@@ -8,6 +8,7 @@
   --moss: #5f7447;
   --water: #88aeb0;
   --shadow: rgba(39, 29, 18, 0.28);
+  --pixel-border: #2b2118;
 }
 
 * { box-sizing: border-box; }
@@ -16,10 +17,13 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 18% 12%, rgba(233, 157, 145, 0.34), transparent 24rem),
-    linear-gradient(135deg, #f7efd9 0%, #ddc89e 52%, #b8bd91 100%);
+    linear-gradient(90deg, rgba(33, 26, 20, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(33, 26, 20, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 18% 12%, rgba(233, 157, 145, 0.36), transparent 24rem),
+    linear-gradient(135deg, #f7efd9 0%, #ddc89e 52%, #8d9c74 100%);
+  background-size: 16px 16px, 16px 16px, auto, auto;
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .shell {
@@ -31,15 +35,29 @@ body {
 }
 
 .hero-panel, .dialog {
-  border: 1px solid rgba(33, 26, 20, 0.28);
-  background: rgba(244, 234, 214, 0.86);
-  box-shadow: 0 1.2rem 3rem var(--shadow);
-  backdrop-filter: blur(10px);
+  border: 4px solid var(--pixel-border);
+  background: rgba(244, 234, 214, 0.94);
+  box-shadow: 8px 8px 0 rgba(33, 26, 20, 0.35);
+  image-rendering: pixelated;
 }
 
 .hero-panel {
   align-self: start;
   padding: 1.5rem;
+  position: relative;
+}
+
+.hero-panel::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 44px;
+  height: 44px;
+  background:
+    linear-gradient(#211a14 0 0) 12px 4px / 20px 8px no-repeat,
+    linear-gradient(#ef9ca0 0 0) 4px 12px / 36px 20px no-repeat,
+    linear-gradient(#4f7a49 0 0) 12px 32px / 20px 8px no-repeat;
 }
 
 .eyebrow, .speaker-role {
@@ -59,9 +77,9 @@ h2 { font-size: clamp(1.8rem, 3vw, 3rem); }
   position: relative;
   min-height: calc(100vh - 2rem);
   overflow: hidden;
-  border: 1px solid rgba(33, 26, 20, 0.34);
-  background: #eadbbd;
-  box-shadow: inset 0 0 7rem rgba(52, 40, 25, 0.18), 0 1.2rem 3rem var(--shadow);
+  border: 6px solid var(--pixel-border);
+  background: #1c1916;
+  box-shadow: 10px 10px 0 rgba(33, 26, 20, 0.35);
 }
 
 canvas {
@@ -84,8 +102,9 @@ canvas {
 
 .hud span {
   padding: 0.45rem 0.7rem;
-  background: rgba(244, 234, 214, 0.82);
-  border: 1px solid rgba(33, 26, 20, 0.22);
+  background: rgba(244, 234, 214, 0.94);
+  border: 3px solid var(--pixel-border);
+  box-shadow: 3px 3px 0 rgba(33, 26, 20, 0.35);
   font: 700 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -101,11 +120,12 @@ canvas {
 }
 
 .close-button, .topic-buttons button {
-  border: 1px solid rgba(33, 26, 20, 0.45);
-  background: rgba(255, 250, 238, 0.82);
+  border: 3px solid var(--pixel-border);
+  background: rgba(255, 250, 238, 0.92);
   color: var(--ink);
   cursor: pointer;
   font: 700 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  box-shadow: 3px 3px 0 rgba(33, 26, 20, 0.24);
 }
 
 .close-button {
@@ -116,7 +136,12 @@ canvas {
 #speaker-intro { line-height: 1.55; color: var(--ink-soft); }
 .topic-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 1rem 0; }
 .topic-buttons button { padding: 0.7rem; text-align: left; }
-.topic-buttons button:hover, .topic-buttons button.active { background: var(--ink); color: var(--paper); }
+.topic-buttons button:hover, .topic-buttons button.active {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(33, 26, 20, 0.24);
+}
 .answer { border-top: 1px solid rgba(33, 26, 20, 0.24); padding-top: 1rem; line-height: 1.65; }
 .answer a { color: #6d3f2f; font-weight: 700; }
 
