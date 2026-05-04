@@ -22,6 +22,13 @@ import { isRotatable } from './office/layout/furnitureCatalog.js';
 import { EditTool, TILE_SIZE } from './office/types.js';
 import { isBrowserRuntime } from './runtime.js';
 import { vscode } from './vscodeApi.js';
+import {
+  communityLinks,
+  createPeachBlossomLayout,
+  isInZone,
+  npcPlacements,
+  worldZones,
+} from './world/peachBlossomWorld.js';
 import personaData from '../../data/personas.json';
 
 interface Persona {
@@ -45,7 +52,7 @@ const topicLabels: Record<string, string> = {
 };
 
 const PLAYER_ID = 0;
-const TREE_TILE = { col: 4, row: 4 };
+const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 
 function readPlayerProfile(): PlayerProfile | null {
   try {
@@ -119,7 +126,9 @@ function App() {
   const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
+  const [currentZoneId, setCurrentZoneId] = useState<string | null>(null);
   const [, setPlayerMoveTick] = useState(0);
+  const [worldInitialized, setWorldInitialized] = useState(false);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
 
@@ -194,9 +203,32 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
+    if (!worldInitialized) {
+      officeState.rebuildFromLayout(createPeachBlossomLayout());
+      setWorldInitialized(true);
+    }
     officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
     officeState.cameraFollowId = PLAYER_ID;
-  }, [layoutReady, officeState, playerProfile]);
+  }, [layoutReady, officeState, playerProfile, worldInitialized]);
+
+  useEffect(() => {
+    if (!layoutReady || agents.length === 0) return;
+    const personaById = new Map(personas.map((persona, index) => [persona.id, index + 1]));
+    for (const placement of npcPlacements) {
+      const agentId = personaById.get(placement.personaId);
+      if (!agentId || !agents.includes(agentId)) continue;
+      const ch = officeState.characters.get(agentId);
+      if (!ch) continue;
+      ch.tileCol = placement.col;
+      ch.tileRow = placement.row;
+      ch.x = placement.col * TILE_SIZE + TILE_SIZE / 2;
+      ch.y = placement.row * TILE_SIZE + TILE_SIZE / 2;
+      ch.path = [];
+      ch.moveProgress = 0;
+      ch.wanderTimer = 2 + (agentId % 5);
+      ch.seatId = null;
+    }
+  }, [agents, layoutReady, officeState]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
@@ -207,10 +239,13 @@ function App() {
       if (player && nearbyId) {
         officeState.faceCharacterToward(nearbyId, player.tileCol, player.tileRow);
       }
-      const nearTree = player
-        ? Math.abs(player.tileCol - TREE_TILE.col) + Math.abs(player.tileRow - TREE_TILE.row) <= 2
-        : false;
+      const nearTree =
+        !!player && !!archiveTreeZone && isInZone(player.tileCol, player.tileRow, archiveTreeZone, 1);
       setIsNearTree(nearTree);
+      const zone = player
+        ? worldZones.find((candidate) => isInZone(player.tileCol, player.tileRow, candidate))
+        : null;
+      setCurrentZoneId(zone?.id ?? null);
     }, 250);
     return () => window.clearInterval(interval);
   }, [findNearbyNpc, layoutReady, officeState, playerProfile]);
@@ -376,17 +411,31 @@ function App() {
               className="absolute z-44 -translate-x-1/2 -translate-y-full pixel-panel px-8 py-5 text-center text-text pointer-events-none"
               style={{ left: promptPosition.left, top: promptPosition.top, opacity: 0.5 }}
             >
-              <p className="text-sm leading-snug">{nearbyPersona.name}: 想聊聊嗎？</p>
-              <p className="text-xs text-accent-bright mt-2">按 Space 交談</p>
+              <p className="text-sm leading-snug">{nearbyPersona.name}</p>
+              <p className="text-xs text-text-muted mt-1">{nearbyPersona.role}</p>
+              <p className="text-xs text-text-muted mt-1">{nearbyPersona.intro}</p>
+              <p className="text-xs text-accent-bright mt-2">Press Space to talk</p>
+            </div>
+          )}
+
+          {currentZoneId && !activeDialoguePersona && (
+            <div className="absolute left-12 top-12 z-43 pixel-panel px-7 py-5 text-text w-[min(380px,calc(100vw-24px))]">
+              <p className="text-xs uppercase tracking-wide text-accent-bright mb-2">Peach Blossom Spring</p>
+              <p className="text-sm">
+                {worldZones.find((zone) => zone.id === currentZoneId)?.name ?? 'NGM Persona Village'}
+              </p>
+              <p className="text-xs text-text-muted mt-1">
+                {worldZones.find((zone) => zone.id === currentZoneId)?.description}
+              </p>
             </div>
           )}
 
           {isNearTree && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
               <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">
-                Big tree archive
+                Archive tree
               </p>
-              <h1 className="text-2xl leading-none mb-3">NGM persona index</h1>
+              <h1 className="text-2xl leading-none mb-3">NGM Persona Village archive</h1>
               <p className="text-sm text-text-muted mb-8">
                 這棵大樹保存 14 位獨立社群組織者的 persona 設定。離開大樹後介面會收起。
               </p>
@@ -408,6 +457,16 @@ function App() {
                   </details>
                 ))}
               </div>
+              <div className="mt-8 border border-border bg-bg/70 px-7 py-5">
+                <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">Community portals</p>
+                <div className="flex flex-col gap-2">
+                  {communityLinks.map((link) => (
+                    <a key={link.label} href={link.url} target="_blank" rel="noreferrer" className="text-xs text-text-muted hover:text-accent-bright">
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </section>
           )}
 
@@ -415,6 +474,7 @@ function App() {
             <RpgDialogue
               persona={activeDialoguePersona}
               player={playerProfile}
+              topicLabels={topicLabels}
               onClose={() => setActiveDialogueId(null)}
             />
           )}
@@ -441,7 +501,7 @@ function App() {
           }}
         >
           <span className="text-sm text-text leading-none">
-            Your agents now respond in real-time.{' '}
+            Wander 桃花源 and talk with nearby personas.{' '}
             <span
               className="text-accent cursor-pointer underline"
               onClick={() => {
@@ -460,19 +520,19 @@ function App() {
       <Modal
         isOpen={isHooksInfoOpen}
         onClose={() => setIsHooksInfoOpen(false)}
-        title="Instant Detection is ON"
+        title="Peach Blossom Spring"
         zIndex={52}
       >
         <div className="text-base text-text px-10" style={{ lineHeight: 1.4 }}>
-          <p className="mb-8">Your Pixel Agents office now reacts in real-time:</p>
+          <p className="mb-8">This world is now a WorkAdventure-style Peach Blossom Spring map:</p>
           <ul className="mb-8 pl-18 list-disc m-0">
-            <li className="text-sm mb-2">Permission prompts appear instantly</li>
-            <li className="text-sm mb-2">Turn completions detected the moment they happen</li>
-            <li className="text-sm mb-2">Sound notifications play immediately</li>
+            <li className="text-sm mb-2">Wander through rivers, bridge, village, and forest zones</li>
+            <li className="text-sm mb-2">Approach a persona and press Space to talk</li>
+            <li className="text-sm mb-2">Visit the archive tree for the full index and portal links</li>
           </ul>
           <p className="mb-12 text-text-muted">
-            This works through Claude Code Hooks, small event listeners that notify Pixel Agents
-            whenever something happens in your Claude sessions.
+            Pixel Agents remains visual inspiration for lively characters, while the world direction is
+            now Peach Blossom Spring / 桃花源.
           </p>
           <div className="text-center">
             <button

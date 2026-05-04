@@ -47,7 +47,7 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
           Start
         </button>
         <p className="mt-8 text-xs text-text-muted leading-snug">
-          Use arrow keys or WASD to walk. Approach an NPC to open the RPG dialogue box.
+          Use arrow keys or WASD to wander. Approach a persona and press Space to talk.
         </p>
       </form>
     </div>
