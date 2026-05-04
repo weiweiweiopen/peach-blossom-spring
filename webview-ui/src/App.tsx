@@ -6,6 +6,8 @@ import { ChangelogModal } from './components/ChangelogModal.js';
 import { DebugView } from './components/DebugView.js';
 import { EditActionBar } from './components/EditActionBar.js';
 import { MigrationNotice } from './components/MigrationNotice.js';
+import { PlayerSetup, type PlayerProfile } from './components/PlayerSetup.js';
+import { RpgDialogue } from './components/RpgDialogue.js';
 import { SettingsModal } from './components/SettingsModal.js';
 import { Tooltip } from './components/Tooltip.js';
 import { Modal } from './components/ui/Modal.js';
@@ -26,6 +28,7 @@ import { vscode } from './vscodeApi.js';
 import personaData from '../../data/personas.json';
 
 interface Persona {
+  id: string;
   name: string;
   role: string;
   intro: string;
@@ -43,6 +46,17 @@ const topicLabels: Record<string, string> = {
   exchange: 'International exchange',
   sustainability: 'Open community sustainability',
 };
+
+const PLAYER_ID = 0;
+
+function readPlayerProfile(): PlayerProfile | null {
+  try {
+    const raw = localStorage.getItem('peach_player_profile');
+    return raw ? (JSON.parse(raw) as PlayerProfile) : null;
+  } catch {
+    return null;
+  }
+}
 
 // Game state lives outside React — updated imperatively by message handlers
 const officeStateRef = { current: null as OfficeState | null };
@@ -103,6 +117,11 @@ function App() {
   const [hooksTooltipDismissed, setHooksTooltipDismissed] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [alwaysShowOverlay, setAlwaysShowOverlay] = useState(false);
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(() =>
+    readPlayerProfile(),
+  );
+  const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
+  const [, setPlayerMoveTick] = useState(0);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
 
@@ -162,6 +181,81 @@ function App() {
 
   const officeState = getOfficeState();
   const selectedPersona = selectedAgent ? personas[selectedAgent - 1] : null;
+  const activeDialoguePersona = activeDialogueId ? personas[activeDialogueId - 1] : null;
+
+  const findNearbyNpc = useCallback((): number | null => {
+    const player = officeState.characters.get(PLAYER_ID);
+    if (!player) return null;
+    let nearest: { id: number; dist: number } | null = null;
+    for (const id of agents) {
+      const npc = officeState.characters.get(id);
+      if (!npc) continue;
+      const dist = Math.abs(npc.tileCol - player.tileCol) + Math.abs(npc.tileRow - player.tileRow);
+      if (dist <= 2 && (!nearest || dist < nearest.dist)) {
+        nearest = { id, dist };
+      }
+    }
+    return nearest?.id ?? null;
+  }, [agents, officeState]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile) return;
+    officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
+    officeState.cameraFollowId = PLAYER_ID;
+  }, [layoutReady, officeState, playerProfile]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile) return;
+    const interval = window.setInterval(() => {
+      const nearbyId = findNearbyNpc();
+      if (nearbyId && activeDialogueId === null) {
+        officeState.selectedAgentId = nearbyId;
+        setActiveDialogueId(nearbyId);
+      }
+    }, 250);
+    return () => window.clearInterval(interval);
+  }, [activeDialogueId, findNearbyNpc, layoutReady, officeState, playerProfile]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
+      if (activeDialogueId !== null && event.key !== 'Escape') return;
+
+      let moved = false;
+      if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
+        moved = officeState.movePlayerBy(PLAYER_ID, 0, -1);
+      } else if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
+        moved = officeState.movePlayerBy(PLAYER_ID, 0, 1);
+      } else if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
+        moved = officeState.movePlayerBy(PLAYER_ID, -1, 0);
+      } else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
+        moved = officeState.movePlayerBy(PLAYER_ID, 1, 0);
+      } else if (event.key === 'Escape') {
+        setActiveDialogueId(null);
+      }
+
+      if (moved) {
+        event.preventDefault();
+        setPlayerMoveTick((tick) => tick + 1);
+        const nearbyId = findNearbyNpc();
+        if (nearbyId) {
+          officeState.selectedAgentId = nearbyId;
+          setActiveDialogueId(nearbyId);
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeDialogueId, findNearbyNpc, layoutReady, officeState, playerProfile]);
+
+  const handlePlayerStart = useCallback((profile: PlayerProfile) => {
+    localStorage.setItem('peach_player_profile', JSON.stringify(profile));
+    setPlayerProfile(profile);
+  }, []);
 
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
@@ -271,7 +365,7 @@ function App() {
             alwaysShowOverlay={alwaysShowOverlay}
           />
 
-          {selectedPersona && (
+          {selectedPersona && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
               <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">
                 Ask as this NGM interviewee
@@ -293,6 +387,14 @@ function App() {
                 ))}
               </div>
             </section>
+          )}
+
+          {activeDialoguePersona && playerProfile && (
+            <RpgDialogue
+              persona={activeDialoguePersona}
+              player={playerProfile}
+              onClose={() => setActiveDialogueId(null)}
+            />
           )}
         </>
       ) : (
@@ -411,6 +513,8 @@ function App() {
       {showMigrationNotice && (
         <MigrationNotice onDismiss={() => setMigrationNoticeDismissed(true)} />
       )}
+
+      {!playerProfile && <PlayerSetup onStart={handlePlayerStart} />}
     </div>
   );
 }

@@ -322,6 +322,49 @@ export class OfficeState {
     this.characters.set(id, ch);
   }
 
+  addPlayer(id: number, palette: number, name: string): void {
+    if (this.characters.has(id)) return;
+    const spawn = this.walkableTiles.find((tile) => !this.blockedTiles.has(`${tile.col},${tile.row}`)) ?? {
+      col: 1,
+      row: 1,
+    };
+    const ch = createCharacter(id, palette, null, null, 0);
+    ch.isPlayer = true;
+    ch.folderName = name;
+    ch.isActive = false;
+    ch.state = CharacterState.IDLE;
+    ch.matrixEffect = null;
+    ch.tileCol = spawn.col;
+    ch.tileRow = spawn.row;
+    ch.x = spawn.col * TILE_SIZE + TILE_SIZE / 2;
+    ch.y = spawn.row * TILE_SIZE + TILE_SIZE / 2;
+    this.characters.set(id, ch);
+    this.cameraFollowId = id;
+  }
+
+  movePlayerBy(id: number, dCol: number, dRow: number): boolean {
+    const ch = this.characters.get(id);
+    if (!ch?.isPlayer) return false;
+    const col = ch.tileCol + dCol;
+    const row = ch.tileRow + dRow;
+    if (col < 0 || row < 0 || col >= this.layout.cols || row >= this.layout.rows) return false;
+    if (!isWalkable(col, row, this.tileMap, this.blockedTiles)) return false;
+
+    ch.tileCol = col;
+    ch.tileRow = row;
+    ch.x = col * TILE_SIZE + TILE_SIZE / 2;
+    ch.y = row * TILE_SIZE + TILE_SIZE / 2;
+    ch.path = [];
+    ch.moveProgress = 0;
+    ch.state = CharacterState.IDLE;
+    if (dCol > 0) ch.dir = Direction.RIGHT;
+    if (dCol < 0) ch.dir = Direction.LEFT;
+    if (dRow > 0) ch.dir = Direction.DOWN;
+    if (dRow < 0) ch.dir = Direction.UP;
+    this.cameraFollowId = id;
+    return true;
+  }
+
   removeAgent(id: number): void {
     const ch = this.characters.get(id);
     if (!ch) return;
@@ -722,6 +765,7 @@ export class OfficeState {
 
     const toDelete: number[] = [];
     for (const ch of this.characters.values()) {
+      if (ch.isPlayer) continue;
       // Handle matrix effect animation
       if (ch.matrixEffect) {
         ch.matrixEffectTimer += dt;
@@ -767,6 +811,7 @@ export class OfficeState {
   getCharacterAt(worldX: number, worldY: number): number | null {
     const chars = this.getCharacters().sort((a, b) => b.y - a.y);
     for (const ch of chars) {
+      if (ch.isPlayer) continue;
       // Skip characters that are despawning
       if (ch.matrixEffect === 'despawn') continue;
       // Character sprite is 16x24, anchored bottom-center

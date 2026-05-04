@@ -180,6 +180,8 @@ export interface Character {
   matrixEffectSeeds: number[];
   /** Workspace folder name (only set for multi-root workspaces) */
   folderName?: string;
+  /** User-controlled protagonist, excluded from agent hit-testing and AI FSM. */
+  isPlayer?: boolean;
 
   // -- Agent Teams --
   /** Team name this agent belongs to */
