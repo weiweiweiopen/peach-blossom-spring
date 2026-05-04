@@ -1,0 +1,10 @@
+{
+  "name": "peach-blossom-spring",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interactive NGM persona village for GitHub Pages.",
+  "scripts": {
+    "build": "node --check app.js",
+    "test": "node --check app.js"
+  }
+}

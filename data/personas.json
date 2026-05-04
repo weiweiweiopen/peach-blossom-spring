@@ -1,0 +1,231 @@
+{
+  "project": "Peach Blossom Spring / Non-Governmental Matters",
+  "source_status": "Built from local NGM interviewee list, partial extracted Q&A, and the available NGM round-table markdown. Full PDF transcript extraction still needs a reliable OCR/text-extraction pass because most existing JSON entries were placeholders.",
+  "topics": ["nomadic", "camp", "independent", "artScience", "funding", "exchange", "sustainability"],
+  "personas": [
+    {
+      "id": "andreas-siagian",
+      "name": "Andreas Siagian",
+      "role": "Lifepatch / local commons organizer",
+      "intro": "Andreas introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. His persona keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.",
+      "transcript": "docs/transcripts/andreas-siagian.md",
+      "responses": {
+        "nomadic": "Nomadic research only works if it returns to a place with care. Travel should not become cultural extraction; it should leave behind trust, repaired tools, local documents, or the next host who can act without waiting for you.",
+        "camp": "I would keep the camp small: twelve people, forty-eight hours, no stage. At that scale you know who cooks, who fixes things, and who is responsible when something breaks.",
+        "independent": "Independence is not isolation. It is the ability to keep relationships and decisions visible enough that a collective does not become only a logo or funding container.",
+        "artScience": "Art-science should begin from local problems and available materials. The question is not how to import a lab model, but how people can make sense of tools together.",
+        "funding": "Use grants to lower risk, not to enlarge bureaucracy. If a budget makes people chase deliverables instead of neighbors, the scale is already wrong.",
+        "exchange": "International exchange is meaningful when it creates long friendships and repeated responsibility, not when it only moves speakers between events.",
+        "sustainability": "Sustainability is a replicable small unit. Like yeast, a camp can multiply without becoming a central institution."
+      }
+    },
+    {
+      "id": "anastassia-pistofidou",
+      "name": "Anastassia Pistofidou",
+      "role": "Fabricademy / decentralized education",
+      "intro": "Anastassia speaks through node networks, portable curriculum, and peer validation. Her persona turns camps into distributed learning frameworks.",
+      "transcript": "docs/transcripts/anastassia-pistofidou.md",
+      "responses": {
+        "nomadic": "Nomadic research needs a curriculum that can travel without becoming colonial. A shared theme can move across nodes, while each lab keeps autonomy over local materials and rhythms.",
+        "camp": "I would make the camp a semester-based node network: synchronous openings, asynchronous endings, peer review, and micro-credentials that recognize care and technical work.",
+        "independent": "Independent labs become stronger when they can register as nodes without surrendering their identity. The light structure matters: enough protocol to connect, not enough to dominate.",
+        "artScience": "Art-science projects need methods that can be taught, forked, and tested by others. Documentation is not aftercare; it is part of the medium.",
+        "funding": "Funding should support shared infrastructure, translation, and mentoring across nodes. It should not force every node to produce the same output.",
+        "exchange": "International exchange can be peer validation. The value is not only mobility, but the ability for distributed labs to recognize each other's learning.",
+        "sustainability": "Sustainability is node autonomy plus peer validation. A network survives when knowledge can circulate without a single center."
+      }
+    },
+    {
+      "id": "giulia-tomasello",
+      "name": "Giulia Tomasello",
+      "role": "wearable technology / care protocols",
+      "intro": "Giulia's persona frames technology through consent, feminist practice, and care as infrastructure.",
+      "transcript": "docs/transcripts/giulia-tomasello.md",
+      "responses": {
+        "nomadic": "Nomadic research must carry consent with it. Moving between contexts means learning how people want to be addressed, credited, protected, and invited back.",
+        "camp": "A camp should start with care protocols before production. Psychological safety, language support, rest time, and non-extractive participation are not extras.",
+        "independent": "Independent research needs support networks because burnout is also a governance problem. If care is invisible, independence becomes another form of unpaid labor.",
+        "artScience": "Art-science should make bodies and social relations legible, not just produce devices. Wearables can be tools for conversation about health, agency, and intimacy.",
+        "funding": "Use funding to pay for care roles, access needs, and long-term support, not only equipment and exhibitions.",
+        "exchange": "International exchange must avoid extracting local stories. It should build conditions where participants can say no, pause, or redirect the format.",
+        "sustainability": "A sustainable open community has care clauses that are enforceable. Friendship is powerful, but care should not depend only on private goodwill."
+      }
+    },
+    {
+      "id": "christian-dils",
+      "name": "Christian Dils",
+      "role": "Fraunhofer TexLab / research infrastructure",
+      "intro": "Christian's persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
+      "transcript": "docs/transcripts/christian-dils.md",
+      "responses": {
+        "nomadic": "Nomadic researchers need predictable infrastructure. A lab visit becomes more useful when machines, safety rules, and maintenance duties are clear before arrival.",
+        "camp": "I would turn camps into equipment time-sharing markets. Entry is not only a ticket; it is a maintenance obligation and a documentation contribution.",
+        "independent": "Independent labs need infrastructure health. If nobody maintains the bench, the commons becomes symbolic rather than usable.",
+        "artScience": "Art-science collaboration improves when artists understand constraints and engineers understand context. The shared object is often the protocol.",
+        "funding": "Spend grants on calibration, repair, safety, documentation, and technician time. Those boring lines are what make experiments repeatable.",
+        "exchange": "International exchange should include SOP exchange and repair knowledge, not only lectures and final artworks.",
+        "sustainability": "Sustainability is a commons that still works after the festival. Maintenance is culture."
+      }
+    },
+    {
+      "id": "jonathan-minchin",
+      "name": "Jonathan Minchin",
+      "role": "Green Fablab / ecological field commons",
+      "intro": "Jonathan's persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
+      "transcript": "docs/transcripts/jonathan-minchin.md",
+      "responses": {
+        "nomadic": "Nomadic research should follow seasons as much as flights. A field site teaches through weather, crops, breakdowns, and the patience of ecological time.",
+        "camp": "A camp can be a field-mesh: small rural nodes, shared data standards, and exchanges aligned with planting, harvest, and repair cycles.",
+        "independent": "Independent research is strongest when it connects tools to land and community needs. Labs are less important than the relationships that keep them useful.",
+        "artScience": "Art-science can prototype ecological literacy. Sensors, robots, and fabrication tools matter when they help people observe and care for environments.",
+        "funding": "Use funding to support shared datasets, local stewardship, and slow fieldwork rather than one-off demos.",
+        "exchange": "International exchange should compare situated practices: what works in one field, island, city, or workshop, and what should not be copied.",
+        "sustainability": "Sustainability is measured in land health, tool reuse, and whether local people can continue without the visiting project."
+      }
+    },
+    {
+      "id": "marc-dusseiller",
+      "name": "Marc Dusseiller",
+      "role": "Hackteria / nomadic workshopologist",
+      "intro": "Marc's persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
+      "transcript": "docs/transcripts/marc-dusseiller.md",
+      "responses": {
+        "nomadic": "Nomadic research is like carrying a tiny lab in your backpack and trusting friends more than institutions. It works when the setup is cheap, open, and funny enough that people dare to touch it.",
+        "camp": "First ask why we are together. A good hacker camp is dense, permissive, and slightly chaotic: local materials, cooking, soldering, failing, repairing, and laughing.",
+        "independent": "Independent research is not pure autonomy. It is a network of temporary autonomous labs, friend nodes, and shared protocols that can appear and disappear without becoming a ministry.",
+        "artScience": "Science-art projects should stay hands-on. If people cannot open the box, contaminate the protocol, or rebuild it with cheaper parts, it loses the Hackteria spirit.",
+        "funding": "Money is useful when it buys time and materials without killing the experiment. Refuse the kind of grant that turns friendship into KPI theater.",
+        "exchange": "International exchange is friendship with tools attached. The real result is that twelve years later you can still call someone and make a lab happen.",
+        "sustainability": "Sustainability is short-term gathering becoming long-term friendship. Failure is also part of the archive."
+      }
+    },
+    {
+      "id": "mika-satomi",
+      "name": "Mika Satomi",
+      "role": "KOBAKANT / e-textile exchange",
+      "intro": "Mika's persona emphasizes survivable scale, wish walls, e-textile knowledge sharing, and mutual promises.",
+      "transcript": "docs/transcripts/mika-satomi.md",
+      "responses": {
+        "nomadic": "Nomadic research needs small wishes rather than heroic plans. If I travel, I want to know what someone wants to learn, borrow, repair, or share.",
+        "camp": "I would make a Wish Wall. Entry is a wish plus a promise: teach one stitch, share one pattern, fix one tool, listen to one story.",
+        "independent": "Independent practice survives when the scale is survivable. Smaller groups can notice fatigue, confusion, and quiet knowledge.",
+        "artScience": "E-textiles are good because they make technology soft enough to touch. The project can be technical and intimate at the same time.",
+        "funding": "Use funding for small materials, documentation, childcare, and time to write patterns clearly. Do not spend it all on spectacle.",
+        "exchange": "International exchange should be reciprocal at the level of small skills. A good exchange leaves both sides with something they can actually use.",
+        "sustainability": "Sustainability is wish fulfillment, not only deliverables. Count the promises completed and the people who still ask each other for help."
+      }
+    },
+    {
+      "id": "rully-shabara",
+      "name": "Rully Shabara",
+      "role": "Senyawa / de-staged practice",
+      "intro": "Rully's persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
+      "transcript": "docs/transcripts/rully-shabara.md",
+      "responses": {
+        "nomadic": "Nomadic movement can become another performance economy. Move only when the encounter changes how people listen to each other.",
+        "camp": "Remove the stage. Sit in circles, share food, rehearse together, record if needed, but do not make the audience the reason for gathering.",
+        "independent": "Independence means not letting institutions commission your narrative. Speak for yourselves, even when the format is rough.",
+        "artScience": "Art-science should not become decoration for technology. Let the body, voice, and risk remain present.",
+        "funding": "Take money carefully. If it requires you to become an industry of yourself, it may cost more than it gives.",
+        "exchange": "International exchange is meaningful when translation is embodied, not only linguistic: rhythm, food, silence, and disagreement matter.",
+        "sustainability": "Sustainability is continuation of relationships after the event, not serial shows with new branding."
+      }
+    },
+    {
+      "id": "ryu-oyama",
+      "name": "Ryu Toru Oyama",
+      "role": "Oki Wonder Lab / island-chain host",
+      "intro": "Ryu's persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
+      "transcript": "docs/transcripts/ryu-oyama.md",
+      "responses": {
+        "nomadic": "From an island, nomadic research feels different. Isolation is not lack; it is a condition that asks visitors to slow down and notice where they are.",
+        "camp": "I propose time-shifted island camps: one site begins, another continues later, a third concludes. The camp becomes a chain rather than a center.",
+        "independent": "Independent research needs local tempo. Okinawa, Taipei, and Europe should not be forced into the same clock.",
+        "artScience": "Art-science can learn from food, ecology, weather, and local craft. A lab can include a kitchen and a shoreline.",
+        "funding": "Use funding to reduce travel pressure by supporting staggered hosting, remote intervals, and local preparation.",
+        "exchange": "International exchange should respect distance. Sometimes the best exchange is delayed, partial, and continued by another node.",
+        "sustainability": "Sustainability is decentered in time and space. A chain of small acts can be stronger than one flagship event."
+      }
+    },
+    {
+      "id": "stephanie-pan",
+      "name": "Stephanie Pan",
+      "role": "Modern Body Festival / micro-lab dramaturgy",
+      "intro": "Stephanie's persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
+      "transcript": "docs/transcripts/stephanie-pan.md",
+      "responses": {
+        "nomadic": "Nomadic research should carry dramaturgy: who enters, who hosts, who rests, and how the encounter is framed.",
+        "camp": "A festival can slim down into micro-labs. Audiences can become co-hosts, not consumers of a finished cultural product.",
+        "independent": "Independent research needs formats that do not exhaust people. A smaller matinee lab can be more honest than a large annual flagship.",
+        "artScience": "Art-science works when the public can rehearse with the project. The body learns through participation, not only explanation.",
+        "funding": "Use funding to support access, care clauses, and continuity between small events instead of one big image campaign.",
+        "exchange": "International exchange should include feedback loops and language support. Otherwise only confident voices travel well.",
+        "sustainability": "Sustainability is continuous micro-generation: smaller formats that can return without burning out the host community."
+      }
+    },
+    {
+      "id": "stelio-manousakis",
+      "name": "Stelio Manousakis",
+      "role": "Modern Body Festival / governance rehearsal",
+      "intro": "Stelio's persona fuses administration and performance, treating sound-checks as governance checks.",
+      "transcript": "docs/transcripts/stelio-manousakis.md",
+      "responses": {
+        "nomadic": "Nomadic projects need technical and social sound-checks. Before performance, ask about fatigue, translation, exits, and who can stop the process.",
+        "camp": "Make governance part of rehearsal. If the camp cannot practice decision-making, it cannot claim to be autonomous.",
+        "independent": "Independence requires administration, but administration can be creative. The problem is hiding it until it becomes crisis.",
+        "artScience": "Art-science often depends on systems. Let the system's rules, failures, and maintenance become visible parts of the work.",
+        "funding": "Use funding to pay for coordination and risk planning. Invisible administration is real labor.",
+        "exchange": "International exchange should rehearse translation and exit plans as seriously as technical setup.",
+        "sustainability": "Sustainability is governance that can be practiced before conflict. The check is part of the performance."
+      }
+    },
+    {
+      "id": "svenja-keune",
+      "name": "Svenja Keune",
+      "role": "I.N.S.E.C.T. / multispecies design",
+      "intro": "Svenja's persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
+      "transcript": "docs/transcripts/svenja-keune.md",
+      "responses": {
+        "nomadic": "Nomadic research should include more-than-human rhythms. Not every collaborator moves at human festival speed.",
+        "camp": "I would split the camp in two: first being-with, then a pause, then designing-with. The interval is not empty; it lets attention change.",
+        "independent": "Independent research needs permission to be slow. Ecological listening does not fit well into compressed deliverable formats.",
+        "artScience": "Art-science can become multispecies practice when it starts with observation and cohabitation, not immediate design solutions.",
+        "funding": "Use funding to protect pauses, field care, and return visits. Without those, ecological work becomes aesthetic sampling.",
+        "exchange": "International exchange should compare rhythms and habitats, not only methods. Some knowledge must remain situated.",
+        "sustainability": "Sustainability is ecological rhythm plus social care. A project should ask what it disturbs and what it helps regenerate."
+      }
+    },
+    {
+      "id": "ted-hung",
+      "name": "Ted Hung",
+      "role": "Fablab Taipei / person-based network",
+      "intro": "Ted's persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
+      "transcript": "docs/transcripts/ted-hung.md",
+      "responses": {
+        "nomadic": "Nomadic research needs hosts more than spaces. The connection between people is stronger than the connection between labs.",
+        "camp": "I would create People Passes: membership follows trusted people and host responsibilities, not only institutional rooms.",
+        "independent": "Independent research should not worship lab identity. A lab becomes useful when people can actually connect through it.",
+        "artScience": "Art-science projects need practical access: tools, hosts, safety, and someone who can explain what is possible today.",
+        "funding": "Use micro-donations and transparent ledgers where possible. Large funding can help, but relationships should not disappear behind accounting.",
+        "exchange": "International exchange is host-to-host trust. The institution is secondary if the people can keep helping each other.",
+        "sustainability": "Sustainability is relationship backing. Spaces change; people carry the network."
+      }
+    },
+    {
+      "id": "tincuta-heinzel",
+      "name": "Tincuta Heinzel",
+      "role": "curator / critical textile and media questions",
+      "intro": "Tincuta's persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
+      "transcript": "docs/transcripts/tincuta-heinzel.md",
+      "responses": {
+        "nomadic": "Nomadic research must ask what questions travel and what questions should stay local. Curating means caring for that difference.",
+        "camp": "A camp can be a curatorial tool. Each location should have co-curators who pose ethical questions and collect local responses.",
+        "independent": "Independent research is not only freedom from institutions; it is also responsibility for framing, context, and critique.",
+        "artScience": "Art-science needs critical vocabulary. Otherwise technology appears neutral and the social conditions of making disappear.",
+        "funding": "Use funding to support translation, reflection, and publication of questions, not only objects. Debate is an outcome.",
+        "exchange": "International exchange should produce versions, not universal conclusions. Each site answers differently.",
+        "sustainability": "Sustainability is an evolving commons of questions, failures, trials, and errors that others can respond to."
+      }
+    }
+  ]
+}
