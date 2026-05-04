@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { toMajorMinor } from './changelogData.js';
-import { BottomToolbar } from './components/BottomToolbar.js';
 import { ChangelogModal } from './components/ChangelogModal.js';
 import { DebugView } from './components/DebugView.js';
 import { EditActionBar } from './components/EditActionBar.js';
@@ -12,17 +11,15 @@ import { SettingsModal } from './components/SettingsModal.js';
 import { Tooltip } from './components/Tooltip.js';
 import { Modal } from './components/ui/Modal.js';
 import { VersionIndicator } from './components/VersionIndicator.js';
-import { ZoomControls } from './components/ZoomControls.js';
 import { useEditorActions } from './hooks/useEditorActions.js';
 import { useEditorKeyboard } from './hooks/useEditorKeyboard.js';
 import { useExtensionMessages } from './hooks/useExtensionMessages.js';
 import { OfficeCanvas } from './office/components/OfficeCanvas.js';
-import { ToolOverlay } from './office/components/ToolOverlay.js';
 import { EditorState } from './office/editor/editorState.js';
 import { EditorToolbar } from './office/editor/EditorToolbar.js';
 import { OfficeState } from './office/engine/officeState.js';
 import { isRotatable } from './office/layout/furnitureCatalog.js';
-import { EditTool } from './office/types.js';
+import { EditTool, TILE_SIZE } from './office/types.js';
 import { isBrowserRuntime } from './runtime.js';
 import { vscode } from './vscodeApi.js';
 import personaData from '../../data/personas.json';
@@ -48,6 +45,7 @@ const topicLabels: Record<string, string> = {
 };
 
 const PLAYER_ID = 0;
+const TREE_TILE = { col: 4, row: 4 };
 
 function readPlayerProfile(): PlayerProfile | null {
   try {
@@ -91,11 +89,9 @@ function App() {
     agentTools,
     agentStatuses,
     subagentTools,
-    subagentCharacters,
     layoutReady,
     layoutWasReset,
     loadedAssets,
-    workspaceFolders,
     externalAssetDirectories,
     lastSeenVersion,
     extensionVersion,
@@ -120,7 +116,9 @@ function App() {
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(() =>
     readPlayerProfile(),
   );
+  const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
+  const [isNearTree, setIsNearTree] = useState(false);
   const [, setPlayerMoveTick] = useState(0);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
@@ -167,10 +165,6 @@ function App() {
     editor.handleToggleEditMode,
   );
 
-  const handleCloseAgent = useCallback((id: number) => {
-    vscode.postMessage({ type: 'closeAgent', id });
-  }, []);
-
   const handleClick = useCallback((agentId: number) => {
     // If clicked agent is a sub-agent, focus the parent's terminal instead
     const os = getOfficeState();
@@ -180,7 +174,7 @@ function App() {
   }, []);
 
   const officeState = getOfficeState();
-  const selectedPersona = selectedAgent ? personas[selectedAgent - 1] : null;
+  const nearbyPersona = nearbyNpcId ? personas[nearbyNpcId - 1] : null;
   const activeDialoguePersona = activeDialogueId ? personas[activeDialogueId - 1] : null;
 
   const findNearbyNpc = useCallback((): number | null => {
@@ -207,14 +201,19 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     const interval = window.setInterval(() => {
+      const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
-      if (nearbyId && activeDialogueId === null) {
-        officeState.selectedAgentId = nearbyId;
-        setActiveDialogueId(nearbyId);
+      setNearbyNpcId(nearbyId);
+      if (player && nearbyId) {
+        officeState.faceCharacterToward(nearbyId, player.tileCol, player.tileRow);
       }
+      const nearTree = player
+        ? Math.abs(player.tileCol - TREE_TILE.col) + Math.abs(player.tileRow - TREE_TILE.row) <= 2
+        : false;
+      setIsNearTree(nearTree);
     }, 250);
     return () => window.clearInterval(interval);
-  }, [activeDialogueId, findNearbyNpc, layoutReady, officeState, playerProfile]);
+  }, [findNearbyNpc, layoutReady, officeState, playerProfile]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
@@ -235,22 +234,24 @@ function App() {
         moved = officeState.movePlayerBy(PLAYER_ID, 1, 0);
       } else if (event.key === 'Escape') {
         setActiveDialogueId(null);
+      } else if (event.code === 'Space') {
+        if (nearbyNpcId !== null) {
+          event.preventDefault();
+          officeState.selectedAgentId = nearbyNpcId;
+          setActiveDialogueId(nearbyNpcId);
+        }
+        return;
       }
 
       if (moved) {
         event.preventDefault();
         setPlayerMoveTick((tick) => tick + 1);
-        const nearbyId = findNearbyNpc();
-        if (nearbyId) {
-          officeState.selectedAgentId = nearbyId;
-          setActiveDialogueId(nearbyId);
-        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeDialogueId, findNearbyNpc, layoutReady, officeState, playerProfile]);
+  }, [activeDialogueId, layoutReady, nearbyNpcId, officeState, playerProfile]);
 
   const handlePlayerStart = useCallback((profile: PlayerProfile) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
@@ -259,6 +260,25 @@ function App() {
 
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
+
+  const promptPosition = (() => {
+    if (!nearbyNpcId || !containerRef.current) return null;
+    const ch = officeState.characters.get(nearbyNpcId);
+    if (!ch) return null;
+    const rect = containerRef.current.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const layout = officeState.getLayout();
+    const mapW = layout.cols * TILE_SIZE * editor.zoom;
+    const mapH = layout.rows * TILE_SIZE * editor.zoom;
+    const canvasW = rect.width * dpr;
+    const canvasH = rect.height * dpr;
+    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    return {
+      left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
+      top: (deviceOffsetY + (ch.y - 34) * editor.zoom) / dpr,
+    };
+  })();
 
   // Show "Press R to rotate" hint when a rotatable item is selected or being placed
   const showRotateHint =
@@ -304,8 +324,6 @@ function App() {
 
       {!isDebugMode ? (
         <>
-          <ZoomControls zoom={editor.zoom} onZoomChange={editor.handleZoomChange} />
-
           {/* Vignette overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
@@ -353,36 +371,40 @@ function App() {
               );
             })()}
 
-          <ToolOverlay
-            officeState={officeState}
-            agents={agents}
-            agentTools={agentTools}
-            subagentCharacters={subagentCharacters}
-            containerRef={containerRef}
-            zoom={editor.zoom}
-            panRef={editor.panRef}
-            onCloseAgent={handleCloseAgent}
-            alwaysShowOverlay={alwaysShowOverlay}
-          />
+          {nearbyPersona && !activeDialoguePersona && promptPosition && (
+            <div
+              className="absolute z-44 -translate-x-1/2 -translate-y-full pixel-panel px-8 py-5 text-center text-text pointer-events-none"
+              style={{ left: promptPosition.left, top: promptPosition.top, opacity: 0.5 }}
+            >
+              <p className="text-sm leading-snug">{nearbyPersona.name}: 想聊聊嗎？</p>
+              <p className="text-xs text-accent-bright mt-2">按 Space 交談</p>
+            </div>
+          )}
 
-          {selectedPersona && !activeDialoguePersona && (
+          {isNearTree && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
               <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">
-                Ask as this NGM interviewee
+                Big tree archive
               </p>
-              <h1 className="text-2xl leading-none mb-3">{selectedPersona.name}</h1>
-              <p className="text-sm text-text-muted mb-8">{selectedPersona.role}</p>
-              <p className="text-base leading-snug mb-10">{selectedPersona.intro}</p>
-              <p className="text-sm text-accent-bright mb-5">
-                What would {selectedPersona.name} say about...
+              <h1 className="text-2xl leading-none mb-3">NGM persona index</h1>
+              <p className="text-sm text-text-muted mb-8">
+                這棵大樹保存 14 位獨立社群組織者的 persona 設定。離開大樹後介面會收起。
               </p>
               <div className="flex flex-col gap-6">
-                {Object.entries(selectedPersona.responses).map(([topic, answer]) => (
-                  <details key={topic} className="border border-border bg-bg/70 px-7 py-5">
+                {personas.map((persona) => (
+                  <details key={persona.id} className="border border-border bg-bg/70 px-7 py-5">
                     <summary className="cursor-pointer text-sm text-accent-bright">
-                      {topicLabels[topic] ?? topic}
+                      {persona.name} / {persona.role}
                     </summary>
-                    <p className="mt-5 text-sm leading-snug text-text-muted">{answer}</p>
+                    <p className="mt-5 text-sm leading-snug text-text-muted">{persona.intro}</p>
+                    <div className="mt-5 flex flex-col gap-3">
+                      {Object.entries(persona.responses).map(([topic, answer]) => (
+                        <p key={topic} className="text-xs leading-snug text-text-muted">
+                          <span className="text-accent-bright">{topicLabels[topic] ?? topic}: </span>
+                          {answer}
+                        </p>
+                      ))}
+                    </div>
                   </details>
                 ))}
               </div>
@@ -465,15 +487,6 @@ function App() {
           </p>
         </div>
       </Modal>
-
-      <BottomToolbar
-        isEditMode={editor.isEditMode}
-        onOpenClaude={editor.handleOpenClaude}
-        onToggleEditMode={editor.handleToggleEditMode}
-        isSettingsOpen={isSettingsOpen}
-        onToggleSettings={() => setIsSettingsOpen((v) => !v)}
-        workspaceFolders={workspaceFolders}
-      />
 
       <VersionIndicator
         currentVersion={extensionVersion}

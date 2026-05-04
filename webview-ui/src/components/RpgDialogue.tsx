@@ -39,6 +39,18 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
     setError('');
   }, [persona]);
 
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = question.trim();
@@ -71,8 +83,8 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
   }
 
   return (
-    <div className="absolute inset-x-4 bottom-4 z-50 flex justify-center pointer-events-none">
-      <section className="pixel-panel pointer-events-auto w-[min(920px,100%)] px-10 py-8 text-text shadow-pixel">
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none">
+      <section className="pixel-panel pointer-events-auto w-[min(1100px,66vw)] h-[66vh] min-w-[min(760px,calc(100vw-32px))] px-12 py-10 text-text shadow-pixel flex flex-col">
         <div className="flex items-start justify-between gap-8 mb-5">
           <div>
             <p className="text-xs uppercase tracking-wide text-accent-bright mb-2">RPG dialogue</p>
@@ -83,9 +95,9 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
             x
           </button>
         </div>
-        <div className="max-h-56 overflow-auto bg-bg/70 border border-border px-6 py-5 mb-6">
+        <div className="flex-1 overflow-auto bg-bg/70 border border-border px-8 py-7 mb-6 text-lg">
           {messages.map((message, index) => (
-            <p key={`${message.speaker}-${index.toString()}`} className="text-sm leading-snug mb-4 last:mb-0">
+            <p key={`${message.speaker}-${index.toString()}`} className="text-base leading-relaxed mb-5 last:mb-0">
               <span className="text-accent-bright">{message.speaker}: </span>
               {message.text}
             </p>

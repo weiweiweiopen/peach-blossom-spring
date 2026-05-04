@@ -11,6 +11,8 @@ import {
   INACTIVE_SEAT_TIMER_MIN_SEC,
   INACTIVE_SEAT_TIMER_RANGE_SEC,
   WAITING_BUBBLE_DURATION_SEC,
+  WALK_FRAME_DURATION_SEC,
+  WALK_SPEED_PX_PER_SEC,
 } from '../../constants.js';
 import { getAnimationFrames, getCatalogEntry, getOnStateType } from '../layout/furnitureCatalog.js';
 import {
@@ -53,6 +55,10 @@ export class OfficeState {
   /** Reverse lookup: sub-agent character ID → parent info */
   subagentMeta: Map<number, { parentAgentId: number; parentToolId: string }> = new Map();
   private nextSubagentId = -1;
+
+  private tileCenter(col: number, row: number): { x: number; y: number } {
+    return { x: col * TILE_SIZE + TILE_SIZE / 2, y: row * TILE_SIZE + TILE_SIZE / 2 };
+  }
 
   constructor(layout?: OfficeLayout) {
     this.layout = layout || createDefaultLayout();
@@ -345,24 +351,71 @@ export class OfficeState {
   movePlayerBy(id: number, dCol: number, dRow: number): boolean {
     const ch = this.characters.get(id);
     if (!ch?.isPlayer) return false;
+    if (ch.path.length > 0) return false;
     const col = ch.tileCol + dCol;
     const row = ch.tileRow + dRow;
     if (col < 0 || row < 0 || col >= this.layout.cols || row >= this.layout.rows) return false;
     if (!isWalkable(col, row, this.tileMap, this.blockedTiles)) return false;
 
-    ch.tileCol = col;
-    ch.tileRow = row;
-    ch.x = col * TILE_SIZE + TILE_SIZE / 2;
-    ch.y = row * TILE_SIZE + TILE_SIZE / 2;
-    ch.path = [];
+    ch.path = [{ col, row }];
     ch.moveProgress = 0;
-    ch.state = CharacterState.IDLE;
+    ch.state = CharacterState.WALK;
     if (dCol > 0) ch.dir = Direction.RIGHT;
     if (dCol < 0) ch.dir = Direction.LEFT;
     if (dRow > 0) ch.dir = Direction.DOWN;
     if (dRow < 0) ch.dir = Direction.UP;
     this.cameraFollowId = id;
     return true;
+  }
+
+  faceCharacterToward(id: number, targetCol: number, targetRow: number): void {
+    const ch = this.characters.get(id);
+    if (!ch) return;
+    const dCol = targetCol - ch.tileCol;
+    const dRow = targetRow - ch.tileRow;
+    if (Math.abs(dCol) > Math.abs(dRow)) {
+      ch.dir = dCol > 0 ? Direction.RIGHT : Direction.LEFT;
+    } else if (dRow !== 0) {
+      ch.dir = dRow > 0 ? Direction.DOWN : Direction.UP;
+    }
+  }
+
+  private updatePlayer(ch: Character, dt: number): void {
+    if (ch.path.length === 0) {
+      ch.state = CharacterState.IDLE;
+      ch.frame = 0;
+      return;
+    }
+
+    ch.state = CharacterState.WALK;
+    ch.frameTimer += dt;
+    if (ch.frameTimer >= WALK_FRAME_DURATION_SEC) {
+      ch.frameTimer -= WALK_FRAME_DURATION_SEC;
+      ch.frame = (ch.frame + 1) % 4;
+    }
+
+    const next = ch.path[0];
+    const target = this.tileCenter(next.col, next.row);
+    const dx = target.x - ch.x;
+    const dy = target.y - ch.y;
+    const dist = Math.hypot(dx, dy);
+    const step = WALK_SPEED_PX_PER_SEC * 1.35 * dt;
+    if (dist <= step || dist === 0) {
+      ch.x = target.x;
+      ch.y = target.y;
+      ch.tileCol = next.col;
+      ch.tileRow = next.row;
+      ch.path.shift();
+      if (ch.path.length === 0) {
+        ch.state = CharacterState.IDLE;
+        ch.frame = 0;
+        ch.frameTimer = 0;
+      }
+      return;
+    }
+
+    ch.x += (dx / dist) * step;
+    ch.y += (dy / dist) * step;
   }
 
   removeAgent(id: number): void {
@@ -765,7 +818,10 @@ export class OfficeState {
 
     const toDelete: number[] = [];
     for (const ch of this.characters.values()) {
-      if (ch.isPlayer) continue;
+      if (ch.isPlayer) {
+        this.updatePlayer(ch, dt);
+        continue;
+      }
       // Handle matrix effect animation
       if (ch.matrixEffect) {
         ch.matrixEffectTimer += dt;

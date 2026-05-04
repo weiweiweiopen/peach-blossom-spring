@@ -299,11 +299,10 @@ export function dispatchMockMessages(): void {
       toolName: 'Persona',
     });
   });
-  dispatch({ type: 'agentSelected', id: 6 });
   dispatch({
     type: 'settingsLoaded',
     soundEnabled: false,
-    alwaysShowLabels: true,
+    alwaysShowLabels: false,
     hooksInfoShown: true,
     extensionVersion: '1.3.0',
     lastSeenVersion: '1.2',
