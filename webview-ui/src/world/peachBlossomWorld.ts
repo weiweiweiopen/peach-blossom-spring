@@ -39,6 +39,9 @@ const tavernColor: ColorValue = { h: 18, s: 45, b: 4, c: 20 };
 const theatreColor: ColorValue = { h: 8, s: 44, b: 4, c: 18 };
 const campColor: ColorValue = { h: 15, s: 55, b: 8, c: 18 };
 const treeColor: ColorValue = { h: 88, s: 50, b: -12, c: 15 };
+const peachBloomColor: ColorValue = { h: 342, s: 48, b: 22, c: 8 };
+const templeColor: ColorValue = { h: 14, s: 38, b: -8, c: 24 };
+const innRoofColor: ColorValue = { h: 20, s: 50, b: -10, c: 26 };
 
 function fillRect(
   tiles: TileTypeVal[],
@@ -184,6 +187,12 @@ export function createPeachBlossomLayout(): OfficeLayout {
   fillRect(tiles, tileColors, cols, { col: 40, row: 38, w: 18, h: 14 }, TileType.FLOOR_7, woodsColor);
   fillRect(tiles, tileColors, cols, { col: 25, row: 42, w: 10, h: 8 }, TileType.FLOOR_8, campColor);
   fillRect(tiles, tileColors, cols, { col: 29, row: 4, w: 8, h: 8 }, TileType.FLOOR_9, treeColor);
+
+  // Peach grove and Chinese-style landmarks
+  fillRect(tiles, tileColors, cols, { col: 6, row: 52, w: 20, h: 8 }, TileType.FLOOR_9, peachBloomColor);
+  fillRect(tiles, tileColors, cols, { col: 50, row: 6, w: 10, h: 8 }, TileType.FLOOR_5, templeColor);
+  fillRect(tiles, tileColors, cols, { col: 6, row: 18, w: 12, h: 6 }, TileType.FLOOR_4, innRoofColor);
+  fillRect(tiles, tileColors, cols, { col: 18, row: 18, w: 10, h: 6 }, TileType.FLOOR_4, innRoofColor);
 
   fillRect(tiles, tileColors, cols, { col: 3, row: 31, w: 58, h: 2 }, TileType.FLOOR_3, trailColor);
   fillRect(tiles, tileColors, cols, { col: 31, row: 5, w: 2, h: 48 }, TileType.FLOOR_3, trailColor);

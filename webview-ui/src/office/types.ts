@@ -182,6 +182,8 @@ export interface Character {
   folderName?: string;
   /** User-controlled protagonist, excluded from agent hit-testing and AI FSM. */
   isPlayer?: boolean;
+  /** Movement speed multiplier, primarily for player sprint. */
+  moveSpeedMultiplier?: number;
 
   // -- Agent Teams --
   /** Team name this agent belongs to */

@@ -339,6 +339,7 @@ export class OfficeState {
     ch.folderName = name;
     ch.isActive = false;
     ch.state = CharacterState.IDLE;
+    ch.moveSpeedMultiplier = 1;
     ch.matrixEffect = null;
     ch.tileCol = spawn.col;
     ch.tileRow = spawn.row;
@@ -351,13 +352,14 @@ export class OfficeState {
   movePlayerBy(id: number, dCol: number, dRow: number): boolean {
     const ch = this.characters.get(id);
     if (!ch?.isPlayer) return false;
-    if (ch.path.length > 0) return false;
-    const col = ch.tileCol + dCol;
-    const row = ch.tileRow + dRow;
+    if (ch.path.length > 1) return false;
+    const from = ch.path.length > 0 ? ch.path[ch.path.length - 1] : { col: ch.tileCol, row: ch.tileRow };
+    const col = from.col + dCol;
+    const row = from.row + dRow;
     if (col < 0 || row < 0 || col >= this.layout.cols || row >= this.layout.rows) return false;
     if (!isWalkable(col, row, this.tileMap, this.blockedTiles)) return false;
 
-    ch.path = [{ col, row }];
+    ch.path.push({ col, row });
     ch.moveProgress = 0;
     ch.state = CharacterState.WALK;
     if (dCol > 0) ch.dir = Direction.RIGHT;
@@ -366,6 +368,12 @@ export class OfficeState {
     if (dRow < 0) ch.dir = Direction.UP;
     this.cameraFollowId = id;
     return true;
+  }
+
+  setPlayerSpeedMultiplier(id: number, multiplier: number): void {
+    const ch = this.characters.get(id);
+    if (!ch?.isPlayer) return;
+    ch.moveSpeedMultiplier = Math.max(1, multiplier);
   }
 
   faceCharacterToward(id: number, targetCol: number, targetRow: number): void {
@@ -399,7 +407,8 @@ export class OfficeState {
     const dx = target.x - ch.x;
     const dy = target.y - ch.y;
     const dist = Math.hypot(dx, dy);
-    const step = WALK_SPEED_PX_PER_SEC * 1.35 * dt;
+    const speedMultiplier = ch.moveSpeedMultiplier ?? 1;
+    const step = WALK_SPEED_PX_PER_SEC * 1.9 * speedMultiplier * dt;
     if (dist <= step || dist === 0) {
       ch.x = target.x;
       ch.y = target.y;

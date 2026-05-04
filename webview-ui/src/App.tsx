@@ -54,6 +54,10 @@ const topicLabels: Record<string, string> = {
 const PLAYER_ID = 0;
 const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 
+function trimToFiftyChars(text: string): string {
+  return text.length > 50 ? `${text.slice(0, 50)}...` : text;
+}
+
 function readPlayerProfile(): PlayerProfile | null {
   try {
     const raw = localStorage.getItem('peach_player_profile');
@@ -126,9 +130,13 @@ function App() {
   const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
-  const [currentZoneId, setCurrentZoneId] = useState<string | null>(null);
   const [, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [videoError, setVideoError] = useState<string>('');
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
 
@@ -227,6 +235,7 @@ function App() {
       ch.moveProgress = 0;
       ch.wanderTimer = 2 + (agentId % 5);
       ch.seatId = null;
+      ch.hueShift = (25 + agentId * 23) % 120;
     }
   }, [agents, layoutReady, officeState]);
 
@@ -236,16 +245,19 @@ function App() {
       const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
       setNearbyNpcId(nearbyId);
+      setPromptAnchor((prev) => {
+        if (!nearbyId) return null;
+        if (prev && prev.npcId === nearbyId) return prev;
+        const npc = officeState.characters.get(nearbyId);
+        if (!npc) return null;
+        return { npcId: nearbyId, col: npc.tileCol, row: npc.tileRow };
+      });
       if (player && nearbyId) {
         officeState.faceCharacterToward(nearbyId, player.tileCol, player.tileRow);
       }
       const nearTree =
         !!player && !!archiveTreeZone && isInZone(player.tileCol, player.tileRow, archiveTreeZone, 1);
       setIsNearTree(nearTree);
-      const zone = player
-        ? worldZones.find((candidate) => isInZone(player.tileCol, player.tileRow, candidate))
-        : null;
-      setCurrentZoneId(zone?.id ?? null);
     }, 250);
     return () => window.clearInterval(interval);
   }, [findNearbyNpc, layoutReady, officeState, playerProfile]);
@@ -258,6 +270,7 @@ function App() {
       if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
       if (activeDialogueId !== null && event.key !== 'Escape') return;
 
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, event.shiftKey || event.ctrlKey ? 1.8 : 1);
       let moved = false;
       if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
         moved = officeState.movePlayerBy(PLAYER_ID, 0, -1);
@@ -288,6 +301,29 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeDialogueId, layoutReady, nearbyNpcId, officeState, playerProfile]);
 
+  useEffect(() => {
+    if (!playerProfile || !localVideoRef.current || localStreamRef.current) return;
+    async function startLocalVideo() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        localStreamRef.current = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+        setVideoEnabled(true);
+        setVideoError('');
+      } catch {
+        setVideoEnabled(false);
+        setVideoError('Video monitor unavailable');
+      }
+    }
+    void startLocalVideo();
+    return () => {
+      localStreamRef.current?.getTracks().forEach((track) => track.stop());
+      localStreamRef.current = null;
+    };
+  }, [playerProfile]);
+
   const handlePlayerStart = useCallback((profile: PlayerProfile) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
     setPlayerProfile(profile);
@@ -297,9 +333,7 @@ function App() {
   void editorTickForKeyboard;
 
   const promptPosition = (() => {
-    if (!nearbyNpcId || !containerRef.current) return null;
-    const ch = officeState.characters.get(nearbyNpcId);
-    if (!ch) return null;
+    if (!promptAnchor || !containerRef.current) return null;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -310,9 +344,30 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
-      top: (deviceOffsetY + (ch.y - 34) * editor.zoom) / dpr,
+      left: (deviceOffsetX + (promptAnchor.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
+      top: (deviceOffsetY + (promptAnchor.row * TILE_SIZE - 8) * editor.zoom) / dpr,
     };
+  })();
+
+  const nameTags = (() => {
+    if (!containerRef.current) return [] as Array<{ id: number; name: string; left: number; top: number }>;
+    const rect = containerRef.current.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const layout = officeState.getLayout();
+    const mapW = layout.cols * TILE_SIZE * editor.zoom;
+    const mapH = layout.rows * TILE_SIZE * editor.zoom;
+    const canvasW = rect.width * dpr;
+    const canvasH = rect.height * dpr;
+    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    return Array.from(officeState.characters.values())
+      .filter((ch) => ch.folderName)
+      .map((ch) => ({
+        id: ch.id,
+        name: ch.folderName ?? '',
+        left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
+        top: (deviceOffsetY + (ch.y - 30) * editor.zoom) / dpr,
+      }));
   })();
 
   // Show "Press R to rotate" hint when a rotatable item is selected or being placed
@@ -408,27 +463,39 @@ function App() {
 
           {nearbyPersona && !activeDialoguePersona && promptPosition && (
             <div
-              className="absolute z-44 -translate-x-1/2 -translate-y-full pixel-panel px-8 py-5 text-center text-text pointer-events-none"
-              style={{ left: promptPosition.left, top: promptPosition.top, opacity: 0.5 }}
+              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-none rounded-[10px] border-2 border-border"
+              style={{
+                left: promptPosition.left,
+                top: promptPosition.top,
+                background: 'rgba(24, 24, 40, 0.58)',
+                backdropFilter: 'blur(1px)',
+              }}
             >
-              <p className="text-sm leading-snug">{nearbyPersona.name}</p>
-              <p className="text-xs text-text-muted mt-1">{nearbyPersona.role}</p>
-              <p className="text-xs text-text-muted mt-1">{nearbyPersona.intro}</p>
-              <p className="text-xs text-accent-bright mt-2">Press Space to talk</p>
+              <p className="text-lg leading-snug text-text">{nearbyPersona.name}</p>
+              <p className="text-base text-text mt-1">{trimToFiftyChars(nearbyPersona.intro)}</p>
+              <p className="text-base text-accent-bright mt-2">Press Space to talk</p>
             </div>
           )}
 
-          {currentZoneId && !activeDialoguePersona && (
-            <div className="absolute left-12 top-12 z-43 pixel-panel px-7 py-5 text-text w-[min(380px,calc(100vw-24px))]">
-              <p className="text-xs uppercase tracking-wide text-accent-bright mb-2">Peach Blossom Spring</p>
-              <p className="text-sm">
-                {worldZones.find((zone) => zone.id === currentZoneId)?.name ?? 'NGM Persona Village'}
-              </p>
-              <p className="text-xs text-text-muted mt-1">
-                {worldZones.find((zone) => zone.id === currentZoneId)?.description}
-              </p>
+          {nameTags.map((tag) => (
+            <div
+              key={tag.id}
+              className="absolute z-42 -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-white/20 bg-black/65 text-white text-base pointer-events-none"
+              style={{ left: tag.left, top: tag.top }}
+            >
+              {tag.name}
             </div>
-          )}
+          ))}
+
+          <div className="absolute top-8 right-8 z-45 pixel-panel px-4 py-4 w-[220px]">
+            <p className="text-base text-accent-bright mb-2">Video monitor</p>
+            <div className="bg-black border border-border h-[140px] w-full overflow-hidden">
+              <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
+            </div>
+            <p className="text-sm text-text-muted mt-2">
+              {videoEnabled ? 'Live' : videoError || 'Waiting for camera permission'}
+            </p>
+          </div>
 
           {isNearTree && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
@@ -445,10 +512,10 @@ function App() {
                     <summary className="cursor-pointer text-sm text-accent-bright">
                       {persona.name} / {persona.role}
                     </summary>
-                    <p className="mt-5 text-sm leading-snug text-text-muted">{persona.intro}</p>
+                    <p className="mt-5 text-base leading-snug text-text-muted">{persona.intro}</p>
                     <div className="mt-5 flex flex-col gap-3">
                       {Object.entries(persona.responses).map(([topic, answer]) => (
-                        <p key={topic} className="text-xs leading-snug text-text-muted">
+                        <p key={topic} className="text-base leading-snug text-text-muted">
                           <span className="text-accent-bright">{topicLabels[topic] ?? topic}: </span>
                           {answer}
                         </p>
