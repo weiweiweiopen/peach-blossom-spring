@@ -352,7 +352,8 @@ export class OfficeState {
   movePlayerBy(id: number, dCol: number, dRow: number): boolean {
     const ch = this.characters.get(id);
     if (!ch?.isPlayer) return false;
-    if (ch.path.length > 1) return false;
+    // Allow up to 5 tiles queued for smooth continuous movement
+    if (ch.path.length >= 5) return false;
     const from = ch.path.length > 0 ? ch.path[ch.path.length - 1] : { col: ch.tileCol, row: ch.tileRow };
     const col = from.col + dCol;
     const row = from.row + dRow;
@@ -408,7 +409,7 @@ export class OfficeState {
     const dy = target.y - ch.y;
     const dist = Math.hypot(dx, dy);
     const speedMultiplier = ch.moveSpeedMultiplier ?? 1;
-    const step = WALK_SPEED_PX_PER_SEC * 1.9 * speedMultiplier * dt;
+    const step = WALK_SPEED_PX_PER_SEC * 3.5 * speedMultiplier * dt;
     if (dist <= step || dist === 0) {
       ch.x = target.x;
       ch.y = target.y;

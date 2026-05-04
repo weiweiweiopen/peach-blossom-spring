@@ -51,18 +51,18 @@
 
   --font-pixel: 'FS Pixel Sans', sans-serif;
 
-  /* Text sizes (pixel-art scale, base = 22px) */
+  /* Text sizes (pixel-art scale, base = 22px, unified CJK/EN size) */
   --text-*: initial;
-  --text-2xs: 20px;
-  --text-xs: 22px;
-  --text-sm: 24px;
-  --text-base: 26px;
-  --text-lg: 30px;
-  --text-xl: 34px;
-  --text-2xl: 40px;
-  --text-3xl: 48px;
-  --text-4xl: 56px;
-  --text-5xl: 68px;
+  --text-2xs: 22px;
+  --text-xs: 26px;
+  --text-sm: 30px;
+  --text-base: 34px;
+  --text-lg: 38px;
+  --text-xl: 44px;
+  --text-2xl: 52px;
+  --text-3xl: 60px;
+  --text-4xl: 70px;
+  --text-5xl: 84px;
 
   /* Colors — reference :root vars so VS Code shows swatches */
   --color-bg: var(--color-bg);
