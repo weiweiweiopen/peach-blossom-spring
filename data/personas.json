@@ -1,7 +1,15 @@
 {
   "project": "Peach Blossom Spring / Non-Governmental Matters",
-  "source_status": "Built from local NGM interviewee list, partial extracted Q&A, and the available NGM round-table markdown. Full PDF transcript extraction still needs a reliable OCR/text-extraction pass because most existing JSON entries were placeholders.",
-  "topics": ["nomadic", "camp", "independent", "artScience", "funding", "exchange", "sustainability"],
+  "source_status": "Bilingual NGM interview Q&A extracted from  (PDF→Word→txt). Per-persona JSON in ; combined transcripts in  (consumed by webview-ui/src/deepseekClient.ts at build); language-only copies in  and .",
+  "topics": [
+    "nomadic",
+    "camp",
+    "independent",
+    "artScience",
+    "funding",
+    "exchange",
+    "sustainability"
+  ],
   "personas": [
     {
       "id": "andreas-siagian",

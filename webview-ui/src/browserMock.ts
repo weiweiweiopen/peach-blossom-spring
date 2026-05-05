@@ -8,6 +8,8 @@
  * Only imported in browser runtime; tree-shaken from VS Code webview runtime.
  */
 
+import extraPersonaData from '../../data/extra-personas.json';
+import personaData from '../../data/personas.json';
 import { rgbaToHex } from '../../shared/assets/colorUtils.ts';
 import {
   CHAR_FRAME_H,
@@ -25,14 +27,14 @@ import type {
   CatalogEntry,
   CharacterDirectionSprites,
 } from '../../shared/assets/types.ts';
-import personaData from '../../data/personas.json';
 
 interface Persona {
+  id: string;
   name: string;
   role: string;
 }
 
-const personas = personaData.personas as Persona[];
+const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
 
 const personaAgentIds = personas.map((_, index) => index + 1);
 

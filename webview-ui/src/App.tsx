@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import extraPersonaData from '../../data/extra-personas.json';
+import personaData from '../../data/personas.json';
 import { toMajorMinor } from './changelogData.js';
 import { ChangelogModal } from './components/ChangelogModal.js';
 import { DebugView } from './components/DebugView.js';
 import { EditActionBar } from './components/EditActionBar.js';
 import { MigrationNotice } from './components/MigrationNotice.js';
-import { PlayerSetup, type PlayerProfile } from './components/PlayerSetup.js';
-import { RpgDialogue } from './components/RpgDialogue.js';
+import { type PlayerProfile,PlayerSetup } from './components/PlayerSetup.js';
 import { SettingsModal } from './components/SettingsModal.js';
 import { Tooltip } from './components/Tooltip.js';
 import { Modal } from './components/ui/Modal.js';
@@ -14,6 +15,7 @@ import { VersionIndicator } from './components/VersionIndicator.js';
 import { useEditorActions } from './hooks/useEditorActions.js';
 import { useEditorKeyboard } from './hooks/useEditorKeyboard.js';
 import { useExtensionMessages } from './hooks/useExtensionMessages.js';
+import { type LanguageCode,readStoredLanguage, t, writeStoredLanguage } from './i18n.js';
 import { OfficeCanvas } from './office/components/OfficeCanvas.js';
 import { EditorState } from './office/editor/editorState.js';
 import { EditorToolbar } from './office/editor/EditorToolbar.js';
@@ -21,6 +23,7 @@ import { OfficeState } from './office/engine/officeState.js';
 import { isRotatable } from './office/layout/furnitureCatalog.js';
 import { EditTool, TILE_SIZE } from './office/types.js';
 import { isBrowserRuntime } from './runtime.js';
+import { shouldEnableVideoEncounter } from './videoEncounter.js';
 import { vscode } from './vscodeApi.js';
 import {
   communityLinks,
@@ -29,7 +32,6 @@ import {
   npcPlacements,
   worldZones,
 } from './world/peachBlossomWorld.js';
-import personaData from '../../data/personas.json';
 
 interface Persona {
   id: string;
@@ -39,7 +41,7 @@ interface Persona {
   responses: Record<string, string>;
 }
 
-const personas = personaData.personas as Persona[];
+const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
 
 const topicLabels: Record<string, string> = {
   nomadic: 'Nomadic research',
@@ -53,15 +55,31 @@ const topicLabels: Record<string, string> = {
 
 const PLAYER_ID = 0;
 const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
+type PlayMode = 'camp' | 'expedition';
+const ExpeditionPanel = lazy(() =>
+  import('./components/ExpeditionPanel.js').then((module) => ({ default: module.ExpeditionPanel })),
+);
+const RpgDialogue = lazy(() =>
+  import('./components/RpgDialogue.js').then((module) => ({ default: module.RpgDialogue })),
+);
 
 function trimToFiftyChars(text: string): string {
   return text.length > 50 ? `${text.slice(0, 50)}...` : text;
 }
 
-function readPlayerProfile(): PlayerProfile | null {
+function readSavedPlayerDefaults(): PlayerProfile | null {
   try {
     const raw = localStorage.getItem('peach_player_profile');
-    return raw ? (JSON.parse(raw) as PlayerProfile) : null;
+    if (!raw) return null;
+    const saved = JSON.parse(raw) as Partial<PlayerProfile>;
+    return {
+      name: saved.name ?? '',
+      palette: saved.palette ?? 0,
+      avatarTitle: saved.avatarTitle,
+      currentRole: saved.currentRole ?? 'Wandering researcher',
+      mission: saved.mission ?? 'Find an idea worth developing with others',
+      constraints: saved.constraints ?? '',
+    };
   } catch {
     return null;
   }
@@ -124,19 +142,17 @@ function App() {
   const [hooksTooltipDismissed, setHooksTooltipDismissed] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [alwaysShowOverlay, setAlwaysShowOverlay] = useState(false);
-  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(() =>
-    readPlayerProfile(),
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() => readStoredLanguage());
+  const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(() => readSavedPlayerDefaults());
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
   const [, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(false);
-  const [videoError, setVideoError] = useState<string>('');
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const localStreamRef = useRef<MediaStream | null>(null);
   const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
+  const [showMobileControls, setShowMobileControls] = useState(false);
+  const [playMode, setPlayMode] = useState<PlayMode>('camp');
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
 
@@ -191,8 +207,27 @@ function App() {
   }, []);
 
   const officeState = getOfficeState();
-  const nearbyPersona = nearbyNpcId ? personas[nearbyNpcId - 1] : null;
-  const activeDialoguePersona = activeDialogueId ? personas[activeDialogueId - 1] : null;
+  const personaByAgentId = useMemo(
+    () => new Map(personas.map((persona, index) => [index + 1, persona])),
+    [],
+  );
+  const nearbyPersona = nearbyNpcId ? personaByAgentId.get(nearbyNpcId) ?? null : null;
+  const activeDialoguePersona = activeDialogueId ? personaByAgentId.get(activeDialogueId) ?? null : null;
+  const activeDialogueCharacter = activeDialogueId ? officeState.characters.get(activeDialogueId) ?? null : null;
+  const abaoAgentId = personas.findIndex((persona) => persona.id === 'abao') + 1;
+  const isNearAbao = nearbyNpcId === abaoAgentId;
+
+  useEffect(() => {
+    writeStoredLanguage(selectedLanguage);
+  }, [selectedLanguage]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(pointer: coarse), (max-width: 900px)');
+    const sync = () => setShowMobileControls(mediaQuery.matches);
+    sync();
+    mediaQuery.addEventListener('change', sync);
+    return () => mediaQuery.removeEventListener('change', sync);
+  }, []);
 
   const findNearbyNpc = useCallback((): number | null => {
     const player = officeState.characters.get(PLAYER_ID);
@@ -414,32 +449,26 @@ function App() {
     };
   }, [layoutReady, officeState, playerProfile]);
 
-  useEffect(() => {
-    if (!playerProfile || !localVideoRef.current || localStreamRef.current) return;
-    async function startLocalVideo() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        localStreamRef.current = stream;
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-        setVideoEnabled(true);
-        setVideoError('');
-      } catch {
-        setVideoEnabled(false);
-        setVideoError('Video monitor unavailable');
+  const handleMoveCommand = useCallback(
+    (dCol: number, dRow: number, sprint = false) => {
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, sprint ? 3.1 : 1);
+      const moved = officeState.movePlayerBy(PLAYER_ID, dCol, dRow);
+      if (moved) {
+        setPlayerMoveTick((tick) => tick + 1);
       }
-    }
-    void startLocalVideo();
-    return () => {
-      localStreamRef.current?.getTracks().forEach((track) => track.stop());
-      localStreamRef.current = null;
-    };
-  }, [playerProfile]);
+      return moved;
+    },
+    [officeState],
+  );
 
   const handlePlayerStart = useCallback((profile: PlayerProfile) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
+    setPlayerDefaults(profile);
     setPlayerProfile(profile);
+  }, []);
+
+  const handleLanguageChange = useCallback((language: LanguageCode) => {
+    setSelectedLanguage(language);
   }, []);
 
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
@@ -539,6 +568,36 @@ function App() {
             <EditActionBar editor={editor} editorState={editorState} />
           )}
 
+          {playerProfile && !activeDialoguePersona && (
+            <div className="absolute left-6 top-6 z-47 pixel-panel px-4 py-4 flex flex-wrap gap-3 text-sm shadow-pixel">
+              <button
+                className={`${playMode === 'camp' ? 'bg-accent text-white border-accent' : 'bg-bg text-text border-border'} border px-4 py-3`}
+                type="button"
+                onClick={() => setPlayMode('camp')}
+              >
+                Enter the Camp
+              </button>
+              <button
+                className={`${playMode === 'expedition' ? 'bg-accent text-white border-accent' : 'bg-bg text-text border-border'} border px-4 py-3`}
+                type="button"
+                onClick={() => setPlayMode('expedition')}
+              >
+                Send on Expedition
+              </button>
+            </div>
+          )}
+
+          {playerProfile && playMode === 'expedition' && !activeDialoguePersona && (
+            <Suspense fallback={<div className="absolute right-6 top-6 z-47 pixel-panel px-6 py-5 text-text shadow-pixel">Loading expedition...</div>}>
+              <ExpeditionPanel
+                avatar={playerProfile}
+                personas={personas}
+                isOpen
+                onClose={() => setPlayMode('camp')}
+              />
+            </Suspense>
+          )}
+
           {showRotateHint && (
             <div
               className="absolute left-1/2 -translate-x-1/2 z-11 bg-accent-bright text-white text-sm py-3 px-8 rounded-none border-2 border-accent shadow-pixel pointer-events-none whitespace-nowrap"
@@ -588,7 +647,7 @@ function App() {
             >
               <p className="text-lg leading-snug text-text">{nearbyPersona.name}</p>
               <p className="text-base text-text mt-1">{trimToFiftyChars(nearbyPersona.intro)}</p>
-              <p className="text-base text-accent-bright mt-2">Press Space to talk</p>
+              <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, 'pressSpaceToTalk')}</p>
             </div>
           )}
 
@@ -602,25 +661,32 @@ function App() {
             </div>
           ))}
 
-          <div className="absolute top-8 right-8 z-45 pixel-panel px-4 py-4 w-[220px]">
-            <p className="text-base text-accent-bright mb-2">Video monitor</p>
-            <div className="bg-black border border-border h-[140px] w-full overflow-hidden">
-              <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
+          {shouldEnableVideoEncounter() && <></>}
+
+          {isNearAbao && playerProfile && !activeDialoguePersona && (
+            <div className="absolute inset-x-0 bottom-0 h-[34vh] z-44 border-t-2 border-border bg-black/75 backdrop-blur-[1px] flex items-center justify-center">
+              <div className="text-center px-10 max-w-[960px]">
+                <p className="text-lg text-accent-bright mb-3">{t(selectedLanguage, 'abaoEncounterTitle')}</p>
+                <div className="flex items-center justify-center gap-10 mb-4">
+                  <div className="pixel-panel px-8 py-6 min-w-[220px]">
+                    <p className="text-sm text-text-muted mb-2">{playerProfile.name}</p>
+                    <p className="text-2xl">Traveler</p>
+                  </div>
+                  <div className="pixel-panel px-8 py-6 min-w-[220px]">
+                    <p className="text-sm text-text-muted mb-2">ABao</p>
+                    <p className="text-2xl">Storyteller</p>
+                  </div>
+                </div>
+                <p className="text-base text-text-muted">{t(selectedLanguage, 'abaoEncounterHint')}</p>
+              </div>
             </div>
-            <p className="text-sm text-text-muted mt-2">
-              {videoEnabled ? 'Live' : videoError || 'Waiting for camera permission'}
-            </p>
-          </div>
+          )}
 
           {isNearTree && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
-              <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">
-                Archive tree
-              </p>
-              <h1 className="text-2xl leading-none mb-3">NGM Persona Village archive</h1>
-              <p className="text-sm text-text-muted mb-8">
-                這棵大樹保存 14 位獨立社群組織者的 persona 設定。離開大樹後介面會收起。
-              </p>
+              <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'archiveTree')}</p>
+              <h1 className="text-2xl leading-none mb-3">{t(selectedLanguage, 'archiveTitle')}</h1>
+              <p className="text-sm text-text-muted mb-8">{t(selectedLanguage, 'archiveDescription')}</p>
               <div className="flex flex-col gap-6">
                 {personas.map((persona) => (
                   <details key={persona.id} className="border border-border bg-bg/70 px-7 py-5">
@@ -640,7 +706,7 @@ function App() {
                 ))}
               </div>
               <div className="mt-8 border border-border bg-bg/70 px-7 py-5">
-                <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">Community portals</p>
+                <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'communityPortals')}</p>
                 <div className="flex flex-col gap-2">
                   {communityLinks.map((link) => (
                     <a key={link.label} href={link.url} target="_blank" rel="noreferrer" className="text-xs text-text-muted hover:text-accent-bright">
@@ -652,13 +718,44 @@ function App() {
             </section>
           )}
 
-          {activeDialoguePersona && playerProfile && (
-            <RpgDialogue
-              persona={activeDialoguePersona}
-              player={playerProfile}
-              topicLabels={topicLabels}
-              onClose={() => setActiveDialogueId(null)}
-            />
+          {activeDialoguePersona && activeDialogueCharacter && playerProfile && (
+            <Suspense fallback={<div className="absolute inset-x-0 bottom-0 z-50 pixel-panel mx-auto mb-6 w-fit px-6 py-5 text-text shadow-pixel">Loading dialogue...</div>}>
+              <RpgDialogue
+                persona={activeDialoguePersona}
+                player={playerProfile}
+                npcAvatar={{
+                  palette: activeDialogueCharacter.palette,
+                  hueShift: activeDialogueCharacter.hueShift,
+                }}
+                topicLabels={topicLabels}
+                language={selectedLanguage}
+                onClose={() => setActiveDialogueId(null)}
+              />
+            </Suspense>
+          )}
+
+          {showMobileControls && playerProfile && !activeDialoguePersona && (
+            <div className="absolute left-6 bottom-6 z-46 grid grid-cols-3 gap-2 select-none" style={{ touchAction: 'none' }}>
+              <div />
+              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(0, -1)}>
+                ▲
+              </button>
+              <div />
+              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(-1, 0)}>
+                ◀
+              </button>
+              <button className="pixel-panel px-5 py-4 text-sm" type="button" onPointerDown={() => handleMoveCommand(0, -1, true)}>
+                Shift
+              </button>
+              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(1, 0)}>
+                ▶
+              </button>
+              <div />
+              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(0, 1)}>
+                ▼
+              </button>
+              <div />
+            </div>
           )}
         </>
       ) : (
@@ -673,7 +770,7 @@ function App() {
       )}
 
       {/* Hooks first-run tooltip */}
-      {!hooksInfoShown && !hooksTooltipDismissed && (
+      {playerProfile && !hooksInfoShown && !hooksTooltipDismissed && (
         <Tooltip
           title="Instant Detection Active"
           position="top-right"
@@ -699,77 +796,92 @@ function App() {
       )}
 
       {/* Hooks info modal */}
-      <Modal
-        isOpen={isHooksInfoOpen}
-        onClose={() => setIsHooksInfoOpen(false)}
-        title="Peach Blossom Spring"
-        zIndex={52}
-      >
-        <div className="text-base text-text px-10" style={{ lineHeight: 1.4 }}>
-          <p className="mb-8">This world is now a WorkAdventure-style Peach Blossom Spring map:</p>
-          <ul className="mb-8 pl-18 list-disc m-0">
-            <li className="text-sm mb-2">Wander through rivers, bridge, village, and forest zones</li>
-            <li className="text-sm mb-2">Approach a persona and press Space to talk</li>
-            <li className="text-sm mb-2">Visit the archive tree for the full index and portal links</li>
-          </ul>
-          <p className="mb-12 text-text-muted">
-            Pixel Agents remains visual inspiration for lively characters, while the world direction is
-            now Peach Blossom Spring / 桃花源.
-          </p>
-          <div className="text-center">
-            <button
-              onClick={() => setIsHooksInfoOpen(false)}
-              className="py-4 px-20 text-lg bg-accent text-white border-2 border-accent rounded-none cursor-pointer shadow-pixel"
-            >
-              Got it
-            </button>
+      {playerProfile && (
+        <Modal
+          isOpen={isHooksInfoOpen}
+          onClose={() => setIsHooksInfoOpen(false)}
+          title="Peach Blossom Spring"
+          zIndex={52}
+        >
+          <div className="text-base text-text px-10" style={{ lineHeight: 1.4 }}>
+            <p className="mb-8">This world is now a WorkAdventure-style Peach Blossom Spring map:</p>
+            <ul className="mb-8 pl-18 list-disc m-0">
+              <li className="text-sm mb-2">Wander through rivers, bridge, village, forest, and temple zones</li>
+              <li className="text-sm mb-2">Approach a persona and press Space to talk</li>
+              <li className="text-sm mb-2">Visit the archive tree for the full index and portal links</li>
+            </ul>
+            <p className="mb-12 text-text-muted">
+              Pixel Agents remains visual inspiration for lively characters, while the world direction is
+              now Peach Blossom Spring / 桃花源.
+            </p>
+            <div className="text-center">
+              <button
+                onClick={() => setIsHooksInfoOpen(false)}
+                className="py-4 px-20 text-lg bg-accent text-white border-2 border-accent rounded-none cursor-pointer shadow-pixel"
+              >
+                Got it
+              </button>
+            </div>
+            <p className="mt-8 text-xs text-text-muted text-center">
+              To disable, go to Settings {'>'} Instant Detection
+            </p>
           </div>
-          <p className="mt-8 text-xs text-text-muted text-center">
-            To disable, go to Settings {'>'} Instant Detection
-          </p>
-        </div>
-      </Modal>
+        </Modal>
+      )}
 
-      <VersionIndicator
-        currentVersion={extensionVersion}
-        lastSeenVersion={lastSeenVersion}
-        onDismiss={handleWhatsNewDismiss}
-        onOpenChangelog={handleOpenChangelog}
-      />
+      {playerProfile && (
+        <VersionIndicator
+          currentVersion={extensionVersion}
+          lastSeenVersion={lastSeenVersion}
+          onDismiss={handleWhatsNewDismiss}
+          onOpenChangelog={handleOpenChangelog}
+        />
+      )}
 
-      <ChangelogModal
-        isOpen={isChangelogOpen}
-        onClose={() => setIsChangelogOpen(false)}
-        currentVersion={extensionVersion}
-      />
+      {playerProfile && (
+        <ChangelogModal
+          isOpen={isChangelogOpen}
+          onClose={() => setIsChangelogOpen(false)}
+          currentVersion={extensionVersion}
+        />
+      )}
 
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        isDebugMode={isDebugMode}
-        onToggleDebugMode={handleToggleDebugMode}
-        alwaysShowOverlay={alwaysShowOverlay}
-        onToggleAlwaysShowOverlay={handleToggleAlwaysShowOverlay}
-        externalAssetDirectories={externalAssetDirectories}
-        watchAllSessions={watchAllSessions}
-        onToggleWatchAllSessions={() => {
-          const newVal = !watchAllSessions;
-          setWatchAllSessions(newVal);
-          vscode.postMessage({ type: 'setWatchAllSessions', enabled: newVal });
-        }}
-        hooksEnabled={hooksEnabled}
-        onToggleHooksEnabled={() => {
-          const newVal = !hooksEnabled;
-          setHooksEnabled(newVal);
-          vscode.postMessage({ type: 'setHooksEnabled', enabled: newVal });
-        }}
-      />
+      {playerProfile && (
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          isDebugMode={isDebugMode}
+          onToggleDebugMode={handleToggleDebugMode}
+          alwaysShowOverlay={alwaysShowOverlay}
+          onToggleAlwaysShowOverlay={handleToggleAlwaysShowOverlay}
+          externalAssetDirectories={externalAssetDirectories}
+          watchAllSessions={watchAllSessions}
+          onToggleWatchAllSessions={() => {
+            const newVal = !watchAllSessions;
+            setWatchAllSessions(newVal);
+            vscode.postMessage({ type: 'setWatchAllSessions', enabled: newVal });
+          }}
+          hooksEnabled={hooksEnabled}
+          onToggleHooksEnabled={() => {
+            const newVal = !hooksEnabled;
+            setHooksEnabled(newVal);
+            vscode.postMessage({ type: 'setHooksEnabled', enabled: newVal });
+          }}
+        />
+      )}
 
       {showMigrationNotice && (
         <MigrationNotice onDismiss={() => setMigrationNoticeDismissed(true)} />
       )}
 
-      {!playerProfile && <PlayerSetup onStart={handlePlayerStart} />}
+      {!playerProfile && (
+        <PlayerSetup
+          language={selectedLanguage}
+          onLanguageChange={handleLanguageChange}
+          defaultProfile={playerDefaults}
+          onStart={handlePlayerStart}
+        />
+      )}
     </div>
   );
 }

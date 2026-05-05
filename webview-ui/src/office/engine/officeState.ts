@@ -397,7 +397,8 @@ export class OfficeState {
     }
 
     ch.state = CharacterState.WALK;
-    ch.frameTimer += dt;
+    const speedMultiplier = ch.moveSpeedMultiplier ?? 1;
+    ch.frameTimer += dt * speedMultiplier;
     if (ch.frameTimer >= WALK_FRAME_DURATION_SEC) {
       ch.frameTimer -= WALK_FRAME_DURATION_SEC;
       ch.frame = (ch.frame + 1) % 4;
@@ -408,7 +409,6 @@ export class OfficeState {
     const dx = target.x - ch.x;
     const dy = target.y - ch.y;
     const dist = Math.hypot(dx, dy);
-    const speedMultiplier = ch.moveSpeedMultiplier ?? 1;
     const step = WALK_SPEED_PX_PER_SEC * 3.5 * speedMultiplier * dt;
     if (dist <= step || dist === 0) {
       ch.x = target.x;

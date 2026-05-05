@@ -1,0 +1,25 @@
+{
+  "intervieweeId": "abao",
+  "links": [
+    {
+      "title": "Shih Wei Chieh",
+      "url": "https://shihweichieh.com",
+      "description": "Artist bio and project index."
+    },
+    {
+      "title": "Solar Oracle Walkman",
+      "url": "https://medium.com/@shihweichieh/solar-oracle-walman-%E4%BB%A5%E8%AE%8A%E5%88%86%E8%87%AA%E7%B7%A8%E7%A2%BC%E5%99%A8%E9%80%A3%E7%B5%90%E9%96%8B%E6%BA%90%E5%8D%8A%E5%B0%8E%E9%AB%94-%E5%85%89%E4%BC%8F%E7%89%A9%E7%90%86%E4%B8%8D%E5%8F%AF%E8%A4%87%E8%A3%BD%E6%80%A7-%E6%84%9F%E7%9F%A5%E9%81%8E%E7%A8%8B-9de4a2e1d72e",
+      "description": "Essay on solar materials, generative audio, and identity in noise."
+    },
+    {
+      "title": "AI Agent Identity Essay",
+      "url": "https://medium.com/@shihweichieh/%E5%BE%9E%E8%83%BD%E6%BA%90%E5%B1%A4%E7%B6%81%E5%AE%9A%E8%BA%AB%E4%BB%BD%E5%B1%A4%E7%9C%8Bai-agent%E5%92%8C%E5%BF%83%E6%99%BA%E5%93%B2%E5%AD%B8-fc8f882a5b8e",
+      "description": "Essay on energy-bound identity, AI agents, and mind philosophy."
+    },
+    {
+      "title": "Abao Favorite Map",
+      "url": "https://www.google.com/maps/d/edit?hl=zh-TW&mid=1RIUnUZHYZCiKaW7xdVqfbgYtKq2dwMM",
+      "description": "Reference map for Abao’s storyteller encounter."
+    }
+  ]
+}
