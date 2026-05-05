@@ -76,7 +76,7 @@
   /* 1px base so Tailwind spacing maps directly to pixels (pixel-art project) */
   --spacing: 1px;
 
-  --font-pixel: 'FS Pixel Sans', 'CJK Pixel Match', sans-serif;
+  --font-pixel: 'FS Pixel Sans', monospace;
 
   /* Text sizes (pixel-art scale, base = 22px, unified CJK/EN size) */
   --text-*: initial;

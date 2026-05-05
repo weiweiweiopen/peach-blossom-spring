@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode,t } from '../i18n.js';
@@ -81,10 +81,23 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isWikiOpen, setIsWikiOpen] = useState(false);
+  const messageLogRef = useRef<HTMLDivElement>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
   const wiki = useMemo(() => getWikiLinksForInterviewee(persona.id), [persona.id]);
+  const suggestedQuestions = useMemo(() => {
+    const topics = Object.entries(persona.responses).filter(([, answer]) => answer.trim().length > 0);
+    const offset = persona.id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % Math.max(1, topics.length);
+    return Array.from({ length: Math.min(3, topics.length) }, (_, index) => {
+      const [, answer] = topics[(offset + index) % topics.length];
+      const clue = answer.replace(/\s+/g, ' ').trim().slice(0, language === 'zh-TW' ? 18 : 42);
+      if (language === 'zh-TW') {
+        return `你提到「${clue}」，這對我的任務有什麼提醒？`;
+      }
+      return `You mentioned "${clue}". How does that matter for my mission?`;
+    });
+  }, [language, persona.id, persona.responses, topicLabels]);
 
   useEffect(() => {
     setMessages([
@@ -100,6 +113,12 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setError('');
     setIsWikiOpen(false);
   }, [language, persona.id, persona.intro, persona.name]);
+
+  useEffect(() => {
+    const log = messageLogRef.current;
+    if (!log) return;
+    log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+  }, [isLoading, messages]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -185,7 +204,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         </div>
 
         <div className="flex-1 min-h-0 flex gap-6 mb-6">
-          <div className="flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
+          <div ref={messageLogRef} className="flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
             {messages.map((message, index) => (
               <p
                 key={`${message.speaker}-${index.toString()}`}
@@ -227,20 +246,16 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         </div>
 
         <div className="flex flex-wrap gap-3 mb-5">
-          <button
-            className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
-            type="button"
-            onClick={() => void submitPrompt(t(language, 'teachMe'))}
-          >
-            {t(language, 'teachMe')}
-          </button>
-          <button
-            className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
-            type="button"
-            onClick={() => void submitPrompt(t(language, 'whereIsThis'))}
-          >
-            {t(language, 'whereIsThis')}
-          </button>
+          {suggestedQuestions.map((item) => (
+            <button
+              key={item}
+              className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
+              type="button"
+              onClick={() => void submitPrompt(item)}
+            >
+              {item}
+            </button>
+          ))}
           <button
             className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
             type="button"

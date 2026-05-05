@@ -185,6 +185,7 @@ function App() {
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const mobileDragRef = useRef({ pointerId: null as number | null, clientX: 0, clientY: 0, raf: 0, nextAt: 0 });
 
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
   useEditorKeyboard(
@@ -462,6 +463,82 @@ function App() {
     [officeState],
   );
 
+  const getScreenPosition = useCallback(
+    (characterId: number): { left: number; top: number } | null => {
+      if (!containerRef.current) return null;
+      const ch = officeState.characters.get(characterId);
+      if (!ch) return null;
+      const rect = containerRef.current.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const layout = officeState.getLayout();
+      const mapW = layout.cols * TILE_SIZE * editor.zoom;
+      const mapH = layout.rows * TILE_SIZE * editor.zoom;
+      const canvasW = rect.width * dpr;
+      const canvasH = rect.height * dpr;
+      const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+      const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+      return {
+        left: rect.left + (deviceOffsetX + ch.x * editor.zoom) / dpr,
+        top: rect.top + (deviceOffsetY + ch.y * editor.zoom) / dpr,
+      };
+    },
+    [editor.panRef, editor.zoom, officeState],
+  );
+
+  const stepTowardMobilePointer = useCallback(() => {
+    const drag = mobileDragRef.current;
+    drag.raf = requestAnimationFrame(stepTowardMobilePointer);
+    if (drag.pointerId === null || activeDialogueIdRef.current !== null) return;
+    const now = performance.now();
+    if (now < drag.nextAt) return;
+    const playerScreen = getScreenPosition(PLAYER_ID);
+    if (!playerScreen) return;
+    const dx = drag.clientX - playerScreen.left;
+    const dy = drag.clientY - playerScreen.top;
+    if (Math.hypot(dx, dy) < 18) return;
+    const moved = Math.abs(dx) > Math.abs(dy)
+      ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
+      : handleMoveCommand(0, dy > 0 ? 1 : -1);
+    if (moved) {
+      drag.nextAt = now + 90;
+    }
+  }, [getScreenPosition, handleMoveCommand]);
+
+  const handleMobilePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (!showMobileControls || !playerProfile || activeDialogueIdRef.current !== null) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('button, input, textarea, a, select, [data-no-mobile-drag="true"]')) return;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      mobileDragRef.current.pointerId = event.pointerId;
+      mobileDragRef.current.clientX = event.clientX;
+      mobileDragRef.current.clientY = event.clientY;
+      mobileDragRef.current.nextAt = 0;
+      if (!mobileDragRef.current.raf) {
+        mobileDragRef.current.raf = requestAnimationFrame(stepTowardMobilePointer);
+      }
+    },
+    [playerProfile, showMobileControls, stepTowardMobilePointer],
+  );
+
+  const handleMobilePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (mobileDragRef.current.pointerId !== event.pointerId) return;
+    mobileDragRef.current.clientX = event.clientX;
+    mobileDragRef.current.clientY = event.clientY;
+  }, []);
+
+  const stopMobilePointer = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (mobileDragRef.current.pointerId !== event.pointerId) return;
+    mobileDragRef.current.pointerId = null;
+    mobileDragRef.current.nextAt = 0;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (mobileDragRef.current.raf) cancelAnimationFrame(mobileDragRef.current.raf);
+    };
+  }, []);
+
   const handlePlayerStart = useCallback((profile: PlayerProfile, mode: StartMode) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
     setPlayerDefaults(profile);
@@ -540,7 +617,15 @@ function App() {
   }
 
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden">
+    <div
+      ref={containerRef}
+      className="w-full h-full relative overflow-hidden"
+      style={{ touchAction: showMobileControls ? 'none' : undefined }}
+      onPointerDown={handleMobilePointerDown}
+      onPointerMove={handleMobilePointerMove}
+      onPointerUp={stopMobilePointer}
+      onPointerCancel={stopMobilePointer}
+    >
       <OfficeCanvas
         officeState={officeState}
         onClick={handleClick}
@@ -620,19 +705,24 @@ function App() {
             })()}
 
           {nearbyPersona && !activeDialoguePersona && promptPosition && (
-            <div
-              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-none rounded-[10px] border-2 border-border"
+            <button
+              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border"
               style={{
                 left: promptPosition.left,
                 top: promptPosition.top,
                 background: 'rgba(24, 24, 40, 0.58)',
                 backdropFilter: 'blur(1px)',
               }}
+              type="button"
+              onClick={() => {
+                officeState.selectedAgentId = nearbyNpcId;
+                setActiveDialogueId(nearbyNpcId);
+              }}
             >
               <p className="text-lg leading-snug text-text">{nearbyPersona.name}</p>
               <p className="text-base text-text mt-1">{trimToFiftyChars(nearbyPersona.intro)}</p>
               <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, 'pressSpaceToTalk')}</p>
-            </div>
+            </button>
           )}
 
           {nameTags.map((tag) => (
@@ -719,26 +809,8 @@ function App() {
           )}
 
           {showMobileControls && playerProfile && !activeDialoguePersona && (
-            <div className="absolute left-6 bottom-6 z-46 grid grid-cols-3 gap-2 select-none" style={{ touchAction: 'none' }}>
-              <div />
-              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(0, -1)}>
-                ▲
-              </button>
-              <div />
-              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(-1, 0)}>
-                ◀
-              </button>
-              <button className="pixel-panel px-5 py-4 text-sm" type="button" onPointerDown={() => handleMoveCommand(0, -1, true)}>
-                Shift
-              </button>
-              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(1, 0)}>
-                ▶
-              </button>
-              <div />
-              <button className="pixel-panel px-5 py-4 text-lg" type="button" onPointerDown={() => handleMoveCommand(0, 1)}>
-                ▼
-              </button>
-              <div />
+            <div className="absolute left-4 bottom-4 z-46 pointer-events-none text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
+              {t(selectedLanguage, 'movementHint')}
             </div>
           )}
         </>
@@ -813,7 +885,7 @@ function App() {
         </Modal>
       )}
 
-      {playerProfile && (
+      {playerProfile && !showMobileControls && (
         <VersionIndicator
           currentVersion={extensionVersion}
           lastSeenVersion={lastSeenVersion}
