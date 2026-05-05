@@ -1,6 +1,11 @@
 const DEEPSEEK_API_KEY_STORAGE_KEYS = [
   'peach_deepseek_api_key',
   'deepseek_api_key',
+  'deepseek_api',
+  'deepseekApiKey',
+  'deepseek-api-key',
+  'DEEPSEEK_API_KEY',
+  'VITE_DEEPSEEK_API_KEY',
   'pbs_deepseek_api_key',
   'solar_oracle_walkman_api_key',
   'solar_oracle_api_key',
@@ -18,6 +23,30 @@ export function readStoredDeepSeekApiKey(): string {
       if (stored) return stored;
       const sessionStored = sessionStorage.getItem(key)?.trim();
       if (sessionStored) return sessionStored;
+    }
+
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+
+      const trimmedRaw = raw.trim();
+      if (/^sk-[A-Za-z0-9]{16,}$/.test(trimmedRaw)) {
+        return trimmedRaw;
+      }
+
+      try {
+        const parsed = JSON.parse(trimmedRaw) as Record<string, unknown>;
+        for (const candidateKey of ['apiKey', 'deepseekApiKey', 'deepseek_api_key']) {
+          const candidate = parsed[candidateKey];
+          if (typeof candidate === 'string' && /^sk-[A-Za-z0-9]{16,}$/.test(candidate.trim())) {
+            return candidate.trim();
+          }
+        }
+      } catch {
+        // Ignore non-JSON values.
+      }
     }
   } catch {
     return '';
