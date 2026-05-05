@@ -637,7 +637,6 @@ function App() {
             <RpgDialogue
               persona={activeDialoguePersona}
               player={playerProfile}
-              topicLabels={topicLabels}
               onClose={() => setActiveDialogueId(null)}
             />
           )}
