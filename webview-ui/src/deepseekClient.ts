@@ -154,6 +154,11 @@ export async function askDeepSeekPersona({
   knowledge,
   preferredLanguage,
 }: AskPersonaArgs): Promise<string> {
+  const resolvedApiKey = apiKey?.trim() ?? '';
+  if (!resolvedApiKey) {
+    throw new Error('DeepSeek API key is missing.');
+  }
+
   const languageInstruction =
     preferredLanguage === 'zh-TW'
       ? 'Reply in Traditional Chinese.'
@@ -184,15 +189,18 @@ export async function askDeepSeekPersona({
   ];
   const prompt = promptParts.join('\n');
 
-  const res = await fetch('/api/chat', {
+  const res = await fetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
     headers: {
-      ...(apiKey?.trim() ? { 'X-DeepSeek-Api-Key': apiKey.trim() } : {}),
+      Authorization: `Bearer ${resolvedApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      systemPrompt: prompt,
-      prompt: `${playerName}: ${question}`,
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: prompt },
+        { role: 'user', content: `${playerName}: ${question}` },
+      ],
       temperature: 0.7,
       max_tokens: 700,
     }),
