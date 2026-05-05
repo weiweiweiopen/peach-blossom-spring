@@ -22,10 +22,11 @@ interface DialogueMessage {
 interface RpgDialogueProps {
   persona: Persona;
   player: PlayerProfile;
+  topicLabels: Record<string, string>;
   onClose: () => void;
 }
 
-export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
+export function RpgDialogue({ persona, player, topicLabels, onClose }: RpgDialogueProps) {
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('deepseek_api_key') ?? '');
   const [showKeyField, setShowKeyField] = useState(() => !sessionStorage.getItem('deepseek_api_key'));
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
@@ -33,6 +34,10 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const orderedTopics = useMemo(
+    () => Object.keys(topicLabels).filter((topic) => persona.responses[topic]),
+    [persona.responses, topicLabels],
+  );
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
 
   useEffect(() => {
@@ -56,6 +61,16 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
+
+  function handleTopicPick(topic: string): void {
+    const response = persona.responses[topic];
+    if (!response) return;
+    setMessages((prev) => [
+      ...prev,
+      { speaker: player.name, text: topicLabels[topic] ?? topic },
+      { speaker: persona.name, text: response },
+    ]);
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -88,7 +103,7 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
 
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none">
-      <section className="pixel-panel pointer-events-auto w-[min(1320px,86vw)] h-[82vh] min-w-[min(860px,calc(100vw-32px))] px-12 py-10 text-text shadow-pixel flex flex-col">
+      <section className="pixel-panel pointer-events-auto w-[min(1100px,72vw)] h-[70vh] min-w-[min(760px,calc(100vw-32px))] px-12 py-10 text-text shadow-pixel flex flex-col">
         <div className="flex items-start justify-between gap-8 mb-5">
           <div>
             <p className="text-sm uppercase tracking-wide text-accent-bright mb-2">Wander and talk</p>
@@ -113,6 +128,19 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
           {isLoading && <p className="text-base text-text-muted">{persona.name} is thinking...</p>}
         </div>
 
+        <div className="flex flex-wrap gap-3 mb-5">
+          {orderedTopics.map((topic) => (
+            <button
+              key={topic}
+              type="button"
+              onClick={() => handleTopicPick(topic)}
+              className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-sm"
+            >
+              {topicLabels[topic] ?? topic}
+            </button>
+          ))}
+        </div>
+
         {showKeyField && (
           <input
             className="w-full bg-bg border border-border px-5 py-4 text-sm text-text outline-none focus:border-accent-bright mb-3"
@@ -123,21 +151,27 @@ export function RpgDialogue({ persona, player, onClose }: RpgDialogueProps) {
           />
         )}
 
-        <form onSubmit={(event) => void handleSubmit(event)} className="flex">
+        <form onSubmit={(event) => void handleSubmit(event)} className="flex gap-4">
           <input
             className="flex-1 bg-bg border-2 border-border px-6 py-5 text-base text-text outline-none focus:border-accent-bright"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder={`Ask ${persona.name} anything...`}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                const form = event.currentTarget.form;
-                form?.requestSubmit();
-              }
-            }}
           />
-
+          <button
+            className="bg-accent text-white border-2 border-accent px-8 py-4 text-base disabled:opacity-50"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? '...' : 'Talk'}
+          </button>
+          <button
+            className="bg-bg text-text border-2 border-border px-8 py-4 text-base"
+            type="button"
+            onClick={onClose}
+          >
+            Close
+          </button>
         </form>
 
         {error && <p className="text-sm text-red-300 mt-3">{error}</p>}

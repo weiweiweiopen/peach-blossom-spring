@@ -35,27 +35,27 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
         onSubmit={handleSubmit}
       >
         <p className="text-base uppercase tracking-wide text-accent-bright mb-3">
-          進入桃花源 / Enter Peach Blossom Spring
+          Non-Governmental Matters
         </p>
         <h1 className="text-3xl leading-tight mb-5">
-          桃花源─一個沒有政府的小誌
+          Peach Blossom Spring
           <span className="block text-xl text-text-muted mt-2">
-            Peach Blossom Spring - A non Governmental Matters
+            an interactive page of Non-Governmental Matters
           </span>
         </h1>
         <p className="text-base leading-relaxed text-text-muted mb-10 max-w-[760px]">
-          桃花源是一個互動寓言維度，許多仙人住在此，你一舉一動都會影響這個開源科技藝術世界的發展！
+          This is a metaphor of utopia and art science society, too underground to be remembered…
           <span className="block mt-3 text-text">
-            你也可以在這裡面發現這個寓言世界與目前現實世的耦合。
+            一個太地下而被遺忘的烏托邦，14 位獨立社群組織者在這裡停留、交談、消失。
           </span>
         </p>
 
         <hr className="border-border mb-10" />
 
         <p className="text-base uppercase tracking-wide text-accent-bright mb-4">
-          Create your character / 創造角色
+          Create your protagonist
         </p>
-        <h2 className="text-2xl leading-none mb-8">創角視窗</h2>
+        <h2 className="text-2xl leading-none mb-8">創建異世界旅人</h2>
 
         <label className="block text-base text-text-muted mb-3" htmlFor="player-name">
           Name
