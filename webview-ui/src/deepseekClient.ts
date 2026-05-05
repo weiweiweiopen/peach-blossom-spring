@@ -27,7 +27,6 @@ interface KnowledgeBase {
 }
 
 interface AskPersonaArgs {
-  apiKey?: string;
   playerName: string;
   question: string;
   knowledge: KnowledgeBase;
@@ -148,15 +147,18 @@ export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
 }
 
 export async function askDeepSeekPersona({
-  apiKey,
   playerName,
   question,
   knowledge,
   preferredLanguage,
 }: AskPersonaArgs): Promise<string> {
-  const resolvedApiKey = apiKey?.trim() ?? '';
-  if (!resolvedApiKey) {
-    throw new Error('DeepSeek API key is missing.');
+  const chatApiUrl = document
+    .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
+    ?.getAttribute('content')
+    ?.trim();
+
+  if (!chatApiUrl) {
+    throw new Error('DeepSeek proxy is not configured.');
   }
 
   const languageInstruction =
@@ -189,19 +191,17 @@ export async function askDeepSeekPersona({
   ];
   const prompt = promptParts.join('\n');
 
-  const res = await fetch('https://api.deepseek.com/chat/completions', {
+  const res = await fetch(chatApiUrl, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${resolvedApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
+      mode: 'chat',
       messages: [
         { role: 'system', content: prompt },
         { role: 'user', content: `${playerName}: ${question}` },
       ],
-      temperature: 0.7,
       max_tokens: 700,
     }),
   });
@@ -211,8 +211,9 @@ export async function askDeepSeekPersona({
     throw new Error(`DeepSeek request failed (${res.status.toString()}): ${details}`);
   }
 
-  const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }>; error?: string };
-  return data.choices?.[0]?.message?.content?.trim() ?? '...';
+  const data = (await res.json()) as { content?: string; error?: string };
+  if (data.error) throw new Error(data.error);
+  return data.content?.trim() ?? '...';
 }
 
 export type { KnowledgeBase, PersonaShape };

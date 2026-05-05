@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { getInitialDeepSeekApiKey, readStoredDeepSeekApiKey } from '../apiKeyStorage.js';
 import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode,t } from '../i18n.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
@@ -77,7 +76,6 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
 }
 
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose }: RpgDialogueProps) {
-  const [runtimeApiKey, setRuntimeApiKey] = useState(() => getInitialDeepSeekApiKey());
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -133,29 +131,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     return orderedTopics.find((topic) => !!persona.responses[topic]) ?? 'nomadic';
   }
 
-  function buildLocalReply(topic: string, questionInput: string): string {
-    const source = persona.responses[topic] ?? persona.responses.camp ?? persona.intro;
-    const normalizedQuestion = questionInput.toLowerCase();
-    const snippets = knowledge.knowledge
-      .filter((line) => line.length > 16)
-      .filter((line) => {
-        const normalizedLine = line.toLowerCase();
-        return normalizedQuestion
-          .split(/\s+/)
-          .filter((word) => word.length >= 3)
-          .some((word) => normalizedLine.includes(word));
-      })
-      .slice(0, 2);
-
-    if (language === 'zh-TW') {
-      const quoteBlock = snippets.length > 0 ? `\n\n文本摘錄：\n- ${snippets.join('\n- ')}` : '';
-      return `${source}${quoteBlock}\n\n（本地文本回應模式）繼續問我，我會從已載入文本再往下推進。`;
-    }
-
-    const quoteBlock = snippets.length > 0 ? `\n\nText excerpts:\n- ${snippets.join('\n- ')}` : '';
-    return `${source}${quoteBlock}\n\n(Local text response mode) Ask follow-ups and I will keep building from loaded transcript context.`;
-  }
-
   async function submitPrompt(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isLoading) return;
@@ -165,20 +140,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
-
-      const latestStoredApiKey = readStoredDeepSeekApiKey();
-      const effectiveApiKey = latestStoredApiKey || runtimeApiKey || getInitialDeepSeekApiKey();
-      if (effectiveApiKey && effectiveApiKey !== runtimeApiKey) {
-        setRuntimeApiKey(effectiveApiKey);
-      }
-
-      if (!effectiveApiKey.trim()) {
-        setMessages((prev) => [...prev, { speaker: persona.name, text: buildLocalReply(topic, trimmed) }]);
-        return;
-      }
-
       const answer = await askDeepSeekPersona({
-        apiKey: effectiveApiKey.trim(),
         playerName: player.name,
         question: `${trimmed}\nTopic hint: ${topic}`,
         knowledge: {
@@ -189,9 +151,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       });
       setMessages((prev) => [...prev, { speaker: persona.name, text: answer }]);
     } catch (err) {
-      const topic = resolveTopic(trimmed);
-      setRuntimeApiKey('');
-      setMessages((prev) => [...prev, { speaker: persona.name, text: buildLocalReply(topic, trimmed) }]);
+      setError(err instanceof Error ? err.message : 'DeepSeek proxy request failed.');
     } finally {
       setIsLoading(false);
     }
