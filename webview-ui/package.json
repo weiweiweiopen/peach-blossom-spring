@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run check:secrets && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --import tsx/esm --test test/*.test.ts"
+    "test": "node --import tsx/esm --test test/*.test.ts",
+    "check:secrets": "node scripts/check-no-secrets.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

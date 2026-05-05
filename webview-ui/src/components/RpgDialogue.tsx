@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   clearStoredDeepSeekApiKey,
   getInitialDeepSeekApiKey,
+  hasStoredDeepSeekApiKey,
   writeStoredDeepSeekApiKey,
 } from '../apiKeyStorage.js';
 import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
@@ -87,6 +88,9 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isWikiOpen, setIsWikiOpen] = useState(false);
+  const [isApiPanelOpen, setIsApiPanelOpen] = useState(false);
+  const [manualApiInput, setManualApiInput] = useState('');
+  const [savedLocally, setSavedLocally] = useState(() => hasStoredDeepSeekApiKey());
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
@@ -165,6 +169,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     } catch (err) {
       if (err instanceof Error && err.message.includes('DeepSeek request failed (401)')) {
         clearStoredDeepSeekApiKey();
+        setSavedLocally(false);
         setError('DeepSeek API key is invalid. Update the key and try again.');
       } else {
         setError(err instanceof Error ? err.message : 'DeepSeek request failed.');
@@ -172,6 +177,16 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function handleSaveLocalApiKey(): void {
+    const trimmed = manualApiInput.trim();
+    if (!trimmed) return;
+    writeStoredDeepSeekApiKey(trimmed);
+    setApiKey(trimmed);
+    setManualApiInput('');
+    setSavedLocally(true);
+    setError('');
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -267,15 +282,38 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           </button>
         </div>
 
-        <input
-          className="w-full bg-bg border border-border px-5 py-4 text-base text-text outline-none focus:border-accent-bright mb-4"
-          type="password"
-          value={apiKey}
-          onChange={(event) => setApiKey(event.target.value)}
-          placeholder="DeepSeek API key"
-          autoComplete="off"
-          spellCheck={false}
-        />
+        {!apiKey.trim() && (
+          <div className="mb-4 border border-border bg-bg/60 px-4 py-3 text-sm text-text-muted">
+            <p className="text-accent-bright mb-1">{language === 'zh-TW' ? '缺少 API key' : 'API key missing'}</p>
+            <p>
+              {language === 'zh-TW'
+                ? '請在 webview-ui/.env.local 設定 VITE_DEEPSEEK_API_KEY，或使用本機瀏覽器儲存一次。'
+                : 'Set VITE_DEEPSEEK_API_KEY in webview-ui/.env.local, or save it once in local browser storage.'}
+            </p>
+          </div>
+        )}
+        <details className="mb-4" open={isApiPanelOpen} onToggle={(event) => setIsApiPanelOpen(event.currentTarget.open)}>
+          <summary className="cursor-pointer text-sm text-text-muted">
+            {language === 'zh-TW' ? '本機 API key 設定' : 'Local API key settings'}
+          </summary>
+          <div className="mt-3 border border-border bg-bg/60 px-4 py-4">
+            <input
+              className="w-full bg-bg border border-border px-4 py-3 text-base text-text outline-none focus:border-accent-bright mb-3"
+              type="password"
+              value={manualApiInput}
+              onChange={(event) => setManualApiInput(event.target.value)}
+              placeholder="VITE_DEEPSEEK_API_KEY"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <button className="bg-bg text-text border border-border px-4 py-2 text-sm" type="button" onClick={handleSaveLocalApiKey}>
+              {language === 'zh-TW' ? '儲存到本機' : 'Save locally'}
+            </button>
+            {savedLocally && (
+              <p className="text-xs text-text-muted mt-2">{language === 'zh-TW' ? '已儲存在本機。' : 'Saved locally.'}</p>
+            )}
+          </div>
+        </details>
 
         <form onSubmit={(event) => void handleSubmit(event)} className="flex gap-4">
           <input
