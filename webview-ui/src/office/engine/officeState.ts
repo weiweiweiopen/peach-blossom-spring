@@ -352,8 +352,8 @@ export class OfficeState {
   movePlayerBy(id: number, dCol: number, dRow: number): boolean {
     const ch = this.characters.get(id);
     if (!ch?.isPlayer) return false;
-    // Allow up to 5 tiles queued for smooth continuous movement
-    if (ch.path.length >= 5) return false;
+    // Keep keyboard movement to one tile per press so the player can align with NPCs.
+    if (ch.path.length > 0) return false;
     const from = ch.path.length > 0 ? ch.path[ch.path.length - 1] : { col: ch.tileCol, row: ch.tileRow };
     const col = from.col + dCol;
     const row = from.row + dRow;
