@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-  clearStoredDeepSeekApiKey,
-  getInitialDeepSeekApiKey,
-  hasStoredDeepSeekApiKey,
-  writeStoredDeepSeekApiKey,
-} from '../apiKeyStorage.js';
+import { getInitialDeepSeekApiKey } from '../apiKeyStorage.js';
 import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode,t } from '../i18n.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
@@ -83,8 +78,6 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
 
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose }: RpgDialogueProps) {
   const [runtimeApiKey, setRuntimeApiKey] = useState(() => getInitialDeepSeekApiKey());
-  const [manualApiKey, setManualApiKey] = useState('');
-  const [hasLocalKeySaved, setHasLocalKeySaved] = useState(() => hasStoredDeepSeekApiKey());
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -140,19 +133,29 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     return orderedTopics.find((topic) => !!persona.responses[topic]) ?? 'nomadic';
   }
 
+  function buildLocalReply(topic: string): string {
+    const source = persona.responses[topic] ?? persona.responses.camp ?? persona.intro;
+    if (language === 'zh-TW') {
+      return `${source}\n\n（本地文本回應模式）如果你想更細節，我可以再用這個方向延伸。`;
+    }
+    return `${source}\n\n(Local text response mode) Ask a follow-up and I can expand from this direction.`;
+  }
+
   async function submitPrompt(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isLoading) return;
-    if (!runtimeApiKey.trim()) {
-      setError(t(language, 'apiKeyMissingInstruction'));
-      return;
-    }
 
     setError('');
     setIsLoading(true);
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
+
+      if (!runtimeApiKey.trim()) {
+        setMessages((prev) => [...prev, { speaker: persona.name, text: buildLocalReply(topic) }]);
+        return;
+      }
+
       const answer = await askDeepSeekPersona({
         apiKey: runtimeApiKey.trim(),
         playerName: player.name,
@@ -165,35 +168,12 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       });
       setMessages((prev) => [...prev, { speaker: persona.name, text: answer }]);
     } catch (err) {
-      if (err instanceof Error && err.message.includes('DeepSeek request failed (401)')) {
-        if (hasStoredDeepSeekApiKey()) {
-          clearStoredDeepSeekApiKey();
-          setHasLocalKeySaved(false);
-        }
-        setRuntimeApiKey(getInitialDeepSeekApiKey());
-        setError(language === 'zh-TW' ? 'DeepSeek API key 無效，請更新本機設定後再試一次。' : 'DeepSeek API key is invalid. Update your local setting and try again.');
-      } else {
-        setError(err instanceof Error ? err.message : 'DeepSeek request failed.');
-      }
+      const topic = resolveTopic(trimmed);
+      setRuntimeApiKey('');
+      setMessages((prev) => [...prev, { speaker: persona.name, text: buildLocalReply(topic) }]);
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function handleSaveLocalApiKey(): void {
-    const trimmed = manualApiKey.trim();
-    if (!trimmed) return;
-    writeStoredDeepSeekApiKey(trimmed);
-    setRuntimeApiKey(trimmed);
-    setHasLocalKeySaved(true);
-    setManualApiKey('');
-    setError('');
-  }
-
-  function handleClearLocalApiKey(): void {
-    clearStoredDeepSeekApiKey();
-    setHasLocalKeySaved(false);
-    setRuntimeApiKey(getInitialDeepSeekApiKey());
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -288,43 +268,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             {t(language, 'wiki')}
           </button>
         </div>
-
-        {!runtimeApiKey.trim() && (
-          <div className="mb-5 border border-amber-300/50 bg-amber-100/10 px-5 py-4 text-base text-amber-100">
-            <p className="text-accent-bright">{t(language, 'apiKeyMissing')}</p>
-            <p className="mt-2 text-text-muted">{t(language, 'apiKeyMissingInstruction')}</p>
-          </div>
-        )}
-
-        <details className="mb-5 border border-border bg-bg/60 px-5 py-4">
-          <summary className="cursor-pointer text-base text-accent-bright">{t(language, 'localApiKeySettings')}</summary>
-          <div className="mt-4 flex flex-col gap-4">
-            <label className="text-sm text-text-muted" htmlFor="dialogue-api-key">
-              {t(language, 'apiKeyLabel')}
-            </label>
-            <input
-              id="dialogue-api-key"
-              className="w-full bg-bg border border-border px-5 py-4 text-base text-text outline-none focus:border-accent-bright"
-              type="password"
-              value={manualApiKey}
-              onChange={(event) => setManualApiKey(event.target.value)}
-              placeholder={t(language, 'apiKeyLabel')}
-              autoComplete="off"
-              spellCheck={false}
-            />
-            <div className="flex flex-wrap items-center gap-3">
-              <button className="bg-bg text-text border border-border px-4 py-3 text-sm" type="button" onClick={handleSaveLocalApiKey}>
-                {t(language, 'saveLocally')}
-              </button>
-              {hasLocalKeySaved && <span className="text-sm text-text-muted">{t(language, 'savedLocally')}</span>}
-              {hasLocalKeySaved && (
-                <button className="bg-bg text-text border border-border px-4 py-3 text-sm" type="button" onClick={handleClearLocalApiKey}>
-                  {t(language, 'clearSavedKey')}
-                </button>
-              )}
-            </div>
-          </div>
-        </details>
 
         <form onSubmit={(event) => void handleSubmit(event)} className="flex gap-4">
           <input
