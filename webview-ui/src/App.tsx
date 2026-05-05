@@ -219,6 +219,20 @@ function App() {
     officeState.cameraFollowId = PLAYER_ID;
   }, [layoutReady, officeState, playerProfile, worldInitialized]);
 
+  // 60 Hz render tick: forces React overlays (name tags, "Press Space" prompt,
+  // archive-tree highlight, etc.) to recompute from the latest character.x/y
+  // and panRef each frame, so they don't lag behind the canvas.
+  useEffect(() => {
+    if (!layoutReady || !playerProfile) return;
+    let raf = 0;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      setPlayerMoveTick((t) => (t + 1) | 0);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [layoutReady, playerProfile]);
+
   useEffect(() => {
     if (!layoutReady || agents.length === 0) return;
     const personaById = new Map(personas.map((persona, index) => [persona.id, index + 1]));
@@ -262,58 +276,124 @@ function App() {
     return () => window.clearInterval(interval);
   }, [findNearbyNpc, layoutReady, officeState, playerProfile]);
 
+  const nearbyNpcIdRef = useRef<number | null>(null);
+  const activeDialogueIdRef = useRef<number | null>(null);
+  useEffect(() => {
+    nearbyNpcIdRef.current = nearbyNpcId;
+  }, [nearbyNpcId]);
+  useEffect(() => {
+    activeDialogueIdRef.current = activeDialogueId;
+  }, [activeDialogueId]);
+
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      const target = event.target as HTMLElement | null;
-      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
-      if (activeDialogueId !== null && event.key !== 'Escape') return;
+    // Continuous smooth movement: track held keys, advance via rAF, do not rely on OS key-repeat.
+    const heldKeys = new Set<'up' | 'down' | 'left' | 'right'>();
+    let isSprint = false;
+    let raf = 0;
 
-      const isMovementKey =
-        event.key === 'ArrowUp' ||
-        event.key === 'ArrowDown' ||
-        event.key === 'ArrowLeft' ||
-        event.key === 'ArrowRight' ||
-        event.key.toLowerCase() === 'w' ||
-        event.key.toLowerCase() === 'a' ||
-        event.key.toLowerCase() === 's' ||
-        event.key.toLowerCase() === 'd';
-      if (event.repeat && isMovementKey) {
-        event.preventDefault();
+    const dirOf = (event: KeyboardEvent): 'up' | 'down' | 'left' | 'right' | null => {
+      const k = event.key.toLowerCase();
+      if (event.key === 'ArrowUp' || k === 'w') return 'up';
+      if (event.key === 'ArrowDown' || k === 's') return 'down';
+      if (event.key === 'ArrowLeft' || k === 'a') return 'left';
+      if (event.key === 'ArrowRight' || k === 'd') return 'right';
+      return null;
+    };
+
+    const stepOnce = (dir: 'up' | 'down' | 'left' | 'right'): boolean => {
+      if (dir === 'up') return officeState.movePlayerBy(PLAYER_ID, 0, -1);
+      if (dir === 'down') return officeState.movePlayerBy(PLAYER_ID, 0, 1);
+      if (dir === 'left') return officeState.movePlayerBy(PLAYER_ID, -1, 0);
+      return officeState.movePlayerBy(PLAYER_ID, 1, 0);
+    };
+
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      if (activeDialogueIdRef.current !== null) {
+        heldKeys.clear();
         return;
       }
+      // Re-apply speed multiplier every frame so sprint actually takes effect during the whole hold.
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.8 : 1);
 
-      officeState.setPlayerSpeedMultiplier(PLAYER_ID, event.shiftKey || event.ctrlKey ? 1.8 : 1);
-      let moved = false;
-      if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
-        moved = officeState.movePlayerBy(PLAYER_ID, 0, -1);
-      } else if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
-        moved = officeState.movePlayerBy(PLAYER_ID, 0, 1);
-      } else if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
-        moved = officeState.movePlayerBy(PLAYER_ID, -1, 0);
-      } else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
-        moved = officeState.movePlayerBy(PLAYER_ID, 1, 0);
-      } else if (event.key === 'Escape') {
+      const ch = officeState.characters.get(PLAYER_ID);
+      if (!ch) return;
+      // Only push another tile when the queue is short, so direction changes feel responsive.
+      const targetMaxQueue = isSprint ? 2 : 1;
+      if (ch.path.length > targetMaxQueue) return;
+      if (heldKeys.size === 0) return;
+
+      // Vertical first, then horizontal (no diagonals).
+      let dir: 'up' | 'down' | 'left' | 'right' | null = null;
+      if (heldKeys.has('up')) dir = 'up';
+      else if (heldKeys.has('down')) dir = 'down';
+      else if (heldKeys.has('left')) dir = 'left';
+      else if (heldKeys.has('right')) dir = 'right';
+      if (!dir) return;
+
+      const moved = stepOnce(dir);
+      if (moved) {
+        setPlayerMoveTick((t) => t + 1);
+      }
+    };
+    raf = requestAnimationFrame(tick);
+
+    function onKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
+
+      if (event.shiftKey || event.ctrlKey) isSprint = true;
+
+      if (event.key === 'Escape') {
         setActiveDialogueId(null);
-      } else if (event.code === 'Space') {
-        if (nearbyNpcId !== null) {
+        return;
+      }
+      if (event.code === 'Space') {
+        if (activeDialogueIdRef.current === null && nearbyNpcIdRef.current !== null) {
           event.preventDefault();
-          officeState.selectedAgentId = nearbyNpcId;
-          setActiveDialogueId(nearbyNpcId);
+          officeState.selectedAgentId = nearbyNpcIdRef.current;
+          setActiveDialogueId(nearbyNpcIdRef.current);
         }
         return;
       }
+      if (activeDialogueIdRef.current !== null) return;
 
-      if (moved) {
+      const dir = dirOf(event);
+      if (dir) {
         event.preventDefault();
-        setPlayerMoveTick((tick) => tick + 1);
+        const fresh = !heldKeys.has(dir);
+        heldKeys.add(dir);
+        if (fresh) {
+          // Immediate one-tile push for tap responsiveness.
+          officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.8 : 1);
+          if (stepOnce(dir)) setPlayerMoveTick((t) => t + 1);
+        }
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeDialogueId, layoutReady, nearbyNpcId, officeState, playerProfile]);
+    function onKeyUp(event: KeyboardEvent) {
+      if (!event.shiftKey && !event.ctrlKey) isSprint = false;
+      const dir = dirOf(event);
+      if (dir) heldKeys.delete(dir);
+    }
+
+    function onWindowBlur() {
+      heldKeys.clear();
+      isSprint = false;
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', onWindowBlur);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', onWindowBlur);
+    };
+  }, [layoutReady, officeState, playerProfile]);
 
   useEffect(() => {
     if (!playerProfile || !localVideoRef.current || localStreamRef.current) return;
@@ -348,6 +428,8 @@ function App() {
 
   const promptPosition = (() => {
     if (!promptAnchor || !containerRef.current) return null;
+    const npc = officeState.characters.get(promptAnchor.npcId);
+    if (!npc) return null;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -358,8 +440,8 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + (promptAnchor.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
-      top: (deviceOffsetY + (promptAnchor.row * TILE_SIZE - 8) * editor.zoom) / dpr,
+      left: (deviceOffsetX + npc.x * editor.zoom) / dpr,
+      top: (deviceOffsetY + (npc.y - 24) * editor.zoom) / dpr,
     };
   })();
 
@@ -555,6 +637,7 @@ function App() {
             <RpgDialogue
               persona={activeDialoguePersona}
               player={playerProfile}
+              topicLabels={topicLabels}
               onClose={() => setActiveDialogueId(null)}
             />
           )}

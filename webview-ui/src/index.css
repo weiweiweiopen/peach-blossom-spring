@@ -8,6 +8,33 @@
   src: url('/fonts/FSPixelSansUnicode-Regular.ttf') format('truetype');
 }
 
+/*
+ * CJK glyphs in the pixel font render visually larger than its Latin glyphs
+ * (the Han/Hangul/Hiragana grids are denser than the 5×7 Latin grid).
+ * Map CJK Unicode ranges to system CJK fonts and shrink them with size-adjust
+ * so they appear at the same x-height as the pixel Latin glyphs.
+ *
+ * size-adjust: 78%   → roughly matches the FS Pixel Sans cap-height visually.
+ * Tweak this number if Chinese still looks larger or smaller than English.
+ */
+@font-face {
+  font-family: 'CJK Pixel Match';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 78%;
+  unicode-range:
+    U+3000-303F, U+3040-309F, U+30A0-30FF, U+3100-312F, U+3130-318F,
+    U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7AF, U+F900-FAFF,
+    U+FE30-FE4F, U+FF00-FFEF;
+  src:
+    local('PingFang TC'), local('PingFang SC'),
+    local('Hiragino Sans'), local('Hiragino Sans GB'),
+    local('Microsoft JhengHei'), local('Microsoft YaHei'),
+    local('Noto Sans CJK TC'), local('Noto Sans CJK SC'),
+    local('Source Han Sans TC'), local('Source Han Sans SC');
+}
+
 :root {
   /* Core palette */
   --color-bg: #1e1e2e;
@@ -49,7 +76,7 @@
   /* 1px base so Tailwind spacing maps directly to pixels (pixel-art project) */
   --spacing: 1px;
 
-  --font-pixel: 'FS Pixel Sans', sans-serif;
+  --font-pixel: 'FS Pixel Sans', 'CJK Pixel Match', sans-serif;
 
   /* Text sizes (pixel-art scale, base = 22px, unified CJK/EN size) */
   --text-*: initial;

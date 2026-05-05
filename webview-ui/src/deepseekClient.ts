@@ -1,3 +1,7 @@
+// Knowledge layer (Pre-WorkAdventure design):
+// Build a per-persona KnowledgeBase from data/personas.json + docs/transcripts/*.md
+// at build time (Vite raw glob), then feed it to DeepSeek as the system prompt.
+
 interface KnowledgeBase {
   name: string;
   role: string;
@@ -14,13 +18,55 @@ interface AskPersonaArgs {
   knowledge: KnowledgeBase;
 }
 
-export async function loadPersonaKnowledge(personaId: string): Promise<KnowledgeBase> {
-  const base = import.meta.env.BASE_URL;
-  const res = await fetch(`${base}data/knowledge/${personaId}.json?ts=${Date.now().toString()}`);
-  if (!res.ok) {
-    throw new Error(`Failed to load knowledge base for ${personaId}`);
+interface PersonaShape {
+  id: string;
+  name: string;
+  role: string;
+  intro: string;
+  responses: Record<string, string>;
+}
+
+// Eagerly inline every transcript markdown at build time.
+// Path is relative to this file: webview-ui/src → docs/transcripts is ../../docs/transcripts
+const transcriptModules = import.meta.glob('../../docs/transcripts/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+const transcriptByPersonaId: Record<string, string> = {};
+for (const [filepath, contents] of Object.entries(transcriptModules)) {
+  const match = /\/([^/]+)\.md$/.exec(filepath);
+  if (match) {
+    transcriptByPersonaId[match[1]] = contents;
   }
-  return (await res.json()) as KnowledgeBase;
+}
+
+function extractKnowledgePoints(transcript: string): string[] {
+  // Pull non-empty lines; drop the leading title (#) and blank separators.
+  return transcript
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#'));
+}
+
+export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
+  const transcript = transcriptByPersonaId[persona.id] ?? '';
+  const knowledge = extractKnowledgePoints(transcript);
+  const systemPrompt = [
+    `You are role-playing as ${persona.name} (${persona.role}) inside a Peach Blossom Spring / 桃花源 village in an RPG dialogue scene.`,
+    'Stay in character. Speak with warmth and concrete details rooted in the persona description and reference topic answers below.',
+    'Reply in Traditional Chinese unless the player asks for another language. Keep replies under ~150 words.',
+    'Do not invent transcript material beyond what is supplied here.',
+  ].join(' ');
+  return {
+    name: persona.name,
+    role: persona.role,
+    intro: persona.intro,
+    systemPrompt,
+    knowledge,
+    responses: persona.responses,
+  };
 }
 
 export async function askDeepSeekPersona({
@@ -31,8 +77,6 @@ export async function askDeepSeekPersona({
 }: AskPersonaArgs): Promise<string> {
   const prompt = [
     knowledge.systemPrompt,
-    'You are inside a traditional RPG dialogue scene. Reply in Traditional Chinese unless the player asks for another language.',
-    'Do not claim you have full transcript access beyond the knowledge base supplied here.',
     `NPC: ${knowledge.name} (${knowledge.role})`,
     `Intro: ${knowledge.intro}`,
     `Knowledge: ${knowledge.knowledge.join(' / ')}`,
@@ -62,7 +106,7 @@ export async function askDeepSeekPersona({
   }
 
   const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-  return data.choices?.[0]?.message?.content?.trim() || '...';
+  return data.choices?.[0]?.message?.content?.trim() ?? '...';
 }
 
-export type { KnowledgeBase };
+export type { KnowledgeBase, PersonaShape };

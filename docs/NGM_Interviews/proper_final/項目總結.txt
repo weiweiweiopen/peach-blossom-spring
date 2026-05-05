@@ -1,0 +1,60 @@
+# NGM訪談項目總結
+
+## 項目完成狀態
+✅ 所有14位受訪者的中文逐字稿已成功提取
+✅ 已創建標準化的Q/A格式文件
+✅ 文件已保存到指定位置
+
+## 受訪者列表
+- 安德烈亞斯·西亞吉安 (Andreas Siagian)
+- 安娜斯塔西婭·皮斯托菲杜 (Anastasia Pistofidou)
+- 克里斯蒂安·迪爾斯 (Christian Dils)
+- 朱莉婭·托馬塞洛 (Giulia Tomasello)
+- 喬納森·明欽 (Jonathan Minchin)
+- 馬克·杜塞利爾 (Marc Dusseiller)
+- 里美美香 (Mika Satomi)
+- 魯利·沙巴拉 (Rully Shabara)
+- 大山龍 (Ryu Oyama)
+- 斯特利奧斯·馬努薩基斯 (Stelios Manousakis)
+- 潘斯蒂芬妮 (Stephanie Pan)
+- 斯文雅·科伊內 (Svenja Keune)
+- 洪泰德 (Ted Hung)
+- 廷庫塔·海因策爾 (Tincuta Heinzel)
+
+## 文件統計
+- 總文件數：14個
+- 文件格式：TXT文本文件
+- 文件編碼：UTF-8
+- 包含內容：完整中文逐字稿 + Q/A格式
+
+## 文件位置
+1. **工作區目錄**：~/.openclaw/workspace/ngm_processing/proper_final/
+2. **桌面目錄**：~/Desktop/NGM_Interviews/proper_final/
+
+## 文件命名規範
+- 格式：英文名_proper_final.txt
+- 示例：Andreas_Siagian_proper_final.txt
+
+## 內容格式
+1. 標題：中文名 (英文名)
+2. 訪談日期
+3. Q/A內容（整句Q在一個引號裡，整段A在一個引號裡）
+4. 訪談基本信息
+5. 註釋說明
+
+## 使用說明
+這些文件可以直接用於：
+1. 閱讀和分析訪談內容
+2. 翻譯準備
+3. 內容整理和研究
+4. 文本分析和數據處理
+
+## 注意事項
+1. Q/A分割為自動處理，如需精確分割建議手動調整
+2. 文本已清理，但可能仍有格式問題
+3. 建議使用UTF-8編碼的文本編輯器打開
+
+## 創建信息
+- 創建時間：2025年2月22日
+- 處理工具：Python自定義腳本
+- 數據來源：NGM.pdf原始提取

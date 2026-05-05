@@ -758,32 +758,26 @@ export function OfficeCanvas({
     [isEditMode, officeState, screenToTile],
   );
 
-  // Wheel: Ctrl+wheel to zoom, plain wheel/trackpad to pan
+  // Wheel / trackpad: always zoom — pinch (ctrl/meta+wheel) and plain
+  // two-finger scroll both adjust zoom. We never pan via wheel here, so the
+  // player camera-follow stays locked. Use middle-mouse drag to manually pan.
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault();
-      if (e.ctrlKey || e.metaKey) {
-        // Accumulate scroll delta, step zoom when threshold crossed
-        zoomAccumulatorRef.current += e.deltaY;
-        if (Math.abs(zoomAccumulatorRef.current) >= ZOOM_SCROLL_THRESHOLD) {
-          const delta = zoomAccumulatorRef.current < 0 ? 1 : -1;
-          zoomAccumulatorRef.current = 0;
-          const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom + delta));
-          if (newZoom !== zoom) {
-            onZoomChange(newZoom);
-          }
+      // macOS pinch arrives as wheel+ctrlKey with small deltas; plain
+      // two-finger scroll arrives without ctrlKey and larger deltas.
+      // Treat both as zoom intent.
+      zoomAccumulatorRef.current += e.deltaY;
+      if (Math.abs(zoomAccumulatorRef.current) >= ZOOM_SCROLL_THRESHOLD) {
+        const delta = zoomAccumulatorRef.current < 0 ? 1 : -1;
+        zoomAccumulatorRef.current = 0;
+        const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom + delta));
+        if (newZoom !== zoom) {
+          onZoomChange(newZoom);
         }
-      } else {
-        // Pan via trackpad two-finger scroll or mouse wheel
-        const dpr = window.devicePixelRatio || 1;
-        officeState.cameraFollowId = null;
-        panRef.current = clampPan(
-          panRef.current.x - e.deltaX * dpr,
-          panRef.current.y - e.deltaY * dpr,
-        );
       }
     },
-    [zoom, onZoomChange, officeState, panRef, clampPan],
+    [zoom, onZoomChange],
   );
 
   // Prevent default middle-click browser behavior (auto-scroll)

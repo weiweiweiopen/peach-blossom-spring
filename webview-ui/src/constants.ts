@@ -75,7 +75,7 @@ export const CANVAS_ERROR_TILE_COLOR = '#FF00FF';
 export const WALL_COLOR = '#3A3A5C';
 
 // ── Camera ───────────────────────────────────────────────────
-export const CAMERA_FOLLOW_LERP = 0.1;
+export const CAMERA_FOLLOW_LERP = 1.0;
 export const CAMERA_FOLLOW_SNAP_THRESHOLD = 0.5;
 
 // ── Zoom ─────────────────────────────────────────────────────

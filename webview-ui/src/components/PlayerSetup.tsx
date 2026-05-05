@@ -21,19 +21,43 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const name = String(form.get('name') || '').trim() || 'Visitor';
-    const palette = Number(form.get('palette') || 0);
+    const name = String(form.get('name') ?? '').trim() || 'Visitor';
+    const palette = Number(form.get('palette') ?? 0);
     const avatarTitle =
       avatarChoices.find((choice) => choice.palette === palette)?.title ?? '跨維度旅人';
     onStart({ name, palette, avatarTitle });
   }
 
   return (
-    <div className="absolute inset-0 z-60 flex items-center justify-center bg-black/75 px-8">
-      <form className="pixel-panel w-[min(1200px,100%)] px-14 py-12 text-text" onSubmit={handleSubmit}>
-        <p className="text-base uppercase tracking-wide text-accent-bright mb-4">Enter Peach Blossom Spring</p>
-        <h1 className="text-3xl leading-none mb-8">創建異世界旅人 / Create your protagonist</h1>
-        <label className="block text-base text-text-muted mb-4" htmlFor="player-name">
+    <div className="absolute inset-0 z-60 flex items-center justify-center bg-black/80 px-8 py-8 overflow-auto">
+      <form
+        className="pixel-panel w-[min(1200px,100%)] px-14 py-12 text-text"
+        onSubmit={handleSubmit}
+      >
+        <p className="text-base uppercase tracking-wide text-accent-bright mb-3">
+          Non-Governmental Matters
+        </p>
+        <h1 className="text-3xl leading-tight mb-5">
+          Peach Blossom Spring
+          <span className="block text-xl text-text-muted mt-2">
+            an interactive page of Non-Governmental Matters
+          </span>
+        </h1>
+        <p className="text-base leading-relaxed text-text-muted mb-10 max-w-[760px]">
+          This is a metaphor of utopia and art science society, too underground to be remembered…
+          <span className="block mt-3 text-text">
+            一個太地下而被遺忘的烏托邦，14 位獨立社群組織者在這裡停留、交談、消失。
+          </span>
+        </p>
+
+        <hr className="border-border mb-10" />
+
+        <p className="text-base uppercase tracking-wide text-accent-bright mb-4">
+          Create your protagonist
+        </p>
+        <h2 className="text-2xl leading-none mb-8">創建異世界旅人</h2>
+
+        <label className="block text-base text-text-muted mb-3" htmlFor="player-name">
           Name
         </label>
         <input
@@ -44,10 +68,14 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
           placeholder="輸入你的角色名 / Your traveler name"
           autoFocus
         />
+
         <p className="text-lg text-text-muted mb-5">異世界角色樣式 / Isekai avatar collection</p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
           {avatarChoices.map((choice) => (
-            <label key={choice.title} className="border border-border bg-bg/70 px-6 py-6 cursor-pointer">
+            <label
+              key={choice.title}
+              className="border border-border bg-bg/70 px-6 py-6 cursor-pointer"
+            >
               <input
                 className="mr-4"
                 type="radio"
@@ -59,11 +87,17 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
             </label>
           ))}
         </div>
-        <button className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel" type="submit">
-          繼續 / Continue
+
+        <button
+          className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
+          type="submit"
+        >
+          進入桃花源 / Enter
         </button>
+
         <p className="mt-8 text-base text-text-muted leading-snug">
-          你將以奇異旅人身份誤入桃花源。Use WASD / arrows to wander, Shift or Ctrl to sprint.
+          Use WASD or arrow keys to wander. Hold Shift while moving to sprint. Approach a persona and
+          press Space to talk. Pinch / scroll to zoom.
         </p>
       </form>
     </div>

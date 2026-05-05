@@ -1,0 +1,119 @@
+{
+  "total_interviewees": 14,
+  "total_qa_pairs": 64,
+  "interviewees": [
+    {
+      "name": "Andreas Siagian",
+      "chinese_name": "安德烈亞斯·西亞吉安",
+      "date": "2022年11月11日",
+      "qa_count": 0,
+      "txt_file": "Andreas_Siagian_formatted.txt",
+      "json_file": "Andreas_Siagian_structured.json"
+    },
+    {
+      "name": "Anastasia Pistofidou",
+      "chinese_name": "安娜斯塔西婭·皮斯托菲杜",
+      "date": "未註明日期",
+      "qa_count": 3,
+      "txt_file": "Anastasia_Pistofidou_formatted.txt",
+      "json_file": "Anastasia_Pistofidou_structured.json"
+    },
+    {
+      "name": "Christian Dils",
+      "chinese_name": "克里斯蒂安·迪爾斯",
+      "date": "2022年06月29日",
+      "qa_count": 2,
+      "txt_file": "Christian_Dils_formatted.txt",
+      "json_file": "Christian_Dils_structured.json"
+    },
+    {
+      "name": "Giulia Tomasello",
+      "chinese_name": "朱利亞·托馬塞洛",
+      "date": "未註明日期",
+      "qa_count": 2,
+      "txt_file": "Giulia_Tomasello_formatted.txt",
+      "json_file": "Giulia_Tomasello_structured.json"
+    },
+    {
+      "name": "Jonathan Minchin",
+      "chinese_name": "喬納森·明欽",
+      "date": "未註明日期",
+      "qa_count": 0,
+      "txt_file": "Jonathan_Minchin_formatted.txt",
+      "json_file": "Jonathan_Minchin_structured.json"
+    },
+    {
+      "name": "Marc Dusseiller",
+      "chinese_name": "馬克·杜塞利爾",
+      "date": "2022年11月22日",
+      "qa_count": 8,
+      "txt_file": "Marc_Dusseiller_formatted.txt",
+      "json_file": "Marc_Dusseiller_structured.json"
+    },
+    {
+      "name": "Mika Satomi",
+      "chinese_name": "里美美香",
+      "date": "2022年07月09日",
+      "qa_count": 5,
+      "txt_file": "Mika_Satomi_formatted.txt",
+      "json_file": "Mika_Satomi_structured.json"
+    },
+    {
+      "name": "Rully Shabara",
+      "chinese_name": "魯利·沙巴拉",
+      "date": "2022年07月09日",
+      "qa_count": 14,
+      "txt_file": "Rully_Shabara_formatted.txt",
+      "json_file": "Rully_Shabara_structured.json"
+    },
+    {
+      "name": "Ryu Oyama",
+      "chinese_name": "大山龍",
+      "date": "未註明日期",
+      "qa_count": 13,
+      "txt_file": "Ryu_Oyama_formatted.txt",
+      "json_file": "Ryu_Oyama_structured.json"
+    },
+    {
+      "name": "Stelios Manousakis",
+      "chinese_name": "斯特利奧斯·馬努薩基斯",
+      "date": "未註明日期",
+      "qa_count": 0,
+      "txt_file": "Stelios_Manousakis_formatted.txt",
+      "json_file": "Stelios_Manousakis_structured.json"
+    },
+    {
+      "name": "Stephanie Pan",
+      "chinese_name": "潘斯蒂芬妮",
+      "date": "2022年09月06日",
+      "qa_count": 0,
+      "txt_file": "Stephanie_Pan_formatted.txt",
+      "json_file": "Stephanie_Pan_structured.json"
+    },
+    {
+      "name": "Svenja Keune",
+      "chinese_name": "斯文雅·科伊內",
+      "date": "未註明日期",
+      "qa_count": 0,
+      "txt_file": "Svenja_Keune_formatted.txt",
+      "json_file": "Svenja_Keune_structured.json"
+    },
+    {
+      "name": "Ted Hung",
+      "chinese_name": "洪泰德",
+      "date": "2022年07月05日",
+      "qa_count": 9,
+      "txt_file": "Ted_Hung_formatted.txt",
+      "json_file": "Ted_Hung_structured.json"
+    },
+    {
+      "name": "Tincuta Heinzel",
+      "chinese_name": "廷庫塔·海因策爾",
+      "date": "2022年12月03日",
+      "qa_count": 8,
+      "txt_file": "Tincuta_Heinzel_formatted.txt",
+      "json_file": "Tincuta_Heinzel_structured.json"
+    }
+  ],
+  "output_directory": "formatted_final_interviews"
+}

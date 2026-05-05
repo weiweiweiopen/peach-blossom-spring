@@ -1,0 +1,23 @@
+{
+  "total_interviewees": 14,
+  "interviewees_with_content": 14,
+  "total_segments_matched": 10240,
+  "unclassified_segments": 0,
+  "saved_files": [
+    "Andreas_Siagian_full_transcript.json",
+    "Anastasia_Pistofidou_full_transcript.json",
+    "Christian_Dils_full_transcript.json",
+    "Giulia_Tomasello_full_transcript.json",
+    "Jonathan_Minchin_full_transcript.json",
+    "Marc_Dusseiller_full_transcript.json",
+    "Mika_Satomi_full_transcript.json",
+    "Rully_Shabara_full_transcript.json",
+    "Ryu_Oyama_full_transcript.json",
+    "Stelios_Manousakis_full_transcript.json",
+    "Stephanie_Pan_full_transcript.json",
+    "Svenja_Keune_full_transcript.json",
+    "Ted_Hung_full_transcript.json",
+    "Tincuta_Heinzel_full_transcript.json"
+  ],
+  "output_directory": "smart_organized_transcripts"
+}
