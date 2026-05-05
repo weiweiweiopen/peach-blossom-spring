@@ -7,7 +7,7 @@ import { ChangelogModal } from './components/ChangelogModal.js';
 import { DebugView } from './components/DebugView.js';
 import { EditActionBar } from './components/EditActionBar.js';
 import { MigrationNotice } from './components/MigrationNotice.js';
-import { type PlayerProfile,PlayerSetup } from './components/PlayerSetup.js';
+import { type PlayerProfile,PlayerSetup, type StartMode } from './components/PlayerSetup.js';
 import { SettingsModal } from './components/SettingsModal.js';
 import { Tooltip } from './components/Tooltip.js';
 import { Modal } from './components/ui/Modal.js';
@@ -462,7 +462,7 @@ function App() {
     [officeState],
   );
 
-  const handlePlayerStart = useCallback((profile: PlayerProfile, mode: PlayMode) => {
+  const handlePlayerStart = useCallback((profile: PlayerProfile, mode: StartMode) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
     setPlayerDefaults(profile);
     setPlayerProfile(profile);
@@ -571,12 +571,12 @@ function App() {
           )}
 
           {playerProfile && playMode === 'expedition' && !activeDialoguePersona && (
-            <Suspense fallback={<div className="absolute right-6 top-6 z-47 pixel-panel px-6 py-5 text-text shadow-pixel">Loading expedition...</div>}>
+            <Suspense fallback={<div className="absolute inset-0 z-47 flex items-center justify-center bg-black/35 px-6 py-5 text-text">Loading expedition...</div>}>
               <ExpeditionPanel
                 avatar={playerProfile}
                 personas={personas}
-                language={selectedLanguage}
                 isOpen
+                language={selectedLanguage}
                 onClose={() => setPlayMode('camp')}
               />
             </Suspense>

@@ -1,9 +1,23 @@
+import agentProfiles from '../../../data/agent-profiles.json';
+
+import { buildExpeditionPromptContext, EXPEDITION_REASONING_RULES } from './expeditionPrompt.js';
 import { getNpcBehaviorProfile } from './npcBehaviorProfiles.js';
-import { buildExpeditionPrompt } from './expeditionPrompt.js';
-import type { ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';
+import type { AgentProfile, ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';
 
 const encounterTypes = ['friction circle', 'field test', 'night kitchen argument', 'archive detour', 'prototype omen'];
 const topicOrder = ['camp', 'independent', 'artScience', 'sustainability', 'nomadic', 'funding', 'exchange'];
+const agentProfileMap = agentProfiles as Record<string, AgentProfile>;
+
+function localizeEncounterType(encounterType: string, language: RunExpeditionInput['language']): string {
+  const labels: Record<string, string> = {
+    'friction circle': language === 'zh-TW' ? '摩擦圓桌' : 'Friction circle',
+    'field test': language === 'zh-TW' ? '現地測試' : 'Field test',
+    'night kitchen argument': language === 'zh-TW' ? '夜間廚房辯論' : 'Night kitchen argument',
+    'archive detour': language === 'zh-TW' ? '檔案岔路' : 'Archive detour',
+    'prototype omen': language === 'zh-TW' ? '原型預兆' : 'Prototype omen',
+  };
+  return labels[encounterType] ?? encounterType;
+}
 
 function chooseTopic(mission: string, round: number): string {
   const q = mission.toLowerCase();
@@ -35,8 +49,8 @@ function interpretMission(mission: string, constraints?: string): string {
 export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
   const selected = input.personas.filter((persona) => input.selectedNpcIds.includes(persona.id));
   const expeditionNpcs = selected.length > 0 ? selected : input.personas.slice(0, 6);
-  void buildExpeditionPrompt(input.avatar, input.mission, expeditionNpcs);
   const interpretedMission = interpretMission(input.mission, input.avatar.constraints);
+  const playerSkills = input.avatar.skills?.trim() || 'generalist curiosity';
   const rounds = Math.max(1, Math.min(input.maxRounds, 20));
   const events: ExpeditionEvent[] = Array.from({ length: rounds }, (_, index) => {
     const round = index + 1;
@@ -44,15 +58,23 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     const profile = getNpcBehaviorProfile(persona);
     const topic = chooseTopic(input.mission, index);
     const response = persona.responses[topic] ?? persona.responses.camp ?? persona.intro;
+    const reasoning = buildExpeditionPromptContext({
+      avatar: input.avatar,
+      persona,
+      agentProfile: agentProfileMap[persona.id],
+      behaviorProfile: profile,
+      topic,
+      sourceResponse: summarize(response, 150),
+    });
     return {
       round,
       npcId: persona.id,
-      encounterType: encounterTypes[index % encounterTypes.length],
-      npcContribution: `${persona.name} contributes from ${profile.expertise}: ${summarize(response)}`,
-      challengeToUser: `${profile.disagreementStyle} Likely objection: ${profile.likelyToReject}`,
-      newLead: `Follow ${profile.likelyToNotice}`,
-      avatarBeliefUpdate: `${input.avatar.name} updates the mission from "make the idea convincing" toward "make the idea accountable to ${profile.perspective}".`,
-      nextQuestion: `What would change if ${profile.bias.toLowerCase()}?`,
+      encounterType: localizeEncounterType(encounterTypes[index % encounterTypes.length], input.language),
+      npcContribution: `Source-grounded memory: ${reasoning.sourceGroundedMemory} Cautious extrapolation: ${reasoning.cautiousExtrapolation} Speculative proposal: ${reasoning.speculativeProposal}`,
+      challengeToUser: `${profile.disagreementStyle} Likely objection: ${profile.likelyToReject} Player-skill check: how will ${playerSkills} help under real pressure?`,
+      newLead: `Follow ${profile.likelyToNotice}. Re-read through this rule: ${EXPEDITION_REASONING_RULES}`,
+      avatarBeliefUpdate: `${input.avatar.name} updates the mission from "make the idea convincing" toward "make the idea accountable to ${profile.perspective}" through skills in ${playerSkills}.`,
+      nextQuestion: `What would change if ${profile.bias.toLowerCase()} and the mission leaned on ${playerSkills}?`,
     };
   });
 
@@ -61,9 +83,11 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     interpretedMission,
     keyEncounters: events.slice(0, 6).map((event) => {
       const persona = input.personas.find((item) => item.id === event.npcId);
-      return `Round ${event.round}, ${persona?.name ?? event.npcId}: ${event.encounterType} -> ${event.npcContribution}`;
+      return input.language === 'zh-TW'
+        ? `第 ${event.round} 回合，${persona?.name ?? event.npcId}：${event.encounterType} -> ${event.npcContribution}`
+        : `Round ${event.round}, ${persona?.name ?? event.npcId}: ${event.encounterType} -> ${event.npcContribution}`;
     }),
-    strongestEmergentDirection: `Turn the mission into a living prototype: one small camp-scale test, one visible conflict log, one care/maintenance protocol, and one shareable artifact that other nodes can fork.`,
+    strongestEmergentDirection: `Turn the mission into a living prototype shaped by ${playerSkills}: one small camp-scale test, one visible conflict log, one care or maintenance protocol, and one shareable artifact that other nodes can fork.`,
     disagreementsBetweenNpcs: [
       'Scale conflict: commons organizers and field practitioners pull toward small accountable units, while network educators ask for portability across nodes.',
       'Tempo conflict: hacker-camp improvisers want fast playful failure, while care and infrastructure voices slow the mission down for consent, safety, and maintenance.',
@@ -77,7 +101,7 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     concreteNextActions: [
       'Write a one-page mission covenant covering consent, credit, maintenance, and what will not be scaled.',
       'Run a 48-hour camp prototype with fewer than twelve people and document every disagreement as design material.',
-      'Create a forkable artifact: recipe, map, SOP, wish wall, or field notebook that another node can adapt.',
+      `Create a forkable artifact that uses the player's skills in ${playerSkills}: recipe, map, SOP, wish wall, or field notebook that another node can adapt.`,
       'Name one local steward and one external peer reviewer before seeking funding.',
     ],
     followUpQuestions: events.slice(-4).map((event) => event.nextQuestion),

@@ -1,44 +1,42 @@
 {
-  "profiles": {
-    "mika-satomi": {
-      "thinkingStyle": "material-systems and social choreography",
-      "transferableMethods": ["co-design rituals", "embodied prototyping"],
-      "likelyQuestions": ["Who maintains this after launch?"],
-      "likelyToReject": "abstractions detached from situated practice",
-      "blindSpots": ["institutional procurement constraints"],
-      "skills": ["facilitation", "critical making"]
-    },
-    "marc-dusseiller": {
-      "thinkingStyle": "open lab pragmatism with playful hacking",
-      "transferableMethods": ["rapid camp iteration", "peer pedagogy"],
-      "likelyQuestions": ["Can this be taught in one workshop cycle?"],
-      "likelyToReject": "closed knowledge pipelines",
-      "blindSpots": ["long-term governance detail"],
-      "skills": ["biohacking", "community infrastructure"]
-    },
-    "rully-shabara": {
-      "thinkingStyle": "hybrid craft and translocal narrative framing",
-      "transferableMethods": ["context translation", "story-led prototyping"],
-      "likelyQuestions": ["What local meaning shifts in this mission?"],
-      "likelyToReject": "one-size-fits-all deployment",
-      "blindSpots": ["strict technical benchmarking"],
-      "skills": ["cultural mediation", "creative direction"]
-    },
-    "jonathan-minchin": {
-      "thinkingStyle": "systems design with civic accountability",
-      "transferableMethods": ["stakeholder mapping", "scenario stress tests"],
-      "likelyQuestions": ["Where is refusal power located?"],
-      "likelyToReject": "solutions without maintenance plans",
-      "blindSpots": ["informal emergent social signals"],
-      "skills": ["policy translation", "program design"]
-    },
-    "anastassia-pistofidou": {
-      "thinkingStyle": "distributed fabrication and feminist commons",
-      "transferableMethods": ["open documentation", "collective capacity building"],
-      "likelyQuestions": ["Who can reproduce this with low resources?"],
-      "likelyToReject": "vendor-locked toolchains",
-      "blindSpots": ["top-down scaling narratives"],
-      "skills": ["maker education", "open hardware"]
-    }
+  "mika-satomi": {
+    "thinkingStyle": "Starts from small promises, soft technologies, and survivable group scale.",
+    "transferableMethods": ["wish wall", "skill exchange", "pattern writing", "repair rituals"],
+    "likelyQuestions": ["What can people actually learn in one sitting?", "What promise will be completed after the gathering?"],
+    "likelyToReject": ["heroic scale without mutual support", "spectacle that erases quiet practical knowledge"],
+    "blindSpots": ["large institutional leverage", "high-speed logistics"],
+    "skills": ["e-textiles", "facilitation", "repair", "documentation"]
+  },
+  "marc-dusseiller": {
+    "thinkingStyle": "Improvises through cheap tools, humor, contamination, and long friendship arcs.",
+    "transferableMethods": ["backpack labs", "open hardware workshops", "failure pedagogy", "friend-node hosting"],
+    "likelyQuestions": ["Can people open the box?", "Is the setup cheap enough to travel and fork?"],
+    "likelyToReject": ["closed demos", "funding logic that kills play"],
+    "blindSpots": ["slow institutional protocol", "formal governance polish"],
+    "skills": ["DIY biology", "open hardware", "workshop hosting", "network building"]
+  },
+  "rully-shabara": {
+    "thinkingStyle": "Tests whether a format still belongs to the people inside it rather than to a stage.",
+    "transferableMethods": ["circle practice", "meal-based gathering", "voice exercises", "de-staged rehearsal"],
+    "likelyQuestions": ["Who is performing for whom?", "What changes if the stage disappears?"],
+    "likelyToReject": ["branding-first cultural production", "formats that reward spectators more than participants"],
+    "blindSpots": ["technical replication detail", "infrastructure planning"],
+    "skills": ["collective voice", "performance practice", "ritual design", "group listening"]
+  },
+  "jonathan-minchin": {
+    "thinkingStyle": "Re-anchors every mission in land, season, stewardship, and field continuity.",
+    "transferableMethods": ["seasonal planning", "field prototyping", "ecological logging", "rural mesh hosting"],
+    "likelyQuestions": ["What happens across seasons?", "Who maintains this after the visitor leaves?"],
+    "likelyToReject": ["placeless innovation", "projects copied without ecological translation"],
+    "blindSpots": ["urban cultural speed", "presentation-first framing"],
+    "skills": ["agroecology", "green fablab methods", "sensor deployment", "rural stewardship"]
+  },
+  "anastassia-pistofidou": {
+    "thinkingStyle": "Turns intuition into distributed curriculum, node governance, and peer validation.",
+    "transferableMethods": ["modular curriculum", "micro-credentials", "peer review", "distributed node coordination"],
+    "likelyQuestions": ["Can another node teach this?", "What stays local and what becomes portable?"],
+    "likelyToReject": ["one-off workshops", "centralized control over local pedagogy"],
+    "blindSpots": ["anti-structure spontaneity", "non-documented tacit exchange"],
+    "skills": ["decentralized education", "fabrication pedagogy", "network design", "documentation"]
   }
 }

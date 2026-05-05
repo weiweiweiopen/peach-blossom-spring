@@ -1,60 +1,76 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import process from 'node:process';
 
-const root = path.resolve(process.cwd(), '..');
-const targets = [
-  path.join(process.cwd(), 'src'),
-  path.join(root, 'data'),
-  path.join(root, 'docs'),
-  path.join(root, '.gitignore'),
-  path.join(root, 'package.json'),
-  path.join(process.cwd(), 'package.json'),
-  path.join(process.cwd(), '.env.example'),
-  path.join(process.cwd(), 'API_KEYS.md'),
+const repoRoot = path.resolve(import.meta.dirname, '..', '..');
+const scanTargets = [
+  path.join(repoRoot, 'webview-ui', 'src'),
+  path.join(repoRoot, 'data'),
+  path.join(repoRoot, 'docs'),
 ];
-
-const ignoreNames = new Set(['node_modules', 'dist', '.git']);
+const rootFiles = [
+  path.join(repoRoot, '.gitignore'),
+  path.join(repoRoot, 'package.json'),
+  path.join(repoRoot, 'webview-ui', 'package.json'),
+  path.join(repoRoot, 'webview-ui', 'API_KEYS.md'),
+  path.join(repoRoot, 'webview-ui', '.env.example'),
+];
+const ignoredDirNames = new Set(['node_modules', 'dist', '.git']);
+const ignoredFileNames = new Set(['.env.local']);
+const textExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json', '.md', '.txt', '.yml', '.yaml', '.html', '.css', '.scss', '.env', '.example']);
 const suspiciousPatterns = [
   /sk-[A-Za-z0-9]{16,}/g,
-  /DEEPSEEK_API_KEY\s*=\s*sk-/g,
+  /DEEPSEEK_API_KEY\s*=\s*sk-[A-Za-z0-9]+/g,
+  /VITE_DEEPSEEK_API_KEY\s*=\s*sk-[A-Za-z0-9]+/g,
 ];
 
-function walk(entry, out = []) {
-  if (!fs.existsSync(entry)) return out;
-  const stat = fs.statSync(entry);
-  if (stat.isFile()) {
-    out.push(entry);
-    return out;
-  }
-  for (const name of fs.readdirSync(entry)) {
-    if (ignoreNames.has(name) || name === '.env.local') continue;
-    const full = path.join(entry, name);
-    const rel = path.relative(root, full).replace(/\\/g, '/');
-    if (/\.env\..+\.local$/.test(name) || rel.endsWith('/.env.local')) continue;
-    walk(full, out);
-  }
-  return out;
+function shouldIgnore(filePath) {
+  const base = path.basename(filePath);
+  if (ignoredFileNames.has(base)) return true;
+  if (base.endsWith('.local')) return true;
+  return false;
 }
 
-const files = targets.flatMap((target) => walk(target));
-const findings = [];
+function shouldReadFile(filePath) {
+  return textExtensions.has(path.extname(filePath).toLowerCase()) || rootFiles.includes(filePath);
+}
 
-for (const file of files) {
-  const text = fs.readFileSync(file, 'utf8');
+function collectFiles(targetPath, results) {
+  if (!fs.existsSync(targetPath) || shouldIgnore(targetPath)) return;
+  const stat = fs.statSync(targetPath);
+  if (stat.isDirectory()) {
+    for (const entry of fs.readdirSync(targetPath, { withFileTypes: true })) {
+      if (ignoredDirNames.has(entry.name)) continue;
+      collectFiles(path.join(targetPath, entry.name), results);
+    }
+    return;
+  }
+  if (shouldReadFile(targetPath)) results.push(targetPath);
+}
+
+const files = [];
+for (const target of scanTargets) collectFiles(target, files);
+for (const file of rootFiles) {
+  if (fs.existsSync(file) && !shouldIgnore(file)) files.push(file);
+}
+
+const findings = [];
+for (const filePath of files) {
+  const text = fs.readFileSync(filePath, 'utf8');
   for (const pattern of suspiciousPatterns) {
-    const matches = text.match(pattern);
-    if (matches?.length) {
-      findings.push({ file: path.relative(root, file), pattern: pattern.toString(), count: matches.length });
+    const matches = [...text.matchAll(pattern)];
+    for (const match of matches) {
+      findings.push({ filePath, match: match[0] });
     }
   }
 }
 
 if (findings.length > 0) {
-  console.error('Potential secrets detected:');
+  console.error('Suspicious secret-like strings found:');
   for (const finding of findings) {
-    console.error(`- ${finding.file}: ${finding.pattern} (${finding.count})`);
+    console.error(`- ${path.relative(repoRoot, finding.filePath)}: ${finding.match}`);
   }
   process.exit(1);
 }
 
-console.log('No hardcoded secrets detected.');
+console.log(`Secret scan passed across ${files.length.toString()} files.`);

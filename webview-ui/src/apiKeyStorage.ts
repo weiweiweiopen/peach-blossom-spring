@@ -6,6 +6,11 @@ const DEEPSEEK_API_KEY_STORAGE_KEYS = [
   'solar_oracle_api_key',
 ];
 
+function readEnvDeepSeekApiKey(): string {
+  const viteEnv = (import.meta as ImportMeta & { env?: { VITE_DEEPSEEK_API_KEY?: string } }).env;
+  return viteEnv?.VITE_DEEPSEEK_API_KEY?.trim() ?? '';
+}
+
 export function readStoredDeepSeekApiKey(): string {
   try {
     for (const key of DEEPSEEK_API_KEY_STORAGE_KEYS) {
@@ -14,10 +19,14 @@ export function readStoredDeepSeekApiKey(): string {
       const sessionStored = sessionStorage.getItem(key)?.trim();
       if (sessionStored) return sessionStored;
     }
-    return '';
   } catch {
     return '';
   }
+  return '';
+}
+
+export function hasStoredDeepSeekApiKey(): boolean {
+  return readStoredDeepSeekApiKey().length > 0;
 }
 
 export function hasStoredDeepSeekApiKey(): boolean {
@@ -41,7 +50,7 @@ export function writeStoredDeepSeekApiKey(apiKey: string): void {
       sessionStorage.setItem(key, trimmed);
     }
   } catch {
-    // Ignore storage failures so the current dialogue can still use the in-memory key.
+    // Ignore storage failures so dialogue can still continue with the in-memory key.
   }
 }
 
@@ -52,12 +61,19 @@ export function clearStoredDeepSeekApiKey(): void {
       sessionStorage.removeItem(key);
     }
   } catch {
-    // Ignore storage failures so the current dialogue can still continue in memory.
+    // Ignore storage failures so dialogue state does not crash.
   }
+}
+
+export function maskApiKeyForDebug(apiKey: string): string {
+  const trimmed = apiKey.trim();
+  if (!trimmed) return '';
+  if (trimmed.length <= 8) return `${trimmed.slice(0, 2)}...${trimmed.slice(-2)}`;
+  return `${trimmed.slice(0, 3)}...${trimmed.slice(-4)}`;
 }
 
 export function getInitialDeepSeekApiKey(): string {
   const stored = readStoredDeepSeekApiKey();
   if (stored) return stored;
-  return import.meta.env.VITE_DEEPSEEK_API_KEY?.trim() ?? '';
+  return readEnvDeepSeekApiKey();
 }

@@ -1,14 +1,9 @@
-# API Key Setup (Local Only)
-
-Use local environment variables for DeepSeek during development.
+# API Key Setup
 
 1. Create `webview-ui/.env.local`.
-2. Add:
-   `VITE_DEEPSEEK_API_KEY=your_key_here`
+2. Add `VITE_DEEPSEEK_API_KEY=...`.
 3. Restart the dev server.
-4. Never commit `.env.local` (it is gitignored).
-5. If a key is ever pasted into chat, screenshots, GitHub, or logs, rotate it immediately.
+4. Never commit `.env.local`.
+5. Rotate the key immediately if it was pasted into chat, screenshots, GitHub, or logs.
 
-Notes:
-- Production/static builds should not require committing a key.
-- UI should only use local env or local browser storage fallback.
+Local browser storage is also supported for one-time local saving, but `.env.local` is the preferred local development workflow.

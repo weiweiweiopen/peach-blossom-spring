@@ -16,6 +16,15 @@ export interface ExpeditionPersona {
 
 export type ExpeditionMode = 'template-simulation';
 
+export interface AgentProfile {
+  thinkingStyle?: string;
+  transferableMethods?: string[];
+  likelyQuestions?: string[];
+  likelyToReject?: string[];
+  blindSpots?: string[];
+  skills?: string[];
+}
+
 export interface NpcBehaviorProfile {
   npcId: string;
   perspective: string;
@@ -56,9 +65,11 @@ export interface ExpeditionResult {
 
 export interface RunExpeditionInput {
   avatar: ExpeditionAvatar;
+  language: LanguageCode;
   mission: string;
   selectedNpcIds: string[];
   maxRounds: number;
   mode: ExpeditionMode;
   personas: ExpeditionPersona[];
 }
+import type { LanguageCode } from '../i18n.js';

@@ -82,15 +82,14 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
 }
 
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose }: RpgDialogueProps) {
-  const [apiKey, setApiKey] = useState(() => getInitialDeepSeekApiKey());
+  const [runtimeApiKey, setRuntimeApiKey] = useState(() => getInitialDeepSeekApiKey());
+  const [manualApiKey, setManualApiKey] = useState('');
+  const [hasLocalKeySaved, setHasLocalKeySaved] = useState(() => hasStoredDeepSeekApiKey());
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isWikiOpen, setIsWikiOpen] = useState(false);
-  const [isApiPanelOpen, setIsApiPanelOpen] = useState(false);
-  const [manualApiInput, setManualApiInput] = useState('');
-  const [savedLocally, setSavedLocally] = useState(() => hasStoredDeepSeekApiKey());
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
@@ -144,8 +143,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   async function submitPrompt(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isLoading) return;
-    if (!apiKey.trim()) {
-      setError('DeepSeek API key is missing.');
+    if (!runtimeApiKey.trim()) {
+      setError(t(language, 'apiKeyMissingInstruction'));
       return;
     }
 
@@ -155,7 +154,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     try {
       const topic = resolveTopic(trimmed);
       const answer = await askDeepSeekPersona({
-        apiKey: apiKey.trim(),
+        apiKey: runtimeApiKey.trim(),
         playerName: player.name,
         question: `${trimmed}\nTopic hint: ${topic}`,
         knowledge: {
@@ -164,13 +163,15 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         },
         preferredLanguage: language,
       });
-      writeStoredDeepSeekApiKey(apiKey.trim());
       setMessages((prev) => [...prev, { speaker: persona.name, text: answer }]);
     } catch (err) {
       if (err instanceof Error && err.message.includes('DeepSeek request failed (401)')) {
-        clearStoredDeepSeekApiKey();
-        setSavedLocally(false);
-        setError('DeepSeek API key is invalid. Update the key and try again.');
+        if (hasStoredDeepSeekApiKey()) {
+          clearStoredDeepSeekApiKey();
+          setHasLocalKeySaved(false);
+        }
+        setRuntimeApiKey(getInitialDeepSeekApiKey());
+        setError(language === 'zh-TW' ? 'DeepSeek API key 無效，請更新本機設定後再試一次。' : 'DeepSeek API key is invalid. Update your local setting and try again.');
       } else {
         setError(err instanceof Error ? err.message : 'DeepSeek request failed.');
       }
@@ -180,13 +181,19 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   }
 
   function handleSaveLocalApiKey(): void {
-    const trimmed = manualApiInput.trim();
+    const trimmed = manualApiKey.trim();
     if (!trimmed) return;
     writeStoredDeepSeekApiKey(trimmed);
-    setApiKey(trimmed);
-    setManualApiInput('');
-    setSavedLocally(true);
+    setRuntimeApiKey(trimmed);
+    setHasLocalKeySaved(true);
+    setManualApiKey('');
     setError('');
+  }
+
+  function handleClearLocalApiKey(): void {
+    clearStoredDeepSeekApiKey();
+    setHasLocalKeySaved(false);
+    setRuntimeApiKey(getInitialDeepSeekApiKey());
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -282,36 +289,40 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           </button>
         </div>
 
-        {!apiKey.trim() && (
-          <div className="mb-4 border border-border bg-bg/60 px-4 py-3 text-sm text-text-muted">
-            <p className="text-accent-bright mb-1">{language === 'zh-TW' ? '缺少 API key' : 'API key missing'}</p>
-            <p>
-              {language === 'zh-TW'
-                ? '請在 webview-ui/.env.local 設定 VITE_DEEPSEEK_API_KEY，或使用本機瀏覽器儲存一次。'
-                : 'Set VITE_DEEPSEEK_API_KEY in webview-ui/.env.local, or save it once in local browser storage.'}
-            </p>
+        {!runtimeApiKey.trim() && (
+          <div className="mb-5 border border-amber-300/50 bg-amber-100/10 px-5 py-4 text-base text-amber-100">
+            <p className="text-accent-bright">{t(language, 'apiKeyMissing')}</p>
+            <p className="mt-2 text-text-muted">{t(language, 'apiKeyMissingInstruction')}</p>
           </div>
         )}
-        <details className="mb-4" open={isApiPanelOpen} onToggle={(event) => setIsApiPanelOpen(event.currentTarget.open)}>
-          <summary className="cursor-pointer text-sm text-text-muted">
-            {language === 'zh-TW' ? '本機 API key 設定' : 'Local API key settings'}
-          </summary>
-          <div className="mt-3 border border-border bg-bg/60 px-4 py-4">
+
+        <details className="mb-5 border border-border bg-bg/60 px-5 py-4">
+          <summary className="cursor-pointer text-base text-accent-bright">{t(language, 'localApiKeySettings')}</summary>
+          <div className="mt-4 flex flex-col gap-4">
+            <label className="text-sm text-text-muted" htmlFor="dialogue-api-key">
+              {t(language, 'apiKeyLabel')}
+            </label>
             <input
-              className="w-full bg-bg border border-border px-4 py-3 text-base text-text outline-none focus:border-accent-bright mb-3"
+              id="dialogue-api-key"
+              className="w-full bg-bg border border-border px-5 py-4 text-base text-text outline-none focus:border-accent-bright"
               type="password"
-              value={manualApiInput}
-              onChange={(event) => setManualApiInput(event.target.value)}
-              placeholder="VITE_DEEPSEEK_API_KEY"
+              value={manualApiKey}
+              onChange={(event) => setManualApiKey(event.target.value)}
+              placeholder={t(language, 'apiKeyLabel')}
               autoComplete="off"
               spellCheck={false}
             />
-            <button className="bg-bg text-text border border-border px-4 py-2 text-sm" type="button" onClick={handleSaveLocalApiKey}>
-              {language === 'zh-TW' ? '儲存到本機' : 'Save locally'}
-            </button>
-            {savedLocally && (
-              <p className="text-xs text-text-muted mt-2">{language === 'zh-TW' ? '已儲存在本機。' : 'Saved locally.'}</p>
-            )}
+            <div className="flex flex-wrap items-center gap-3">
+              <button className="bg-bg text-text border border-border px-4 py-3 text-sm" type="button" onClick={handleSaveLocalApiKey}>
+                {t(language, 'saveLocally')}
+              </button>
+              {hasLocalKeySaved && <span className="text-sm text-text-muted">{t(language, 'savedLocally')}</span>}
+              {hasLocalKeySaved && (
+                <button className="bg-bg text-text border border-border px-4 py-3 text-sm" type="button" onClick={handleClearLocalApiKey}>
+                  {t(language, 'clearSavedKey')}
+                </button>
+              )}
+            </div>
           </div>
         </details>
 

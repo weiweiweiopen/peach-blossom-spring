@@ -1,9 +1,10 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import * as fs from 'fs';
+import type { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
 import type { Plugin } from 'vite';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
 import { buildAssetIndex, buildFurnitureCatalog } from '../shared/assets/build.ts';
 import {
@@ -99,11 +100,111 @@ function browserMockAssetsPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [tailwindcss(), react(), browserMockAssetsPlugin()],
-  build: {
-    outDir: '../dist/webview',
-    emptyOutDir: true,
-  },
-  base: './',
+function deepSeekChatProxyPlugin(defaultApiKey: string): Plugin {
+  type MiddlewareStack = {
+    use: (
+      path: string,
+      handler: (
+        req: IncomingMessage,
+        res: ServerResponse,
+        next: (err?: unknown) => void,
+      ) => void | Promise<void>,
+    ) => void;
+  };
+
+  function registerChatRoute(middlewares: MiddlewareStack): void {
+    middlewares.use('/api/chat', async (req, res, next) => {
+      if (req.method !== 'POST') {
+        next();
+        return;
+      }
+
+      const runtimeApiKey = req.headers['x-deepseek-api-key'];
+      const resolvedApiKey = Array.isArray(runtimeApiKey)
+        ? runtimeApiKey.find((value) => value.trim().length > 0)?.trim() ?? ''
+        : runtimeApiKey?.trim() ?? defaultApiKey.trim();
+
+      if (!resolvedApiKey) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Missing DeepSeek API key. Set VITE_DEEPSEEK_API_KEY in webview-ui/.env.local or save one locally in the browser.' }));
+        return;
+      }
+
+      const chunks: Uint8Array[] = [];
+      for await (const chunk of req) {
+        chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+      }
+
+      try {
+        const bodyText = Buffer.concat(chunks).toString('utf8');
+        const payload = JSON.parse(bodyText || '{}') as {
+          systemPrompt?: string;
+          prompt?: string;
+          temperature?: number;
+          max_tokens?: number;
+        };
+
+        if (!payload.prompt || typeof payload.prompt !== 'string') {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: 'prompt is required' }));
+          return;
+        }
+
+        const upstream = await fetch('https://api.deepseek.com/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${resolvedApiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [
+              { role: 'system', content: payload.systemPrompt ?? '' },
+              { role: 'user', content: payload.prompt },
+            ],
+            temperature: payload.temperature ?? 0.7,
+            max_tokens: payload.max_tokens ?? 700,
+          }),
+        });
+
+        const responseText = await upstream.text();
+        res.statusCode = upstream.status;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(responseText);
+      } catch (error) {
+        res.statusCode = 502;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(
+          JSON.stringify({
+            error: `Upstream error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          }),
+        );
+      }
+    });
+  }
+
+  return {
+    name: 'deepseek-chat-proxy',
+    configureServer(server) {
+      registerChatRoute(server.middlewares);
+    },
+    configurePreviewServer(server) {
+      registerChatRoute(server.middlewares);
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, __dirname, '');
+
+  return {
+    plugins: [tailwindcss(), react(), browserMockAssetsPlugin(), deepSeekChatProxyPlugin(env.VITE_DEEPSEEK_API_KEY ?? '')],
+    build: {
+      outDir: '../dist/webview',
+      emptyOutDir: true,
+    },
+    base: './',
+  };
 });

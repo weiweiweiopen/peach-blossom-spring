@@ -17,7 +17,10 @@ type TranslationKey =
   | 'constraintsLabel'
   | 'constraintsPlaceholder'
   | 'avatarCollection'
+  | 'skillsLabel'
+  | 'skillsPlaceholder'
   | 'enterWorld'
+  | 'sendOnExpedition'
   | 'movementHint'
   | 'pressSpaceToTalk'
   | 'wanderAndTalk'
@@ -33,6 +36,46 @@ type TranslationKey =
   | 'talk'
   | 'close'
   | 'thinking'
+  | 'apiKeyMissing'
+  | 'apiKeyMissingInstruction'
+  | 'localApiKeySettings'
+  | 'apiKeyLabel'
+  | 'saveLocally'
+  | 'savedLocally'
+  | 'clearSavedKey'
+  | 'expeditionTitle'
+  | 'templateSimulation'
+  | 'expeditionDescription'
+  | 'expeditionPlayerSummary'
+  | 'expeditionConstraints'
+  | 'expeditionSkills'
+  | 'expeditionNoConstraints'
+  | 'expeditionMission'
+  | 'expeditionMaxRounds'
+  | 'expeditionSelectedNpcs'
+  | 'expeditionRun'
+  | 'expeditionRunning'
+  | 'expeditionLiveLog'
+  | 'expeditionNoEvents'
+  | 'expeditionRound'
+  | 'expeditionChallenge'
+  | 'expeditionLead'
+  | 'expeditionNextQuestion'
+  | 'expeditionReport'
+  | 'expeditionOriginalMission'
+  | 'expeditionInterpretedMission'
+  | 'expeditionEmergentDirection'
+  | 'expeditionKeyEncounters'
+  | 'expeditionNpcDisagreements'
+  | 'expeditionBlindSpots'
+  | 'expeditionNextActions'
+  | 'expeditionFollowUpQuestions'
+  | 'expeditionResearchLeads'
+  | 'encounterFrictionCircle'
+  | 'encounterFieldTest'
+  | 'encounterNightKitchenArgument'
+  | 'encounterArchiveDetour'
+  | 'encounterPrototypeOmen'
   | 'abaoEncounterTitle'
   | 'abaoEncounterHint';
 
@@ -63,7 +106,10 @@ const translations: TranslationTable = {
     constraintsLabel: '限制條件（選填）',
     constraintsPlaceholder: '例如：不能做成企業 dashboard、預算很小、必須開源、三個月內要有原型。',
     avatarCollection: '異世界角色樣式',
+    skillsLabel: '我有什麼技能',
+    skillsPlaceholder: '例如：田野研究、開源硬體、策展、社群組織、織品、寫程式。',
     enterWorld: '進入桃花源',
+    sendOnExpedition: '派遣遠征',
     movementHint: '用方向鍵或 WASD 行走。手機可用螢幕方向鍵。按住 Shift 可加速。',
     pressSpaceToTalk: '按下 Space 交談',
     wanderAndTalk: '漫遊與對話',
@@ -79,6 +125,46 @@ const translations: TranslationTable = {
     talk: '交談',
     close: '關閉',
     thinking: '正在思考...',
+    apiKeyMissing: '缺少 API key',
+    apiKeyMissingInstruction: '請在 webview-ui/.env.local 設定 VITE_DEEPSEEK_API_KEY，或使用本機瀏覽器儲存一次。',
+    localApiKeySettings: '本機 API key 設定',
+    apiKeyLabel: 'DeepSeek API key',
+    saveLocally: '只存本機',
+    savedLocally: '已儲存在本機',
+    clearSavedKey: '清除本機 key',
+    expeditionTitle: '桃花源：可派遣的思考生命模擬器',
+    templateSimulation: '模板模擬',
+    expeditionDescription: '把你的任務派進桃花源，讓不同 NPC 從記憶、推演與猜測三種層次互相碰撞。',
+    expeditionPlayerSummary: '遠征者',
+    expeditionConstraints: '限制條件',
+    expeditionSkills: '技能',
+    expeditionNoConstraints: '未設定',
+    expeditionMission: '任務',
+    expeditionMaxRounds: '回合上限',
+    expeditionSelectedNpcs: '選擇同行 NPC',
+    expeditionRun: '派遣遠征',
+    expeditionRunning: '遠征進行中...',
+    expeditionLiveLog: '現場事件紀錄',
+    expeditionNoEvents: '尚未產生遠征事件。',
+    expeditionRound: '回合',
+    expeditionChallenge: '質疑',
+    expeditionLead: '新線索',
+    expeditionNextQuestion: '下一個問題',
+    expeditionReport: '遠征報告',
+    expeditionOriginalMission: '原始任務',
+    expeditionInterpretedMission: '重新詮釋的任務',
+    expeditionEmergentDirection: '湧現方向',
+    expeditionKeyEncounters: '關鍵遭遇',
+    expeditionNpcDisagreements: 'NPC 分歧',
+    expeditionBlindSpots: '盲點',
+    expeditionNextActions: '下一步行動',
+    expeditionFollowUpQuestions: '後續問題',
+    expeditionResearchLeads: '招募 / 研究線索',
+    encounterFrictionCircle: '摩擦圓桌',
+    encounterFieldTest: '現地測試',
+    encounterNightKitchenArgument: '夜間廚房辯論',
+    encounterArchiveDetour: '檔案岔路',
+    encounterPrototypeOmen: '原型預兆',
     abaoEncounterTitle: 'Abao 的說書人地圖場域',
     abaoEncounterHint: '靠近 Abao 時，故事場景會展開；按 Space 進入對話。',
   },
@@ -100,7 +186,10 @@ const translations: TranslationTable = {
     constraintsLabel: 'Constraints (optional)',
     constraintsPlaceholder: 'No corporate dashboard, tiny budget, must be open source, prototype in three months...',
     avatarCollection: 'Isekai avatar collection',
+    skillsLabel: 'What skills do I have?',
+    skillsPlaceholder: 'For example: field research, open hardware, curation, community organizing, textiles, coding.',
     enterWorld: 'Enter Peach Blossom Spring',
+    sendOnExpedition: 'Send on Expedition',
     movementHint: 'Use arrow keys or WASD to move. On mobile, use the on-screen controls. Hold Shift to sprint.',
     pressSpaceToTalk: 'Press Space to talk',
     wanderAndTalk: 'Wander and talk',
@@ -116,6 +205,46 @@ const translations: TranslationTable = {
     talk: 'Talk',
     close: 'Close',
     thinking: 'is thinking...',
+    apiKeyMissing: 'API key missing',
+    apiKeyMissingInstruction: 'Set VITE_DEEPSEEK_API_KEY in webview-ui/.env.local, or save it once in local browser storage.',
+    localApiKeySettings: 'Local API key settings',
+    apiKeyLabel: 'DeepSeek API key',
+    saveLocally: 'Save locally',
+    savedLocally: 'saved locally',
+    clearSavedKey: 'Clear saved key',
+    expeditionTitle: 'Peach Blossom Spring: Dispatchable Thinking Life Simulator',
+    templateSimulation: 'Template Simulation',
+    expeditionDescription: 'Dispatch your mission into Peach Blossom Spring and let NPCs collide through memory, extrapolation, and speculation.',
+    expeditionPlayerSummary: 'Expedition avatar',
+    expeditionConstraints: 'Constraints',
+    expeditionSkills: 'Skills',
+    expeditionNoConstraints: 'none declared',
+    expeditionMission: 'Mission',
+    expeditionMaxRounds: 'Max rounds',
+    expeditionSelectedNpcs: 'Selected NPCs',
+    expeditionRun: 'Send on Expedition',
+    expeditionRunning: 'Expedition running...',
+    expeditionLiveLog: 'Live Event Log',
+    expeditionNoEvents: 'No expedition events yet.',
+    expeditionRound: 'Round',
+    expeditionChallenge: 'Challenge',
+    expeditionLead: 'Lead',
+    expeditionNextQuestion: 'Next question',
+    expeditionReport: 'Expedition Report',
+    expeditionOriginalMission: 'Original mission',
+    expeditionInterpretedMission: 'Interpreted mission',
+    expeditionEmergentDirection: 'Emergent direction',
+    expeditionKeyEncounters: 'Key Encounters',
+    expeditionNpcDisagreements: 'NPC Disagreements',
+    expeditionBlindSpots: 'Blind Spots',
+    expeditionNextActions: 'Concrete Next Actions',
+    expeditionFollowUpQuestions: 'Follow-Up Questions',
+    expeditionResearchLeads: 'Open-Call / Research Leads',
+    encounterFrictionCircle: 'Friction circle',
+    encounterFieldTest: 'Field test',
+    encounterNightKitchenArgument: 'Night kitchen argument',
+    encounterArchiveDetour: 'Archive detour',
+    encounterPrototypeOmen: 'Prototype omen',
     abaoEncounterTitle: 'Abao storyteller encounter',
     abaoEncounterHint: 'When you enter Abao’s range, the map opens into a storytelling split scene. Press Space to talk.',
   },
@@ -136,7 +265,10 @@ const translations: TranslationTable = {
     constraintsLabel: 'Constraints (optional)',
     constraintsPlaceholder: 'No corporate dashboard, tiny budget, must be open source, prototype in three months...',
     avatarCollection: 'Isekai avatar collection',
+    skillsLabel: 'What skills do I have?',
+    skillsPlaceholder: 'For example: field research, open hardware, curation, community organizing, textiles, coding.',
     enterWorld: 'Enter Peach Blossom Spring',
+    sendOnExpedition: 'Send on Expedition',
     movementHint: 'Use arrow keys or WASD to move. On mobile, use the on-screen controls. Hold Shift to sprint.',
     pressSpaceToTalk: 'Press Space to talk',
     wanderAndTalk: 'Wander and talk',
@@ -152,6 +284,46 @@ const translations: TranslationTable = {
     talk: 'Talk',
     close: 'Close',
     thinking: 'is thinking...',
+    apiKeyMissing: 'API key missing',
+    apiKeyMissingInstruction: 'Set VITE_DEEPSEEK_API_KEY in webview-ui/.env.local, or save it once in local browser storage.',
+    localApiKeySettings: 'Local API key settings',
+    apiKeyLabel: 'DeepSeek API key',
+    saveLocally: 'Save locally',
+    savedLocally: 'saved locally',
+    clearSavedKey: 'Clear saved key',
+    expeditionTitle: 'Peach Blossom Spring: Dispatchable Thinking Life Simulator',
+    templateSimulation: 'Template Simulation',
+    expeditionDescription: 'Dispatch your mission into Peach Blossom Spring and let NPCs collide through memory, extrapolation, and speculation.',
+    expeditionPlayerSummary: 'Expedition avatar',
+    expeditionConstraints: 'Constraints',
+    expeditionSkills: 'Skills',
+    expeditionNoConstraints: 'none declared',
+    expeditionMission: 'Mission',
+    expeditionMaxRounds: 'Max rounds',
+    expeditionSelectedNpcs: 'Selected NPCs',
+    expeditionRun: 'Send on Expedition',
+    expeditionRunning: 'Expedition running...',
+    expeditionLiveLog: 'Live Event Log',
+    expeditionNoEvents: 'No expedition events yet.',
+    expeditionRound: 'Round',
+    expeditionChallenge: 'Challenge',
+    expeditionLead: 'Lead',
+    expeditionNextQuestion: 'Next question',
+    expeditionReport: 'Expedition Report',
+    expeditionOriginalMission: 'Original mission',
+    expeditionInterpretedMission: 'Interpreted mission',
+    expeditionEmergentDirection: 'Emergent direction',
+    expeditionKeyEncounters: 'Key Encounters',
+    expeditionNpcDisagreements: 'NPC Disagreements',
+    expeditionBlindSpots: 'Blind Spots',
+    expeditionNextActions: 'Concrete Next Actions',
+    expeditionFollowUpQuestions: 'Follow-Up Questions',
+    expeditionResearchLeads: 'Open-Call / Research Leads',
+    encounterFrictionCircle: 'Friction circle',
+    encounterFieldTest: 'Field test',
+    encounterNightKitchenArgument: 'Night kitchen argument',
+    encounterArchiveDetour: 'Archive detour',
+    encounterPrototypeOmen: 'Prototype omen',
     abaoEncounterTitle: 'Abao storyteller encounter',
     abaoEncounterHint: 'When you enter Abao’s range, the map opens into a storytelling split scene. Press Space to talk.',
   },

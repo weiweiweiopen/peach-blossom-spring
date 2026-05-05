@@ -1,7 +1,9 @@
 dist/
 node_modules/
 .DS_Store
-
 .env
 .env.local
 .env.*.local
+webview-ui/.env
+webview-ui/.env.local
+webview-ui/.env.*.local

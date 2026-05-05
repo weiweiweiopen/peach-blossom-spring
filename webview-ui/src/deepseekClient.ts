@@ -27,7 +27,7 @@ interface KnowledgeBase {
 }
 
 interface AskPersonaArgs {
-  apiKey: string;
+  apiKey?: string;
   playerName: string;
   question: string;
   knowledge: KnowledgeBase;
@@ -184,18 +184,15 @@ export async function askDeepSeekPersona({
   ];
   const prompt = promptParts.join('\n');
 
-  const res = await fetch('https://api.deepseek.com/chat/completions', {
+  const res = await fetch('/api/chat', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      ...(apiKey?.trim() ? { 'X-DeepSeek-Api-Key': apiKey.trim() } : {}),
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: prompt },
-        { role: 'user', content: `${playerName}: ${question}` },
-      ],
+      systemPrompt: prompt,
+      prompt: `${playerName}: ${question}`,
       temperature: 0.7,
       max_tokens: 700,
     }),
@@ -206,7 +203,7 @@ export async function askDeepSeekPersona({
     throw new Error(`DeepSeek request failed (${res.status.toString()}): ${details}`);
   }
 
-  const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
+  const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }>; error?: string };
   return data.choices?.[0]?.message?.content?.trim() ?? '...';
 }
 

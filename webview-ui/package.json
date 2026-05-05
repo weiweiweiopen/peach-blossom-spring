@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "check:secrets": "node scripts/check-no-secrets.mjs",
     "dev": "vite",
-    "build": "npm run check:secrets && tsc -b && vite build",
+    "prebuild": "npm run check:secrets",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --import tsx/esm --test test/*.test.ts",
-    "check:secrets": "node scripts/check-no-secrets.mjs"
+    "pretest": "npm run check:secrets",
+    "test": "node --import tsx/esm --test test/*.test.ts"
   },
   "dependencies": {
     "react": "^19.2.0",

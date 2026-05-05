@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { type LanguageCode,supportedLanguages, t } from '../i18n.js';
 
 interface PlayerProfile {
@@ -7,8 +9,9 @@ interface PlayerProfile {
   currentRole: string;
   mission: string;
   constraints?: string;
-  skills: string;
+  skills?: string;
 }
+
 type StartMode = 'camp' | 'expedition';
 
 interface PlayerSetupProps {
@@ -28,19 +31,22 @@ const avatarChoices = [
 ];
 
 export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfile }: PlayerSetupProps) {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  function handleStart(mode: StartMode) {
+    const formElement = formRef.current;
+    if (!formElement) return;
+
+    const form = new FormData(formElement);
     const name = String(form.get('name') ?? '').trim() || (language === 'zh-TW' ? '訪客' : 'Visitor');
     const currentRole = String(form.get('currentRole') ?? '').trim() || (language === 'zh-TW' ? '漂流研究者' : 'Wandering researcher');
     const mission = String(form.get('mission') ?? '').trim() || (language === 'zh-TW' ? '尋找一個值得被共同推進的想法' : 'Find an idea worth developing with others');
     const constraints = String(form.get('constraints') ?? '').trim();
+    const skills = String(form.get('skills') ?? '').trim();
     const palette = Number(form.get('palette') ?? 0);
     const avatarTitle =
       avatarChoices.find((choice) => choice.palette === palette)?.title[language] ??
       avatarChoices[5].title[language];
-    const skills = String(form.get('skills') ?? '').trim();
-    const mode = (String(form.get('startMode') ?? 'camp') === 'expedition' ? 'expedition' : 'camp') as StartMode;
     onStart({ name, palette, avatarTitle, currentRole, mission, constraints, skills }, mode);
   }
 
@@ -50,8 +56,12 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
       style={{ paddingTop: 'max(24px, env(safe-area-inset-top))', paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
     >
       <form
+        ref={formRef}
         className="pixel-panel w-[min(1180px,100%)] max-h-[calc(100dvh-48px)] overflow-auto px-14 py-12 text-text"
-        onSubmit={handleSubmit}
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleStart('camp');
+        }}
       >
         <div className="flex items-center justify-between gap-8 mb-6 flex-wrap">
           <p className="text-sm uppercase tracking-wide text-accent-bright">{t(language, 'ngmLabel')}</p>
@@ -126,8 +136,9 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           defaultValue={defaultProfile?.constraints ?? ''}
           placeholder={t(language, 'constraintsPlaceholder')}
         />
+
         <label className="block text-base text-text-muted mb-3" htmlFor="player-skills">
-          {language === 'zh-TW' ? '我有什麼技能' : 'What skills do I have?'}
+          {t(language, 'skillsLabel')}
         </label>
         <textarea
           id="player-skills"
@@ -135,6 +146,7 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           className="w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={500}
           defaultValue={defaultProfile?.skills ?? ''}
+          placeholder={t(language, 'skillsPlaceholder')}
         />
 
         <p className="text-lg text-text-muted mb-5">{t(language, 'avatarCollection')}</p>
@@ -157,11 +169,19 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel" type="submit" name="startMode" value="camp">
+          <button
+            className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
+            type="button"
+            onClick={() => handleStart('camp')}
+          >
             {t(language, 'enterWorld')}
           </button>
-          <button className="w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel" type="submit" name="startMode" value="expedition">
-            {language === 'zh-TW' ? '派遣遠征' : 'Send on Expedition'}
+          <button
+            className="w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel"
+            type="button"
+            onClick={() => handleStart('expedition')}
+          >
+            {t(language, 'sendOnExpedition')}
           </button>
         </div>
 
@@ -174,3 +194,4 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
 }
 
 export type { PlayerProfile };
+export type { StartMode };
