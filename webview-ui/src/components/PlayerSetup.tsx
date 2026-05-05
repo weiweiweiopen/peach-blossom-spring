@@ -7,12 +7,14 @@ interface PlayerProfile {
   currentRole: string;
   mission: string;
   constraints?: string;
+  skills: string;
 }
+type StartMode = 'camp' | 'expedition';
 
 interface PlayerSetupProps {
   language: LanguageCode;
   onLanguageChange: (language: LanguageCode) => void;
-  onStart: (profile: PlayerProfile) => void;
+  onStart: (profile: PlayerProfile, mode: StartMode) => void;
   defaultProfile: PlayerProfile | null;
 }
 
@@ -37,7 +39,9 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
     const avatarTitle =
       avatarChoices.find((choice) => choice.palette === palette)?.title[language] ??
       avatarChoices[5].title[language];
-    onStart({ name, palette, avatarTitle, currentRole, mission, constraints });
+    const skills = String(form.get('skills') ?? '').trim();
+    const mode = (String(form.get('startMode') ?? 'camp') === 'expedition' ? 'expedition' : 'camp') as StartMode;
+    onStart({ name, palette, avatarTitle, currentRole, mission, constraints, skills }, mode);
   }
 
   return (
@@ -122,6 +126,16 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           defaultValue={defaultProfile?.constraints ?? ''}
           placeholder={t(language, 'constraintsPlaceholder')}
         />
+        <label className="block text-base text-text-muted mb-3" htmlFor="player-skills">
+          {language === 'zh-TW' ? '我有什麼技能' : 'What skills do I have?'}
+        </label>
+        <textarea
+          id="player-skills"
+          name="skills"
+          className="w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          maxLength={500}
+          defaultValue={defaultProfile?.skills ?? ''}
+        />
 
         <p className="text-lg text-text-muted mb-5">{t(language, 'avatarCollection')}</p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
@@ -142,12 +156,14 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           ))}
         </div>
 
-        <button
-          className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
-          type="submit"
-        >
-          {t(language, 'enterWorld')}
-        </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel" type="submit" name="startMode" value="camp">
+            {t(language, 'enterWorld')}
+          </button>
+          <button className="w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel" type="submit" name="startMode" value="expedition">
+            {language === 'zh-TW' ? '派遣遠征' : 'Send on Expedition'}
+          </button>
+        </div>
 
         <p className="mt-8 text-base text-text-muted leading-[1.45]">
           {t(language, 'movementHint')}

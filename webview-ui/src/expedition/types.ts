@@ -3,6 +3,7 @@ export interface ExpeditionAvatar {
   currentRole: string;
   mission: string;
   constraints?: string;
+  skills?: string;
 }
 
 export interface ExpeditionPersona {
@@ -13,7 +14,7 @@ export interface ExpeditionPersona {
   responses: Record<string, string>;
 }
 
-export type ExpeditionMode = 'local-mock';
+export type ExpeditionMode = 'template-simulation';
 
 export interface NpcBehaviorProfile {
   npcId: string;

@@ -79,6 +79,7 @@ function readSavedPlayerDefaults(): PlayerProfile | null {
       currentRole: saved.currentRole ?? 'Wandering researcher',
       mission: saved.mission ?? 'Find an idea worth developing with others',
       constraints: saved.constraints ?? '',
+      skills: saved.skills ?? '',
     };
   } catch {
     return null;
@@ -461,10 +462,11 @@ function App() {
     [officeState],
   );
 
-  const handlePlayerStart = useCallback((profile: PlayerProfile) => {
+  const handlePlayerStart = useCallback((profile: PlayerProfile, mode: PlayMode) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
     setPlayerDefaults(profile);
     setPlayerProfile(profile);
+    setPlayMode(mode);
   }, []);
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
@@ -568,30 +570,12 @@ function App() {
             <EditActionBar editor={editor} editorState={editorState} />
           )}
 
-          {playerProfile && !activeDialoguePersona && (
-            <div className="absolute left-6 top-6 z-47 pixel-panel px-4 py-4 flex flex-wrap gap-3 text-sm shadow-pixel">
-              <button
-                className={`${playMode === 'camp' ? 'bg-accent text-white border-accent' : 'bg-bg text-text border-border'} border px-4 py-3`}
-                type="button"
-                onClick={() => setPlayMode('camp')}
-              >
-                Enter the Camp
-              </button>
-              <button
-                className={`${playMode === 'expedition' ? 'bg-accent text-white border-accent' : 'bg-bg text-text border-border'} border px-4 py-3`}
-                type="button"
-                onClick={() => setPlayMode('expedition')}
-              >
-                Send on Expedition
-              </button>
-            </div>
-          )}
-
           {playerProfile && playMode === 'expedition' && !activeDialoguePersona && (
             <Suspense fallback={<div className="absolute right-6 top-6 z-47 pixel-panel px-6 py-5 text-text shadow-pixel">Loading expedition...</div>}>
               <ExpeditionPanel
                 avatar={playerProfile}
                 personas={personas}
+                language={selectedLanguage}
                 isOpen
                 onClose={() => setPlayMode('camp')}
               />
