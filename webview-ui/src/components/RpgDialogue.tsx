@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+  clearStoredDeepSeekApiKey,
   getInitialDeepSeekApiKey,
   writeStoredDeepSeekApiKey,
 } from '../apiKeyStorage.js';
@@ -144,7 +145,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       return;
     }
 
-    writeStoredDeepSeekApiKey(apiKey.trim());
     setError('');
     setIsLoading(true);
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
@@ -160,9 +160,15 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         },
         preferredLanguage: language,
       });
+      writeStoredDeepSeekApiKey(apiKey.trim());
       setMessages((prev) => [...prev, { speaker: persona.name, text: answer }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'DeepSeek request failed.');
+      if (err instanceof Error && err.message.includes('DeepSeek request failed (401)')) {
+        clearStoredDeepSeekApiKey();
+        setError('DeepSeek API key is invalid. Update the key and try again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'DeepSeek request failed.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -261,15 +267,15 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           </button>
         </div>
 
-        {!apiKey.trim() && (
-          <input
-            className="w-full bg-bg border border-border px-5 py-4 text-base text-text outline-none focus:border-accent-bright mb-4"
-            type="password"
-            value={apiKey}
-            onChange={(event) => setApiKey(event.target.value)}
-            placeholder="DeepSeek API key"
-          />
-        )}
+        <input
+          className="w-full bg-bg border border-border px-5 py-4 text-base text-text outline-none focus:border-accent-bright mb-4"
+          type="password"
+          value={apiKey}
+          onChange={(event) => setApiKey(event.target.value)}
+          placeholder="DeepSeek API key"
+          autoComplete="off"
+          spellCheck={false}
+        />
 
         <form onSubmit={(event) => void handleSubmit(event)} className="flex gap-4">
           <input

@@ -33,6 +33,17 @@ export function writeStoredDeepSeekApiKey(apiKey: string): void {
   }
 }
 
+export function clearStoredDeepSeekApiKey(): void {
+  try {
+    for (const key of DEEPSEEK_API_KEY_STORAGE_KEYS) {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    }
+  } catch {
+    // Ignore storage failures so the current dialogue can still continue in memory.
+  }
+}
+
 export function getInitialDeepSeekApiKey(): string {
   const stored = readStoredDeepSeekApiKey();
   if (stored) return stored;
