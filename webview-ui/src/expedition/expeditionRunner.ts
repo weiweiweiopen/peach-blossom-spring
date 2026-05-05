@@ -1,4 +1,5 @@
 import { getNpcBehaviorProfile } from './npcBehaviorProfiles.js';
+import { buildExpeditionPrompt } from './expeditionPrompt.js';
 import type { ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';
 
 const encounterTypes = ['friction circle', 'field test', 'night kitchen argument', 'archive detour', 'prototype omen'];
@@ -34,6 +35,7 @@ function interpretMission(mission: string, constraints?: string): string {
 export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
   const selected = input.personas.filter((persona) => input.selectedNpcIds.includes(persona.id));
   const expeditionNpcs = selected.length > 0 ? selected : input.personas.slice(0, 6);
+  void buildExpeditionPrompt(input.avatar, input.mission, expeditionNpcs);
   const interpretedMission = interpretMission(input.mission, input.avatar.constraints);
   const rounds = Math.max(1, Math.min(input.maxRounds, 20));
   const events: ExpeditionEvent[] = Array.from({ length: rounds }, (_, index) => {

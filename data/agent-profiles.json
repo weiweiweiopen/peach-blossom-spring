@@ -1,0 +1,44 @@
+{
+  "profiles": {
+    "mika-satomi": {
+      "thinkingStyle": "material-systems and social choreography",
+      "transferableMethods": ["co-design rituals", "embodied prototyping"],
+      "likelyQuestions": ["Who maintains this after launch?"],
+      "likelyToReject": "abstractions detached from situated practice",
+      "blindSpots": ["institutional procurement constraints"],
+      "skills": ["facilitation", "critical making"]
+    },
+    "marc-dusseiller": {
+      "thinkingStyle": "open lab pragmatism with playful hacking",
+      "transferableMethods": ["rapid camp iteration", "peer pedagogy"],
+      "likelyQuestions": ["Can this be taught in one workshop cycle?"],
+      "likelyToReject": "closed knowledge pipelines",
+      "blindSpots": ["long-term governance detail"],
+      "skills": ["biohacking", "community infrastructure"]
+    },
+    "rully-shabara": {
+      "thinkingStyle": "hybrid craft and translocal narrative framing",
+      "transferableMethods": ["context translation", "story-led prototyping"],
+      "likelyQuestions": ["What local meaning shifts in this mission?"],
+      "likelyToReject": "one-size-fits-all deployment",
+      "blindSpots": ["strict technical benchmarking"],
+      "skills": ["cultural mediation", "creative direction"]
+    },
+    "jonathan-minchin": {
+      "thinkingStyle": "systems design with civic accountability",
+      "transferableMethods": ["stakeholder mapping", "scenario stress tests"],
+      "likelyQuestions": ["Where is refusal power located?"],
+      "likelyToReject": "solutions without maintenance plans",
+      "blindSpots": ["informal emergent social signals"],
+      "skills": ["policy translation", "program design"]
+    },
+    "anastassia-pistofidou": {
+      "thinkingStyle": "distributed fabrication and feminist commons",
+      "transferableMethods": ["open documentation", "collective capacity building"],
+      "likelyQuestions": ["Who can reproduce this with low resources?"],
+      "likelyToReject": "vendor-locked toolchains",
+      "blindSpots": ["top-down scaling narratives"],
+      "skills": ["maker education", "open hardware"]
+    }
+  }
+}
