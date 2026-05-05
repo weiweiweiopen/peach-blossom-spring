@@ -292,6 +292,7 @@ function App() {
     const heldKeys = new Set<'up' | 'down' | 'left' | 'right'>();
     let isSprint = false;
     let raf = 0;
+    let nextRepeatAt = 0;
 
     const dirOf = (event: KeyboardEvent): 'up' | 'down' | 'left' | 'right' | null => {
       const k = event.key.toLowerCase();
@@ -316,14 +317,16 @@ function App() {
         return;
       }
       // Re-apply speed multiplier every frame so sprint actually takes effect during the whole hold.
-      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.8 : 1);
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.4 : 1);
 
       const ch = officeState.characters.get(PLAYER_ID);
       if (!ch) return;
       // Only push another tile when the queue is short, so direction changes feel responsive.
-      const targetMaxQueue = isSprint ? 2 : 1;
+      const targetMaxQueue = isSprint ? 1 : 0;
       if (ch.path.length > targetMaxQueue) return;
       if (heldKeys.size === 0) return;
+      const now = performance.now();
+      if (now < nextRepeatAt) return;
 
       // Vertical first, then horizontal (no diagonals).
       let dir: 'up' | 'down' | 'left' | 'right' | null = null;
@@ -336,6 +339,7 @@ function App() {
       const moved = stepOnce(dir);
       if (moved) {
         setPlayerMoveTick((t) => t + 1);
+        nextRepeatAt = now + (isSprint ? 95 : 140);
       }
     };
     raf = requestAnimationFrame(tick);
@@ -367,8 +371,11 @@ function App() {
         heldKeys.add(dir);
         if (fresh) {
           // Immediate one-tile push for tap responsiveness.
-          officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.8 : 1);
-          if (stepOnce(dir)) setPlayerMoveTick((t) => t + 1);
+          officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.4 : 1);
+          if (stepOnce(dir)) {
+            setPlayerMoveTick((t) => t + 1);
+            nextRepeatAt = performance.now() + 180;
+          }
         }
       }
     }
@@ -377,11 +384,15 @@ function App() {
       if (!event.shiftKey && !event.ctrlKey) isSprint = false;
       const dir = dirOf(event);
       if (dir) heldKeys.delete(dir);
+      if (heldKeys.size === 0) {
+        nextRepeatAt = 0;
+      }
     }
 
     function onWindowBlur() {
       heldKeys.clear();
       isSprint = false;
+      nextRepeatAt = 0;
     }
 
     window.addEventListener('keydown', onKeyDown);

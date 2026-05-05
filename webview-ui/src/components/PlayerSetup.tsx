@@ -38,15 +38,15 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
           Non-Governmental Matters
         </p>
         <h1 className="text-3xl leading-tight mb-5">
-          Peach Blossom Spring
+          桃花源─一個沒有政府的小誌
           <span className="block text-xl text-text-muted mt-2">
-            an interactive page of Non-Governmental Matters
+            Peach Blossom Spring - A non Governmental Matters
           </span>
         </h1>
         <p className="text-base leading-relaxed text-text-muted mb-10 max-w-[760px]">
-          This is a metaphor of utopia and art science society, too underground to be remembered…
+          桃花源是一個互動寓言維度，許多仙人住在此，你一舉一動都會影響這個開源科技藝術世界的發展！
           <span className="block mt-3 text-text">
-            一個太地下而被遺忘的烏托邦，14 位獨立社群組織者在這裡停留、交談、消失。
+            You can also discover how this allegorical world couples with our present reality.
           </span>
         </p>
 
