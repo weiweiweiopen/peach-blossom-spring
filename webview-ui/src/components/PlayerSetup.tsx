@@ -44,9 +44,9 @@ export function PlayerSetup({ onStart }: PlayerSetupProps) {
           </span>
         </h1>
         <p className="text-base leading-relaxed text-text-muted mb-10 max-w-[760px]">
-          桃花源是一個互動寓言維度，許多仙人住在此，你一舉一動都會影響這個開源科技藝術世界的發展！
+          桃花源是一個互動寓言維度，許多仙人住在此，你一舉一動都會影響這個自由開源科技藝術世界的發展！
           <span className="block mt-3 text-text">
-            You can also discover how this allegorical world couples with our present reality.
+            你也可以在這裡面發現這個寓言世界與目前現實世的耦合。
           </span>
         </p>
 

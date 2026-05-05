@@ -291,6 +291,7 @@ function App() {
     // Continuous smooth movement: track held keys, advance via rAF, do not rely on OS key-repeat.
     const heldKeys = new Set<'up' | 'down' | 'left' | 'right'>();
     let isSprint = false;
+    let sprintHeld = false;
     let raf = 0;
     let nextRepeatAt = 0;
 
@@ -317,7 +318,8 @@ function App() {
         return;
       }
       // Re-apply speed multiplier every frame so sprint actually takes effect during the whole hold.
-      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.4 : 1);
+      isSprint = sprintHeld;
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 3.1 : 1);
 
       const ch = officeState.characters.get(PLAYER_ID);
       if (!ch) return;
@@ -339,7 +341,7 @@ function App() {
       const moved = stepOnce(dir);
       if (moved) {
         setPlayerMoveTick((t) => t + 1);
-        nextRepeatAt = now + (isSprint ? 95 : 140);
+        nextRepeatAt = now + (isSprint ? 60 : 170);
       }
     };
     raf = requestAnimationFrame(tick);
@@ -348,7 +350,9 @@ function App() {
       const target = event.target as HTMLElement | null;
       if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
 
-      if (event.shiftKey || event.ctrlKey) isSprint = true;
+      if (event.key === 'Shift' || event.key === 'Control') {
+        sprintHeld = true;
+      }
 
       if (event.key === 'Escape') {
         setActiveDialogueId(null);
@@ -371,17 +375,20 @@ function App() {
         heldKeys.add(dir);
         if (fresh) {
           // Immediate one-tile push for tap responsiveness.
-          officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 2.4 : 1);
+          officeState.setPlayerSpeedMultiplier(PLAYER_ID, sprintHeld ? 3.1 : 1);
           if (stepOnce(dir)) {
             setPlayerMoveTick((t) => t + 1);
-            nextRepeatAt = performance.now() + 180;
+            nextRepeatAt = performance.now() + 190;
           }
         }
       }
     }
 
     function onKeyUp(event: KeyboardEvent) {
-      if (!event.shiftKey && !event.ctrlKey) isSprint = false;
+      if (event.key === 'Shift' || event.key === 'Control') {
+        sprintHeld = false;
+        isSprint = false;
+      }
       const dir = dirOf(event);
       if (dir) heldKeys.delete(dir);
       if (heldKeys.size === 0) {
@@ -392,6 +399,7 @@ function App() {
     function onWindowBlur() {
       heldKeys.clear();
       isSprint = false;
+      sprintHeld = false;
       nextRepeatAt = 0;
     }
 
