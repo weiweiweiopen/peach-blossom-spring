@@ -91,11 +91,10 @@ function extractKnowledgePoints(transcript: string): string[] {
     .filter((line) => line.length > 0 && !line.startsWith('#'));
 }
 
-// Keep a generous but safe budget for the transcript section of the prompt.
-// DeepSeek-Chat handles 64K tokens of context; ~16K characters is well under
-// that even after the rest of the prompt scaffolding, and leaves room for
-// the model's reply.
-const TRANSCRIPT_CHAR_BUDGET = 16000;
+// The shared Cloudflare proxy caps each message at 16K characters. Keep each
+// source slice small enough that the final system message stays under the cap.
+const TRANSCRIPT_CHAR_BUDGET = 5200;
+const SYSTEM_MESSAGE_CHAR_BUDGET = 14000;
 
 function trimTranscript(raw: string): string {
   if (raw.length <= TRANSCRIPT_CHAR_BUDGET) return raw;
@@ -114,6 +113,11 @@ function trimTranscript(raw: string): string {
   const enKept = en.slice(0, enBudget);
   const zhKept = zh.slice(0, zhBudget);
   return `${enKept}\n[…EN truncated]\n\n${zhKept}\n[…ZH truncated]`;
+}
+
+function trimMessage(raw: string): string {
+  if (raw.length <= SYSTEM_MESSAGE_CHAR_BUDGET) return raw;
+  return `${raw.slice(0, SYSTEM_MESSAGE_CHAR_BUDGET)}\n\n[…prompt truncated to fit proxy limit]`;
 }
 
 export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
@@ -167,6 +171,11 @@ export async function askDeepSeekPersona({
       : preferredLanguage === 'en'
         ? 'Reply in English.'
         : 'Reply in English for now.';
+  const primaryTranscript =
+    preferredLanguage === 'zh-TW'
+      ? knowledge.transcript_zh || knowledge.transcript
+      : knowledge.transcript_en || knowledge.transcript;
+  const sourceNotes = knowledge.knowledge.slice(0, 28).join('\n');
   const promptParts = [
     knowledge.systemPrompt,
     languageInstruction,
@@ -174,22 +183,18 @@ export async function askDeepSeekPersona({
     `NPC: ${knowledge.name} (${knowledge.role})`,
     `Intro: ${knowledge.intro}`,
     '',
-    '--- English transcript (authoritative source when answering in English) ---',
-    knowledge.transcript_en || '(no English transcript available)',
-    '--- end English transcript ---',
+    '--- Relevant transcript excerpt ---',
+    primaryTranscript || '(no transcript excerpt available)',
+    '--- end relevant transcript excerpt ---',
     '',
-    '--- Chinese transcript (authoritative source when answering in Chinese) ---',
-    knowledge.transcript_zh || '(no Chinese transcript available)',
-    '--- end Chinese transcript ---',
-    '',
-    '--- Combined transcript / source notes ---',
-    knowledge.transcript || '(no combined transcript available)',
-    '--- end combined transcript ---',
+    '--- Compact source notes ---',
+    sourceNotes || '(no source notes available)',
+    '--- end compact source notes ---',
     '',
     `Reference topic answers (canned fallback if transcript is silent): ${JSON.stringify(knowledge.responses)}`,
     `Related wiki links: ${JSON.stringify(knowledge.wikiLinks)}`,
   ];
-  const prompt = promptParts.join('\n');
+  const prompt = trimMessage(promptParts.join('\n'));
 
   const res = await fetch(chatApiUrl, {
     method: 'POST',
