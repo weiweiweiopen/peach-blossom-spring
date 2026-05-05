@@ -270,6 +270,20 @@ function App() {
       if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
       if (activeDialogueId !== null && event.key !== 'Escape') return;
 
+      const isMovementKey =
+        event.key === 'ArrowUp' ||
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowLeft' ||
+        event.key === 'ArrowRight' ||
+        event.key.toLowerCase() === 'w' ||
+        event.key.toLowerCase() === 'a' ||
+        event.key.toLowerCase() === 's' ||
+        event.key.toLowerCase() === 'd';
+      if (event.repeat && isMovementKey) {
+        event.preventDefault();
+        return;
+      }
+
       officeState.setPlayerSpeedMultiplier(PLAYER_ID, event.shiftKey || event.ctrlKey ? 1.8 : 1);
       let moved = false;
       if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
@@ -541,7 +555,6 @@ function App() {
             <RpgDialogue
               persona={activeDialoguePersona}
               player={playerProfile}
-              topicLabels={topicLabels}
               onClose={() => setActiveDialogueId(null)}
             />
           )}

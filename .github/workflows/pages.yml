@@ -28,6 +28,8 @@ jobs:
       - run: npm install
         working-directory: webview-ui
       - run: npm run build
+        env:
+          VITE_DEEPSEEK_API_KEY: ${{ secrets.VITE_DEEPSEEK_API_KEY }}
       - uses: actions/configure-pages@v5
         with:
           enablement: true

@@ -30,8 +30,8 @@ The current map includes:
 ## Interaction model
 
 - Proximity trigger: nearby persona prompt (`Press Space to talk`)
-- Dialogue trigger: Space opens persona topic dialogue
-- Topic response source: existing `personas.json` responses only
+- Dialogue trigger: Space opens a free-form persona chat box
+- Dialogue response source: persona knowledge JSON + DeepSeek chat completion
 - Archive trigger: enter the archive tree zone to open persona index + links
 - Zone banner: active zone name + description shown while wandering
 
@@ -43,7 +43,14 @@ The current map includes:
 
 ## Local development
 
+PBS reads `VITE_DEEPSEEK_API_KEY` at startup and writes it into browser `localStorage` as `peach_deepseek_api_key`, so local testing can use the same one-time key setup as GitHub Pages without committing a secret.
+
 ```bash
+cat > webview-ui/.env.local <<'EOF'
+VITE_DEEPSEEK_API_KEY=your_deepseek_key_here
+EOF
 npm --prefix webview-ui run build
 npm --prefix webview-ui run test
 ```
+
+For GitHub Pages, add the same value as a repository secret named `VITE_DEEPSEEK_API_KEY`; `.github/workflows/pages.yml` injects it only during the Pages build.
