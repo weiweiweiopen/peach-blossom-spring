@@ -29,18 +29,6 @@ export function hasStoredDeepSeekApiKey(): boolean {
   return readStoredDeepSeekApiKey().length > 0;
 }
 
-export function hasStoredDeepSeekApiKey(): boolean {
-  return readStoredDeepSeekApiKey().length > 0;
-}
-
-export function maskApiKeyForDebug(apiKey: string): string {
-  const trimmed = apiKey.trim();
-  if (!trimmed) return '(empty)';
-  if (trimmed.length <= 6) return '***';
-  const suffix = trimmed.slice(-4);
-  return `sk-...${suffix}`;
-}
-
 export function writeStoredDeepSeekApiKey(apiKey: string): void {
   const trimmed = apiKey.trim();
   if (!trimmed) return;
@@ -68,8 +56,8 @@ export function clearStoredDeepSeekApiKey(): void {
 export function maskApiKeyForDebug(apiKey: string): string {
   const trimmed = apiKey.trim();
   if (!trimmed) return '';
-  if (trimmed.length <= 8) return `${trimmed.slice(0, 2)}...${trimmed.slice(-2)}`;
-  return `${trimmed.slice(0, 3)}...${trimmed.slice(-4)}`;
+  if (trimmed.length <= 6) return '***';
+  return `sk-...${trimmed.slice(-4)}`;
 }
 
 export function getInitialDeepSeekApiKey(): string {
