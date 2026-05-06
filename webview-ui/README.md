@@ -1,8 +1,8 @@
-# Peach Blossom Spring (WorkAdventure-first)
+# 桃花源：可思考的生命模擬器派遣
 
 This app is now a WorkAdventure-first explorable map prototype.
 
-- World direction: Peach Blossom Spring / 桃花源 / NGM Persona Village
+- World direction: 桃花源：可思考的生命模擬器派遣 / indoor forest Peach Blossom Spring
 - Pixel Agents: visual inspiration for lively pixel NPCs only
 - Persona knowledge source: `data/personas.json` (preserved, no regeneration)
 
