@@ -547,11 +547,16 @@
     left: 10px;
     right: 10px;
     bottom: calc(58px + env(safe-area-inset-bottom));
+    z-index: 78;
     width: auto;
     max-height: 48dvh;
     overflow: auto;
     padding: 14px;
     font-size: 14px;
+  }
+
+  .question-response-panel textarea {
+    scroll-margin-bottom: calc(76px + env(safe-area-inset-bottom));
   }
   .mobile-stats-bar {
     position: fixed;
