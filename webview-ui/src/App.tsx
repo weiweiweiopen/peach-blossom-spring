@@ -153,6 +153,7 @@ function App() {
   const [worldInitialized, setWorldInitialized] = useState(false);
   const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
+  const [mobileViewportHeight, setMobileViewportHeight] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight));
   const [playMode, setPlayMode] = useState<PlayMode>('camp');
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
@@ -186,6 +187,10 @@ function App() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const mobileDragRef = useRef({ pointerId: null as number | null, clientX: 0, clientY: 0, raf: 0, nextAt: 0 });
+  const mobileControlOffsetPx = useMemo(() => {
+    if (!showMobileControls) return 0;
+    return Math.min(150, Math.max(86, mobileViewportHeight * 0.18));
+  }, [mobileViewportHeight, showMobileControls]);
 
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
   useEditorKeyboard(
@@ -225,10 +230,19 @@ function App() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(pointer: coarse), (max-width: 900px)');
-    const sync = () => setShowMobileControls(mediaQuery.matches);
+    const sync = () => {
+      setShowMobileControls(mediaQuery.matches);
+      setMobileViewportHeight(window.innerHeight);
+    };
     sync();
     mediaQuery.addEventListener('change', sync);
-    return () => mediaQuery.removeEventListener('change', sync);
+    window.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', sync);
+    return () => {
+      mediaQuery.removeEventListener('change', sync);
+      window.removeEventListener('resize', sync);
+      window.removeEventListener('orientationchange', sync);
+    };
   }, []);
 
   const findNearbyNpc = useCallback((): number | null => {
@@ -493,16 +507,17 @@ function App() {
     if (now < drag.nextAt) return;
     const playerScreen = getScreenPosition(PLAYER_ID);
     if (!playerScreen) return;
+    const controlCenterY = playerScreen.top + mobileControlOffsetPx;
     const dx = drag.clientX - playerScreen.left;
-    const dy = drag.clientY - playerScreen.top;
-    if (Math.hypot(dx, dy) < 18) return;
+    const dy = drag.clientY - controlCenterY;
+    if (Math.hypot(dx, dy) < 24) return;
     const moved = Math.abs(dx) > Math.abs(dy)
       ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
       : handleMoveCommand(0, dy > 0 ? 1 : -1);
     if (moved) {
       drag.nextAt = now + 90;
     }
-  }, [getScreenPosition, handleMoveCommand]);
+  }, [getScreenPosition, handleMoveCommand, mobileControlOffsetPx]);
 
   const handleMobilePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -534,8 +549,9 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const drag = mobileDragRef.current;
     return () => {
-      if (mobileDragRef.current.raf) cancelAnimationFrame(mobileDragRef.current.raf);
+      if (drag.raf) cancelAnimationFrame(drag.raf);
     };
   }, []);
 
@@ -706,7 +722,7 @@ function App() {
 
           {nearbyPersona && !activeDialoguePersona && promptPosition && (
             <button
-              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border"
+              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
               style={{
                 left: promptPosition.left,
                 top: promptPosition.top,
@@ -809,8 +825,14 @@ function App() {
           )}
 
           {showMobileControls && playerProfile && !activeDialoguePersona && (
-            <div className="absolute left-4 bottom-4 z-46 pointer-events-none text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
-              {t(selectedLanguage, 'movementHint')}
+            <div
+              className="mobile-thumb-guide absolute left-1/2 z-46 pointer-events-none -translate-x-1/2 text-center"
+              style={{ bottom: `calc(${Math.round(mobileControlOffsetPx).toString()}px + env(safe-area-inset-bottom))` }}
+            >
+              <div className="mx-auto mb-3 h-42 w-42 rounded-full border border-white/20 bg-black/20" />
+              <p className="text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
+                {selectedLanguage === 'zh-TW' ? '拇指放這附近拖曳移動' : 'Drag here with your thumb'}
+              </p>
             </div>
           )}
         </>

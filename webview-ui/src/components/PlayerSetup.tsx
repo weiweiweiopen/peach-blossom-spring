@@ -22,14 +22,13 @@ interface PlayerSetupProps {
 }
 
 const avatarChoices = [
-  { palette: 0, title: { 'zh-TW': '迷路外星使者', en: 'Lost alien envoy', th: 'Lost alien envoy' } },
-  { palette: 1, title: { 'zh-TW': '會發光的魚人', en: 'Luminous fishfolk', th: 'Luminous fishfolk' } },
-  { palette: 2, title: { 'zh-TW': '竹林機器精靈', en: 'Bamboo machine spirit', th: 'Bamboo machine spirit' } },
-  { palette: 3, title: { 'zh-TW': '桃花風暴巫師', en: 'Peach storm mage', th: 'Peach storm mage' } },
-  { palette: 4, title: { 'zh-TW': '笑點超低史萊姆', en: 'Low-threshold slime', th: 'Low-threshold slime' } },
-  { palette: 5, title: { 'zh-TW': '跨維度旅人', en: 'Interdimensional traveler', th: 'Interdimensional traveler' } },
+  { palette: 0, title: { 'zh-TW': 'Thronglet 藍褲小黃人', en: 'Blue-pants Thronglet', th: 'Blue-pants Thronglet' } },
+  { palette: 1, title: { 'zh-TW': 'Thronglet 粉紅電子雞', en: 'Pink Tamagotchi Thronglet', th: 'Pink Tamagotchi Thronglet' } },
+  { palette: 2, title: { 'zh-TW': 'Thronglet 綠野照護員', en: 'Green field Thronglet', th: 'Green field Thronglet' } },
+  { palette: 3, title: { 'zh-TW': 'Thronglet 紫色玩家', en: 'Purple player Thronglet', th: 'Purple player Thronglet' } },
+  { palette: 4, title: { 'zh-TW': 'Thronglet 橘色玩伴', en: 'Orange Plaything Thronglet', th: 'Orange Plaything Thronglet' } },
+  { palette: 5, title: { 'zh-TW': 'Thronglet 水藍旅人', en: 'Sky-blue Thronglet', th: 'Sky-blue Thronglet' } },
 ];
-
 export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfile }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
