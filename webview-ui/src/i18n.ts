@@ -77,7 +77,28 @@ type TranslationKey =
   | 'encounterArchiveDetour'
   | 'encounterPrototypeOmen'
   | 'abaoEncounterTitle'
-  | 'abaoEncounterHint';
+  | 'abaoEncounterHint'
+  | 'hatchEnter'
+  | 'dispatchPetOnly'
+  | 'dispatchArchive'
+  | 'localDispatchRecords'
+  | 'active'
+  | 'hibernating'
+  | 'archived'
+  | 'fieldNotes'
+  | 'petReturnedNotes'
+  | 'localOnlyNotice'
+  | 'smallCircleEvent'
+  | 'hibernationEvent'
+  | 'worldResonanceEvent'
+  | 'observerMode'
+  | 'stats'
+  | 'status'
+  | 'skill'
+  | 'sendFieldNote'
+  | 'fieldNotePlaceholder'
+  | 'zoomIn'
+  | 'zoomOut';
 
 type TranslationTable = Record<LanguageCode, Record<TranslationKey, string>>;
 
@@ -167,6 +188,27 @@ const translations: TranslationTable = {
     encounterPrototypeOmen: '原型預兆',
     abaoEncounterTitle: 'Abao 的說書人地圖場域',
     abaoEncounterHint: '靠近 Abao 時，故事場景會展開；點角色泡泡進入對話。',
+    hatchEnter: '孵化並進入世界',
+    dispatchPetOnly: '只派遣電子雞',
+    dispatchArchive: '派遣紀錄',
+    localDispatchRecords: '本機派遣紀錄',
+    active: '活躍',
+    hibernating: '休眠',
+    archived: '已封存',
+    fieldNotes: '田野筆記',
+    petReturnedNotes: '你的電子雞帶回了 {count} 則田野筆記',
+    localOnlyNotice: '本版為本機派遣紀錄；跨使用者同步需要下一版伺服器。',
+    smallCircleEvent: '一小群問題雞開始交換彼此的失敗經驗。',
+    hibernationEvent: '有些問題雞鑽進草叢休眠，等待下一次被召回。',
+    worldResonanceEvent: '桃花源短暫變成一座會彼此回應的網絡。',
+    observerMode: '無人物瀏覽模式',
+    stats: '數值',
+    status: '狀態',
+    skill: '技能',
+    sendFieldNote: '留下田野筆記',
+    fieldNotePlaceholder: '寫一則短田野筆記...',
+    zoomIn: '放大',
+    zoomOut: '縮小',
   },
   en: {
     languageLabel: 'Language',
@@ -247,6 +289,28 @@ const translations: TranslationTable = {
     encounterPrototypeOmen: 'Prototype omen',
     abaoEncounterTitle: 'Abao storyteller encounter',
     abaoEncounterHint: 'When you enter Abao’s range, the map opens into a storytelling split scene. Tap the character bubble to talk.',
+    hatchEnter: 'Hatch & Enter',
+    dispatchPetOnly: 'Dispatch Pet Only',
+    dispatchArchive: 'Dispatch Archive',
+    localDispatchRecords: 'Local Dispatch Records',
+    active: 'Active',
+    hibernating: 'Hibernating',
+    archived: 'Archived',
+    fieldNotes: 'Field Notes',
+    petReturnedNotes: 'Your pet returned with {count} field notes.',
+    localOnlyNotice: 'This version stores dispatch records locally. Cross-user sync requires a future server backend.',
+    smallCircleEvent: 'A small circle of question-pets begins exchanging failed attempts.',
+    hibernationEvent: 'Some question-pets slip into the grass to hibernate, waiting to be recalled.',
+    worldResonanceEvent: 'Peach Blossom Spring briefly becomes a network that answers itself.',
+    observerMode: 'No-avatar browse mode',
+    stats: 'Stats',
+    status: 'Status',
+    skill: 'Skill',
+    sendFieldNote: 'Leave field note',
+    fieldNotePlaceholder: 'Write a short field note...',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+
   },
   th: {
     languageLabel: 'ภาษา',
@@ -326,10 +390,32 @@ const translations: TranslationTable = {
     encounterPrototypeOmen: 'Prototype omen',
     abaoEncounterTitle: 'Abao storyteller encounter',
     abaoEncounterHint: 'When you enter Abao’s range, the map opens into a storytelling split scene. Tap the character bubble to talk.',
+    hatchEnter: 'Hatch & Enter',
+    dispatchPetOnly: 'Dispatch Pet Only',
+    dispatchArchive: 'Dispatch Archive',
+    localDispatchRecords: 'Local Dispatch Records',
+    active: 'Active',
+    hibernating: 'Hibernating',
+    archived: 'Archived',
+    fieldNotes: 'Field Notes',
+    petReturnedNotes: 'Your pet returned with {count} field notes.',
+    localOnlyNotice: 'This version stores dispatch records locally. Cross-user sync requires a future server backend.',
+    smallCircleEvent: 'A small circle of question-pets begins exchanging failed attempts.',
+    hibernationEvent: 'Some question-pets slip into the grass to hibernate, waiting to be recalled.',
+    worldResonanceEvent: 'Peach Blossom Spring briefly becomes a network that answers itself.',
+    observerMode: 'No-avatar browse mode',
+    stats: 'Stats',
+    status: 'Status',
+    skill: 'Skill',
+    sendFieldNote: 'Leave field note',
+    fieldNotePlaceholder: 'Write a short field note...',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+
   },
 };
 
-export const LANGUAGE_STORAGE_KEY = 'peach_language';
+export const LANGUAGE_STORAGE_KEY = 'pbs.settings.language';
 
 export function readStoredLanguage(): LanguageCode {
   try {

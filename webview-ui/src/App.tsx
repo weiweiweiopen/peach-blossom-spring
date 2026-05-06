@@ -7,7 +7,7 @@ import { ChangelogModal } from './components/ChangelogModal.js';
 import { DebugView } from './components/DebugView.js';
 import { EditActionBar } from './components/EditActionBar.js';
 import { MigrationNotice } from './components/MigrationNotice.js';
-import { type PlayerProfile,PlayerSetup, type StartMode } from './components/PlayerSetup.js';
+import { type PlayerProfile, PlayerSetup, type StartMode } from './components/PlayerSetup.js';
 import { SettingsModal } from './components/SettingsModal.js';
 import { Tooltip } from './components/Tooltip.js';
 import { Modal } from './components/ui/Modal.js';
@@ -15,14 +15,15 @@ import { VersionIndicator } from './components/VersionIndicator.js';
 import { useEditorActions } from './hooks/useEditorActions.js';
 import { useEditorKeyboard } from './hooks/useEditorKeyboard.js';
 import { useExtensionMessages } from './hooks/useExtensionMessages.js';
-import { type LanguageCode,readStoredLanguage, t, writeStoredLanguage } from './i18n.js';
+import { type LanguageCode, readStoredLanguage, supportedLanguages, t, writeStoredLanguage } from './i18n.js';
 import { OfficeCanvas } from './office/components/OfficeCanvas.js';
 import { EditorState } from './office/editor/editorState.js';
 import { EditorToolbar } from './office/editor/EditorToolbar.js';
 import { OfficeState } from './office/engine/officeState.js';
 import { isRotatable } from './office/layout/furnitureCatalog.js';
 import { EditTool, TILE_SIZE } from './office/types.js';
-import { appearanceToSpriteData } from './pets/generateQuestionPet.js';
+import { appearanceToSpriteData, generateQuestionPet } from './pets/generateQuestionPet.js';
+import { type PetDispatch, petStore, tagsFromText } from './pets/petStore.js';
 import { QuestionPetPreview } from './pets/QuestionPetPreview.js';
 import { isBrowserRuntime } from './runtime.js';
 import { applyPlayerNpcDialogue, applyPlayerThrongletResponse, createInitialSnapshot, createThronglet, tickSimulation } from './simulation/engine.js';
@@ -64,6 +65,7 @@ const MOBILE_THUMB_GUIDE_BOTTOM_PX = 72;
 const MOBILE_THUMB_GUIDE_DIAMETER_PX = 168;
 const archiveTreeZone = tamagotchiPeachForestZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 type PlayMode = 'camp' | 'expedition';
+type AppMode = 'interactive' | 'dispatch_observer';
 const ExpeditionPanel = lazy(() =>
   import('./components/ExpeditionPanel.js').then((module) => ({ default: module.ExpeditionPanel })),
 );
@@ -167,11 +169,25 @@ function App() {
   const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>('camp');
+  const [appMode, setAppMode] = useState<AppMode>('interactive');
+  const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() => petStore.listPets());
+  const [selectedDispatchPet, setSelectedDispatchPet] = useState<PetDispatch | null>(null);
+  const [selectedNpcInfo, setSelectedNpcInfo] = useState<Persona | null>(null);
+  const [mobileRulesOpen, setMobileRulesOpen] = useState(false);
+  const [worldNotice, setWorldNotice] = useState<string | null>(null);
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
   const [petResponse, setPetResponse] = useState('');
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
+  const activeDispatchPets = useMemo(() => dispatchedPets.filter((pet) => pet.status === 'active'), [dispatchedPets]);
+  const archiveSummary = useMemo(() => ({
+    total: dispatchedPets.length,
+    active: dispatchedPets.filter((pet) => pet.status === 'active').length,
+    hibernating: dispatchedPets.filter((pet) => pet.status === 'hibernating').length,
+    archived: dispatchedPets.filter((pet) => pet.status === 'archived').length,
+    notes: dispatchedPets.reduce((sum, pet) => sum + (pet.ownerId === petStore.getOwnerId() ? pet.interactions.length : 0), 0),
+  }), [dispatchedPets]);
 
   const handleWhatsNewDismiss = useCallback(() => {
     vscode.postMessage({ type: 'setLastSeenVersion', version: currentMajorMinor });
@@ -221,16 +237,33 @@ function App() {
   );
 
   const handleClick = useCallback((agentId: number) => {
+    const dispatchIndex = agentId - 20000;
+    if (dispatchIndex >= 0) {
+      const pet = activeDispatchPets[dispatchIndex] ?? null;
+      if (pet) {
+        setSelectedDispatchPet(pet);
+        setSelectedPet(null);
+        setSelectedNpcInfo(null);
+        return;
+      }
+    }
     const pet = simSnapshot?.thronglets.find((item) => item.characterId === agentId) ?? null;
-    if (pet) {
+    if (pet && appMode === 'interactive') {
       setSelectedPet(pet);
+      setSelectedDispatchPet(null);
+      return;
+    }
+    const persona = personas[agentId - 1] ?? null;
+    if (appMode === 'dispatch_observer' && persona) {
+      setSelectedNpcInfo(persona);
+      setSelectedDispatchPet(null);
       return;
     }
     const os = getOfficeState();
     const meta = os.subagentMeta.get(agentId);
     const focusId = meta ? meta.parentAgentId : agentId;
     vscode.postMessage({ type: 'focusAgent', id: focusId });
-  }, [simSnapshot]);
+  }, [activeDispatchPets, appMode, simSnapshot]);
 
   const officeState = getOfficeState();
   const personaByAgentId = useMemo(
@@ -284,9 +317,14 @@ function App() {
       officeState.rebuildFromLayout(createTamagotchiPeachForestLayout());
       setWorldInitialized(true);
     }
-    officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
-    officeState.cameraFollowId = PLAYER_ID;
-  }, [layoutReady, officeState, playerProfile, worldInitialized]);
+    if (appMode === 'interactive') {
+      officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
+      officeState.cameraFollowId = PLAYER_ID;
+    } else {
+      officeState.characters.delete(PLAYER_ID);
+      officeState.cameraFollowId = null;
+    }
+  }, [appMode, layoutReady, officeState, playerProfile, worldInitialized]);
 
   // 60 Hz render tick: forces React overlays (name tags, "Press Space" prompt,
   // archive-tree highlight, etc.) to recompute from the latest character.x/y
@@ -323,16 +361,16 @@ function App() {
   }, [agents, layoutReady, officeState]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || !simSnapshot) return;
+    if (!layoutReady || !playerProfile || appMode !== 'interactive' || !simSnapshot) return;
     simSnapshot.thronglets.forEach((pet, index) => {
       if (!officeState.characters.has(pet.characterId)) {
         officeState.addQuestionPet(pet.characterId, languageLabel(selectedLanguage, '問題電子雞', 'Question Pet'), appearanceToSpriteData(pet.appearance), 34 + index, 34);
       }
     });
-  }, [layoutReady, officeState, playerProfile, selectedLanguage, simSnapshot]);
+  }, [appMode, layoutReady, officeState, playerProfile, selectedLanguage, simSnapshot]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || !simSnapshot) return;
+    if (!layoutReady || !playerProfile || appMode !== 'interactive' || !simSnapshot) return;
     const interval = window.setInterval(() => {
       setSimSnapshot((current) => {
         if (!current) return current;
@@ -355,10 +393,10 @@ function App() {
       });
     }, 1800);
     return () => window.clearInterval(interval);
-  }, [layoutReady, officeState, playerProfile, simSnapshot]);
+  }, [appMode, layoutReady, officeState, playerProfile, simSnapshot]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile) return;
+    if (!layoutReady || !playerProfile || appMode !== 'interactive') return;
     const interval = window.setInterval(() => {
       const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
@@ -378,7 +416,7 @@ function App() {
       setIsNearTree(nearTree);
     }, 250);
     return () => window.clearInterval(interval);
-  }, [findNearbyNpc, layoutReady, officeState, playerProfile]);
+  }, [appMode, findNearbyNpc, layoutReady, officeState, playerProfile]);
 
   const nearbyNpcIdRef = useRef<number | null>(null);
   const activeDialogueIdRef = useRef<number | null>(null);
@@ -390,7 +428,7 @@ function App() {
   }, [activeDialogueId]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile) return;
+    if (!layoutReady || !playerProfile || appMode !== 'interactive') return;
 
     // Continuous smooth movement: track held keys, advance via rAF, do not rely on OS key-repeat.
     const heldKeys = new Set<'up' | 'down' | 'left' | 'right'>();
@@ -516,7 +554,7 @@ function App() {
       window.removeEventListener('keyup', onKeyUp);
       window.removeEventListener('blur', onWindowBlur);
     };
-  }, [layoutReady, officeState, playerProfile]);
+  }, [appMode, layoutReady, officeState, playerProfile]);
 
   const handleMoveCommand = useCallback(
     (dCol: number, dRow: number, sprint = false) => {
@@ -550,7 +588,7 @@ function App() {
 
   const handleMobilePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!showMobileControls || !playerProfile || activeDialogueIdRef.current !== null) return;
+      if (!showMobileControls || !playerProfile || appMode !== 'interactive' || activeDialogueIdRef.current !== null) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest('button, input, textarea, a, select, [data-no-mobile-drag="true"]')) return;
       event.currentTarget.setPointerCapture(event.pointerId);
@@ -562,7 +600,7 @@ function App() {
         mobileDragRef.current.raf = requestAnimationFrame(stepTowardMobilePointer);
       }
     },
-    [playerProfile, showMobileControls, stepTowardMobilePointer],
+    [appMode, playerProfile, showMobileControls, stepTowardMobilePointer],
   );
 
   const handleMobilePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
@@ -586,17 +624,78 @@ function App() {
 
   const handlePlayerStart = useCallback((profile: PlayerProfile, mode: StartMode) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
+    const created = petStore.createDispatch({
+      ownerName: profile.name,
+      displayName: profile.name ? `${profile.name} / question pet` : undefined,
+      question: profile.question || profile.mission,
+      skill: profile.skills,
+      seed: profile.petSeed ?? `${Date.now()}`,
+      isMobile: showMobileControls,
+    });
+    const allPets = petStore.listPets();
+    setDispatchedPets(allPets);
     const pet = createThronglet(profile.question || profile.mission, profile.name, PLAYER_ID, 10000);
     const npcContexts = personas.map((persona, index) => ({ id: `npc-${persona.id}`, characterId: index + 1, name: persona.name, text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(' ')}` }));
     setSimSnapshot(createInitialSnapshot([pet], npcContexts));
     setPlayerDefaults(profile);
     setPlayerProfile(profile);
-    setPlayMode(mode === 'expedition' ? 'camp' : mode);
-  }, []);
+    setAppMode(mode);
+    setPlayMode('camp');
+    setSelectedDispatchPet(created);
+  }, [showMobileControls]);
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
     setSelectedLanguage(language);
   }, []);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile) return;
+    activeDispatchPets.forEach((pet, index) => {
+      const id = 20000 + index;
+      if (officeState.characters.has(id)) return;
+      const appearance = generateQuestionPet(pet.question, pet.seed);
+      officeState.addQuestionPet(id, pet.displayName ?? languageLabel(selectedLanguage, '問題電子雞', 'Question Pet'), appearanceToSpriteData(appearance), Math.round(pet.worldPosition.x), Math.round(pet.worldPosition.y));
+    });
+  }, [activeDispatchPets, layoutReady, officeState, playerProfile, selectedLanguage]);
+
+  useEffect(() => {
+    if (!playerProfile || activeDispatchPets.length === 0) return;
+    const interval = window.setInterval(() => {
+      const pets = petStore.listPets();
+      const active = pets.filter((pet) => pet.status === 'active');
+      const avg = (key: keyof PetDispatch['stats']) => active.length ? active.reduce((sum, pet) => sum + pet.stats[key], 0) / active.length : 0;
+      if (active.length >= 12 && avg('social') > 60 && avg('learning') > 60 && avg('tension') < 70) {
+        setWorldNotice(t(selectedLanguage, 'worldResonanceEvent'));
+        active.slice(0, 4).forEach((pet) => petStore.addInteraction(pet.id, { actorType: 'system', message: t(selectedLanguage, 'worldResonanceEvent'), tags: ['world-resonance'], deltaStats: { social: 2, learning: 2 } }));
+      } else {
+        const clustered = active.filter((pet) => pet.stats.social > 50).slice(0, 3);
+        if (clustered.length >= 3 && clustered.some((pet) => tagsFromText(pet.question).some((tag) => tagsFromText(clustered[0].question).includes(tag)))) {
+          setWorldNotice(t(selectedLanguage, 'smallCircleEvent'));
+          clustered.forEach((pet) => petStore.addInteraction(pet.id, { actorType: 'system', message: t(selectedLanguage, 'smallCircleEvent'), tags: ['small-circle'], deltaStats: { learning: 5 } }));
+        }
+      }
+      setDispatchedPets(petStore.listPets());
+      window.setTimeout(() => setWorldNotice(null), 3600);
+    }, 6000);
+    return () => window.clearInterval(interval);
+  }, [activeDispatchPets.length, playerProfile, selectedLanguage]);
+
+  function handleCloseWorld() {
+    setPlayerProfile(null);
+    setActiveDialogueId(null);
+    setSelectedPet(null);
+    setSelectedDispatchPet(null);
+    setSelectedNpcInfo(null);
+    officeState.characters.delete(PLAYER_ID);
+    officeState.cameraFollowId = null;
+    setDispatchedPets(petStore.listPets());
+  }
+
+  function handleClearArchive() {
+    petStore.clearLocalDemo();
+    setDispatchedPets([]);
+  }
+
 
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
@@ -668,7 +767,7 @@ function App() {
     <div
       ref={containerRef}
       className="w-full h-full relative overflow-hidden"
-      style={{ touchAction: showMobileControls ? 'none' : undefined }}
+      style={{ touchAction: showMobileControls && appMode === 'interactive' ? 'none' : undefined }}
       onPointerDown={handleMobilePointerDown}
       onPointerMove={handleMobilePointerMove}
       onPointerUp={stopMobilePointer}
@@ -690,6 +789,24 @@ function App() {
         onZoomChange={editor.handleZoomChange}
         panRef={editor.panRef}
       />
+
+      <label className="global-language-select" data-no-mobile-drag="true">
+        <span>{t(selectedLanguage, 'languageLabel')}</span>
+        <select value={selectedLanguage} onChange={(event) => handleLanguageChange(event.target.value as LanguageCode)}>
+          {supportedLanguages.map((entry) => <option key={entry.code} value={entry.code}>{entry.label}</option>)}
+        </select>
+      </label>
+
+      {playerProfile && appMode === 'dispatch_observer' && (
+        <button className="observer-close" type="button" onClick={handleCloseWorld} aria-label={t(selectedLanguage, 'close')}>×</button>
+      )}
+
+      {playerProfile && appMode === 'dispatch_observer' && (
+        <div className="observer-zoom" data-no-mobile-drag="true">
+          <button type="button" onClick={() => editor.handleZoomChange(Math.min(4, editor.zoom + 0.25))} aria-label={t(selectedLanguage, 'zoomIn')}>+</button>
+          <button type="button" onClick={() => editor.handleZoomChange(Math.max(0.55, editor.zoom - 0.25))} aria-label={t(selectedLanguage, 'zoomOut')}>−</button>
+        </div>
+      )}
 
       {!isDebugMode ? (
         <>
@@ -752,7 +869,7 @@ function App() {
               );
             })()}
 
-          {nearbyPersona && !activeDialoguePersona && promptPosition && (
+          {appMode === 'interactive' && nearbyPersona && !activeDialoguePersona && promptPosition && (
             <button
               className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
               style={{
@@ -785,7 +902,7 @@ function App() {
 
           {shouldEnableVideoEncounter() && <></>}
 
-          {isNearAbao && playerProfile && !activeDialoguePersona && (
+          {appMode === 'interactive' && isNearAbao && playerProfile && !activeDialoguePersona && (
             <div className="absolute inset-x-0 bottom-0 h-[34vh] z-44 border-t-2 border-border bg-black/75 backdrop-blur-[1px] flex items-center justify-center">
               <div className="text-center px-10 max-w-[960px]">
                 <p className="text-lg text-accent-bright mb-3">{t(selectedLanguage, 'abaoEncounterTitle')}</p>
@@ -804,7 +921,7 @@ function App() {
             </div>
           )}
 
-          {isNearTree && !activeDialoguePersona && (
+          {appMode === 'interactive' && isNearTree && !activeDialoguePersona && (
             <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
               <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'archiveTree')}</p>
               <h1 className="text-2xl leading-none mb-3">{t(selectedLanguage, 'archiveTitle')}</h1>
@@ -840,7 +957,7 @@ function App() {
             </section>
           )}
 
-          {activeDialoguePersona && activeDialogueCharacter && playerProfile && (
+          {appMode === 'interactive' && activeDialoguePersona && activeDialogueCharacter && playerProfile && (
             <Suspense fallback={<div className="absolute inset-x-0 bottom-0 z-50 pixel-panel mx-auto mb-6 w-fit px-6 py-5 text-text shadow-pixel">Loading dialogue...</div>}>
               <RpgDialogue
                 persona={activeDialoguePersona}
@@ -861,7 +978,7 @@ function App() {
             </Suspense>
           )}
 
-          {simSnapshot && playerProfile && (
+          {simSnapshot && playerProfile && appMode === 'interactive' && (
             <section className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6" data-no-mobile-drag="true">
               <div className="flex items-center justify-between gap-4 mb-4">
                 <h2 className="text-lg">問題電子雞 SIM</h2>
@@ -880,6 +997,54 @@ function App() {
             </section>
           )}
 
+
+
+          {worldNotice && <div className="world-resonance-notice">{worldNotice}</div>}
+
+          {(selectedDispatchPet || selectedNpcInfo) && (
+            <section className="question-response-panel info-card absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
+              <button className="float-right text-xl" type="button" onClick={() => { setSelectedDispatchPet(null); setSelectedNpcInfo(null); }}>×</button>
+              {selectedDispatchPet ? (() => {
+                const appearance = generateQuestionPet(selectedDispatchPet.question, selectedDispatchPet.seed);
+                return (
+                  <>
+                    <div className="flex gap-5 items-start mb-5"><QuestionPetPreview question={selectedDispatchPet.question} appearance={appearance} size={6} /><div><p className="text-sm">{selectedDispatchPet.displayName}</p><h2 className="text-lg leading-snug">{selectedDispatchPet.question}</h2></div></div>
+                    <p className="text-sm mb-2">{t(selectedLanguage, 'skill')}: {selectedDispatchPet.skill || '—'}</p>
+                    <p className="text-sm mb-2">{t(selectedLanguage, 'status')}: {selectedDispatchPet.status}</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm mb-4">{Object.entries(selectedDispatchPet.stats).map(([key, value]) => <p key={key}>{key}: {value}</p>)}</div>
+                    <p className="text-sm mb-2">{t(selectedLanguage, 'fieldNotes')}</p>
+                    {(selectedDispatchPet.interactions ?? []).slice(0, 5).map((note) => <p key={note.id} className="text-sm border-t border-[var(--tama-ink)] py-2">{note.actorType}: {note.message} {note.tags?.join(', ')}</p>)}
+                    {appMode === 'interactive' && <><textarea className="field-note-input w-full min-h-[86px] px-4 py-3" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={t(selectedLanguage, 'fieldNotePlaceholder')} maxLength={180} /><button className="mt-3 mode-primary px-5 py-3" type="button" onClick={() => { const response = petResponse.trim(); if (!response) return; petStore.addInteraction(selectedDispatchPet.id, { actorType: 'player', actorId: playerProfile?.name, message: response, tags: ['field-note'], deltaStats: { social: 4, learning: 2, tension: -1 } }); setPetResponse(''); setDispatchedPets(petStore.listPets()); setSelectedDispatchPet(petStore.listPets().find((pet) => pet.id === selectedDispatchPet.id) ?? null); }}>{t(selectedLanguage, 'sendFieldNote')}</button></>}
+                    <p className="text-sm mt-4 opacity-80">{t(selectedLanguage, 'localOnlyNotice')}</p>
+                  </>
+                );
+              })() : selectedNpcInfo && (
+                <>
+                  <p className="text-sm">NPC</p>
+                  <h2 className="text-lg mb-3">{selectedNpcInfo.name}</h2>
+                  <p className="text-sm mb-3">{selectedNpcInfo.role}</p>
+                  <p className="text-base leading-snug">{selectedNpcInfo.intro}</p>
+                  {appMode === 'dispatch_observer' && <p className="text-sm mt-4">{t(selectedLanguage, 'observerMode')} · {t(selectedLanguage, 'localOnlyNotice')}</p>}
+                </>
+              )}
+            </section>
+          )}
+
+          {playerProfile && showMobileControls && (
+            <button className="mobile-stats-bar" type="button" onClick={() => setMobileRulesOpen(true)} data-no-mobile-drag="true">
+              <span>🐣 {archiveSummary.active}</span><span>💬 {archiveSummary.notes}</span><span>S {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.social, 0) / Math.max(1, activeDispatchPets.length))}</span><span>L {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.learning, 0) / Math.max(1, activeDispatchPets.length))}</span><span>T {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.tension, 0) / Math.max(1, activeDispatchPets.length))}</span><span>R {simSnapshot?.tick ?? 0}</span>
+            </button>
+          )}
+
+          {mobileRulesOpen && (
+            <section className="mobile-rules-drawer" data-no-mobile-drag="true">
+              <button className="float-right text-xl" type="button" onClick={() => setMobileRulesOpen(false)}>×</button>
+              <h2 className="text-lg mb-3">{t(selectedLanguage, 'dispatchArchive')}</h2>
+              <p className="text-sm mb-2">{t(selectedLanguage, 'active')}: {archiveSummary.active} · {t(selectedLanguage, 'hibernating')}: {archiveSummary.hibernating} · {t(selectedLanguage, 'archived')}: {archiveSummary.archived}</p>
+              <p className="text-sm">{t(selectedLanguage, 'localOnlyNotice')}</p>
+            </section>
+          )}
+
           {selectedPet && (
             <section className="question-response-panel absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
               <button className="float-right text-xl" type="button" onClick={() => setSelectedPet(null)}>x</button>
@@ -895,7 +1060,7 @@ function App() {
             </section>
           )}
 
-          {showMobileControls && playerProfile && !activeDialoguePersona && (
+          {showMobileControls && playerProfile && appMode === 'interactive' && !activeDialoguePersona && (
             <div
               className="mobile-thumb-guide absolute z-46 pointer-events-none -translate-x-1/2 text-center"
               style={{
@@ -1026,9 +1191,11 @@ function App() {
       {!playerProfile && (
         <PlayerSetup
           language={selectedLanguage}
-          onLanguageChange={handleLanguageChange}
           defaultProfile={playerDefaults}
           onStart={handlePlayerStart}
+          archiveSummary={archiveSummary}
+          recentPets={dispatchedPets}
+          onClearArchive={handleClearArchive}
         />
       )}
     </div>

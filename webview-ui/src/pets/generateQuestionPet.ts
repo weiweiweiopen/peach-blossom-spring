@@ -3,6 +3,7 @@ import { hashQuestion, mulberry32 } from './hashQuestion.js';
 
 export interface QuestionPetAppearance {
   seed: number;
+  seedKey: string;
   bodyType: string;
   eyeType: string;
   mouthType: string;
@@ -16,34 +17,21 @@ export interface QuestionPetAppearance {
   sprite16: number[][];
 }
 
-const bodyTypes = ['roundBlob', 'ovalEgg', 'softBlock', 'seedBody', 'teardrop', 'doubleLobed', 'antennaCreature', 'wingSide'];
-const eyeTypes = ['dot', 'sleepy', 'wide', 'mismatch'];
-const mouthTypes = ['open', 'line', 'surprised', 'none'];
-const accessoryTypes = ['questionAntenna', 'leafSprout', 'horn', 'tinyFin', 'sideEars', 'tailNub', 'floatingDot', 'haloPixel', 'blushDots'];
+const bodyTypes = ['roundBlob', 'ovalEgg', 'softBlock', 'seedBody', 'teardrop', 'doubleLobed', 'antennaCreature', 'wingSide', 'tinyMushroom', 'longBean'];
+const eyeTypes = ['dot', 'sleepy', 'wide', 'mismatch', 'spark'];
+const mouthTypes = ['open', 'line', 'surprised', 'none', 'crooked'];
+const accessoryTypes = ['questionAntenna', 'leafSprout', 'horn', 'tinyFin', 'sideEars', 'tailNub', 'floatingDot', 'haloPixel', 'blushDots', 'lopsidedEar', 'tinyCrown'];
 
 type Palette = QuestionPetAppearance['palette'];
 
-const themePalettes: Array<{ words: string[]; palette: Palette }> = [
-  { words: ['money', 'funding', 'grant', 'resource', 'budget', '補助', '資金', '錢'], palette: { primary: '#F7D94A', secondary: '#FFF2A6', accent: '#FF7A2F', outline: '#1B1B14' } },
-  { words: ['care', 'community', 'support', '照顧', '支持', '社群'], palette: { primary: '#FF8FBC', secondary: '#FFD0E4', accent: '#FFF2A6', outline: '#1B1B14' } },
-  { words: ['technology', 'tool', 'media', 'digital', '科技', '工具', '媒體'], palette: { primary: '#B7D879', secondary: '#79C7C5', accent: '#45A6FF', outline: '#253421' } },
-  { words: ['ecology', 'plant', 'multispecies', 'forest', '生態', '植物', '多物種'], palette: { primary: '#B7D879', secondary: '#FF8FBC', accent: '#FFD0E4', outline: '#253421' } },
-  { words: ['conflict', 'pressure', 'burnout', '衝突', '壓力', '疲勞'], palette: { primary: '#1B1B14', secondary: '#FF7A2F', accent: '#FF4FA3', outline: '#FFF2A6' } },
-  { words: ['philosophy', 'identity', 'ontology', '哲學', '身分', '存在'], palette: { primary: '#B7D879', secondary: '#FFF2A6', accent: '#45A6FF', outline: '#253421' } },
+const tamaPalettes: Palette[] = [
+  { primary: '#E5D327', secondary: '#ECE45C', accent: '#76A69B', outline: '#14150F' },
+  { primary: '#C4D1C2', secondary: '#A5A692', accent: '#76A69B', outline: '#14150F' },
+  { primary: '#A5A692', secondary: '#ECE45C', accent: '#76A69B', outline: '#14150F' },
 ];
 
-const fallbackPalettes: Palette[] = [
-  { primary: '#F7D94A', secondary: '#FFF2A6', accent: '#FF8FBC', outline: '#1B1B14' },
-  { primary: '#B7D879', secondary: '#79C7C5', accent: '#FF8FBC', outline: '#253421' },
-  { primary: '#FFD0E4', secondary: '#FF8FBC', accent: '#45A6FF', outline: '#1B1B14' },
-];
-
-function pickPalette(question: string, seed: number): Palette {
-  const lower = question.toLowerCase();
-  const themed = themePalettes.find((entry) => entry.words.some((word) => lower.includes(word)));
-  const base = themed?.palette ?? fallbackPalettes[seed % fallbackPalettes.length];
-  const accents = ['#FF7A2F', '#FF4FA3', '#45A6FF', '#79C7C5', '#FF8FBC'];
-  return { ...base, accent: accents[(seed >>> 3) % accents.length] };
+function pickPalette(seed: number): Palette {
+  return tamaPalettes[seed % tamaPalettes.length];
 }
 
 function inBody(bodyType: string, x: number, y: number): boolean {
@@ -56,6 +44,8 @@ function inBody(bodyType: string, x: number, y: number): boolean {
   if (bodyType === 'teardrop') return dx * dx / (14 + y) + (y - 9) * (y - 9) / 30 <= 1 && y >= 3;
   if (bodyType === 'doubleLobed') return (x - 5.5) ** 2 / 14 + (y - 8) ** 2 / 24 <= 1 || (x - 9.5) ** 2 / 14 + (y - 8) ** 2 / 24 <= 1;
   if (bodyType === 'wingSide') return dx * dx / 22 + dy * dy / 28 <= 1 || ((x === 2 || x === 13) && y >= 7 && y <= 10);
+  if (bodyType === 'tinyMushroom') return (y >= 4 && y <= 8 && dx * dx / 28 + (y - 7) ** 2 / 11 <= 1) || (x >= 6 && x <= 9 && y >= 8 && y <= 13);
+  if (bodyType === 'longBean') return dx * dx / 15 + (y - 8.5) ** 2 / 38 <= 1;
   return dx * dx / 25 + dy * dy / 30 <= 1;
 }
 
@@ -63,14 +53,19 @@ function set(grid: number[][], x: number, y: number, value: number): void {
   if (x >= 0 && x < 16 && y >= 0 && y < 16) grid[y][x] = value;
 }
 
-export function generateQuestionPet(question: string): QuestionPetAppearance {
-  const seed = hashQuestion(question || 'question-pet');
+export function makePetSeed(question: string, nonce = Date.now()): string {
+  return `${hashQuestion(`${question}|${nonce}|${Math.random()}`).toString(36)}-${nonce.toString(36)}`;
+}
+
+export function generateQuestionPet(question: string, seedKey?: string): QuestionPetAppearance {
+  const normalizedSeedKey = seedKey ?? hashQuestion(question || 'question-pet').toString(36);
+  const seed = hashQuestion(`${question || 'question-pet'}|${normalizedSeedKey}`);
   const rng = mulberry32(seed);
   const bodyType = bodyTypes[Math.floor(rng() * bodyTypes.length)];
   const eyeType = eyeTypes[Math.floor(rng() * eyeTypes.length)];
   const mouthType = mouthTypes[Math.floor(rng() * mouthTypes.length)];
   const accessoryType = accessoryTypes[Math.floor(rng() * accessoryTypes.length)];
-  const palette = pickPalette(question, seed);
+  const palette = pickPalette(seed);
   const grid = Array.from({ length: 16 }, () => Array.from({ length: 16 }, () => 0));
 
   for (let y = 0; y < 16; y++) {
@@ -86,11 +81,13 @@ export function generateQuestionPet(question: string): QuestionPetAppearance {
   for (const [x, y, h] of eyes) {
     if (eyeType === 'sleepy') { set(grid, x - 1, y, 1); set(grid, x, y, 1); }
     else if (eyeType === 'wide') { set(grid, x, y, 1); set(grid, x, y + 1, 1); }
+    else if (eyeType === 'spark') { set(grid, x, y, 1); set(grid, x - 1, y, 3); }
     else { for (let dy = 0; dy < h; dy++) set(grid, x, y + dy, 1); }
   }
   if (mouthType === 'line') { set(grid, 7, 11, 1); set(grid, 8, 11, 1); }
   if (mouthType === 'open') { set(grid, 8, 11, 1); set(grid, 8, 12, 1); }
   if (mouthType === 'surprised') { set(grid, 8, 11, 1); set(grid, 7, 11, 1); set(grid, 8, 12, 1); }
+  if (mouthType === 'crooked') { set(grid, 7, 11, 1); set(grid, 9, 12, 1); }
 
   if (accessoryType === 'questionAntenna') { set(grid, 8, 3, 1); set(grid, 9, 2, 1); set(grid, 10, 2, 1); set(grid, 9, 1, 1); }
   if (accessoryType === 'leafSprout') { set(grid, 7, 3, 3); set(grid, 8, 2, 3); set(grid, 9, 3, 3); }
@@ -101,8 +98,13 @@ export function generateQuestionPet(question: string): QuestionPetAppearance {
   if (accessoryType === 'floatingDot') { set(grid, 12, 3, 3); set(grid, 13, 2, 1); }
   if (accessoryType === 'haloPixel') { set(grid, 6, 2, 3); set(grid, 7, 2, 3); set(grid, 8, 2, 3); set(grid, 9, 2, 3); }
   if (accessoryType === 'blushDots') { set(grid, 4, 10, 3); set(grid, 11, 10, 3); }
+  if (accessoryType === 'lopsidedEar') { set(grid, 3, 6, 3); set(grid, 2, 5, 1); }
+  if (accessoryType === 'tinyCrown') { set(grid, 6, 3, 3); set(grid, 8, 2, 3); set(grid, 10, 3, 3); }
 
-  return { seed, bodyType, eyeType, mouthType, accessoryType, palette, sprite16: grid };
+  if (seed % 2 === 0) set(grid, 11, 5, 3);
+  if (seed % 5 === 0) set(grid, 4, 12, 1);
+
+  return { seed, seedKey: normalizedSeedKey, bodyType, eyeType, mouthType, accessoryType, palette, sprite16: grid };
 }
 
 export function appearanceToSpriteData(appearance: QuestionPetAppearance): SpriteData {
