@@ -51,25 +51,25 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
 
   return (
     <div
-      className="absolute inset-0 z-60 flex items-start justify-center bg-black/80 px-8 overflow-auto"
+      className="player-setup-overlay absolute inset-0 z-60 flex items-start justify-center bg-black/80 px-8 overflow-auto"
       style={{ paddingTop: 'max(24px, env(safe-area-inset-top))', paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
     >
       <form
         ref={formRef}
-        className="pixel-panel w-[min(1180px,100%)] max-h-[calc(100dvh-48px)] overflow-auto px-14 py-12 text-text"
+        className="player-setup-panel pixel-panel w-[min(1180px,100%)] max-h-[calc(100dvh-48px)] overflow-auto px-14 py-12 text-text"
         onSubmit={(event) => {
           event.preventDefault();
           handleStart('camp');
         }}
       >
-        <div className="flex items-center justify-between gap-8 mb-6 flex-wrap">
-          <p className="text-sm uppercase tracking-wide text-accent-bright">{t(language, 'ngmLabel')}</p>
-          <label className="flex items-center gap-3 text-base text-text-muted">
+        <div className="player-setup-topbar flex items-center justify-between gap-8 mb-6 flex-wrap">
+          <p className="player-setup-kicker text-sm uppercase tracking-wide text-accent-bright">{t(language, 'ngmLabel')}</p>
+          <label className="player-setup-language flex items-center gap-3 text-base text-text-muted">
             {t(language, 'languageLabel')}
             <select
               value={language}
               onChange={(event) => onLanguageChange(event.target.value as LanguageCode)}
-              className="bg-bg border border-border px-4 py-2 text-base text-text"
+              className="player-setup-select bg-bg border border-border px-4 py-2 text-base text-text"
             >
               {supportedLanguages.map((entry) => (
                 <option key={entry.code} value={entry.code}>
@@ -80,103 +80,103 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           </label>
         </div>
 
-        <h1 className="text-3xl leading-[1.15] mb-6">{t(language, 'loginTitle')}</h1>
-        <p className="text-lg leading-[1.5] text-text-muted mb-10 max-w-[900px]">
+        <h1 className="player-setup-title text-3xl leading-[1.15] mb-6">{t(language, 'loginTitle')}</h1>
+        <p className="player-setup-description text-lg leading-[1.5] text-text-muted mb-10 max-w-[900px]">
           {t(language, 'loginDescription')}
         </p>
 
-        <hr className="border-border mb-10" />
+        <hr className="player-setup-divider border-border mb-10" />
 
-        <label className="block text-base text-text-muted mb-3" htmlFor="player-name">
+        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-name">
           {t(language, 'nameLabel')}
         </label>
         <input
           id="player-name"
           name="name"
-          className="w-full bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          className="player-setup-field w-full bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={32}
           defaultValue={defaultProfile?.name ?? ''}
           placeholder={t(language, 'namePlaceholder')}
           autoFocus
         />
 
-        <label className="block text-base text-text-muted mb-3" htmlFor="player-role">
+        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-role">
           {t(language, 'roleLabel')}
         </label>
         <input
           id="player-role"
           name="currentRole"
-          className="w-full bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          className="player-setup-field w-full bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={80}
           defaultValue={defaultProfile?.currentRole ?? ''}
           placeholder={t(language, 'rolePlaceholder')}
         />
 
-        <label className="block text-base text-text-muted mb-3" htmlFor="player-mission">
+        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-mission">
           {t(language, 'missionLabel')}
         </label>
         <textarea
           id="player-mission"
           name="mission"
-          className="w-full min-h-[130px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          className="player-setup-field player-setup-textarea-large w-full min-h-[130px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={800}
           defaultValue={defaultProfile?.mission ?? ''}
           placeholder={t(language, 'missionPlaceholder')}
         />
 
-        <label className="block text-base text-text-muted mb-3" htmlFor="player-constraints">
+        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-constraints">
           {t(language, 'constraintsLabel')}
         </label>
         <textarea
           id="player-constraints"
           name="constraints"
-          className="w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          className="player-setup-field player-setup-textarea w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={500}
           defaultValue={defaultProfile?.constraints ?? ''}
           placeholder={t(language, 'constraintsPlaceholder')}
         />
 
-        <label className="block text-base text-text-muted mb-3" htmlFor="player-skills">
+        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-skills">
           {t(language, 'skillsLabel')}
         </label>
         <textarea
           id="player-skills"
           name="skills"
-          className="w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
+          className="player-setup-field player-setup-textarea w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
           maxLength={500}
           defaultValue={defaultProfile?.skills ?? ''}
           placeholder={t(language, 'skillsPlaceholder')}
         />
 
-        <p className="text-lg text-text-muted mb-5">{t(language, 'avatarCollection')}</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
+        <p className="player-setup-avatar-heading text-lg text-text-muted mb-5">{t(language, 'avatarCollection')}</p>
+        <div className="player-setup-avatar-grid grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
           {avatarChoices.map((choice) => (
             <label
               key={choice.palette}
-              className="border border-border bg-bg/70 px-6 py-6 cursor-pointer"
+              className="player-setup-avatar-choice border border-border bg-bg/70 px-6 py-6 cursor-pointer"
             >
               <input
-                className="mr-4"
+                className="player-setup-radio mr-4"
                 type="radio"
                 name="palette"
                 value={choice.palette}
                 defaultChecked={(defaultProfile?.palette ?? 0) === choice.palette}
               />
-              <span className="text-lg leading-[1.2]">{choice.title[language]}</span>
+              <span className="player-setup-avatar-title text-lg leading-[1.2]">{choice.title[language]}</span>
             </label>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="player-setup-actions grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
-            className="w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
+            className="player-setup-action w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
             type="button"
             onClick={() => handleStart('camp')}
           >
             {t(language, 'enterWorld')}
           </button>
           <button
-            className="w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel"
+            className="player-setup-action w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel"
             type="button"
             onClick={() => handleStart('expedition')}
           >
@@ -184,7 +184,7 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           </button>
         </div>
 
-        <p className="mt-8 text-base text-text-muted leading-[1.45]">
+        <p className="player-setup-hint mt-8 text-base text-text-muted leading-[1.45]">
           {t(language, 'movementHint')}
         </p>
       </form>
