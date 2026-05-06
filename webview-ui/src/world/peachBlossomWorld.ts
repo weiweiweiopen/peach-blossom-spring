@@ -52,6 +52,8 @@ const theatreColor: ColorValue = { h: 8, s: 44, b: 4, c: 18 };
 const campColor: ColorValue = { h: 15, s: 55, b: 8, c: 18 };
 const treeColor: ColorValue = { h: 88, s: 50, b: -12, c: 15 };
 const peachBloomColor: ColorValue = { h: 342, s: 48, b: 22, c: 8 };
+const petalGroundColor: ColorValue = { h: 334, s: 34, b: 28, c: 4 };
+const lcdMintColor: ColorValue = { h: 92, s: 24, b: 20, c: 8 };
 const templeColor: ColorValue = { h: 14, s: 38, b: -8, c: 24 };
 const thaiTempleColor: ColorValue = { h: 46, s: 48, b: 12, c: 24 };
 const cafeColor: ColorValue = { h: 19, s: 36, b: -5, c: 18 };
@@ -229,6 +231,8 @@ export function createPeachBlossomLayout(): OfficeLayout {
   fillRect(tiles, tileColors, cols, { col: 2, row: 20, w: 27, h: 7 }, TileType.WALL, waterColor);
   fillRect(tiles, tileColors, cols, { col: 28, row: 21, w: 7, h: 5 }, TileType.FLOOR_3, bridgeColor);
   fillRect(tiles, tileColors, cols, { col: 3, row: 17, w: 26, h: 2 }, TileType.FLOOR_3, trailColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 8, h: 3 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: 20, row: 15, w: 8, h: 3 }, TileType.FLOOR_5, petalGroundColor);
   addFurniture(furniture, 'DOUBLE_BOOKSHELF', 18, 6, { h: 170, s: 45, b: 30, c: 0 });
   addFurniture(furniture, 'DOUBLE_BOOKSHELF', 21, 6, { h: 170, s: 45, b: 30, c: 0 });
   addFurniture(furniture, 'LARGE_PLANT', 18, 9);
@@ -240,8 +244,11 @@ export function createPeachBlossomLayout(): OfficeLayout {
   addFurniture(furniture, 'PC_SIDE', 12, 10, { h: 205, s: 65, b: 5, c: 25 });
   addFurniture(furniture, 'SMALL_TABLE_SIDE', 14, 7, { h: 205, s: 70, b: 10, c: 30 });
   addFurniture(furniture, 'CLOCK', 13, 6, { h: 205, s: 70, b: 10, c: 30 });
-  for (const [col, row] of [[4, 4], [15, 4], [25, 5], [6, 15], [20, 15], [25, 16]] as const) {
+  for (const [col, row] of [[4, 4], [15, 4], [25, 5], [6, 15], [20, 15], [25, 16], [8, 3], [23, 17]] as const) {
     addFurniture(furniture, 'PLANT', col, row, peachBloomColor);
+  }
+  for (const [col, row] of [[3, 6], [11, 5], [18, 17], [27, 18]] as const) {
+    addFurniture(furniture, 'PLANT_2', col, row, peachBloomColor);
   }
   for (const [col, row] of [[4, 9], [6, 13], [13, 6], [16, 16], [26, 12]] as const) {
     addFurniture(furniture, 'COFFEE', col, row, { h: 54, s: 70, b: 8, c: 30 });
@@ -254,6 +261,8 @@ export function createPeachBlossomLayout(): OfficeLayout {
   fillRect(tiles, tileColors, cols, { col: 35, row: 5, w: 10, h: 9 }, TileType.FLOOR_5, templeColor);
   fillRect(tiles, tileColors, cols, { col: 47, row: 10, w: 12, h: 9 }, TileType.FLOOR_6, tavernColor);
   fillRect(tiles, tileColors, cols, { col: 33, row: 22, w: 28, h: 2 }, TileType.FLOOR_3, trailColor);
+  fillRect(tiles, tileColors, cols, { col: 34, row: 3, w: 24, h: 2 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: 35, row: 19, w: 24, h: 3 }, TileType.FLOOR_5, petalGroundColor);
   addFurniture(furniture, 'BOOKSHELF', 38, 5, { h: 8, s: 65, b: 5, c: 35 });
   addFurniture(furniture, 'BOOKSHELF', 40, 5, { h: 8, s: 65, b: 5, c: 35 });
   addFurniture(furniture, 'LARGE_PAINTING', 38, 7, { h: 44, s: 70, b: 14, c: 30 });
@@ -261,8 +270,11 @@ export function createPeachBlossomLayout(): OfficeLayout {
   addFurniture(furniture, 'SMALL_TABLE_FRONT', 54, 13, { h: 18, s: 42, b: -4, c: 18 });
   addFurniture(furniture, 'WOODEN_BENCH', 50, 16);
   addFurniture(furniture, 'WOODEN_BENCH', 54, 16);
-  for (const [col, row] of [[34, 4], [48, 4], [57, 5], [33, 15], [45, 18], [58, 21], [37, 24], [52, 25]] as const) {
+  for (const [col, row] of [[34, 4], [48, 4], [57, 5], [33, 15], [45, 18], [58, 21], [37, 24], [52, 25], [41, 4], [51, 20], [59, 17]] as const) {
     addFurniture(furniture, 'PLANT_2', col, row, peachBloomColor);
+  }
+  for (const [col, row] of [[36, 18], [39, 20], [43, 3], [55, 3]] as const) {
+    addFurniture(furniture, 'PLANT', col, row, peachBloomColor);
   }
   for (const [col, row] of [[42, 18], [45, 21], [55, 23]] as const) {
     addFurniture(furniture, 'SOFA_SIDE', col, row, { h: 0, s: -80, b: -18, c: 10 });
@@ -273,7 +285,9 @@ export function createPeachBlossomLayout(): OfficeLayout {
   fillRect(tiles, tileColors, cols, { col: 46, row: 36, w: 15, h: 14 }, TileType.FLOOR_6, theatreColor);
   fillRect(tiles, tileColors, cols, { col: 30, row: 52, w: 10, h: 8 }, TileType.FLOOR_8, campColor);
   fillRect(tiles, tileColors, cols, { col: 29, row: 30, w: 7, h: 6 }, TileType.FLOOR_9, treeColor);
-  fillRect(tiles, tileColors, cols, { col: 36, row: 29, w: 10, h: 8 }, TileType.FLOOR_6, theatreColor);
+  fillRect(tiles, tileColors, cols, { col: 36, row: 29, w: 10, h: 8 }, TileType.FLOOR_6, lcdMintColor);
+  fillRect(tiles, tileColors, cols, { col: 24, row: 29, w: 8, h: 3 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: 39, row: 34, w: 15, h: 3 }, TileType.FLOOR_5, petalGroundColor);
   fillRect(tiles, tileColors, cols, { col: 8, row: 31, w: 49, h: 2 }, TileType.FLOOR_3, trailColor);
   fillRect(tiles, tileColors, cols, { col: 31, row: 24, w: 2, h: 34 }, TileType.FLOOR_3, trailColor);
   addFurniture(furniture, 'LARGE_PAINTING', 9, 36, { h: 48, s: 72, b: 18, c: 35 });
@@ -300,7 +314,7 @@ export function createPeachBlossomLayout(): OfficeLayout {
     version: 1,
     cols,
     rows,
-    layoutRevision: 4,
+    layoutRevision: 5,
     tiles,
     tileColors,
     furniture,

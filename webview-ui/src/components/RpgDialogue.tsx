@@ -151,6 +151,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isWikiOpen, setIsWikiOpen] = useState(false);
+  const [areSuggestionsOpen, setAreSuggestionsOpen] = useState(false);
   const [questionSeed, setQuestionSeed] = useState(() => Math.floor(Math.random() * 1000));
   const messageLogRef = useRef<HTMLDivElement>(null);
 
@@ -176,6 +177,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setQuestion('');
     setError('');
     setIsWikiOpen(false);
+    setAreSuggestionsOpen(false);
     setQuestionSeed(Math.floor(Math.random() * 1000));
   }, [language, persona.id, persona.intro, persona.name]);
 
@@ -249,31 +251,31 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   }
 
   return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none">
-      <section className="pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col">
-        <div className="flex items-start justify-between gap-8 mb-5">
-          <div className="flex items-start gap-6">
-            <div className="flex gap-4">
+    <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
+      <section className="rpg-dialogue-panel pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col">
+        <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
+          <div className="rpg-dialogue-title flex items-start gap-6">
+            <div className="rpg-dialogue-avatars flex gap-4">
               <PixelAvatar avatar={{ palette: player.palette, hueShift: 0 }} label={player.name} />
               <PixelAvatar avatar={npcAvatar} label={persona.name} />
             </div>
             <div>
-              <p className="text-lg uppercase tracking-wide text-accent-bright mb-2">{t(language, 'wanderAndTalk')}</p>
-              <h2 className="text-2xl leading-none">{persona.name}</h2>
-              <p className="text-xl text-text-muted mt-2">{persona.role}</p>
+              <p className="rpg-dialogue-kicker text-lg uppercase tracking-wide text-accent-bright mb-2">{t(language, 'wanderAndTalk')}</p>
+              <h2 className="rpg-dialogue-name text-2xl leading-none">{persona.name}</h2>
+              <p className="rpg-dialogue-role text-xl text-text-muted mt-2">{persona.role}</p>
             </div>
           </div>
-          <button className="text-2xl text-text-muted hover:text-text" type="button" onClick={onClose}>
+          <button className="rpg-dialogue-x text-2xl text-text-muted hover:text-text" type="button" onClick={onClose}>
             x
           </button>
         </div>
 
-        <div className="flex-1 min-h-0 flex gap-6 mb-6">
-          <div ref={messageLogRef} className="flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
+        <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
+          <div ref={messageLogRef} className="rpg-dialogue-log flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
             {messages.map((message, index) => (
               <p
                 key={`${message.speaker}-${index.toString()}`}
-                className="text-xl leading-relaxed mb-6 last:mb-0"
+                className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0"
               >
                 <span className="text-accent-bright">{message.speaker}: </span>
                 {message.text}
@@ -286,7 +288,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             )}
           </div>
           {isWikiOpen && (
-            <aside className="w-[320px] shrink-0 overflow-auto bg-bg/70 border border-border px-7 py-7">
+            <aside className="rpg-dialogue-wiki w-[320px] shrink-0 overflow-auto bg-bg/70 border border-border px-7 py-7">
               <h3 className="text-lg text-accent-bright mb-4">{t(language, 'wiki')}</h3>
               {wiki.links.length === 0 ? (
                 <p className="text-base text-text-muted">{t(language, 'noWikiLinks')}</p>
@@ -310,11 +312,11 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           )}
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-3">
+        <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
           {fixedQuestions.map((item) => (
             <button
               key={item}
-              className="bg-accent/80 text-white border border-accent hover:border-accent-bright px-5 py-3 text-base"
+              className="rpg-dialogue-chip bg-accent/80 text-white border border-accent hover:border-accent-bright px-5 py-3 text-base"
               type="button"
               onClick={() => void submitPrompt(item)}
             >
@@ -323,42 +325,51 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-5">
-          {suggestedQuestions.map((item) => (
-            <button
-              key={item}
-              className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
-              type="button"
-              onClick={() => void submitPrompt(item)}
-            >
-              {item}
-            </button>
-          ))}
+        <div className="rpg-dialogue-suggestions mb-5">
           <button
-            className="bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
+            className="rpg-dialogue-more hidden cursor-pointer text-base text-accent-bright mb-3"
             type="button"
-            onClick={() => setIsWikiOpen((prev) => !prev)}
+            onClick={() => setAreSuggestionsOpen((prev) => !prev)}
           >
-            {t(language, 'wiki')}
+            {areSuggestionsOpen ? (language === 'zh-TW' ? '收起問題' : 'Hide questions') : (language === 'zh-TW' ? '更多問題' : 'More questions')}
           </button>
+          <div className={`rpg-dialogue-suggestion-list flex flex-wrap gap-3 ${areSuggestionsOpen ? 'is-open' : ''}`}>
+            {suggestedQuestions.map((item) => (
+              <button
+                key={item}
+                className="rpg-dialogue-chip bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
+                type="button"
+                onClick={() => void submitPrompt(item)}
+              >
+                {item}
+              </button>
+            ))}
+            <button
+              className="rpg-dialogue-chip bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
+              type="button"
+              onClick={() => setIsWikiOpen((prev) => !prev)}
+            >
+              {t(language, 'wiki')}
+            </button>
+          </div>
         </div>
 
-        <form onSubmit={(event) => void handleSubmit(event)} className="flex gap-4">
+        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4">
           <input
-            className="flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
+            className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder={`${persona.name} - ${t(language, 'askAnything')}`}
           />
           <button
-            className="bg-accent text-white border-2 border-accent px-10 py-5 text-xl disabled:opacity-50"
+            className="rpg-dialogue-submit bg-accent text-white border-2 border-accent px-10 py-5 text-xl disabled:opacity-50"
             type="submit"
             disabled={isLoading}
           >
             {isLoading ? '...' : t(language, 'talk')}
           </button>
           <button
-            className="bg-bg text-text border-2 border-border px-10 py-5 text-xl"
+            className="rpg-dialogue-close-secondary bg-bg text-text border-2 border-border px-10 py-5 text-xl"
             type="button"
             onClick={onClose}
           >
