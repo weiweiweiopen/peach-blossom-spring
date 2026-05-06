@@ -1,4 +1,45 @@
 {
   "intervieweeId": "jonathan-minchin",
-  "links": []
+  "links": [
+    {
+      "title": "IAAC profile",
+      "url": "https://iaac.net/people/jonathan-minchin/",
+      "description": "Jonathan Minchin profile at IAAC."
+    },
+    {
+      "title": "Fab Lab Barcelona profile",
+      "url": "https://fablabbcn.org/team/jonathan-minchin",
+      "description": "Jonathan Minchin profile at Fab Lab Barcelona."
+    },
+    {
+      "title": "Open Source Beehives / IAAC",
+      "url": "https://iaac.net/project/open-source-beehives-project/",
+      "description": "IAAC project page for Open Source Beehives."
+    },
+    {
+      "title": "ROMI",
+      "url": "https://romi-project.eu/",
+      "description": "ROMI project website."
+    },
+    {
+      "title": "OpenLab",
+      "url": "https://www.openlab.org/",
+      "description": "OpenLab website."
+    },
+    {
+      "title": "Green Fab Lab author page",
+      "url": "https://greenfablab.org/author/jon/",
+      "description": "Green Fab Lab author archive."
+    },
+    {
+      "title": "Fab Academy 2013 page",
+      "url": "https://fabacademy.org/2013/students/minchin.jonathan/index.html",
+      "description": "Fab Academy 2013 student page."
+    },
+    {
+      "title": "e-Estonia",
+      "url": "https://e-estonia.com/",
+      "description": "e-Estonia website."
+    }
+  ]
 }

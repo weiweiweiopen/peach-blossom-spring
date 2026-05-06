@@ -27,6 +27,8 @@ type TranslationKey =
   | 'archiveTree'
   | 'archiveTitle'
   | 'archiveDescription'
+  | 'archivePdfTitle'
+  | 'archiveMapTitle'
   | 'communityPortals'
   | 'wiki'
   | 'noWikiLinks'
@@ -135,8 +137,10 @@ const translations: TranslationTable = {
     pressSpaceToTalk: '點我交談',
     wanderAndTalk: '漫遊與對話',
     archiveTree: '檔案大樹',
-    archiveTitle: 'NGM 人物檔案',
-    archiveDescription: '這棵大樹保存 14 位 interviewee 與 Abao 的知識索引與外部連結。',
+    archiveTitle: 'NGM PDF 與社群地圖',
+    archiveDescription: '人物檔案與外部連結已移到各受訪者 NPC 交談視窗的 Wiki 連結下。',
+    archivePdfTitle: 'NGM PDF 嵌入電子書',
+    archiveMapTitle: 'NGM 社群地圖',
     communityPortals: '社群入口',
     wiki: 'Wiki',
     noWikiLinks: '尚未加入 wiki 連結',
@@ -236,8 +240,10 @@ const translations: TranslationTable = {
     pressSpaceToTalk: 'Tap to talk',
     wanderAndTalk: 'Wander and talk',
     archiveTree: 'Archive Tree',
-    archiveTitle: 'NGM Character Archive',
-    archiveDescription: 'The archive tree keeps the 14 interviewees and Abao linked to transcripts and references.',
+    archiveTitle: 'NGM PDF and Community Map',
+    archiveDescription: 'Interviewee dossiers and external references now live under each NPC dialogue window’s Wiki links.',
+    archivePdfTitle: 'NGM PDF embedded ebook',
+    archiveMapTitle: 'NGM community map',
     communityPortals: 'Community portals',
     wiki: 'Wiki',
     noWikiLinks: 'No wiki links yet',
@@ -337,8 +343,10 @@ const translations: TranslationTable = {
     pressSpaceToTalk: 'Tap to talk',
     wanderAndTalk: 'Wander and talk',
     archiveTree: 'Archive Tree',
-    archiveTitle: 'NGM Character Archive',
-    archiveDescription: 'The archive tree keeps the 14 interviewees and Abao linked to transcripts and references.',
+    archiveTitle: 'NGM PDF and Community Map',
+    archiveDescription: 'Interviewee dossiers and external references now live under each NPC dialogue window’s Wiki links.',
+    archivePdfTitle: 'NGM PDF embedded ebook',
+    archiveMapTitle: 'NGM community map',
     communityPortals: 'Community portals',
     wiki: 'Wiki',
     noWikiLinks: 'No wiki links yet',

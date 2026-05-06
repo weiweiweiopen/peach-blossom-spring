@@ -1,4 +1,40 @@
 {
   "intervieweeId": "andreas-siagian",
-  "links": []
+  "links": [
+    {
+      "title": "ROŠA – Regional Open Science Hardware & Art, Indonesia",
+      "url": "https://www.hackteria.org/wiki/RO%C5%A0A_-_Regional_Open_Science_Hardware_%26_Art,_Indonesia",
+      "description": "Hackteria wiki page for ROŠA in Indonesia."
+    },
+    {
+      "title": "UROŠ – Ubiquitous Rural Open Science Hardware",
+      "url": "https://www.hackteria.org/wiki/UROS",
+      "description": "Hackteria wiki page for UROŠ."
+    },
+    {
+      "title": "bonbontronix Miraheze Wiki",
+      "url": "https://bonbontronix.miraheze.org/wiki/Halaman_Utama",
+      "description": "bonbontronix community wiki."
+    },
+    {
+      "title": "Andreas Siagian personal page",
+      "url": "https://andreassiagian.wordpress.com/andreas-siagian/",
+      "description": "Personal archive page for Andreas Siagian."
+    },
+    {
+      "title": "instrumentasia",
+      "url": "https://instrumentasia.net/",
+      "description": "Instrumentasia project website."
+    },
+    {
+      "title": "Lifepatch",
+      "url": "https://lifepatch.org/",
+      "description": "Lifepatch community website."
+    },
+    {
+      "title": "GOSH",
+      "url": "https://openhardware.science/",
+      "description": "Global Open Science Hardware community."
+    }
+  ]
 }

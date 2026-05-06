@@ -32,7 +32,6 @@ import type { SimSnapshot, Thronglet } from './simulation/types.js';
 import { shouldEnableVideoEncounter } from './videoEncounter.js';
 import { vscode } from './vscodeApi.js';
 import {
-  communityLinks,
   createTamagotchiPeachForestLayout,
   isInZone,
   tamagotchiNpcPlacements,
@@ -932,36 +931,38 @@ function App() {
           )}
 
           {appMode === 'interactive' && isNearTree && !activeDialoguePersona && (
-            <section className="absolute right-12 top-12 z-43 w-[min(420px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
+            <section className="absolute right-12 top-12 z-43 w-[min(920px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
               <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'archiveTree')}</p>
               <h1 className="text-2xl leading-none mb-3">{t(selectedLanguage, 'archiveTitle')}</h1>
               <p className="text-sm text-text-muted mb-8">{t(selectedLanguage, 'archiveDescription')}</p>
-              <div className="flex flex-col gap-6">
-                {personas.map((persona) => (
-                  <details key={persona.id} className="border border-border bg-bg/70 px-7 py-5">
-                    <summary className="cursor-pointer text-sm text-accent-bright">
-                      {persona.name} / {persona.role}
-                    </summary>
-                    <p className="mt-5 text-base leading-snug text-text-muted">{persona.intro}</p>
-                    <div className="mt-5 flex flex-col gap-3">
-                      {Object.entries(persona.responses).map(([topic, answer]) => (
-                        <p key={topic} className="text-base leading-snug text-text-muted">
-                          <span className="text-accent-bright">{topicLabels[topic] ?? topic}: </span>
-                          {answer}
-                        </p>
-                      ))}
-                    </div>
-                  </details>
-                ))}
-              </div>
-              <div className="mt-8 border border-border bg-bg/70 px-7 py-5">
-                <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'communityPortals')}</p>
-                <div className="flex flex-col gap-2">
-                  {communityLinks.map((link) => (
-                    <a key={link.label} href={link.url} target="_blank" rel="noreferrer" className="text-xs text-text-muted hover:text-accent-bright">
-                      {link.label}
-                    </a>
-                  ))}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div className="border border-border bg-bg/70 px-7 py-5">
+                  <h2 className="text-lg text-accent-bright mb-4">{t(selectedLanguage, 'archivePdfTitle')}</h2>
+                  <iframe
+                    title="NGM PDF embedded ebook"
+                    src="https://archive.org/embed/ngm_20230328"
+                    width="560"
+                    height="384"
+                    frameBorder="0"
+                    allowFullScreen
+                    className="w-full min-h-[384px] bg-white border border-border"
+                  />
+                </div>
+                <div className="border border-border bg-bg/70 px-7 py-5">
+                  <h2 className="text-lg text-accent-bright mb-4">{t(selectedLanguage, 'archiveMapTitle')}</h2>
+                  <iframe
+                    title="NGM community map"
+                    src="http://u.osmfr.org/m/862535/"
+                    className="w-full min-h-[384px] bg-white border border-border"
+                  />
+                  <a
+                    href="http://u.osmfr.org/m/862535/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-block text-sm text-accent-bright hover:text-text"
+                  >
+                    http://u.osmfr.org/m/862535/
+                  </a>
                 </div>
               </div>
             </section>

@@ -1,4 +1,45 @@
 {
   "intervieweeId": "svenja-keune",
-  "links": []
+  "links": [
+    {
+      "title": "Svenja Keune website",
+      "url": "https://svenja-keune.de/",
+      "description": "Personal website."
+    },
+    {
+      "title": "Svenja Keune About",
+      "url": "https://svenja-keune.de/about/",
+      "description": "About page."
+    },
+    {
+      "title": "I.N.S.E.C.T. Summercamp / Design + Posthumanism",
+      "url": "https://designandposthumanism.org/2022/09/26/i-n-s-e-c-t-summercamp-ome-newcastle-uk/",
+      "description": "Design + Posthumanism post about I.N.S.E.C.T. Summercamp."
+    },
+    {
+      "title": "OME",
+      "url": "http://bbe.ac.uk/ome/",
+      "description": "OME website."
+    },
+    {
+      "title": "HBBE",
+      "url": "http://bbe.ac.uk/",
+      "description": "Hub for Biotechnology in the Built Environment website."
+    },
+    {
+      "title": "Connected Everything UK",
+      "url": "https://connectedeverything.ac.uk/category/funding/",
+      "description": "Connected Everything UK funding category."
+    },
+    {
+      "title": "Danish Arts Foundation / Craft and design projects",
+      "url": "https://slks.dk/english/grants/grant/craft-and-design-projects-in-denmark-and-abroad",
+      "description": "Danish Arts Foundation grant page."
+    },
+    {
+      "title": "University of Borås / Designing and Living with Organisms",
+      "url": "https://www.hb.se/en/research/research-portal/projects/designing-and-living-with-organisms-dlo/",
+      "description": "University of Borås project page."
+    }
+  ]
 }

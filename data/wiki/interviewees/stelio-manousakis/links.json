@@ -1,4 +1,25 @@
 {
   "intervieweeId": "stelio-manousakis",
-  "links": []
+  "links": [
+    {
+      "title": "Stelios Manousakis / Modular Brains",
+      "url": "https://modularbrains.net/",
+      "description": "Personal website."
+    },
+    {
+      "title": "Modern Body Festival",
+      "url": "https://modernbodyfestival.org/",
+      "description": "Modern Body Festival website."
+    },
+    {
+      "title": "Modern Body Laboratory",
+      "url": "https://modernbodyfestival.org/2016/modern-body-laboratory-2/",
+      "description": "Modern Body Laboratory page."
+    },
+    {
+      "title": "Modern Body Festival 2016 artists",
+      "url": "https://modernbodyfestival.org/2016/artists/",
+      "description": "2016 artist listing."
+    }
+  ]
 }

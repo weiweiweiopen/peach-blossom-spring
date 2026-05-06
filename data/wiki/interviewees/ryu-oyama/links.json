@@ -1,4 +1,30 @@
 {
   "intervieweeId": "ryu-oyama",
-  "links": []
+  "links": [
+    {
+      "title": "Oki Wonder Lab / Hackteria Wiki",
+      "url": "https://www.hackteria.org/wiki/Oki_Wonder_Lab",
+      "description": "Hackteria wiki page for Oki Wonder Lab."
+    },
+    {
+      "title": "HLabX Kick-Off Trip / Hackteria Wiki",
+      "url": "https://www.hackteria.org/wiki/HLabX_Kick-Off_Trip_-_Taiwan-Jogja",
+      "description": "Hackteria wiki page for HLabX Taiwan-Jogja trip."
+    },
+    {
+      "title": "OIST",
+      "url": "https://www.oist.jp/",
+      "description": "Okinawa Institute of Science and Technology website."
+    },
+    {
+      "title": "Rewilding Culture / Feral Labs Node Book",
+      "url": "https://forum.hackteria.org/t/rewilding-culture-feral-labs-node-book-1-just-fresh-from-the-press/1257",
+      "description": "Hackteria forum post for the Feral Labs Node Book."
+    },
+    {
+      "title": "Makery / Lab Kill Lab article",
+      "url": "https://www.makery.info/en/2021/01/06/english-shu-lea-cheangs-feral-lab-kill-lab-occupies-taipei/",
+      "description": "Makery article on Lab Kill Lab."
+    }
+  ]
 }
