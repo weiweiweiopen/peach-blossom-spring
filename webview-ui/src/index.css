@@ -636,3 +636,83 @@
 .rpg-dialogue-input::placeholder {
   color: color-mix(in srgb, var(--palette-ink) 54%, var(--palette-silver) 46%);
 }
+
+/* High-contrast information and text surfaces: white background, black text. */
+.pixel-panel,
+.question-hatch-panel,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer,
+.dispatch-archive,
+.archive-inbox,
+.global-language-select,
+.global-language-select select,
+.mobile-talk-prompt,
+.world-resonance-notice,
+.field-note-input,
+.rpg-dialogue-panel,
+.rpg-dialogue-log,
+.rpg-dialogue-wiki,
+.rpg-dialogue-input,
+.rpg-dialogue-close-secondary,
+.rpg-dialogue-suggestion-list .rpg-dialogue-chip,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.question-status-panel button,
+.question-response-panel button,
+.question-response-panel textarea {
+  color: #000 !important;
+  background: #fff !important;
+  border-color: #000 !important;
+}
+
+.pixel-panel *,
+.question-hatch-panel *,
+.question-status-panel *,
+.question-response-panel *,
+.mobile-rules-drawer *,
+.dispatch-archive *,
+.archive-inbox *,
+.global-language-select *,
+.mobile-talk-prompt *,
+.world-resonance-notice *,
+.rpg-dialogue-panel * {
+  color: #000 !important;
+}
+
+.pixel-panel details,
+.pixel-panel summary,
+.pixel-panel a,
+.question-status-panel button,
+.question-response-panel button,
+.rpg-dialogue-wiki a,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit {
+  background: #fff !important;
+  border-color: #000 !important;
+}
+
+.field-note-input::placeholder,
+.rpg-dialogue-input::placeholder,
+.question-response-panel textarea::placeholder {
+  color: #555 !important;
+}
+
+.question-hatch-panel input,
+.question-hatch-panel textarea,
+.question-hatch-panel select,
+.question-hatch-panel button,
+.question-status-panel input,
+.question-status-panel textarea,
+.question-status-panel select,
+.question-response-panel input,
+.question-response-panel textarea,
+.question-response-panel select,
+.mobile-rules-drawer button,
+.mobile-stats-bar,
+.observer-close,
+.observer-zoom button {
+  color: #000 !important;
+  background: #fff !important;
+  border-color: #000 !important;
+}

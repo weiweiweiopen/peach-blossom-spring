@@ -893,7 +893,7 @@ function App() {
           {nameTags.map((tag) => (
             <div
               key={tag.id}
-              className="absolute z-42 -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-white/20 bg-black/65 text-white text-base pointer-events-none"
+              className="absolute z-42 -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base pointer-events-none"
               style={{ left: tag.left, top: tag.top }}
             >
               {tag.name}
@@ -903,9 +903,9 @@ function App() {
           {shouldEnableVideoEncounter() && <></>}
 
           {appMode === 'interactive' && isNearAbao && playerProfile && !activeDialoguePersona && (
-            <div className="absolute inset-x-0 bottom-0 h-[34vh] z-44 border-t-2 border-border bg-black/75 backdrop-blur-[1px] flex items-center justify-center">
+            <div className="absolute inset-x-0 bottom-0 h-[34vh] z-44 border-t-2 border-black bg-white text-black backdrop-blur-[1px] flex items-center justify-center">
               <div className="text-center px-10 max-w-[960px]">
-                <p className="text-lg text-accent-bright mb-3">{t(selectedLanguage, 'abaoEncounterTitle')}</p>
+                <p className="text-lg text-black mb-3">{t(selectedLanguage, 'abaoEncounterTitle')}</p>
                 <div className="flex items-center justify-center gap-10 mb-4">
                   <div className="pixel-panel px-8 py-6 min-w-[220px]">
                     <p className="text-sm text-text-muted mb-2">{playerProfile.name}</p>
@@ -916,7 +916,7 @@ function App() {
                     <p className="text-2xl">Storyteller</p>
                   </div>
                 </div>
-                <p className="text-base text-text-muted">{t(selectedLanguage, 'abaoEncounterHint')}</p>
+                <p className="text-base text-black">{t(selectedLanguage, 'abaoEncounterHint')}</p>
               </div>
             </div>
           )}
