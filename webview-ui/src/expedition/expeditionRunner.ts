@@ -1,5 +1,4 @@
 import agentProfiles from '../../../data/agent-profiles.json';
-
 import { buildExpeditionPromptContext } from './expeditionPrompt.js';
 import { getNpcBehaviorProfile } from './npcBehaviorProfiles.js';
 import type { AgentProfile, ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';

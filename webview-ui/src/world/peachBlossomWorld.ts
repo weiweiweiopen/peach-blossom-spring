@@ -320,3 +320,63 @@ export function createPeachBlossomLayout(): OfficeLayout {
     furniture,
   };
 }
+
+export const tamagotchiPeachForestZones: WorldZone[] = [
+  { id: 'lcd-river', name: 'LCD River', kind: 'river', bounds: { col: 5, row: 7, w: 50, h: 12 }, description: 'A winding blue-green river where tired question pets recover energy.' },
+  { id: 'peach-grove', name: 'Peach Grove', kind: 'forest', bounds: { col: 7, row: 20, w: 20, h: 24 }, description: 'Sparse pink blossom trees and quiet petal ground.' },
+  { id: 'archive-tree', name: 'Archive Tree', kind: 'archiveTree', bounds: { col: 29, row: 27, w: 7, h: 7 }, description: 'A single tree that indexes wiki traces and NGM references.' },
+  { id: 'story-circle', name: 'Story Circle', kind: 'storyCircle', bounds: { col: 38, row: 27, w: 13, h: 10 }, description: 'An open LCD circle for temporary throngs.' },
+  { id: 'quiet-forest', name: 'Quiet Forest', kind: 'forest', bounds: { col: 8, row: 45, w: 48, h: 10 }, description: 'Open forest corners for solitude and reflection.' },
+];
+
+export const tamagotchiNpcPlacements: NpcPlacement[] = [
+  { personaId: 'andreas-siagian', col: 12, row: 24, zoneId: 'peach-grove', idleBehavior: 'wander' },
+  { personaId: 'anastassia-pistofidou', col: 23, row: 38, zoneId: 'peach-grove', idleBehavior: 'stand' },
+  { personaId: 'giulia-tomasello', col: 47, row: 31, zoneId: 'story-circle', idleBehavior: 'stand' },
+  { personaId: 'christian-dils', col: 37, row: 16, zoneId: 'lcd-river', idleBehavior: 'stand' },
+  { personaId: 'jonathan-minchin', col: 18, row: 50, zoneId: 'quiet-forest', idleBehavior: 'wander' },
+  { personaId: 'marc-dusseiller', col: 51, row: 49, zoneId: 'quiet-forest', idleBehavior: 'wander' },
+  { personaId: 'mika-satomi', col: 30, row: 14, zoneId: 'lcd-river', idleBehavior: 'fish' },
+  { personaId: 'rully-shabara', col: 11, row: 15, zoneId: 'lcd-river', idleBehavior: 'boat' },
+  { personaId: 'ryu-oyama', col: 43, row: 34, zoneId: 'story-circle', idleBehavior: 'campfire' },
+  { personaId: 'stephanie-pan', col: 30, row: 30, zoneId: 'archive-tree', idleBehavior: 'stand' },
+  { personaId: 'stelio-manousakis', col: 55, row: 35, zoneId: 'story-circle', idleBehavior: 'perform' },
+  { personaId: 'svenja-keune', col: 18, row: 27, zoneId: 'peach-grove', idleBehavior: 'sit' },
+  { personaId: 'ted-hung', col: 10, row: 49, zoneId: 'quiet-forest', idleBehavior: 'campfire' },
+  { personaId: 'tincuta-heinzel', col: 54, row: 17, zoneId: 'lcd-river', idleBehavior: 'wander' },
+  { personaId: 'abao', col: 41, row: 30, zoneId: 'story-circle', idleBehavior: 'stand' },
+];
+
+export function createTamagotchiPeachForestLayout(): OfficeLayout {
+  const cols = 64;
+  const rows = 64;
+  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_1);
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill({ h: 86, s: 32, b: 12, c: 8 });
+  const furniture: PlacedFurniture[] = [];
+
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: rows }, TileType.FLOOR_1, { h: 86, s: 32, b: 12, c: 8 });
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: 1 }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
+  fillRect(tiles, tileColors, cols, { col: 0, row: rows - 1, w: cols, h: 1 }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: 1, h: rows }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
+  fillRect(tiles, tileColors, cols, { col: cols - 1, row: 0, w: 1, h: rows }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
+
+  for (let x = 4; x < 59; x++) {
+    const y = 10 + Math.round(Math.sin(x / 5) * 4);
+    fillRect(tiles, tileColors, cols, { col: x, row: y, w: 1, h: 5 }, TileType.WALL, { h: 184, s: 48, b: 12, c: 18 });
+    fillRect(tiles, tileColors, cols, { col: x, row: y + 5, w: 1, h: 1 }, TileType.FLOOR_3, { h: 180, s: 32, b: 26, c: 8 });
+  }
+
+  fillRect(tiles, tileColors, cols, { col: 8, row: 20, w: 18, h: 18 }, TileType.FLOOR_5, { h: 334, s: 34, b: 28, c: 4 });
+  fillRect(tiles, tileColors, cols, { col: 29, row: 27, w: 7, h: 7 }, TileType.FLOOR_9, { h: 88, s: 50, b: -12, c: 15 });
+  fillRect(tiles, tileColors, cols, { col: 38, row: 27, w: 14, h: 10 }, TileType.FLOOR_6, { h: 92, s: 24, b: 20, c: 8 });
+  fillRect(tiles, tileColors, cols, { col: 6, row: 45, w: 50, h: 9 }, TileType.FLOOR_2, { h: 104, s: 34, b: 8, c: 12 });
+  fillRect(tiles, tileColors, cols, { col: 8, row: 39, w: 48, h: 2 }, TileType.FLOOR_3, { h: 32, s: 40, b: 0, c: 10 });
+  fillRect(tiles, tileColors, cols, { col: 31, row: 18, w: 2, h: 40 }, TileType.FLOOR_3, { h: 32, s: 40, b: 0, c: 10 });
+
+  for (const [col, row] of [[7, 22], [13, 21], [21, 24], [10, 31], [20, 34], [27, 45], [37, 45], [49, 44], [55, 52], [8, 52], [58, 22], [45, 20], [34, 26], [30, 27]] as const) {
+    addFurniture(furniture, (col + row) % 2 ? 'PLANT' : 'PLANT_2', col, row, { h: 334, s: 62, b: 20, c: 10 });
+  }
+  addFurniture(furniture, 'LARGE_PLANT', 31, 29, { h: 334, s: 48, b: 22, c: 8 });
+
+  return { version: 1, cols, rows, layoutRevision: 6, tiles, tileColors, furniture };
+}

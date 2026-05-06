@@ -308,3 +308,52 @@
   .rpg-dialogue-chip { padding: 7px 10px; }
   .rpg-dialogue-input { padding: 9px 10px; }
 }
+
+@layer components {
+  .tamagotchi-bg {
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255, 242, 166, 0.28) 0 3px, transparent 4px),
+      radial-gradient(circle at 75% 24%, rgba(255, 143, 188, 0.24) 0 2px, transparent 3px),
+      #253421;
+  }
+
+  .question-hatch-panel,
+  .question-status-panel,
+  .question-response-panel {
+    background: #F7D94A;
+    border: 6px solid #1B1B14;
+    box-shadow: 8px 8px 0 #D9A928, inset 0 0 0 6px #FFF2A6;
+    border-radius: 22px;
+    color: #1B1B14;
+  }
+
+  .question-hatch-device {
+    background: #FFF2A6;
+    border: 5px solid #1B1B14;
+    border-radius: 26px;
+    box-shadow: inset 0 -10px 0 rgba(217, 169, 40, 0.45);
+  }
+
+  .question-status-panel,
+  .question-response-panel {
+    background: #F7D94A;
+  }
+
+  .question-status-panel::after,
+  .question-response-panel::after,
+  .question-hatch-device::after {
+    content: '';
+    display: block;
+    width: 58px;
+    height: 22px;
+    margin: 14px auto 0;
+    border: 4px solid #1B1B14;
+    border-radius: 999px;
+    background: #FF8FBC;
+  }
+
+  .question-pet-preview span {
+    width: 100%;
+    height: 100%;
+  }
+}
