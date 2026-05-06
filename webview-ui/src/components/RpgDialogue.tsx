@@ -17,6 +17,10 @@ interface Persona {
 interface PlayerProfile {
   name: string;
   palette: number;
+  currentRole?: string;
+  mission?: string;
+  constraints?: string;
+  skills?: string;
 }
 
 interface DialogueAvatar {
@@ -75,29 +79,89 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
   );
 }
 
+function cleanPromptSnippet(text: string, language: LanguageCode): string {
+  const oneLine = text
+    .replace(/^#+\s*/, '')
+    .replace(/^Q\d+[：:]\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const withoutLatin = language === 'zh-TW' ? oneLine.replace(/[A-Za-z][A-Za-z0-9._/-]*/g, '').replace(/\s+/g, ' ') : oneLine;
+  return withoutLatin.replace(/[「」"']/g, '').trim();
+}
+
+function shorten(text: string, max: number): string {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
+}
+
+function makeFixedQuestions(language: LanguageCode): string[] {
+  return language === 'zh-TW'
+    ? ['你是誰？', '這裡是哪裡？', '你可以給我一些意見嗎？']
+    : ['Who are you?', 'Where am I?', 'Can you give me some advice?'];
+}
+
+function makeSuggestedQuestions(
+  transcript: string,
+  persona: Persona,
+  player: PlayerProfile,
+  language: LanguageCode,
+  seed: number,
+): string[] {
+  const sourceLines = transcript
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => /^##\s*Q\d+[：:]/.test(line));
+  const fallbackLines = transcript
+    .split(/[。！？.!?]\s*/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > (language === 'zh-TW' ? 18 : 40));
+  const candidates = sourceLines.length > 0 ? sourceLines : fallbackLines;
+  const mission = shorten(
+    player.mission?.trim() || (language === 'zh-TW' ? '我正在想的這個任務' : 'the mission I am working on'),
+    language === 'zh-TW' ? 34 : 72,
+  );
+  const skills = shorten(player.skills?.trim() || (language === 'zh-TW' ? '我的技能' : 'my skills'), language === 'zh-TW' ? 22 : 48);
+  const role = shorten(persona.role, language === 'zh-TW' ? 24 : 48);
+  const snippets = candidates.map((item) => cleanPromptSnippet(item, language)).filter(Boolean);
+  const offset = snippets.length > 0 ? (seed + persona.id.length) % snippets.length : 0;
+  const detail = snippets.length > 0
+    ? shorten(snippets[offset], language === 'zh-TW' ? 24 : 52)
+    : role;
+  const zhTemplates = [
+    `你說你是${role}？你對「${mission}」有什麼看法？`,
+    `如果我想用「${skills}」開始做這件事，你會建議我先避開什麼？`,
+    `你剛剛提到「${detail}」，這跟我的任務有什麼關係？`,
+    `以你的經驗，我這個想法最容易在哪裡卡住？`,
+    `如果我們才剛認識，你會先問我哪一個問題？`,
+  ];
+  const enTemplates = [
+    `You work with ${role}. What do you think about "${mission}"?`,
+    `If I start with ${skills}, what should I be careful about first?`,
+    `You mentioned "${detail}". How does that connect to my mission?`,
+    `From your experience, where might this idea get stuck?`,
+    `If we just met, what would you ask me first?`,
+  ];
+  const templates = language === 'zh-TW' ? zhTemplates : enTemplates;
+  return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
+}
+
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isWikiOpen, setIsWikiOpen] = useState(false);
+  const [questionSeed, setQuestionSeed] = useState(() => Math.floor(Math.random() * 1000));
   const messageLogRef = useRef<HTMLDivElement>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
   const wiki = useMemo(() => getWikiLinksForInterviewee(persona.id), [persona.id]);
   const suggestedQuestions = useMemo(() => {
-    const topics = Object.entries(persona.responses).filter(([, answer]) => answer.trim().length > 0);
-    const offset = persona.id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % Math.max(1, topics.length);
-    return Array.from({ length: Math.min(3, topics.length) }, (_, index) => {
-      const [, answer] = topics[(offset + index) % topics.length];
-      const clue = answer.replace(/\s+/g, ' ').trim().slice(0, language === 'zh-TW' ? 18 : 42);
-      if (language === 'zh-TW') {
-        return `你提到「${clue}」，這對我的任務有什麼提醒？`;
-      }
-      return `You mentioned "${clue}". How does that matter for my mission?`;
-    });
-  }, [language, persona.id, persona.responses, topicLabels]);
+    const transcript = language === 'zh-TW' ? knowledge.transcript_zh || knowledge.transcript_en : knowledge.transcript_en || knowledge.transcript_zh;
+    return makeSuggestedQuestions(transcript, persona, player, language, questionSeed);
+  }, [knowledge.transcript_en, knowledge.transcript_zh, language, persona, player, questionSeed]);
+  const fixedQuestions = useMemo(() => makeFixedQuestions(language), [language]);
 
   useEffect(() => {
     setMessages([
@@ -112,6 +176,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setQuestion('');
     setError('');
     setIsWikiOpen(false);
+    setQuestionSeed(Math.floor(Math.random() * 1000));
   }, [language, persona.id, persona.intro, persona.name]);
 
   useEffect(() => {
@@ -243,6 +308,19 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               )}
             </aside>
           )}
+        </div>
+
+        <div className="flex flex-wrap gap-3 mb-3">
+          {fixedQuestions.map((item) => (
+            <button
+              key={item}
+              className="bg-accent/80 text-white border border-accent hover:border-accent-bright px-5 py-3 text-base"
+              type="button"
+              onClick={() => void submitPrompt(item)}
+            >
+              {item}
+            </button>
+          ))}
         </div>
 
         <div className="flex flex-wrap gap-3 mb-5">

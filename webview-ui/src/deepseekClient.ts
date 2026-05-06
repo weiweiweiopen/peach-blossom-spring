@@ -1,6 +1,7 @@
 // Knowledge layer (Pre-WorkAdventure design):
-// Build a per-persona KnowledgeBase from data/personas.json + docs/transcripts/*.md
-// at build time (Vite raw glob), then feed it to DeepSeek as the system prompt.
+// Build a per-persona KnowledgeBase from data/personas.json + language-specific
+// docs/transcripts_en and docs/transcripts_zh markdown at build time, then feed
+// the current language slice to DeepSeek as the system prompt.
 //
 // The transcripts are bilingual NGM interview Q&A in Markdown; this module
 // keeps the prompt well-formed by:
@@ -19,7 +20,6 @@ interface KnowledgeBase {
   systemPrompt: string;
   intro: string;
   knowledge: string[];
-  transcript: string;
   transcript_en: string;
   transcript_zh: string;
   wikiLinks: WikiLink[];
@@ -41,14 +41,7 @@ interface PersonaShape {
   responses: Record<string, string>;
 }
 
-// Eagerly inline every transcript markdown at build time.
-// Path is relative to this file: webview-ui/src → docs/transcripts is ../../docs/transcripts
-const transcriptModules = import.meta.glob('../../docs/transcripts/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>;
-
+// Eagerly inline the language-specific transcript markdown at build time.
 const transcriptEnModules = import.meta.glob('../../docs/transcripts_en/*.md', {
   query: '?raw',
   import: 'default',
@@ -61,15 +54,8 @@ const transcriptZhModules = import.meta.glob('../../docs/transcripts_zh/*.md', {
   eager: true,
 }) as Record<string, string>;
 
-const transcriptByPersonaId: Record<string, string> = {};
 const transcriptEnByPersonaId: Record<string, string> = {};
 const transcriptZhByPersonaId: Record<string, string> = {};
-for (const [filepath, contents] of Object.entries(transcriptModules)) {
-  const match = /\/([^/]+)\.md$/.exec(filepath);
-  if (match) {
-    transcriptByPersonaId[match[1]] = contents;
-  }
-}
 for (const [filepath, contents] of Object.entries(transcriptEnModules)) {
   const match = /\/([^/]+)\.md$/.exec(filepath);
   if (match) {
@@ -121,13 +107,11 @@ function trimMessage(raw: string): string {
 }
 
 export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
-  const transcriptRaw = transcriptByPersonaId[persona.id] ?? '';
   const transcriptEnRaw = transcriptEnByPersonaId[persona.id] ?? '';
   const transcriptZhRaw = transcriptZhByPersonaId[persona.id] ?? '';
-  const transcript = trimTranscript(transcriptRaw);
   const transcript_en = trimTranscript(transcriptEnRaw);
   const transcript_zh = trimTranscript(transcriptZhRaw);
-  const knowledge = extractKnowledgePoints(transcript);
+  const knowledge = extractKnowledgePoints(transcript_en || transcript_zh);
   const systemPrompt = [
     `You are role-playing as ${persona.name} (${persona.role}) inside a Peach Blossom Spring / 桃花源 RPG dialogue scene.`,
     'Speak in first person, with warmth and concrete detail. Quote or paraphrase from the supplied interview transcript whenever a player question touches material it covers; cite the relevant Q only when natural.',
@@ -142,7 +126,6 @@ export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
     intro: persona.intro,
     systemPrompt,
     knowledge,
-    transcript,
     transcript_en,
     transcript_zh,
     wikiLinks: getWikiLinksForInterviewee(persona.id).links,
@@ -173,8 +156,8 @@ export async function askDeepSeekPersona({
         : 'Reply in English for now.';
   const primaryTranscript =
     preferredLanguage === 'zh-TW'
-      ? knowledge.transcript_zh || knowledge.transcript
-      : knowledge.transcript_en || knowledge.transcript;
+      ? knowledge.transcript_zh || knowledge.transcript_en
+      : knowledge.transcript_en || knowledge.transcript_zh;
   const sourceNotes = knowledge.knowledge.slice(0, 28).join('\n');
   const promptParts = [
     knowledge.systemPrompt,

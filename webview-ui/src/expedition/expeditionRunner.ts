@@ -1,12 +1,22 @@
 import agentProfiles from '../../../data/agent-profiles.json';
 
-import { buildExpeditionPromptContext, EXPEDITION_REASONING_RULES } from './expeditionPrompt.js';
+import { buildExpeditionPromptContext } from './expeditionPrompt.js';
 import { getNpcBehaviorProfile } from './npcBehaviorProfiles.js';
 import type { AgentProfile, ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';
 
 const encounterTypes = ['friction circle', 'field test', 'night kitchen argument', 'archive detour', 'prototype omen'];
 const topicOrder = ['camp', 'independent', 'artScience', 'sustainability', 'nomadic', 'funding', 'exchange'];
 const agentProfileMap = agentProfiles as Record<string, AgentProfile>;
+const transcriptZhModules = import.meta.glob('../../../docs/transcripts_zh/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+const transcriptZhByPersonaId: Record<string, string> = {};
+for (const [filepath, contents] of Object.entries(transcriptZhModules)) {
+  const match = /\/([^/]+)\.md$/.exec(filepath);
+  if (match) transcriptZhByPersonaId[match[1]] = contents;
+}
 
 function localizeEncounterType(encounterType: string, language: RunExpeditionInput['language']): string {
   const labels: Record<string, string> = {
@@ -19,8 +29,8 @@ function localizeEncounterType(encounterType: string, language: RunExpeditionInp
   return labels[encounterType] ?? encounterType;
 }
 
-function chooseTopic(mission: string, round: number): string {
-  const q = mission.toLowerCase();
+function chooseTopic(mission: string, round: number, skills?: string, constraints?: string): string {
+  const q = [mission, skills, constraints].filter(Boolean).join(' ').toLowerCase();
   const keywordTopics: Array<[string, string[]]> = [
     ['funding', ['fund', 'grant', 'money', '資金', '補助']],
     ['sustainability', ['sustain', 'long-term', 'community', '永續', '社群']],
@@ -34,9 +44,51 @@ function chooseTopic(mission: string, round: number): string {
   return matched?.[0] ?? topicOrder[round % topicOrder.length];
 }
 
+function localizeTopic(topic: string): string {
+  const labels: Record<string, string> = {
+    camp: '營隊與共同生活',
+    independent: '獨立實作與自治',
+    artScience: '藝術科技合作',
+    sustainability: '永續與維護',
+    nomadic: '移動研究',
+    funding: '資金與支持',
+    exchange: '國際交流',
+  };
+  return labels[topic] ?? '任務脈絡';
+}
+
 function summarize(text: string, max = 170): string {
   const trimmed = text.replace(/\s+/g, ' ').trim();
   return trimmed.length > max ? `${trimmed.slice(0, max)}...` : trimmed;
+}
+
+function removeLatinText(text: string): string {
+  return text
+    .replace(/[A-Za-z][A-Za-z0-9._/-]*/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([，。！？：；、])/g, '$1')
+    .trim();
+}
+
+function summarizeChineseTranscript(personaId: string, roundIndex: number): string {
+  const transcript = transcriptZhByPersonaId[personaId] ?? '';
+  const paragraphs = transcript
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 30 && !line.startsWith('#'));
+  const raw = paragraphs.length > 0 ? paragraphs[roundIndex % paragraphs.length] : '';
+  return removeLatinText(summarize(raw, 120)) || '這段訪談提醒我們，任務必須先回到具體的人、場域、責任與後續維護。';
+}
+
+function trimContext(text: string, fallback: string, max = 42): string {
+  const cleaned = text.replace(/\s+/g, ' ').trim();
+  if (!cleaned) return fallback;
+  return cleaned.length > max ? `${cleaned.slice(0, max).trim()}...` : cleaned;
+}
+
+function pickByRound<T>(items: T[], roundIndex: number, personaId: string): T {
+  const offset = personaId.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return items[(roundIndex + offset) % items.length];
 }
 
 function interpretMission(mission: string, language: RunExpeditionInput['language'], constraints?: string): string {
@@ -56,42 +108,82 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
   const interpretedMission = interpretMission(input.mission, input.language, input.avatar.constraints);
   const isChinese = input.language === 'zh-TW';
   const playerSkills = input.avatar.skills?.trim() || phrase(input.language, '泛用型好奇心', 'generalist curiosity');
+  const missionBrief = trimContext(input.mission, phrase(input.language, '未命名任務', 'unnamed mission'), isChinese ? 46 : 90);
+  const constraintBrief = trimContext(input.avatar.constraints ?? '', phrase(input.language, '沒有明確限制', 'no explicit constraints'), isChinese ? 40 : 90);
   const rounds = Math.max(1, Math.min(input.maxRounds, 20));
   const events: ExpeditionEvent[] = Array.from({ length: rounds }, (_, index) => {
     const round = index + 1;
     const persona = expeditionNpcs[index % expeditionNpcs.length];
     const profile = getNpcBehaviorProfile(persona);
-    const topic = chooseTopic(input.mission, index);
-    const response = persona.responses[topic] ?? persona.responses.camp ?? persona.intro;
+    const topic = chooseTopic(input.mission, index, input.avatar.skills, input.avatar.constraints);
+    const displayTopic = isChinese ? localizeTopic(topic) : topic;
+    const response = isChinese
+      ? summarizeChineseTranscript(persona.id, index)
+      : persona.responses[topic] ?? persona.responses.camp ?? persona.intro;
     const reasoning = buildExpeditionPromptContext({
       avatar: input.avatar,
       persona,
       agentProfile: agentProfileMap[persona.id],
       behaviorProfile: profile,
       language: input.language,
-      topic,
-      sourceResponse: summarize(response, 150),
+      topic: displayTopic,
+      sourceResponse: isChinese ? response : summarize(response, 150),
+      mission: input.mission,
+      constraints: input.avatar.constraints,
     });
+    const challengeTemplates = isChinese
+      ? [
+        `先不要擴張。${persona.name} 會問：「${missionBrief}」真的需要現在做嗎？玩家技能「${playerSkills}」能不能先證明一個最小版本？`,
+        `${persona.name} 把限制放到桌上：${constraintBrief}。如果這個限制不能被尊重，任務就還不應該上場。`,
+        `現場有人質疑：這件事會不會只是把「${playerSkills}」包成好看的提案？請指出誰會受益、誰能拒絕。`,
+        `${persona.name} 要求把任務翻成一句可執行的測試，而不是再引用訪談語錄。`,
+      ]
+      : [
+        `${persona.name} asks whether "${missionBrief}" really needs to scale now, or whether ${playerSkills} can prove one smallest useful version first.`,
+        `${persona.name} puts the constraint on the table: ${constraintBrief}. If the mission cannot respect it, it is not ready for the field.`,
+        `The room questions whether ${playerSkills} is becoming presentation language instead of practice. Name who benefits and who can refuse.`,
+        `${persona.name} asks for one executable field test, not another transcript quotation.`,
+      ];
+    const leadTemplates = isChinese
+      ? [
+        `把「${missionBrief}」拆成一個 48 小時內能被看見、被拒絕、被修正的小測試。`,
+        `找一位會受限制條件影響的人，先讓他改寫任務規則。限制是：${constraintBrief}。`,
+        `用玩家技能「${playerSkills}」做一份可交給別人的材料：地圖、清單、SOP、願望牆或訪談問題。`,
+        `下一輪不要問角色贊不贊成，改問他會刪掉任務中的哪一部分。`,
+      ]
+      : [
+        `Break "${missionBrief}" into one 48-hour test that can be seen, refused, and revised.`,
+        `Find one person affected by the constraint and let them rewrite the mission rule first: ${constraintBrief}.`,
+        `Use ${playerSkills} to make something another person can hold: a map, checklist, SOP, wish wall, or interview prompt.`,
+        `Next round, do not ask whether the NPC agrees. Ask what part of the mission they would delete.`,
+      ];
+    const nextQuestionTemplates = isChinese
+      ? [
+        `如果只能用「${playerSkills}」做第一步，哪個結果明天就能驗證？`,
+        `「${missionBrief}」最需要誰先說不？`,
+        `哪一個限制最可能讓這個任務變得更準，而不是更小？`,
+        `${persona.name} 的提醒要怎麼改寫成玩家下一個行動？`,
+      ]
+      : [
+        `If the first step can only use ${playerSkills}, what result could be tested tomorrow?`,
+        `Who needs the power to say no to "${missionBrief}" first?`,
+        `Which constraint could make the mission more precise rather than merely smaller?`,
+        `How should ${persona.name}'s warning rewrite the player's next action?`,
+      ];
     const contribution = isChinese
-      ? `文本記憶：${reasoning.sourceGroundedMemory} 謹慎推演：${reasoning.cautiousExtrapolation} 試探提案：${reasoning.speculativeProposal}`
+      ? `文本記憶：${reasoning.sourceGroundedMemory}\n任務連接：${reasoning.cautiousExtrapolation}\n現場提案：${reasoning.speculativeProposal}`
       : `Source-grounded memory: ${reasoning.sourceGroundedMemory} Cautious extrapolation: ${reasoning.cautiousExtrapolation} Speculative proposal: ${reasoning.speculativeProposal}`;
     return {
       round,
       npcId: persona.id,
       encounterType: localizeEncounterType(encounterTypes[index % encounterTypes.length], input.language),
       npcContribution: contribution,
-      challengeToUser: isChinese
-        ? `${profile.disagreementStyle} 可能反對：${profile.likelyToReject}。技能檢查：${playerSkills} 在真實壓力下如何派上用場？`
-        : `${profile.disagreementStyle} Likely objection: ${profile.likelyToReject} Player-skill check: how will ${playerSkills} help under real pressure?`,
-      newLead: isChinese
-        ? `追蹤 ${profile.likelyToNotice}。用這條規則重讀：${EXPEDITION_REASONING_RULES}`
-        : `Follow ${profile.likelyToNotice}. Re-read through this rule: ${EXPEDITION_REASONING_RULES}`,
+      challengeToUser: pickByRound(challengeTemplates, index, persona.id),
+      newLead: pickByRound(leadTemplates, index + 1, persona.id),
       avatarBeliefUpdate: isChinese
-        ? `${input.avatar.name} 透過 ${playerSkills}，把任務從「讓想法有說服力」更新成「讓想法對 ${profile.perspective} 負責」。`
+        ? `${input.avatar.name} 暫時把任務更新成：用「${playerSkills}」在「${constraintBrief}」內驗證「${missionBrief}」的第一個可行接觸點。`
         : `${input.avatar.name} updates the mission from "make the idea convincing" toward "make the idea accountable to ${profile.perspective}" through skills in ${playerSkills}.`,
-      nextQuestion: isChinese
-        ? `如果任務必須面對「${profile.bias.toLowerCase()}」，並真正依靠 ${playerSkills}，會改變什麼？`
-        : `What would change if ${profile.bias.toLowerCase()} and the mission leaned on ${playerSkills}?`,
+      nextQuestion: pickByRound(nextQuestionTemplates, index + 2, persona.id),
     };
   });
 
@@ -101,7 +193,7 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     keyEncounters: events.slice(0, 6).map((event) => {
       const persona = input.personas.find((item) => item.id === event.npcId);
       return input.language === 'zh-TW'
-        ? `第 ${event.round} 回合，${persona?.name ?? event.npcId}：${event.encounterType} -> ${event.npcContribution}`
+        ? `第 ${event.round} 回合，${persona?.name ?? event.npcId}：${event.encounterType}。${event.npcContribution}`
         : `Round ${event.round}, ${persona?.name ?? event.npcId}: ${event.encounterType} -> ${event.npcContribution}`;
     }),
     strongestEmergentDirection: isChinese

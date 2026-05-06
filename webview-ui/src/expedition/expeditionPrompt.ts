@@ -16,6 +16,8 @@ interface ExpeditionPromptContextInput {
   language: 'zh-TW' | 'en' | 'th';
   topic: string;
   sourceResponse: string;
+  mission: string;
+  constraints?: string;
 }
 
 function joinOrFallback(values: string[] | undefined, fallback: string): string {
@@ -30,21 +32,29 @@ export function buildExpeditionPromptContext({
   language,
   topic,
   sourceResponse,
+  mission,
+  constraints,
 }: ExpeditionPromptContextInput): { sourceGroundedMemory: string; cautiousExtrapolation: string; speculativeProposal: string } {
   const isChinese = language === 'zh-TW';
   const playerSkills = avatar.skills?.trim() || (isChinese ? '泛用型好奇心' : 'generalist curiosity');
-  const transferableMethods = joinOrFallback(agentProfile?.transferableMethods, behaviorProfile.expertise);
-  const likelyQuestions = joinOrFallback(agentProfile?.likelyQuestions, behaviorProfile.likelyToNotice);
-  const profileSkills = joinOrFallback(agentProfile?.skills, behaviorProfile.expertise);
+  const missionText = mission.trim() || avatar.mission.trim() || (isChinese ? '尚未命名的任務' : 'an unnamed mission');
+  const constraintText = constraints?.trim() || avatar.constraints?.trim();
   if (isChinese) {
     return {
       sourceGroundedMemory: `${persona.name} 記得：${sourceResponse}`,
-      cautiousExtrapolation: `${persona.name} 把這段記憶謹慎推到「${topic}」，方法是借用 ${transferableMethods}，並認真看待玩家的技能：${playerSkills}。`,
-      speculativeProposal: `${persona.name} 提議一個由 ${profileSkills} 形塑的下一步實驗，同時追問：${likelyQuestions}。`,
+      cautiousExtrapolation: `${persona.name} 把這段記憶推到「${topic}」時，先檢查它能不能服務玩家的任務：「${missionText}」，而不是只重複自己的訪談。`,
+      speculativeProposal: constraintText
+        ? `${persona.name} 建議用「${playerSkills}」做一個小步驟，並先通過限制條件：「${constraintText}」。`
+        : `${persona.name} 建議用「${playerSkills}」做一個小步驟，讓任務先被現場質疑一次。`,
     };
   }
+  const transferableMethods = joinOrFallback(agentProfile?.transferableMethods, behaviorProfile.expertise);
+  const likelyQuestions = joinOrFallback(agentProfile?.likelyQuestions, behaviorProfile.likelyToNotice);
+  const profileSkills = joinOrFallback(agentProfile?.skills, behaviorProfile.expertise);
   const sourceGroundedMemory = `${persona.name} remembers: ${sourceResponse}`;
-  const cautiousExtrapolation = `${persona.name} cautiously extends that memory toward ${topic} by using ${transferableMethods} and by taking the player's skills in ${playerSkills} seriously.`;
-  const speculativeProposal = `${persona.name} proposes a next experiment shaped by ${profileSkills}, while still asking: ${likelyQuestions}.`;
+  const cautiousExtrapolation = `${persona.name} cautiously extends that memory toward ${topic} by using ${transferableMethods}, then tests it against the player's mission: "${missionText}".`;
+  const speculativeProposal = constraintText
+    ? `${persona.name} proposes a next experiment shaped by ${profileSkills} and ${playerSkills}, while respecting: ${constraintText}.`
+    : `${persona.name} proposes a next experiment shaped by ${profileSkills} and ${playerSkills}, while still asking: ${likelyQuestions}.`;
   return { sourceGroundedMemory, cautiousExtrapolation, speculativeProposal };
 }

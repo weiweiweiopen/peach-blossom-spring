@@ -5,7 +5,10 @@
       "name": "ABao",
       "role": "NGM designer / wandering storyteller",
       "intro": "Abao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.",
-      "transcript": "docs/transcripts/abao.md",
+      "transcripts": {
+        "en": "docs/transcripts_en/abao.md",
+        "zh": "docs/transcripts_zh/abao.md"
+      },
       "responses": {
         "nomadic": "我最常把旅行當成一種測量世界的方法。移動不是換景點而已，而是讓材料、語言、能源與朋友關係重新排列。",
         "camp": "如果我要辦 camp，我會讓它像一個會自己長出故事的太陽能神諭裝置：白天量光、晚上量人，讓大家帶著半成品一起 living prototype。",
