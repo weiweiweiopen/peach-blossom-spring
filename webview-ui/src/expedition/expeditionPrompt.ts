@@ -13,7 +13,7 @@ interface ExpeditionPromptContextInput {
   persona: ExpeditionPersona;
   agentProfile?: AgentProfile;
   behaviorProfile: NpcBehaviorProfile;
-  language: 'zh-TW' | 'en' | 'th';
+  language: 'zh-TW' | 'en' | 'ja';
   topic: string;
   sourceResponse: string;
   mission: string;

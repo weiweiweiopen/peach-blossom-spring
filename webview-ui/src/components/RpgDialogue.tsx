@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
-import { type LanguageCode,t } from '../i18n.js';
+import { type LanguageCode, t } from '../i18n.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
-import { getWikiLinksForInterviewee } from '../wikiLinks.js';
 
 interface Persona {
   id: string;
@@ -40,6 +39,7 @@ interface RpgDialogueProps {
   topicLabels: Record<string, string>;
   language: LanguageCode;
   onClose: () => void;
+  onOpenWiki?: () => void;
   onSimEvent?: (prompt: string, topic: string) => void;
 }
 
@@ -146,19 +146,17 @@ function makeSuggestedQuestions(
   return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
 }
 
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onSimEvent }: RpgDialogueProps) {
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isWikiOpen, setIsWikiOpen] = useState(false);
   const [areSuggestionsOpen, setAreSuggestionsOpen] = useState(false);
   const [questionSeed, setQuestionSeed] = useState(() => Math.floor(Math.random() * 1000));
   const messageLogRef = useRef<HTMLDivElement>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
-  const wiki = useMemo(() => getWikiLinksForInterviewee(persona.id), [persona.id]);
   const suggestedQuestions = useMemo(() => {
     const transcript = language === 'zh-TW' ? knowledge.transcript_zh || knowledge.transcript_en : knowledge.transcript_en || knowledge.transcript_zh;
     return makeSuggestedQuestions(transcript, persona, player, language, questionSeed);
@@ -177,7 +175,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     ]);
     setQuestion('');
     setError('');
-    setIsWikiOpen(false);
     setAreSuggestionsOpen(false);
     setQuestionSeed(Math.floor(Math.random() * 1000));
   }, [language, persona.id, persona.intro, persona.name]);
@@ -289,71 +286,52 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               </p>
             )}
           </div>
-          {isWikiOpen && (
-            <aside className="rpg-dialogue-wiki w-[320px] shrink-0 overflow-auto bg-bg/70 border border-border px-7 py-7">
-              <h3 className="text-lg text-accent-bright mb-4">{t(language, 'wiki')}</h3>
-              {wiki.links.length === 0 ? (
-                <p className="text-base text-text-muted">{t(language, 'noWikiLinks')}</p>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {wiki.links.map((link) => (
-                    <a
-                      key={`${link.title}-${link.url}`}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="border border-border px-4 py-4 hover:border-accent-bright"
-                    >
-                      <p className="text-base text-accent-bright">{link.title}</p>
-                      <p className="text-sm text-text-muted mt-2 leading-snug">{link.description}</p>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </aside>
-          )}
         </div>
 
-        <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
-          {fixedQuestions.map((item) => (
-            <button
-              key={item}
-              className="rpg-dialogue-chip bg-accent/80 text-white border border-accent hover:border-accent-bright px-5 py-3 text-base"
-              type="button"
-              onClick={() => void submitPrompt(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-
-        <div className="rpg-dialogue-suggestions mb-5">
+        <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
           <button
-            className="rpg-dialogue-more hidden cursor-pointer text-base text-accent-bright mb-3"
+            className="rpg-dialogue-question-toggle rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
             type="button"
+            aria-expanded={areSuggestionsOpen}
             onClick={() => setAreSuggestionsOpen((prev) => !prev)}
           >
-            {areSuggestionsOpen ? (language === 'zh-TW' ? '收起問題' : 'Hide questions') : (language === 'zh-TW' ? '更多問題' : 'More questions')}
+            {language === 'zh-TW' ? '問我一個問題' : 'Ask me a question'} {areSuggestionsOpen ? '▲' : '▼'}
           </button>
-          <div className={`rpg-dialogue-suggestion-list flex flex-wrap gap-3 ${areSuggestionsOpen ? 'is-open' : ''}`}>
-            {suggestedQuestions.map((item) => (
-              <button
-                key={item}
-                className="rpg-dialogue-chip bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
-                type="button"
-                onClick={() => void submitPrompt(item)}
-              >
-                {item}
-              </button>
-            ))}
-            <button
-              className="rpg-dialogue-chip bg-bg text-text border border-border hover:border-accent-bright px-5 py-3 text-base"
-              type="button"
-              onClick={() => setIsWikiOpen((prev) => !prev)}
-            >
-              {t(language, 'wiki')}
-            </button>
-          </div>
+          <button
+            className="rpg-dialogue-wiki-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+            type="button"
+            onClick={onOpenWiki}
+          >
+            📚 {t(language, 'wiki')}
+          </button>
+          {areSuggestionsOpen && (
+            <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
+              <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
+                {fixedQuestions.map((item) => (
+                  <button
+                    key={item}
+                    className="rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
+                    type="button"
+                    onClick={() => void submitPrompt(item)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+              <div className="rpg-dialogue-suggestion-list flex flex-wrap gap-3">
+                {suggestedQuestions.map((item) => (
+                  <button
+                    key={item}
+                    className="rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+                    type="button"
+                    onClick={() => void submitPrompt(item)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4">

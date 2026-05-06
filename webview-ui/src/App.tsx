@@ -31,6 +31,7 @@ import { scorePromptResonance } from './simulation/resonance.js';
 import type { SimSnapshot, Thronglet } from './simulation/types.js';
 import { shouldEnableVideoEncounter } from './videoEncounter.js';
 import { vscode } from './vscodeApi.js';
+import { getWikiLinksForInterviewee } from './wikiLinks.js';
 import {
   createTamagotchiPeachForestLayout,
   isInZone,
@@ -65,6 +66,10 @@ const MOBILE_THUMB_GUIDE_DIAMETER_PX = 168;
 const archiveTreeZone = tamagotchiPeachForestZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 type PlayMode = 'camp' | 'expedition';
 type AppMode = 'interactive' | 'dispatch_observer';
+type SplitPanel =
+  | { kind: 'wiki'; persona: Persona }
+  | { kind: 'archivePdf' }
+  | { kind: 'archiveMap' };
 const ExpeditionPanel = lazy(() =>
   import('./components/ExpeditionPanel.js').then((module) => ({ default: module.ExpeditionPanel })),
 );
@@ -177,6 +182,11 @@ function App() {
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
   const [petResponse, setPetResponse] = useState('');
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
+  const [isSplitExpanded, setIsSplitExpanded] = useState(false);
+  const [archiveMenuDismissed, setArchiveMenuDismissed] = useState(false);
+  const [abaoBubble, setAbaoBubble] = useState<{ text: string; nonce: number } | null>(null);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
   const activeDispatchPets = useMemo(() => dispatchedPets.filter((pet) => pet.status === 'active'), [dispatchedPets]);
@@ -222,6 +232,29 @@ function App() {
     y: window.innerHeight - MOBILE_THUMB_GUIDE_BOTTOM_PX - MOBILE_THUMB_GUIDE_DIAMETER_PX / 2,
   }), []);
 
+  const abaoLines = useMemo(() => [
+    'WTF',
+    'haha',
+    'what do we do!',
+    'Whyyyyyyyyyy!!',
+    '好無聊喔…',
+    '我喜歡研究意識',
+    'Wise Mouse Culture！',
+    '能源與身份到底是什麼？',
+    'AI agent需要夢嗎？',
+    '今天有太陽嗎？',
+    '我要去黑客營',
+  ], []);
+
+  const showAbaoBubble = useCallback(() => {
+    const text = abaoLines[Math.floor(Math.random() * abaoLines.length)] ?? 'haha';
+    const nonce = Date.now();
+    setAbaoBubble({ text, nonce });
+    window.setTimeout(() => {
+      setAbaoBubble((current) => current?.nonce === nonce ? null : current);
+    }, 2600 + Math.floor(Math.random() * 1400));
+  }, [abaoLines]);
+
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
   useEditorKeyboard(
     editor.isEditMode,
@@ -253,6 +286,10 @@ function App() {
       return;
     }
     const persona = personas[agentId - 1] ?? null;
+    if (appMode === 'interactive' && persona?.id === 'abao') {
+      showAbaoBubble();
+      return;
+    }
     if (appMode === 'dispatch_observer' && persona) {
       setSelectedNpcInfo(persona);
       setSelectedDispatchPet(null);
@@ -262,7 +299,7 @@ function App() {
     const meta = os.subagentMeta.get(agentId);
     const focusId = meta ? meta.parentAgentId : agentId;
     vscode.postMessage({ type: 'focusAgent', id: focusId });
-  }, [activeDispatchPets, appMode, simSnapshot]);
+  }, [activeDispatchPets, appMode, showAbaoBubble, simSnapshot]);
 
   const officeState = getOfficeState();
   const personaByAgentId = useMemo(
@@ -274,6 +311,7 @@ function App() {
   const activeDialogueCharacter = activeDialogueId ? officeState.characters.get(activeDialogueId) ?? null : null;
   const abaoAgentId = personas.findIndex((persona) => persona.id === 'abao') + 1;
   const isNearAbao = nearbyNpcId === abaoAgentId;
+  const isSplitOpen = splitPanel !== null;
 
   useEffect(() => {
     writeStoredLanguage(selectedLanguage);
@@ -645,6 +683,7 @@ function App() {
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
     setSelectedLanguage(language);
+    setLanguageMenuOpen(false);
   }, []);
 
   useEffect(() => {
@@ -682,6 +721,8 @@ function App() {
   function handleCloseWorld() {
     setPlayerProfile(null);
     setActiveDialogueId(null);
+    setSplitPanel(null);
+    setIsSplitExpanded(false);
     setSelectedPet(null);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
@@ -758,15 +799,25 @@ function App() {
       return false;
     })();
 
+  useEffect(() => {
+    if (!isNearTree) setArchiveMenuDismissed(false);
+  }, [isNearTree]);
+
   const shouldShowMobileStatsBar =
     Boolean(playerProfile) &&
     showMobileControls &&
     appMode === 'interactive' &&
+    !isSplitOpen &&
     !activeDialoguePersona &&
     !selectedDispatchPet &&
     !selectedPet &&
     !selectedNpcInfo &&
     !mobileRulesOpen;
+
+  const closeSplitPanel = useCallback(() => {
+    setSplitPanel(null);
+    setIsSplitExpanded(false);
+  }, []);
 
   if (!layoutReady) {
     return <div className="w-full h-full flex items-center justify-center ">Loading...</div>;
@@ -775,8 +826,8 @@ function App() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full relative overflow-hidden"
-      style={{ touchAction: showMobileControls && appMode === 'interactive' ? 'none' : undefined }}
+      className={`game-world-layer w-full h-full relative overflow-hidden ${isSplitOpen ? 'world-split-active' : ''} ${isSplitExpanded ? 'world-split-expanded' : ''}`}
+      style={{ touchAction: showMobileControls && appMode === 'interactive' && !isSplitOpen ? 'none' : undefined }}
       onPointerDown={handleMobilePointerDown}
       onPointerMove={handleMobilePointerMove}
       onPointerUp={stopMobilePointer}
@@ -799,12 +850,32 @@ function App() {
         panRef={editor.panRef}
       />
 
-      <label className="global-language-select" data-no-mobile-drag="true">
-        <span>{t(selectedLanguage, 'languageLabel')}</span>
-        <select value={selectedLanguage} onChange={(event) => handleLanguageChange(event.target.value as LanguageCode)}>
-          {supportedLanguages.map((entry) => <option key={entry.code} value={entry.code}>{entry.label}</option>)}
-        </select>
-      </label>
+      <div className="global-language-menu" data-no-mobile-drag="true">
+        <button
+          className="global-language-trigger"
+          type="button"
+          aria-label={t(selectedLanguage, 'languageLabel')}
+          aria-expanded={languageMenuOpen}
+          onClick={() => setLanguageMenuOpen((open) => !open)}
+        >
+          💬
+        </button>
+        {languageMenuOpen && (
+          <div className="global-language-options" role="menu">
+            {supportedLanguages.map((entry) => (
+              <button
+                key={entry.code}
+                className={entry.code === selectedLanguage ? 'is-active' : ''}
+                type="button"
+                role="menuitem"
+                onClick={() => handleLanguageChange(entry.code)}
+              >
+                {entry.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {playerProfile && appMode === 'dispatch_observer' && (
         <button className="observer-close" type="button" onClick={handleCloseWorld} aria-label={t(selectedLanguage, 'close')}>×</button>
@@ -889,6 +960,10 @@ function App() {
               }}
               type="button"
               onClick={() => {
+                if (nearbyNpcId === abaoAgentId) {
+                  showAbaoBubble();
+                  return;
+                }
                 officeState.selectedAgentId = nearbyNpcId;
                 setActiveDialogueId(nearbyNpcId);
               }}
@@ -911,62 +986,27 @@ function App() {
 
           {shouldEnableVideoEncounter() && <></>}
 
-          {appMode === 'interactive' && isNearAbao && playerProfile && !activeDialoguePersona && (
-            <div className="absolute inset-x-0 bottom-0 h-[34vh] z-44 border-t-2 border-black bg-white text-black backdrop-blur-[1px] flex items-center justify-center">
-              <div className="text-center px-10 max-w-[960px]">
-                <p className="text-lg text-black mb-3">{t(selectedLanguage, 'abaoEncounterTitle')}</p>
-                <div className="flex items-center justify-center gap-10 mb-4">
-                  <div className="pixel-panel px-8 py-6 min-w-[220px]">
-                    <p className="text-sm text-text-muted mb-2">{playerProfile.name}</p>
-                    <p className="text-2xl">Traveler</p>
-                  </div>
-                  <div className="pixel-panel px-8 py-6 min-w-[220px]">
-                    <p className="text-sm text-text-muted mb-2">ABao</p>
-                    <p className="text-2xl">Storyteller</p>
-                  </div>
-                </div>
-                <p className="text-base text-black">{t(selectedLanguage, 'abaoEncounterHint')}</p>
-              </div>
+          {appMode === 'interactive' && isNearAbao && abaoBubble && promptPosition && !activeDialoguePersona && (
+            <div className="abao-speech-bubble" style={{ left: promptPosition.left, top: promptPosition.top - 78 }} data-no-mobile-drag="true">
+              {abaoBubble.text}
             </div>
           )}
 
-          {appMode === 'interactive' && isNearTree && !activeDialoguePersona && (
-            <section className="absolute right-12 top-12 z-43 w-[min(920px,calc(100vw-24px))] max-h-[calc(100vh-96px)] overflow-auto pixel-panel px-12 py-10 text-text shadow-pixel">
-              <p className="text-xs uppercase tracking-wide text-accent-bright mb-3">{t(selectedLanguage, 'archiveTree')}</p>
-              <h1 className="text-2xl leading-none mb-3">{t(selectedLanguage, 'archiveTitle')}</h1>
-              <p className="text-sm text-text-muted mb-8">{t(selectedLanguage, 'archiveDescription')}</p>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div className="border border-border bg-bg/70 px-7 py-5">
-                  <h2 className="text-lg text-accent-bright mb-4">{t(selectedLanguage, 'archivePdfTitle')}</h2>
-                  <iframe
-                    title="NGM PDF embedded ebook"
-                    src="https://archive.org/embed/ngm_20230328"
-                    width="560"
-                    height="384"
-                    frameBorder="0"
-                    allowFullScreen
-                    className="w-full min-h-[384px] bg-white border border-border"
-                  />
-                </div>
-                <div className="border border-border bg-bg/70 px-7 py-5">
-                  <h2 className="text-lg text-accent-bright mb-4">{t(selectedLanguage, 'archiveMapTitle')}</h2>
-                  <iframe
-                    title="NGM community map"
-                    src="http://u.osmfr.org/m/862535/"
-                    className="w-full min-h-[384px] bg-white border border-border"
-                  />
-                  <a
-                    href="http://u.osmfr.org/m/862535/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-4 inline-block text-sm text-accent-bright hover:text-text"
-                  >
-                    http://u.osmfr.org/m/862535/
-                  </a>
-                </div>
+
+          {appMode === 'interactive' && isNearTree && !activeDialoguePersona && !splitPanel && !archiveMenuDismissed && (
+            <section className="archive-tree-menu pixel-panel" data-no-mobile-drag="true">
+              <button className="archive-tree-close" type="button" onClick={() => setArchiveMenuDismissed(true)} aria-label={t(selectedLanguage, 'close')}>×</button>
+              <p className="archive-tree-kicker">{t(selectedLanguage, 'archiveTree')}</p>
+              <h1>{t(selectedLanguage, 'archiveTitle')}</h1>
+              <p>{t(selectedLanguage, 'archiveDescription')}</p>
+              <div className="archive-tree-options">
+                <button type="button" onClick={() => { setSplitPanel({ kind: 'archivePdf' }); setIsSplitExpanded(false); }}>1. {selectedLanguage === 'zh-TW' ? 'NGM 書' : 'NGM Book'}</button>
+                <button type="button" onClick={() => { setSplitPanel({ kind: 'archiveMap' }); setIsSplitExpanded(false); }}>2. {selectedLanguage === 'zh-TW' ? '社群地圖' : 'Community Map'}</button>
               </div>
             </section>
           )}
+
+
 
           {appMode === 'interactive' && activeDialoguePersona && activeDialogueCharacter && playerProfile && (
             <Suspense fallback={<div className="absolute inset-x-0 bottom-0 z-50 pixel-panel mx-auto mb-6 w-fit px-6 py-5 text-text shadow-pixel">Loading dialogue...</div>}>
@@ -980,6 +1020,7 @@ function App() {
                 topicLabels={topicLabels}
                 language={selectedLanguage}
                 onClose={() => setActiveDialogueId(null)}
+                onOpenWiki={() => { setSplitPanel({ kind: 'wiki', persona: activeDialoguePersona }); setIsSplitExpanded(false); setActiveDialogueId(null); }}
                 onSimEvent={(prompt) => {
                   const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(' ')}`;
                   const resonance = scorePromptResonance(playerProfile.question || playerProfile.mission, personaText);
@@ -989,7 +1030,7 @@ function App() {
             </Suspense>
           )}
 
-          {simSnapshot && playerProfile && appMode === 'interactive' && (
+          {simSnapshot && playerProfile && appMode === 'interactive' && !isSplitOpen && (
             <section className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6" data-no-mobile-drag="true">
               <div className="flex items-center justify-between gap-4 mb-4">
                 <h2 className="text-lg">問題電子雞 SIM</h2>
@@ -1092,6 +1133,45 @@ function App() {
           subagentTools={subagentTools}
           onSelectAgent={handleSelectAgent}
         />
+      )}
+
+
+      {splitPanel && (
+        <aside className={`world-split-panel ${isSplitExpanded ? 'is-expanded' : ''}`} data-no-mobile-drag="true">
+          <div className="world-split-toolbar">
+            <div>
+              <p>{splitPanel.kind === 'wiki' ? 'World Wiki' : t(selectedLanguage, 'archiveTree')}</p>
+              <h2>{splitPanel.kind === 'wiki' ? splitPanel.persona.name : splitPanel.kind === 'archivePdf' ? t(selectedLanguage, 'archivePdfTitle') : t(selectedLanguage, 'archiveMapTitle')}</h2>
+            </div>
+            <div className="world-split-actions">
+              <button type="button" onClick={() => setIsSplitExpanded((expanded) => !expanded)}>{isSplitExpanded ? '↙' : '⤢'}</button>
+              <button type="button" onClick={closeSplitPanel}>✕</button>
+            </div>
+          </div>
+          <div className="world-split-content">
+            {splitPanel.kind === 'wiki' ? (() => {
+              const wiki = getWikiLinksForInterviewee(splitPanel.persona.id);
+              return (
+                <div className="world-wiki-content">
+                  <p className="world-wiki-role">{splitPanel.persona.role}</p>
+                  <p className="world-wiki-intro">{splitPanel.persona.intro}</p>
+                  {wiki.links.length === 0 ? (
+                    <p>{t(selectedLanguage, 'noWikiLinks')}</p>
+                  ) : wiki.links.map((link) => (
+                    <a key={`${link.title}-${link.url}`} href={link.url} target="_blank" rel="noreferrer">
+                      <strong>{link.title}</strong>
+                      <span>{link.description}</span>
+                    </a>
+                  ))}
+                </div>
+              );
+            })() : splitPanel.kind === 'archivePdf' ? (
+              <iframe title="NGM PDF embedded ebook" src="https://archive.org/embed/ngm_20230328" allowFullScreen className="world-split-iframe" />
+            ) : (
+              <iframe title="NGM community map" src="https://umap.openstreetmap.fr/en/map/862535" className="world-split-iframe" />
+            )}
+          </div>
+        </aside>
       )}
 
       {/* Hooks first-run tooltip */}
