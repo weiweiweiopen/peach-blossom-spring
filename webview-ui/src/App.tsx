@@ -24,6 +24,7 @@ import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
 import { VersionIndicator } from "./components/VersionIndicator.js";
+import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
 import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
@@ -1269,28 +1270,31 @@ function App() {
         </button>
       )}
 
-      {playerProfile && appMode === "dispatch_observer" && (
-        <div className="observer-zoom" data-no-mobile-drag="true">
-          <button
-            type="button"
-            onClick={() =>
-              editor.handleZoomChange(Math.min(4, editor.zoom + 0.25))
-            }
-            aria-label={t(selectedLanguage, "zoomIn")}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              editor.handleZoomChange(Math.max(0.55, editor.zoom - 0.25))
-            }
-            aria-label={t(selectedLanguage, "zoomOut")}
-          >
-            −
-          </button>
-        </div>
-      )}
+      {playerProfile &&
+        (appMode === "interactive" || appMode === "dispatch_observer") && (
+          <div className="map-zoom-controls" data-no-mobile-drag="true">
+            <button
+              type="button"
+              onClick={() =>
+                editor.handleZoomChange(Math.min(ZOOM_MAX, editor.zoom + 0.25))
+              }
+              disabled={editor.zoom >= ZOOM_MAX}
+              aria-label={t(selectedLanguage, "zoomIn")}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                editor.handleZoomChange(Math.max(ZOOM_MIN, editor.zoom - 0.25))
+              }
+              disabled={editor.zoom <= ZOOM_MIN}
+              aria-label={t(selectedLanguage, "zoomOut")}
+            >
+              −
+            </button>
+          </div>
+        )}
 
       {!isDebugMode ? (
         <>
