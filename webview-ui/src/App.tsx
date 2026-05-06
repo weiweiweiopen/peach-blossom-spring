@@ -759,6 +759,16 @@ function App() {
       return false;
     })();
 
+  const shouldShowMobileStatsBar =
+    Boolean(playerProfile) &&
+    showMobileControls &&
+    appMode === 'interactive' &&
+    !activeDialoguePersona &&
+    !selectedDispatchPet &&
+    !selectedPet &&
+    !selectedNpcInfo &&
+    !mobileRulesOpen;
+
   if (!layoutReady) {
     return <div className="w-full h-full flex items-center justify-center ">Loading...</div>;
   }
@@ -1030,7 +1040,7 @@ function App() {
             </section>
           )}
 
-          {playerProfile && showMobileControls && (
+          {shouldShowMobileStatsBar && (
             <button className="mobile-stats-bar" type="button" onClick={() => setMobileRulesOpen(true)} data-no-mobile-drag="true">
               <span>🐣 {archiveSummary.active}</span><span>💬 {archiveSummary.notes}</span><span>S {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.social, 0) / Math.max(1, activeDispatchPets.length))}</span><span>L {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.learning, 0) / Math.max(1, activeDispatchPets.length))}</span><span>T {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.tension, 0) / Math.max(1, activeDispatchPets.length))}</span><span>R {simSnapshot?.tick ?? 0}</span>
             </button>
