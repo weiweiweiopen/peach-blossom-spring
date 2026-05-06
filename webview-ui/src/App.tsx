@@ -809,10 +809,7 @@ function App() {
                 bottom: `calc(${MOBILE_THUMB_GUIDE_BOTTOM_PX}px + env(safe-area-inset-bottom))`,
               }}
             >
-              <div className="mx-auto mb-3 h-42 w-42 rounded-full border border-white/20 bg-black/20" />
-              <p className="text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
-                {selectedLanguage === 'zh-TW' ? '拇指放這附近拖曳移動' : 'Drag here with your thumb'}
-              </p>
+              <div className="mx-auto h-42 w-42 rounded-full border border-white/20 bg-black/20" />
             </div>
           )}
         </>
