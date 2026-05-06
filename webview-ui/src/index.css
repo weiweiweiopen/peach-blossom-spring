@@ -173,6 +173,37 @@
     opacity: 0.78;
   }
 
+  .player-setup-overlay {
+    align-items: flex-start;
+    padding: max(12px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .player-setup-panel {
+    width: min(100%, 620px);
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
+    padding: 14px;
+  }
+
+  .player-setup-topbar { gap: 10px; margin-bottom: 12px; }
+  .player-setup-kicker { font-size: 18px; line-height: 1.2; }
+  .player-setup-language { gap: 8px; font-size: 18px; }
+  .player-setup-select { padding: 8px 10px; font-size: 18px; }
+  .player-setup-title { margin-bottom: 12px; font-size: 30px; line-height: 1.2; }
+  .player-setup-description { margin-bottom: 16px; font-size: 20px; line-height: 1.45; }
+  .player-setup-divider { margin-bottom: 16px; }
+  .player-setup-label { margin-bottom: 7px; font-size: 18px; }
+  .player-setup-field { margin-bottom: 16px; padding: 12px; font-size: 20px; line-height: 1.35; }
+  .player-setup-textarea-large { min-height: 104px; }
+  .player-setup-textarea { min-height: 76px; }
+  .player-setup-avatar-heading { margin-bottom: 10px; font-size: 20px; }
+  .player-setup-avatar-grid { grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+  .player-setup-avatar-choice { padding: 10px 12px; }
+  .player-setup-radio { margin-right: 8px; }
+  .player-setup-avatar-title { font-size: 19px; line-height: 1.25; }
+  .player-setup-actions { gap: 8px; }
+  .player-setup-action { padding: 12px 14px; font-size: 24px; line-height: 1.2; }
+  .player-setup-hint { margin-top: 14px; font-size: 18px; line-height: 1.4; }
+
   .rpg-dialogue-overlay {
     align-items: flex-end;
     padding: 0;
@@ -199,6 +230,19 @@
   .rpg-dialogue-main { margin-bottom: 10px; gap: 10px; }
   .rpg-dialogue-log { padding: 12px; font-size: 20px; }
   .rpg-dialogue-message { margin-bottom: 12px; font-size: 20px; line-height: 1.45; }
+  .rpg-dialogue-thinking { font-size: 20px; line-height: 1.45; }
+
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-kicker { font-size: 17px; }
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-name { font-size: 26px; }
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-role { font-size: 17px; }
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-log { font-size: 18px; }
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-message,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-thinking,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-input,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-submit {
+    font-size: 18px;
+    line-height: 1.42;
+  }
 
   .rpg-dialogue-wiki {
     position: absolute;
@@ -228,6 +272,12 @@
     white-space: nowrap;
   }
 
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-more {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
   .rpg-dialogue-suggestions { margin-bottom: 10px; }
   .rpg-dialogue-more { display: block; font-size: 18px; }
   .rpg-dialogue-suggestion-list:not(.is-open) { display: none; }
@@ -247,9 +297,13 @@
   .rpg-dialogue-kicker, .rpg-dialogue-role { display: none; }
   .rpg-dialogue-main { margin-bottom: 6px; }
   .rpg-dialogue-log { padding: 8px 10px; }
-  .rpg-dialogue-message { margin-bottom: 8px; font-size: 18px; line-height: 1.35; }
+  .rpg-dialogue-message, .rpg-dialogue-thinking { margin-bottom: 8px; font-size: 18px; line-height: 1.35; }
   .rpg-dialogue-fixed { margin-bottom: 4px; }
   .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-input, .rpg-dialogue-submit { font-size: 17px; }
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-more,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-input,
+  .rpg-dialogue-panel[data-language='zh-TW'] .rpg-dialogue-submit { font-size: 16px; }
   .rpg-dialogue-chip { padding: 7px 10px; }
   .rpg-dialogue-input { padding: 9px 10px; }
 }

@@ -54,6 +54,7 @@ const topicLabels: Record<string, string> = {
 };
 
 const PLAYER_ID = 0;
+const MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX = 76; // 2cm at 96 CSS px/in.
 const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 type PlayMode = 'camp' | 'expedition';
 const ExpeditionPanel = lazy(() =>
@@ -189,8 +190,13 @@ function App() {
   const mobileDragRef = useRef({ pointerId: null as number | null, clientX: 0, clientY: 0, raf: 0, nextAt: 0 });
   const mobileControlOffsetPx = useMemo(() => {
     if (!showMobileControls) return 0;
-    return Math.min(150, Math.max(86, mobileViewportHeight * 0.18));
+    const baseOffset = Math.min(150, Math.max(86, mobileViewportHeight * 0.18));
+    return baseOffset + MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX;
   }, [mobileViewportHeight, showMobileControls]);
+  const mobileThumbGuideBottomPx = useMemo(() => {
+    if (!showMobileControls) return 0;
+    return Math.max(12, mobileControlOffsetPx - MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX);
+  }, [mobileControlOffsetPx, showMobileControls]);
 
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
   useEditorKeyboard(
@@ -827,7 +833,7 @@ function App() {
           {showMobileControls && playerProfile && !activeDialoguePersona && (
             <div
               className="mobile-thumb-guide absolute left-1/2 z-46 pointer-events-none -translate-x-1/2 text-center"
-              style={{ bottom: `calc(${Math.round(mobileControlOffsetPx).toString()}px + env(safe-area-inset-bottom))` }}
+              style={{ bottom: `calc(${Math.round(mobileThumbGuideBottomPx).toString()}px + env(safe-area-inset-bottom))` }}
             >
               <div className="mx-auto mb-3 h-42 w-42 rounded-full border border-white/20 bg-black/20" />
               <p className="text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
