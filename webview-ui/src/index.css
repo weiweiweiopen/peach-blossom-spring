@@ -721,3 +721,386 @@
   background: #fff !important;
   border-color: #000 !important;
 }
+
+/* Mobile-first discoverable game UI pass */
+.global-language-menu {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 82;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.global-language-trigger {
+  min-width: 44px;
+  min-height: 44px;
+  color: #000;
+  background: color-mix(in srgb, #fff 82%, transparent);
+  border: 3px solid #000;
+  border-radius: 16px 16px 16px 4px;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 22px;
+  touch-action: manipulation;
+}
+.global-language-options {
+  min-width: 168px;
+  padding: 8px;
+  color: #000;
+  background: color-mix(in srgb, #fff 90%, transparent);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+}
+.global-language-options button {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #000;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font-size: 16px;
+}
+.global-language-options button.is-active {
+  background: var(--palette-yellow);
+  outline: 2px solid #000;
+}
+
+.world-split-active {
+  width: 50% !important;
+  height: 100% !important;
+}
+.world-split-expanded {
+  width: 0 !important;
+  pointer-events: none;
+}
+.world-split-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 74;
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  color: #000;
+  background: color-mix(in srgb, #fff 94%, transparent);
+  border-left: 4px solid #000;
+  box-shadow: -4px 0 0 color-mix(in srgb, #000 18%, transparent);
+}
+.world-split-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(14px, env(safe-area-inset-top)) 14px 12px;
+  border-bottom: 3px solid #000;
+  background: color-mix(in srgb, var(--palette-cream) 88%, transparent);
+}
+.world-split-toolbar p {
+  margin: 0 0 4px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.world-split-toolbar h2 {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.12;
+}
+.world-split-actions {
+  display: flex;
+  gap: 8px;
+}
+.world-split-actions button,
+.archive-tree-close {
+  min-width: 42px;
+  min-height: 42px;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  font-size: 20px;
+  touch-action: manipulation;
+}
+.world-split-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.world-split-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  background: #fff;
+  border: 2px solid #000;
+}
+.world-wiki-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 17px;
+  line-height: 1.48;
+}
+.world-wiki-role {
+  font-size: 18px;
+  font-weight: 700;
+}
+.world-wiki-intro {
+  padding: 12px;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+}
+.world-wiki-content a {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 44px;
+  padding: 12px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  text-decoration: none;
+}
+.world-wiki-content a strong {
+  font-size: 18px;
+}
+.world-wiki-content a span {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.archive-tree-menu {
+  position: absolute;
+  top: 56px;
+  right: 20px;
+  z-index: 45;
+  width: min(380px, calc(100vw - 24px));
+  padding: 18px;
+  color: #000;
+  background: color-mix(in srgb, #fff 92%, transparent) !important;
+}
+.archive-tree-close {
+  float: right;
+  margin-left: 12px;
+}
+.archive-tree-kicker {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.archive-tree-menu h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.1;
+}
+.archive-tree-menu p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+.archive-tree-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.archive-tree-options button {
+  min-height: 44px;
+  padding: 12px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  text-align: left;
+  font-size: 18px;
+}
+
+.abao-speech-bubble {
+  position: absolute;
+  z-index: 48;
+  transform: translate(-50%, -100%);
+  max-width: min(300px, 78vw);
+  padding: 12px 14px;
+  color: #000;
+  background: color-mix(in srgb, #fff 94%, transparent);
+  border: 3px solid #000;
+  border-radius: 18px 18px 18px 5px;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 20px;
+  line-height: 1.25;
+  pointer-events: none;
+}
+.abao-speech-bubble::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  border-right: 3px solid #000;
+  border-bottom: 3px solid #000;
+  transform: rotate(45deg);
+}
+
+.rpg-dialogue-actions {
+  flex: 0 0 auto;
+}
+.rpg-dialogue-question-toggle,
+.rpg-dialogue-wiki-button,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.rpg-dialogue-close-secondary {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.rpg-dialogue-question-drawer {
+  max-height: 24vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rpg-dialogue-wiki-button {
+  background: var(--palette-cream) !important;
+}
+
+.question-status-panel {
+  background: color-mix(in srgb, #fff 82%, transparent) !important;
+  max-height: 38vh !important;
+  padding: 14px !important;
+  font-size: 16px !important;
+}
+.question-status-panel h2,
+.question-status-panel .text-lg {
+  font-size: 19px !important;
+}
+.question-status-panel .text-sm,
+.question-status-panel p {
+  font-size: 14px !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .world-split-active {
+    width: 100% !important;
+    height: 50dvh !important;
+  }
+  .world-split-expanded {
+    height: 0 !important;
+  }
+  .world-split-panel {
+    top: 50dvh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    border-top: 4px solid #000;
+    border-left: 0;
+    box-shadow: 0 -3px 0 color-mix(in srgb, #000 18%, transparent);
+  }
+  .world-split-toolbar {
+    padding: 10px 12px;
+  }
+  .world-split-toolbar h2 {
+    font-size: 20px;
+  }
+  .world-split-content {
+    padding: 10px;
+  }
+  .world-split-iframe {
+    min-height: 330px;
+  }
+  .world-wiki-content {
+    font-size: 18px;
+  }
+  .world-wiki-content a strong {
+    font-size: 19px;
+  }
+  .world-wiki-content a span {
+    font-size: 16px;
+  }
+  .global-language-menu {
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+  }
+  .archive-tree-menu {
+    top: max(62px, env(safe-area-inset-top));
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 44dvh;
+    overflow: auto;
+    padding: 14px;
+  }
+  .archive-tree-menu h1 {
+    font-size: 22px;
+  }
+  .archive-tree-menu p {
+    font-size: 16px;
+  }
+  .archive-tree-options button {
+    min-height: 46px;
+    font-size: 18px;
+  }
+  .mobile-talk-prompt {
+    min-width: 154px;
+    min-height: 48px;
+    padding: 10px 12px !important;
+  }
+  .mobile-talk-prompt p:first-child {
+    font-size: 21px !important;
+  }
+  .mobile-talk-prompt p:last-child {
+    font-size: 18px !important;
+  }
+  .rpg-dialogue-panel {
+    height: min(82dvh, 640px) !important;
+    padding: 14px !important;
+  }
+  .rpg-dialogue-log {
+    font-size: 21px !important;
+  }
+  .rpg-dialogue-message,
+  .rpg-dialogue-thinking {
+    font-size: 20px !important;
+    line-height: 1.45 !important;
+  }
+  .rpg-dialogue-question-drawer {
+    max-height: 23dvh;
+  }
+  .rpg-dialogue-chip,
+  .rpg-dialogue-more,
+  .rpg-dialogue-input,
+  .rpg-dialogue-submit,
+  .rpg-dialogue-close-secondary {
+    min-height: 42px;
+    font-size: 19px !important;
+  }
+  .rpg-dialogue-form {
+    align-items: stretch;
+  }
+  .rpg-dialogue-input {
+    padding: 11px 12px !important;
+  }
+  .rpg-dialogue-submit {
+    padding: 10px 14px !important;
+  }
+  .mobile-stats-bar {
+    min-height: 44px;
+    max-height: 46px;
+    padding: 7px 10px;
+    background: color-mix(in srgb, #fff 78%, transparent) !important;
+    font-size: 16px;
+  }
+}
+.world-split-panel.is-expanded {
+  left: 0;
+  width: 100vw;
+}
+@media (max-width: 900px), (pointer: coarse) {
+  .world-split-panel.is-expanded {
+    top: 0;
+    height: 100dvh;
+  }
+}

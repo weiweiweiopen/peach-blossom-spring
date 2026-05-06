@@ -37,14 +37,14 @@ interface PlayerSetupProps {
 }
 
 const copy = {
-  title: { 'zh-TW': '孵化一隻問題電子雞', en: 'Hatch a Question Pet', th: 'Hatch a Question Pet' },
-  question: { 'zh-TW': '你的問題', en: 'Your question', th: 'Your question' },
-  placeholder: { 'zh-TW': '你想派遣到桃花源裡的問題是什麼？', en: 'What question do you want to dispatch into Peach Blossom Spring?', th: 'What question do you want to dispatch into Peach Blossom Spring?' },
-  skills: { 'zh-TW': '你的技能（可選）', en: 'Your skills (optional)', th: 'Your skills (optional)' },
-  name: { 'zh-TW': '顯示名稱（可選）', en: 'Display name (optional)', th: 'Display name (optional)' },
-  hint: { 'zh-TW': '輸入一個問題，它會成為 16x16 的電子雞。你可以本人進入桃花源一起互動，也可以只派遣雞、用無人物瀏覽模式觀察世界。', en: 'Type a question to hatch a deterministic 16x16 pet. Enter with your avatar, or dispatch only the pet and browse without a player.', th: 'Type a question to hatch a deterministic 16x16 pet.' },
-  reshuffle: { 'zh-TW': '重新生成', en: 'Shuffle pet', th: 'Shuffle pet' },
-  clear: { 'zh-TW': '清空本機 demo', en: 'Clear local demo', th: 'Clear local demo' },
+  title: { 'zh-TW': '孵化一隻問題電子雞', en: 'Hatch a Question Pet', ja: 'Hatch a Question Pet' },
+  question: { 'zh-TW': '你的問題', en: 'Your question', ja: 'Your question' },
+  placeholder: { 'zh-TW': '你想派遣到桃花源裡的問題是什麼？', en: 'What question do you want to dispatch into Peach Blossom Spring?', ja: 'What question do you want to dispatch into Peach Blossom Spring?' },
+  skills: { 'zh-TW': '你的技能（可選）', en: 'Your skills (optional)', ja: 'Your skills (optional)' },
+  name: { 'zh-TW': '顯示名稱（可選）', en: 'Display name (optional)', ja: 'Display name (optional)' },
+  hint: { 'zh-TW': '輸入一個問題，它會成為 16x16 的電子雞。你可以本人進入桃花源一起互動，也可以只派遣雞、用無人物瀏覽模式觀察世界。', en: 'Type a question to hatch a deterministic 16x16 pet. Enter with your avatar, or dispatch only the pet and browse without a player.', ja: 'Type a question to hatch a deterministic 16x16 pet.' },
+  reshuffle: { 'zh-TW': '重新生成', en: 'Shuffle pet', ja: 'Shuffle pet' },
+  clear: { 'zh-TW': '清空本機 demo', en: 'Clear local demo', ja: 'Clear local demo' },
 };
 
 export function PlayerSetup({ language, onStart, defaultProfile, archiveSummary, recentPets, onClearArchive }: PlayerSetupProps) {

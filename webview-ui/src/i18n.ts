@@ -1,4 +1,4 @@
-export type LanguageCode = 'zh-TW' | 'en' | 'th';
+export type LanguageCode = 'zh-TW' | 'en' | 'ja';
 
 type TranslationKey =
   | 'languageLabel'
@@ -107,7 +107,7 @@ type TranslationTable = Record<LanguageCode, Record<TranslationKey, string>>;
 export const supportedLanguages: Array<{ code: LanguageCode; label: string }> = [
   { code: 'zh-TW', label: '繁體中文' },
   { code: 'en', label: 'English' },
-  { code: 'th', label: 'ไทย (coming soon)' },
+  { code: 'ja', label: '日本語' },
 ];
 
 const translations: TranslationTable = {
@@ -117,7 +117,7 @@ const translations: TranslationTable = {
     loginTitle: '桃花源：可派遣的思考生命模擬器',
     loginSubtitle: '一個 Non-Governmental Matters 的互動寓言維度',
     loginDescription:
-      '桃花源是一個互動寓言維度，許多社群和仙人在這與世隔絕，你來到這裡探索並收集建造一個烏托邦的方式。請自由的與住在這裡的朋友交談，每一個意見裡都有數不盡的寶藏。但記得你的一舉一動都會影響這個自由開源科技藝術世界的發展，或許你也會在裡面發現夢境與現實世界的耦合。',
+      '這一個互動寓言維度，許多奇怪生物在這與世隔絕，你來到這裡探索並收集建造一個烏托邦的線索。請自由的與住在這裡的朋友交談，每一個意見裡都有數不盡的寶藏。但記得你的一舉一動都會影響這個自由開源科技藝術世界的發展，或許你會在裡面發現夢境與現實世界耦合的方式。',
     createProtagonist: '創建主角',
     createTraveler: '創建異世界旅人',
     nameLabel: '名字',
@@ -220,7 +220,7 @@ const translations: TranslationTable = {
     loginTitle: 'Peach Blossom Spring: Dispatchable Thinking Life Simulator',
     loginSubtitle: 'An interactive allegorical dimension of Non-Governmental Matters',
     loginDescription:
-      'Peach Blossom Spring is an interactive allegorical dimension inhabited by many immortals. Every action you take influences this free and open-source techno-art world, while revealing how the allegory couples with our present reality.',
+      'This interactive allegorical dimension is inhabited by strange creatures isolated from the outside world. You arrive here to explore and gather fragments for building a utopia. Feel free to speak with the beings living here — every conversation hides unexpected treasures. But remember: every action you take may influence the evolution of this free and open-source techno-artistic world. Somewhere within it, you may discover how dreams and reality become coupled together.',
     createProtagonist: 'Create your protagonist',
     createTraveler: 'Create your isekai traveler',
     nameLabel: 'Name',
@@ -318,12 +318,12 @@ const translations: TranslationTable = {
     zoomOut: 'Zoom out',
 
   },
-  th: {
-    languageLabel: 'ภาษา',
+  ja: {
+    languageLabel: '言語',
     ngmLabel: 'Non-Governmental Matters',
     loginTitle: 'Peach Blossom Spring: Dispatchable Thinking Life Simulator',
-    loginSubtitle: 'Thai UI coming soon',
-    loginDescription: 'Thai localization is not ready yet. The game will currently fall back to English content.',
+    loginSubtitle: 'Japanese UI coming soon',
+    loginDescription: 'Japanese localization is not ready yet. The game will currently fall back to English content.',
     createProtagonist: 'Create your protagonist',
     createTraveler: 'Create your isekai traveler',
     nameLabel: 'Name',
@@ -428,7 +428,7 @@ export const LANGUAGE_STORAGE_KEY = 'pbs.settings.language';
 export function readStoredLanguage(): LanguageCode {
   try {
     const raw = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    return raw === 'en' || raw === 'th' || raw === 'zh-TW' ? raw : 'zh-TW';
+    return raw === 'en' || raw === 'ja' || raw === 'zh-TW' ? raw : 'zh-TW';
   } catch {
     return 'zh-TW';
   }
