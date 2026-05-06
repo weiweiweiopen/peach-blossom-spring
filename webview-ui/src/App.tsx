@@ -1,43 +1,71 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import extraPersonaData from '../../data/extra-personas.json';
-import personaData from '../../data/personas.json';
-import { toMajorMinor } from './changelogData.js';
-import { ChangelogModal } from './components/ChangelogModal.js';
-import { DebugView } from './components/DebugView.js';
-import { EditActionBar } from './components/EditActionBar.js';
-import { MigrationNotice } from './components/MigrationNotice.js';
-import { type PlayerProfile, PlayerSetup, type StartMode } from './components/PlayerSetup.js';
-import { SettingsModal } from './components/SettingsModal.js';
-import { Tooltip } from './components/Tooltip.js';
-import { Modal } from './components/ui/Modal.js';
-import { VersionIndicator } from './components/VersionIndicator.js';
-import { useEditorActions } from './hooks/useEditorActions.js';
-import { useEditorKeyboard } from './hooks/useEditorKeyboard.js';
-import { useExtensionMessages } from './hooks/useExtensionMessages.js';
-import { type LanguageCode, readStoredLanguage, supportedLanguages, t, writeStoredLanguage } from './i18n.js';
-import { OfficeCanvas } from './office/components/OfficeCanvas.js';
-import { EditorState } from './office/editor/editorState.js';
-import { EditorToolbar } from './office/editor/EditorToolbar.js';
-import { OfficeState } from './office/engine/officeState.js';
-import { isRotatable } from './office/layout/furnitureCatalog.js';
-import { EditTool, TILE_SIZE } from './office/types.js';
-import { appearanceToSpriteData, generateQuestionPet } from './pets/generateQuestionPet.js';
-import { type PetDispatch, petStore, tagsFromText } from './pets/petStore.js';
-import { QuestionPetPreview } from './pets/QuestionPetPreview.js';
-import { isBrowserRuntime } from './runtime.js';
-import { applyPlayerNpcDialogue, applyPlayerThrongletResponse, createInitialSnapshot, createThronglet, tickSimulation } from './simulation/engine.js';
-import { scorePromptResonance } from './simulation/resonance.js';
-import type { SimSnapshot, Thronglet } from './simulation/types.js';
-import { shouldEnableVideoEncounter } from './videoEncounter.js';
-import { vscode } from './vscodeApi.js';
-import { getWikiLinksForInterviewee } from './wikiLinks.js';
+import extraPersonaData from "../../data/extra-personas.json";
+import personaData from "../../data/personas.json";
+import { toMajorMinor } from "./changelogData.js";
+import { ChangelogModal } from "./components/ChangelogModal.js";
+import { DebugView } from "./components/DebugView.js";
+import { EditActionBar } from "./components/EditActionBar.js";
+import { MigrationNotice } from "./components/MigrationNotice.js";
+import {
+  type PlayerProfile,
+  PlayerSetup,
+  type StartMode,
+} from "./components/PlayerSetup.js";
+import { SettingsModal } from "./components/SettingsModal.js";
+import { Tooltip } from "./components/Tooltip.js";
+import { Modal } from "./components/ui/Modal.js";
+import { VersionIndicator } from "./components/VersionIndicator.js";
+import { useEditorActions } from "./hooks/useEditorActions.js";
+import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
+import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
+import {
+  type LanguageCode,
+  readStoredLanguage,
+  supportedLanguages,
+  t,
+  writeStoredLanguage,
+} from "./i18n.js";
+import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
+import { EditorState } from "./office/editor/editorState.js";
+import { EditorToolbar } from "./office/editor/EditorToolbar.js";
+import { OfficeState } from "./office/engine/officeState.js";
+import { isRotatable } from "./office/layout/furnitureCatalog.js";
+import { isWalkable } from "./office/layout/tileMap.js";
+import { EditTool, TILE_SIZE } from "./office/types.js";
+import {
+  appearanceToSpriteData,
+  generateQuestionPet,
+} from "./pets/generateQuestionPet.js";
+import { type PetDispatch, petStore, tagsFromText } from "./pets/petStore.js";
+import { QuestionPetPreview } from "./pets/QuestionPetPreview.js";
+import { isBrowserRuntime } from "./runtime.js";
+import {
+  applyPlayerNpcDialogue,
+  applyPlayerThrongletResponse,
+  createInitialSnapshot,
+  createThronglet,
+  tickSimulation,
+} from "./simulation/engine.js";
+import { scorePromptResonance } from "./simulation/resonance.js";
+import type { SimSnapshot, Thronglet } from "./simulation/types.js";
+import { shouldEnableVideoEncounter } from "./videoEncounter.js";
+import { vscode } from "./vscodeApi.js";
+import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   createTamagotchiPeachForestLayout,
   isInZone,
   tamagotchiNpcPlacements,
   tamagotchiPeachForestZones,
-} from './world/peachBlossomWorld.js';
+} from "./world/peachBlossomWorld.js";
 
 interface Persona {
   id: string;
@@ -47,34 +75,44 @@ interface Persona {
   responses: Record<string, string>;
 }
 
-const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
+const personas = [
+  ...(personaData.personas as Persona[]),
+  ...(extraPersonaData.personas as Persona[]),
+];
 
 const topicLabels: Record<string, string> = {
-  nomadic: 'Nomadic research',
-  camp: 'Hacker camp',
-  independent: 'Independent research',
-  artScience: 'Science art project',
-  funding: 'How to use funding',
-  exchange: 'International exchange',
-  sustainability: 'Open community sustainability',
+  nomadic: "Nomadic research",
+  camp: "Hacker camp",
+  independent: "Independent research",
+  artScience: "Science art project",
+  funding: "How to use funding",
+  exchange: "International exchange",
+  sustainability: "Open community sustainability",
 };
 
 const PLAYER_ID = 0;
-const MOBILE_THUMB_GUIDE_CENTER_LEFT_PX = 96;
-const MOBILE_THUMB_GUIDE_BOTTOM_PX = 72;
-const MOBILE_THUMB_GUIDE_DIAMETER_PX = 168;
-const archiveTreeZone = tamagotchiPeachForestZones.find((zone) => zone.kind === 'archiveTree') ?? null;
-type PlayMode = 'camp' | 'expedition';
-type AppMode = 'interactive' | 'dispatch_observer';
+const MOBILE_THUMB_GUIDE_BOTTOM_PX = 148;
+const MOBILE_THUMB_GUIDE_DIAMETER_PX = 112;
+const MOBILE_THUMB_ACTIVE_RADIUS_PX = 60;
+const archiveTreeZone =
+  tamagotchiPeachForestZones.find((zone) => zone.kind === "archiveTree") ??
+  null;
+type PlayMode = "camp" | "expedition";
+type AppMode = "interactive" | "dispatch_observer";
 type SplitPanel =
-  | { kind: 'wiki'; persona: Persona }
-  | { kind: 'archivePdf' }
-  | { kind: 'archiveMap' };
+  | { kind: "wiki"; persona: Persona }
+  | { kind: "archivePdf" }
+  | { kind: "archiveMap" }
+  | { kind: "external"; title: string; url: string };
 const ExpeditionPanel = lazy(() =>
-  import('./components/ExpeditionPanel.js').then((module) => ({ default: module.ExpeditionPanel })),
+  import("./components/ExpeditionPanel.js").then((module) => ({
+    default: module.ExpeditionPanel,
+  })),
 );
 const RpgDialogue = lazy(() =>
-  import('./components/RpgDialogue.js').then((module) => ({ default: module.RpgDialogue })),
+  import("./components/RpgDialogue.js").then((module) => ({
+    default: module.RpgDialogue,
+  })),
 );
 
 function trimToFiftyChars(text: string): string {
@@ -82,23 +120,37 @@ function trimToFiftyChars(text: string): string {
 }
 
 function languageLabel(language: LanguageCode, zh: string, en: string): string {
-  return language === 'zh-TW' ? zh : en;
+  return language === "zh-TW" ? zh : en;
+}
+
+function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
+  if (panel.kind === "wiki") return panel.persona.name;
+  if (panel.kind === "archivePdf") return t(language, "archivePdfTitle");
+  if (panel.kind === "archiveMap") return t(language, "archiveMapTitle");
+  return panel.title;
+}
+
+function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
+  if (panel.kind === "wiki") return "World Wiki";
+  if (panel.kind === "external") return t(language, "communityPortals");
+  return t(language, "archiveTree");
 }
 
 function readSavedPlayerDefaults(): PlayerProfile | null {
   try {
-    const raw = localStorage.getItem('peach_player_profile');
+    const raw = localStorage.getItem("peach_player_profile");
     if (!raw) return null;
     const saved = JSON.parse(raw) as Partial<PlayerProfile>;
     return {
-      name: saved.name ?? '',
+      name: saved.name ?? "",
       palette: saved.palette ?? 0,
       avatarTitle: saved.avatarTitle,
-      currentRole: saved.currentRole ?? 'Wandering researcher',
-      mission: saved.mission ?? 'Find an idea worth developing with others',
-      constraints: saved.constraints ?? '',
-      skills: saved.skills ?? '',
-      question: saved.question ?? saved.mission ?? '',
+      currentRole: saved.currentRole ?? "Wandering researcher",
+      mission: saved.mission ?? "Find an idea worth developing with others",
+      constraints: saved.constraints ?? "",
+      skills: saved.skills ?? "",
+      question: saved.question ?? saved.mission ?? "",
+      petSeed: saved.petSeed,
     };
   } catch {
     return null;
@@ -121,7 +173,9 @@ function App() {
   // useExtensionMessages listener has been registered.
   useEffect(() => {
     if (isBrowserRuntime) {
-      void import('./browserMock.js').then(({ dispatchMockMessages }) => dispatchMockMessages());
+      void import("./browserMock.js").then(({ dispatchMockMessages }) =>
+        dispatchMockMessages(),
+      );
     }
   }, []);
 
@@ -150,10 +204,15 @@ function App() {
     hooksEnabled,
     setHooksEnabled,
     hooksInfoShown,
-  } = useExtensionMessages(getOfficeState, editor.setLastSavedLayout, isEditDirty);
+  } = useExtensionMessages(
+    getOfficeState,
+    editor.setLastSavedLayout,
+    isEditDirty,
+  );
 
   // Show migration notice once layout reset is detected
-  const [migrationNoticeDismissed, setMigrationNoticeDismissed] = useState(false);
+  const [migrationNoticeDismissed, setMigrationNoticeDismissed] =
+    useState(false);
   const showMigrationNotice = layoutWasReset && !migrationNoticeDismissed;
 
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
@@ -162,49 +221,85 @@ function App() {
   const [hooksTooltipDismissed, setHooksTooltipDismissed] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [alwaysShowOverlay, setAlwaysShowOverlay] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() => readStoredLanguage());
-  const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(() => readSavedPlayerDefaults());
-  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() =>
+    readStoredLanguage(),
+  );
+  const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
+    () => readSavedPlayerDefaults(),
+  );
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(
+    null,
+  );
   const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
   const [, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
-  const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
+  const [promptAnchor, setPromptAnchor] = useState<{
+    npcId: number;
+    col: number;
+    row: number;
+  } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
-  const [playMode, setPlayMode] = useState<PlayMode>('camp');
-  const [appMode, setAppMode] = useState<AppMode>('interactive');
-  const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() => petStore.listPets());
-  const [selectedDispatchPet, setSelectedDispatchPet] = useState<PetDispatch | null>(null);
+  const [playMode, setPlayMode] = useState<PlayMode>("camp");
+  const [appMode, setAppMode] = useState<AppMode>("interactive");
+  const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() =>
+    petStore.listPets(),
+  );
+  const [selectedDispatchPet, setSelectedDispatchPet] =
+    useState<PetDispatch | null>(null);
   const [selectedNpcInfo, setSelectedNpcInfo] = useState<Persona | null>(null);
   const [mobileRulesOpen, setMobileRulesOpen] = useState(false);
   const [worldNotice, setWorldNotice] = useState<string | null>(null);
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
-  const [petResponse, setPetResponse] = useState('');
+  const [petResponse, setPetResponse] = useState("");
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
   const [isSplitExpanded, setIsSplitExpanded] = useState(false);
   const [archiveMenuDismissed, setArchiveMenuDismissed] = useState(false);
-  const [abaoBubble, setAbaoBubble] = useState<{ text: string; nonce: number } | null>(null);
+  const [abaoBubble, setAbaoBubble] = useState<{
+    text: string;
+    nonce: number;
+  } | null>(null);
+  const petRunawayDoneRef = useRef<string | null>(null);
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
-  const activeDispatchPets = useMemo(() => dispatchedPets.filter((pet) => pet.status === 'active'), [dispatchedPets]);
-  const archiveSummary = useMemo(() => ({
-    total: dispatchedPets.length,
-    active: dispatchedPets.filter((pet) => pet.status === 'active').length,
-    hibernating: dispatchedPets.filter((pet) => pet.status === 'hibernating').length,
-    archived: dispatchedPets.filter((pet) => pet.status === 'archived').length,
-    notes: dispatchedPets.reduce((sum, pet) => sum + (pet.ownerId === petStore.getOwnerId() ? pet.interactions.length : 0), 0),
-  }), [dispatchedPets]);
+  const activeDispatchPets = useMemo(
+    () => dispatchedPets.filter((pet) => pet.status === "active"),
+    [dispatchedPets],
+  );
+  const archiveSummary = useMemo(
+    () => ({
+      total: dispatchedPets.length,
+      active: dispatchedPets.filter((pet) => pet.status === "active").length,
+      hibernating: dispatchedPets.filter((pet) => pet.status === "hibernating")
+        .length,
+      archived: dispatchedPets.filter((pet) => pet.status === "archived")
+        .length,
+      notes: dispatchedPets.reduce(
+        (sum, pet) =>
+          sum +
+          (pet.ownerId === petStore.getOwnerId() ? pet.interactions.length : 0),
+        0,
+      ),
+    }),
+    [dispatchedPets],
+  );
 
   const handleWhatsNewDismiss = useCallback(() => {
-    vscode.postMessage({ type: 'setLastSeenVersion', version: currentMajorMinor });
+    vscode.postMessage({
+      type: "setLastSeenVersion",
+      version: currentMajorMinor,
+    });
   }, [currentMajorMinor]);
 
   const handleOpenChangelog = useCallback(() => {
     setIsChangelogOpen(true);
-    vscode.postMessage({ type: 'setLastSeenVersion', version: currentMajorMinor });
+    vscode.postMessage({
+      type: "setLastSeenVersion",
+      version: currentMajorMinor,
+    });
   }, [currentMajorMinor]);
 
   // Sync alwaysShowOverlay from persisted settings
@@ -212,47 +307,69 @@ function App() {
     setAlwaysShowOverlay(alwaysShowLabels);
   }, [alwaysShowLabels]);
 
-  const handleToggleDebugMode = useCallback(() => setIsDebugMode((prev) => !prev), []);
+  const handleToggleDebugMode = useCallback(
+    () => setIsDebugMode((prev) => !prev),
+    [],
+  );
   const handleToggleAlwaysShowOverlay = useCallback(() => {
     setAlwaysShowOverlay((prev) => {
       const newVal = !prev;
-      vscode.postMessage({ type: 'setAlwaysShowLabels', enabled: newVal });
+      vscode.postMessage({ type: "setAlwaysShowLabels", enabled: newVal });
       return newVal;
     });
   }, []);
 
   const handleSelectAgent = useCallback((id: number) => {
-    vscode.postMessage({ type: 'focusAgent', id });
+    vscode.postMessage({ type: "focusAgent", id });
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const mobileDragRef = useRef({ pointerId: null as number | null, clientX: 0, clientY: 0, raf: 0, nextAt: 0 });
-  const getMobileControlCenter = useCallback(() => ({
-    x: MOBILE_THUMB_GUIDE_CENTER_LEFT_PX,
-    y: window.innerHeight - MOBILE_THUMB_GUIDE_BOTTOM_PX - MOBILE_THUMB_GUIDE_DIAMETER_PX / 2,
-  }), []);
+  const mobileDragRef = useRef({
+    pointerId: null as number | null,
+    clientX: 0,
+    clientY: 0,
+    raf: 0,
+    nextAt: 0,
+  });
+  const getMobileControlCenter = useCallback(
+    () => ({
+      x: window.innerWidth / 2,
+      y:
+        window.innerHeight -
+        MOBILE_THUMB_GUIDE_BOTTOM_PX -
+        MOBILE_THUMB_GUIDE_DIAMETER_PX / 2,
+    }),
+    [],
+  );
 
-  const abaoLines = useMemo(() => [
-    'WTF',
-    'haha',
-    'what do we do!',
-    'Whyyyyyyyyyy!!',
-    '好無聊喔…',
-    '我喜歡研究意識',
-    'Wise Mouse Culture！',
-    '能源與身份到底是什麼？',
-    'AI agent需要夢嗎？',
-    '今天有太陽嗎？',
-    '我要去黑客營',
-  ], []);
+  const abaoLines = useMemo(
+    () => [
+      "WTF",
+      "haha",
+      "what do we do!",
+      "Whyyyyyyyyyy!!",
+      "好無聊喔…",
+      "我喜歡研究意識",
+      "Wise Mouse Culture！",
+      "能源與身份到底是什麼？",
+      "AI agent需要夢嗎？",
+      "今天有太陽嗎？",
+      "我要去黑客營",
+    ],
+    [],
+  );
 
   const showAbaoBubble = useCallback(() => {
-    const text = abaoLines[Math.floor(Math.random() * abaoLines.length)] ?? 'haha';
+    const text =
+      abaoLines[Math.floor(Math.random() * abaoLines.length)] ?? "haha";
     const nonce = Date.now();
     setAbaoBubble({ text, nonce });
-    window.setTimeout(() => {
-      setAbaoBubble((current) => current?.nonce === nonce ? null : current);
-    }, 2600 + Math.floor(Math.random() * 1400));
+    window.setTimeout(
+      () => {
+        setAbaoBubble((current) => (current?.nonce === nonce ? null : current));
+      },
+      2600 + Math.floor(Math.random() * 1400),
+    );
   }, [abaoLines]);
 
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
@@ -268,48 +385,60 @@ function App() {
     editor.handleToggleEditMode,
   );
 
-  const handleClick = useCallback((agentId: number) => {
-    const dispatchIndex = agentId - 20000;
-    if (dispatchIndex >= 0) {
-      const pet = activeDispatchPets[dispatchIndex] ?? null;
-      if (pet) {
-        setSelectedDispatchPet(pet);
-        setSelectedPet(null);
-        setSelectedNpcInfo(null);
+  const handleClick = useCallback(
+    (agentId: number) => {
+      const dispatchIndex = agentId - 20000;
+      if (dispatchIndex >= 0) {
+        const pet = activeDispatchPets[dispatchIndex] ?? null;
+        if (pet) {
+          setSelectedDispatchPet(pet);
+          setSelectedPet(null);
+          setSelectedNpcInfo(null);
+          return;
+        }
+      }
+      const pet =
+        simSnapshot?.thronglets.find((item) => item.characterId === agentId) ??
+        null;
+      if (pet && appMode === "interactive") {
+        setSelectedPet(pet);
+        setSelectedDispatchPet(null);
         return;
       }
-    }
-    const pet = simSnapshot?.thronglets.find((item) => item.characterId === agentId) ?? null;
-    if (pet && appMode === 'interactive') {
-      setSelectedPet(pet);
-      setSelectedDispatchPet(null);
-      return;
-    }
-    const persona = personas[agentId - 1] ?? null;
-    if (appMode === 'interactive' && persona?.id === 'abao') {
-      showAbaoBubble();
-      return;
-    }
-    if (appMode === 'dispatch_observer' && persona) {
-      setSelectedNpcInfo(persona);
-      setSelectedDispatchPet(null);
-      return;
-    }
-    const os = getOfficeState();
-    const meta = os.subagentMeta.get(agentId);
-    const focusId = meta ? meta.parentAgentId : agentId;
-    vscode.postMessage({ type: 'focusAgent', id: focusId });
-  }, [activeDispatchPets, appMode, showAbaoBubble, simSnapshot]);
+      const persona = personas[agentId - 1] ?? null;
+      if (appMode === "interactive" && persona?.id === "abao") {
+        showAbaoBubble();
+        return;
+      }
+      if (appMode === "dispatch_observer" && persona) {
+        setSelectedNpcInfo(persona);
+        setSelectedDispatchPet(null);
+        return;
+      }
+      const os = getOfficeState();
+      const meta = os.subagentMeta.get(agentId);
+      const focusId = meta ? meta.parentAgentId : agentId;
+      vscode.postMessage({ type: "focusAgent", id: focusId });
+    },
+    [activeDispatchPets, appMode, showAbaoBubble, simSnapshot],
+  );
 
   const officeState = getOfficeState();
   const personaByAgentId = useMemo(
     () => new Map(personas.map((persona, index) => [index + 1, persona])),
     [],
   );
-  const nearbyPersona = nearbyNpcId ? personaByAgentId.get(nearbyNpcId) ?? null : null;
-  const activeDialoguePersona = activeDialogueId ? personaByAgentId.get(activeDialogueId) ?? null : null;
-  const activeDialogueCharacter = activeDialogueId ? officeState.characters.get(activeDialogueId) ?? null : null;
-  const abaoAgentId = personas.findIndex((persona) => persona.id === 'abao') + 1;
+  const nearbyPersona = nearbyNpcId
+    ? (personaByAgentId.get(nearbyNpcId) ?? null)
+    : null;
+  const activeDialoguePersona = activeDialogueId
+    ? (personaByAgentId.get(activeDialogueId) ?? null)
+    : null;
+  const activeDialogueCharacter = activeDialogueId
+    ? (officeState.characters.get(activeDialogueId) ?? null)
+    : null;
+  const abaoAgentId =
+    personas.findIndex((persona) => persona.id === "abao") + 1;
   const isNearAbao = nearbyNpcId === abaoAgentId;
   const isSplitOpen = splitPanel !== null;
 
@@ -318,18 +447,20 @@ function App() {
   }, [selectedLanguage]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(pointer: coarse), (max-width: 900px)');
+    const mediaQuery = window.matchMedia(
+      "(pointer: coarse), (max-width: 900px)",
+    );
     const sync = () => {
       setShowMobileControls(mediaQuery.matches);
     };
     sync();
-    mediaQuery.addEventListener('change', sync);
-    window.addEventListener('resize', sync);
-    window.addEventListener('orientationchange', sync);
+    mediaQuery.addEventListener("change", sync);
+    window.addEventListener("resize", sync);
+    window.addEventListener("orientationchange", sync);
     return () => {
-      mediaQuery.removeEventListener('change', sync);
-      window.removeEventListener('resize', sync);
-      window.removeEventListener('orientationchange', sync);
+      mediaQuery.removeEventListener("change", sync);
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", sync);
     };
   }, []);
 
@@ -340,7 +471,9 @@ function App() {
     for (const id of agents) {
       const npc = officeState.characters.get(id);
       if (!npc) continue;
-      const dist = Math.abs(npc.tileCol - player.tileCol) + Math.abs(npc.tileRow - player.tileRow);
+      const dist =
+        Math.abs(npc.tileCol - player.tileCol) +
+        Math.abs(npc.tileRow - player.tileRow);
       if (dist <= 2 && (!nearest || dist < nearest.dist)) {
         nearest = { id, dist };
       }
@@ -354,8 +487,12 @@ function App() {
       officeState.rebuildFromLayout(createTamagotchiPeachForestLayout());
       setWorldInitialized(true);
     }
-    if (appMode === 'interactive') {
-      officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
+    if (appMode === "interactive") {
+      officeState.addPlayer(
+        PLAYER_ID,
+        playerProfile.palette,
+        playerProfile.name,
+      );
       officeState.cameraFollowId = PLAYER_ID;
     } else {
       officeState.characters.delete(PLAYER_ID);
@@ -379,16 +516,55 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || agents.length === 0) return;
-    const personaById = new Map(personas.map((persona, index) => [persona.id, index + 1]));
+    const personaById = new Map(
+      personas.map((persona, index) => [persona.id, index + 1]),
+    );
     for (const placement of tamagotchiNpcPlacements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId || !agents.includes(agentId)) continue;
       const ch = officeState.characters.get(agentId);
       if (!ch) continue;
-      ch.tileCol = placement.col;
-      ch.tileRow = placement.row;
-      ch.x = placement.col * TILE_SIZE + TILE_SIZE / 2;
-      ch.y = placement.row * TILE_SIZE + TILE_SIZE / 2;
+      const resolvedPlacement = (() => {
+        if (
+          isWalkable(
+            placement.col,
+            placement.row,
+            officeState.tileMap,
+            officeState.blockedTiles,
+          )
+        ) {
+          return { col: placement.col, row: placement.row };
+        }
+        for (let radius = 1; radius <= 6; radius++) {
+          for (let dRow = -radius; dRow <= radius; dRow++) {
+            for (let dCol = -radius; dCol <= radius; dCol++) {
+              if (Math.abs(dCol) !== radius && Math.abs(dRow) !== radius)
+                continue;
+              const col = placement.col + dCol;
+              const row = placement.row + dRow;
+              if (
+                isWalkable(
+                  col,
+                  row,
+                  officeState.tileMap,
+                  officeState.blockedTiles,
+                )
+              ) {
+                return { col, row };
+              }
+            }
+          }
+        }
+        return (
+          officeState.walkableTiles.find(
+            (tile) => tile.col > 1 && tile.row > 1,
+          ) ?? { col: 1, row: 1 }
+        );
+      })();
+      ch.tileCol = resolvedPlacement.col;
+      ch.tileRow = resolvedPlacement.row;
+      ch.x = resolvedPlacement.col * TILE_SIZE + TILE_SIZE / 2;
+      ch.y = resolvedPlacement.row * TILE_SIZE + TILE_SIZE / 2;
       ch.path = [];
       ch.moveProgress = 0;
       ch.wanderTimer = 2 + (agentId % 5);
@@ -398,31 +574,114 @@ function App() {
   }, [agents, layoutReady, officeState]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || appMode !== 'interactive' || !simSnapshot) return;
+    if (
+      !layoutReady ||
+      !playerProfile ||
+      appMode !== "interactive" ||
+      !simSnapshot
+    )
+      return;
     simSnapshot.thronglets.forEach((pet, index) => {
       if (!officeState.characters.has(pet.characterId)) {
-        officeState.addQuestionPet(pet.characterId, languageLabel(selectedLanguage, '問題電子雞', 'Question Pet'), appearanceToSpriteData(pet.appearance), 34 + index, 34);
+        officeState.addQuestionPet(
+          pet.characterId,
+          languageLabel(selectedLanguage, "問題電子雞", "Question Pet"),
+          appearanceToSpriteData(pet.appearance),
+          3 + index,
+          3,
+        );
       }
     });
-  }, [appMode, layoutReady, officeState, playerProfile, selectedLanguage, simSnapshot]);
+  }, [
+    appMode,
+    layoutReady,
+    officeState,
+    playerProfile,
+    selectedLanguage,
+    simSnapshot,
+  ]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || appMode !== 'interactive' || !simSnapshot) return;
+    if (
+      !layoutReady ||
+      !playerProfile ||
+      appMode !== "interactive" ||
+      !simSnapshot
+    )
+      return;
+    const runawayKey = `${playerProfile.petSeed ?? playerProfile.question}-${simSnapshot.thronglets.map((pet) => pet.id).join("|")}`;
+    if (petRunawayDoneRef.current === runawayKey) return;
+    petRunawayDoneRef.current = runawayKey;
+    const timeout = window.setTimeout(() => {
+      simSnapshot.thronglets.forEach((pet, index) => {
+        const ch = officeState.characters.get(pet.characterId);
+        if (!ch) return;
+        ch.moveSpeedMultiplier = 4.2;
+        void officeState.walkToTile(pet.characterId, 52 - index * 2, 49);
+      });
+      setWorldNotice(
+        selectedLanguage === "zh-TW"
+          ? "你的問題電子雞看了你一眼，然後用不合理的速度拋下你。"
+          : "Your question pet looks at you once, then abandons you at unreasonable speed.",
+      );
+      window.setTimeout(() => setWorldNotice(null), 3600);
+    }, 700);
+    return () => window.clearTimeout(timeout);
+  }, [
+    appMode,
+    layoutReady,
+    officeState,
+    playerProfile,
+    selectedLanguage,
+    simSnapshot,
+  ]);
+
+  useEffect(() => {
+    if (
+      !layoutReady ||
+      !playerProfile ||
+      appMode !== "interactive" ||
+      !simSnapshot
+    )
+      return;
     const interval = window.setInterval(() => {
       setSimSnapshot((current) => {
         if (!current) return current;
-        const contexts = Object.fromEntries(current.thronglets.map((pet) => [pet.id, personas.map((persona) => `${persona.role} ${persona.intro}`).join(' ')]));
+        const contexts = Object.fromEntries(
+          current.thronglets.map((pet) => [
+            pet.id,
+            personas
+              .map((persona) => `${persona.role} ${persona.intro}`)
+              .join(" "),
+          ]),
+        );
         const next = tickSimulation(current, contexts);
         for (const pet of next.thronglets) {
           const ch = officeState.characters.get(pet.characterId);
           if (!ch || ch.path.length > 0) continue;
-          const targets = pet.currentAction === 'visitRiver' || pet.state.energy < 35
-            ? [{ col: 20, row: 16 }, { col: 45, row: 12 }]
-            : pet.currentAction === 'joinThrong' || pet.state.groupBond > 50
-              ? [{ col: 43, row: 31 }]
-              : pet.currentAction === 'reflect' || pet.state.solitude > 60
-                ? [{ col: 14, row: 51 }, { col: 53, row: 50 }]
-                : [{ col: ch.tileCol + ((next.tick + pet.characterId) % 3) - 1, row: ch.tileRow + (((next.tick + pet.characterId) >> 1) % 3) - 1 }];
+          const targets =
+            pet.currentAction === "visitRiver" || pet.state.energy < 35
+              ? [
+                  { col: 20, row: 16 },
+                  { col: 45, row: 12 },
+                ]
+              : pet.currentAction === "joinThrong" || pet.state.groupBond > 50
+                ? [{ col: 43, row: 31 }]
+                : pet.currentAction === "reflect" || pet.state.solitude > 60
+                  ? [
+                      { col: 14, row: 51 },
+                      { col: 53, row: 50 },
+                    ]
+                  : [
+                      {
+                        col:
+                          ch.tileCol + ((next.tick + pet.characterId) % 3) - 1,
+                        row:
+                          ch.tileRow +
+                          (((next.tick + pet.characterId) >> 1) % 3) -
+                          1,
+                      },
+                    ];
           const target = targets[next.tick % targets.length];
           officeState.walkToTile(pet.characterId, target.col, target.row);
         }
@@ -433,7 +692,7 @@ function App() {
   }, [appMode, layoutReady, officeState, playerProfile, simSnapshot]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || appMode !== 'interactive') return;
+    if (!layoutReady || !playerProfile || appMode !== "interactive") return;
     const interval = window.setInterval(() => {
       const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
@@ -446,10 +705,16 @@ function App() {
         return { npcId: nearbyId, col: npc.tileCol, row: npc.tileRow };
       });
       if (player && nearbyId) {
-        officeState.faceCharacterToward(nearbyId, player.tileCol, player.tileRow);
+        officeState.faceCharacterToward(
+          nearbyId,
+          player.tileCol,
+          player.tileRow,
+        );
       }
       const nearTree =
-        !!player && !!archiveTreeZone && isInZone(player.tileCol, player.tileRow, archiveTreeZone, 1);
+        !!player &&
+        !!archiveTreeZone &&
+        isInZone(player.tileCol, player.tileRow, archiveTreeZone, 1);
       setIsNearTree(nearTree);
     }, 250);
     return () => window.clearInterval(interval);
@@ -465,28 +730,30 @@ function App() {
   }, [activeDialogueId]);
 
   useEffect(() => {
-    if (!layoutReady || !playerProfile || appMode !== 'interactive') return;
+    if (!layoutReady || !playerProfile || appMode !== "interactive") return;
 
     // Continuous smooth movement: track held keys, advance via rAF, do not rely on OS key-repeat.
-    const heldKeys = new Set<'up' | 'down' | 'left' | 'right'>();
+    const heldKeys = new Set<"up" | "down" | "left" | "right">();
     let isSprint = false;
     let sprintHeld = false;
     let raf = 0;
     let nextRepeatAt = 0;
 
-    const dirOf = (event: KeyboardEvent): 'up' | 'down' | 'left' | 'right' | null => {
+    const dirOf = (
+      event: KeyboardEvent,
+    ): "up" | "down" | "left" | "right" | null => {
       const k = event.key.toLowerCase();
-      if (event.key === 'ArrowUp' || k === 'w') return 'up';
-      if (event.key === 'ArrowDown' || k === 's') return 'down';
-      if (event.key === 'ArrowLeft' || k === 'a') return 'left';
-      if (event.key === 'ArrowRight' || k === 'd') return 'right';
+      if (event.key === "ArrowUp" || k === "w") return "up";
+      if (event.key === "ArrowDown" || k === "s") return "down";
+      if (event.key === "ArrowLeft" || k === "a") return "left";
+      if (event.key === "ArrowRight" || k === "d") return "right";
       return null;
     };
 
-    const stepOnce = (dir: 'up' | 'down' | 'left' | 'right'): boolean => {
-      if (dir === 'up') return officeState.movePlayerBy(PLAYER_ID, 0, -1);
-      if (dir === 'down') return officeState.movePlayerBy(PLAYER_ID, 0, 1);
-      if (dir === 'left') return officeState.movePlayerBy(PLAYER_ID, -1, 0);
+    const stepOnce = (dir: "up" | "down" | "left" | "right"): boolean => {
+      if (dir === "up") return officeState.movePlayerBy(PLAYER_ID, 0, -1);
+      if (dir === "down") return officeState.movePlayerBy(PLAYER_ID, 0, 1);
+      if (dir === "left") return officeState.movePlayerBy(PLAYER_ID, -1, 0);
       return officeState.movePlayerBy(PLAYER_ID, 1, 0);
     };
 
@@ -510,11 +777,11 @@ function App() {
       if (now < nextRepeatAt) return;
 
       // Vertical first, then horizontal (no diagonals).
-      let dir: 'up' | 'down' | 'left' | 'right' | null = null;
-      if (heldKeys.has('up')) dir = 'up';
-      else if (heldKeys.has('down')) dir = 'down';
-      else if (heldKeys.has('left')) dir = 'left';
-      else if (heldKeys.has('right')) dir = 'right';
+      let dir: "up" | "down" | "left" | "right" | null = null;
+      if (heldKeys.has("up")) dir = "up";
+      else if (heldKeys.has("down")) dir = "down";
+      else if (heldKeys.has("left")) dir = "left";
+      else if (heldKeys.has("right")) dir = "right";
       if (!dir) return;
 
       const moved = stepOnce(dir);
@@ -527,18 +794,21 @@ function App() {
 
     function onKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null;
-      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA') return;
+      if (target?.tagName === "INPUT" || target?.tagName === "TEXTAREA") return;
 
-      if (event.key === 'Shift' || event.key === 'Control') {
+      if (event.key === "Shift" || event.key === "Control") {
         sprintHeld = true;
       }
 
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setActiveDialogueId(null);
         return;
       }
-      if (event.code === 'Space') {
-        if (activeDialogueIdRef.current === null && nearbyNpcIdRef.current !== null) {
+      if (event.code === "Space") {
+        if (
+          activeDialogueIdRef.current === null &&
+          nearbyNpcIdRef.current !== null
+        ) {
           event.preventDefault();
           officeState.selectedAgentId = nearbyNpcIdRef.current;
           setActiveDialogueId(nearbyNpcIdRef.current);
@@ -564,7 +834,7 @@ function App() {
     }
 
     function onKeyUp(event: KeyboardEvent) {
-      if (event.key === 'Shift' || event.key === 'Control') {
+      if (event.key === "Shift" || event.key === "Control") {
         sprintHeld = false;
         isSprint = false;
       }
@@ -582,14 +852,14 @@ function App() {
       nextRepeatAt = 0;
     }
 
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
-    window.addEventListener('blur', onWindowBlur);
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", onWindowBlur);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
-      window.removeEventListener('blur', onWindowBlur);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", onWindowBlur);
     };
   }, [appMode, layoutReady, officeState, playerProfile]);
 
@@ -615,9 +885,10 @@ function App() {
     const dx = drag.clientX - controlCenter.x;
     const dy = drag.clientY - controlCenter.y;
     if (Math.hypot(dx, dy) < 24) return;
-    const moved = Math.abs(dx) > Math.abs(dy)
-      ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
-      : handleMoveCommand(0, dy > 0 ? 1 : -1);
+    const moved =
+      Math.abs(dx) > Math.abs(dy)
+        ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
+        : handleMoveCommand(0, dy > 0 ? 1 : -1);
     if (moved) {
       drag.nextAt = now + 90;
     }
@@ -625,32 +896,65 @@ function App() {
 
   const handleMobilePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!showMobileControls || !playerProfile || appMode !== 'interactive' || activeDialogueIdRef.current !== null) return;
+      if (
+        !showMobileControls ||
+        !playerProfile ||
+        appMode !== "interactive" ||
+        activeDialogueIdRef.current !== null
+      )
+        return;
       const target = event.target as HTMLElement | null;
-      if (target?.closest('button, input, textarea, a, select, [data-no-mobile-drag="true"]')) return;
+      if (
+        target?.closest(
+          'button, input, textarea, a, select, [data-no-mobile-drag="true"]',
+        )
+      )
+        return;
+      const controlCenter = getMobileControlCenter();
+      if (
+        Math.hypot(
+          event.clientX - controlCenter.x,
+          event.clientY - controlCenter.y,
+        ) > MOBILE_THUMB_ACTIVE_RADIUS_PX
+      )
+        return;
       event.currentTarget.setPointerCapture(event.pointerId);
       mobileDragRef.current.pointerId = event.pointerId;
       mobileDragRef.current.clientX = event.clientX;
       mobileDragRef.current.clientY = event.clientY;
       mobileDragRef.current.nextAt = 0;
       if (!mobileDragRef.current.raf) {
-        mobileDragRef.current.raf = requestAnimationFrame(stepTowardMobilePointer);
+        mobileDragRef.current.raf = requestAnimationFrame(
+          stepTowardMobilePointer,
+        );
       }
     },
-    [appMode, playerProfile, showMobileControls, stepTowardMobilePointer],
+    [
+      appMode,
+      getMobileControlCenter,
+      playerProfile,
+      showMobileControls,
+      stepTowardMobilePointer,
+    ],
   );
 
-  const handleMobilePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (mobileDragRef.current.pointerId !== event.pointerId) return;
-    mobileDragRef.current.clientX = event.clientX;
-    mobileDragRef.current.clientY = event.clientY;
-  }, []);
+  const handleMobilePointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (mobileDragRef.current.pointerId !== event.pointerId) return;
+      mobileDragRef.current.clientX = event.clientX;
+      mobileDragRef.current.clientY = event.clientY;
+    },
+    [],
+  );
 
-  const stopMobilePointer = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (mobileDragRef.current.pointerId !== event.pointerId) return;
-    mobileDragRef.current.pointerId = null;
-    mobileDragRef.current.nextAt = 0;
-  }, []);
+  const stopMobilePointer = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (mobileDragRef.current.pointerId !== event.pointerId) return;
+      mobileDragRef.current.pointerId = null;
+      mobileDragRef.current.nextAt = 0;
+    },
+    [],
+  );
 
   useEffect(() => {
     const drag = mobileDragRef.current;
@@ -659,27 +963,42 @@ function App() {
     };
   }, []);
 
-  const handlePlayerStart = useCallback((profile: PlayerProfile, mode: StartMode) => {
-    localStorage.setItem('peach_player_profile', JSON.stringify(profile));
-    const created = petStore.createDispatch({
-      ownerName: profile.name,
-      displayName: profile.name ? `${profile.name} / question pet` : undefined,
-      question: profile.question || profile.mission,
-      skill: profile.skills,
-      seed: profile.petSeed ?? `${Date.now()}`,
-      isMobile: showMobileControls,
-    });
-    const allPets = petStore.listPets();
-    setDispatchedPets(allPets);
-    const pet = createThronglet(profile.question || profile.mission, profile.name, PLAYER_ID, 10000);
-    const npcContexts = personas.map((persona, index) => ({ id: `npc-${persona.id}`, characterId: index + 1, name: persona.name, text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(' ')}` }));
-    setSimSnapshot(createInitialSnapshot([pet], npcContexts));
-    setPlayerDefaults(profile);
-    setPlayerProfile(profile);
-    setAppMode(mode);
-    setPlayMode('camp');
-    setSelectedDispatchPet(created);
-  }, [showMobileControls]);
+  const handlePlayerStart = useCallback(
+    (profile: PlayerProfile, mode: StartMode) => {
+      localStorage.setItem("peach_player_profile", JSON.stringify(profile));
+      const created = petStore.createDispatch({
+        ownerName: profile.name,
+        displayName: profile.name
+          ? `${profile.name} / question pet`
+          : undefined,
+        question: profile.question || profile.mission,
+        skill: profile.skills,
+        seed: profile.petSeed ?? `${Date.now()}`,
+        isMobile: showMobileControls,
+      });
+      const allPets = petStore.listPets();
+      setDispatchedPets(allPets);
+      const pet = createThronglet(
+        profile.question || profile.mission,
+        profile.name,
+        PLAYER_ID,
+        10000,
+      );
+      const npcContexts = personas.map((persona, index) => ({
+        id: `npc-${persona.id}`,
+        characterId: index + 1,
+        name: persona.name,
+        text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`,
+      }));
+      setSimSnapshot(createInitialSnapshot([pet], npcContexts));
+      setPlayerDefaults(profile);
+      setPlayerProfile(profile);
+      setAppMode(mode);
+      setPlayMode("camp");
+      setSelectedDispatchPet(mode === "dispatch_observer" ? created : null);
+    },
+    [showMobileControls],
+  );
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
     setSelectedLanguage(language);
@@ -692,24 +1011,68 @@ function App() {
       const id = 20000 + index;
       if (officeState.characters.has(id)) return;
       const appearance = generateQuestionPet(pet.question, pet.seed);
-      officeState.addQuestionPet(id, pet.displayName ?? languageLabel(selectedLanguage, '問題電子雞', 'Question Pet'), appearanceToSpriteData(appearance), Math.round(pet.worldPosition.x), Math.round(pet.worldPosition.y));
+      officeState.addQuestionPet(
+        id,
+        pet.displayName ??
+          languageLabel(selectedLanguage, "問題電子雞", "Question Pet"),
+        appearanceToSpriteData(appearance),
+        Math.round(pet.worldPosition.x),
+        Math.round(pet.worldPosition.y),
+      );
     });
-  }, [activeDispatchPets, layoutReady, officeState, playerProfile, selectedLanguage]);
+  }, [
+    activeDispatchPets,
+    layoutReady,
+    officeState,
+    playerProfile,
+    selectedLanguage,
+  ]);
 
   useEffect(() => {
     if (!playerProfile || activeDispatchPets.length === 0) return;
     const interval = window.setInterval(() => {
       const pets = petStore.listPets();
-      const active = pets.filter((pet) => pet.status === 'active');
-      const avg = (key: keyof PetDispatch['stats']) => active.length ? active.reduce((sum, pet) => sum + pet.stats[key], 0) / active.length : 0;
-      if (active.length >= 12 && avg('social') > 60 && avg('learning') > 60 && avg('tension') < 70) {
-        setWorldNotice(t(selectedLanguage, 'worldResonanceEvent'));
-        active.slice(0, 4).forEach((pet) => petStore.addInteraction(pet.id, { actorType: 'system', message: t(selectedLanguage, 'worldResonanceEvent'), tags: ['world-resonance'], deltaStats: { social: 2, learning: 2 } }));
+      const active = pets.filter((pet) => pet.status === "active");
+      const avg = (key: keyof PetDispatch["stats"]) =>
+        active.length
+          ? active.reduce((sum, pet) => sum + pet.stats[key], 0) / active.length
+          : 0;
+      if (
+        active.length >= 12 &&
+        avg("social") > 60 &&
+        avg("learning") > 60 &&
+        avg("tension") < 70
+      ) {
+        setWorldNotice(t(selectedLanguage, "worldResonanceEvent"));
+        active.slice(0, 4).forEach((pet) =>
+          petStore.addInteraction(pet.id, {
+            actorType: "system",
+            message: t(selectedLanguage, "worldResonanceEvent"),
+            tags: ["world-resonance"],
+            deltaStats: { social: 2, learning: 2 },
+          }),
+        );
       } else {
-        const clustered = active.filter((pet) => pet.stats.social > 50).slice(0, 3);
-        if (clustered.length >= 3 && clustered.some((pet) => tagsFromText(pet.question).some((tag) => tagsFromText(clustered[0].question).includes(tag)))) {
-          setWorldNotice(t(selectedLanguage, 'smallCircleEvent'));
-          clustered.forEach((pet) => petStore.addInteraction(pet.id, { actorType: 'system', message: t(selectedLanguage, 'smallCircleEvent'), tags: ['small-circle'], deltaStats: { learning: 5 } }));
+        const clustered = active
+          .filter((pet) => pet.stats.social > 50)
+          .slice(0, 3);
+        if (
+          clustered.length >= 3 &&
+          clustered.some((pet) =>
+            tagsFromText(pet.question).some((tag) =>
+              tagsFromText(clustered[0].question).includes(tag),
+            ),
+          )
+        ) {
+          setWorldNotice(t(selectedLanguage, "smallCircleEvent"));
+          clustered.forEach((pet) =>
+            petStore.addInteraction(pet.id, {
+              actorType: "system",
+              message: t(selectedLanguage, "smallCircleEvent"),
+              tags: ["small-circle"],
+              deltaStats: { learning: 5 },
+            }),
+          );
         }
       }
       setDispatchedPets(petStore.listPets());
@@ -736,7 +1099,6 @@ function App() {
     setDispatchedPets([]);
   }
 
-
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
 
@@ -751,8 +1113,10 @@ function App() {
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
     const canvasW = rect.width * dpr;
     const canvasH = rect.height * dpr;
-    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    const deviceOffsetX =
+      Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const deviceOffsetY =
+      Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
       left: (deviceOffsetX + npc.x * editor.zoom) / dpr,
       top: (deviceOffsetY + (npc.y - 24) * editor.zoom) / dpr,
@@ -760,7 +1124,13 @@ function App() {
   })();
 
   const nameTags = (() => {
-    if (!containerRef.current) return [] as Array<{ id: number; name: string; left: number; top: number }>;
+    if (!containerRef.current)
+      return [] as Array<{
+        id: number;
+        name: string;
+        left: number;
+        top: number;
+      }>;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -768,13 +1138,15 @@ function App() {
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
     const canvasW = rect.width * dpr;
     const canvasH = rect.height * dpr;
-    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    const deviceOffsetX =
+      Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const deviceOffsetY =
+      Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
       .map((ch) => ({
         id: ch.id,
-        name: ch.folderName ?? '',
+        name: ch.folderName ?? "",
         left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
         top: (deviceOffsetY + (ch.y - 30) * editor.zoom) / dpr,
       }));
@@ -806,7 +1178,7 @@ function App() {
   const shouldShowMobileStatsBar =
     Boolean(playerProfile) &&
     showMobileControls &&
-    appMode === 'interactive' &&
+    appMode === "interactive" &&
     !isSplitOpen &&
     !activeDialoguePersona &&
     !selectedDispatchPet &&
@@ -820,14 +1192,23 @@ function App() {
   }, []);
 
   if (!layoutReady) {
-    return <div className="w-full h-full flex items-center justify-center ">Loading...</div>;
+    return (
+      <div className="w-full h-full flex items-center justify-center ">
+        Loading...
+      </div>
+    );
   }
 
   return (
     <div
       ref={containerRef}
-      className={`game-world-layer w-full h-full relative overflow-hidden ${isSplitOpen ? 'world-split-active' : ''} ${isSplitExpanded ? 'world-split-expanded' : ''}`}
-      style={{ touchAction: showMobileControls && appMode === 'interactive' && !isSplitOpen ? 'none' : undefined }}
+      className={`game-world-layer w-full h-full relative overflow-hidden ${isSplitOpen ? "world-split-active" : ""} ${isSplitExpanded ? "world-split-expanded" : ""}`}
+      style={{
+        touchAction:
+          showMobileControls && appMode === "interactive" && !isSplitOpen
+            ? "none"
+            : undefined,
+      }}
       onPointerDown={handleMobilePointerDown}
       onPointerMove={handleMobilePointerMove}
       onPointerUp={stopMobilePointer}
@@ -854,7 +1235,7 @@ function App() {
         <button
           className="global-language-trigger"
           type="button"
-          aria-label={t(selectedLanguage, 'languageLabel')}
+          aria-label={t(selectedLanguage, "languageLabel")}
           aria-expanded={languageMenuOpen}
           onClick={() => setLanguageMenuOpen((open) => !open)}
         >
@@ -865,7 +1246,7 @@ function App() {
             {supportedLanguages.map((entry) => (
               <button
                 key={entry.code}
-                className={entry.code === selectedLanguage ? 'is-active' : ''}
+                className={entry.code === selectedLanguage ? "is-active" : ""}
                 type="button"
                 role="menuitem"
                 onClick={() => handleLanguageChange(entry.code)}
@@ -877,14 +1258,37 @@ function App() {
         )}
       </div>
 
-      {playerProfile && appMode === 'dispatch_observer' && (
-        <button className="observer-close" type="button" onClick={handleCloseWorld} aria-label={t(selectedLanguage, 'close')}>×</button>
+      {playerProfile && appMode === "dispatch_observer" && (
+        <button
+          className="observer-close"
+          type="button"
+          onClick={handleCloseWorld}
+          aria-label={t(selectedLanguage, "close")}
+        >
+          ×
+        </button>
       )}
 
-      {playerProfile && appMode === 'dispatch_observer' && (
+      {playerProfile && appMode === "dispatch_observer" && (
         <div className="observer-zoom" data-no-mobile-drag="true">
-          <button type="button" onClick={() => editor.handleZoomChange(Math.min(4, editor.zoom + 0.25))} aria-label={t(selectedLanguage, 'zoomIn')}>+</button>
-          <button type="button" onClick={() => editor.handleZoomChange(Math.max(0.55, editor.zoom - 0.25))} aria-label={t(selectedLanguage, 'zoomOut')}>−</button>
+          <button
+            type="button"
+            onClick={() =>
+              editor.handleZoomChange(Math.min(4, editor.zoom + 0.25))
+            }
+            aria-label={t(selectedLanguage, "zoomIn")}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              editor.handleZoomChange(Math.max(0.55, editor.zoom - 0.25))
+            }
+            aria-label={t(selectedLanguage, "zoomOut")}
+          >
+            −
+          </button>
         </div>
       )}
 
@@ -893,24 +1297,32 @@ function App() {
           {/* Vignette overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'var(--vignette)' }}
+            style={{ background: "var(--vignette)" }}
           />
 
           {editor.isEditMode && editor.isDirty && (
             <EditActionBar editor={editor} editorState={editorState} />
           )}
 
-          {playerProfile && playMode === 'expedition' && !activeDialoguePersona && (
-            <Suspense fallback={<div className="absolute inset-0 z-47 flex items-center justify-center bg-black/35 px-6 py-5 text-text">Loading expedition...</div>}>
-              <ExpeditionPanel
-                avatar={playerProfile}
-                personas={personas}
-                isOpen
-                language={selectedLanguage}
-                onClose={() => setPlayMode('camp')}
-              />
-            </Suspense>
-          )}
+          {playerProfile &&
+            playMode === "expedition" &&
+            !activeDialoguePersona && (
+              <Suspense
+                fallback={
+                  <div className="absolute inset-0 z-47 flex items-center justify-center bg-black/35 px-6 py-5 text-text">
+                    Loading expedition...
+                  </div>
+                }
+              >
+                <ExpeditionPanel
+                  avatar={playerProfile}
+                  personas={personas}
+                  isOpen
+                  language={selectedLanguage}
+                  onClose={() => setPlayMode("camp")}
+                />
+              </Suspense>
+            )}
 
           {showRotateHint && (
             <div
@@ -925,7 +1337,9 @@ function App() {
             (() => {
               const selUid = editorState.selectedFurnitureUid;
               const selColor = selUid
-                ? (officeState.getLayout().furniture.find((f) => f.uid === selUid)?.color ?? null)
+                ? (officeState
+                    .getLayout()
+                    .furniture.find((f) => f.uid === selUid)?.color ?? null)
                 : null;
               return (
                 <EditorToolbar
@@ -942,37 +1356,49 @@ function App() {
                   onFloorColorChange={editor.handleFloorColorChange}
                   onWallColorChange={editor.handleWallColorChange}
                   onWallSetChange={editor.handleWallSetChange}
-                  onSelectedFurnitureColorChange={editor.handleSelectedFurnitureColorChange}
+                  onSelectedFurnitureColorChange={
+                    editor.handleSelectedFurnitureColorChange
+                  }
                   onFurnitureTypeChange={editor.handleFurnitureTypeChange}
                   loadedAssets={loadedAssets}
                 />
               );
             })()}
 
-          {appMode === 'interactive' && nearbyPersona && !activeDialoguePersona && promptPosition && (
-            <button
-              className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
-              style={{
-                left: promptPosition.left,
-                top: promptPosition.top,
-                background: 'rgba(24, 24, 40, 0.58)',
-                backdropFilter: 'blur(1px)',
-              }}
-              type="button"
-              onClick={() => {
-                if (nearbyNpcId === abaoAgentId) {
-                  showAbaoBubble();
-                  return;
-                }
-                officeState.selectedAgentId = nearbyNpcId;
-                setActiveDialogueId(nearbyNpcId);
-              }}
-            >
-              <p className="text-lg leading-snug text-text">{nearbyPersona.name}</p>
-              <p className="text-base text-text mt-1">{trimToFiftyChars(nearbyPersona.intro)}</p>
-              <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, 'pressSpaceToTalk')}</p>
-            </button>
-          )}
+          {appMode === "interactive" &&
+            nearbyPersona &&
+            nearbyNpcId !== abaoAgentId &&
+            !activeDialoguePersona &&
+            promptPosition && (
+              <button
+                className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
+                style={{
+                  left: promptPosition.left,
+                  top: promptPosition.top,
+                  background: "rgba(24, 24, 40, 0.58)",
+                  backdropFilter: "blur(1px)",
+                }}
+                type="button"
+                onClick={() => {
+                  if (nearbyNpcId === abaoAgentId) {
+                    showAbaoBubble();
+                    return;
+                  }
+                  officeState.selectedAgentId = nearbyNpcId;
+                  setActiveDialogueId(nearbyNpcId);
+                }}
+              >
+                <p className="text-lg leading-snug text-text">
+                  {nearbyPersona.name}
+                </p>
+                <p className="text-base text-text mt-1">
+                  {trimToFiftyChars(nearbyPersona.intro)}
+                </p>
+                <p className="text-base text-accent-bright mt-2">
+                  {t(selectedLanguage, "pressSpaceToTalk")}
+                </p>
+              </button>
+            )}
 
           {nameTags.map((tag) => (
             <div
@@ -986,143 +1412,470 @@ function App() {
 
           {shouldEnableVideoEncounter() && <></>}
 
-          {appMode === 'interactive' && isNearAbao && abaoBubble && promptPosition && !activeDialoguePersona && (
-            <div className="abao-speech-bubble" style={{ left: promptPosition.left, top: promptPosition.top - 78 }} data-no-mobile-drag="true">
-              {abaoBubble.text}
-            </div>
-          )}
-
-
-          {appMode === 'interactive' && isNearTree && !activeDialoguePersona && !splitPanel && !archiveMenuDismissed && (
-            <section className="archive-tree-menu pixel-panel" data-no-mobile-drag="true">
-              <button className="archive-tree-close" type="button" onClick={() => setArchiveMenuDismissed(true)} aria-label={t(selectedLanguage, 'close')}>×</button>
-              <p className="archive-tree-kicker">{t(selectedLanguage, 'archiveTree')}</p>
-              <h1>{t(selectedLanguage, 'archiveTitle')}</h1>
-              <p>{t(selectedLanguage, 'archiveDescription')}</p>
-              <div className="archive-tree-options">
-                <button type="button" onClick={() => { setSplitPanel({ kind: 'archivePdf' }); setIsSplitExpanded(false); }}>1. {selectedLanguage === 'zh-TW' ? 'NGM 書' : 'NGM Book'}</button>
-                <button type="button" onClick={() => { setSplitPanel({ kind: 'archiveMap' }); setIsSplitExpanded(false); }}>2. {selectedLanguage === 'zh-TW' ? '社群地圖' : 'Community Map'}</button>
-              </div>
-            </section>
-          )}
-
-
-
-          {appMode === 'interactive' && activeDialoguePersona && activeDialogueCharacter && playerProfile && (
-            <Suspense fallback={<div className="absolute inset-x-0 bottom-0 z-50 pixel-panel mx-auto mb-6 w-fit px-6 py-5 text-text shadow-pixel">Loading dialogue...</div>}>
-              <RpgDialogue
-                persona={activeDialoguePersona}
-                player={playerProfile}
-                npcAvatar={{
-                  palette: activeDialogueCharacter.palette,
-                  hueShift: activeDialogueCharacter.hueShift,
+          {appMode === "interactive" &&
+            isNearAbao &&
+            abaoBubble &&
+            promptPosition &&
+            !activeDialoguePersona && (
+              <div
+                className="abao-speech-bubble"
+                style={{
+                  left: promptPosition.left,
+                  top: promptPosition.top - 78,
                 }}
-                topicLabels={topicLabels}
-                language={selectedLanguage}
-                onClose={() => setActiveDialogueId(null)}
-                onOpenWiki={() => { setSplitPanel({ kind: 'wiki', persona: activeDialoguePersona }); setIsSplitExpanded(false); setActiveDialogueId(null); }}
-                onSimEvent={(prompt) => {
-                  const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(' ')}`;
-                  const resonance = scorePromptResonance(playerProfile.question || playerProfile.mission, personaText);
-                  setSimSnapshot((current) => current ? applyPlayerNpcDialogue(current, `npc-${activeDialoguePersona.id}`, prompt, resonance) : current);
-                }}
-              />
-            </Suspense>
-          )}
-
-          {simSnapshot && playerProfile && appMode === 'interactive' && !isSplitOpen && (
-            <section className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6" data-no-mobile-drag="true">
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <h2 className="text-lg">問題電子雞 SIM</h2>
-                <span className="text-base">tick {simSnapshot.tick}</span>
+                data-no-mobile-drag="true"
+              >
+                {abaoBubble.text}
               </div>
-              {simSnapshot.thronglets.map((pet) => (
-                <button key={pet.id} className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]" type="button" onClick={() => setSelectedPet(pet)}>
-                  <div className="flex gap-4 items-center"><QuestionPetPreview question={pet.question.text} appearance={pet.appearance} size={4} /><span className="text-base leading-snug">{pet.question.text}</span></div>
-                  <p className="text-sm mt-3">{pet.currentAction} / energy {pet.state.energy.toFixed(0)} stress {pet.state.stress.toFixed(0)} bond {pet.state.groupBond.toFixed(0)}</p>
+            )}
+
+          {appMode === "interactive" &&
+            isNearTree &&
+            !activeDialoguePersona &&
+            !splitPanel &&
+            !archiveMenuDismissed && (
+              <section
+                className="archive-tree-menu pixel-panel"
+                data-no-mobile-drag="true"
+              >
+                <button
+                  className="archive-tree-close"
+                  type="button"
+                  onClick={() => setArchiveMenuDismissed(true)}
+                  aria-label={t(selectedLanguage, "close")}
+                >
+                  ×
                 </button>
-              ))}
-              <div className="grid grid-cols-2 gap-2 text-sm mb-4">{Object.entries(simSnapshot.scores).map(([key, value]) => <p key={key}>{key}: {value.toFixed(1)}</p>)}</div>
-              {simSnapshot.throngs.map((throng) => <p key={throng.id} className="text-sm mb-2">THRONG: {throng.topic} ({throng.memberIds.length})</p>)}
-              {simSnapshot.thoughts.map((thought, index) => <p key={`${thought}-${index}`} className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">{thought}</p>)}
-              {simSnapshot.events.slice(0, 4).map((event) => <p key={event.id} className="text-sm opacity-80 mt-2">{event.type}: {event.text}</p>)}
-            </section>
+                <p className="archive-tree-kicker">
+                  {t(selectedLanguage, "archiveTree")}
+                </p>
+                <h1>{t(selectedLanguage, "archiveTitle")}</h1>
+                <p>{t(selectedLanguage, "archiveDescription")}</p>
+                <div className="archive-tree-options">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSplitPanel({ kind: "archivePdf" });
+                      setIsSplitExpanded(false);
+                    }}
+                  >
+                    1. {selectedLanguage === "zh-TW" ? "NGM 書" : "NGM Book"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSplitPanel({ kind: "archiveMap" });
+                      setIsSplitExpanded(false);
+                    }}
+                  >
+                    2.{" "}
+                    {selectedLanguage === "zh-TW"
+                      ? "社群地圖"
+                      : "Community Map"}
+                  </button>
+                </div>
+              </section>
+            )}
+
+          {appMode === "interactive" &&
+            activeDialoguePersona &&
+            activeDialogueCharacter &&
+            playerProfile && (
+              <Suspense
+                fallback={
+                  <div className="absolute inset-x-0 bottom-0 z-50 pixel-panel mx-auto mb-6 w-fit px-6 py-5 text-text shadow-pixel">
+                    Loading dialogue...
+                  </div>
+                }
+              >
+                <RpgDialogue
+                  persona={activeDialoguePersona}
+                  player={playerProfile}
+                  npcAvatar={{
+                    palette: activeDialogueCharacter.palette,
+                    hueShift: activeDialogueCharacter.hueShift,
+                  }}
+                  topicLabels={topicLabels}
+                  language={selectedLanguage}
+                  onClose={() => setActiveDialogueId(null)}
+                  onOpenWiki={() => {
+                    setSplitPanel({
+                      kind: "wiki",
+                      persona: activeDialoguePersona,
+                    });
+                    setIsSplitExpanded(false);
+                    setActiveDialogueId(null);
+                  }}
+                  onSimEvent={(prompt) => {
+                    const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(" ")}`;
+                    const resonance = scorePromptResonance(
+                      playerProfile.question || playerProfile.mission,
+                      personaText,
+                    );
+                    setSimSnapshot((current) =>
+                      current
+                        ? applyPlayerNpcDialogue(
+                            current,
+                            `npc-${activeDialoguePersona.id}`,
+                            prompt,
+                            resonance,
+                          )
+                        : current,
+                    );
+                  }}
+                />
+              </Suspense>
+            )}
+
+          {simSnapshot &&
+            playerProfile &&
+            appMode === "interactive" &&
+            !isSplitOpen && (
+              <section
+                className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6"
+                data-no-mobile-drag="true"
+              >
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <h2 className="text-lg">問題電子雞 SIM</h2>
+                  <span className="text-base">tick {simSnapshot.tick}</span>
+                </div>
+                {simSnapshot.thronglets.map((pet) => (
+                  <button
+                    key={pet.id}
+                    className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
+                    type="button"
+                    onClick={() => setSelectedPet(pet)}
+                  >
+                    <div className="flex gap-4 items-center">
+                      <QuestionPetPreview
+                        question={pet.question.text}
+                        appearance={pet.appearance}
+                        size={4}
+                      />
+                      <span className="text-base leading-snug">
+                        {pet.question.text}
+                      </span>
+                    </div>
+                    <p className="text-sm mt-3">
+                      {pet.currentAction} / energy {pet.state.energy.toFixed(0)}{" "}
+                      stress {pet.state.stress.toFixed(0)} bond{" "}
+                      {pet.state.groupBond.toFixed(0)}
+                    </p>
+                  </button>
+                ))}
+                <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+                  {Object.entries(simSnapshot.scores).map(([key, value]) => (
+                    <p key={key}>
+                      {key}: {value.toFixed(1)}
+                    </p>
+                  ))}
+                </div>
+                {simSnapshot.throngs.map((throng) => (
+                  <p key={throng.id} className="text-sm mb-2">
+                    THRONG: {throng.topic} ({throng.memberIds.length})
+                  </p>
+                ))}
+                {simSnapshot.thoughts.map((thought, index) => (
+                  <p
+                    key={`${thought}-${index}`}
+                    className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3"
+                  >
+                    {thought}
+                  </p>
+                ))}
+                {simSnapshot.events.slice(0, 4).map((event) => (
+                  <p key={event.id} className="text-sm opacity-80 mt-2">
+                    {event.type}: {event.text}
+                  </p>
+                ))}
+              </section>
+            )}
+
+          {worldNotice && (
+            <div className="world-resonance-notice">{worldNotice}</div>
           )}
-
-
-
-          {worldNotice && <div className="world-resonance-notice">{worldNotice}</div>}
 
           {(selectedDispatchPet || selectedNpcInfo) && (
-            <section className="question-response-panel info-card absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
-              <button className="float-right text-xl" type="button" onClick={() => { setSelectedDispatchPet(null); setSelectedNpcInfo(null); }}>×</button>
-              {selectedDispatchPet ? (() => {
-                const appearance = generateQuestionPet(selectedDispatchPet.question, selectedDispatchPet.seed);
-                return (
-                  <>
-                    <div className="flex gap-5 items-start mb-5"><QuestionPetPreview question={selectedDispatchPet.question} appearance={appearance} size={6} /><div><p className="text-sm">{selectedDispatchPet.displayName}</p><h2 className="text-lg leading-snug">{selectedDispatchPet.question}</h2></div></div>
-                    <p className="text-sm mb-2">{t(selectedLanguage, 'skill')}: {selectedDispatchPet.skill || '—'}</p>
-                    <p className="text-sm mb-2">{t(selectedLanguage, 'status')}: {selectedDispatchPet.status}</p>
-                    <div className="grid grid-cols-2 gap-2 text-sm mb-4">{Object.entries(selectedDispatchPet.stats).map(([key, value]) => <p key={key}>{key}: {value}</p>)}</div>
-                    <p className="text-sm mb-2">{t(selectedLanguage, 'fieldNotes')}</p>
-                    {(selectedDispatchPet.interactions ?? []).slice(0, 5).map((note) => <p key={note.id} className="text-sm border-t border-[var(--tama-ink)] py-2">{note.actorType}: {note.message} {note.tags?.join(', ')}</p>)}
-                    {appMode === 'interactive' && <><textarea className="field-note-input w-full min-h-[86px] px-4 py-3" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={t(selectedLanguage, 'fieldNotePlaceholder')} maxLength={180} /><button className="mt-3 mode-primary px-5 py-3" type="button" onClick={() => { const response = petResponse.trim(); if (!response) return; petStore.addInteraction(selectedDispatchPet.id, { actorType: 'player', actorId: playerProfile?.name, message: response, tags: ['field-note'], deltaStats: { social: 4, learning: 2, tension: -1 } }); setPetResponse(''); setDispatchedPets(petStore.listPets()); setSelectedDispatchPet(petStore.listPets().find((pet) => pet.id === selectedDispatchPet.id) ?? null); }}>{t(selectedLanguage, 'sendFieldNote')}</button></>}
-                    <p className="text-sm mt-4 opacity-80">{t(selectedLanguage, 'localOnlyNotice')}</p>
-                  </>
-                );
-              })() : selectedNpcInfo && (
-                <>
-                  <p className="text-sm">NPC</p>
-                  <h2 className="text-lg mb-3">{selectedNpcInfo.name}</h2>
-                  <p className="text-sm mb-3">{selectedNpcInfo.role}</p>
-                  <p className="text-base leading-snug">{selectedNpcInfo.intro}</p>
-                  {appMode === 'dispatch_observer' && <p className="text-sm mt-4">{t(selectedLanguage, 'observerMode')} · {t(selectedLanguage, 'localOnlyNotice')}</p>}
-                </>
-              )}
+            <section
+              className="question-response-panel info-card absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7"
+              data-no-mobile-drag="true"
+            >
+              <button
+                className="float-right text-xl"
+                type="button"
+                onClick={() => {
+                  setSelectedDispatchPet(null);
+                  setSelectedNpcInfo(null);
+                }}
+              >
+                ×
+              </button>
+              {selectedDispatchPet
+                ? (() => {
+                    const appearance = generateQuestionPet(
+                      selectedDispatchPet.question,
+                      selectedDispatchPet.seed,
+                    );
+                    return (
+                      <>
+                        <div className="flex gap-5 items-start mb-5">
+                          <QuestionPetPreview
+                            question={selectedDispatchPet.question}
+                            appearance={appearance}
+                            size={6}
+                          />
+                          <div>
+                            <p className="text-sm">
+                              {selectedDispatchPet.displayName}
+                            </p>
+                            <h2 className="text-lg leading-snug">
+                              {selectedDispatchPet.question}
+                            </h2>
+                          </div>
+                        </div>
+                        <p className="text-sm mb-2">
+                          {t(selectedLanguage, "skill")}:{" "}
+                          {selectedDispatchPet.skill || "—"}
+                        </p>
+                        <p className="text-sm mb-2">
+                          {t(selectedLanguage, "status")}:{" "}
+                          {selectedDispatchPet.status}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+                          {Object.entries(selectedDispatchPet.stats).map(
+                            ([key, value]) => (
+                              <p key={key}>
+                                {key}: {value}
+                              </p>
+                            ),
+                          )}
+                        </div>
+                        <p className="text-sm mb-2">
+                          {t(selectedLanguage, "fieldNotes")}
+                        </p>
+                        {(selectedDispatchPet.interactions ?? [])
+                          .slice(0, 5)
+                          .map((note) => (
+                            <p
+                              key={note.id}
+                              className="text-sm border-t border-[var(--tama-ink)] py-2"
+                            >
+                              {note.actorType}: {note.message}{" "}
+                              {note.tags?.join(", ")}
+                            </p>
+                          ))}
+                        {appMode === "interactive" && (
+                          <>
+                            <textarea
+                              className="field-note-input w-full min-h-[86px] px-4 py-3"
+                              value={petResponse}
+                              onChange={(event) =>
+                                setPetResponse(event.target.value)
+                              }
+                              placeholder={t(
+                                selectedLanguage,
+                                "fieldNotePlaceholder",
+                              )}
+                              maxLength={180}
+                            />
+                            <button
+                              className="mt-3 mode-primary px-5 py-3"
+                              type="button"
+                              onClick={() => {
+                                const response = petResponse.trim();
+                                if (!response) return;
+                                petStore.addInteraction(
+                                  selectedDispatchPet.id,
+                                  {
+                                    actorType: "player",
+                                    actorId: playerProfile?.name,
+                                    message: response,
+                                    tags: ["field-note"],
+                                    deltaStats: {
+                                      social: 4,
+                                      learning: 2,
+                                      tension: -1,
+                                    },
+                                  },
+                                );
+                                setPetResponse("");
+                                setDispatchedPets(petStore.listPets());
+                                setSelectedDispatchPet(
+                                  petStore
+                                    .listPets()
+                                    .find(
+                                      (pet) =>
+                                        pet.id === selectedDispatchPet.id,
+                                    ) ?? null,
+                                );
+                              }}
+                            >
+                              {t(selectedLanguage, "sendFieldNote")}
+                            </button>
+                          </>
+                        )}
+                        <p className="text-sm mt-4 opacity-80">
+                          {t(selectedLanguage, "localOnlyNotice")}
+                        </p>
+                      </>
+                    );
+                  })()
+                : selectedNpcInfo && (
+                    <>
+                      <p className="text-sm">NPC</p>
+                      <h2 className="text-lg mb-3">{selectedNpcInfo.name}</h2>
+                      <p className="text-sm mb-3">{selectedNpcInfo.role}</p>
+                      <p className="text-base leading-snug">
+                        {selectedNpcInfo.intro}
+                      </p>
+                      {appMode === "dispatch_observer" && (
+                        <p className="text-sm mt-4">
+                          {t(selectedLanguage, "observerMode")} ·{" "}
+                          {t(selectedLanguage, "localOnlyNotice")}
+                        </p>
+                      )}
+                    </>
+                  )}
             </section>
           )}
 
           {shouldShowMobileStatsBar && (
-            <button className="mobile-stats-bar" type="button" onClick={() => setMobileRulesOpen(true)} data-no-mobile-drag="true">
-              <span>🐣 {archiveSummary.active}</span><span>💬 {archiveSummary.notes}</span><span>S {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.social, 0) / Math.max(1, activeDispatchPets.length))}</span><span>L {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.learning, 0) / Math.max(1, activeDispatchPets.length))}</span><span>T {Math.round(activeDispatchPets.reduce((sum, pet) => sum + pet.stats.tension, 0) / Math.max(1, activeDispatchPets.length))}</span><span>R {simSnapshot?.tick ?? 0}</span>
+            <button
+              className="mobile-stats-bar"
+              type="button"
+              onClick={() => setMobileRulesOpen(true)}
+              data-no-mobile-drag="true"
+            >
+              <span>🐣 {archiveSummary.active}</span>
+              <span>💬 {archiveSummary.notes}</span>
+              <span>
+                S{" "}
+                {Math.round(
+                  activeDispatchPets.reduce(
+                    (sum, pet) => sum + pet.stats.social,
+                    0,
+                  ) / Math.max(1, activeDispatchPets.length),
+                )}
+              </span>
+              <span>
+                L{" "}
+                {Math.round(
+                  activeDispatchPets.reduce(
+                    (sum, pet) => sum + pet.stats.learning,
+                    0,
+                  ) / Math.max(1, activeDispatchPets.length),
+                )}
+              </span>
+              <span>
+                T{" "}
+                {Math.round(
+                  activeDispatchPets.reduce(
+                    (sum, pet) => sum + pet.stats.tension,
+                    0,
+                  ) / Math.max(1, activeDispatchPets.length),
+                )}
+              </span>
+              <span>R {simSnapshot?.tick ?? 0}</span>
             </button>
           )}
 
           {mobileRulesOpen && (
             <section className="mobile-rules-drawer" data-no-mobile-drag="true">
-              <button className="float-right text-xl" type="button" onClick={() => setMobileRulesOpen(false)}>×</button>
-              <h2 className="text-lg mb-3">{t(selectedLanguage, 'dispatchArchive')}</h2>
-              <p className="text-sm mb-2">{t(selectedLanguage, 'active')}: {archiveSummary.active} · {t(selectedLanguage, 'hibernating')}: {archiveSummary.hibernating} · {t(selectedLanguage, 'archived')}: {archiveSummary.archived}</p>
-              <p className="text-sm">{t(selectedLanguage, 'localOnlyNotice')}</p>
+              <button
+                className="float-right text-xl"
+                type="button"
+                onClick={() => setMobileRulesOpen(false)}
+              >
+                ×
+              </button>
+              <h2 className="text-lg mb-3">
+                {t(selectedLanguage, "dispatchArchive")}
+              </h2>
+              <p className="text-sm mb-2">
+                {t(selectedLanguage, "active")}: {archiveSummary.active} ·{" "}
+                {t(selectedLanguage, "hibernating")}:{" "}
+                {archiveSummary.hibernating} · {t(selectedLanguage, "archived")}
+                : {archiveSummary.archived}
+              </p>
+              <p className="text-sm">
+                {t(selectedLanguage, "localOnlyNotice")}
+              </p>
             </section>
           )}
 
           {selectedPet && (
-            <section className="question-response-panel absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
-              <button className="float-right text-xl" type="button" onClick={() => setSelectedPet(null)}>x</button>
-              <div className="flex gap-5 items-start mb-5"><QuestionPetPreview question={selectedPet.question.text} appearance={selectedPet.appearance} size={6} /><div><p className="text-sm">originating question</p><h2 className="text-lg leading-snug">{selectedPet.question.text}</h2></div></div>
-              <textarea className="w-full min-h-[110px] bg-[var(--palette-cream)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-4 py-4 text-lg" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={selectedLanguage === 'zh-TW' ? '回應這隻問題電子雞...' : 'Respond to this question pet...'} />
-              <button className="mt-4 bg-[var(--palette-pink)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-6 py-4 text-lg" type="button" onClick={() => {
-                const response = petResponse.trim();
-                if (!response) return;
-                setSimSnapshot((current) => current ? applyPlayerThrongletResponse(current, selectedPet.id, response) : current);
-                setPetResponse('');
-                setSelectedPet(null);
-              }}>{selectedLanguage === 'zh-TW' ? '送出回應' : 'Send Response'}</button>
+            <section
+              className="question-response-panel absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7"
+              data-no-mobile-drag="true"
+            >
+              <button
+                className="float-right text-xl"
+                type="button"
+                onClick={() => setSelectedPet(null)}
+              >
+                x
+              </button>
+              <div className="flex gap-5 items-start mb-5">
+                <QuestionPetPreview
+                  question={selectedPet.question.text}
+                  appearance={selectedPet.appearance}
+                  size={6}
+                />
+                <div>
+                  <p className="text-sm">originating question</p>
+                  <h2 className="text-lg leading-snug">
+                    {selectedPet.question.text}
+                  </h2>
+                </div>
+              </div>
+              <textarea
+                className="w-full min-h-[110px] bg-[var(--palette-cream)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-4 py-4 text-lg"
+                value={petResponse}
+                onChange={(event) => setPetResponse(event.target.value)}
+                placeholder={
+                  selectedLanguage === "zh-TW"
+                    ? "回應這隻問題電子雞..."
+                    : "Respond to this question pet..."
+                }
+              />
+              <button
+                className="mt-4 bg-[var(--palette-pink)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-6 py-4 text-lg"
+                type="button"
+                onClick={() => {
+                  const response = petResponse.trim();
+                  if (!response) return;
+                  setSimSnapshot((current) =>
+                    current
+                      ? applyPlayerThrongletResponse(
+                          current,
+                          selectedPet.id,
+                          response,
+                        )
+                      : current,
+                  );
+                  setPetResponse("");
+                  setSelectedPet(null);
+                }}
+              >
+                {selectedLanguage === "zh-TW" ? "送出回應" : "Send Response"}
+              </button>
             </section>
           )}
 
-          {showMobileControls && playerProfile && appMode === 'interactive' && !activeDialoguePersona && (
-            <div
-              className="mobile-thumb-guide absolute z-46 pointer-events-none -translate-x-1/2 text-center"
-              style={{
-                left: `calc(${MOBILE_THUMB_GUIDE_CENTER_LEFT_PX}px + env(safe-area-inset-left))`,
-                bottom: `calc(${MOBILE_THUMB_GUIDE_BOTTOM_PX}px + env(safe-area-inset-bottom))`,
-              }}
-            >
-              <div className="mx-auto h-42 w-42 rounded-full border border-white/20 bg-black/20" />
-            </div>
-          )}
+          {showMobileControls &&
+            playerProfile &&
+            appMode === "interactive" &&
+            !activeDialoguePersona && (
+              <div
+                className="mobile-thumb-guide absolute z-46 pointer-events-none -translate-x-1/2 text-center"
+                style={{
+                  left: "50%",
+                  bottom: `calc(${MOBILE_THUMB_GUIDE_BOTTOM_PX}px + env(safe-area-inset-bottom))`,
+                }}
+              >
+                <div className="mx-auto h-42 w-42 rounded-full border border-white/20 bg-black/20" />
+              </div>
+            )}
         </>
       ) : (
         <DebugView
@@ -1135,40 +1888,80 @@ function App() {
         />
       )}
 
-
       {splitPanel && (
-        <aside className={`world-split-panel ${isSplitExpanded ? 'is-expanded' : ''}`} data-no-mobile-drag="true">
+        <aside
+          className={`world-split-panel ${isSplitExpanded ? "is-expanded" : ""}`}
+          data-no-mobile-drag="true"
+        >
           <div className="world-split-toolbar">
             <div>
-              <p>{splitPanel.kind === 'wiki' ? 'World Wiki' : t(selectedLanguage, 'archiveTree')}</p>
-              <h2>{splitPanel.kind === 'wiki' ? splitPanel.persona.name : splitPanel.kind === 'archivePdf' ? t(selectedLanguage, 'archivePdfTitle') : t(selectedLanguage, 'archiveMapTitle')}</h2>
+              <p>{splitPanelKicker(splitPanel, selectedLanguage)}</p>
+              <h2>{splitPanelTitle(splitPanel, selectedLanguage)}</h2>
             </div>
             <div className="world-split-actions">
-              <button type="button" onClick={() => setIsSplitExpanded((expanded) => !expanded)}>{isSplitExpanded ? '↙' : '⤢'}</button>
-              <button type="button" onClick={closeSplitPanel}>✕</button>
+              <button
+                type="button"
+                onClick={() => setIsSplitExpanded((expanded) => !expanded)}
+              >
+                {isSplitExpanded ? "↙" : "⤢"}
+              </button>
+              <button type="button" onClick={closeSplitPanel}>
+                ✕
+              </button>
             </div>
           </div>
           <div className="world-split-content">
-            {splitPanel.kind === 'wiki' ? (() => {
-              const wiki = getWikiLinksForInterviewee(splitPanel.persona.id);
-              return (
-                <div className="world-wiki-content">
-                  <p className="world-wiki-role">{splitPanel.persona.role}</p>
-                  <p className="world-wiki-intro">{splitPanel.persona.intro}</p>
-                  {wiki.links.length === 0 ? (
-                    <p>{t(selectedLanguage, 'noWikiLinks')}</p>
-                  ) : wiki.links.map((link) => (
-                    <a key={`${link.title}-${link.url}`} href={link.url} target="_blank" rel="noreferrer">
-                      <strong>{link.title}</strong>
-                      <span>{link.description}</span>
-                    </a>
-                  ))}
-                </div>
-              );
-            })() : splitPanel.kind === 'archivePdf' ? (
-              <iframe title="NGM PDF embedded ebook" src="https://archive.org/embed/ngm_20230328" allowFullScreen className="world-split-iframe" />
+            {splitPanel.kind === "wiki" ? (
+              (() => {
+                const wiki = getWikiLinksForInterviewee(splitPanel.persona.id);
+                return (
+                  <div className="world-wiki-content">
+                    <p className="world-wiki-role">{splitPanel.persona.role}</p>
+                    <p className="world-wiki-intro">
+                      {splitPanel.persona.intro}
+                    </p>
+                    {wiki.links.length === 0 ? (
+                      <p>{t(selectedLanguage, "noWikiLinks")}</p>
+                    ) : (
+                      wiki.links.map((link) => (
+                        <button
+                          key={`${link.title}-${link.url}`}
+                          type="button"
+                          onClick={() =>
+                            setSplitPanel({
+                              kind: "external",
+                              title: link.title,
+                              url: link.url,
+                            })
+                          }
+                        >
+                          <strong>{link.title}</strong>
+                          <span>{link.description}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                );
+              })()
+            ) : splitPanel.kind === "archivePdf" ? (
+              <iframe
+                title="NGM PDF embedded ebook"
+                src="https://archive.org/embed/ngm_20230328"
+                allowFullScreen
+                className="world-split-iframe"
+              />
+            ) : splitPanel.kind === "archiveMap" ? (
+              <iframe
+                title="NGM community map"
+                src="https://umap.openstreetmap.fr/en/map/862535"
+                className="world-split-iframe"
+              />
             ) : (
-              <iframe title="NGM community map" src="https://umap.openstreetmap.fr/en/map/862535" className="world-split-iframe" />
+              <iframe
+                title={splitPanel.title}
+                src={splitPanel.url}
+                className="world-split-iframe"
+              />
             )}
           </div>
         </aside>
@@ -1181,17 +1974,17 @@ function App() {
           position="top-right"
           onDismiss={() => {
             setHooksTooltipDismissed(true);
-            vscode.postMessage({ type: 'setHooksInfoShown' });
+            vscode.postMessage({ type: "setHooksInfoShown" });
           }}
         >
           <span className="text-sm text-text leading-none">
-            Wander 桃花源 and talk with nearby personas.{' '}
+            Wander 桃花源 and talk with nearby personas.{" "}
             <span
               className="text-accent cursor-pointer underline"
               onClick={() => {
                 setIsHooksInfoOpen(true);
                 setHooksTooltipDismissed(true);
-                vscode.postMessage({ type: 'setHooksInfoShown' });
+                vscode.postMessage({ type: "setHooksInfoShown" });
               }}
             >
               View more
@@ -1208,16 +2001,28 @@ function App() {
           title="Peach Blossom Spring"
           zIndex={52}
         >
-          <div className="text-base text-text px-10" style={{ lineHeight: 1.4 }}>
-            <p className="mb-8">This world is now a WorkAdventure-style Peach Blossom Spring map:</p>
+          <div
+            className="text-base text-text px-10"
+            style={{ lineHeight: 1.4 }}
+          >
+            <p className="mb-8">
+              This world is now a WorkAdventure-style Peach Blossom Spring map:
+            </p>
             <ul className="mb-8 pl-18 list-disc m-0">
-              <li className="text-sm mb-2">Wander through a tiny LCD river, peach grove, archive tree, and story circle</li>
-              <li className="text-sm mb-2">Approach a persona and press Space to talk</li>
-              <li className="text-sm mb-2">Visit the archive tree for the full index and portal links</li>
+              <li className="text-sm mb-2">
+                Wander through a tiny LCD river, peach grove, archive tree, and
+                story circle
+              </li>
+              <li className="text-sm mb-2">
+                Approach a persona and press Space to talk
+              </li>
+              <li className="text-sm mb-2">
+                Visit the archive tree for the full index and portal links
+              </li>
             </ul>
             <p className="mb-12 text-text-muted">
-              Pixel Agents remains visual inspiration for lively characters, while the world direction is
-              now Peach Blossom Spring / 桃花源.
+              Pixel Agents remains visual inspiration for lively characters,
+              while the world direction is now Peach Blossom Spring / 桃花源.
             </p>
             <div className="text-center">
               <button
@@ -1228,7 +2033,7 @@ function App() {
               </button>
             </div>
             <p className="mt-8 text-xs text-text-muted text-center">
-              To disable, go to Settings {'>'} Instant Detection
+              To disable, go to Settings {">"} Instant Detection
             </p>
           </div>
         </Modal>
@@ -1264,13 +2069,16 @@ function App() {
           onToggleWatchAllSessions={() => {
             const newVal = !watchAllSessions;
             setWatchAllSessions(newVal);
-            vscode.postMessage({ type: 'setWatchAllSessions', enabled: newVal });
+            vscode.postMessage({
+              type: "setWatchAllSessions",
+              enabled: newVal,
+            });
           }}
           hooksEnabled={hooksEnabled}
           onToggleHooksEnabled={() => {
             const newVal = !hooksEnabled;
             setHooksEnabled(newVal);
-            vscode.postMessage({ type: 'setHooksEnabled', enabled: newVal });
+            vscode.postMessage({ type: "setHooksEnabled", enabled: newVal });
           }}
         />
       )}
