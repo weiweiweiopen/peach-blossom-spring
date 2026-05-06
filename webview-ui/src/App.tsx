@@ -1272,19 +1272,11 @@ function App() {
 
       {playerProfile &&
         (appMode === "interactive" || appMode === "dispatch_observer") && (
-          <div className="map-zoom-controls" data-no-mobile-drag="true">
-            <span className="map-zoom-controls__label">MAP ZOOM</span>
-            <button
-              type="button"
-              onClick={() =>
-                editor.handleZoomChange(Math.max(ZOOM_MIN, editor.zoom - 0.25))
-              }
-              disabled={editor.zoom <= ZOOM_MIN}
-              aria-label={t(selectedLanguage, "zoomOut")}
-            >
-              −
-            </button>
-            <span className="map-zoom-controls__level">{editor.zoom.toFixed(2)}×</span>
+          <div
+            className="map-zoom-controls"
+            data-no-mobile-drag="true"
+            aria-label="Map zoom controls"
+          >
             <button
               type="button"
               onClick={() =>
@@ -1292,8 +1284,20 @@ function App() {
               }
               disabled={editor.zoom >= ZOOM_MAX}
               aria-label={t(selectedLanguage, "zoomIn")}
+              title={`${t(selectedLanguage, "zoomIn")} (${editor.zoom.toFixed(2)}×)`}
             >
               +
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                editor.handleZoomChange(Math.max(ZOOM_MIN, editor.zoom - 0.25))
+              }
+              disabled={editor.zoom <= ZOOM_MIN}
+              aria-label={t(selectedLanguage, "zoomOut")}
+              title={`${t(selectedLanguage, "zoomOut")} (${editor.zoom.toFixed(2)}×)`}
+            >
+              −
             </button>
           </div>
         )}

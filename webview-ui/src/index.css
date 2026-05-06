@@ -163,45 +163,40 @@
 
 .map-zoom-controls {
   position: fixed;
-  top: max(66px, env(safe-area-inset-top));
-  left: 50%;
-  z-index: 73;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transform: translateX(-50%);
-  padding: 7px 10px;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 82;
+  display: inline-flex;
+  align-items: stretch;
+  height: 44px;
+  overflow: hidden;
   color: #000;
-  background: color-mix(in srgb, #fff 88%, transparent);
-  border: 3px solid #000;
-  border-radius: 999px;
-  box-shadow: 3px 3px 0 #000;
+  background: color-mix(in srgb, #fff 92%, transparent);
+  border: 1px solid color-mix(in srgb, #000 18%, transparent);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px color-mix(in srgb, #000 22%, transparent);
   user-select: none;
 }
-.map-zoom-controls__label {
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-.map-zoom-controls__level {
-  min-width: 54px;
-  font-size: 14px;
-  text-align: center;
-}
 .map-zoom-controls button {
-  min-width: 34px;
-  min-height: 32px;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
   color: #000;
-  background: var(--palette-yellow);
-  border: 3px solid #000;
-  border-radius: 999px;
-  box-shadow: 2px 2px 0 #000;
-  font-size: 21px;
-  line-height: 1;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font: 400 26px/1 Arial, Helvetica, sans-serif;
   touch-action: manipulation;
 }
+.map-zoom-controls button + button {
+  border-left: 1px solid color-mix(in srgb, #000 14%, transparent);
+}
+.map-zoom-controls button:not(:disabled):hover {
+  background: color-mix(in srgb, #000 6%, transparent);
+}
 .map-zoom-controls button:disabled {
-  opacity: 0.42;
+  opacity: 0.34;
   cursor: default;
 }
 
@@ -1258,28 +1253,29 @@
   max-height: 52vh !important;
   border-color: #000 !important;
   color: #000 !important;
-  font-size: 21px !important;
+  font-size: 26px !important;
 }
 .question-status-panel h2,
 .question-status-panel .text-lg {
-  font-size: 28px !important;
+  font-size: 33px !important;
 }
 .question-status-panel .text-base,
 .question-status-panel p,
 .question-status-panel .text-sm {
-  font-size: 20px !important;
+  font-size: 25px !important;
   line-height: 1.5 !important;
 }
 .question-status-panel button {
   border-color: #000 !important;
+  font-size: 25px !important;
 }
 
 .mobile-thumb-guide > div {
-  width: 112px !important;
-  height: 112px !important;
-  border: 3px solid #000 !important;
-  background: color-mix(in srgb, #fff 30%, transparent) !important;
-  box-shadow: 3px 3px 0 color-mix(in srgb, #000 36%, transparent);
+  width: 38px !important;
+  height: 38px !important;
+  border: 0 !important;
+  background: color-mix(in srgb, #000 22%, transparent) !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 900px), (pointer: coarse) {
@@ -1317,15 +1313,14 @@
     max-height: 34vh !important;
   }
   .map-zoom-controls {
-    top: max(62px, env(safe-area-inset-top));
-    gap: 6px;
-    padding: 6px 8px;
+    top: max(10px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
+    height: 44px;
   }
-  .map-zoom-controls__label {
-    display: none;
-  }
-  .map-zoom-controls__level {
-    min-width: 48px;
+  .map-zoom-controls button {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
   .mobile-thumb-guide {
     bottom: calc(148px + env(safe-area-inset-bottom)) !important;
