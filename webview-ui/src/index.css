@@ -1104,3 +1104,173 @@
     height: 100dvh;
   }
 }
+
+/* 2026 flow cleanup: readable low-res Tamagotchi boot UI, reliable split controls. */
+.player-setup-panel.question-hatch-panel {
+  border-color: #000;
+  box-shadow: 6px 6px 0 #000;
+}
+.player-setup-title {
+  font-size: clamp(32px, 4.8vw, 56px) !important;
+  letter-spacing: 0.01em;
+}
+.player-setup-description {
+  font-size: clamp(18px, 1.9vw, 24px) !important;
+  line-height: 1.65 !important;
+}
+.player-setup-label {
+  font-size: clamp(18px, 1.8vw, 24px) !important;
+  color: #000;
+}
+.player-setup-field {
+  font-size: clamp(20px, 2vw, 26px) !important;
+  border-color: #000 !important;
+  box-shadow: inset 3px 3px 0 color-mix(in srgb, #000 12%, transparent);
+}
+.player-setup-action {
+  min-height: 58px;
+  font-size: clamp(22px, 2.2vw, 30px) !important;
+  border-color: #000 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+.question-hatch-device {
+  border-color: #000 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+.question-hatch-screen {
+  display: grid;
+  place-items: center;
+  width: min(176px, 100%);
+  min-height: 176px;
+  margin-inline: auto;
+  background:
+    linear-gradient(45deg, color-mix(in srgb, var(--palette-blue) 34%, transparent) 25%, transparent 25% 75%, color-mix(in srgb, var(--palette-pink) 38%, transparent) 75%),
+    var(--palette-cream);
+  background-size: 18px 18px;
+  border: 4px solid #000;
+  box-shadow: inset 3px 3px 0 color-mix(in srgb, #000 16%, transparent);
+}
+.question-hatch-egg {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 118px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 4px solid #000;
+  border-radius: 48% 48% 44% 44%;
+  font-size: 42px;
+}
+.question-hatch-device.is-hatching .question-pet-preview {
+  animation: pet-hatch-pop 0.78s steps(4, end) both;
+  border-color: #000 !important;
+}
+@keyframes pet-hatch-pop {
+  0% { transform: scale(0.2); opacity: 0; filter: brightness(2); }
+  45% { transform: scale(1.18); opacity: 1; filter: brightness(1.8); }
+  70% { transform: scale(0.92); filter: brightness(1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.global-language-menu {
+  z-index: 68;
+}
+.world-split-panel {
+  z-index: 92;
+}
+.world-split-toolbar {
+  position: relative;
+  z-index: 2;
+  padding-right: max(14px, env(safe-area-inset-right));
+}
+.world-split-actions button {
+  cursor: pointer;
+}
+.world-wiki-content button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 48px;
+  padding: 12px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  text-align: left;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 #000;
+}
+.world-wiki-content button strong {
+  font-size: 19px;
+}
+.world-wiki-content button span {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.question-status-panel {
+  width: min(500px, calc(100vw - 24px)) !important;
+  max-height: 48vh !important;
+  border-color: #000 !important;
+  color: #000 !important;
+  font-size: 18px !important;
+}
+.question-status-panel h2,
+.question-status-panel .text-lg {
+  font-size: 24px !important;
+}
+.question-status-panel .text-base,
+.question-status-panel p,
+.question-status-panel .text-sm {
+  font-size: 17px !important;
+  line-height: 1.45 !important;
+}
+.question-status-panel button {
+  border-color: #000 !important;
+}
+
+.mobile-thumb-guide > div {
+  width: 112px !important;
+  height: 112px !important;
+  border: 3px solid #000 !important;
+  background: color-mix(in srgb, #fff 30%, transparent) !important;
+  box-shadow: 3px 3px 0 color-mix(in srgb, #000 36%, transparent);
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .player-setup-panel {
+    padding: 18px !important;
+  }
+  .player-setup-title {
+    font-size: clamp(28px, 8vw, 38px) !important;
+  }
+  .player-setup-description,
+  .player-setup-label,
+  .player-setup-field,
+  .player-setup-action {
+    font-size: 20px !important;
+  }
+  .question-hatch-screen {
+    min-height: 148px;
+  }
+  .world-split-toolbar {
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+  .world-split-actions button,
+  .archive-tree-close {
+    min-width: 46px;
+    min-height: 46px;
+  }
+  .question-status-panel {
+    left: 8px !important;
+    bottom: 8px !important;
+    width: calc(100vw - 16px) !important;
+    max-height: 34vh !important;
+  }
+  .mobile-thumb-guide {
+    bottom: calc(148px + env(safe-area-inset-bottom)) !important;
+  }
+}
