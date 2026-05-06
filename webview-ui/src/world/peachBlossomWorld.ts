@@ -39,24 +39,33 @@ export type NpcPlacement = {
 
 export type CommunityLink = { label: string; url: string };
 
-const wallColor: ColorValue = { h: 45, s: 18, b: -22, c: 0 };
-const villageColor: ColorValue = { h: 38, s: 35, b: 12, c: 0 };
-const fieldColor: ColorValue = { h: 82, s: 48, b: 2, c: 12 };
-const cropColor: ColorValue = { h: 104, s: 52, b: -2, c: 18 };
-const glassColor: ColorValue = { h: 178, s: 32, b: 24, c: 8 };
-const trailColor: ColorValue = { h: 32, s: 40, b: 0, c: 10 };
-const waterColor: ColorValue = { h: 205, s: 58, b: 0, c: 20 };
-const bridgeColor: ColorValue = { h: 28, s: 36, b: -10, c: 18 };
-const tavernColor: ColorValue = { h: 18, s: 45, b: 4, c: 20 };
-const theatreColor: ColorValue = { h: 8, s: 44, b: 4, c: 18 };
-const campColor: ColorValue = { h: 15, s: 55, b: 8, c: 18 };
-const treeColor: ColorValue = { h: 88, s: 50, b: -12, c: 15 };
-const peachBloomColor: ColorValue = { h: 342, s: 48, b: 22, c: 8 };
-const petalGroundColor: ColorValue = { h: 334, s: 34, b: 28, c: 4 };
-const lcdMintColor: ColorValue = { h: 92, s: 24, b: 20, c: 8 };
-const templeColor: ColorValue = { h: 14, s: 38, b: -8, c: 24 };
-const thaiTempleColor: ColorValue = { h: 46, s: 48, b: 12, c: 24 };
-const cafeColor: ColorValue = { h: 19, s: 36, b: -5, c: 18 };
+// Shared palette requested for both the entrance UI and the explorable world:
+// yellow #FCF46B, blue #69C3AA, silver #BAC3D9, pale pink #FFD4FF,
+// and pale yellow #F9E9C2. Floor/furniture tinting stores colors as HSB+C.
+const paletteYellow: ColorValue = { h: 57, s: 96, b: 20, c: 10 };
+const paletteBlue: ColorValue = { h: 163, s: 43, b: 5, c: 14 };
+const paletteSilver: ColorValue = { h: 223, s: 29, b: 24, c: 6 };
+const palettePink: ColorValue = { h: 300, s: 100, b: 36, c: 0 };
+const paletteCream: ColorValue = { h: 43, s: 82, b: 32, c: 4 };
+
+const wallColor: ColorValue = paletteSilver;
+const villageColor: ColorValue = paletteCream;
+const fieldColor: ColorValue = { ...paletteYellow, b: 12, c: 16 };
+const cropColor: ColorValue = { ...paletteBlue, b: 10, c: 18 };
+const glassColor: ColorValue = { ...paletteBlue, b: 24, c: 8 };
+const trailColor: ColorValue = { ...paletteCream, b: 12, c: 18 };
+const waterColor: ColorValue = { ...paletteBlue, b: 0, c: 22 };
+const bridgeColor: ColorValue = { ...paletteSilver, b: 14, c: 18 };
+const tavernColor: ColorValue = { ...palettePink, b: 18, c: 12 };
+const theatreColor: ColorValue = { ...palettePink, b: 10, c: 18 };
+const campColor: ColorValue = { ...paletteYellow, b: 8, c: 20 };
+const treeColor: ColorValue = { ...paletteBlue, b: -4, c: 18 };
+const peachBloomColor: ColorValue = palettePink;
+const petalGroundColor: ColorValue = { ...palettePink, b: 30, c: 4 };
+const lcdMintColor: ColorValue = { ...paletteSilver, b: 22, c: 8 };
+const templeColor: ColorValue = { ...paletteYellow, b: 2, c: 24 };
+const thaiTempleColor: ColorValue = { ...paletteYellow, b: 16, c: 20 };
+const cafeColor: ColorValue = { ...paletteCream, b: 10, c: 18 };
 
 function fillRect(
   tiles: TileTypeVal[],
@@ -351,32 +360,32 @@ export function createTamagotchiPeachForestLayout(): OfficeLayout {
   const cols = 64;
   const rows = 64;
   const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_1);
-  const tileColors = new Array<ColorValue | null>(cols * rows).fill({ h: 86, s: 32, b: 12, c: 8 });
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill(villageColor);
   const furniture: PlacedFurniture[] = [];
 
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: rows }, TileType.FLOOR_1, { h: 86, s: 32, b: 12, c: 8 });
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: 1 }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
-  fillRect(tiles, tileColors, cols, { col: 0, row: rows - 1, w: cols, h: 1 }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: 1, h: rows }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
-  fillRect(tiles, tileColors, cols, { col: cols - 1, row: 0, w: 1, h: rows }, TileType.WALL, { h: 52, s: 55, b: 18, c: 20 });
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: rows }, TileType.FLOOR_1, villageColor);
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 0, row: rows - 1, w: cols, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: 1, h: rows }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: cols - 1, row: 0, w: 1, h: rows }, TileType.WALL, wallColor);
 
   for (let x = 4; x < 59; x++) {
     const y = 10 + Math.round(Math.sin(x / 5) * 4);
-    fillRect(tiles, tileColors, cols, { col: x, row: y, w: 1, h: 5 }, TileType.WALL, { h: 184, s: 48, b: 12, c: 18 });
-    fillRect(tiles, tileColors, cols, { col: x, row: y + 5, w: 1, h: 1 }, TileType.FLOOR_3, { h: 180, s: 32, b: 26, c: 8 });
+    fillRect(tiles, tileColors, cols, { col: x, row: y, w: 1, h: 5 }, TileType.WALL, waterColor);
+    fillRect(tiles, tileColors, cols, { col: x, row: y + 5, w: 1, h: 1 }, TileType.FLOOR_3, glassColor);
   }
 
-  fillRect(tiles, tileColors, cols, { col: 8, row: 20, w: 18, h: 18 }, TileType.FLOOR_5, { h: 334, s: 34, b: 28, c: 4 });
-  fillRect(tiles, tileColors, cols, { col: 29, row: 27, w: 7, h: 7 }, TileType.FLOOR_9, { h: 88, s: 50, b: -12, c: 15 });
-  fillRect(tiles, tileColors, cols, { col: 38, row: 27, w: 14, h: 10 }, TileType.FLOOR_6, { h: 92, s: 24, b: 20, c: 8 });
-  fillRect(tiles, tileColors, cols, { col: 6, row: 45, w: 50, h: 9 }, TileType.FLOOR_2, { h: 104, s: 34, b: 8, c: 12 });
-  fillRect(tiles, tileColors, cols, { col: 8, row: 39, w: 48, h: 2 }, TileType.FLOOR_3, { h: 32, s: 40, b: 0, c: 10 });
-  fillRect(tiles, tileColors, cols, { col: 31, row: 18, w: 2, h: 40 }, TileType.FLOOR_3, { h: 32, s: 40, b: 0, c: 10 });
+  fillRect(tiles, tileColors, cols, { col: 8, row: 20, w: 18, h: 18 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: 29, row: 27, w: 7, h: 7 }, TileType.FLOOR_9, treeColor);
+  fillRect(tiles, tileColors, cols, { col: 38, row: 27, w: 14, h: 10 }, TileType.FLOOR_6, lcdMintColor);
+  fillRect(tiles, tileColors, cols, { col: 6, row: 45, w: 50, h: 9 }, TileType.FLOOR_2, cropColor);
+  fillRect(tiles, tileColors, cols, { col: 8, row: 39, w: 48, h: 2 }, TileType.FLOOR_3, trailColor);
+  fillRect(tiles, tileColors, cols, { col: 31, row: 18, w: 2, h: 40 }, TileType.FLOOR_3, trailColor);
 
   for (const [col, row] of [[7, 22], [13, 21], [21, 24], [10, 31], [20, 34], [27, 45], [37, 45], [49, 44], [55, 52], [8, 52], [58, 22], [45, 20], [34, 26], [30, 27]] as const) {
-    addFurniture(furniture, (col + row) % 2 ? 'PLANT' : 'PLANT_2', col, row, { h: 334, s: 62, b: 20, c: 10 });
+    addFurniture(furniture, (col + row) % 2 ? 'PLANT' : 'PLANT_2', col, row, peachBloomColor);
   }
-  addFurniture(furniture, 'LARGE_PLANT', 31, 29, { h: 334, s: 48, b: 22, c: 8 });
+  addFurniture(furniture, 'LARGE_PLANT', 31, 29, peachBloomColor);
 
   return { version: 1, cols, rows, layoutRevision: 6, tiles, tileColors, furniture };
 }
