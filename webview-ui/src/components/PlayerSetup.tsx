@@ -243,8 +243,8 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
                 defaultChecked={(defaultProfile?.palette ?? 0) === choice.palette}
               />
               <span className="player-setup-avatar-copy inline-flex max-w-[calc(100%-2.25rem)] flex-col align-top">
-                <span className="player-setup-avatar-title text-lg leading-[1.2]">{choice.title[language]}</span>
-                <span className="player-setup-avatar-note mt-3 block text-sm leading-[1.35] text-text-muted">
+                <span className="player-setup-avatar-title text-3xl leading-[1.15]">{choice.title[language]}</span>
+                <span className="player-setup-avatar-note mt-4 block text-lg leading-[1.5] text-text-muted">
                   {choice.note[language]}
                 </span>
               </span>
@@ -254,14 +254,14 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
 
         <div className="player-setup-actions grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
-            className="player-setup-action w-full bg-accent text-white border-2 border-accent px-8 py-5 text-2xl shadow-pixel"
+            className="player-setup-action w-full bg-accent text-white border-2 border-accent px-8 py-5 text-lg shadow-pixel"
             type="button"
             onClick={() => handleStart('camp')}
           >
             {t(language, 'enterWorld')}
           </button>
           <button
-            className="player-setup-action w-full bg-bg text-text border-2 border-border px-8 py-5 text-2xl shadow-pixel"
+            className="player-setup-action w-full bg-bg text-text border-2 border-border px-8 py-5 text-lg shadow-pixel"
             type="button"
             onClick={() => handleStart('expedition')}
           >
