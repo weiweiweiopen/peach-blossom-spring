@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { type LanguageCode,supportedLanguages, t } from '../i18n.js';
+import { type LanguageCode, supportedLanguages, t } from '../i18n.js';
 
 interface PlayerProfile {
   name: string;
@@ -21,14 +21,130 @@ interface PlayerSetupProps {
   defaultProfile: PlayerProfile | null;
 }
 
-const avatarChoices = [
-  { palette: 0, title: { 'zh-TW': '星軌編織者', en: 'Weaver of Star-Paths', th: 'Weaver of Star-Paths' } },
-  { palette: 1, title: { 'zh-TW': '永恆記憶守望者', en: 'Sentinel of Eternal Echoes', th: 'Sentinel of Eternal Echoes' } },
-  { palette: 2, title: { 'zh-TW': '虛擬靈魂架構師', en: 'Architect of Digital Souls', th: 'Architect of Digital Souls' } },
-  { palette: 3, title: { 'zh-TW': '引力叛徒', en: 'Gravity Renegade', th: 'Gravity Renegade' } },
-  { palette: 4, title: { 'zh-TW': '新世界黎明先鋒', en: 'Vanguard of the Neon Dawn', th: 'Vanguard of the Neon Dawn' } },
-  { palette: 5, title: { 'zh-TW': '星系繁榮鑄造師', en: 'Shaper of Galactic Fortune', th: 'Shaper of Galactic Fortune' } },
-  { palette: 6, title: { 'zh-TW': '光譜詩人', en: 'Poet of the Spectrum', th: 'Poet of the Spectrum' } },
+interface AvatarChoice {
+  palette: number;
+  title: Record<LanguageCode, string>;
+  note: Record<LanguageCode, string>;
+}
+
+const avatarChoices: AvatarChoice[] = [
+  {
+    palette: 0,
+    title: {
+      'zh-TW': '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
+      en: '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
+      th: '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
+    },
+    note: {
+      'zh-TW': '負責確保事情按部就班地發生，通常是在錯誤的時間。',
+      en: 'Responsible for ensuring events happen procedurally, usually at the wrong time.',
+      th: 'Responsible for ensuring events happen procedurally, usually at the wrong time.',
+    },
+  },
+  {
+    palette: 1,
+    title: {
+      'zh-TW': '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
+      en: '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
+      th: '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
+    },
+    note: {
+      'zh-TW': '小心守護著那些沒人想要但丟掉會被罰款的歷史垃圾。',
+      en: 'Carefully guards historical junk nobody wants, but discarding it incurs a fine.',
+      th: 'Carefully guards historical junk nobody wants, but discarding it incurs a fine.',
+    },
+  },
+  {
+    palette: 2,
+    title: {
+      'zh-TW': '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
+      en: '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
+      th: '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
+    },
+    note: {
+      'zh-TW': '向宇宙解釋為什麼電腦認為 2+2 等於一盤熱騰騰的炸魚薯條。',
+      en: 'Explains to the universe why the computer believes 2+2 equals a steaming plate of fish and chips.',
+      th: 'Explains to the universe why the computer believes 2+2 equals a steaming plate of fish and chips.',
+    },
+  },
+  {
+    palette: 3,
+    title: {
+      'zh-TW': '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
+      en: '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
+      th: '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
+    },
+    note: {
+      'zh-TW': '他反對秩序，但對「下午茶時間」出奇地堅持。',
+      en: 'Opposes order, yet is surprisingly strict about afternoon tea time.',
+      th: 'Opposes order, yet is surprisingly strict about afternoon tea time.',
+    },
+  },
+  {
+    palette: 4,
+    title: {
+      'zh-TW': "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
+      en: "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
+      th: "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
+    },
+    note: {
+      'zh-TW': '熱衷於推廣那些在建造完成前就已經退流行的星際建築。',
+      en: 'Promotes interstellar architecture that goes out of fashion before construction finishes.',
+      th: 'Promotes interstellar architecture that goes out of fashion before construction finishes.',
+    },
+  },
+  {
+    palette: 5,
+    title: {
+      'zh-TW': '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
+      en: '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
+      th: '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
+    },
+    note: {
+      'zh-TW': '致力於向那些連呼吸都困難的人推銷「星雲保險」。',
+      en: 'Dedicated to selling Nebula Insurance to people who can barely breathe.',
+      th: 'Dedicated to selling Nebula Insurance to people who can barely breathe.',
+    },
+  },
+  {
+    palette: 6,
+    title: {
+      'zh-TW': '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
+      en: '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
+      th: '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
+    },
+    note: {
+      'zh-TW': '負責讓宇宙看起來比實際上稍微不那麼令人絕望一點點。',
+      en: 'Makes the universe look very slightly less hopeless than it actually is.',
+      th: 'Makes the universe look very slightly less hopeless than it actually is.',
+    },
+  },
+  {
+    palette: 7,
+    title: {
+      'zh-TW': '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
+      en: '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
+      th: '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
+    },
+    note: {
+      'zh-TW': '這份工作基本上就是每天求著那些毫無生存意志的植物不要隨便死掉。',
+      en: 'Basically spends every day begging plants with no will to live not to die randomly.',
+      th: 'Basically spends every day begging plants with no will to live not to die randomly.',
+    },
+  },
+  {
+    palette: 8,
+    title: {
+      'zh-TW': '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
+      en: '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
+      th: '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
+    },
+    note: {
+      'zh-TW': '主要工作是填寫大量的表格，試圖說服太陽慢點熄滅，或者至少先換成省電燈泡。',
+      en: 'Mostly fills out forms to persuade the sun to go out more slowly, or at least switch to energy-saving bulbs first.',
+      th: 'Mostly fills out forms to persuade the sun to go out more slowly, or at least switch to energy-saving bulbs first.',
+    },
+  },
 ];
 export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfile }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -154,7 +270,7 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           {avatarChoices.map((choice) => (
             <label
               key={choice.palette}
-              className="player-setup-avatar-choice border border-border bg-bg/70 px-6 py-6 cursor-pointer"
+              className="player-setup-avatar-choice group relative border border-border bg-bg/70 px-6 py-6 cursor-pointer"
             >
               <input
                 className="player-setup-radio mr-4"
@@ -164,6 +280,9 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
                 defaultChecked={(defaultProfile?.palette ?? 0) === choice.palette}
               />
               <span className="player-setup-avatar-title text-lg leading-[1.2]">{choice.title[language]}</span>
+              <span className="player-setup-avatar-note pointer-events-none absolute left-4 right-4 top-[calc(100%+8px)] z-10 hidden border border-accent-bright bg-bg px-4 py-3 text-sm leading-[1.35] text-text shadow-pixel group-hover:block group-focus-within:block">
+                {choice.note[language]}
+              </span>
             </label>
           ))}
         </div>

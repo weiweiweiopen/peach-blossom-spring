@@ -54,7 +54,9 @@ const topicLabels: Record<string, string> = {
 };
 
 const PLAYER_ID = 0;
-const MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX = 76; // 2cm at 96 CSS px/in.
+const MOBILE_THUMB_GUIDE_CENTER_LEFT_PX = 96;
+const MOBILE_THUMB_GUIDE_BOTTOM_PX = 72;
+const MOBILE_THUMB_GUIDE_DIAMETER_PX = 168;
 const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 type PlayMode = 'camp' | 'expedition';
 const ExpeditionPanel = lazy(() =>
@@ -154,7 +156,6 @@ function App() {
   const [worldInitialized, setWorldInitialized] = useState(false);
   const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
-  const [mobileViewportHeight, setMobileViewportHeight] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight));
   const [playMode, setPlayMode] = useState<PlayMode>('camp');
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
@@ -188,15 +189,10 @@ function App() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const mobileDragRef = useRef({ pointerId: null as number | null, clientX: 0, clientY: 0, raf: 0, nextAt: 0 });
-  const mobileControlOffsetPx = useMemo(() => {
-    if (!showMobileControls) return 0;
-    const baseOffset = Math.min(150, Math.max(86, mobileViewportHeight * 0.18));
-    return baseOffset + MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX;
-  }, [mobileViewportHeight, showMobileControls]);
-  const mobileThumbGuideBottomPx = useMemo(() => {
-    if (!showMobileControls) return 0;
-    return Math.max(12, mobileControlOffsetPx - MOBILE_THUMB_CENTER_EXTRA_OFFSET_PX);
-  }, [mobileControlOffsetPx, showMobileControls]);
+  const getMobileControlCenter = useCallback(() => ({
+    x: MOBILE_THUMB_GUIDE_CENTER_LEFT_PX,
+    y: window.innerHeight - MOBILE_THUMB_GUIDE_BOTTOM_PX - MOBILE_THUMB_GUIDE_DIAMETER_PX / 2,
+  }), []);
 
   const [editorTickForKeyboard, setEditorTickForKeyboard] = useState(0);
   useEditorKeyboard(
@@ -238,7 +234,6 @@ function App() {
     const mediaQuery = window.matchMedia('(pointer: coarse), (max-width: 900px)');
     const sync = () => {
       setShowMobileControls(mediaQuery.matches);
-      setMobileViewportHeight(window.innerHeight);
     };
     sync();
     mediaQuery.addEventListener('change', sync);
@@ -483,39 +478,15 @@ function App() {
     [officeState],
   );
 
-  const getScreenPosition = useCallback(
-    (characterId: number): { left: number; top: number } | null => {
-      if (!containerRef.current) return null;
-      const ch = officeState.characters.get(characterId);
-      if (!ch) return null;
-      const rect = containerRef.current.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      const layout = officeState.getLayout();
-      const mapW = layout.cols * TILE_SIZE * editor.zoom;
-      const mapH = layout.rows * TILE_SIZE * editor.zoom;
-      const canvasW = rect.width * dpr;
-      const canvasH = rect.height * dpr;
-      const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-      const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
-      return {
-        left: rect.left + (deviceOffsetX + ch.x * editor.zoom) / dpr,
-        top: rect.top + (deviceOffsetY + ch.y * editor.zoom) / dpr,
-      };
-    },
-    [editor.panRef, editor.zoom, officeState],
-  );
-
   const stepTowardMobilePointer = useCallback(() => {
     const drag = mobileDragRef.current;
     drag.raf = requestAnimationFrame(stepTowardMobilePointer);
     if (drag.pointerId === null || activeDialogueIdRef.current !== null) return;
     const now = performance.now();
     if (now < drag.nextAt) return;
-    const playerScreen = getScreenPosition(PLAYER_ID);
-    if (!playerScreen) return;
-    const controlCenterY = playerScreen.top + mobileControlOffsetPx;
-    const dx = drag.clientX - playerScreen.left;
-    const dy = drag.clientY - controlCenterY;
+    const controlCenter = getMobileControlCenter();
+    const dx = drag.clientX - controlCenter.x;
+    const dy = drag.clientY - controlCenter.y;
     if (Math.hypot(dx, dy) < 24) return;
     const moved = Math.abs(dx) > Math.abs(dy)
       ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
@@ -523,7 +494,7 @@ function App() {
     if (moved) {
       drag.nextAt = now + 90;
     }
-  }, [getScreenPosition, handleMoveCommand, mobileControlOffsetPx]);
+  }, [getMobileControlCenter, handleMoveCommand]);
 
   const handleMobilePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -832,8 +803,11 @@ function App() {
 
           {showMobileControls && playerProfile && !activeDialoguePersona && (
             <div
-              className="mobile-thumb-guide absolute left-1/2 z-46 pointer-events-none -translate-x-1/2 text-center"
-              style={{ bottom: `calc(${Math.round(mobileThumbGuideBottomPx).toString()}px + env(safe-area-inset-bottom))` }}
+              className="mobile-thumb-guide absolute z-46 pointer-events-none -translate-x-1/2 text-center"
+              style={{
+                left: `calc(${MOBILE_THUMB_GUIDE_CENTER_LEFT_PX}px + env(safe-area-inset-left))`,
+                bottom: `calc(${MOBILE_THUMB_GUIDE_BOTTOM_PX}px + env(safe-area-inset-bottom))`,
+              }}
             >
               <div className="mx-auto mb-3 h-42 w-42 rounded-full border border-white/20 bg-black/20" />
               <p className="text-xs text-text-muted bg-black/45 border border-border px-4 py-3">
