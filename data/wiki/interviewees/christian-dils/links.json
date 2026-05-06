@@ -1,4 +1,40 @@
 {
   "intervieweeId": "christian-dils",
-  "links": []
+  "links": [
+    {
+      "title": "Fraunhofer IZM",
+      "url": "https://www.izm.fraunhofer.de/en.html",
+      "description": "Fraunhofer IZM website."
+    },
+    {
+      "title": "Fraunhofer IZM Research Labs for E-Textiles",
+      "url": "https://www.izm.fraunhofer.de/en/abteilungen/system_integrationinterconnectiontechnologies/ausstattung/research-labs-for-e-textiles.html",
+      "description": "Research Labs for E-Textiles page."
+    },
+    {
+      "title": "Fraunhofer IZM Art-Tech Collaborations",
+      "url": "https://www.izm.fraunhofer.de/en/abteilungen/system_integrationinterconnectiontechnologies/arbeitsgruppen/system-on-flex/art-tech-collaborations.html",
+      "description": "Art-tech collaboration page."
+    },
+    {
+      "title": "Re-FREAM / Planetary Design Circle",
+      "url": "https://re-fream.eu/planetary-design-circle-a-holistic-and-strategic-design-tool/",
+      "description": "Planetary Design Circle article."
+    },
+    {
+      "title": "Fraunhofer WKI Science, Art and Design",
+      "url": "https://www.wki.fraunhofer.de/en/about-us/networks/science-art-design.html",
+      "description": "Fraunhofer WKI science, art, and design network page."
+    },
+    {
+      "title": "Fashion Tech Farm",
+      "url": "https://fashiontechfarm.com/",
+      "description": "Fashion Tech Farm website."
+    },
+    {
+      "title": "ResearchGate profile",
+      "url": "https://www.researchgate.net/profile/Christian-Dils",
+      "description": "Christian Dils ResearchGate profile."
+    }
+  ]
 }
