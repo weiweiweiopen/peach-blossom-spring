@@ -30,6 +30,7 @@ import type {
   OfficeLayout,
   PlacedFurniture,
   Seat,
+  SpriteData,
   TileType as TileTypeVal,
 } from '../types.js';
 import { CharacterState, Direction, MATRIX_EFFECT_DURATION, TILE_SIZE } from '../types.js';
@@ -347,6 +348,27 @@ export class OfficeState {
     ch.y = spawn.row * TILE_SIZE + TILE_SIZE / 2;
     this.characters.set(id, ch);
     this.cameraFollowId = id;
+  }
+
+
+  addQuestionPet(id: number, name: string, spriteOverride: SpriteData, col = 32, row = 32): void {
+    if (this.characters.has(id)) return;
+    const spawn = isWalkable(col, row, this.tileMap, this.blockedTiles)
+      ? { col, row }
+      : (this.walkableTiles.find((tile) => !this.blockedTiles.has(`${tile.col},${tile.row}`)) ?? { col: 1, row: 1 });
+    const ch = createCharacter(id, id % Math.max(1, getLoadedCharacterCount()), null, null, 0);
+    ch.isQuestionPet = true;
+    ch.folderName = name;
+    ch.spriteOverride = spriteOverride;
+    ch.isActive = false;
+    ch.state = CharacterState.IDLE;
+    ch.seatId = null;
+    ch.matrixEffect = null;
+    ch.tileCol = spawn.col;
+    ch.tileRow = spawn.row;
+    ch.x = spawn.col * TILE_SIZE + TILE_SIZE / 2;
+    ch.y = spawn.row * TILE_SIZE + TILE_SIZE / 2;
+    this.characters.set(id, ch);
   }
 
   movePlayerBy(id: number, dCol: number, dRow: number): boolean {

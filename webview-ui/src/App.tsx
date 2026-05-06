@@ -22,15 +22,20 @@ import { EditorToolbar } from './office/editor/EditorToolbar.js';
 import { OfficeState } from './office/engine/officeState.js';
 import { isRotatable } from './office/layout/furnitureCatalog.js';
 import { EditTool, TILE_SIZE } from './office/types.js';
+import { appearanceToSpriteData } from './pets/generateQuestionPet.js';
+import { QuestionPetPreview } from './pets/QuestionPetPreview.js';
 import { isBrowserRuntime } from './runtime.js';
+import { applyPlayerNpcDialogue, applyPlayerThrongletResponse, createInitialSnapshot, createThronglet, tickSimulation } from './simulation/engine.js';
+import { scorePromptResonance } from './simulation/resonance.js';
+import type { SimSnapshot, Thronglet } from './simulation/types.js';
 import { shouldEnableVideoEncounter } from './videoEncounter.js';
 import { vscode } from './vscodeApi.js';
 import {
   communityLinks,
-  createPeachBlossomLayout,
+  createTamagotchiPeachForestLayout,
   isInZone,
-  npcPlacements,
-  worldZones,
+  tamagotchiNpcPlacements,
+  tamagotchiPeachForestZones,
 } from './world/peachBlossomWorld.js';
 
 interface Persona {
@@ -57,7 +62,7 @@ const PLAYER_ID = 0;
 const MOBILE_THUMB_GUIDE_CENTER_LEFT_PX = 96;
 const MOBILE_THUMB_GUIDE_BOTTOM_PX = 72;
 const MOBILE_THUMB_GUIDE_DIAMETER_PX = 168;
-const archiveTreeZone = worldZones.find((zone) => zone.kind === 'archiveTree') ?? null;
+const archiveTreeZone = tamagotchiPeachForestZones.find((zone) => zone.kind === 'archiveTree') ?? null;
 type PlayMode = 'camp' | 'expedition';
 const ExpeditionPanel = lazy(() =>
   import('./components/ExpeditionPanel.js').then((module) => ({ default: module.ExpeditionPanel })),
@@ -68,6 +73,10 @@ const RpgDialogue = lazy(() =>
 
 function trimToFiftyChars(text: string): string {
   return text.length > 50 ? `${text.slice(0, 50)}...` : text;
+}
+
+function languageLabel(language: LanguageCode, zh: string, en: string): string {
+  return language === 'zh-TW' ? zh : en;
 }
 
 function readSavedPlayerDefaults(): PlayerProfile | null {
@@ -83,6 +92,7 @@ function readSavedPlayerDefaults(): PlayerProfile | null {
       mission: saved.mission ?? 'Find an idea worth developing with others',
       constraints: saved.constraints ?? '',
       skills: saved.skills ?? '',
+      question: saved.question ?? saved.mission ?? '',
     };
   } catch {
     return null;
@@ -157,6 +167,9 @@ function App() {
   const [promptAnchor, setPromptAnchor] = useState<{ npcId: number; col: number; row: number } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>('camp');
+  const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
+  const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
+  const [petResponse, setPetResponse] = useState('');
 
   const currentMajorMinor = toMajorMinor(extensionVersion);
 
@@ -208,12 +221,16 @@ function App() {
   );
 
   const handleClick = useCallback((agentId: number) => {
-    // If clicked agent is a sub-agent, focus the parent's terminal instead
+    const pet = simSnapshot?.thronglets.find((item) => item.characterId === agentId) ?? null;
+    if (pet) {
+      setSelectedPet(pet);
+      return;
+    }
     const os = getOfficeState();
     const meta = os.subagentMeta.get(agentId);
     const focusId = meta ? meta.parentAgentId : agentId;
     vscode.postMessage({ type: 'focusAgent', id: focusId });
-  }, []);
+  }, [simSnapshot]);
 
   const officeState = getOfficeState();
   const personaByAgentId = useMemo(
@@ -264,7 +281,7 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     if (!worldInitialized) {
-      officeState.rebuildFromLayout(createPeachBlossomLayout());
+      officeState.rebuildFromLayout(createTamagotchiPeachForestLayout());
       setWorldInitialized(true);
     }
     officeState.addPlayer(PLAYER_ID, playerProfile.palette, playerProfile.name);
@@ -288,7 +305,7 @@ function App() {
   useEffect(() => {
     if (!layoutReady || agents.length === 0) return;
     const personaById = new Map(personas.map((persona, index) => [persona.id, index + 1]));
-    for (const placement of npcPlacements) {
+    for (const placement of tamagotchiNpcPlacements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId || !agents.includes(agentId)) continue;
       const ch = officeState.characters.get(agentId);
@@ -304,6 +321,41 @@ function App() {
       ch.hueShift = (25 + agentId * 23) % 120;
     }
   }, [agents, layoutReady, officeState]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile || !simSnapshot) return;
+    simSnapshot.thronglets.forEach((pet, index) => {
+      if (!officeState.characters.has(pet.characterId)) {
+        officeState.addQuestionPet(pet.characterId, languageLabel(selectedLanguage, '問題電子雞', 'Question Pet'), appearanceToSpriteData(pet.appearance), 34 + index, 34);
+      }
+    });
+  }, [layoutReady, officeState, playerProfile, selectedLanguage, simSnapshot]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile || !simSnapshot) return;
+    const interval = window.setInterval(() => {
+      setSimSnapshot((current) => {
+        if (!current) return current;
+        const contexts = Object.fromEntries(current.thronglets.map((pet) => [pet.id, personas.map((persona) => `${persona.role} ${persona.intro}`).join(' ')]));
+        const next = tickSimulation(current, contexts);
+        for (const pet of next.thronglets) {
+          const ch = officeState.characters.get(pet.characterId);
+          if (!ch || ch.path.length > 0) continue;
+          const targets = pet.currentAction === 'visitRiver' || pet.state.energy < 35
+            ? [{ col: 20, row: 16 }, { col: 45, row: 12 }]
+            : pet.currentAction === 'joinThrong' || pet.state.groupBond > 50
+              ? [{ col: 43, row: 31 }]
+              : pet.currentAction === 'reflect' || pet.state.solitude > 60
+                ? [{ col: 14, row: 51 }, { col: 53, row: 50 }]
+                : [{ col: ch.tileCol + ((next.tick + pet.characterId) % 3) - 1, row: ch.tileRow + (((next.tick + pet.characterId) >> 1) % 3) - 1 }];
+          const target = targets[next.tick % targets.length];
+          officeState.walkToTile(pet.characterId, target.col, target.row);
+        }
+        return next;
+      });
+    }, 1800);
+    return () => window.clearInterval(interval);
+  }, [layoutReady, officeState, playerProfile, simSnapshot]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
@@ -534,9 +586,12 @@ function App() {
 
   const handlePlayerStart = useCallback((profile: PlayerProfile, mode: StartMode) => {
     localStorage.setItem('peach_player_profile', JSON.stringify(profile));
+    const pet = createThronglet(profile.question || profile.mission, profile.name, PLAYER_ID, 10000);
+    const npcContexts = personas.map((persona, index) => ({ id: `npc-${persona.id}`, characterId: index + 1, name: persona.name, text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(' ')}` }));
+    setSimSnapshot(createInitialSnapshot([pet], npcContexts));
     setPlayerDefaults(profile);
     setPlayerProfile(profile);
-    setPlayMode(mode);
+    setPlayMode(mode === 'expedition' ? 'camp' : mode);
   }, []);
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
@@ -797,8 +852,47 @@ function App() {
                 topicLabels={topicLabels}
                 language={selectedLanguage}
                 onClose={() => setActiveDialogueId(null)}
+                onSimEvent={(prompt) => {
+                  const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(' ')}`;
+                  const resonance = scorePromptResonance(playerProfile.question || playerProfile.mission, personaText);
+                  setSimSnapshot((current) => current ? applyPlayerNpcDialogue(current, `npc-${activeDialoguePersona.id}`, prompt, resonance) : current);
+                }}
               />
             </Suspense>
+          )}
+
+          {simSnapshot && playerProfile && (
+            <section className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6" data-no-mobile-drag="true">
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <h2 className="text-lg">問題電子雞 SIM</h2>
+                <span className="text-base">tick {simSnapshot.tick}</span>
+              </div>
+              {simSnapshot.thronglets.map((pet) => (
+                <button key={pet.id} className="w-full text-left border-2 border-[#253421] bg-[#B7D879] px-4 py-4 mb-4 text-[#253421]" type="button" onClick={() => setSelectedPet(pet)}>
+                  <div className="flex gap-4 items-center"><QuestionPetPreview question={pet.question.text} appearance={pet.appearance} size={4} /><span className="text-base leading-snug">{pet.question.text}</span></div>
+                  <p className="text-sm mt-3">{pet.currentAction} / energy {pet.state.energy.toFixed(0)} stress {pet.state.stress.toFixed(0)} bond {pet.state.groupBond.toFixed(0)}</p>
+                </button>
+              ))}
+              <div className="grid grid-cols-2 gap-2 text-sm mb-4">{Object.entries(simSnapshot.scores).map(([key, value]) => <p key={key}>{key}: {value.toFixed(1)}</p>)}</div>
+              {simSnapshot.throngs.map((throng) => <p key={throng.id} className="text-sm mb-2">THRONG: {throng.topic} ({throng.memberIds.length})</p>)}
+              {simSnapshot.thoughts.map((thought, index) => <p key={`${thought}-${index}`} className="text-sm leading-snug border-t border-[#253421] pt-3 mt-3">{thought}</p>)}
+              {simSnapshot.events.slice(0, 4).map((event) => <p key={event.id} className="text-sm opacity-80 mt-2">{event.type}: {event.text}</p>)}
+            </section>
+          )}
+
+          {selectedPet && (
+            <section className="question-response-panel absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
+              <button className="float-right text-xl" type="button" onClick={() => setSelectedPet(null)}>x</button>
+              <div className="flex gap-5 items-start mb-5"><QuestionPetPreview question={selectedPet.question.text} appearance={selectedPet.appearance} size={6} /><div><p className="text-sm">originating question</p><h2 className="text-lg leading-snug">{selectedPet.question.text}</h2></div></div>
+              <textarea className="w-full min-h-[110px] bg-[#B7D879] border-4 border-[#253421] text-[#253421] px-4 py-4 text-lg" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={selectedLanguage === 'zh-TW' ? '回應這隻問題電子雞...' : 'Respond to this question pet...'} />
+              <button className="mt-4 bg-[#FF8FBC] border-4 border-[#1B1B14] text-[#1B1B14] px-6 py-4 text-lg" type="button" onClick={() => {
+                const response = petResponse.trim();
+                if (!response) return;
+                setSimSnapshot((current) => current ? applyPlayerThrongletResponse(current, selectedPet.id, response) : current);
+                setPetResponse('');
+                setSelectedPet(null);
+              }}>{selectedLanguage === 'zh-TW' ? '送出回應' : 'Send Response'}</button>
+            </section>
           )}
 
           {showMobileControls && playerProfile && !activeDialoguePersona && (
@@ -861,7 +955,7 @@ function App() {
           <div className="text-base text-text px-10" style={{ lineHeight: 1.4 }}>
             <p className="mb-8">This world is now a WorkAdventure-style Peach Blossom Spring map:</p>
             <ul className="mb-8 pl-18 list-disc m-0">
-              <li className="text-sm mb-2">Wander through rivers, bridge, village, forest, and temple zones</li>
+              <li className="text-sm mb-2">Wander through a tiny LCD river, peach grove, archive tree, and story circle</li>
               <li className="text-sm mb-2">Approach a persona and press Space to talk</li>
               <li className="text-sm mb-2">Visit the archive tree for the full index and portal links</li>
             </ul>

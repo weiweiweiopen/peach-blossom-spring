@@ -1,4 +1,4 @@
-import type { ExpeditionAvatar, ExpeditionPersona, AgentProfile, NpcBehaviorProfile } from './types.js';
+import type { AgentProfile, ExpeditionAvatar, ExpeditionPersona, NpcBehaviorProfile } from './types.js';
 
 export const EXPEDITION_REASONING_RULES = [
   'NPC transcripts and persona responses are memory and worldview sources, not answer boundaries.',

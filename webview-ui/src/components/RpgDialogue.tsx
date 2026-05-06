@@ -40,6 +40,7 @@ interface RpgDialogueProps {
   topicLabels: Record<string, string>;
   language: LanguageCode;
   onClose: () => void;
+  onSimEvent?: (prompt: string, topic: string) => void;
 }
 
 function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string }) {
@@ -145,7 +146,7 @@ function makeSuggestedQuestions(
   return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
 }
 
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose }: RpgDialogueProps) {
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -226,6 +227,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
+      onSimEvent?.(trimmed, topic);
       const answer = await askDeepSeekPersona({
         playerName: player.name,
         question: `${trimmed}\nTopic hint: ${topic}`,

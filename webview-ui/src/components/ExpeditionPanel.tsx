@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { type LanguageCode, t } from '../i18n.js';
 import { runExpedition } from '../expedition/expeditionRunner.js';
 import type { ExpeditionEvent, ExpeditionPersona, ExpeditionReport } from '../expedition/types.js';
+import { type LanguageCode, t } from '../i18n.js';
 import type { PlayerProfile } from './PlayerSetup.js';
 
 interface ExpeditionPanelProps {
