@@ -73,6 +73,16 @@
   /* Shadow */
   --shadow-pixel: 3px 3px 0px color-mix(in srgb, var(--palette-blue) 70%, var(--palette-ink) 30%);
 
+  /* Readable UI scale */
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-dialogue: clamp(16px, 2vw, 20px);
+  --font-size-title: clamp(32px, 5vw, 56px);
+  --mobile-safe-bottom: env(safe-area-inset-bottom);
+  --mobile-monitor-collapsed-height: 52px;
+  --panel-gap: 16px;
+
   /* Non-utility values */
   --vignette: radial-gradient(ellipse at center, transparent 58%, color-mix(in srgb, var(--palette-silver) 72%, transparent) 100%);
   --btn-disabled-opacity: 0.35;
@@ -125,11 +135,24 @@
   html,
   body,
   #root {
-    @apply m-0 w-full h-full overflow-hidden font-pixel text-base text-text;
+    @apply m-0 w-full h-full overflow-hidden text-text;
+    min-height: 100dvh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    font-size: var(--font-size-base);
+    line-height: 1.45;
   }
 
   * {
-    @apply font-pixel;
+    box-sizing: border-box;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+    line-height: 1.4;
+  }
+
+  h1, h2, h3, .player-setup-kicker, .pet-card-label {
+    font-family: 'FS Pixel Sans', 'CJK Pixel Match', monospace;
   }
 }
 
@@ -720,4 +743,76 @@
   color: #000 !important;
   background: #fff !important;
   border-color: #000 !important;
+}
+
+
+.peach-spring-entry-bg {
+  padding: max(58px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 16% 22%, rgba(255, 212, 255, 0.72) 0 9px, transparent 10px 24px),
+    radial-gradient(circle at 82% 18%, rgba(252, 244, 107, 0.48) 0 12px, transparent 13px 28px),
+    linear-gradient(135deg, rgba(186, 195, 217, 0.34) 0 12%, transparent 13% 100%),
+    linear-gradient(170deg, transparent 0 58%, rgba(105, 195, 170, 0.24) 59% 68%, transparent 69%),
+    radial-gradient(ellipse at 50% 115%, rgba(105, 195, 170, 0.3), transparent 58%),
+    #f9f4d7;
+}
+
+.peach-spring-entry-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(255,255,255,.42) 12.5% 13.5%, transparent 14% 32%, rgba(255,255,255,.38) 32.5% 33.5%, transparent 34% 64%, rgba(255,255,255,.38) 64.5% 65.5%, transparent 66%),
+    radial-gradient(ellipse at 25% 8%, rgba(113, 158, 128, .25), transparent 34%),
+    radial-gradient(ellipse at 72% 10%, rgba(113, 158, 128, .2), transparent 32%);
+}
+
+.player-setup-panel {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+.player-setup-title { font-size: var(--font-size-title); }
+.player-setup-description { font-size: 17px; }
+.entry-intro { max-height: 34dvh; overflow: auto; padding-right: 8px; }
+.player-setup-label { font-size: 16px; font-weight: 700; }
+.player-setup-field { font-size: 18px; line-height: 1.45; border: 3px solid var(--palette-blue); background: rgba(255,255,255,.92); }
+.player-setup-action, .dispatch-archive, .archive-inbox { font-size: 16px; line-height: 1.45; }
+.lifeform-decoration { pointer-events: none; border: 3px solid rgba(105, 195, 170, .65); background: rgba(255,255,255,.55); box-shadow: var(--shadow-pixel); }
+
+.global-language-select, .observer-zoom button, .observer-close, .mobile-talk-prompt, .name-tag, .question-status-panel, .question-response-panel, .mobile-rules-drawer, .mobile-stats-bar, .rpg-dialogue-panel { font-size: var(--font-size-base); line-height: 1.45; }
+.text-sm { font-size: var(--font-size-sm) !important; }
+.text-xs { font-size: var(--font-size-xs) !important; }
+.rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-submit { font-size: var(--font-size-dialogue) !important; line-height: 1.45 !important; }
+
+@media (max-width: 768px) {
+  .player-setup-overlay { min-height: 100dvh; padding-bottom: calc(var(--mobile-monitor-collapsed-height) + env(safe-area-inset-bottom)); }
+  .player-setup-panel { max-height: calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+  .player-setup-description { font-size: 16px; }
+  .entry-intro { max-height: 28dvh; }
+  .lifeform-decoration { display: none; }
+  .question-response-panel.info-card,
+  .question-response-panel {
+    bottom: calc(var(--mobile-monitor-collapsed-height) + 12px + env(safe-area-inset-bottom));
+    z-index: 58;
+    font-size: 16px;
+    max-height: 45dvh;
+  }
+  .mobile-stats-bar {
+    min-height: var(--mobile-monitor-collapsed-height);
+    font-size: 16px;
+    pointer-events: auto;
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .mobile-stats-bar.is-input-focused,
+  body:has(input:focus, textarea:focus) .mobile-stats-bar {
+    transform: translateY(calc(100% - 18px));
+    opacity: .72;
+  }
+  .mobile-rules-drawer.is-input-focused,
+  body:has(input:focus, textarea:focus) .mobile-rules-drawer {
+    transform: translateY(calc(100% - var(--mobile-monitor-collapsed-height)));
+    pointer-events: none;
+  }
+  input, textarea, button, select { font-size: 16px !important; }
 }
