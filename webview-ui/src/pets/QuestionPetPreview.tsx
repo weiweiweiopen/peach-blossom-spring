@@ -19,7 +19,7 @@ export function QuestionPetPreview({ question, appearance, size = 8 }: Props) {
         width: 16 * size,
         height: 16 * size,
         borderColor: pet.palette.outline,
-        background: '#B7D879',
+        background: '#F9E9C2',
         imageRendering: 'pixelated',
       }}
       aria-label="16x16 question pet preview"

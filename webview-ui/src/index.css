@@ -37,21 +37,27 @@
 
 :root {
   /* Core palette */
-  --color-bg: #1e1e2e;
-  --color-bg-dark: #181828;
-  --color-bg-thumb: #2a2a3a;
-  --color-border: #4a4a6a;
-  --color-accent: #6030ff;
-  --color-accent-bright: #746fff;
+  --palette-yellow: #FCF46B;
+  --palette-blue: #69C3AA;
+  --palette-silver: #BAC3D9;
+  --palette-pink: #FFD4FF;
+  --palette-cream: #F9E9C2;
+  --palette-ink: #315B63;
+  --color-bg: var(--palette-cream);
+  --color-bg-dark: var(--palette-silver);
+  --color-bg-thumb: var(--palette-silver);
+  --color-border: var(--palette-blue);
+  --color-accent: var(--palette-blue);
+  --color-accent-bright: var(--palette-yellow);
 
   /* Text */
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text: var(--palette-ink);
+  --color-text-muted: color-mix(in srgb, var(--palette-ink) 68%, var(--palette-silver) 32%);
 
   /* Buttons */
-  --color-btn-bg: rgb(53, 52, 69);
-  --color-btn-hover: rgb(78, 75, 104);
-  --color-active-bg: rgb(44, 43, 109);
+  --color-btn-bg: var(--palette-pink);
+  --color-btn-hover: var(--palette-yellow);
+  --color-active-bg: var(--palette-blue);
 
   /* Semantic */
   --color-reset-text: #ecc;
@@ -65,10 +71,10 @@
   --color-status-error: var(--color-danger);
 
   /* Shadow */
-  --shadow-pixel: 2px 2px 0px #0a0a14;
+  --shadow-pixel: 3px 3px 0px color-mix(in srgb, var(--palette-blue) 70%, var(--palette-ink) 30%);
 
   /* Non-utility values */
-  --vignette: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.6) 100%);
+  --vignette: radial-gradient(ellipse at center, transparent 58%, color-mix(in srgb, var(--palette-silver) 72%, transparent) 100%);
   --btn-disabled-opacity: 0.35;
 }
 
@@ -156,13 +162,13 @@
 
 @media (max-width: 900px), (pointer: coarse) {
   :root {
-    --vignette: radial-gradient(ellipse at center, transparent 64%, rgba(0, 0, 0, 0.42) 100%);
+    --vignette: radial-gradient(ellipse at center, transparent 64%, color-mix(in srgb, var(--palette-silver) 62%, transparent) 100%);
   }
 
   .mobile-talk-prompt {
     max-width: min(82vw, 360px);
     padding: 8px 10px;
-    background: rgba(24, 24, 40, 0.72) !important;
+    background: color-mix(in srgb, var(--palette-cream) 88%, transparent) !important;
   }
 
   .mobile-talk-prompt p:nth-child(2) {
@@ -208,7 +214,7 @@
   .rpg-dialogue-overlay {
     align-items: flex-end;
     padding: 0;
-    background: rgba(0, 0, 0, 0.48);
+    background: color-mix(in srgb, var(--palette-silver) 46%, transparent);
   }
 
   .rpg-dialogue-panel {
@@ -312,31 +318,31 @@
 @layer components {
   .tamagotchi-bg {
     background:
-      radial-gradient(circle at 18% 18%, rgba(255, 242, 166, 0.28) 0 3px, transparent 4px),
-      radial-gradient(circle at 75% 24%, rgba(255, 143, 188, 0.24) 0 2px, transparent 3px),
-      #253421;
+      radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--palette-yellow) 52%, transparent) 0 3px, transparent 4px),
+      radial-gradient(circle at 75% 24%, color-mix(in srgb, var(--palette-pink) 56%, transparent) 0 2px, transparent 3px),
+      var(--palette-blue);
   }
 
   .question-hatch-panel,
   .question-status-panel,
   .question-response-panel {
-    background: #F7D94A;
-    border: 6px solid #1B1B14;
-    box-shadow: 8px 8px 0 #D9A928, inset 0 0 0 6px #FFF2A6;
+    background: var(--palette-cream);
+    border: 6px solid var(--palette-blue);
+    box-shadow: 8px 8px 0 var(--palette-silver), inset 0 0 0 6px var(--palette-yellow);
     border-radius: 22px;
-    color: #1B1B14;
+    color: var(--palette-ink);
   }
 
   .question-hatch-device {
-    background: #FFF2A6;
-    border: 5px solid #1B1B14;
+    background: var(--palette-yellow);
+    border: 5px solid var(--palette-blue);
     border-radius: 26px;
-    box-shadow: inset 0 -10px 0 rgba(217, 169, 40, 0.45);
+    box-shadow: inset 0 -10px 0 color-mix(in srgb, var(--palette-silver) 52%, transparent);
   }
 
   .question-status-panel,
   .question-response-panel {
-    background: #F7D94A;
+    background: var(--palette-cream);
   }
 
   .question-status-panel::after,
@@ -347,9 +353,9 @@
     width: 58px;
     height: 22px;
     margin: 14px auto 0;
-    border: 4px solid #1B1B14;
+    border: 4px solid var(--palette-blue);
     border-radius: 999px;
-    background: #FF8FBC;
+    background: var(--palette-pink);
   }
 
   .question-pet-preview span {
@@ -359,31 +365,31 @@
 }
 
 :root {
-  --tama-yellow: #E5D327;
-  --tama-yellow-light: #ECE45C;
-  --tama-mint: #C4D1C2;
-  --tama-teal: #76A69B;
-  --tama-lcd: #A5A692;
-  --tama-ink: #14150F;
-  --color-bg: var(--tama-ink);
-  --color-bg-dark: #10110c;
-  --color-bg-thumb: var(--tama-lcd);
-  --color-border: var(--tama-ink);
-  --color-accent: var(--tama-teal);
-  --color-accent-bright: var(--tama-yellow-light);
-  --color-text: var(--tama-ink);
-  --color-text-muted: rgba(20, 21, 15, 0.72);
-  --color-btn-bg: var(--tama-mint);
-  --color-btn-hover: var(--tama-teal);
-  --color-active-bg: var(--tama-teal);
-  --shadow-pixel: 3px 3px 0 var(--tama-ink);
-  --vignette: radial-gradient(ellipse at center, transparent 56%, rgba(20, 21, 15, 0.5) 100%);
+  --tama-yellow: var(--palette-yellow);
+  --tama-yellow-light: var(--palette-cream);
+  --tama-mint: var(--palette-silver);
+  --tama-teal: var(--palette-blue);
+  --tama-lcd: var(--palette-cream);
+  --tama-ink: var(--palette-ink);
+  --color-bg: var(--palette-cream);
+  --color-bg-dark: var(--palette-silver);
+  --color-bg-thumb: var(--palette-silver);
+  --color-border: var(--palette-blue);
+  --color-accent: var(--palette-blue);
+  --color-accent-bright: var(--palette-yellow);
+  --color-text: var(--palette-ink);
+  --color-text-muted: color-mix(in srgb, var(--palette-ink) 70%, var(--palette-silver) 30%);
+  --color-btn-bg: var(--palette-pink);
+  --color-btn-hover: var(--palette-yellow);
+  --color-active-bg: var(--palette-blue);
+  --shadow-pixel: 3px 3px 0 color-mix(in srgb, var(--palette-blue) 70%, var(--palette-ink) 30%);
+  --vignette: radial-gradient(ellipse at center, transparent 56%, color-mix(in srgb, var(--palette-silver) 58%, transparent) 100%);
 }
 
 .tamagotchi-bg {
   background:
-    radial-gradient(circle at 20% 15%, rgba(236, 228, 92, 0.75), transparent 28%),
-    linear-gradient(135deg, rgba(229, 211, 39, 0.92), rgba(196, 209, 194, 0.88));
+    radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--palette-yellow) 74%, transparent), transparent 28%),
+    linear-gradient(135deg, var(--palette-cream), var(--palette-silver));
 }
 
 .question-hatch-panel,
@@ -398,7 +404,7 @@
 
 .question-hatch-panel {
   background:
-    linear-gradient(180deg, rgba(236, 228, 92, 0.72), rgba(196, 209, 194, 0.9)),
+    linear-gradient(180deg, color-mix(in srgb, var(--palette-yellow) 72%, transparent), color-mix(in srgb, var(--palette-silver) 90%, transparent)),
     var(--tama-yellow-light);
 }
 
@@ -424,7 +430,7 @@
 .player-setup-action { font-size: 21px; border: 4px solid var(--tama-ink); color: var(--tama-ink); }
 .mode-primary { background: var(--tama-teal); border: 3px solid var(--tama-ink); color: var(--tama-ink); }
 .mode-secondary { background: var(--tama-yellow-light); border: 3px solid var(--tama-ink); color: var(--tama-ink); }
-.shuffle-pet-button { background: #d98aa5; color: var(--tama-ink); border: 3px solid var(--tama-ink); }
+.shuffle-pet-button { background: var(--palette-pink); color: var(--tama-ink); border: 3px solid var(--tama-ink); }
 .pet-card-label { font-size: 13px; }
 
 .question-pet-preview,
@@ -451,7 +457,7 @@
   gap: 6px;
   padding: 6px 8px;
   color: var(--tama-ink);
-  background: rgba(196, 209, 194, 0.94);
+  background: color-mix(in srgb, var(--palette-silver) 94%, transparent);
   border: 2px solid var(--tama-ink);
   box-shadow: 2px 2px 0 var(--tama-ink);
   font-size: 13px;
@@ -560,7 +566,7 @@
     overflow-x: auto;
     padding: 8px 10px;
     color: var(--tama-ink);
-    background: rgba(196, 209, 194, 0.94);
+    background: color-mix(in srgb, var(--palette-silver) 94%, transparent);
     border: 3px solid var(--tama-ink);
     box-shadow: 2px 2px 0 var(--tama-ink);
     font-size: 14px;
@@ -581,4 +587,52 @@
   .mobile-thumb-guide {
     bottom: calc(58px + env(safe-area-inset-bottom)) !important;
   }
+}
+
+
+.rpg-dialogue-overlay {
+  background: color-mix(in srgb, var(--palette-silver) 42%, transparent) !important;
+}
+
+.rpg-dialogue-panel {
+  color: var(--palette-ink);
+  background: var(--palette-cream);
+  border-color: var(--palette-blue);
+}
+
+.rpg-dialogue-log,
+.rpg-dialogue-wiki,
+.rpg-dialogue-input,
+.rpg-dialogue-close-secondary,
+.rpg-dialogue-suggestion-list .rpg-dialogue-chip {
+  color: var(--palette-ink);
+  background: color-mix(in srgb, var(--palette-pink) 32%, var(--palette-cream) 68%);
+  border-color: var(--palette-blue);
+}
+
+.rpg-dialogue-chip,
+.rpg-dialogue-submit {
+  color: var(--palette-ink) !important;
+  background: var(--palette-yellow) !important;
+  border-color: var(--palette-blue) !important;
+}
+
+.rpg-dialogue-kicker,
+.rpg-dialogue-message span,
+.rpg-dialogue-more,
+.rpg-dialogue-wiki h3,
+.rpg-dialogue-wiki a p:first-child {
+  color: color-mix(in srgb, var(--palette-blue) 82%, var(--palette-ink) 18%) !important;
+}
+
+.rpg-dialogue-role,
+.rpg-dialogue-thinking,
+.rpg-dialogue-wiki p,
+.rpg-dialogue-x,
+.rpg-dialogue-avatars span {
+  color: color-mix(in srgb, var(--palette-ink) 68%, var(--palette-silver) 32%) !important;
+}
+
+.rpg-dialogue-input::placeholder {
+  color: color-mix(in srgb, var(--palette-ink) 54%, var(--palette-silver) 46%);
 }

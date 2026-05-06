@@ -25,9 +25,9 @@ const accessoryTypes = ['questionAntenna', 'leafSprout', 'horn', 'tinyFin', 'sid
 type Palette = QuestionPetAppearance['palette'];
 
 const tamaPalettes: Palette[] = [
-  { primary: '#E5D327', secondary: '#ECE45C', accent: '#76A69B', outline: '#14150F' },
-  { primary: '#C4D1C2', secondary: '#A5A692', accent: '#76A69B', outline: '#14150F' },
-  { primary: '#A5A692', secondary: '#ECE45C', accent: '#76A69B', outline: '#14150F' },
+  { primary: '#FCF46B', secondary: '#F9E9C2', accent: '#69C3AA', outline: '#69C3AA' },
+  { primary: '#BAC3D9', secondary: '#FFD4FF', accent: '#FCF46B', outline: '#69C3AA' },
+  { primary: '#FFD4FF', secondary: '#F9E9C2', accent: '#BAC3D9', outline: '#69C3AA' },
 ];
 
 function pickPalette(seed: number): Palette {

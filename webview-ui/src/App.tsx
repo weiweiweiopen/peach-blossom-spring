@@ -985,14 +985,14 @@ function App() {
                 <span className="text-base">tick {simSnapshot.tick}</span>
               </div>
               {simSnapshot.thronglets.map((pet) => (
-                <button key={pet.id} className="w-full text-left border-2 border-[#253421] bg-[#B7D879] px-4 py-4 mb-4 text-[#253421]" type="button" onClick={() => setSelectedPet(pet)}>
+                <button key={pet.id} className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]" type="button" onClick={() => setSelectedPet(pet)}>
                   <div className="flex gap-4 items-center"><QuestionPetPreview question={pet.question.text} appearance={pet.appearance} size={4} /><span className="text-base leading-snug">{pet.question.text}</span></div>
                   <p className="text-sm mt-3">{pet.currentAction} / energy {pet.state.energy.toFixed(0)} stress {pet.state.stress.toFixed(0)} bond {pet.state.groupBond.toFixed(0)}</p>
                 </button>
               ))}
               <div className="grid grid-cols-2 gap-2 text-sm mb-4">{Object.entries(simSnapshot.scores).map(([key, value]) => <p key={key}>{key}: {value.toFixed(1)}</p>)}</div>
               {simSnapshot.throngs.map((throng) => <p key={throng.id} className="text-sm mb-2">THRONG: {throng.topic} ({throng.memberIds.length})</p>)}
-              {simSnapshot.thoughts.map((thought, index) => <p key={`${thought}-${index}`} className="text-sm leading-snug border-t border-[#253421] pt-3 mt-3">{thought}</p>)}
+              {simSnapshot.thoughts.map((thought, index) => <p key={`${thought}-${index}`} className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">{thought}</p>)}
               {simSnapshot.events.slice(0, 4).map((event) => <p key={event.id} className="text-sm opacity-80 mt-2">{event.type}: {event.text}</p>)}
             </section>
           )}
@@ -1049,8 +1049,8 @@ function App() {
             <section className="question-response-panel absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7" data-no-mobile-drag="true">
               <button className="float-right text-xl" type="button" onClick={() => setSelectedPet(null)}>x</button>
               <div className="flex gap-5 items-start mb-5"><QuestionPetPreview question={selectedPet.question.text} appearance={selectedPet.appearance} size={6} /><div><p className="text-sm">originating question</p><h2 className="text-lg leading-snug">{selectedPet.question.text}</h2></div></div>
-              <textarea className="w-full min-h-[110px] bg-[#B7D879] border-4 border-[#253421] text-[#253421] px-4 py-4 text-lg" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={selectedLanguage === 'zh-TW' ? '回應這隻問題電子雞...' : 'Respond to this question pet...'} />
-              <button className="mt-4 bg-[#FF8FBC] border-4 border-[#1B1B14] text-[#1B1B14] px-6 py-4 text-lg" type="button" onClick={() => {
+              <textarea className="w-full min-h-[110px] bg-[var(--palette-cream)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-4 py-4 text-lg" value={petResponse} onChange={(event) => setPetResponse(event.target.value)} placeholder={selectedLanguage === 'zh-TW' ? '回應這隻問題電子雞...' : 'Respond to this question pet...'} />
+              <button className="mt-4 bg-[var(--palette-pink)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-6 py-4 text-lg" type="button" onClick={() => {
                 const response = petResponse.trim();
                 if (!response) return;
                 setSimSnapshot((current) => current ? applyPlayerThrongletResponse(current, selectedPet.id, response) : current);
