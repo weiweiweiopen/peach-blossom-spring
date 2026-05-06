@@ -22,12 +22,13 @@ interface PlayerSetupProps {
 }
 
 const avatarChoices = [
-  { palette: 0, title: { 'zh-TW': 'Thronglet 藍褲小黃人', en: 'Blue-pants Thronglet', th: 'Blue-pants Thronglet' } },
-  { palette: 1, title: { 'zh-TW': 'Thronglet 粉紅電子雞', en: 'Pink Tamagotchi Thronglet', th: 'Pink Tamagotchi Thronglet' } },
-  { palette: 2, title: { 'zh-TW': 'Thronglet 綠野照護員', en: 'Green field Thronglet', th: 'Green field Thronglet' } },
-  { palette: 3, title: { 'zh-TW': 'Thronglet 紫色玩家', en: 'Purple player Thronglet', th: 'Purple player Thronglet' } },
-  { palette: 4, title: { 'zh-TW': 'Thronglet 橘色玩伴', en: 'Orange Plaything Thronglet', th: 'Orange Plaything Thronglet' } },
-  { palette: 5, title: { 'zh-TW': 'Thronglet 水藍旅人', en: 'Sky-blue Thronglet', th: 'Sky-blue Thronglet' } },
+  { palette: 0, title: { 'zh-TW': '星軌編織者', en: 'Weaver of Star-Paths', th: 'Weaver of Star-Paths' } },
+  { palette: 1, title: { 'zh-TW': '永恆記憶守望者', en: 'Sentinel of Eternal Echoes', th: 'Sentinel of Eternal Echoes' } },
+  { palette: 2, title: { 'zh-TW': '虛擬靈魂架構師', en: 'Architect of Digital Souls', th: 'Architect of Digital Souls' } },
+  { palette: 3, title: { 'zh-TW': '引力叛徒', en: 'Gravity Renegade', th: 'Gravity Renegade' } },
+  { palette: 4, title: { 'zh-TW': '新世界黎明先鋒', en: 'Vanguard of the Neon Dawn', th: 'Vanguard of the Neon Dawn' } },
+  { palette: 5, title: { 'zh-TW': '星系繁榮鑄造師', en: 'Shaper of Galactic Fortune', th: 'Shaper of Galactic Fortune' } },
+  { palette: 6, title: { 'zh-TW': '光譜詩人', en: 'Poet of the Spectrum', th: 'Poet of the Spectrum' } },
 ];
 export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfile }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -45,7 +46,7 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
     const palette = Number(form.get('palette') ?? 0);
     const avatarTitle =
       avatarChoices.find((choice) => choice.palette === palette)?.title[language] ??
-      avatarChoices[5].title[language];
+      avatarChoices[0].title[language];
     onStart({ name, palette, avatarTitle, currentRole, mission, constraints, skills }, mode);
   }
 
