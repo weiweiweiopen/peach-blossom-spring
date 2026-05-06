@@ -31,9 +31,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 0,
     title: {
-      'zh-TW': '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
-      en: '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
-      th: '二等星際排隊委員會主席 (Chairman of the Sub-Committee for Infinite Queuing)',
+      'zh-TW': '二等星際排隊委員會主席',
+      en: 'Chairman of the Sub-Committee for Infinite Queuing',
+      th: 'Chairman of the Sub-Committee for Infinite Queuing',
     },
     note: {
       'zh-TW': '負責確保事情按部就班地發生，通常是在錯誤的時間。',
@@ -44,9 +44,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 1,
     title: {
-      'zh-TW': '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
-      en: '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
-      th: '無用遺物保存處高級副處長 (Senior Sub-Warden of Inconvenient Antiques)',
+      'zh-TW': '無用遺物保存處高級副處長',
+      en: 'Senior Sub-Warden of Inconvenient Antiques',
+      th: 'Senior Sub-Warden of Inconvenient Antiques',
     },
     note: {
       'zh-TW': '小心守護著那些沒人想要但丟掉會被罰款的歷史垃圾。',
@@ -57,9 +57,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 2,
     title: {
-      'zh-TW': '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
-      en: '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
-      th: '數位故障道歉專員 (Chief Apologist for Digital Hallucinations)',
+      'zh-TW': '數位故障道歉專員',
+      en: 'Chief Apologist for Digital Hallucinations',
+      th: 'Chief Apologist for Digital Hallucinations',
     },
     note: {
       'zh-TW': '向宇宙解釋為什麼電腦認為 2+2 等於一盤熱騰騰的炸魚薯條。',
@@ -70,9 +70,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 3,
     title: {
-      'zh-TW': '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
-      en: '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
-      th: '無視物理定律許可證發放人 (Unlicensed Practitioner of Spontaneous Disarray)',
+      'zh-TW': '無視物理定律許可證發放人',
+      en: 'Unlicensed Practitioner of Spontaneous Disarray',
+      th: 'Unlicensed Practitioner of Spontaneous Disarray',
     },
     note: {
       'zh-TW': '他反對秩序，但對「下午茶時間」出奇地堅持。',
@@ -83,9 +83,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 4,
     title: {
-      'zh-TW': "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
-      en: "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
-      th: "過時未來主義宣傳大使 (Ambassador for Yesterday's Tomorrow)",
+      'zh-TW': "過時未來主義宣傳大使",
+      en: "Ambassador for Yesterday's Tomorrow",
+      th: "Ambassador for Yesterday's Tomorrow",
     },
     note: {
       'zh-TW': '熱衷於推廣那些在建造完成前就已經退流行的星際建築。',
@@ -96,9 +96,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 5,
     title: {
-      'zh-TW': '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
-      en: '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
-      th: '真空利潤提取專家 (Professional Extractor of Credit from Thin Vacuum)',
+      'zh-TW': '真空利潤提取專家',
+      en: 'Professional Extractor of Credit from Thin Vacuum',
+      th: 'Professional Extractor of Credit from Thin Vacuum',
     },
     note: {
       'zh-TW': '致力於向那些連呼吸都困難的人推銷「星雲保險」。',
@@ -109,9 +109,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 6,
     title: {
-      'zh-TW': '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
-      en: '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
-      th: '認可感官錯覺技術員 (Technician of Sanctioned Hallucinations)',
+      'zh-TW': '認可感官錯覺技術員',
+      en: 'Technician of Sanctioned Hallucinations',
+      th: 'Technician of Sanctioned Hallucinations',
     },
     note: {
       'zh-TW': '負責讓宇宙看起來比實際上稍微不那麼令人絕望一點點。',
@@ -122,9 +122,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 7,
     title: {
-      'zh-TW': '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
-      en: '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
-      th: '非自願型碳基生命飼育員 (Involuntary Custodian of Uncooperative Carbon-Based Life)',
+      'zh-TW': '非自願型碳基生命飼育員',
+      en: 'Involuntary Custodian of Uncooperative Carbon-Based Life',
+      th: 'Involuntary Custodian of Uncooperative Carbon-Based Life',
     },
     note: {
       'zh-TW': '這份工作基本上就是每天求著那些毫無生存意志的植物不要隨便死掉。',
@@ -135,9 +135,9 @@ const avatarChoices: AvatarChoice[] = [
   {
     palette: 8,
     title: {
-      'zh-TW': '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
-      en: '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
-      th: '宇宙末日延後申請代理人 (Authorized Agent for Postponing the Heat Death of the Universe)',
+      'zh-TW': '宇宙末日延後申請代理人',
+      en: 'Authorized Agent for Postponing the Heat Death of the Universe',
+      th: 'Authorized Agent for Postponing the Heat Death of the Universe',
     },
     note: {
       'zh-TW': '主要工作是填寫大量的表格，試圖說服太陽慢點熄滅，或者至少先換成省電燈泡。',
@@ -155,15 +155,14 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
 
     const form = new FormData(formElement);
     const name = String(form.get('name') ?? '').trim() || (language === 'zh-TW' ? '訪客' : 'Visitor');
-    const currentRole = String(form.get('currentRole') ?? '').trim() || (language === 'zh-TW' ? '漂流研究者' : 'Wandering researcher');
-    const mission = String(form.get('mission') ?? '').trim() || (language === 'zh-TW' ? '尋找一個值得被共同推進的想法' : 'Find an idea worth developing with others');
-    const constraints = String(form.get('constraints') ?? '').trim();
-    const skills = String(form.get('skills') ?? '').trim();
+    const mission = String(form.get('mission') ?? '').trim() || (language === 'zh-TW' ? '尋找一個想要的未來' : 'Find a future I want');
+    const constraints = '';
+    const skills = '';
     const palette = Number(form.get('palette') ?? 0);
     const avatarTitle =
       avatarChoices.find((choice) => choice.palette === palette)?.title[language] ??
       avatarChoices[0].title[language];
-    onStart({ name, palette, avatarTitle, currentRole, mission, constraints, skills }, mode);
+    onStart({ name, palette, avatarTitle, currentRole: avatarTitle, mission, constraints, skills }, mode);
   }
 
   return (
@@ -217,18 +216,6 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           autoFocus
         />
 
-        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-role">
-          {t(language, 'roleLabel')}
-        </label>
-        <input
-          id="player-role"
-          name="currentRole"
-          className="player-setup-field w-full bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
-          maxLength={80}
-          defaultValue={defaultProfile?.currentRole ?? ''}
-          placeholder={t(language, 'rolePlaceholder')}
-        />
-
         <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-mission">
           {t(language, 'missionLabel')}
         </label>
@@ -239,30 +226,6 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
           maxLength={800}
           defaultValue={defaultProfile?.mission ?? ''}
           placeholder={t(language, 'missionPlaceholder')}
-        />
-
-        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-constraints">
-          {t(language, 'constraintsLabel')}
-        </label>
-        <textarea
-          id="player-constraints"
-          name="constraints"
-          className="player-setup-field player-setup-textarea w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
-          maxLength={500}
-          defaultValue={defaultProfile?.constraints ?? ''}
-          placeholder={t(language, 'constraintsPlaceholder')}
-        />
-
-        <label className="player-setup-label block text-base text-text-muted mb-3" htmlFor="player-skills">
-          {t(language, 'skillsLabel')}
-        </label>
-        <textarea
-          id="player-skills"
-          name="skills"
-          className="player-setup-field player-setup-textarea w-full min-h-[90px] bg-bg border-2 border-border px-6 py-5 text-xl text-text outline-none focus:border-accent-bright mb-10"
-          maxLength={500}
-          defaultValue={defaultProfile?.skills ?? ''}
-          placeholder={t(language, 'skillsPlaceholder')}
         />
 
         <p className="player-setup-avatar-heading text-lg text-text-muted mb-5">{t(language, 'avatarCollection')}</p>
@@ -279,9 +242,11 @@ export function PlayerSetup({ language, onLanguageChange, onStart, defaultProfil
                 value={choice.palette}
                 defaultChecked={(defaultProfile?.palette ?? 0) === choice.palette}
               />
-              <span className="player-setup-avatar-title text-lg leading-[1.2]">{choice.title[language]}</span>
-              <span className="player-setup-avatar-note pointer-events-none absolute left-4 right-4 top-[calc(100%+8px)] z-10 hidden border border-accent-bright bg-bg px-4 py-3 text-sm leading-[1.35] text-text shadow-pixel group-hover:block group-focus-within:block">
-                {choice.note[language]}
+              <span className="player-setup-avatar-copy inline-flex max-w-[calc(100%-2.25rem)] flex-col align-top">
+                <span className="player-setup-avatar-title text-lg leading-[1.2]">{choice.title[language]}</span>
+                <span className="player-setup-avatar-note mt-3 block text-sm leading-[1.35] text-text-muted">
+                  {choice.note[language]}
+                </span>
               </span>
             </label>
           ))}
