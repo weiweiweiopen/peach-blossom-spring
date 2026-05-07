@@ -27,6 +27,9 @@ type TranslationKey =
   | "archiveTree"
   | "archiveTitle"
   | "archiveDescription"
+  | "archiveNewsTitle"
+  | "archiveEbookButton"
+  | "archiveMapButton"
   | "archivePdfTitle"
   | "archiveMapTitle"
   | "communityPortals"
@@ -146,9 +149,11 @@ const translations: TranslationTable = {
     pressSpaceToTalk: "點我交談",
     wanderAndTalk: "漫遊與對話",
     archiveTree: "檔案大樹",
-    archiveTitle: "NGM PDF 與社群地圖",
-    archiveDescription:
-      "人物檔案與外部連結已移到各受訪者 NPC 交談視窗的 Wiki 連結下。",
+    archiveTitle: "中央大樹",
+    archiveDescription: "",
+    archiveNewsTitle: "最新消息",
+    archiveEbookButton: "NGM e-book",
+    archiveMapButton: "The Map",
     archivePdfTitle: "NGM PDF 嵌入電子書",
     archiveMapTitle: "NGM 社群地圖",
     communityPortals: "社群入口",
@@ -258,9 +263,11 @@ const translations: TranslationTable = {
     pressSpaceToTalk: "Tap to talk",
     wanderAndTalk: "Wander and talk",
     archiveTree: "Archive Tree",
-    archiveTitle: "NGM PDF and Community Map",
-    archiveDescription:
-      "Interviewee dossiers and external references now live under each NPC dialogue window’s Wiki links.",
+    archiveTitle: "Central Tree",
+    archiveDescription: "",
+    archiveNewsTitle: "Latest News",
+    archiveEbookButton: "NGM e-book",
+    archiveMapButton: "The Map",
     archivePdfTitle: "NGM PDF embedded ebook",
     archiveMapTitle: "NGM community map",
     communityPortals: "Community portals",
@@ -376,9 +383,11 @@ const translations: TranslationTable = {
     pressSpaceToTalk: "คุย",
     wanderAndTalk: "เดินเล่นและคุย",
     archiveTree: "ต้นไม้ไฟล์",
-    archiveTitle: "NGM PDF และแผนที่ชุมชน",
-    archiveDescription:
-      "แฟ้มบุคคลและลิงก์ภายนอกอยู่ในปุ่ม Wiki ของหน้าต่างสนทนา NPC",
+    archiveTitle: "ต้นไม้กลาง",
+    archiveDescription: "",
+    archiveNewsTitle: "ข่าวล่าสุด",
+    archiveEbookButton: "NGM e-book",
+    archiveMapButton: "The Map",
     archivePdfTitle: "หนังสือ NGM PDF",
     archiveMapTitle: "แผนที่ชุมชน NGM",
     communityPortals: "ประตูชุมชน",
@@ -493,9 +502,11 @@ const translations: TranslationTable = {
     pressSpaceToTalk: "Tap to talk",
     wanderAndTalk: "Wander and talk",
     archiveTree: "Archive Tree",
-    archiveTitle: "NGM PDF and Community Map",
-    archiveDescription:
-      "Interviewee dossiers and external references now live under each NPC dialogue window’s Wiki links.",
+    archiveTitle: "中央の木",
+    archiveDescription: "",
+    archiveNewsTitle: "最新ニュース",
+    archiveEbookButton: "NGM e-book",
+    archiveMapButton: "The Map",
     archivePdfTitle: "NGM PDF embedded ebook",
     archiveMapTitle: "NGM community map",
     communityPortals: "Community portals",

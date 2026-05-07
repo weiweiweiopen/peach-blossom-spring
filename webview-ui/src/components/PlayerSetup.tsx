@@ -66,7 +66,7 @@ const copy: Record<
     skills: "我有什麼技能",
     skillsPlaceholder: "例如：田野研究、做飯、寫程式、聆聽、縫紉、召喚朋友...",
     start: "生成 / 開始",
-    booting: "電子雞正在破殼...",
+    booting: "問題電子雞出生了，停留 3 秒讓你欣賞...",
     blank: "等待三個欄位完成",
     born: "嗶！牠出生了。牠看起來已經想逃跑。",
   },
@@ -82,7 +82,7 @@ const copy: Record<
     skillsPlaceholder:
       "Fieldwork, cooking, coding, listening, sewing, summoning friends...",
     start: "Generate / Start",
-    booting: "Question pet is cracking the egg...",
+    booting: "Question pet hatched — pausing 3 seconds to admire it...",
     blank: "Waiting for all three fields",
     born: "Beep! It was born. It already looks ready to run away.",
   },
@@ -97,7 +97,7 @@ const copy: Record<
     skills: "ฉันมีทักษะอะไร",
     skillsPlaceholder: "ภาคสนาม ทำอาหาร เขียนโค้ด ฟัง เย็บผ้า เรียกเพื่อน...",
     start: "สร้าง / เริ่ม",
-    booting: "สัตว์คำถามกำลังฟัก...",
+    booting: "สัตว์คำถามฟักแล้ว — รอ 3 วินาทีเพื่อดูมัน...",
     blank: "รอให้กรอกครบสามช่อง",
     born: "บี๊บ! มันเกิดแล้ว และดูเหมือนพร้อมจะวิ่งหนีทันที",
   },
@@ -112,7 +112,7 @@ const copy: Record<
     skillsPlaceholder:
       "フィールドワーク、料理、コード、聞くこと、縫製、友だち召喚...",
     start: "生成 / 開始",
-    booting: "質問ペットが殻を割っています...",
+    booting: "質問ペットが生まれました。3秒眺めてから入ります...",
     blank: "三つの欄の入力待ち",
     born: "ピッ！生まれた。もう逃げ出す顔をしている。",
   },
@@ -173,7 +173,7 @@ export function PlayerSetup({
         },
         "interactive",
       );
-    }, 980);
+    }, 3000);
   }
 
   return (
