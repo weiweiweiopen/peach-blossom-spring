@@ -124,8 +124,15 @@ export function updateCharacter(
     }
 
     case CharacterState.IDLE: {
-      // No idle animation — static pose
-      ch.frame = 0;
+      if (ch.isQuestionPet && ch.spriteAnimation && ch.spriteAnimation.length > 0) {
+        if (ch.frameTimer >= TYPE_FRAME_DURATION_SEC / 2) {
+          ch.frameTimer -= TYPE_FRAME_DURATION_SEC / 2;
+          ch.frame = (ch.frame + 1) % ch.spriteAnimation.length;
+        }
+      } else {
+        // No idle animation — static pose
+        ch.frame = 0;
+      }
       if (ch.seatTimer < 0) ch.seatTimer = 0; // clear turn-end sentinel
       // If became active, pathfind to seat
       if (ch.isActive) {

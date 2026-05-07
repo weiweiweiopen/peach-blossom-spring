@@ -1,4 +1,4 @@
-import { appearanceToSpriteData, generateQuestionPet, makePetSeed } from './generateQuestionPet.js';
+import { appearanceToAnimationData, appearanceToSpriteData, generateQuestionPet, makePetSeed } from './generateQuestionPet.js';
 
 export interface PetStats {
   social: number;
@@ -31,6 +31,8 @@ export interface PetDispatch {
     paletteId: string;
     shapeTags: string[];
     iconData?: string;
+    animationData?: string;
+    moodType?: string;
   };
   createdAt: number;
   lastSeenAt?: number;
@@ -132,8 +134,10 @@ export class LocalPetStore implements RemotePetStore {
       seed: input.seed,
       spriteProfile: {
         paletteId: `tama-${appearance.seed % 3}`,
-        shapeTags: [appearance.bodyType, appearance.eyeType, appearance.accessoryType, ...tags.slice(0, 3)],
+        shapeTags: [appearance.bodyType, appearance.eyeType, appearance.accessoryType, appearance.moodType, ...tags.slice(0, 3)],
         iconData: JSON.stringify(appearanceToSpriteData(appearance)),
+        animationData: JSON.stringify(appearanceToAnimationData(appearance)),
+        moodType: appearance.moodType,
       },
       createdAt: Date.now(),
       worldPosition: {

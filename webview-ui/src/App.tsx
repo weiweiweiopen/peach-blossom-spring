@@ -44,6 +44,7 @@ import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { isWalkable } from "./office/layout/tileMap.js";
 import { EditTool, TILE_SIZE } from "./office/types.js";
 import {
+  appearanceToAnimationData,
   appearanceToSpriteData,
   generateQuestionPet,
 } from "./pets/generateQuestionPet.js";
@@ -815,6 +816,7 @@ function App() {
           appearanceToSpriteData(pet.appearance),
           3 + index,
           3,
+          appearanceToAnimationData(pet.appearance),
         );
       }
     });
@@ -1289,6 +1291,7 @@ function App() {
         appearanceToSpriteData(appearance),
         Math.round(pet.worldPosition.x),
         Math.round(pet.worldPosition.y),
+        appearanceToAnimationData(appearance),
       );
     });
   }, [

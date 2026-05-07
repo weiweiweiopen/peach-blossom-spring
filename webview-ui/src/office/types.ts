@@ -186,6 +186,8 @@ export interface Character {
   isQuestionPet?: boolean;
   /** Optional 16x16 generated sprite override for question pets. */
   spriteOverride?: SpriteData;
+  /** Optional generated animation frames for question pets. */
+  spriteAnimation?: SpriteData[];
   /** Movement speed multiplier, primarily for player sprint. */
   moveSpeedMultiplier?: number;
 

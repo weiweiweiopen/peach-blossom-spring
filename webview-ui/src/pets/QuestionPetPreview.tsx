@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { appearanceToSpriteData, generateQuestionPet, type QuestionPetAppearance } from './generateQuestionPet.js';
+import { appearanceToAnimationData, generateQuestionPet, type QuestionPetAppearance } from './generateQuestionPet.js';
 
 interface Props {
   question: string;
@@ -10,7 +10,18 @@ interface Props {
 
 export function QuestionPetPreview({ question, appearance, size = 8 }: Props) {
   const pet = useMemo(() => appearance ?? generateQuestionPet(question), [appearance, question]);
-  const sprite = useMemo(() => appearanceToSpriteData(pet), [pet]);
+  const frames = useMemo(() => appearanceToAnimationData(pet), [pet]);
+  const [frameIndex, setFrameIndex] = useState(0);
+  const sprite = frames[frameIndex % frames.length];
+
+  useEffect(() => {
+    setFrameIndex(0);
+    const timer = window.setInterval(() => {
+      setFrameIndex((current) => (current + 1) % frames.length);
+    }, 140);
+    return () => window.clearInterval(timer);
+  }, [frames.length]);
+
   return (
     <div
       className="question-pet-preview inline-grid border-2"
@@ -22,7 +33,7 @@ export function QuestionPetPreview({ question, appearance, size = 8 }: Props) {
         background: '#F9E9C2',
         imageRendering: 'pixelated',
       }}
-      aria-label="16x16 question pet preview"
+      aria-label={`16x16 animated question pet preview: ${pet.moodType}`}
     >
       {sprite.flatMap((row, y) => row.map((color, x) => (
         <span key={`${x}-${y}`} style={{ background: color || 'transparent' }} />
