@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { askDeepSeekPersona, buildKnowledgeBase } from '../deepseekClient.js';
+import type { KnowledgeBase } from '../deepseekClient.js';
+import { askDeepSeekPersona, buildKnowledgeBase, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
@@ -334,12 +335,25 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const messageLogRef = useRef<HTMLDivElement>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
-  const knowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
+  const emptyKnowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
+  const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
+  const knowledge = loadedKnowledge ?? emptyKnowledge;
   const suggestedQuestions = useMemo(() => {
     const transcript = language === 'zh-TW' ? knowledge.transcript_zh || knowledge.transcript_en : knowledge.transcript_en || knowledge.transcript_zh;
     return makeSuggestedQuestions(transcript, persona, player, language, questionSeed);
   }, [knowledge.transcript_en, knowledge.transcript_zh, language, persona, player, questionSeed]);
   const fixedQuestions = useMemo(() => makeFixedQuestions(language), [language]);
+
+  useEffect(() => {
+    let isCurrent = true;
+    setLoadedKnowledge(null);
+    void loadKnowledgeBase(persona).then((nextKnowledge) => {
+      if (isCurrent) setLoadedKnowledge(nextKnowledge);
+    });
+    return () => {
+      isCurrent = false;
+    };
+  }, [persona]);
 
   useEffect(() => {
     setMessages([
@@ -400,11 +414,13 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     try {
       const topic = resolveTopic(trimmed);
       onSimEvent?.(trimmed, topic);
+      const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
+      if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
       const answer = await askDeepSeekPersona({
         playerName: player.name,
         question: `${trimmed}\nTopic hint: ${topic}`,
         knowledge: {
-          ...knowledge,
+          ...dialogueKnowledge,
           responses: persona.responses,
         },
         preferredLanguage: language,
