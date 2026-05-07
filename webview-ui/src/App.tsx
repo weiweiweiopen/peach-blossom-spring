@@ -1475,24 +1475,26 @@ function App() {
       onPointerUp={stopMobilePointer}
       onPointerCancel={stopMobilePointer}
     >
-      <div className="pbs-world-map-layer">
-        <OfficeCanvas
-          officeState={officeState}
-          onClick={handleClick}
-          isEditMode={editor.isEditMode}
-          editorState={editorState}
-          onEditorTileAction={editor.handleEditorTileAction}
-          onEditorEraseAction={editor.handleEditorEraseAction}
-          onEditorSelectionChange={editor.handleEditorSelectionChange}
-          onDeleteSelected={editor.handleDeleteSelected}
-          onRotateSelected={editor.handleRotateSelected}
-          onDragMove={editor.handleDragMove}
-          editorTick={editor.editorTick}
-          zoom={editor.zoom}
-          onZoomChange={editor.handleZoomChange}
-          panRef={editor.panRef}
-        />
-      </div>
+      {playerProfile && (
+        <div className="pbs-world-map-layer">
+          <OfficeCanvas
+            officeState={officeState}
+            onClick={handleClick}
+            isEditMode={editor.isEditMode}
+            editorState={editorState}
+            onEditorTileAction={editor.handleEditorTileAction}
+            onEditorEraseAction={editor.handleEditorEraseAction}
+            onEditorSelectionChange={editor.handleEditorSelectionChange}
+            onDeleteSelected={editor.handleDeleteSelected}
+            onRotateSelected={editor.handleRotateSelected}
+            onDragMove={editor.handleDragMove}
+            editorTick={editor.editorTick}
+            zoom={editor.zoom}
+            onZoomChange={editor.handleZoomChange}
+            panRef={editor.panRef}
+          />
+        </div>
+      )}
 
       <div className="floating-ui-layer" data-no-mobile-drag="true">
         <div className="global-language-menu">
