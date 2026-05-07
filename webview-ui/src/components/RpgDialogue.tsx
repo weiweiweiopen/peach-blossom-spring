@@ -170,13 +170,106 @@ function makeSuggestedQuestions(
   return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
 }
 
+const localizedPersonaIntros: Record<string, Record<LanguageCode, string>> = {
+  abao: {
+    'zh-TW': 'ABao 是一位說故事的人，持續漂移在太陽能材料、旅行、AI 身分、雷射與寓言世界之間。',
+    en: 'ABao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.',
+    ja: 'ABao は、太陽素材、旅、AI アイデンティティ、レーザー、寓話的な世界のあいだを漂い続ける語り手です。',
+    th: 'ABao เป็นนักเล่าเรื่องที่ล่องลอยอยู่ระหว่างวัสดุพลังงานแสงอาทิตย์ การเดินทาง อัตลักษณ์ AI เลเซอร์ และโลกเชิงอุปมา',
+  },
+  'andreas-siagian': {
+    'zh-TW': 'Andreas 將 Lifepatch 介紹為承載價值的生活空間，而不是擁有他全部身分的品牌。他的人格不斷回到鄰里尺度、可見的責任與扎根的協作。',
+    en: 'Andreas introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. His persona keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.',
+    ja: 'Andreas は Lifepatch を、自分のアイデンティティ全体を所有するブランドではなく、価値が生きる生活空間として紹介します。彼のペルソナは、近隣のスケール、見える責任、地に足のついた協働へ戻り続けます。',
+    th: 'Andreas แนะนำ Lifepatch ในฐานะพื้นที่อยู่อาศัยของคุณค่า ไม่ใช่แบรนด์ที่ครอบครองตัวตนทั้งหมดของเขา บุคลิกของเขาวนกลับมาหาขนาดระดับละแวกบ้าน ความรับผิดชอบที่มองเห็นได้ และการร่วมมือที่ติดดินเสมอ',
+  },
+  'anastassia-pistofidou': {
+    'zh-TW': 'Anastassia 透過節點網絡、可攜式課程與同儕驗證來說話。她的人格把營隊轉化為分散式學習框架。',
+    en: 'Anastassia speaks through node networks, portable curriculum, and peer validation. Her persona turns camps into distributed learning frameworks.',
+    ja: 'Anastassia はノード型ネットワーク、持ち運べるカリキュラム、ピア検証を通して語ります。彼女のペルソナはキャンプを分散型の学習フレームワークへ変えます。',
+    th: 'Anastassia พูดผ่านเครือข่ายโหนด หลักสูตรที่เคลื่อนย้ายได้ และการรับรองจากเพื่อนร่วมทาง บุคลิกของเธอเปลี่ยนแคมป์ให้เป็นกรอบการเรียนรู้แบบกระจายตัว',
+  },
+  'giulia-tomasello': {
+    'zh-TW': 'Giulia 的人格透過同意、女性主義實踐與作為基礎設施的照護來理解科技。',
+    en: "Giulia's persona frames technology through consent, feminist practice, and care as infrastructure.",
+    ja: 'Giulia のペルソナは、同意、フェミニストの実践、インフラとしてのケアを通してテクノロジーを捉えます。',
+    th: 'บุคลิกของ Giulia มองเทคโนโลยีผ่านความยินยอม ปฏิบัติการเฟมินิสต์ และการดูแลในฐานะโครงสร้างพื้นฐาน',
+  },
+  'christian-dils': {
+    'zh-TW': 'Christian 的人格從設備、維護、標準作業程序與健康的技術公地出發思考。',
+    en: "Christian's persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
+    ja: 'Christian のペルソナは、機材、保守、標準作業手順、健全な技術コモンズから考えます。',
+    th: 'บุคลิกของ Christian คิดจากอุปกรณ์ การบำรุงรักษา ขั้นตอนปฏิบัติมาตรฐาน และคอมมอนส์ทางเทคนิคที่แข็งแรง',
+  },
+  'jonathan-minchin': {
+    'zh-TW': 'Jonathan 的人格連結數位製造、農業、生態曆法與以田野為基礎的知識公地。',
+    en: "Jonathan's persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
+    ja: 'Jonathan のペルソナは、デジタルファブリケーション、農業、生態暦、現場に根ざした知識コモンズを結びます。',
+    th: 'บุคลิกของ Jonathan เชื่อมโยงการผลิตดิจิทัล เกษตรกรรม ปฏิทินนิเวศ และคอมมอนส์ความรู้ที่ตั้งอยู่บนภาคสนาม',
+  },
+  'marc-dusseiller': {
+    'zh-TW': 'Marc 的人格重視高密度即興、低成本開放硬體、友誼，以及把失敗當作教學法。',
+    en: "Marc's persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
+    ja: 'Marc のペルソナは、濃密な即興、低コストのオープンハードウェア、友情、そして教育法としての失敗を大切にします。',
+    th: 'บุคลิกของ Marc ให้คุณค่ากับการด้นสดที่เข้มข้น ฮาร์ดแวร์เปิดราคาต่ำ มิตรภาพ และความล้มเหลวในฐานะวิธีสอน',
+  },
+  'mika-satomi': {
+    'zh-TW': 'Mika 的人格強調能存活的尺度、願望牆、電子織品知識分享與相互承諾。',
+    en: "Mika's persona emphasizes survivable scale, wish walls, e-textile knowledge sharing, and mutual promises.",
+    ja: 'Mika のペルソナは、持続できるスケール、願いの壁、電子テキスタイルの知識共有、相互の約束を強調します。',
+    th: 'บุคลิกของ Mika เน้นขนาดที่อยู่รอดได้ กำแพงความปรารถนา การแบ่งปันความรู้ e-textile และคำมั่นต่อกัน',
+  },
+  'rully-shabara': {
+    'zh-TW': 'Rully 的人格警告不要把營隊變成產業。他重視圓圈、餐食、練習，以及能自己發聲的社群。',
+    en: "Rully's persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
+    ja: 'Rully のペルソナは、キャンプを産業に変えることへ警鐘を鳴らします。彼は輪、食事、練習、自ら語るコミュニティを重んじます。',
+    th: 'บุคลิกของ Rully เตือนว่าอย่าเปลี่ยนแคมป์ให้กลายเป็นอุตสาหกรรม เขาให้ความสำคัญกับวงล้อม มื้ออาหาร แบบฝึกหัด และชุมชนที่พูดด้วยเสียงของตนเอง',
+  },
+  'ryu-oyama': {
+    'zh-TW': 'Ryu 的人格把孤立視為方法與資源，運用島嶼節奏來讓活動在時間與空間中去中心化。',
+    en: "Ryu's persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
+    ja: 'Ryu のペルソナは孤立を方法であり資源として扱い、島のリズムによって活動を時間と空間の中で脱中心化します。',
+    th: 'บุคลิกของ Ryu มองความโดดเดี่ยวเป็นทั้งวิธีการและทรัพยากร โดยใช้จังหวะของเกาะเพื่อลดศูนย์กลางของกิจกรรมในเวลาและพื้นที่',
+  },
+  'stephanie-pan': {
+    'zh-TW': 'Stephanie 的人格把節慶轉化為微型實驗室，帶著照護條款、觀眾共同主持與持續的小規模生成。',
+    en: "Stephanie's persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
+    ja: 'Stephanie のペルソナは、フェスティバルをケア条項、観客との共同ホスト、継続的な小さな生成を備えたマイクロラボへ変えます。',
+    th: 'บุคลิกของ Stephanie เปลี่ยนเทศกาลให้เป็นไมโครแล็บที่มีข้อตกลงเรื่องการดูแล การร่วมเป็นเจ้าภาพกับผู้ชม และการก่อรูปเล็ก ๆ อย่างต่อเนื่อง',
+  },
+  'stelio-manousakis': {
+    'zh-TW': 'Stelio 的人格融合行政與表演，把 sound-check 當成治理檢查。',
+    en: "Stelio's persona fuses administration and performance, treating sound-checks as governance checks.",
+    ja: 'Stelio のペルソナは運営とパフォーマンスを融合させ、サウンドチェックをガバナンスの点検として扱います。',
+    th: 'บุคลิกของ Stelio ผสานงานบริหารกับการแสดง และมองการซาวด์เช็กเป็นการตรวจสอบธรรมาภิบาล',
+  },
+  'svenja-keune': {
+    'zh-TW': 'Svenja 的人格以生態節奏思考，先共處再共同設計，也把停頓視為協作的一部分。',
+    en: "Svenja's persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
+    ja: 'Svenja のペルソナは生態的なリズムで考え、共にデザインする前に共に在ること、そして協働の一部としての間を大切にします。',
+    th: 'บุคลิกของ Svenja คิดเป็นจังหวะนิเวศ อยู่-ด้วยกันก่อนออกแบบ-ด้วยกัน และมองการหยุดพักเป็นส่วนหนึ่งของความร่วมมือ',
+  },
+  'ted-hung': {
+    'zh-TW': 'Ted 的人格說，人與人之間的連結比實驗室之間的連結更重要。他偏好以人為本的會員關係與透明帳本。',
+    en: "Ted's persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
+    ja: 'Ted のペルソナは、ラボ同士のつながりより人と人のつながりの方が重要だと言います。彼は人を基盤にしたメンバーシップと透明な台帳を好みます。',
+    th: 'บุคลิกของ Ted บอกว่าความเชื่อมโยงระหว่างผู้คนสำคัญกว่าความเชื่อมโยงระหว่างแล็บ เขาชอบสมาชิกภาพที่ตั้งอยู่บนตัวบุคคลและบัญชีที่โปร่งใส',
+  },
+  'tincuta-heinzel': {
+    'zh-TW': 'Tincuta 的人格把營隊視為策展工具，產生倫理問題、在地回應與版本，而不是固定成果。',
+    en: "Tincuta's persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
+    ja: 'Tincuta のペルソナは、キャンプを固定された成果物ではなく、倫理的な問い、地域の応答、複数のバージョンを生み出すキュレーションの道具として扱います。',
+    th: 'บุคลิกของ Tincuta มองแคมป์เป็นเครื่องมือภัณฑารักษ์ที่สร้างคำถามเชิงจริยธรรม การตอบสนองเฉพาะถิ่น และเวอร์ชันต่าง ๆ มากกว่าผลงานตายตัว',
+  },
+};
 
 function makeIntroMessage(persona: Persona, language: LanguageCode): string {
+  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
   const messages: Record<LanguageCode, string> = {
-    'zh-TW': `${persona.intro} 歡迎來到桃花源，你想問我什麼？`,
-    en: `${persona.intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
-    ja: `${persona.intro} 桃花源へようこそ。何を聞きたいですか？`,
-    th: `${persona.intro} ยินดีต้อนรับสู่ Peach Blossom Spring คุณอยากถามอะไร?`,
+    'zh-TW': `${intro} 歡迎來到桃花源，你想問我什麼？`,
+    en: `${intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
+    ja: `${intro} 桃花源へようこそ。何を聞きたいですか？`,
+    th: `${intro} ยินดีต้อนรับสู่ Peach Blossom Spring คุณอยากถามอะไร?`,
   };
   return messages[language];
 }

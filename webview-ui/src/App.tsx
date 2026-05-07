@@ -415,6 +415,7 @@ function App() {
   const [mobileRulesOpen, setMobileRulesOpen] = useState(false);
   const [worldNotice, setWorldNotice] = useState<string | null>(null);
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
+  const [isQuestionSimMinimized, setIsQuestionSimMinimized] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
   const [petResponse, setPetResponse] = useState("");
   const [petBoardResponses, setPetBoardResponses] = useState<
@@ -1838,69 +1839,95 @@ function App() {
             appMode === "interactive" &&
             !isSplitOpen && (
               <section
-                className="question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] max-h-[46vh] overflow-auto px-7 py-6"
+                className={`question-status-panel absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] px-7 py-6 ${
+                  isQuestionSimMinimized
+                    ? "question-status-panel-minimized"
+                    : "max-h-[46vh] overflow-auto"
+                }`}
                 data-no-mobile-drag="true"
               >
-                <div className="flex items-center justify-between gap-4 mb-4">
+                <div className="question-status-header flex items-center justify-between gap-4 mb-4">
                   <h2 className="text-lg">
                     {t(selectedLanguage, "hud.questionPetSim")}
                   </h2>
-                  <span className="text-base">
-                    {t(selectedLanguage, "hud.tick")} {simSnapshot.tick}
-                  </span>
+                  <div className="question-status-actions">
+                    <span className="text-base">
+                      {t(selectedLanguage, "hud.tick")} {simSnapshot.tick}
+                    </span>
+                    <button
+                      type="button"
+                      aria-label={
+                        isQuestionSimMinimized
+                          ? "Restore Question Pet SIM"
+                          : "Minimize Question Pet SIM"
+                      }
+                      onClick={() =>
+                        setIsQuestionSimMinimized((minimized) => !minimized)
+                      }
+                    >
+                      {isQuestionSimMinimized ? "↗" : "—"}
+                    </button>
+                  </div>
                 </div>
-                {simSnapshot.thronglets.map((pet) => (
-                  <button
-                    key={pet.id}
-                    className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
-                    type="button"
-                    onClick={() => setSelectedPet(pet)}
-                  >
-                    <div className="flex gap-4 items-center">
-                      <QuestionPetPreview
-                        question={pet.question.text}
-                        appearance={pet.appearance}
-                        size={4}
-                      />
-                      <span className="text-base leading-snug">
-                        {pet.question.text}
-                      </span>
+                {!isQuestionSimMinimized && (
+                  <>
+                    {simSnapshot.thronglets.map((pet) => (
+                      <button
+                        key={pet.id}
+                        className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
+                        type="button"
+                        onClick={() => setSelectedPet(pet)}
+                      >
+                        <div className="flex gap-4 items-center">
+                          <QuestionPetPreview
+                            question={pet.question.text}
+                            appearance={pet.appearance}
+                            size={4}
+                          />
+                          <span className="text-base leading-snug">
+                            {pet.question.text}
+                          </span>
+                        </div>
+                        <p className="text-sm mt-3">
+                          {pet.currentAction} / {t(selectedLanguage, "pet.energy")}
+                          {" "}
+                          {pet.state.energy.toFixed(0)} {" "}
+                          {t(selectedLanguage, "pet.stress")}
+                          {" "}
+                          {pet.state.stress.toFixed(0)} {" "}
+                          {t(selectedLanguage, "pet.bond")}
+                          {" "}
+                          {pet.state.groupBond.toFixed(0)}
+                        </p>
+                      </button>
+                    ))}
+                    <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+                      {Object.entries(simSnapshot.scores).map(([key, value]) => (
+                        <p key={key}>
+                          {key}: {value.toFixed(1)}
+                        </p>
+                      ))}
                     </div>
-                    <p className="text-sm mt-3">
-                      {pet.currentAction} / {t(selectedLanguage, "pet.energy")}{" "}
-                      {pet.state.energy.toFixed(0)}{" "}
-                      {t(selectedLanguage, "pet.stress")}{" "}
-                      {pet.state.stress.toFixed(0)}{" "}
-                      {t(selectedLanguage, "pet.bond")}{" "}
-                      {pet.state.groupBond.toFixed(0)}
-                    </p>
-                  </button>
-                ))}
-                <div className="grid grid-cols-2 gap-2 text-sm mb-4">
-                  {Object.entries(simSnapshot.scores).map(([key, value]) => (
-                    <p key={key}>
-                      {key}: {value.toFixed(1)}
-                    </p>
-                  ))}
-                </div>
-                {simSnapshot.throngs.map((throng) => (
-                  <p key={throng.id} className="text-sm mb-2">
-                    THRONG: {throng.topic} ({throng.memberIds.length})
-                  </p>
-                ))}
-                {simSnapshot.thoughts.map((thought, index) => (
-                  <p
-                    key={`${thought}-${index}`}
-                    className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3"
-                  >
-                    {thought}
-                  </p>
-                ))}
-                {simSnapshot.events.slice(0, 4).map((event) => (
-                  <p key={event.id} className="text-sm opacity-80 mt-2">
-                    {event.type}: {event.text}
-                  </p>
-                ))}
+                    {simSnapshot.throngs.map((throng) => (
+                      <p key={throng.id} className="text-sm mb-2">
+                        THRONG: {throng.topic} ({throng.memberIds.length})
+                      </p>
+                    ))}
+                    {simSnapshot.thoughts.map((thought, index) => (
+                      <p
+                        key={`${thought}-${index}`}
+                        className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3"
+                      >
+                        {thought}
+                      </p>
+                    ))}
+                    {simSnapshot.events.slice(0, 4).map((event) => (
+                      <p key={event.id} className="text-sm opacity-80 mt-2">
+                        {event.type}: {event.text}
+                      </p>
+                    ))}
+                  </>
+                )}
               </section>
             )}
 
