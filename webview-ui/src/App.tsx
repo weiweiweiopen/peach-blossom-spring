@@ -92,6 +92,7 @@ const topicLabels: Record<string, string> = {
 };
 
 const PLAYER_ID = 0;
+const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
 const MOBILE_THUMB_GUIDE_BOTTOM_PX = 148;
 const MOBILE_THUMB_GUIDE_DIAMETER_PX = 112;
 const MOBILE_THUMB_ACTIVE_RADIUS_PX = 60;
@@ -121,7 +122,8 @@ const COMMUNITY_NEWS_LINKS = [
   },
 ];
 
-const COMMUNITY_MAP_URL = "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
+const COMMUNITY_MAP_URL =
+  "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
 
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
@@ -233,7 +235,8 @@ function findNearestApproachableTile(
 ): { col: number; row: number } {
   const canStand = (col: number, row: number) => {
     if (occupied.has(`${col},${row}`)) return false;
-    if (!isWalkable(col, row, officeState.tileMap, officeState.blockedTiles)) return false;
+    if (!isWalkable(col, row, officeState.tileMap, officeState.blockedTiles))
+      return false;
     const neighbors = [
       { col: col + 1, row },
       { col: col - 1, row },
@@ -241,11 +244,17 @@ function findNearestApproachableTile(
       { col, row: row - 1 },
     ];
     return neighbors.some((tile) =>
-      isWalkable(tile.col, tile.row, officeState.tileMap, officeState.blockedTiles),
+      isWalkable(
+        tile.col,
+        tile.row,
+        officeState.tileMap,
+        officeState.blockedTiles,
+      ),
     );
   };
 
-  if (canStand(preferredCol, preferredRow)) return { col: preferredCol, row: preferredRow };
+  if (canStand(preferredCol, preferredRow))
+    return { col: preferredCol, row: preferredRow };
 
   for (let radius = 1; radius <= 8; radius++) {
     for (let dRow = -radius; dRow <= radius; dRow++) {
@@ -411,6 +420,9 @@ function App() {
   >([]);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
+  const [splitPanelAnchor, setSplitPanelAnchor] = useState<
+    { kind: "npc"; id: number } | { kind: "tree" } | null
+  >(null);
   const [isSplitExpanded, setIsSplitExpanded] = useState(false);
   const [archiveMenuDismissed, setArchiveMenuDismissed] = useState(false);
   const [abaoBubble, setAbaoBubble] = useState<{
@@ -670,6 +682,19 @@ function App() {
     return nearest?.id ?? null;
   }, [agents, officeState]);
 
+  const getPlayerDistanceFromCharacter = useCallback(
+    (characterId: number): number => {
+      const player = officeState.characters.get(PLAYER_ID);
+      const character = officeState.characters.get(characterId);
+      if (!player || !character) return Number.POSITIVE_INFINITY;
+      return (
+        Math.abs(character.tileCol - player.tileCol) +
+        Math.abs(character.tileRow - player.tileRow)
+      );
+    },
+    [officeState],
+  );
+
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     if (!worldInitialized) {
@@ -747,10 +772,16 @@ function App() {
         .slice(0, 2);
       for (const id of shuffled) {
         const ch = officeState.characters.get(id);
-        if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer) continue;
+        if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
+          continue;
         if (nearbyNpcIdRef.current === id) continue;
         if (Math.random() > 0.45) continue;
-        const target = findShortNpcStep(officeState, ch.tileCol, ch.tileRow, occupied);
+        const target = findShortNpcStep(
+          officeState,
+          ch.tileCol,
+          ch.tileRow,
+          occupied,
+        );
         if (target && officeState.walkToTile(id, target.col, target.row)) {
           occupied.delete(`${ch.tileCol},${ch.tileRow}`);
           occupied.add(`${target.col},${target.row}`);
@@ -907,6 +938,53 @@ function App() {
     return () => window.clearInterval(interval);
   }, [appMode, findNearbyNpc, layoutReady, officeState, playerProfile]);
 
+  useEffect(() => {
+    if (!layoutReady || !playerProfile || appMode !== "interactive") return;
+    const interval = window.setInterval(() => {
+      if (activeDialogueIdRef.current !== null) {
+        const distance = getPlayerDistanceFromCharacter(
+          activeDialogueIdRef.current,
+        );
+        if (distance > CONVERSATION_CLOSE_DISTANCE_TILES) {
+          setActiveDialogueId(null);
+        }
+      }
+
+      setSplitPanel((current) => {
+        if (!current || !splitPanelAnchor) return current;
+        const player = officeState.characters.get(PLAYER_ID);
+        const awayFromTree =
+          splitPanelAnchor.kind === "tree" &&
+          (!player ||
+            !archiveTreeZone ||
+            !isInZone(
+              player.tileCol,
+              player.tileRow,
+              archiveTreeZone,
+              CONVERSATION_CLOSE_DISTANCE_TILES,
+            ));
+        const awayFromNpc =
+          splitPanelAnchor.kind === "npc" &&
+          getPlayerDistanceFromCharacter(splitPanelAnchor.id) >
+            CONVERSATION_CLOSE_DISTANCE_TILES;
+        if (awayFromTree || awayFromNpc) {
+          setIsSplitExpanded(false);
+          setSplitPanelAnchor(null);
+          return null;
+        }
+        return current;
+      });
+    }, 250);
+    return () => window.clearInterval(interval);
+  }, [
+    appMode,
+    getPlayerDistanceFromCharacter,
+    layoutReady,
+    officeState,
+    playerProfile,
+    splitPanelAnchor,
+  ]);
+
   const nearbyNpcIdRef = useRef<number | null>(null);
   const activeDialogueIdRef = useRef<number | null>(null);
   useEffect(() => {
@@ -946,10 +1024,6 @@ function App() {
 
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      if (activeDialogueIdRef.current !== null) {
-        heldKeys.clear();
-        return;
-      }
       // Re-apply speed multiplier every frame so sprint actually takes effect during the whole hold.
       isSprint = sprintHeld;
       officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 3.1 : 1);
@@ -1002,8 +1076,6 @@ function App() {
         }
         return;
       }
-      if (activeDialogueIdRef.current !== null) return;
-
       const dir = dirOf(event);
       if (dir) {
         event.preventDefault();
@@ -1375,6 +1447,7 @@ function App() {
 
   const closeSplitPanel = useCallback(() => {
     setSplitPanel(null);
+    setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
 
@@ -1389,7 +1462,8 @@ function App() {
   return (
     <div
       ref={containerRef}
-      className={`game-world-layer w-full h-full relative overflow-hidden ${isSplitOpen ? "world-split-active" : ""} ${isSplitExpanded ? "world-split-expanded" : ""}`}
+      className={`game-world-layer pbs-interaction-root w-full h-full relative overflow-hidden ${isSplitOpen ? "world-split-active" : ""} ${isSplitExpanded ? "world-split-expanded" : ""}`}
+      data-modal-layer={activeDialoguePersona || splitPanel ? "open" : "closed"}
       style={{
         touchAction:
           showMobileControls && appMode === "interactive" && !isSplitOpen
@@ -1401,22 +1475,24 @@ function App() {
       onPointerUp={stopMobilePointer}
       onPointerCancel={stopMobilePointer}
     >
-      <OfficeCanvas
-        officeState={officeState}
-        onClick={handleClick}
-        isEditMode={editor.isEditMode}
-        editorState={editorState}
-        onEditorTileAction={editor.handleEditorTileAction}
-        onEditorEraseAction={editor.handleEditorEraseAction}
-        onEditorSelectionChange={editor.handleEditorSelectionChange}
-        onDeleteSelected={editor.handleDeleteSelected}
-        onRotateSelected={editor.handleRotateSelected}
-        onDragMove={editor.handleDragMove}
-        editorTick={editor.editorTick}
-        zoom={editor.zoom}
-        onZoomChange={editor.handleZoomChange}
-        panRef={editor.panRef}
-      />
+      <div className="pbs-world-map-layer">
+        <OfficeCanvas
+          officeState={officeState}
+          onClick={handleClick}
+          isEditMode={editor.isEditMode}
+          editorState={editorState}
+          onEditorTileAction={editor.handleEditorTileAction}
+          onEditorEraseAction={editor.handleEditorEraseAction}
+          onEditorSelectionChange={editor.handleEditorSelectionChange}
+          onDeleteSelected={editor.handleDeleteSelected}
+          onRotateSelected={editor.handleRotateSelected}
+          onDragMove={editor.handleDragMove}
+          editorTick={editor.editorTick}
+          zoom={editor.zoom}
+          onZoomChange={editor.handleZoomChange}
+          panRef={editor.panRef}
+        />
+      </div>
 
       <div className="floating-ui-layer" data-no-mobile-drag="true">
         <div className="global-language-menu">
@@ -1445,7 +1521,9 @@ function App() {
             </div>
           )}
         </div>
+      </div>
 
+      <div className="hud-ui-layer" data-no-mobile-drag="true">
         {playerProfile && appMode === "dispatch_observer" && (
           <button
             className="observer-close"
@@ -1653,6 +1731,7 @@ function App() {
                     type="button"
                     onClick={() => {
                       setSplitPanel({ kind: "communityLinks" });
+                      setSplitPanelAnchor({ kind: "tree" });
                       setIsSplitExpanded(false);
                     }}
                   >
@@ -1662,6 +1741,7 @@ function App() {
                     type="button"
                     onClick={() => {
                       setSplitPanel({ kind: "archivePdf" });
+                      setSplitPanelAnchor({ kind: "tree" });
                       setIsSplitExpanded(false);
                     }}
                   >
@@ -1671,6 +1751,7 @@ function App() {
                     type="button"
                     onClick={() => {
                       setSplitPanel({ kind: "archiveMap" });
+                      setSplitPanelAnchor({ kind: "tree" });
                       setIsSplitExpanded(false);
                     }}
                   >
@@ -1705,6 +1786,10 @@ function App() {
                     setSplitPanel({
                       kind: "wiki",
                       persona: activeDialoguePersona,
+                    });
+                    setSplitPanelAnchor({
+                      kind: "npc",
+                      id: activeDialogueCharacter.id,
                     });
                     setIsSplitExpanded(false);
                     setActiveDialogueId(null);

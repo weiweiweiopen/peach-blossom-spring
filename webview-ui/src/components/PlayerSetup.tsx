@@ -177,44 +177,54 @@ export function PlayerSetup({
   }
 
   return (
-    <div
-      className="player-setup-overlay absolute inset-0 z-60 flex items-start justify-center px-8 overflow-auto tamagotchi-bg"
-      style={{
-        paddingTop: "max(58px, env(safe-area-inset-top))",
-        paddingBottom: "max(16px, env(safe-area-inset-bottom))",
-      }}
-    >
+    <div className="player-setup-overlay tamagotchi-bg">
       <form
         ref={formRef}
-        className="player-setup-panel question-hatch-panel w-[min(1040px,100%)] max-h-[calc(100dvh-76px)] overflow-auto px-14 py-12 text-[var(--tama-ink)]"
+        className="player-setup-shell"
         onSubmit={(event) => {
           event.preventDefault();
           handleStart();
         }}
       >
-        <p className="player-setup-kicker text-sm uppercase tracking-wide mb-4">
-          {c.kicker}
-        </p>
-        <div className="grid md:grid-cols-[1fr_260px] gap-10 items-start">
-          <div>
-            <h1 className="player-setup-title leading-[1.1] mb-5">
-              {t(language, "loginTitle")}
-            </h1>
-            <p className="player-setup-description leading-[1.58] mb-8 max-w-[760px]">
-              {t(language, "loginDescription")}
-            </p>
+        <header className="player-setup-header">
+          <p className="player-setup-kicker">{c.kicker}</p>
+          <h1 className="player-setup-title">{t(language, "loginTitle")}</h1>
+          <p className="player-setup-description">
+            {t(language, "loginDescription")}
+          </p>
+        </header>
 
-            <label
-              className="player-setup-label block mb-3"
-              htmlFor="question-pet-name"
-            >
+        <div className="player-setup-console">
+          <aside
+            className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
+            aria-live="polite"
+          >
+            <p className="pet-card-label">{c.title}</p>
+            <div className="question-hatch-screen">
+              {hasHatched ? (
+                <QuestionPetPreview
+                  question={question || c.questionPlaceholder}
+                  appearance={appearance}
+                  size={12}
+                />
+              ) : (
+                <div className="question-hatch-egg">?</div>
+              )}
+            </div>
+            <p className="pet-card-label question-hatch-status">
+              {hasHatched ? c.born : c.blank}
+            </p>
+          </aside>
+
+          <section className="player-setup-controls" aria-label="Pet controls">
+            <label className="player-setup-label" htmlFor="question-pet-name">
               {c.name}
             </label>
             <input
               id="question-pet-name"
               name="name"
               required
-              className="player-setup-field w-full px-6 py-5 outline-none mb-7"
+              className="player-setup-field"
               maxLength={32}
               defaultValue={defaultProfile?.name ?? ""}
               placeholder={c.namePlaceholder}
@@ -222,7 +232,7 @@ export function PlayerSetup({
             />
 
             <label
-              className="player-setup-label block mb-3"
+              className="player-setup-label"
               htmlFor="question-pet-question"
             >
               {c.question}
@@ -231,7 +241,7 @@ export function PlayerSetup({
               id="question-pet-question"
               name="question"
               required
-              className="player-setup-field player-setup-textarea-large w-full min-h-[116px] px-6 py-5 outline-none mb-7"
+              className="player-setup-field player-setup-textarea-large"
               maxLength={800}
               value={question}
               onChange={(event) => {
@@ -241,53 +251,30 @@ export function PlayerSetup({
               placeholder={c.questionPlaceholder}
             />
 
-            <label
-              className="player-setup-label block mb-3"
-              htmlFor="question-pet-skills"
-            >
+            <label className="player-setup-label" htmlFor="question-pet-skills">
               {c.skills}
             </label>
             <textarea
               id="question-pet-skills"
               name="skills"
               required
-              className="player-setup-field player-setup-textarea w-full min-h-[92px] px-6 py-5 outline-none mb-2"
+              className="player-setup-field player-setup-textarea"
               maxLength={500}
               defaultValue={defaultProfile?.skills ?? ""}
               placeholder={c.skillsPlaceholder}
             />
-          </div>
 
-          <aside
-            className={`question-hatch-device text-center px-7 py-8 ${hasHatched ? "is-hatching" : ""}`}
-            aria-live="polite"
-          >
-            <p className="pet-card-label mb-4">{c.title}</p>
-            <div className="question-hatch-screen mx-auto">
-              {hasHatched ? (
-                <QuestionPetPreview
-                  question={question || c.questionPlaceholder}
-                  appearance={appearance}
-                  size={10}
-                />
-              ) : (
-                <div className="question-hatch-egg">?</div>
+            <button
+              className={`player-setup-action mode-primary ${isBooting ? "is-booting" : ""}`}
+              type="submit"
+              disabled={isBooting}
+            >
+              <span>{c.start}</span>
+              {isBooting && (
+                <span className="pixel-spinner" aria-hidden="true" />
               )}
-            </div>
-            <p className="pet-card-label mt-5 leading-snug">
-              {hasHatched ? c.born : c.blank}
-            </p>
-          </aside>
-        </div>
-
-        <div className="player-setup-actions flex flex-col md:flex-row gap-5 mt-8">
-          <button
-            className="player-setup-action flex-1 mode-primary px-8 py-5 shadow-pixel"
-            type="submit"
-            disabled={isBooting}
-          >
-            {isBooting ? "..." : c.start}
-          </button>
+            </button>
+          </section>
         </div>
       </form>
     </div>
