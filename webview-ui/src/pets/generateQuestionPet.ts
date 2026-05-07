@@ -43,12 +43,44 @@ const accessoryTypes = [
 type Palette = QuestionPetAppearance["palette"];
 type Stamp = readonly string[];
 
-const lcdPalette: Palette = {
-  primary: "#1f2a1e",
-  secondary: "#d8e0a8",
-  accent: "#59683f",
-  outline: "#101610",
-};
+const colorfulPalettes: Palette[] = [
+  {
+    primary: "#ff7fb6",
+    secondary: "#fff0a8",
+    accent: "#4ad6ff",
+    outline: "#21121f",
+  },
+  {
+    primary: "#7ee86d",
+    secondary: "#fff4c8",
+    accent: "#ff8b3d",
+    outline: "#102414",
+  },
+  {
+    primary: "#8fa8ff",
+    secondary: "#ffe7f5",
+    accent: "#ffd23f",
+    outline: "#161a3a",
+  },
+  {
+    primary: "#ffb347",
+    secondary: "#e8fff4",
+    accent: "#6c5ce7",
+    outline: "#2b1708",
+  },
+  {
+    primary: "#50e3c2",
+    secondary: "#fff3d6",
+    accent: "#ff5f7e",
+    outline: "#082721",
+  },
+  {
+    primary: "#c084fc",
+    secondary: "#f5ffe8",
+    accent: "#64d96b",
+    outline: "#25133d",
+  },
+];
 
 const bodyStamps: Record<string, Stamp> = {
   tamaEgg: [
@@ -220,40 +252,71 @@ function addMouth(grid: number[][], mouthType: string): void {
   }
 }
 
+function outlineSprite(grid: number[][]): void {
+  const bodyCells = grid.map((row) => [...row]);
+  bodyCells.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell === 0) return;
+      [
+        [x - 1, y],
+        [x + 1, y],
+        [x, y - 1],
+        [x, y + 1],
+      ].forEach(([nx, ny]) => {
+        const isInside = nx >= 0 && nx < 16 && ny >= 0 && ny < 16;
+        if (isInside && grid[ny][nx] === 0) grid[ny][nx] = 1;
+      });
+    });
+  });
+}
+
+function addFaceDetails(grid: number[][], seed: number): void {
+  const cheekY = seed % 3 === 0 ? 9 : 10;
+  set(grid, 4, cheekY, 4);
+  set(grid, 11, cheekY, 4);
+  if (seed % 2 === 0) {
+    set(grid, 7, 6, 4);
+    set(grid, 8, 6, 4);
+  } else {
+    set(grid, 6, 5, 4);
+    set(grid, 9, 5, 4);
+  }
+}
+
 function addAccessory(grid: number[][], accessoryType: string): void {
   if (accessoryType === "singleAntenna") {
-    set(grid, 8, 3, 1);
-    set(grid, 8, 2, 1);
-    set(grid, 9, 1, 1);
+    set(grid, 8, 3, 3);
+    set(grid, 8, 2, 3);
+    set(grid, 9, 1, 3);
   }
   if (accessoryType === "cornerEar") {
-    set(grid, 4, 4, 1);
-    set(grid, 3, 3, 1);
-    set(grid, 2, 3, 1);
+    set(grid, 4, 4, 3);
+    set(grid, 3, 3, 3);
+    set(grid, 2, 3, 3);
   }
   if (accessoryType === "sprout") {
-    set(grid, 7, 3, 1);
-    set(grid, 8, 2, 1);
-    set(grid, 9, 3, 1);
+    set(grid, 7, 3, 3);
+    set(grid, 8, 2, 3);
+    set(grid, 9, 3, 3);
   }
   if (accessoryType === "tailBit") {
-    set(grid, 13, 10, 1);
-    set(grid, 14, 10, 1);
-    set(grid, 14, 9, 1);
+    set(grid, 13, 10, 3);
+    set(grid, 14, 10, 3);
+    set(grid, 14, 9, 3);
   }
   if (accessoryType === "crownTicks") {
-    set(grid, 5, 4, 1);
-    set(grid, 7, 3, 1);
-    set(grid, 9, 4, 1);
+    set(grid, 5, 4, 3);
+    set(grid, 7, 3, 3);
+    set(grid, 9, 4, 3);
   }
   if (accessoryType === "sideKnob") {
-    set(grid, 2, 8, 1);
-    set(grid, 13, 7, 1);
+    set(grid, 2, 8, 3);
+    set(grid, 13, 7, 3);
   }
   if (accessoryType === "questionBead") {
-    set(grid, 12, 3, 1);
-    set(grid, 13, 2, 1);
-    set(grid, 12, 1, 1);
+    set(grid, 12, 3, 3);
+    set(grid, 13, 2, 3);
+    set(grid, 12, 1, 3);
   }
 }
 
@@ -280,7 +343,9 @@ export function generateQuestionPet(
     Array.from({ length: 16 }, () => 0),
   );
 
-  stamp(grid, bodyStamps[bodyType], seed % 2 === 0 ? 2 : 3, 4, 1);
+  stamp(grid, bodyStamps[bodyType], seed % 2 === 0 ? 2 : 3, 4, 2);
+  outlineSprite(grid);
+  addFaceDetails(grid, seed);
   addEyes(grid, eyeType, seed);
   addMouth(grid, mouthType);
   addAccessory(grid, accessoryType);
@@ -296,7 +361,7 @@ export function generateQuestionPet(
     eyeType,
     mouthType,
     accessoryType,
-    palette: lcdPalette,
+    palette: colorfulPalettes[seed % colorfulPalettes.length],
     sprite16: grid,
   };
 }

@@ -1929,3 +1929,38 @@
     min-height: 360px;
   }
 }
+
+/* Restore the archive/wiki split to an even half-screen panel on desktop.
+   The map HUD now stays below the split panel instead of shrinking the panel. */
+.world-split-panel {
+  z-index: calc(var(--z-layer-hud) + 20) !important;
+}
+@media (min-width: 901px) and (pointer: fine) {
+  .world-split-active {
+    width: 50% !important;
+    height: 100% !important;
+  }
+  .world-split-panel {
+    inset: 0 0 0 auto !important;
+    width: 50vw !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  .world-split-panel.is-expanded {
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+}
+
+/* Keep the create-character console above any boot-time world/layout paint. */
+.player-setup-overlay {
+  position: fixed;
+  z-index: calc(var(--z-layer-hud) + 40);
+}
+
+/* Question pets are colorful creatures now; keep the preview stage warm and neutral. */
+.question-pet-preview {
+  background: #fff7d6 !important;
+}
