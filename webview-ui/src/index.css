@@ -165,7 +165,7 @@
   position: fixed;
   top: max(12px, env(safe-area-inset-top));
   left: max(12px, env(safe-area-inset-left));
-  z-index: 82;
+  z-index: 90;
   display: inline-flex;
   align-items: stretch;
   height: 44px;
@@ -514,7 +514,7 @@
   position: fixed;
   top: max(54px, env(safe-area-inset-top));
   right: max(14px, env(safe-area-inset-right));
-  z-index: 72;
+  z-index: 90;
   width: 38px;
   height: 38px;
   color: var(--tama-ink);
@@ -528,7 +528,7 @@
   position: fixed;
   top: max(100px, env(safe-area-inset-top));
   right: max(14px, env(safe-area-inset-right));
-  z-index: 72;
+  z-index: 90;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -768,7 +768,7 @@
   position: fixed;
   top: max(12px, env(safe-area-inset-top));
   right: max(12px, env(safe-area-inset-right));
-  z-index: 82;
+  z-index: 68;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -815,14 +815,14 @@
 }
 .world-split-expanded {
   width: 0 !important;
-  pointer-events: none;
 }
 .world-split-panel {
   position: fixed;
+  pointer-events: auto;
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 74;
+  z-index: 86;
   display: flex;
   flex-direction: column;
   width: 50vw;
@@ -873,12 +873,37 @@
   padding: 14px;
   -webkit-overflow-scrolling: touch;
 }
+.world-split-panel.is-expanded {
+  left: 0;
+  width: 100vw;
+  border-left: 0;
+}
+.world-split-panel.is-expanded .world-split-iframe {
+  min-height: calc(100dvh - 96px);
+}
 .world-split-iframe {
   width: 100%;
   height: 100%;
   min-height: 520px;
   background: #fff;
   border: 2px solid #000;
+}
+.world-split-embed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100%;
+}
+.world-split-embed-description {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.world-split-embed .world-split-iframe {
+  flex: 1;
 }
 .world-wiki-content {
   display: flex;
@@ -896,7 +921,8 @@
   background: var(--palette-cream);
   border: 2px solid #000;
 }
-.world-wiki-content a {
+.world-wiki-content a,
+.world-wiki-content button {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -907,10 +933,12 @@
   border: 2px solid #000;
   text-decoration: none;
 }
-.world-wiki-content a strong {
+.world-wiki-content a strong,
+.world-wiki-content button strong {
   font-size: 18px;
 }
-.world-wiki-content a span {
+.world-wiki-content a span,
+.world-wiki-content button span {
   font-size: 15px;
   line-height: 1.4;
 }
@@ -1040,6 +1068,13 @@
     border-left: 0;
     box-shadow: 0 -3px 0 color-mix(in srgb, #000 18%, transparent);
   }
+  .world-split-panel.is-expanded {
+    top: 0;
+    height: 100dvh;
+  }
+  .world-split-panel.is-expanded .world-split-iframe {
+    min-height: calc(100dvh - 86px);
+  }
   .world-split-toolbar {
     padding: 10px 12px;
   }
@@ -1055,15 +1090,17 @@
   .world-wiki-content {
     font-size: 18px;
   }
-  .world-wiki-content a strong {
+  .world-wiki-content a strong,
+  .world-wiki-content button strong {
     font-size: 19px;
   }
-  .world-wiki-content a span {
+  .world-wiki-content a span,
+  .world-wiki-content button span {
     font-size: 16px;
   }
   .global-language-menu {
     top: max(10px, env(safe-area-inset-top));
-    right: max(10px, env(safe-area-inset-right));
+    right: calc(max(10px, env(safe-area-inset-right)) + 54px);
   }
   .archive-tree-menu {
     top: max(62px, env(safe-area-inset-top));

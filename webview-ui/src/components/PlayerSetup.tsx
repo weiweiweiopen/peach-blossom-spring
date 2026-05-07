@@ -275,7 +275,7 @@ export function PlayerSetup({
               )}
             </div>
             <p className="pet-card-label mt-5 leading-snug">
-              {isBooting ? c.booting : hasHatched ? c.born : c.blank}
+              {hasHatched ? c.born : c.blank}
             </p>
           </aside>
         </div>
@@ -286,7 +286,7 @@ export function PlayerSetup({
             type="submit"
             disabled={isBooting}
           >
-            {isBooting ? c.booting : c.start}
+            {isBooting ? "..." : c.start}
           </button>
         </div>
       </form>

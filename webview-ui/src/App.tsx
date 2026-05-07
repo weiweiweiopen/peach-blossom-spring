@@ -113,14 +113,12 @@ const COMMUNITY_NEWS_LINKS = [
 
 const COMMUNITY_MAP_URL = "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
 
-function openExternalLink(url: string): void {
-  window.open(url, "_blank", "noopener,noreferrer");
-}
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
 type SplitPanel =
   | { kind: "wiki"; persona: Persona }
   | { kind: "communityLinks" }
+  | { kind: "externalLink"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" };
 const ExpeditionPanel = lazy(() =>
@@ -145,6 +143,7 @@ function languageLabel(language: LanguageCode, zh: string, en: string): string {
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wiki") return panel.persona.name;
   if (panel.kind === "communityLinks") return t(language, "archiveNewsTitle");
+  if (panel.kind === "externalLink") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archivePdfTitle");
   return t(language, "archiveMapTitle");
 }
@@ -152,6 +151,9 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wiki") return "World Wiki";
   if (panel.kind === "communityLinks") return t(language, "communityPortals");
+  if (panel.kind === "externalLink") {
+    return language === "zh-TW" ? "內嵌連結" : "Embedded link";
+  }
   return t(language, "archiveTree");
 }
 
@@ -2022,7 +2024,15 @@ function App() {
                         <button
                           key={`${link.title}-${link.url}`}
                           type="button"
-                          onClick={() => openExternalLink(link.url)}
+                          onClick={() => {
+                            setSplitPanel({
+                              kind: "externalLink",
+                              title: link.title,
+                              url: link.url,
+                              description: link.description,
+                            });
+                            setIsSplitExpanded(false);
+                          }}
                         >
                           <strong>{link.title}</strong>
                           <span>{link.description}</span>
@@ -2038,12 +2048,35 @@ function App() {
                   <button
                     key={link.url}
                     type="button"
-                    onClick={() => openExternalLink(link.url)}
+                    onClick={() => {
+                      setSplitPanel({
+                        kind: "externalLink",
+                        title: link.title,
+                        url: link.url,
+                        description: link.description,
+                      });
+                      setIsSplitExpanded(false);
+                    }}
                   >
                     <strong>{link.title}</strong>
                     <span>{link.description}</span>
                   </button>
                 ))}
+              </div>
+            ) : splitPanel.kind === "externalLink" ? (
+              <div className="world-split-embed">
+                {splitPanel.description && (
+                  <p className="world-split-embed-description">
+                    {splitPanel.description}
+                  </p>
+                )}
+                <iframe
+                  title={splitPanel.title}
+                  src={splitPanel.url}
+                  className="world-split-iframe"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
