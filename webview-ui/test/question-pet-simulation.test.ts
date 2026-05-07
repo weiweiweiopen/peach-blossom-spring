@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { generateQuestionPet } from '../src/pets/generateQuestionPet.js';
+import { generateQuestionPet, petMoodTypes } from '../src/pets/generateQuestionPet.js';
 import { clampState } from '../src/simulation/defaults.js';
 import { createInitialSnapshot, createThronglet, tickSimulation } from '../src/simulation/engine.js';
 import { scorePromptResonance } from '../src/simulation/resonance.js';
@@ -29,6 +29,14 @@ test('same question gives the same pet seed and different questions vary', () =>
   assert.notEqual(a.seed, c.seed);
   assert.equal(a.sprite16.length, 16);
   assert.equal(a.sprite16[0].length, 16);
+  assert.ok(petMoodTypes.includes(a.moodType));
+  assert.equal(a.palette.primary, a.palette.skin);
+  for (const mood of petMoodTypes) {
+    const frames = a.animations[mood];
+    assert.ok(frames.length >= 12);
+    assert.equal(frames[0].length, 16);
+    assert.equal(frames[0][0].length, 16);
+  }
 });
 
 test('simulation ticks update state and events update scores', () => {

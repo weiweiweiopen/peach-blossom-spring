@@ -351,7 +351,7 @@ export class OfficeState {
   }
 
 
-  addQuestionPet(id: number, name: string, spriteOverride: SpriteData, col = 32, row = 32): void {
+  addQuestionPet(id: number, name: string, spriteOverride: SpriteData, col = 32, row = 32, spriteAnimation?: SpriteData[]): void {
     if (this.characters.has(id)) return;
     const spawn = isWalkable(col, row, this.tileMap, this.blockedTiles)
       ? { col, row }
@@ -360,6 +360,7 @@ export class OfficeState {
     ch.isQuestionPet = true;
     ch.folderName = name;
     ch.spriteOverride = spriteOverride;
+    ch.spriteAnimation = spriteAnimation;
     ch.isActive = false;
     ch.state = CharacterState.IDLE;
     ch.seatId = null;
