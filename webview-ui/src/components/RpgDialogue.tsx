@@ -170,6 +170,17 @@ function makeSuggestedQuestions(
   return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
 }
 
+
+function makeIntroMessage(persona: Persona, language: LanguageCode): string {
+  const messages: Record<LanguageCode, string> = {
+    'zh-TW': `${persona.intro} 歡迎來到桃花源，你想問我什麼？`,
+    en: `${persona.intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
+    ja: `${persona.intro} 桃花源へようこそ。何を聞きたいですか？`,
+    th: `${persona.intro} ยินดีต้อนรับสู่ Peach Blossom Spring คุณอยากถามอะไร?`,
+  };
+  return messages[language];
+}
+
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
@@ -191,17 +202,14 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setMessages([
       {
         speaker: persona.name,
-        text:
-          language === 'zh-TW'
-            ? `${persona.intro} 歡迎來到桃花源，你想問我什麼？`
-            : `${persona.intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
+        text: makeIntroMessage(persona, language),
       },
     ]);
     setQuestion('');
     setError('');
     setAreSuggestionsOpen(false);
     setQuestionSeed(Math.floor(Math.random() * 1000));
-  }, [language, persona.id, persona.intro, persona.name]);
+  }, [language, persona]);
 
   useEffect(() => {
     const log = messageLogRef.current;

@@ -21,7 +21,7 @@ type LeafPaths<T, Prefix extends string = ""> = {
 
 export type TranslationKey = LeafPaths<LocaleMessages>;
 
-export const DEFAULT_LOCALE: LanguageCode = "zh-TW";
+export const DEFAULT_LOCALE: LanguageCode = "en";
 export const LANGUAGE_STORAGE_KEY = "pbs.settings.language";
 
 export const supportedLanguages: Array<{

@@ -1511,7 +1511,7 @@ function App() {
             aria-expanded={languageMenuOpen}
             onClick={() => setLanguageMenuOpen((open) => !open)}
           >
-            🌐 {supportedLanguages.find((entry) => entry.code === selectedLanguage)?.shortCode}
+            <span className="global-language-globe" aria-hidden="true" />
           </button>
           {languageMenuOpen && (
             <div className="global-language-options" role="menu">
@@ -1684,7 +1684,7 @@ function App() {
               </button>
             )}
 
-          {nameTags.map((tag) => (
+          {!activeDialoguePersona && !splitPanel && nameTags.map((tag) => (
             <div
               key={tag.id}
               className="npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base pointer-events-none"
@@ -1800,7 +1800,6 @@ function App() {
                       id: activeDialogueCharacter.id,
                     });
                     setIsSplitExpanded(false);
-                    setActiveDialogueId(null);
                   }}
                   onSimEvent={(prompt) => {
                     const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(" ")}`;
