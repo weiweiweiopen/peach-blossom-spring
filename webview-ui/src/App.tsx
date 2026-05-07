@@ -29,6 +29,7 @@ import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
 import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
 import {
+  applyDocumentLocale,
   type LanguageCode,
   readStoredLanguage,
   supportedLanguages,
@@ -137,7 +138,7 @@ interface PetBoardResponse {
 }
 
 type SplitPanel =
-  | { kind: "wiki"; persona: Persona }
+  | { kind: "dialogue.openWiki"; persona: Persona }
   | { kind: "communityLinks" }
   | { kind: "externalLink"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
@@ -158,20 +159,20 @@ function trimToFiftyChars(text: string): string {
 }
 
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
-  if (panel.kind === "wiki") return panel.persona.name;
-  if (panel.kind === "communityLinks") return t(language, "archiveNewsTitle");
+  if (panel.kind === "dialogue.openWiki") return panel.persona.name;
+  if (panel.kind === "communityLinks") return t(language, "archive.newsTitle");
   if (panel.kind === "externalLink") return panel.title;
-  if (panel.kind === "archivePdf") return t(language, "archivePdfTitle");
-  return t(language, "archiveMapTitle");
+  if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
+  return t(language, "archive.mapTitle");
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
-  if (panel.kind === "wiki") return "World Wiki";
-  if (panel.kind === "communityLinks") return t(language, "communityPortals");
+  if (panel.kind === "dialogue.openWiki") return "World Wiki";
+  if (panel.kind === "communityLinks") return t(language, "archive.communityPortals");
   if (panel.kind === "externalLink") {
-    return language === "zh-TW" ? "內嵌連結" : "Embedded link";
+    return t(language, "archive.embeddedLink");
   }
-  return t(language, "archiveTree");
+  return t(language, "archive.tree");
 }
 
 function petResponsesKey(petId: string): string {
@@ -641,6 +642,7 @@ function App() {
 
   useEffect(() => {
     writeStoredLanguage(selectedLanguage);
+    applyDocumentLocale(selectedLanguage);
   }, [selectedLanguage]);
 
   useEffect(() => {
@@ -796,7 +798,7 @@ function App() {
     )
       return;
     simSnapshot.thronglets.forEach((pet, index) => {
-      const label = t(selectedLanguage, "questionPetName");
+      const label = t(selectedLanguage, "pet.questionPet");
       const character = officeState.characters.get(pet.characterId);
       if (character) {
         character.folderName = label;
@@ -1227,7 +1229,7 @@ function App() {
       localStorage.setItem("peach_player_profile", JSON.stringify(profile));
       const created = petStore.createDispatch({
         ownerName: profile.name,
-        displayName: t(selectedLanguage, "questionPetName"),
+        displayName: t(selectedLanguage, "pet.questionPet"),
         question: profile.question || profile.mission,
         skill: profile.skills,
         seed: profile.petSeed ?? `${Date.now()}`,
@@ -1241,7 +1243,7 @@ function App() {
         PLAYER_ID,
         10000,
         profile.petSeed,
-        t(selectedLanguage, "questionPetName"),
+        t(selectedLanguage, "pet.questionPet"),
       );
       const npcContexts = personas.map((persona, index) => ({
         id: `npc-${persona.id}`,
@@ -1268,7 +1270,7 @@ function App() {
     if (!layoutReady || !playerProfile) return;
     activeDispatchPets.forEach((pet, index) => {
       const id = 20000 + index;
-      const label = t(selectedLanguage, "questionPetName");
+      const label = t(selectedLanguage, "pet.questionPet");
       const character = officeState.characters.get(id);
       if (character) {
         character.folderName = label;
@@ -1306,11 +1308,11 @@ function App() {
         avg("learning") > 60 &&
         avg("tension") < 70
       ) {
-        setWorldNotice(t(selectedLanguage, "worldResonanceEvent"));
+        setWorldNotice(t(selectedLanguage, "pet.worldResonanceEvent"));
         active.slice(0, 4).forEach((pet) =>
           petStore.addInteraction(pet.id, {
             actorType: "system",
-            message: t(selectedLanguage, "worldResonanceEvent"),
+            message: t(selectedLanguage, "pet.worldResonanceEvent"),
             tags: ["world-resonance"],
             deltaStats: { social: 2, learning: 2 },
           }),
@@ -1327,11 +1329,11 @@ function App() {
             ),
           )
         ) {
-          setWorldNotice(t(selectedLanguage, "smallCircleEvent"));
+          setWorldNotice(t(selectedLanguage, "pet.smallCircleEvent"));
           clustered.forEach((pet) =>
             petStore.addInteraction(pet.id, {
               actorType: "system",
-              message: t(selectedLanguage, "smallCircleEvent"),
+              message: t(selectedLanguage, "pet.smallCircleEvent"),
               tags: ["small-circle"],
               deltaStats: { learning: 5 },
             }),
@@ -1505,11 +1507,11 @@ function App() {
           <button
             className="global-language-trigger"
             type="button"
-            aria-label={t(selectedLanguage, "languageLabel")}
+            aria-label={t(selectedLanguage, "language.menuLabel")}
             aria-expanded={languageMenuOpen}
             onClick={() => setLanguageMenuOpen((open) => !open)}
           >
-            💬
+            🌐 {supportedLanguages.find((entry) => entry.code === selectedLanguage)?.shortCode}
           </button>
           {languageMenuOpen && (
             <div className="global-language-options" role="menu">
@@ -1521,7 +1523,7 @@ function App() {
                   role="menuitem"
                   onClick={() => handleLanguageChange(entry.code)}
                 >
-                  {entry.label}
+                  {entry.nativeName}
                 </button>
               ))}
             </div>
@@ -1535,7 +1537,7 @@ function App() {
             className="observer-close"
             type="button"
             onClick={handleCloseWorld}
-            aria-label={t(selectedLanguage, "close")}
+            aria-label={t(selectedLanguage, "common.close")}
           >
             ×
           </button>
@@ -1552,8 +1554,8 @@ function App() {
                   )
                 }
                 disabled={editor.zoom >= ZOOM_MAX}
-                aria-label={t(selectedLanguage, "zoomIn")}
-                title={`${t(selectedLanguage, "zoomIn")} (${editor.zoom.toFixed(2)}×)`}
+                aria-label={t(selectedLanguage, "hud.zoomIn")}
+                title={`${t(selectedLanguage, "hud.zoomIn")} (${editor.zoom.toFixed(2)}×)`}
               >
                 +
               </button>
@@ -1565,8 +1567,8 @@ function App() {
                   )
                 }
                 disabled={editor.zoom <= ZOOM_MIN}
-                aria-label={t(selectedLanguage, "zoomOut")}
-                title={`${t(selectedLanguage, "zoomOut")} (${editor.zoom.toFixed(2)}×)`}
+                aria-label={t(selectedLanguage, "hud.zoomOut")}
+                title={`${t(selectedLanguage, "hud.zoomOut")} (${editor.zoom.toFixed(2)}×)`}
               >
                 −
               </button>
@@ -1592,7 +1594,7 @@ function App() {
               <Suspense
                 fallback={
                   <div className="absolute inset-0 z-47 flex items-center justify-center bg-black/35 px-6 py-5 text-text">
-                    {t(selectedLanguage, "loadingExpedition")}
+                    {t(selectedLanguage, "hud.loadingExpedition")}
                   </div>
                 }
               >
@@ -1611,7 +1613,7 @@ function App() {
               className="absolute left-1/2 -translate-x-1/2 z-11 bg-accent-bright text-white text-sm py-3 px-8 rounded-none border-2 border-accent shadow-pixel pointer-events-none whitespace-nowrap"
               style={{ top: editor.isDirty ? 64 : 8 }}
             >
-              {t(selectedLanguage, "rotateHint")}
+              {t(selectedLanguage, "home.rotateHint")}
             </div>
           )}
 
@@ -1677,7 +1679,7 @@ function App() {
                   {trimToFiftyChars(nearbyPersona.intro)}
                 </p>
                 <p className="text-base text-accent-bright mt-2">
-                  {t(selectedLanguage, "pressSpaceToTalk")}
+                  {t(selectedLanguage, "hud.pressToTalk")}
                 </p>
               </button>
             )}
@@ -1724,14 +1726,14 @@ function App() {
                   className="archive-tree-close"
                   type="button"
                   onClick={() => setArchiveMenuDismissed(true)}
-                  aria-label={t(selectedLanguage, "close")}
+                  aria-label={t(selectedLanguage, "common.close")}
                 >
                   ×
                 </button>
                 <p className="archive-tree-kicker">
-                  {t(selectedLanguage, "archiveTree")}
+                  {t(selectedLanguage, "archive.tree")}
                 </p>
-                <h1>{t(selectedLanguage, "archiveTitle")}</h1>
+                <h1>{t(selectedLanguage, "archive.title")}</h1>
                 <div className="archive-tree-options">
                   <button
                     type="button"
@@ -1741,7 +1743,7 @@ function App() {
                       setIsSplitExpanded(false);
                     }}
                   >
-                    1. {t(selectedLanguage, "archiveNewsTitle")}
+                    1. {t(selectedLanguage, "archive.newsTitle")}
                   </button>
                   <button
                     type="button"
@@ -1751,7 +1753,7 @@ function App() {
                       setIsSplitExpanded(false);
                     }}
                   >
-                    2. {t(selectedLanguage, "archiveEbookButton")}
+                    2. {t(selectedLanguage, "archive.ebookButton")}
                   </button>
                   <button
                     type="button"
@@ -1761,7 +1763,7 @@ function App() {
                       setIsSplitExpanded(false);
                     }}
                   >
-                    3. {t(selectedLanguage, "archiveMapButton")}
+                    3. {t(selectedLanguage, "archive.mapButton")}
                   </button>
                 </div>
               </section>
@@ -1790,7 +1792,7 @@ function App() {
                   onClose={() => setActiveDialogueId(null)}
                   onOpenWiki={() => {
                     setSplitPanel({
-                      kind: "wiki",
+                      kind: "dialogue.openWiki",
                       persona: activeDialoguePersona,
                     });
                     setSplitPanelAnchor({
@@ -1831,10 +1833,10 @@ function App() {
               >
                 <div className="flex items-center justify-between gap-4 mb-4">
                   <h2 className="text-lg">
-                    {t(selectedLanguage, "questionPetSim")}
+                    {t(selectedLanguage, "hud.questionPetSim")}
                   </h2>
                   <span className="text-base">
-                    {t(selectedLanguage, "tick")} {simSnapshot.tick}
+                    {t(selectedLanguage, "hud.tick")} {simSnapshot.tick}
                   </span>
                 </div>
                 {simSnapshot.thronglets.map((pet) => (
@@ -1855,11 +1857,11 @@ function App() {
                       </span>
                     </div>
                     <p className="text-sm mt-3">
-                      {pet.currentAction} / {t(selectedLanguage, "energy")}{" "}
+                      {pet.currentAction} / {t(selectedLanguage, "pet.energy")}{" "}
                       {pet.state.energy.toFixed(0)}{" "}
-                      {t(selectedLanguage, "stress")}{" "}
+                      {t(selectedLanguage, "pet.stress")}{" "}
                       {pet.state.stress.toFixed(0)}{" "}
-                      {t(selectedLanguage, "bond")}{" "}
+                      {t(selectedLanguage, "pet.bond")}{" "}
                       {pet.state.groupBond.toFixed(0)}
                     </p>
                   </button>
@@ -1930,17 +1932,17 @@ function App() {
                               {selectedDispatchPet.status}
                             </p>
                             <h2 className="type-heading">
-                              {t(selectedLanguage, "questionPetName")}
+                              {t(selectedLanguage, "pet.questionPet")}
                             </h2>
                             <p className="type-label">
-                              {t(selectedLanguage, "skill")}:{" "}
+                              {t(selectedLanguage, "pet.skill")}:{" "}
                               {selectedDispatchPet.skill || "—"}
                             </p>
                           </div>
                         </div>
                         <div className="pet-detail-section">
                           <p className="type-label pet-detail-kicker">
-                            {t(selectedLanguage, "originalQuestionPurpose")}
+                            {t(selectedLanguage, "pet.originalQuestionPurpose")}
                           </p>
                           <p className="type-body-large">
                             {selectedDispatchPet.question}
@@ -1948,7 +1950,7 @@ function App() {
                         </div>
                         <div className="pet-detail-section">
                           <h3 className="type-subheading">
-                            {t(selectedLanguage, "responses")}
+                            {t(selectedLanguage, "pet.responses")}
                           </h3>
                           <textarea
                             className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
@@ -1958,7 +1960,7 @@ function App() {
                             }
                             placeholder={t(
                               selectedLanguage,
-                              "shareIdeaPlaceholder",
+                              "pet.shareIdeaPlaceholder",
                             )}
                             maxLength={800}
                           />
@@ -1969,12 +1971,12 @@ function App() {
                               handlePostPetBoardResponse(selectedDispatchPet.id)
                             }
                           >
-                            {t(selectedLanguage, "postResponse")}
+                            {t(selectedLanguage, "pet.postResponse")}
                           </button>
                           <div className="pet-response-list">
                             {petBoardResponses.length === 0 ? (
                               <p className="type-caption pet-response-empty">
-                                {t(selectedLanguage, "noResponsesYet")}
+                                {t(selectedLanguage, "pet.noResponsesYet")}
                               </p>
                             ) : (
                               petBoardResponses.map((response) => (
@@ -2003,7 +2005,7 @@ function App() {
                           </div>
                         </div>
                         <p className="type-caption mt-4 opacity-80">
-                          {t(selectedLanguage, "localOnlyNotice")}
+                          {t(selectedLanguage, "pet.localOnlyNotice")}
                         </p>
                       </>
                     );
@@ -2011,7 +2013,7 @@ function App() {
                 : selectedNpcInfo && (
                     <>
                       <p className="text-sm">
-                        {t(selectedLanguage, "npcLabel")}
+                        {t(selectedLanguage, "sim.npcLabel")}
                       </p>
                       <h2 className="text-lg mb-3">{selectedNpcInfo.name}</h2>
                       <p className="text-sm mb-3">{selectedNpcInfo.role}</p>
@@ -2020,8 +2022,8 @@ function App() {
                       </p>
                       {appMode === "dispatch_observer" && (
                         <p className="text-sm mt-4">
-                          {t(selectedLanguage, "observerMode")} ·{" "}
-                          {t(selectedLanguage, "localOnlyNotice")}
+                          {t(selectedLanguage, "sim.observerMode")} ·{" "}
+                          {t(selectedLanguage, "pet.localOnlyNotice")}
                         </p>
                       )}
                     </>
@@ -2079,16 +2081,16 @@ function App() {
                 ×
               </button>
               <h2 className="text-lg mb-3">
-                {t(selectedLanguage, "dispatchArchive")}
+                {t(selectedLanguage, "pet.dispatchArchive")}
               </h2>
               <p className="text-sm mb-2">
-                {t(selectedLanguage, "active")}: {archiveSummary.active} ·{" "}
-                {t(selectedLanguage, "hibernating")}:{" "}
-                {archiveSummary.hibernating} · {t(selectedLanguage, "archived")}
+                {t(selectedLanguage, "pet.active")}: {archiveSummary.active} ·{" "}
+                {t(selectedLanguage, "pet.hibernating")}:{" "}
+                {archiveSummary.hibernating} · {t(selectedLanguage, "pet.archived")}
                 : {archiveSummary.archived}
               </p>
               <p className="text-sm">
-                {t(selectedLanguage, "localOnlyNotice")}
+                {t(selectedLanguage, "pet.localOnlyNotice")}
               </p>
             </section>
           )}
@@ -2116,28 +2118,28 @@ function App() {
                     {selectedPet.currentAction}
                   </p>
                   <h2 className="type-heading">
-                    {t(selectedLanguage, "questionPetName")}
+                    {t(selectedLanguage, "pet.questionPet")}
                   </h2>
                   <p className="type-label">
-                    {t(selectedLanguage, "status")}: {selectedPet.kind}
+                    {t(selectedLanguage, "pet.status")}: {selectedPet.kind}
                   </p>
                 </div>
               </div>
               <div className="pet-detail-section">
                 <p className="type-label pet-detail-kicker">
-                  {t(selectedLanguage, "originalQuestionPurpose")}
+                  {t(selectedLanguage, "pet.originalQuestionPurpose")}
                 </p>
                 <p className="type-body-large">{selectedPet.question.text}</p>
               </div>
               <div className="pet-detail-section">
                 <h3 className="type-subheading">
-                  {t(selectedLanguage, "responses")}
+                  {t(selectedLanguage, "pet.responses")}
                 </h3>
                 <textarea
                   className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
                   value={petResponse}
                   onChange={(event) => setPetResponse(event.target.value)}
-                  placeholder={t(selectedLanguage, "shareIdeaPlaceholder")}
+                  placeholder={t(selectedLanguage, "pet.shareIdeaPlaceholder")}
                   maxLength={800}
                 />
                 <button
@@ -2145,12 +2147,12 @@ function App() {
                   type="button"
                   onClick={() => handlePostPetBoardResponse(selectedPet.id)}
                 >
-                  {t(selectedLanguage, "postResponse")}
+                  {t(selectedLanguage, "pet.postResponse")}
                 </button>
                 <div className="pet-response-list">
                   {petBoardResponses.length === 0 ? (
                     <p className="type-caption pet-response-empty">
-                      {t(selectedLanguage, "noResponsesYet")}
+                      {t(selectedLanguage, "pet.noResponsesYet")}
                     </p>
                   ) : (
                     petBoardResponses.map((response) => (
@@ -2223,7 +2225,7 @@ function App() {
             </div>
           </div>
           <div className="world-split-content">
-            {splitPanel.kind === "wiki" ? (
+            {splitPanel.kind === "dialogue.openWiki" ? (
               (() => {
                 const wiki = getWikiLinksForInterviewee(splitPanel.persona.id);
                 return (
@@ -2233,7 +2235,7 @@ function App() {
                       {splitPanel.persona.intro}
                     </p>
                     {wiki.links.length === 0 ? (
-                      <p>{t(selectedLanguage, "noWikiLinks")}</p>
+                      <p>{t(selectedLanguage, "archive.noWikiLinks")}</p>
                     ) : (
                       wiki.links.map((link) => (
                         <button
