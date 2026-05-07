@@ -1546,3 +1546,386 @@
     gap: 12px;
   }
 }
+
+/* Tamagotchi interaction refactor: four fixed layers with isolated HUD/home/pet rules. */
+:root {
+  --z-layer-map: 1;
+  --z-layer-bubbles: 20;
+  --z-layer-dialogue: 200;
+  --z-layer-hud: 300;
+  --hud-safe-inline: calc(var(--safe-right) + (var(--control-size) * 2) + (var(--floating-gap) * 3));
+  --hud-safe-block: calc(var(--safe-top) + var(--control-size) + (var(--floating-gap) * 2));
+  --lcd-green: #d8e0a8;
+  --lcd-ink: #101610;
+  --lcd-mid: #59683f;
+}
+
+.pbs-interaction-root {
+  isolation: isolate;
+}
+
+.pbs-world-map-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-layer-map);
+  pointer-events: auto;
+}
+
+.pbs-interaction-root[data-modal-layer="open"] .pbs-world-map-layer {
+  pointer-events: auto;
+}
+
+.mobile-talk-prompt,
+.abao-speech-bubble,
+.archive-tree-menu,
+.question-status-panel,
+.question-response-panel,
+.mobile-stats-bar,
+.mobile-rules-drawer,
+.world-resonance-notice {
+  z-index: var(--z-layer-bubbles) !important;
+}
+
+.archive-tree-menu,
+.question-response-panel,
+.mobile-rules-drawer {
+  animation: tama-panel-in 160ms steps(3, end);
+}
+
+.rpg-dialogue-overlay,
+.world-split-panel {
+  z-index: var(--z-layer-dialogue) !important;
+  animation: tama-panel-in 180ms steps(4, end);
+}
+
+.rpg-dialogue-overlay {
+  padding: var(--hud-safe-block) var(--hud-safe-inline) max(22px, var(--safe-bottom)) max(22px, var(--safe-left)) !important;
+  pointer-events: none;
+}
+
+.rpg-dialogue-panel {
+  width: min(1120px, calc(100vw - var(--hud-safe-inline) - max(22px, var(--safe-left)))) !important;
+  height: min(76vh, 720px) !important;
+  min-width: 0 !important;
+  pointer-events: auto;
+}
+
+.world-split-panel {
+  top: var(--hud-safe-block) !important;
+  right: var(--hud-safe-inline) !important;
+  max-width: min(760px, calc(100vw - var(--hud-safe-inline) - max(18px, var(--safe-left)))) !important;
+  max-height: calc(100dvh - var(--hud-safe-block) - max(18px, var(--safe-bottom))) !important;
+  pointer-events: auto;
+}
+
+.world-split-panel.is-expanded {
+  inset: var(--hud-safe-block) var(--hud-safe-inline) max(18px, var(--safe-bottom)) max(18px, var(--safe-left)) !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.floating-ui-layer,
+.hud-ui-layer {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--floating-gap));
+  z-index: var(--z-layer-hud) !important;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--floating-gap);
+  pointer-events: none;
+}
+
+.floating-ui-layer {
+  left: calc(var(--safe-left) + var(--floating-gap));
+  right: auto;
+  justify-content: flex-start;
+  max-width: min(260px, calc(100vw - var(--safe-left) - var(--safe-right) - 16px));
+}
+
+.hud-ui-layer {
+  right: calc(var(--safe-right) + var(--floating-gap));
+  left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(340px, calc(100vw - var(--safe-left) - var(--safe-right) - 16px));
+}
+
+.floating-ui-layer > *,
+.floating-ui-layer button,
+.hud-ui-layer > *,
+.hud-ui-layer button {
+  pointer-events: auto;
+}
+
+.floating-ui-layer .global-language-menu,
+.hud-ui-layer .map-zoom-controls,
+.hud-ui-layer .observer-close {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+}
+
+.floating-ui-layer .global-language-menu {
+  align-items: flex-start;
+}
+
+.global-language-options {
+  left: 0;
+  right: auto;
+}
+
+.hud-ui-layer .map-zoom-controls {
+  order: 2;
+}
+
+.hud-ui-layer .observer-close {
+  order: 1;
+  width: var(--control-size);
+  height: var(--control-size);
+}
+
+.hud-ui-layer .map-zoom-controls button,
+.floating-ui-layer .global-language-trigger {
+  width: var(--control-size);
+  min-width: var(--control-size);
+  min-height: var(--control-size);
+}
+
+.world-split-toolbar,
+.question-response-panel,
+.mobile-rules-drawer,
+.rpg-dialogue-header {
+  padding-right: 14px !important;
+}
+
+.question-response-panel > button.float-right,
+.mobile-rules-drawer > button.float-right {
+  margin-right: 0 !important;
+}
+
+@keyframes tama-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Homepage: fixed-width handheld composition instead of stretched form. */
+.player-setup-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+  padding: max(34px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom));
+}
+
+.player-setup-shell {
+  width: min(1120px, 100%);
+  color: var(--tama-ink, #101610);
+}
+
+.player-setup-header {
+  max-width: 760px;
+  margin: 0 auto 26px;
+  text-align: center;
+}
+
+.player-setup-kicker {
+  margin: 0 0 10px;
+  font-size: clamp(16px, 1.6vw, 22px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.player-setup-title {
+  margin: 0 0 14px;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 0.95;
+}
+
+.player-setup-description {
+  margin: 0 auto;
+  max-width: 720px;
+  font-size: clamp(18px, 2vw, 25px);
+  line-height: 1.45;
+}
+
+.player-setup-console {
+  display: grid;
+  grid-template-columns: minmax(320px, 460px) minmax(360px, 520px);
+  gap: 34px;
+  align-items: stretch;
+}
+
+.player-setup-controls,
+.question-hatch-device {
+  border: 4px solid var(--lcd-ink);
+  background: color-mix(in srgb, var(--palette-cream) 88%, white 12%);
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--palette-blue) 55%, var(--lcd-ink) 45%);
+}
+
+.player-setup-controls {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 3vw, 36px);
+}
+
+.player-setup-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: clamp(17px, 1.7vw, 22px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.player-setup-field {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  color: var(--lcd-ink);
+  background: var(--lcd-green);
+  border: 3px solid var(--lcd-ink);
+  border-radius: 0;
+  outline: none;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.35;
+  box-shadow: inset 3px 3px 0 color-mix(in srgb, var(--lcd-mid) 42%, transparent);
+}
+
+.player-setup-textarea-large {
+  min-height: 132px;
+}
+
+.player-setup-textarea {
+  min-height: 98px;
+}
+
+.question-hatch-device {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 520px;
+  padding: clamp(24px, 3vw, 40px);
+  text-align: center;
+}
+
+.question-hatch-screen {
+  display: grid;
+  place-items: center;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  margin: 18px auto;
+  background: var(--lcd-green);
+  border: 5px solid var(--lcd-ink);
+  box-shadow: inset 5px 5px 0 color-mix(in srgb, var(--lcd-mid) 50%, transparent);
+}
+
+.question-hatch-egg {
+  display: grid;
+  place-items: center;
+  width: 156px;
+  height: 188px;
+  color: var(--lcd-ink);
+  background: var(--lcd-green);
+  border: 5px solid var(--lcd-ink);
+  border-radius: 48% 48% 44% 44%;
+  font-size: 72px;
+  animation: tama-egg-wobble 1.2s steps(2, end) infinite;
+}
+
+.pet-card-label,
+.question-hatch-status {
+  margin: 0;
+  color: var(--lcd-ink);
+  font-size: clamp(16px, 1.5vw, 21px);
+  line-height: 1.35;
+}
+
+.player-setup-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: auto;
+  padding: 18px 22px;
+  border: 4px solid var(--lcd-ink) !important;
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.player-setup-action.is-booting {
+  animation: tama-border-blink 700ms steps(2, end) infinite;
+}
+
+.pixel-spinner {
+  width: 12px;
+  height: 12px;
+  background: var(--lcd-ink);
+  box-shadow: 18px 0 0 var(--lcd-ink), 36px 0 0 var(--lcd-ink);
+  animation: tama-spinner 800ms steps(3, end) infinite;
+}
+
+@keyframes tama-spinner {
+  0% { opacity: 0.25; }
+  33% { opacity: 0.55; }
+  66%, 100% { opacity: 1; }
+}
+
+@keyframes tama-border-blink {
+  50% { box-shadow: 0 0 0 4px var(--lcd-green), var(--shadow-pixel); }
+}
+
+@keyframes tama-egg-wobble {
+  50% { transform: translateX(4px) rotate(2deg); }
+}
+
+/* Pets: LCD matrix instead of smooth/vector pixel art. */
+.question-pet-preview {
+  background: var(--lcd-green) !important;
+  border: 0 !important;
+  image-rendering: pixelated;
+}
+
+.question-pet-preview span {
+  border-radius: 0 !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  :root {
+    --hud-safe-inline: calc(var(--safe-right) + var(--control-size) + (var(--floating-gap) * 2));
+  }
+
+  .rpg-dialogue-overlay {
+    padding: calc(var(--safe-top) + 72px) 12px max(12px, var(--safe-bottom)) !important;
+    align-items: center !important;
+  }
+
+  .rpg-dialogue-panel {
+    width: min(100%, 560px) !important;
+    height: min(78dvh, 680px) !important;
+  }
+
+  .world-split-panel,
+  .world-split-panel.is-expanded {
+    inset: calc(var(--safe-top) + 72px) 10px max(10px, var(--safe-bottom)) 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  .player-setup-console {
+    grid-template-columns: 1fr;
+  }
+
+  .question-hatch-device {
+    min-height: 360px;
+  }
+}

@@ -18,99 +18,243 @@ export interface QuestionPetAppearance {
 }
 
 const bodyTypes = [
-  "roundBlob",
-  "ovalEgg",
-  "softBlock",
-  "seedBody",
-  "teardrop",
-  "doubleLobed",
-  "antennaCreature",
-  "wingSide",
-  "tinyMushroom",
-  "longBean",
+  "tamaEgg",
+  "beanGhost",
+  "blockBuddy",
+  "wideToad",
+  "bellSprite",
+  "longSeed",
+  "oddGourd",
+  "shellBug",
 ];
-const eyeTypes = ["dot", "sleepy", "wide", "mismatch", "spark"];
-const mouthTypes = ["open", "line", "surprised", "none", "crooked"];
+const eyeTypes = ["dot", "sleep", "oneBig", "mismatch", "blankGap"];
+const mouthTypes = ["none", "dash", "o", "fang", "offset"];
 const accessoryTypes = [
-  "questionAntenna",
-  "leafSprout",
-  "horn",
-  "tinyFin",
-  "sideEars",
-  "tailNub",
-  "floatingDot",
-  "haloPixel",
-  "blushDots",
-  "lopsidedEar",
-  "tinyCrown",
+  "none",
+  "singleAntenna",
+  "cornerEar",
+  "sprout",
+  "tailBit",
+  "crownTicks",
+  "sideKnob",
+  "questionBead",
 ];
 
 type Palette = QuestionPetAppearance["palette"];
+type Stamp = readonly string[];
 
-const tamaPalettes: Palette[] = [
-  {
-    primary: "#FCF46B",
-    secondary: "#F9E9C2",
-    accent: "#69C3AA",
-    outline: "#000000",
-  },
-  {
-    primary: "#BAC3D9",
-    secondary: "#FFD4FF",
-    accent: "#FCF46B",
-    outline: "#000000",
-  },
-  {
-    primary: "#FFD4FF",
-    secondary: "#F9E9C2",
-    accent: "#BAC3D9",
-    outline: "#000000",
-  },
-];
+const lcdPalette: Palette = {
+  primary: "#1f2a1e",
+  secondary: "#d8e0a8",
+  accent: "#59683f",
+  outline: "#101610",
+};
 
-function pickPalette(seed: number): Palette {
-  return tamaPalettes[seed % tamaPalettes.length];
-}
+const bodyStamps: Record<string, Stamp> = {
+  tamaEgg: [
+    "....111.....",
+    "...11111....",
+    "..1111111...",
+    ".111111111..",
+    ".111111111..",
+    ".111111111..",
+    "..1111111...",
+    "..1111111...",
+    "...11111....",
+    "...11.11....",
+  ],
+  beanGhost: [
+    "...1111.....",
+    "..111111....",
+    ".11111111...",
+    ".111111111..",
+    ".111111111..",
+    "..11111111..",
+    "..1111111...",
+    "..111111....",
+    ".111.111....",
+    ".11...11....",
+  ],
+  blockBuddy: [
+    "..1111111...",
+    ".111111111..",
+    ".111111111..",
+    ".111111111..",
+    ".111111111..",
+    ".111111111..",
+    ".111111111..",
+    "..1111111...",
+    "..11...11...",
+    "..11...11...",
+  ],
+  wideToad: [
+    ".............",
+    "..111...111..",
+    ".11111111111.",
+    "1111111111111",
+    "1111111111111",
+    ".11111111111.",
+    ".11111111111.",
+    "..111111111..",
+    ".1111...1111.",
+    ".11.......11.",
+  ],
+  bellSprite: [
+    "....111.....",
+    "...11111....",
+    "...11111....",
+    "..1111111...",
+    ".111111111..",
+    ".111111111..",
+    "11111111111.",
+    "11111111111.",
+    "..11...11...",
+    ".11.....11..",
+  ],
+  longSeed: [
+    "....111.....",
+    "...1111.....",
+    "...11111....",
+    "..111111....",
+    "..1111111...",
+    "..1111111...",
+    "...111111...",
+    "...11111....",
+    "....1111....",
+    "....11.11...",
+  ],
+  oddGourd: [
+    "...111......",
+    "..11111.....",
+    "..11111.....",
+    "...111111...",
+    "..11111111..",
+    ".111111111..",
+    ".111111111..",
+    "..1111111...",
+    "..11..111...",
+    ".11....11...",
+  ],
+  shellBug: [
+    ".............",
+    "...11111....",
+    "..1111111...",
+    ".111111111..",
+    "11111111111.",
+    "11111111111.",
+    ".111111111..",
+    "..1111111...",
+    ".11.111.11..",
+    "11.......11.",
+  ],
+};
 
-function inBody(bodyType: string, x: number, y: number): boolean {
-  const dx = x - 7.5;
-  const dy = y - 8;
-  if (bodyType === "roundBlob") return (dx * dx) / 31 + (dy * dy) / 27 <= 1;
-  if (bodyType === "ovalEgg")
-    return (dx * dx) / 22 + ((y - 8.5) * (y - 8.5)) / 36 <= 1;
-  if (bodyType === "softBlock")
-    return (
-      x >= 4 &&
-      x <= 11 &&
-      y >= 4 &&
-      y <= 13 &&
-      !((x === 4 || x === 11) && (y === 4 || y === 13))
-    );
-  if (bodyType === "seedBody")
-    return (dx * dx) / 20 + ((y - 9) * (y - 9)) / 30 <= 1 && !(x < 5 && y < 6);
-  if (bodyType === "teardrop")
-    return (dx * dx) / (14 + y) + ((y - 9) * (y - 9)) / 30 <= 1 && y >= 3;
-  if (bodyType === "doubleLobed")
-    return (
-      (x - 5.5) ** 2 / 14 + (y - 8) ** 2 / 24 <= 1 ||
-      (x - 9.5) ** 2 / 14 + (y - 8) ** 2 / 24 <= 1
-    );
-  if (bodyType === "wingSide")
-    return (
-      (dx * dx) / 22 + (dy * dy) / 28 <= 1 ||
-      ((x === 2 || x === 13) && y >= 7 && y <= 10)
-    );
-  if (bodyType === "tinyMushroom")
-    return (
-      (y >= 4 && y <= 8 && (dx * dx) / 28 + (y - 7) ** 2 / 11 <= 1) ||
-      (x >= 6 && x <= 9 && y >= 8 && y <= 13)
-    );
-  if (bodyType === "longBean") return (dx * dx) / 15 + (y - 8.5) ** 2 / 38 <= 1;
-  return (dx * dx) / 25 + (dy * dy) / 30 <= 1;
+function stamp(
+  grid: number[][],
+  pattern: Stamp,
+  ox: number,
+  oy: number,
+  value: number,
+): void {
+  pattern.forEach((row, y) => {
+    [...row].forEach((cell, x) => {
+      if (cell === "1") set(grid, ox + x, oy + y, value);
+    });
+  });
 }
 
 function set(grid: number[][], x: number, y: number, value: number): void {
   if (x >= 0 && x < 16 && y >= 0 && y < 16) grid[y][x] = value;
+}
+
+function clear(grid: number[][], x: number, y: number): void {
+  set(grid, x, y, 0);
+}
+
+function addEyes(grid: number[][], eyeType: string, seed: number): void {
+  const y = seed % 3 === 0 ? 7 : 8;
+  if (eyeType === "sleep") {
+    set(grid, 5, y, 1);
+    set(grid, 6, y, 1);
+    set(grid, 10, y, 1);
+    set(grid, 11, y, 1);
+  } else if (eyeType === "oneBig") {
+    set(grid, 5, y, 1);
+    set(grid, 6, y, 1);
+    set(grid, 10, y, 1);
+    set(grid, 10, y + 1, 1);
+    clear(grid, 6, y + 1);
+  } else if (eyeType === "mismatch") {
+    set(grid, 5, y, 1);
+    set(grid, 10, y - 1, 1);
+    set(grid, 11, y, 1);
+  } else if (eyeType === "blankGap") {
+    clear(grid, 5, y);
+    clear(grid, 10, y);
+    set(grid, 6, y, 1);
+    set(grid, 11, y, 1);
+  } else {
+    set(grid, 5, y, 1);
+    set(grid, 10, y, 1);
+  }
+}
+
+function addMouth(grid: number[][], mouthType: string): void {
+  if (mouthType === "dash") {
+    set(grid, 7, 11, 1);
+    set(grid, 8, 11, 1);
+  }
+  if (mouthType === "o") {
+    set(grid, 8, 10, 1);
+    set(grid, 7, 11, 1);
+    set(grid, 8, 12, 1);
+  }
+  if (mouthType === "fang") {
+    set(grid, 7, 11, 1);
+    set(grid, 9, 11, 1);
+    set(grid, 8, 12, 1);
+  }
+  if (mouthType === "offset") {
+    set(grid, 6, 11, 1);
+    set(grid, 7, 12, 1);
+  }
+}
+
+function addAccessory(grid: number[][], accessoryType: string): void {
+  if (accessoryType === "singleAntenna") {
+    set(grid, 8, 3, 1);
+    set(grid, 8, 2, 1);
+    set(grid, 9, 1, 1);
+  }
+  if (accessoryType === "cornerEar") {
+    set(grid, 4, 4, 1);
+    set(grid, 3, 3, 1);
+    set(grid, 2, 3, 1);
+  }
+  if (accessoryType === "sprout") {
+    set(grid, 7, 3, 1);
+    set(grid, 8, 2, 1);
+    set(grid, 9, 3, 1);
+  }
+  if (accessoryType === "tailBit") {
+    set(grid, 13, 10, 1);
+    set(grid, 14, 10, 1);
+    set(grid, 14, 9, 1);
+  }
+  if (accessoryType === "crownTicks") {
+    set(grid, 5, 4, 1);
+    set(grid, 7, 3, 1);
+    set(grid, 9, 4, 1);
+  }
+  if (accessoryType === "sideKnob") {
+    set(grid, 2, 8, 1);
+    set(grid, 13, 7, 1);
+  }
+  if (accessoryType === "questionBead") {
+    set(grid, 12, 3, 1);
+    set(grid, 13, 2, 1);
+    set(grid, 12, 1, 1);
+  }
 }
 
 export function makePetSeed(question: string, nonce = Date.now()): string {
@@ -132,132 +276,18 @@ export function generateQuestionPet(
   const mouthType = mouthTypes[Math.floor(rng() * mouthTypes.length)];
   const accessoryType =
     accessoryTypes[Math.floor(rng() * accessoryTypes.length)];
-  const palette = pickPalette(seed);
   const grid = Array.from({ length: 16 }, () =>
     Array.from({ length: 16 }, () => 0),
   );
 
-  for (let y = 0; y < 16; y++) {
-    for (let x = 0; x < 16; x++) {
-      if (!inBody(bodyType, x, y)) continue;
-      const edge =
-        !inBody(bodyType, x - 1, y) ||
-        !inBody(bodyType, x + 1, y) ||
-        !inBody(bodyType, x, y - 1) ||
-        !inBody(bodyType, x, y + 1);
-      grid[y][x] = edge ? 1 : (x + y + seed) % 7 === 0 ? 3 : 2;
-    }
-  }
+  stamp(grid, bodyStamps[bodyType], seed % 2 === 0 ? 2 : 3, 4, 1);
+  addEyes(grid, eyeType, seed);
+  addMouth(grid, mouthType);
+  addAccessory(grid, accessoryType);
 
-  const eyeY = bodyType === "teardrop" ? 7 : 8;
-  const eyes =
-    eyeType === "mismatch"
-      ? [
-          [6, eyeY, 1],
-          [10, eyeY, 2],
-        ]
-      : [
-          [6, eyeY, 1],
-          [10, eyeY, 1],
-        ];
-  for (const [x, y, h] of eyes) {
-    if (eyeType === "sleepy") {
-      set(grid, x - 1, y, 1);
-      set(grid, x, y, 1);
-    } else if (eyeType === "wide") {
-      set(grid, x, y, 1);
-      set(grid, x, y + 1, 1);
-    } else if (eyeType === "spark") {
-      set(grid, x, y, 1);
-      set(grid, x - 1, y, 3);
-    } else {
-      for (let dy = 0; dy < h; dy++) set(grid, x, y + dy, 1);
-    }
-  }
-  if (mouthType === "line") {
-    set(grid, 7, 11, 1);
-    set(grid, 8, 11, 1);
-  }
-  if (mouthType === "open") {
-    set(grid, 8, 11, 1);
-    set(grid, 8, 12, 1);
-  }
-  if (mouthType === "surprised") {
-    set(grid, 8, 11, 1);
-    set(grid, 7, 11, 1);
-    set(grid, 8, 12, 1);
-  }
-  if (mouthType === "crooked") {
-    set(grid, 7, 11, 1);
-    set(grid, 9, 12, 1);
-  }
-
-  // Tamagotchi-ish tiny feet and a black baseline make the creature read as a pet,
-  // not just a random pixel cloud.
-  const footY = bodyType === "tinyMushroom" ? 14 : 13;
-  set(grid, 5, footY, 1);
-  set(grid, 6, footY, 1);
-  set(grid, 10, footY, 1);
-  set(grid, 11, footY, 1);
-  if (bodyType !== "longBean") {
-    set(grid, 4, footY - 1, 1);
-    set(grid, 12, footY - 1, 1);
-  }
-
-  if (accessoryType === "questionAntenna") {
-    set(grid, 8, 3, 1);
-    set(grid, 9, 2, 1);
-    set(grid, 10, 2, 1);
-    set(grid, 9, 1, 1);
-  }
-  if (accessoryType === "leafSprout") {
-    set(grid, 7, 3, 3);
-    set(grid, 8, 2, 3);
-    set(grid, 9, 3, 3);
-  }
-  if (accessoryType === "horn") {
-    set(grid, 6, 3, 1);
-    set(grid, 9, 3, 1);
-  }
-  if (accessoryType === "tinyFin") {
-    set(grid, 13, 8, 3);
-    set(grid, 14, 7, 3);
-    set(grid, 14, 9, 3);
-  }
-  if (accessoryType === "sideEars") {
-    set(grid, 3, 7, 3);
-    set(grid, 12, 7, 3);
-  }
-  if (accessoryType === "tailNub") {
-    set(grid, 12, 11, 3);
-    set(grid, 13, 11, 1);
-  }
-  if (accessoryType === "floatingDot") {
-    set(grid, 12, 3, 3);
-    set(grid, 13, 2, 1);
-  }
-  if (accessoryType === "haloPixel") {
-    set(grid, 6, 2, 3);
-    set(grid, 7, 2, 3);
-    set(grid, 8, 2, 3);
-    set(grid, 9, 2, 3);
-  }
-  if (accessoryType === "blushDots") {
-    set(grid, 4, 10, 3);
-    set(grid, 11, 10, 3);
-  }
-  if (accessoryType === "lopsidedEar") {
-    set(grid, 3, 6, 3);
-    set(grid, 2, 5, 1);
-  }
-  if (accessoryType === "tinyCrown") {
-    set(grid, 6, 3, 3);
-    set(grid, 8, 2, 3);
-    set(grid, 10, 3, 3);
-  }
-
-  if (seed % 2 === 0) set(grid, 11, 5, 3);
-  if (seed % 5 === 0) set(grid, 4, 12, 1);
+  if (seed % 4 === 0) clear(grid, 4, 9);
+  if (seed % 6 === 0) set(grid, 11, 6, 1);
+  if (seed % 7 === 0) clear(grid, 9, 12);
 
   return {
     seed,
@@ -266,7 +296,7 @@ export function generateQuestionPet(
     eyeType,
     mouthType,
     accessoryType,
-    palette,
+    palette: lcdPalette,
     sprite16: grid,
   };
 }
