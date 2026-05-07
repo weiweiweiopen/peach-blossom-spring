@@ -1,11 +1,13 @@
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import de from "./locales/de.js";
 import en from "./locales/en.js";
+import id from "./locales/id.js";
 import ja from "./locales/ja.js";
 import th from "./locales/th.js";
 import zhTW from "./locales/zh-TW.js";
 
-export type LanguageCode = "zh-TW" | "en" | "ja" | "th";
+export type LanguageCode = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
 export type TextDirection = "ltr" | "rtl";
 export type LocaleMessages = typeof zhTW;
 
@@ -32,6 +34,8 @@ export const supportedLanguages: Array<{
 }> = [
   { code: "zh-TW", nativeName: "繁體中文", shortCode: "ZH", dir: "ltr" },
   { code: "en", nativeName: "English", shortCode: "EN", dir: "ltr" },
+  { code: "id", nativeName: "Bahasa Indonesia", shortCode: "ID", dir: "ltr" },
+  { code: "de", nativeName: "Deutsch", shortCode: "DE", dir: "ltr" },
   { code: "ja", nativeName: "日本語", shortCode: "JA", dir: "ltr" },
   { code: "th", nativeName: "ไทย", shortCode: "TH", dir: "ltr" },
 ];
@@ -43,6 +47,8 @@ const supportedLanguageCodes = new Set<LanguageCode>(
 export const locales: Record<LanguageCode, LocaleMessages> = {
   "zh-TW": zhTW,
   en,
+  id,
+  de,
   ja,
   th,
 };
