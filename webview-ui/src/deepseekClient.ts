@@ -1,7 +1,7 @@
 // Knowledge layer (Pre-WorkAdventure design):
 // Build a per-persona KnowledgeBase from data/personas.json + language-specific
-// docs/transcripts_en and docs/transcripts_zh markdown at build time, then feed
-// the current language slice to DeepSeek as the system prompt.
+// docs/transcripts_en and docs/transcripts_zh markdown when dialogue needs it,
+// then feed the current language slice to DeepSeek as the system prompt.
 //
 // The transcripts are bilingual NGM interview Q&A in Markdown; this module
 // keeps the prompt well-formed by:
@@ -41,32 +41,37 @@ interface PersonaShape {
   responses: Record<string, string>;
 }
 
-// Eagerly inline the language-specific transcript markdown at build time.
+// Keep transcript markdown in split lazy chunks so initial page load does not
+// pull every LLM source file before the player talks to an NPC.
+type TranscriptModuleLoader = () => Promise<string>;
+
 const transcriptEnModules = import.meta.glob('../../docs/transcripts_en/*.md', {
   query: '?raw',
   import: 'default',
-  eager: true,
-}) as Record<string, string>;
+}) as Record<string, TranscriptModuleLoader>;
 
 const transcriptZhModules = import.meta.glob('../../docs/transcripts_zh/*.md', {
   query: '?raw',
   import: 'default',
-  eager: true,
-}) as Record<string, string>;
+}) as Record<string, TranscriptModuleLoader>;
 
-const transcriptEnByPersonaId: Record<string, string> = {};
-const transcriptZhByPersonaId: Record<string, string> = {};
-for (const [filepath, contents] of Object.entries(transcriptEnModules)) {
-  const match = /\/([^/]+)\.md$/.exec(filepath);
-  if (match) {
-    transcriptEnByPersonaId[match[1]] = contents;
+function modulesByPersonaId(modules: Record<string, TranscriptModuleLoader>): Record<string, TranscriptModuleLoader> {
+  const byPersonaId: Record<string, TranscriptModuleLoader> = {};
+  for (const [filepath, loader] of Object.entries(modules)) {
+    const match = /\/([^/]+)\.md$/.exec(filepath);
+    if (match) {
+      byPersonaId[match[1]] = loader;
+    }
   }
+  return byPersonaId;
 }
-for (const [filepath, contents] of Object.entries(transcriptZhModules)) {
-  const match = /\/([^/]+)\.md$/.exec(filepath);
-  if (match) {
-    transcriptZhByPersonaId[match[1]] = contents;
-  }
+
+const transcriptEnByPersonaId = modulesByPersonaId(transcriptEnModules);
+const transcriptZhByPersonaId = modulesByPersonaId(transcriptZhModules);
+
+async function loadTranscript(loaders: Record<string, TranscriptModuleLoader>, personaId: string): Promise<string> {
+  const load = loaders[personaId];
+  return load ? await load() : '';
 }
 
 function extractKnowledgePoints(transcript: string): string[] {
@@ -106,9 +111,7 @@ function trimMessage(raw: string): string {
   return `${raw.slice(0, SYSTEM_MESSAGE_CHAR_BUDGET)}\n\n[…prompt truncated to fit proxy limit]`;
 }
 
-export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
-  const transcriptEnRaw = transcriptEnByPersonaId[persona.id] ?? '';
-  const transcriptZhRaw = transcriptZhByPersonaId[persona.id] ?? '';
+function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, transcriptZhRaw: string): KnowledgeBase {
   const transcript_en = trimTranscript(transcriptEnRaw);
   const transcript_zh = trimTranscript(transcriptZhRaw);
   const knowledge = extractKnowledgePoints(transcript_en || transcript_zh);
@@ -131,6 +134,18 @@ export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
     wikiLinks: getWikiLinksForInterviewee(persona.id).links,
     responses: persona.responses,
   };
+}
+
+export function buildKnowledgeBase(persona: PersonaShape): KnowledgeBase {
+  return makeBaseKnowledge(persona, '', '');
+}
+
+export async function loadKnowledgeBase(persona: PersonaShape): Promise<KnowledgeBase> {
+  const [transcriptEnRaw, transcriptZhRaw] = await Promise.all([
+    loadTranscript(transcriptEnByPersonaId, persona.id),
+    loadTranscript(transcriptZhByPersonaId, persona.id),
+  ]);
+  return makeBaseKnowledge(persona, transcriptEnRaw, transcriptZhRaw);
 }
 
 export async function askDeepSeekPersona({
