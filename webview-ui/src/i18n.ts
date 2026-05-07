@@ -103,7 +103,22 @@ type TranslationKey =
   | "sendFieldNote"
   | "fieldNotePlaceholder"
   | "zoomIn"
-  | "zoomOut";
+  | "zoomOut"
+  | "questionPetName"
+  | "questionPetKeeper"
+  | "questionPetSim"
+  | "tick"
+  | "energy"
+  | "stress"
+  | "bond"
+  | "originalQuestionPurpose"
+  | "responses"
+  | "shareIdeaPlaceholder"
+  | "postResponse"
+  | "noResponsesYet"
+  | "npcLabel"
+  | "loadingExpedition"
+  | "rotateHint";
 
 type TranslationTable = Record<
   LanguageCode,
@@ -230,6 +245,21 @@ const translations: TranslationTable = {
     fieldNotePlaceholder: "寫一則短田野筆記...",
     zoomIn: "放大",
     zoomOut: "縮小",
+    questionPetName: "問題電子雞",
+    questionPetKeeper: "問題電子雞飼主",
+    questionPetSim: "問題電子雞 SIM",
+    tick: "刻",
+    energy: "能量",
+    stress: "壓力",
+    bond: "連結",
+    originalQuestionPurpose: "原始問題 / 目的",
+    responses: "回應",
+    shareIdeaPlaceholder: "分享一個想法、線索或回覆…",
+    postResponse: "送出回應",
+    noResponsesYet: "還沒有回應。",
+    npcLabel: "人物",
+    loadingExpedition: "遠征載入中...",
+    rotateHint: "旋轉 (R)",
   },
   en: {
     languageLabel: "Language",
@@ -256,13 +286,13 @@ const translations: TranslationTable = {
     skillsLabel: "What skills do I have?",
     skillsPlaceholder:
       "For example: field research, open hardware, curation, community organizing, textiles, coding.",
-    enterWorld: "Enter Peach Blossom Spring",
-    sendOnExpedition: "Send the Mr. WHY",
+    enterWorld: "桃花源に入る",
+    sendOnExpedition: "why星人を派遣",
     movementHint:
-      "Use arrow keys or WASD to move. On mobile, drag from the lower-left thumb circle. Hold Shift to sprint.",
-    pressSpaceToTalk: "Tap to talk",
-    wanderAndTalk: "Wander and talk",
-    archiveTree: "Archive Tree",
+      "方向キーまたは WASD で移動。スマホでは左下の親指サークルをドラッグ。Shift 長押しで速く移動。",
+    pressSpaceToTalk: "タップして話す",
+    wanderAndTalk: "散策と会話",
+    archiveTree: "アーカイブの木",
     archiveTitle: "Central Tree",
     archiveDescription: "",
     archiveNewsTitle: "Latest News",
@@ -350,6 +380,21 @@ const translations: TranslationTable = {
     fieldNotePlaceholder: "Write a short field note...",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
+    questionPetName: "Question Pet",
+    questionPetKeeper: "Question Pet Keeper",
+    questionPetSim: "Question Pet SIM",
+    tick: "tick",
+    energy: "energy",
+    stress: "stress",
+    bond: "bond",
+    originalQuestionPurpose: "Original question / purpose",
+    responses: "Responses",
+    shareIdeaPlaceholder: "Share an idea, clue, or reply…",
+    postResponse: "Post response",
+    noResponsesYet: "No responses yet.",
+    npcLabel: "NPC",
+    loadingExpedition: "Loading expedition...",
+    rotateHint: "Rotate (R)",
   },
   th: {
     languageLabel: "ภาษา",
@@ -470,19 +515,34 @@ const translations: TranslationTable = {
     fieldNotePlaceholder: "เขียนบันทึกสั้น ๆ...",
     zoomIn: "ขยาย",
     zoomOut: "ย่อ",
+    questionPetName: "สัตว์คำถาม",
+    questionPetKeeper: "ผู้ดูแลสัตว์คำถาม",
+    questionPetSim: "SIM สัตว์คำถาม",
+    tick: "จังหวะ",
+    energy: "พลังงาน",
+    stress: "ความเครียด",
+    bond: "สายสัมพันธ์",
+    originalQuestionPurpose: "คำถาม / เป้าหมายเดิม",
+    responses: "คำตอบ",
+    shareIdeaPlaceholder: "แบ่งปันไอเดีย เบาะแส หรือคำตอบ…",
+    postResponse: "ส่งคำตอบ",
+    noResponsesYet: "ยังไม่มีคำตอบ",
+    npcLabel: "ตัวละคร",
+    loadingExpedition: "กำลังโหลดการเดินทาง...",
+    rotateHint: "หมุน (R)",
   },
   ja: {
     languageLabel: "言語",
     ngmLabel: "Non-Governmental Matters",
-    loginTitle: "Peach Blossom Spring: Dispatching a Thinking Life Simulator",
-    loginSubtitle: "Japanese UI coming soon",
+    loginTitle: "桃花源：考える生命シミュレーター派遣",
+    loginSubtitle: "Non-Governmental Matters のインタラクティブな寓話世界",
     loginDescription:
-      "Japanese localization is not ready yet. The game will currently fall back to English content.",
-    createProtagonist: "Create your protagonist",
-    createTraveler: "Create your isekai traveler",
-    nameLabel: "Name",
-    namePlaceholder: "Enter your traveler name",
-    roleLabel: "Current role",
+      "外の世界から少し切り離された不思議な友人たちが、音楽や実験を続けている寓話的な場所です。ここで対話し、ユートピアをつくる方法の断片を集めてください。",
+    createProtagonist: "主人公を作成",
+    createTraveler: "異世界の旅人を作成",
+    nameLabel: "名前",
+    namePlaceholder: "旅人の名前を入力",
+    roleLabel: "現在の役割",
     rolePlaceholder:
       "Independent researcher, artist, engineer, village summoner...",
     missionLabel: "What do I want?",
@@ -495,13 +555,13 @@ const translations: TranslationTable = {
     skillsLabel: "What skills do I have?",
     skillsPlaceholder:
       "For example: field research, open hardware, curation, community organizing, textiles, coding.",
-    enterWorld: "Enter Peach Blossom Spring",
-    sendOnExpedition: "Send the Mr. WHY",
+    enterWorld: "桃花源に入る",
+    sendOnExpedition: "why星人を派遣",
     movementHint:
-      "Use arrow keys or WASD to move. On mobile, drag from the lower-left thumb circle. Hold Shift to sprint.",
-    pressSpaceToTalk: "Tap to talk",
-    wanderAndTalk: "Wander and talk",
-    archiveTree: "Archive Tree",
+      "方向キーまたは WASD で移動。スマホでは左下の親指サークルをドラッグ。Shift 長押しで速く移動。",
+    pressSpaceToTalk: "タップして話す",
+    wanderAndTalk: "散策と会話",
+    archiveTree: "アーカイブの木",
     archiveTitle: "中央の木",
     archiveDescription: "",
     archiveNewsTitle: "最新ニュース",
@@ -587,8 +647,23 @@ const translations: TranslationTable = {
     skill: "Skill",
     sendFieldNote: "Leave field note",
     fieldNotePlaceholder: "Write a short field note...",
-    zoomIn: "Zoom in",
-    zoomOut: "Zoom out",
+    zoomIn: "拡大",
+    zoomOut: "縮小",
+    questionPetName: "質問ペット",
+    questionPetKeeper: "質問ペットの飼い主",
+    questionPetSim: "質問ペット SIM",
+    tick: "tick",
+    energy: "エネルギー",
+    stress: "ストレス",
+    bond: "きずな",
+    originalQuestionPurpose: "元の問い / 目的",
+    responses: "返信",
+    shareIdeaPlaceholder: "アイデア、手がかり、返信を共有…",
+    postResponse: "返信を投稿",
+    noResponsesYet: "まだ返信はありません。",
+    npcLabel: "人物",
+    loadingExpedition: "遠征を読み込み中...",
+    rotateHint: "回転 (R)",
   },
 };
 

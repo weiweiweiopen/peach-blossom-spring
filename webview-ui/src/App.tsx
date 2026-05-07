@@ -157,10 +157,6 @@ function trimToFiftyChars(text: string): string {
   return text.length > 50 ? `${text.slice(0, 50)}...` : text;
 }
 
-function languageLabel(language: LanguageCode, zh: string, en: string): string {
-  return language === "zh-TW" ? zh : en;
-}
-
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wiki") return panel.persona.name;
   if (panel.kind === "communityLinks") return t(language, "archiveNewsTitle");
@@ -800,10 +796,14 @@ function App() {
     )
       return;
     simSnapshot.thronglets.forEach((pet, index) => {
-      if (!officeState.characters.has(pet.characterId)) {
+      const label = t(selectedLanguage, "questionPetName");
+      const character = officeState.characters.get(pet.characterId);
+      if (character) {
+        character.folderName = label;
+      } else {
         officeState.addQuestionPet(
           pet.characterId,
-          languageLabel(selectedLanguage, "問題電子雞", "Question Pet"),
+          label,
           appearanceToSpriteData(pet.appearance),
           3 + index,
           3,
@@ -1227,9 +1227,7 @@ function App() {
       localStorage.setItem("peach_player_profile", JSON.stringify(profile));
       const created = petStore.createDispatch({
         ownerName: profile.name,
-        displayName: profile.name
-          ? `${profile.name} / question pet`
-          : undefined,
+        displayName: t(selectedLanguage, "questionPetName"),
         question: profile.question || profile.mission,
         skill: profile.skills,
         seed: profile.petSeed ?? `${Date.now()}`,
@@ -1242,6 +1240,8 @@ function App() {
         profile.name,
         PLAYER_ID,
         10000,
+        profile.petSeed,
+        t(selectedLanguage, "questionPetName"),
       );
       const npcContexts = personas.map((persona, index) => ({
         id: `npc-${persona.id}`,
@@ -1256,7 +1256,7 @@ function App() {
       setPlayMode("camp");
       setSelectedDispatchPet(mode === "dispatch_observer" ? created : null);
     },
-    [showMobileControls],
+    [selectedLanguage, showMobileControls],
   );
 
   const handleLanguageChange = useCallback((language: LanguageCode) => {
@@ -1268,12 +1268,16 @@ function App() {
     if (!layoutReady || !playerProfile) return;
     activeDispatchPets.forEach((pet, index) => {
       const id = 20000 + index;
-      if (officeState.characters.has(id)) return;
+      const label = t(selectedLanguage, "questionPetName");
+      const character = officeState.characters.get(id);
+      if (character) {
+        character.folderName = label;
+        return;
+      }
       const appearance = generateQuestionPet(pet.question, pet.seed);
       officeState.addQuestionPet(
         id,
-        pet.displayName ??
-          languageLabel(selectedLanguage, "問題電子雞", "Question Pet"),
+        label,
         appearanceToSpriteData(appearance),
         Math.round(pet.worldPosition.x),
         Math.round(pet.worldPosition.y),
@@ -1588,7 +1592,7 @@ function App() {
               <Suspense
                 fallback={
                   <div className="absolute inset-0 z-47 flex items-center justify-center bg-black/35 px-6 py-5 text-text">
-                    Loading expedition...
+                    {t(selectedLanguage, "loadingExpedition")}
                   </div>
                 }
               >
@@ -1607,7 +1611,7 @@ function App() {
               className="absolute left-1/2 -translate-x-1/2 z-11 bg-accent-bright text-white text-sm py-3 px-8 rounded-none border-2 border-accent shadow-pixel pointer-events-none whitespace-nowrap"
               style={{ top: editor.isDirty ? 64 : 8 }}
             >
-              Rotate (R)
+              {t(selectedLanguage, "rotateHint")}
             </div>
           )}
 
@@ -1681,7 +1685,7 @@ function App() {
           {nameTags.map((tag) => (
             <div
               key={tag.id}
-              className="absolute z-42 -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base pointer-events-none"
+              className="npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base pointer-events-none"
               style={{ left: tag.left, top: tag.top }}
             >
               {tag.name}
@@ -1826,8 +1830,12 @@ function App() {
                 data-no-mobile-drag="true"
               >
                 <div className="flex items-center justify-between gap-4 mb-4">
-                  <h2 className="text-lg">問題電子雞 SIM</h2>
-                  <span className="text-base">tick {simSnapshot.tick}</span>
+                  <h2 className="text-lg">
+                    {t(selectedLanguage, "questionPetSim")}
+                  </h2>
+                  <span className="text-base">
+                    {t(selectedLanguage, "tick")} {simSnapshot.tick}
+                  </span>
                 </div>
                 {simSnapshot.thronglets.map((pet) => (
                   <button
@@ -1847,8 +1855,11 @@ function App() {
                       </span>
                     </div>
                     <p className="text-sm mt-3">
-                      {pet.currentAction} / energy {pet.state.energy.toFixed(0)}{" "}
-                      stress {pet.state.stress.toFixed(0)} bond{" "}
+                      {pet.currentAction} / {t(selectedLanguage, "energy")}{" "}
+                      {pet.state.energy.toFixed(0)}{" "}
+                      {t(selectedLanguage, "stress")}{" "}
+                      {pet.state.stress.toFixed(0)}{" "}
+                      {t(selectedLanguage, "bond")}{" "}
                       {pet.state.groupBond.toFixed(0)}
                     </p>
                   </button>
@@ -1919,8 +1930,7 @@ function App() {
                               {selectedDispatchPet.status}
                             </p>
                             <h2 className="type-heading">
-                              {selectedDispatchPet.displayName ||
-                                "Question Pet"}
+                              {t(selectedLanguage, "questionPetName")}
                             </h2>
                             <p className="type-label">
                               {t(selectedLanguage, "skill")}:{" "}
@@ -1930,21 +1940,26 @@ function App() {
                         </div>
                         <div className="pet-detail-section">
                           <p className="type-label pet-detail-kicker">
-                            Original question / purpose
+                            {t(selectedLanguage, "originalQuestionPurpose")}
                           </p>
                           <p className="type-body-large">
                             {selectedDispatchPet.question}
                           </p>
                         </div>
                         <div className="pet-detail-section">
-                          <h3 className="type-subheading">Responses</h3>
+                          <h3 className="type-subheading">
+                            {t(selectedLanguage, "responses")}
+                          </h3>
                           <textarea
                             className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
                             value={petResponse}
                             onChange={(event) =>
                               setPetResponse(event.target.value)
                             }
-                            placeholder="Share an idea, clue, or reply…"
+                            placeholder={t(
+                              selectedLanguage,
+                              "shareIdeaPlaceholder",
+                            )}
                             maxLength={800}
                           />
                           <button
@@ -1954,12 +1969,12 @@ function App() {
                               handlePostPetBoardResponse(selectedDispatchPet.id)
                             }
                           >
-                            Post response
+                            {t(selectedLanguage, "postResponse")}
                           </button>
                           <div className="pet-response-list">
                             {petBoardResponses.length === 0 ? (
                               <p className="type-caption pet-response-empty">
-                                No responses yet.
+                                {t(selectedLanguage, "noResponsesYet")}
                               </p>
                             ) : (
                               petBoardResponses.map((response) => (
@@ -1995,7 +2010,9 @@ function App() {
                   })()
                 : selectedNpcInfo && (
                     <>
-                      <p className="text-sm">NPC</p>
+                      <p className="text-sm">
+                        {t(selectedLanguage, "npcLabel")}
+                      </p>
                       <h2 className="text-lg mb-3">{selectedNpcInfo.name}</h2>
                       <p className="text-sm mb-3">{selectedNpcInfo.role}</p>
                       <p className="text-base leading-snug">
@@ -2098,7 +2115,9 @@ function App() {
                   <p className="type-caption pet-detail-kicker">
                     {selectedPet.currentAction}
                   </p>
-                  <h2 className="type-heading">{selectedPet.displayName}</h2>
+                  <h2 className="type-heading">
+                    {t(selectedLanguage, "questionPetName")}
+                  </h2>
                   <p className="type-label">
                     {t(selectedLanguage, "status")}: {selectedPet.kind}
                   </p>
@@ -2106,17 +2125,19 @@ function App() {
               </div>
               <div className="pet-detail-section">
                 <p className="type-label pet-detail-kicker">
-                  Original question / purpose
+                  {t(selectedLanguage, "originalQuestionPurpose")}
                 </p>
                 <p className="type-body-large">{selectedPet.question.text}</p>
               </div>
               <div className="pet-detail-section">
-                <h3 className="type-subheading">Responses</h3>
+                <h3 className="type-subheading">
+                  {t(selectedLanguage, "responses")}
+                </h3>
                 <textarea
                   className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
                   value={petResponse}
                   onChange={(event) => setPetResponse(event.target.value)}
-                  placeholder="Share an idea, clue, or reply…"
+                  placeholder={t(selectedLanguage, "shareIdeaPlaceholder")}
                   maxLength={800}
                 />
                 <button
@@ -2124,12 +2145,12 @@ function App() {
                   type="button"
                   onClick={() => handlePostPetBoardResponse(selectedPet.id)}
                 >
-                  Post response
+                  {t(selectedLanguage, "postResponse")}
                 </button>
                 <div className="pet-response-list">
                   {petBoardResponses.length === 0 ? (
                     <p className="type-caption pet-response-empty">
-                      No responses yet.
+                      {t(selectedLanguage, "noResponsesYet")}
                     </p>
                   ) : (
                     petBoardResponses.map((response) => (

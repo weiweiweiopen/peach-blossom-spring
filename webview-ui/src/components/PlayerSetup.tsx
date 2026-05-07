@@ -54,6 +54,7 @@ const copy: Record<
     booting: string;
     blank: string;
     born: string;
+    keeper: string;
   }
 > = {
   "zh-TW": {
@@ -69,6 +70,7 @@ const copy: Record<
     booting: "問題電子雞出生了，停留 3 秒讓你欣賞...",
     blank: "等待三個欄位完成",
     born: "嗶！牠出生了。牠看起來已經想逃跑。",
+    keeper: "問題電子雞飼主",
   },
   en: {
     kicker: "NGM / Peach gate console",
@@ -85,6 +87,7 @@ const copy: Record<
     booting: "Question pet hatched — pausing 3 seconds to admire it...",
     blank: "Waiting for all three fields",
     born: "Beep! It was born. It already looks ready to run away.",
+    keeper: "Question Pet Keeper",
   },
   th: {
     kicker: "NGM / เครื่องทางเข้า桃花源",
@@ -100,6 +103,7 @@ const copy: Record<
     booting: "สัตว์คำถามฟักแล้ว — รอ 3 วินาทีเพื่อดูมัน...",
     blank: "รอให้กรอกครบสามช่อง",
     born: "บี๊บ! มันเกิดแล้ว และดูเหมือนพร้อมจะวิ่งหนีทันที",
+    keeper: "ผู้ดูแลสัตว์คำถาม",
   },
   ja: {
     kicker: "NGM / 桃花源入口端末",
@@ -115,6 +119,7 @@ const copy: Record<
     booting: "質問ペットが生まれました。3秒眺めてから入ります...",
     blank: "三つの欄の入力待ち",
     born: "ピッ！生まれた。もう逃げ出す顔をしている。",
+    keeper: "質問ペットの飼い主",
   },
 };
 
@@ -161,10 +166,8 @@ export function PlayerSetup({
         {
           name,
           palette: hatched.seed % 6,
-          avatarTitle:
-            language === "zh-TW" ? "問題電子雞飼主" : "Question Pet Keeper",
-          currentRole:
-            language === "zh-TW" ? "問題電子雞飼主" : "Question Pet Keeper",
+          avatarTitle: c.keeper,
+          currentRole: c.keeper,
           mission: questionText,
           question: questionText,
           constraints: "",
