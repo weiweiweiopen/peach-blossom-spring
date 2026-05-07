@@ -1931,6 +1931,7 @@
   --z-layer-map: 1;
   --z-layer-bubbles: 120;
   --z-layer-dialogue: 700;
+  --z-layer-dialogue-front: 760;
   --z-layer-hud: 300;
   --hud-safe-inline: calc(
     var(--safe-right) + (var(--control-size) * 2) + (var(--floating-gap) * 3)
@@ -1982,15 +1983,50 @@
   z-index: var(--z-layer-bubbles);
 }
 
+.question-status-header {
+  align-items: flex-start;
+}
+
+.question-status-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.question-status-actions button {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 3px 8px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  line-height: 1;
+}
+
+.question-status-panel-minimized {
+  overflow: visible;
+}
+
+.question-status-panel-minimized .question-status-header {
+  margin-bottom: 0 !important;
+}
+
 .archive-tree-menu,
 .question-response-panel,
 .mobile-rules-drawer {
   animation: tama-panel-in 160ms steps(3, end);
 }
 
-.rpg-dialogue-overlay,
 .world-split-panel {
   z-index: var(--z-layer-dialogue) !important;
+  animation: tama-panel-in 180ms steps(4, end);
+}
+
+.rpg-dialogue-overlay {
+  z-index: var(--z-layer-dialogue-front) !important;
   animation: tama-panel-in 180ms steps(4, end);
 }
 
@@ -2452,6 +2488,10 @@
 
 .world-split-panel {
   z-index: var(--z-layer-dialogue) !important;
+}
+
+.rpg-dialogue-overlay {
+  z-index: var(--z-layer-dialogue-front) !important;
 }
 
 @media (min-width: 901px) and (pointer: fine) {
