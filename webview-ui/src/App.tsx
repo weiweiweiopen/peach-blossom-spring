@@ -98,13 +98,31 @@ const MOBILE_THUMB_ACTIVE_RADIUS_PX = 60;
 const archiveTreeZone =
   tamagotchiPeachForestZones.find((zone) => zone.kind === "archiveTree") ??
   null;
+const COMMUNITY_NEWS_LINKS = [
+  {
+    title: "NGM Zine Library",
+    url: "https://arai-eek.github.io/zine-library/",
+    description: "Non-Governmental Matters community zine library.",
+  },
+  {
+    title: "I.N.S.E.C.T summer camp",
+    url: "https://designandposthumanism.org/2022/09/26/i-n-s-e-c-t-summercamp-ome-newcastle-uk/",
+    description: "Community summer camp notes and references.",
+  },
+];
+
+const COMMUNITY_MAP_URL = "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
+
+function openExternalLink(url: string): void {
+  window.open(url, "_blank", "noopener,noreferrer");
+}
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
 type SplitPanel =
   | { kind: "wiki"; persona: Persona }
+  | { kind: "communityLinks" }
   | { kind: "archivePdf" }
-  | { kind: "archiveMap" }
-  | { kind: "external"; title: string; url: string };
+  | { kind: "archiveMap" };
 const ExpeditionPanel = lazy(() =>
   import("./components/ExpeditionPanel.js").then((module) => ({
     default: module.ExpeditionPanel,
@@ -126,17 +144,81 @@ function languageLabel(language: LanguageCode, zh: string, en: string): string {
 
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wiki") return panel.persona.name;
+  if (panel.kind === "communityLinks") return t(language, "archiveNewsTitle");
   if (panel.kind === "archivePdf") return t(language, "archivePdfTitle");
-  if (panel.kind === "archiveMap") return t(language, "archiveMapTitle");
-  return panel.title;
+  return t(language, "archiveMapTitle");
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wiki") return "World Wiki";
-  if (panel.kind === "external") return t(language, "communityPortals");
+  if (panel.kind === "communityLinks") return t(language, "communityPortals");
   return t(language, "archiveTree");
 }
 
+
+function findNearestApproachableTile(
+  officeState: OfficeState,
+  preferredCol: number,
+  preferredRow: number,
+  occupied = new Set<string>(),
+): { col: number; row: number } {
+  const canStand = (col: number, row: number) => {
+    if (occupied.has(`${col},${row}`)) return false;
+    if (!isWalkable(col, row, officeState.tileMap, officeState.blockedTiles)) return false;
+    const neighbors = [
+      { col: col + 1, row },
+      { col: col - 1, row },
+      { col, row: row + 1 },
+      { col, row: row - 1 },
+    ];
+    return neighbors.some((tile) =>
+      isWalkable(tile.col, tile.row, officeState.tileMap, officeState.blockedTiles),
+    );
+  };
+
+  if (canStand(preferredCol, preferredRow)) return { col: preferredCol, row: preferredRow };
+
+  for (let radius = 1; radius <= 8; radius++) {
+    for (let dRow = -radius; dRow <= radius; dRow++) {
+      for (let dCol = -radius; dCol <= radius; dCol++) {
+        if (Math.abs(dCol) !== radius && Math.abs(dRow) !== radius) continue;
+        const col = preferredCol + dCol;
+        const row = preferredRow + dRow;
+        if (canStand(col, row)) return { col, row };
+      }
+    }
+  }
+
+  return (
+    officeState.walkableTiles.find((tile) => canStand(tile.col, tile.row)) ?? {
+      col: 1,
+      row: 1,
+    }
+  );
+}
+
+function findShortNpcStep(
+  officeState: OfficeState,
+  startCol: number,
+  startRow: number,
+  occupied: Set<string>,
+): { col: number; row: number } | null {
+  const candidates: Array<{ col: number; row: number; score: number }> = [];
+  for (let dRow = -3; dRow <= 3; dRow++) {
+    for (let dCol = -3; dCol <= 3; dCol++) {
+      const distance = Math.abs(dCol) + Math.abs(dRow);
+      if (distance < 1 || distance > 3) continue;
+      const col = startCol + dCol;
+      const row = startRow + dRow;
+      const tile = findNearestApproachableTile(officeState, col, row, occupied);
+      const key = `${tile.col},${tile.row}`;
+      if (occupied.has(key)) continue;
+      candidates.push({ ...tile, score: distance + Math.random() });
+    }
+  }
+  candidates.sort((a, b) => a.score - b.score);
+  return candidates[0] ?? null;
+}
 function readSavedPlayerDefaults(): PlayerProfile | null {
   try {
     const raw = localStorage.getItem("peach_player_profile");
@@ -520,48 +602,19 @@ function App() {
     const personaById = new Map(
       personas.map((persona, index) => [persona.id, index + 1]),
     );
+    const occupied = new Set<string>();
     for (const placement of tamagotchiNpcPlacements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId || !agents.includes(agentId)) continue;
       const ch = officeState.characters.get(agentId);
       if (!ch) continue;
-      const resolvedPlacement = (() => {
-        if (
-          isWalkable(
-            placement.col,
-            placement.row,
-            officeState.tileMap,
-            officeState.blockedTiles,
-          )
-        ) {
-          return { col: placement.col, row: placement.row };
-        }
-        for (let radius = 1; radius <= 6; radius++) {
-          for (let dRow = -radius; dRow <= radius; dRow++) {
-            for (let dCol = -radius; dCol <= radius; dCol++) {
-              if (Math.abs(dCol) !== radius && Math.abs(dRow) !== radius)
-                continue;
-              const col = placement.col + dCol;
-              const row = placement.row + dRow;
-              if (
-                isWalkable(
-                  col,
-                  row,
-                  officeState.tileMap,
-                  officeState.blockedTiles,
-                )
-              ) {
-                return { col, row };
-              }
-            }
-          }
-        }
-        return (
-          officeState.walkableTiles.find(
-            (tile) => tile.col > 1 && tile.row > 1,
-          ) ?? { col: 1, row: 1 }
-        );
-      })();
+      const resolvedPlacement = findNearestApproachableTile(
+        officeState,
+        placement.col,
+        placement.row,
+        occupied,
+      );
+      occupied.add(`${resolvedPlacement.col},${resolvedPlacement.row}`);
       ch.tileCol = resolvedPlacement.col;
       ch.tileRow = resolvedPlacement.row;
       ch.x = resolvedPlacement.col * TILE_SIZE + TILE_SIZE / 2;
@@ -573,6 +626,33 @@ function App() {
       ch.hueShift = (25 + agentId * 23) % 120;
     }
   }, [agents, layoutReady, officeState]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile || appMode !== "interactive") return;
+    const interval = window.setInterval(() => {
+      if (activeDialogueIdRef.current !== null) return;
+      const occupied = new Set<string>();
+      for (const ch of officeState.characters.values()) {
+        if (ch.path.length === 0) occupied.add(`${ch.tileCol},${ch.tileRow}`);
+      }
+      const shuffled = agents
+        .filter((id) => id !== PLAYER_ID && personas[id - 1])
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 2);
+      for (const id of shuffled) {
+        const ch = officeState.characters.get(id);
+        if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer) continue;
+        if (nearbyNpcIdRef.current === id) continue;
+        if (Math.random() > 0.45) continue;
+        const target = findShortNpcStep(officeState, ch.tileCol, ch.tileRow, occupied);
+        if (target && officeState.walkToTile(id, target.col, target.row)) {
+          occupied.delete(`${ch.tileCol},${ch.tileRow}`);
+          occupied.add(`${target.col},${target.row}`);
+        }
+      }
+    }, 4200);
+    return () => window.clearInterval(interval);
+  }, [agents, appMode, layoutReady, officeState, playerProfile]);
 
   useEffect(() => {
     if (
@@ -1460,8 +1540,16 @@ function App() {
                   {t(selectedLanguage, "archiveTree")}
                 </p>
                 <h1>{t(selectedLanguage, "archiveTitle")}</h1>
-                <p>{t(selectedLanguage, "archiveDescription")}</p>
                 <div className="archive-tree-options">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSplitPanel({ kind: "communityLinks" });
+                      setIsSplitExpanded(false);
+                    }}
+                  >
+                    1. {t(selectedLanguage, "archiveNewsTitle")}
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
@@ -1469,7 +1557,7 @@ function App() {
                       setIsSplitExpanded(false);
                     }}
                   >
-                    1. {selectedLanguage === "zh-TW" ? "NGM 書" : "NGM Book"}
+                    2. {t(selectedLanguage, "archiveEbookButton")}
                   </button>
                   <button
                     type="button"
@@ -1478,10 +1566,7 @@ function App() {
                       setIsSplitExpanded(false);
                     }}
                   >
-                    2.{" "}
-                    {selectedLanguage === "zh-TW"
-                      ? "社群地圖"
-                      : "Community Map"}
+                    3. {t(selectedLanguage, "archiveMapButton")}
                   </button>
                 </div>
               </section>
@@ -1937,13 +2022,7 @@ function App() {
                         <button
                           key={`${link.title}-${link.url}`}
                           type="button"
-                          onClick={() =>
-                            setSplitPanel({
-                              kind: "external",
-                              title: link.title,
-                              url: link.url,
-                            })
-                          }
+                          onClick={() => openExternalLink(link.url)}
                         >
                           <strong>{link.title}</strong>
                           <span>{link.description}</span>
@@ -1953,6 +2032,19 @@ function App() {
                   </div>
                 );
               })()
+            ) : splitPanel.kind === "communityLinks" ? (
+              <div className="world-wiki-content">
+                {COMMUNITY_NEWS_LINKS.map((link) => (
+                  <button
+                    key={link.url}
+                    type="button"
+                    onClick={() => openExternalLink(link.url)}
+                  >
+                    <strong>{link.title}</strong>
+                    <span>{link.description}</span>
+                  </button>
+                ))}
+              </div>
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
                 title="NGM PDF embedded ebook"
@@ -1960,17 +2052,13 @@ function App() {
                 allowFullScreen
                 className="world-split-iframe"
               />
-            ) : splitPanel.kind === "archiveMap" ? (
-              <iframe
-                title="NGM community map"
-                src="https://umap.openstreetmap.fr/en/map/862535"
-                className="world-split-iframe"
-              />
             ) : (
               <iframe
-                title={splitPanel.title}
-                src={splitPanel.url}
+                title="NGM community map"
+                src={COMMUNITY_MAP_URL}
                 className="world-split-iframe"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             )}
           </div>

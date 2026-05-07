@@ -1326,3 +1326,24 @@
     bottom: calc(148px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* Keep system windows above pet/social overlays and iframes. */
+.global-language-menu {
+  z-index: 110;
+}
+.archive-tree-menu {
+  z-index: 104;
+}
+.rpg-dialogue-overlay {
+  z-index: 106 !important;
+}
+.world-split-panel {
+  z-index: 108;
+}
+.world-resonance-notice,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer,
+.mobile-stats-bar {
+  z-index: 70 !important;
+}
