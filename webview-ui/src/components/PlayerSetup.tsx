@@ -117,87 +117,92 @@ export function PlayerSetup({
         </header>
 
         <div className="player-setup-console">
-          <section className="player-setup-controls" aria-label={t(language, "setup.petControls")}>
-            <label className="player-setup-label" htmlFor="question-pet-name">
-              {t(language, "setup.nameLabel")}
-            </label>
-            <input
-              id="question-pet-name"
-              name="name"
-              required
-              className="player-setup-field"
-              maxLength={32}
-              defaultValue={defaultProfile?.name ?? ""}
-              placeholder={t(language, "setup.namePlaceholder")}
-              autoFocus
-            />
-
-            <label
-              className="player-setup-label"
-              htmlFor="question-pet-question"
+          <div className="player-setup-merged-panel">
+            <section
+              className="player-setup-controls"
+              aria-label={t(language, "setup.petControls")}
             >
-              {t(language, "setup.questionLabel")}
-            </label>
-            <textarea
-              id="question-pet-question"
-              name="question"
-              required
-              className="player-setup-field player-setup-textarea-large"
-              maxLength={800}
-              value={question}
-              onChange={(event) => {
-                setQuestion(event.target.value);
-                setHasHatched(false);
-              }}
-              placeholder={t(language, "setup.questionPlaceholder")}
-            />
+              <label className="player-setup-label" htmlFor="question-pet-name">
+                {t(language, "setup.nameLabel")}
+              </label>
+              <input
+                id="question-pet-name"
+                name="name"
+                required
+                className="player-setup-field"
+                maxLength={32}
+                defaultValue={defaultProfile?.name ?? ""}
+                placeholder={t(language, "setup.namePlaceholder")}
+                autoFocus
+              />
 
-            <label className="player-setup-label" htmlFor="question-pet-skills">
-              {t(language, "setup.skillsLabel")}
-            </label>
-            <textarea
-              id="question-pet-skills"
-              name="skills"
-              required
-              className="player-setup-field player-setup-textarea"
-              maxLength={500}
-              defaultValue={defaultProfile?.skills ?? ""}
-              placeholder={t(language, "setup.skillsPlaceholder")}
-            />
+              <label
+                className="player-setup-label"
+                htmlFor="question-pet-question"
+              >
+                {t(language, "setup.questionLabel")}
+              </label>
+              <textarea
+                id="question-pet-question"
+                name="question"
+                required
+                className="player-setup-field player-setup-textarea-large"
+                maxLength={800}
+                value={question}
+                onChange={(event) => {
+                  setQuestion(event.target.value);
+                  setHasHatched(false);
+                }}
+                placeholder={t(language, "setup.questionPlaceholder")}
+              />
 
-            <button
-              className={`player-setup-action mode-primary ${isBooting ? "is-booting" : ""}`}
-              type="submit"
-              disabled={isBooting}
+              <label className="player-setup-label" htmlFor="question-pet-skills">
+                {t(language, "setup.skillsLabel")}
+              </label>
+              <textarea
+                id="question-pet-skills"
+                name="skills"
+                required
+                className="player-setup-field player-setup-textarea"
+                maxLength={500}
+                defaultValue={defaultProfile?.skills ?? ""}
+                placeholder={t(language, "setup.skillsPlaceholder")}
+              />
+
+              <button
+                className={`player-setup-action mode-primary ${isBooting ? "is-booting" : ""}`}
+                type="submit"
+                disabled={isBooting}
+              >
+                <span>{t(language, "home.startButton")}</span>
+                {isBooting && (
+                  <span className="pixel-spinner" aria-hidden="true" />
+                )}
+              </button>
+            </section>
+
+            <aside
+              ref={hatchRef}
+              className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
+              aria-live="polite"
             >
-              <span>{t(language, "home.startButton")}</span>
-              {isBooting && (
-                <span className="pixel-spinner" aria-hidden="true" />
-              )}
-            </button>
-          </section>
-
-          <aside
-            ref={hatchRef}
-            className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
-            aria-live="polite"
-          >
-            <p className="pet-card-label">{t(language, "setup.title")}</p>
-            <div className="question-hatch-screen">
-              {hasHatched ? (
-                <QuestionPetPreview
-                  question={question || t(language, "setup.questionPlaceholder")}
-                  appearance={appearance}
-                  size={12}
-                />
-              ) : (
-                <div className="question-hatch-egg">?</div>
-              )}
-            </div>
-            <p className="pet-card-label question-hatch-status">
-              {hasHatched ? t(language, "setup.born") : t(language, "setup.blank")}
-            </p>
-          </aside>
+              <p className="pet-card-label">{t(language, "setup.title")}</p>
+              <div className="question-hatch-screen">
+                {hasHatched ? (
+                  <QuestionPetPreview
+                    question={question || t(language, "setup.questionPlaceholder")}
+                    appearance={appearance}
+                    size={12}
+                  />
+                ) : (
+                  <div className="question-hatch-egg">?</div>
+                )}
+              </div>
+              <p className="pet-card-label question-hatch-status">
+                {hasHatched ? t(language, "setup.born") : t(language, "setup.blank")}
+              </p>
+            </aside>
+          </div>
         </div>
       </form>
     </div>
