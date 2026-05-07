@@ -109,12 +109,31 @@ const COMMUNITY_NEWS_LINKS = [
     url: "https://designandposthumanism.org/2022/09/26/i-n-s-e-c-t-summercamp-ome-newcastle-uk/",
     description: "Community summer camp notes and references.",
   },
+  {
+    title: "arai-eek GitHub",
+    url: "https://github.com/arai-eek",
+    description: "arai-eek project repositories and community code.",
+  },
+  {
+    title: "Parang CNX Instagram",
+    url: "https://www.instagram.com/parang_cnx?igsh=OHRxZjN3aGs0ZGg5",
+    description: "Parang CNX updates and community posts on Instagram.",
+  },
 ];
 
 const COMMUNITY_MAP_URL = "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
 
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
+
+interface PetBoardResponse {
+  id: string;
+  petId: string;
+  author?: string;
+  text: string;
+  createdAt: number;
+}
+
 type SplitPanel =
   | { kind: "wiki"; persona: Persona }
   | { kind: "communityLinks" }
@@ -157,6 +176,54 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return t(language, "archiveTree");
 }
 
+function petResponsesKey(petId: string): string {
+  return `pbs:pet:${petId}:responses`;
+}
+
+function readPetBoardResponses(petId: string): PetBoardResponse[] {
+  try {
+    const raw = localStorage.getItem(petResponsesKey(petId));
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((entry): entry is PetBoardResponse => {
+        if (!entry || typeof entry !== "object") return false;
+        const response = entry as Partial<PetBoardResponse>;
+        return (
+          typeof response.id === "string" &&
+          typeof response.petId === "string" &&
+          typeof response.text === "string" &&
+          typeof response.createdAt === "number"
+        );
+      })
+      .filter((entry) => entry.petId === petId && entry.text.trim().length > 0)
+      .sort((a, b) => b.createdAt - a.createdAt);
+  } catch {
+    return [];
+  }
+}
+
+function writePetBoardResponses(
+  petId: string,
+  responses: PetBoardResponse[],
+): void {
+  localStorage.setItem(petResponsesKey(petId), JSON.stringify(responses));
+}
+
+function makePetBoardResponse(
+  petId: string,
+  text: string,
+  author?: string,
+): PetBoardResponse {
+  return {
+    id: `response-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`,
+    petId,
+    author,
+    text,
+    createdAt: Date.now(),
+  };
+}
 
 function findNearestApproachableTile(
   officeState: OfficeState,
@@ -339,6 +406,9 @@ function App() {
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
   const [petResponse, setPetResponse] = useState("");
+  const [petBoardResponses, setPetBoardResponses] = useState<
+    PetBoardResponse[]
+  >([]);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
   const [isSplitExpanded, setIsSplitExpanded] = useState(false);
@@ -526,6 +596,40 @@ function App() {
     personas.findIndex((persona) => persona.id === "abao") + 1;
   const isNearAbao = nearbyNpcId === abaoAgentId;
   const isSplitOpen = splitPanel !== null;
+
+  const selectedPetBoardId = selectedDispatchPet?.id ?? selectedPet?.id ?? null;
+
+  useEffect(() => {
+    if (!selectedPetBoardId) {
+      setPetBoardResponses([]);
+      setPetResponse("");
+      return;
+    }
+    setPetBoardResponses(readPetBoardResponses(selectedPetBoardId));
+    setPetResponse("");
+  }, [selectedPetBoardId]);
+
+  const handlePostPetBoardResponse = useCallback(
+    (petId: string) => {
+      const text = petResponse.trim();
+      if (!text) return;
+      const next = [
+        makePetBoardResponse(petId, text, playerProfile?.name || undefined),
+        ...readPetBoardResponses(petId),
+      ];
+      writePetBoardResponses(petId, next);
+      setPetBoardResponses(next);
+      setPetResponse("");
+      if (selectedPet?.id === petId) {
+        setSimSnapshot((current) =>
+          current
+            ? applyPlayerThrongletResponse(current, petId, text)
+            : current,
+        );
+      }
+    },
+    [petResponse, playerProfile?.name, selectedPet?.id],
+  );
 
   useEffect(() => {
     writeStoredLanguage(selectedLanguage);
@@ -1314,75 +1418,77 @@ function App() {
         panRef={editor.panRef}
       />
 
-      <div className="global-language-menu" data-no-mobile-drag="true">
-        <button
-          className="global-language-trigger"
-          type="button"
-          aria-label={t(selectedLanguage, "languageLabel")}
-          aria-expanded={languageMenuOpen}
-          onClick={() => setLanguageMenuOpen((open) => !open)}
-        >
-          💬
-        </button>
-        {languageMenuOpen && (
-          <div className="global-language-options" role="menu">
-            {supportedLanguages.map((entry) => (
-              <button
-                key={entry.code}
-                className={entry.code === selectedLanguage ? "is-active" : ""}
-                type="button"
-                role="menuitem"
-                onClick={() => handleLanguageChange(entry.code)}
-              >
-                {entry.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {playerProfile && appMode === "dispatch_observer" && (
-        <button
-          className="observer-close"
-          type="button"
-          onClick={handleCloseWorld}
-          aria-label={t(selectedLanguage, "close")}
-        >
-          ×
-        </button>
-      )}
-
-      {playerProfile &&
-        (appMode === "interactive" || appMode === "dispatch_observer") && (
-          <div
-            className="map-zoom-controls"
-            data-no-mobile-drag="true"
-            aria-label="Map zoom controls"
+      <div className="floating-ui-layer" data-no-mobile-drag="true">
+        <div className="global-language-menu">
+          <button
+            className="global-language-trigger"
+            type="button"
+            aria-label={t(selectedLanguage, "languageLabel")}
+            aria-expanded={languageMenuOpen}
+            onClick={() => setLanguageMenuOpen((open) => !open)}
           >
-            <button
-              type="button"
-              onClick={() =>
-                editor.handleZoomChange(Math.min(ZOOM_MAX, editor.zoom + 0.25))
-              }
-              disabled={editor.zoom >= ZOOM_MAX}
-              aria-label={t(selectedLanguage, "zoomIn")}
-              title={`${t(selectedLanguage, "zoomIn")} (${editor.zoom.toFixed(2)}×)`}
-            >
-              +
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                editor.handleZoomChange(Math.max(ZOOM_MIN, editor.zoom - 0.25))
-              }
-              disabled={editor.zoom <= ZOOM_MIN}
-              aria-label={t(selectedLanguage, "zoomOut")}
-              title={`${t(selectedLanguage, "zoomOut")} (${editor.zoom.toFixed(2)}×)`}
-            >
-              −
-            </button>
-          </div>
+            💬
+          </button>
+          {languageMenuOpen && (
+            <div className="global-language-options" role="menu">
+              {supportedLanguages.map((entry) => (
+                <button
+                  key={entry.code}
+                  className={entry.code === selectedLanguage ? "is-active" : ""}
+                  type="button"
+                  role="menuitem"
+                  onClick={() => handleLanguageChange(entry.code)}
+                >
+                  {entry.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {playerProfile && appMode === "dispatch_observer" && (
+          <button
+            className="observer-close"
+            type="button"
+            onClick={handleCloseWorld}
+            aria-label={t(selectedLanguage, "close")}
+          >
+            ×
+          </button>
         )}
+
+        {playerProfile &&
+          (appMode === "interactive" || appMode === "dispatch_observer") && (
+            <div className="map-zoom-controls" aria-label="Map zoom controls">
+              <button
+                type="button"
+                onClick={() =>
+                  editor.handleZoomChange(
+                    Math.min(ZOOM_MAX, editor.zoom + 0.25),
+                  )
+                }
+                disabled={editor.zoom >= ZOOM_MAX}
+                aria-label={t(selectedLanguage, "zoomIn")}
+                title={`${t(selectedLanguage, "zoomIn")} (${editor.zoom.toFixed(2)}×)`}
+              >
+                +
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  editor.handleZoomChange(
+                    Math.max(ZOOM_MIN, editor.zoom - 0.25),
+                  )
+                }
+                disabled={editor.zoom <= ZOOM_MIN}
+                aria-label={t(selectedLanguage, "zoomOut")}
+                title={`${t(selectedLanguage, "zoomOut")} (${editor.zoom.toFixed(2)}×)`}
+              >
+                −
+              </button>
+            </div>
+          )}
+      </div>
 
       {!isDebugMode ? (
         <>
@@ -1715,103 +1821,86 @@ function App() {
                     );
                     return (
                       <>
-                        <div className="flex gap-5 items-start mb-5">
+                        <div className="pet-detail-header">
                           <QuestionPetPreview
                             question={selectedDispatchPet.question}
                             appearance={appearance}
                             size={6}
                           />
                           <div>
-                            <p className="text-sm">
-                              {selectedDispatchPet.displayName}
+                            <p className="type-caption pet-detail-kicker">
+                              {selectedDispatchPet.status}
                             </p>
-                            <h2 className="text-lg leading-snug">
-                              {selectedDispatchPet.question}
+                            <h2 className="type-heading">
+                              {selectedDispatchPet.displayName ||
+                                "Question Pet"}
                             </h2>
+                            <p className="type-label">
+                              {t(selectedLanguage, "skill")}:{" "}
+                              {selectedDispatchPet.skill || "—"}
+                            </p>
                           </div>
                         </div>
-                        <p className="text-sm mb-2">
-                          {t(selectedLanguage, "skill")}:{" "}
-                          {selectedDispatchPet.skill || "—"}
-                        </p>
-                        <p className="text-sm mb-2">
-                          {t(selectedLanguage, "status")}:{" "}
-                          {selectedDispatchPet.status}
-                        </p>
-                        <div className="grid grid-cols-2 gap-2 text-sm mb-4">
-                          {Object.entries(selectedDispatchPet.stats).map(
-                            ([key, value]) => (
-                              <p key={key}>
-                                {key}: {value}
-                              </p>
-                            ),
-                          )}
+                        <div className="pet-detail-section">
+                          <p className="type-label pet-detail-kicker">
+                            Original question / purpose
+                          </p>
+                          <p className="type-body-large">
+                            {selectedDispatchPet.question}
+                          </p>
                         </div>
-                        <p className="text-sm mb-2">
-                          {t(selectedLanguage, "fieldNotes")}
-                        </p>
-                        {(selectedDispatchPet.interactions ?? [])
-                          .slice(0, 5)
-                          .map((note) => (
-                            <p
-                              key={note.id}
-                              className="text-sm border-t border-[var(--tama-ink)] py-2"
-                            >
-                              {note.actorType}: {note.message}{" "}
-                              {note.tags?.join(", ")}
-                            </p>
-                          ))}
-                        {appMode === "interactive" && (
-                          <>
-                            <textarea
-                              className="field-note-input w-full min-h-[86px] px-4 py-3"
-                              value={petResponse}
-                              onChange={(event) =>
-                                setPetResponse(event.target.value)
-                              }
-                              placeholder={t(
-                                selectedLanguage,
-                                "fieldNotePlaceholder",
-                              )}
-                              maxLength={180}
-                            />
-                            <button
-                              className="mt-3 mode-primary px-5 py-3"
-                              type="button"
-                              onClick={() => {
-                                const response = petResponse.trim();
-                                if (!response) return;
-                                petStore.addInteraction(
-                                  selectedDispatchPet.id,
-                                  {
-                                    actorType: "player",
-                                    actorId: playerProfile?.name,
-                                    message: response,
-                                    tags: ["field-note"],
-                                    deltaStats: {
-                                      social: 4,
-                                      learning: 2,
-                                      tension: -1,
-                                    },
-                                  },
-                                );
-                                setPetResponse("");
-                                setDispatchedPets(petStore.listPets());
-                                setSelectedDispatchPet(
-                                  petStore
-                                    .listPets()
-                                    .find(
-                                      (pet) =>
-                                        pet.id === selectedDispatchPet.id,
-                                    ) ?? null,
-                                );
-                              }}
-                            >
-                              {t(selectedLanguage, "sendFieldNote")}
-                            </button>
-                          </>
-                        )}
-                        <p className="text-sm mt-4 opacity-80">
+                        <div className="pet-detail-section">
+                          <h3 className="type-subheading">Responses</h3>
+                          <textarea
+                            className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
+                            value={petResponse}
+                            onChange={(event) =>
+                              setPetResponse(event.target.value)
+                            }
+                            placeholder="Share an idea, clue, or reply…"
+                            maxLength={800}
+                          />
+                          <button
+                            className="mt-3 mode-primary px-5 py-3 type-label"
+                            type="button"
+                            onClick={() =>
+                              handlePostPetBoardResponse(selectedDispatchPet.id)
+                            }
+                          >
+                            Post response
+                          </button>
+                          <div className="pet-response-list">
+                            {petBoardResponses.length === 0 ? (
+                              <p className="type-caption pet-response-empty">
+                                No responses yet.
+                              </p>
+                            ) : (
+                              petBoardResponses.map((response) => (
+                                <article
+                                  key={response.id}
+                                  className="pet-response-item"
+                                >
+                                  <div className="type-micro pet-response-meta">
+                                    {response.author && (
+                                      <span>{response.author}</span>
+                                    )}
+                                    <time
+                                      dateTime={new Date(
+                                        response.createdAt,
+                                      ).toISOString()}
+                                    >
+                                      {new Date(
+                                        response.createdAt,
+                                      ).toLocaleString()}
+                                    </time>
+                                  </div>
+                                  <p className="type-body">{response.text}</p>
+                                </article>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                        <p className="type-caption mt-4 opacity-80">
                           {t(selectedLanguage, "localOnlyNotice")}
                         </p>
                       </>
@@ -1910,52 +1999,70 @@ function App() {
                 type="button"
                 onClick={() => setSelectedPet(null)}
               >
-                x
+                ×
               </button>
-              <div className="flex gap-5 items-start mb-5">
+              <div className="pet-detail-header">
                 <QuestionPetPreview
                   question={selectedPet.question.text}
                   appearance={selectedPet.appearance}
                   size={6}
                 />
                 <div>
-                  <p className="text-sm">originating question</p>
-                  <h2 className="text-lg leading-snug">
-                    {selectedPet.question.text}
-                  </h2>
+                  <p className="type-caption pet-detail-kicker">
+                    {selectedPet.currentAction}
+                  </p>
+                  <h2 className="type-heading">{selectedPet.displayName}</h2>
+                  <p className="type-label">
+                    {t(selectedLanguage, "status")}: {selectedPet.kind}
+                  </p>
                 </div>
               </div>
-              <textarea
-                className="w-full min-h-[110px] bg-[var(--palette-cream)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-4 py-4 text-lg"
-                value={petResponse}
-                onChange={(event) => setPetResponse(event.target.value)}
-                placeholder={
-                  selectedLanguage === "zh-TW"
-                    ? "回應這隻問題電子雞..."
-                    : "Respond to this question pet..."
-                }
-              />
-              <button
-                className="mt-4 bg-[var(--palette-pink)] border-4 border-[var(--palette-blue)] text-[var(--palette-ink)] px-6 py-4 text-lg"
-                type="button"
-                onClick={() => {
-                  const response = petResponse.trim();
-                  if (!response) return;
-                  setSimSnapshot((current) =>
-                    current
-                      ? applyPlayerThrongletResponse(
-                          current,
-                          selectedPet.id,
-                          response,
-                        )
-                      : current,
-                  );
-                  setPetResponse("");
-                  setSelectedPet(null);
-                }}
-              >
-                {selectedLanguage === "zh-TW" ? "送出回應" : "Send Response"}
-              </button>
+              <div className="pet-detail-section">
+                <p className="type-label pet-detail-kicker">
+                  Original question / purpose
+                </p>
+                <p className="type-body-large">{selectedPet.question.text}</p>
+              </div>
+              <div className="pet-detail-section">
+                <h3 className="type-subheading">Responses</h3>
+                <textarea
+                  className="field-note-input pet-response-input w-full min-h-[92px] px-4 py-3"
+                  value={petResponse}
+                  onChange={(event) => setPetResponse(event.target.value)}
+                  placeholder="Share an idea, clue, or reply…"
+                  maxLength={800}
+                />
+                <button
+                  className="mt-3 mode-primary px-5 py-3 type-label"
+                  type="button"
+                  onClick={() => handlePostPetBoardResponse(selectedPet.id)}
+                >
+                  Post response
+                </button>
+                <div className="pet-response-list">
+                  {petBoardResponses.length === 0 ? (
+                    <p className="type-caption pet-response-empty">
+                      No responses yet.
+                    </p>
+                  ) : (
+                    petBoardResponses.map((response) => (
+                      <article key={response.id} className="pet-response-item">
+                        <div className="type-micro pet-response-meta">
+                          {response.author && <span>{response.author}</span>}
+                          <time
+                            dateTime={new Date(
+                              response.createdAt,
+                            ).toISOString()}
+                          >
+                            {new Date(response.createdAt).toLocaleString()}
+                          </time>
+                        </div>
+                        <p className="type-body">{response.text}</p>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </div>
             </section>
           )}
 

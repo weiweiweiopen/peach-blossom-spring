@@ -76,7 +76,48 @@
   /* Non-utility values */
   --vignette: radial-gradient(ellipse at center, transparent 58%, color-mix(in srgb, var(--palette-silver) 72%, transparent) 100%);
   --btn-disabled-opacity: 0.35;
+
+  /* Safe-area and shared floating UI */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --floating-gap: 8px;
+  --control-size: 52px;
+  --z-window: 100;
+  --z-modal: 200;
+  --z-floating-global: 400;
+
+  /* Centralized typography scale */
+  --font-display: clamp(40px, 9vw, 78px);
+  --font-title: clamp(30px, 6.5vw, 52px);
+  --font-heading: clamp(22px, 4.8vw, 36px);
+  --font-subheading: clamp(18px, 3.8vw, 26px);
+  --font-body-large: clamp(17px, 3.5vw, 22px);
+  --font-body: clamp(15px, 3.1vw, 18px);
+  --font-label: clamp(12px, 2.6vw, 14px);
+  --font-caption: clamp(10px, 2.3vw, 12px);
+  --font-micro: clamp(8px, 2vw, 10px);
+
+  --line-display: 0.92;
+  --line-title: 0.98;
+  --line-heading: 1.08;
+  --line-subheading: 1.18;
+  --line-body: 1.45;
+  --line-label: 1.2;
+  --line-caption: 1.25;
+  --line-micro: 1.15;
 }
+
+.type-display { font-size: var(--font-display); line-height: var(--line-display); }
+.type-title { font-size: var(--font-title); line-height: var(--line-title); }
+.type-heading { font-size: var(--font-heading); line-height: var(--line-heading); }
+.type-subheading { font-size: var(--font-subheading); line-height: var(--line-subheading); }
+.type-body-large { font-size: var(--font-body-large); line-height: var(--line-body); }
+.type-body { font-size: var(--font-body); line-height: var(--line-body); }
+.type-label { font-size: var(--font-label); line-height: var(--line-label); }
+.type-caption { font-size: var(--font-caption); line-height: var(--line-caption); }
+.type-micro { font-size: var(--font-micro); line-height: var(--line-micro); }
 
 @theme inline {
   /* 1px base so Tailwind spacing maps directly to pixels (pixel-art project) */
@@ -470,8 +511,7 @@
 .player-setup-action { font-size: 21px; border: 4px solid var(--tama-ink); color: var(--tama-ink); }
 .mode-primary { background: var(--tama-teal); border: 3px solid var(--tama-ink); color: var(--tama-ink); }
 .mode-secondary { background: var(--tama-yellow-light); border: 3px solid var(--tama-ink); color: var(--tama-ink); }
-.shuffle-pet-button { background: var(--palette-pink); color: var(--tama-ink); border: 3px solid var(--tama-ink); }
-.pet-card-label { font-size: 13px; }
+.pet-card-label { font-size: var(--font-label); line-height: var(--line-label); }
 
 .question-pet-preview,
 .question-pet-preview * {
@@ -1189,25 +1229,25 @@
   box-shadow: 6px 6px 0 #000;
 }
 .player-setup-title {
-  font-size: clamp(32px, 4.8vw, 56px) !important;
+  font-size: var(--font-title) !important;
   letter-spacing: 0.01em;
 }
 .player-setup-description {
-  font-size: clamp(18px, 1.9vw, 24px) !important;
+  font-size: var(--font-body-large) !important;
   line-height: 1.65 !important;
 }
 .player-setup-label {
-  font-size: clamp(18px, 1.8vw, 24px) !important;
+  font-size: var(--font-label) !important;
   color: #000;
 }
 .player-setup-field {
-  font-size: clamp(20px, 2vw, 26px) !important;
+  font-size: var(--font-body-large) !important;
   border-color: #000 !important;
   box-shadow: inset 3px 3px 0 color-mix(in srgb, #000 12%, transparent);
 }
 .player-setup-action {
   min-height: 58px;
-  font-size: clamp(22px, 2.2vw, 30px) !important;
+  font-size: var(--font-subheading) !important;
   border-color: #000 !important;
   box-shadow: 4px 4px 0 #000 !important;
 }
@@ -1383,4 +1423,126 @@
 .mobile-rules-drawer,
 .mobile-stats-bar {
   z-index: 70 !important;
+}
+
+/* Professional UI cleanup guardrail: all always-visible top-right controls must live inside .floating-ui-layer. Do not independently position new top-right controls. */
+.floating-ui-layer {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--floating-gap));
+  right: calc(var(--safe-right) + var(--floating-gap));
+  z-index: var(--z-floating-global);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: var(--floating-gap);
+  max-width: min(340px, calc(100vw - var(--safe-left) - var(--safe-right) - (var(--floating-gap) * 2)));
+  pointer-events: none;
+}
+.floating-ui-layer > *,
+.floating-ui-layer button,
+.floating-ui-layer select {
+  pointer-events: auto;
+}
+.floating-ui-layer .global-language-menu,
+.floating-ui-layer .map-zoom-controls,
+.floating-ui-layer .observer-close,
+.floating-ui-layer .observer-zoom {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+}
+.floating-ui-layer .global-language-menu {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--floating-gap);
+}
+.floating-ui-layer .observer-close {
+  order: 2;
+  width: var(--control-size);
+  height: var(--control-size);
+}
+.floating-ui-layer .map-zoom-controls {
+  order: 3;
+  height: var(--control-size);
+}
+.floating-ui-layer .map-zoom-controls button,
+.floating-ui-layer .global-language-trigger {
+  width: var(--control-size);
+  min-width: var(--control-size);
+  min-height: var(--control-size);
+}
+.world-split-toolbar,
+.question-response-panel,
+.mobile-rules-drawer,
+.rpg-dialogue-header {
+  padding-right: max(72px, calc(var(--safe-right) + var(--control-size) + (var(--floating-gap) * 2))) !important;
+}
+.question-response-panel > button.float-right,
+.mobile-rules-drawer > button.float-right {
+  margin-right: calc(-1 * max(48px, var(--control-size)));
+}
+.pet-detail-header {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.pet-detail-section {
+  margin-top: 16px;
+}
+.pet-detail-kicker {
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pet-response-input {
+  margin-top: 10px;
+  line-height: var(--line-body);
+}
+.pet-response-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.pet-response-item {
+  padding: 10px 0;
+  border-top: 2px solid #000;
+}
+.pet-response-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+  opacity: 0.72;
+}
+.pet-response-empty {
+  margin-top: 10px;
+  opacity: 0.72;
+}
+@media (max-width: 430px) {
+  .floating-ui-layer {
+    max-width: calc((var(--control-size) * 2) + var(--floating-gap));
+  }
+  .floating-ui-layer .global-language-menu {
+    max-width: 100%;
+  }
+  .global-language-options {
+    max-width: calc(100vw - var(--safe-left) - var(--safe-right) - (var(--floating-gap) * 2));
+  }
+  .question-response-panel,
+  .mobile-rules-drawer,
+  .world-split-toolbar,
+  .rpg-dialogue-header {
+    padding-right: 14px !important;
+  }
+  .question-response-panel > button.float-right,
+  .mobile-rules-drawer > button.float-right {
+    margin-right: 0;
+  }
+  .pet-detail-header {
+    gap: 12px;
+  }
 }
