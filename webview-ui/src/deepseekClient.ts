@@ -148,12 +148,17 @@ export async function askDeepSeekPersona({
     throw new Error('DeepSeek proxy is not configured.');
   }
 
-  const languageInstruction =
+  const languageInstruction = [
+    'Detect the player question language and reply in that same language.',
+    'If the question is Thai, reply in Thai. If it is English, reply in English. If it is Japanese, reply in Japanese. If it is Traditional Chinese, reply in Traditional Chinese.',
     preferredLanguage === 'zh-TW'
-      ? 'Reply in Traditional Chinese.'
-      : preferredLanguage === 'en'
-        ? 'Reply in English.'
-        : 'Reply in English for now.';
+      ? 'For UI-only prompts or ambiguous questions, use Traditional Chinese.'
+      : preferredLanguage === 'ja'
+        ? 'For UI-only prompts or ambiguous questions, use Japanese.'
+        : preferredLanguage === 'th'
+          ? 'For UI-only prompts or ambiguous questions, use Thai.'
+          : 'For UI-only prompts or ambiguous questions, use English.',
+  ].join(' ');
   const primaryTranscript =
     preferredLanguage === 'zh-TW'
       ? knowledge.transcript_zh || knowledge.transcript_en

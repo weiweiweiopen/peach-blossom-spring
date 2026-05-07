@@ -45,6 +45,7 @@ export function PlayerSetup({
   defaultProfile,
 }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
+  const hatchRef = useRef<HTMLElement | null>(null);
   const [question, setQuestion] = useState(
     defaultProfile?.question ?? defaultProfile?.mission ?? "",
   );
@@ -75,6 +76,9 @@ export function PlayerSetup({
     setPetSeed(nextSeed);
     setHasHatched(true);
     setIsBooting(true);
+    window.requestAnimationFrame(() => {
+      hatchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     window.setTimeout(() => {
       const hatched = generateQuestionPet(questionText, nextSeed);
       onStart(
@@ -113,27 +117,6 @@ export function PlayerSetup({
         </header>
 
         <div className="player-setup-console">
-          <aside
-            className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
-            aria-live="polite"
-          >
-            <p className="pet-card-label">{t(language, "setup.title")}</p>
-            <div className="question-hatch-screen">
-              {hasHatched ? (
-                <QuestionPetPreview
-                  question={question || t(language, "setup.questionPlaceholder")}
-                  appearance={appearance}
-                  size={12}
-                />
-              ) : (
-                <div className="question-hatch-egg">?</div>
-              )}
-            </div>
-            <p className="pet-card-label question-hatch-status">
-              {hasHatched ? t(language, "setup.born") : t(language, "setup.blank")}
-            </p>
-          </aside>
-
           <section className="player-setup-controls" aria-label={t(language, "setup.petControls")}>
             <label className="player-setup-label" htmlFor="question-pet-name">
               {t(language, "setup.nameLabel")}
@@ -193,6 +176,28 @@ export function PlayerSetup({
               )}
             </button>
           </section>
+
+          <aside
+            ref={hatchRef}
+            className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
+            aria-live="polite"
+          >
+            <p className="pet-card-label">{t(language, "setup.title")}</p>
+            <div className="question-hatch-screen">
+              {hasHatched ? (
+                <QuestionPetPreview
+                  question={question || t(language, "setup.questionPlaceholder")}
+                  appearance={appearance}
+                  size={12}
+                />
+              ) : (
+                <div className="question-hatch-egg">?</div>
+              )}
+            </div>
+            <p className="pet-card-label question-hatch-status">
+              {hasHatched ? t(language, "setup.born") : t(language, "setup.blank")}
+            </p>
+          </aside>
         </div>
       </form>
     </div>

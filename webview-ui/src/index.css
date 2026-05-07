@@ -2355,3 +2355,96 @@
 .question-pet-preview {
   background: var(--palette-cream) !important;
 }
+
+/* 2026-05 interaction fixes: one monochrome globe, restored half split, and cleaner dialogue chrome. */
+.global-language-trigger {
+  display: inline-grid !important;
+  place-items: center;
+  color: #000 !important;
+  background: #fff !important;
+}
+
+.global-language-globe {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 34px;
+  border: 3px solid #000;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent 44%, #000 44% 56%, transparent 56%),
+    linear-gradient(0deg, transparent 44%, #000 44% 56%, transparent 56%),
+    radial-gradient(ellipse at center, transparent 46%, #000 47% 53%, transparent 54%);
+}
+
+.rpg-dialogue-panel {
+  position: relative;
+}
+
+.rpg-dialogue-x {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000;
+  line-height: 1;
+}
+
+.rpg-dialogue-header {
+  padding-right: 58px !important;
+}
+
+.world-split-panel {
+  z-index: var(--z-layer-dialogue) !important;
+}
+
+@media (min-width: 901px) and (pointer: fine) {
+  .world-split-active .rpg-dialogue-overlay {
+    padding: max(18px, var(--safe-top)) 18px max(18px, var(--safe-bottom)) max(18px, var(--safe-left)) !important;
+  }
+
+  .world-split-active .rpg-dialogue-panel {
+    width: 100% !important;
+    height: calc(100dvh - max(18px, var(--safe-top)) - max(18px, var(--safe-bottom))) !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    align-items: flex-start;
+    padding-top: max(24px, env(safe-area-inset-top));
+  }
+
+  .player-setup-header {
+    margin-bottom: 18px;
+  }
+
+  .player-setup-console {
+    grid-template-columns: 1fr;
+  }
+
+  .player-setup-controls {
+    order: 1;
+  }
+
+  .question-hatch-device {
+    order: 2;
+    display: none;
+    scroll-margin-top: max(18px, env(safe-area-inset-top));
+  }
+
+  .question-hatch-device.is-hatching {
+    display: flex;
+  }
+}
