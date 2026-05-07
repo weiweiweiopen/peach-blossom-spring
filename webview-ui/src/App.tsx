@@ -1511,7 +1511,9 @@ function App() {
             aria-expanded={languageMenuOpen}
             onClick={() => setLanguageMenuOpen((open) => !open)}
           >
-            <span className="global-language-globe" aria-hidden="true" />
+            <span className="global-language-globe" aria-hidden="true">
+              🌏
+            </span>
           </button>
           {languageMenuOpen && (
             <div className="global-language-options" role="menu">
