@@ -327,13 +327,18 @@ function getOfficeState(): OfficeState {
 }
 
 function App() {
-  // Browser runtime (dev or static dist): dispatch mock messages after the
-  // useExtensionMessages listener has been registered.
+  // Browser runtime (dev or static dist): start React immediately, then load
+  // heavy mock assets in the background and dispatch after listeners exist.
   useEffect(() => {
     if (isBrowserRuntime) {
-      void import("./browserMock.js").then(({ dispatchMockMessages }) =>
-        dispatchMockMessages(),
-      );
+      void import("./browserMock.js")
+        .then(async ({ dispatchMockMessages, initBrowserMock }) => {
+          await initBrowserMock();
+          dispatchMockMessages();
+        })
+        .catch((error: unknown) => {
+          console.error("[BrowserMock] Failed to initialize", error);
+        });
     }
   }, []);
 
@@ -1459,8 +1464,12 @@ function App() {
 
   if (!layoutReady) {
     return (
-      <div className="w-full h-full flex items-center justify-center ">
-        Loading...
+      <div className="boot-loading-screen" role="status" aria-live="polite">
+        <div className="boot-loading-card">
+          <p className="boot-loading-title">Peach Blossom Spring</p>
+          <p className="boot-loading-copy">Loading NGM Office assets...</p>
+          <span className="boot-loading-dots" aria-hidden="true" />
+        </div>
       </div>
     );
   }
