@@ -610,7 +610,7 @@
         color-mix(in srgb, var(--palette-pink) 56%, transparent) 0 2px,
         transparent 3px
       ),
-      var(--palette-blue);
+      linear-gradient(135deg, var(--palette-cream), var(--palette-silver));
   }
 
   .question-hatch-panel,
@@ -703,7 +703,7 @@
 .question-response-panel,
 .mobile-rules-drawer {
   color: var(--tama-ink);
-  background: color-mix(in srgb, var(--tama-mint) 88%, white 12%);
+  background: color-mix(in srgb, var(--tama-mint) 88%, var(--palette-cream) 12%);
   border: 4px solid var(--tama-ink);
   box-shadow: var(--shadow-pixel);
 }
@@ -743,7 +743,7 @@
   border: 4px solid var(--tama-ink);
 }
 .player-setup-field:focus {
-  border-color: var(--tama-teal);
+  border-color: var(--palette-pink);
 }
 .player-setup-action {
   font-size: 21px;
@@ -754,6 +754,9 @@
   background: var(--tama-teal);
   border: 3px solid var(--tama-ink);
   color: var(--tama-ink);
+}
+.player-setup-action.mode-primary {
+  background: var(--palette-yellow);
 }
 .mode-secondary {
   background: var(--tama-yellow-light);
@@ -1524,8 +1527,8 @@
 
 /* 2026 flow cleanup: readable low-res Tamagotchi boot UI, reliable split controls. */
 .player-setup-panel.question-hatch-panel {
-  border-color: #000;
-  box-shadow: 6px 6px 0 #000;
+  border-color: var(--palette-ink);
+  box-shadow: 6px 6px 0 var(--palette-ink);
 }
 .player-setup-title {
   font-size: var(--font-title) !important;
@@ -1537,22 +1540,23 @@
 }
 .player-setup-label {
   font-size: var(--font-label) !important;
-  color: #000;
+  color: var(--palette-ink);
 }
 .player-setup-field {
   font-size: var(--font-body-large) !important;
-  border-color: #000 !important;
-  box-shadow: inset 3px 3px 0 color-mix(in srgb, #000 12%, transparent);
+  border-color: var(--palette-ink) !important;
+  box-shadow: inset 3px 3px 0
+    color-mix(in srgb, var(--palette-ink) 12%, transparent);
 }
 .player-setup-action {
   min-height: 58px;
   font-size: var(--font-subheading) !important;
-  border-color: #000 !important;
-  box-shadow: 4px 4px 0 #000 !important;
+  border-color: var(--palette-ink) !important;
+  box-shadow: 4px 4px 0 var(--palette-ink) !important;
 }
 .question-hatch-device {
-  border-color: #000 !important;
-  box-shadow: 4px 4px 0 #000 !important;
+  border-color: var(--palette-ink) !important;
+  box-shadow: 4px 4px 0 var(--palette-ink) !important;
 }
 .question-hatch-screen {
   display: grid;
@@ -1563,29 +1567,30 @@
   background:
     linear-gradient(
       45deg,
-      color-mix(in srgb, var(--palette-blue) 34%, transparent) 25%,
+      color-mix(in srgb, var(--palette-yellow) 34%, transparent) 25%,
       transparent 25% 75%,
       color-mix(in srgb, var(--palette-pink) 38%, transparent) 75%
     ),
     var(--palette-cream);
   background-size: 18px 18px;
-  border: 4px solid #000;
-  box-shadow: inset 3px 3px 0 color-mix(in srgb, #000 16%, transparent);
+  border: 4px solid var(--palette-ink);
+  box-shadow: inset 3px 3px 0
+    color-mix(in srgb, var(--palette-ink) 16%, transparent);
 }
 .question-hatch-egg {
   display: grid;
   place-items: center;
   width: 92px;
   height: 118px;
-  color: #000;
+  color: var(--palette-ink);
   background: var(--palette-yellow);
-  border: 4px solid #000;
+  border: 4px solid var(--palette-ink);
   border-radius: 48% 48% 44% 44%;
   font-size: 42px;
 }
 .question-hatch-device.is-hatching .question-pet-preview {
   animation: pet-hatch-pop 0.78s steps(4, end) both;
-  border-color: #000 !important;
+  border-color: var(--palette-ink) !important;
 }
 @keyframes pet-hatch-pop {
   0% {
@@ -2130,9 +2135,13 @@
 .player-setup-controls,
 .question-hatch-device {
   border: 4px solid var(--lcd-ink);
-  background: color-mix(in srgb, var(--palette-cream) 88%, white 12%);
+  background: color-mix(
+    in srgb,
+    var(--palette-cream) 88%,
+    var(--palette-pink) 12%
+  );
   box-shadow: 8px 8px 0
-    color-mix(in srgb, var(--palette-blue) 55%, var(--lcd-ink) 45%);
+    color-mix(in srgb, var(--palette-silver) 55%, var(--lcd-ink) 45%);
 }
 
 .player-setup-controls {
@@ -2344,5 +2353,5 @@
 
 /* Question pets are colorful creatures now; keep the preview stage warm and neutral. */
 .question-pet-preview {
-  background: #fff7d6 !important;
+  background: var(--palette-cream) !important;
 }
