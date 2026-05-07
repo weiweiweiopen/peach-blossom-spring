@@ -27,25 +27,25 @@ function ReportList({ title, items }: { title: string; items: string[] }) {
 }
 
 function buildReportMarkdown(report: ExpeditionReport, language: LanguageCode): string {
-  const title = language === 'zh-TW' ? '桃花源派遣why星人報告' : 'Peach Blossom Spring Mr. WHY Report';
+  const title = t(language, 'expedition.reportTitle');
   const sections: Array<[string, string[]]> = [
-    [language === 'zh-TW' ? '關鍵遭遇' : 'Key Encounters', report.keyEncounters],
-    [language === 'zh-TW' ? 'NPC 分歧' : 'NPC Disagreements', report.disagreementsBetweenNpcs],
-    [language === 'zh-TW' ? '盲點' : 'Blind Spots', report.blindSpots],
-    [language === 'zh-TW' ? '下一步行動' : 'Concrete Next Actions', report.concreteNextActions],
-    [language === 'zh-TW' ? '後續問題' : 'Follow-Up Questions', report.followUpQuestions],
-    [language === 'zh-TW' ? '招募 / 研究線索' : 'Open-Call / Research Leads', report.openCallResearchLeads],
+    [t(language, 'expedition.keyEncounters'), report.keyEncounters],
+    [t(language, 'expedition.npcDisagreements'), report.disagreementsBetweenNpcs],
+    [t(language, 'expedition.blindSpots'), report.blindSpots],
+    [t(language, 'expedition.nextActions'), report.concreteNextActions],
+    [t(language, 'expedition.followUpQuestions'), report.followUpQuestions],
+    [t(language, 'expedition.researchLeads'), report.openCallResearchLeads],
   ];
   return [
     `# ${title}`,
     '',
-    `## ${language === 'zh-TW' ? '原始任務' : 'Original Mission'}`,
+    `## ${t(language, 'expedition.originalMission')}`,
     report.originalMission,
     '',
-    `## ${language === 'zh-TW' ? '重新詮釋的任務' : 'Interpreted Mission'}`,
+    `## ${t(language, 'expedition.interpretedMission')}`,
     report.interpretedMission,
     '',
-    `## ${language === 'zh-TW' ? '湧現方向' : 'Emergent Direction'}`,
+    `## ${t(language, 'expedition.emergentDirection')}`,
     report.strongestEmergentDirection,
     '',
     ...sections.flatMap(([heading, items]) => [`## ${heading}`, ...items.map((item) => `- ${item}`), '']),
@@ -109,7 +109,7 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = language === 'zh-TW' ? '桃花源-派遣why星人報告.md' : 'peach-blossom-mr-why-report.md';
+    link.download = t(language, 'expedition.reportFilename');
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -121,20 +121,20 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
       <div className="h-full w-full overflow-auto px-8 py-7 text-text shadow-pixel">
         <div className="flex items-start justify-between gap-6 mb-6">
           <div>
-            <p className="text-xs uppercase tracking-wide text-accent-bright mb-2">{t(language, 'templateSimulation')}</p>
-            <h2 className="text-2xl leading-none">{t(language, 'expeditionTitle')}</h2>
-            <p className="text-base text-text mt-3 leading-snug">{t(language, 'expeditionDescription')}</p>
+            <p className="text-xs uppercase tracking-wide text-accent-bright mb-2">{t(language, 'expedition.templateSimulation')}</p>
+            <h2 className="text-2xl leading-none">{t(language, 'expedition.title')}</h2>
+            <p className="text-base text-text mt-3 leading-snug">{t(language, 'expedition.description')}</p>
           </div>
           <button className="text-2xl text-text hover:text-accent-bright" type="button" onClick={onClose}>x</button>
         </div>
 
         <div className="border border-border bg-bg px-5 py-4 mb-5">
-          <p className="text-base text-accent-bright mb-1">{t(language, 'expeditionPlayerSummary')}: {avatar.name} / {avatar.currentRole}</p>
-          <p className="text-base text-text">{t(language, 'expeditionConstraints')}: {avatar.constraints?.trim() || t(language, 'expeditionNoConstraints')}</p>
-          <p className="text-base text-text mt-2">{t(language, 'expeditionSkills')}: {avatar.skills?.trim() || t(language, 'expeditionNoConstraints')}</p>
+          <p className="text-base text-accent-bright mb-1">{t(language, 'expedition.playerSummary')}: {avatar.name} / {avatar.currentRole}</p>
+          <p className="text-base text-text">{t(language, 'expedition.constraints')}: {avatar.constraints?.trim() || t(language, 'expedition.noConstraints')}</p>
+          <p className="text-base text-text mt-2">{t(language, 'expedition.skills')}: {avatar.skills?.trim() || t(language, 'expedition.noConstraints')}</p>
         </div>
 
-        <label className="block text-base text-text mb-2" htmlFor="expedition-mission">{t(language, 'expeditionMission')}</label>
+        <label className="block text-base text-text mb-2" htmlFor="expedition-mission">{t(language, 'expedition.mission')}</label>
         <textarea
           id="expedition-mission"
           className="w-full min-h-[110px] bg-bg border-2 border-border px-4 py-3 text-base text-text outline-none focus:border-accent-bright mb-5"
@@ -143,7 +143,7 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
         />
 
         <div className="flex flex-wrap items-center gap-3 mb-5">
-          <span className="text-base text-text">{t(language, 'expeditionMaxRounds')}</span>
+          <span className="text-base text-text">{t(language, 'expedition.maxRounds')}</span>
           {[5, 10, 20].map((rounds) => (
             <button
               key={rounds}
@@ -157,7 +157,7 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
         </div>
 
         <div className="mb-6">
-          <p className="text-base text-text mb-3">{t(language, 'expeditionSelectedNpcs')}</p>
+          <p className="text-base text-text mb-3">{t(language, 'expedition.selectedNpcs')}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {personas.map((persona) => (
               <label key={persona.id} className="border border-border bg-bg/60 px-3 py-3 text-sm cursor-pointer">
@@ -179,13 +179,13 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
           onClick={handleRun}
           disabled={isRunning}
         >
-          {isRunning ? t(language, 'expeditionRunning') : t(language, 'expeditionRun')}
+          {isRunning ? t(language, 'expedition.running') : t(language, 'expedition.run')}
         </button>
 
         <div className="mt-7 border border-border bg-bg px-5 py-5">
-          <h3 className="text-lg text-accent-bright mb-4">{t(language, 'expeditionLiveLog')}</h3>
+          <h3 className="text-lg text-accent-bright mb-4">{t(language, 'expedition.liveLog')}</h3>
           {visibleEvents.length === 0 ? (
-            <p className="text-base text-text">{t(language, 'expeditionNoEvents')}</p>
+            <p className="text-base text-text">{t(language, 'expedition.noEvents')}</p>
           ) : (
             <div className="flex flex-col gap-4">
               {visibleEvents.map((event) => {
@@ -193,12 +193,12 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
                 return (
                   <article key={`${event.round}-${event.npcId}`} className="border border-border bg-bg px-4 py-4">
                     <p className="text-base text-accent-bright mb-2">
-                      {t(language, 'expeditionRound')} {event.round}: {persona?.name ?? event.npcId} / {event.encounterType}
+                      {t(language, 'expedition.round')} {event.round}: {persona?.name ?? event.npcId} / {event.encounterType}
                     </p>
                     <p className="text-base leading-relaxed whitespace-pre-wrap mb-2">{event.npcContribution}</p>
-                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expeditionChallenge')}: {event.challengeToUser}</p>
-                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expeditionLead')}: {event.newLead}</p>
-                    <p className="text-base leading-relaxed text-text">{t(language, 'expeditionNextQuestion')}: {event.nextQuestion}</p>
+                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.challenge')}: {event.challengeToUser}</p>
+                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.lead')}: {event.newLead}</p>
+                    <p className="text-base leading-relaxed text-text">{t(language, 'expedition.nextQuestion')}: {event.nextQuestion}</p>
                   </article>
                 );
               })}
@@ -209,23 +209,23 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
         {report && (
           <div className="mt-7 flex flex-col gap-4">
             <div className="border-2 border-accent-bright bg-bg/80 px-5 py-5">
-              <h3 className="text-xl text-accent-bright mb-3">{t(language, 'expeditionReport')}</h3>
-              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expeditionOriginalMission')}: </span>{report.originalMission}</p>
-              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expeditionInterpretedMission')}: </span>{report.interpretedMission}</p>
-              <p className="text-base leading-relaxed"><span className="text-accent-bright">{t(language, 'expeditionEmergentDirection')}: </span>{report.strongestEmergentDirection}</p>
+              <h3 className="text-xl text-accent-bright mb-3">{t(language, 'expedition.report')}</h3>
+              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.originalMission')}: </span>{report.originalMission}</p>
+              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.interpretedMission')}: </span>{report.interpretedMission}</p>
+              <p className="text-base leading-relaxed"><span className="text-accent-bright">{t(language, 'expedition.emergentDirection')}: </span>{report.strongestEmergentDirection}</p>
             </div>
-            <ReportList title={t(language, 'expeditionKeyEncounters')} items={report.keyEncounters} />
-            <ReportList title={t(language, 'expeditionNpcDisagreements')} items={report.disagreementsBetweenNpcs} />
-            <ReportList title={t(language, 'expeditionBlindSpots')} items={report.blindSpots} />
-            <ReportList title={t(language, 'expeditionNextActions')} items={report.concreteNextActions} />
-            <ReportList title={t(language, 'expeditionFollowUpQuestions')} items={report.followUpQuestions} />
-            <ReportList title={t(language, 'expeditionResearchLeads')} items={report.openCallResearchLeads} />
+            <ReportList title={t(language, 'expedition.keyEncounters')} items={report.keyEncounters} />
+            <ReportList title={t(language, 'expedition.npcDisagreements')} items={report.disagreementsBetweenNpcs} />
+            <ReportList title={t(language, 'expedition.blindSpots')} items={report.blindSpots} />
+            <ReportList title={t(language, 'expedition.nextActions')} items={report.concreteNextActions} />
+            <ReportList title={t(language, 'expedition.followUpQuestions')} items={report.followUpQuestions} />
+            <ReportList title={t(language, 'expedition.researchLeads')} items={report.openCallResearchLeads} />
             <button
               className="w-full bg-accent text-white border-2 border-accent px-6 py-4 text-lg shadow-pixel"
               type="button"
               onClick={handleDownloadReport}
             >
-              {language === 'zh-TW' ? '下載 .md 報告' : 'Download .md report'}
+              {t(language, 'expedition.downloadReport')}
             </button>
           </div>
         )}

@@ -96,9 +96,13 @@ function shorten(text: string, max: number): string {
 }
 
 function makeFixedQuestions(language: LanguageCode): string[] {
-  return language === 'zh-TW'
-    ? ['你是誰？', '這裡是哪裡？', '你可以給我一些意見嗎？']
-    : ['Who are you?', 'Where am I?', 'Can you give me some advice?'];
+  const questions: Record<LanguageCode, string[]> = {
+    'zh-TW': ['你是誰？', '這裡是哪裡？', '你可以給我一些意見嗎？'],
+    en: ['Who are you?', 'Where am I?', 'Can you give me some advice?'],
+    ja: ['あなたは誰？', 'ここはどこ？', '何か助言をもらえる？'],
+    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', 'ช่วยให้คำแนะนำฉันได้ไหม?'],
+  };
+  return questions[language];
 }
 
 function makeSuggestedQuestions(
@@ -118,10 +122,10 @@ function makeSuggestedQuestions(
     .filter((line) => line.length > (language === 'zh-TW' ? 18 : 40));
   const candidates = sourceLines.length > 0 ? sourceLines : fallbackLines;
   const mission = shorten(
-    player.mission?.trim() || (language === 'zh-TW' ? '我正在想的這個任務' : 'the mission I am working on'),
+    player.mission?.trim() || t(language, 'dialogue.fallbackMission'),
     language === 'zh-TW' ? 34 : 72,
   );
-  const skills = shorten(player.skills?.trim() || (language === 'zh-TW' ? '我的技能' : 'my skills'), language === 'zh-TW' ? 22 : 48);
+  const skills = shorten(player.skills?.trim() || t(language, 'dialogue.fallbackSkills'), language === 'zh-TW' ? 22 : 48);
   const role = shorten(persona.role, language === 'zh-TW' ? 24 : 48);
   const snippets = candidates.map((item) => cleanPromptSnippet(item, language)).filter(Boolean);
   const offset = snippets.length > 0 ? (seed + persona.id.length) % snippets.length : 0;
@@ -142,7 +146,27 @@ function makeSuggestedQuestions(
     `From your experience, where might this idea get stuck?`,
     `If we just met, what would you ask me first?`,
   ];
-  const templates = language === 'zh-TW' ? zhTemplates : enTemplates;
+  const jaTemplates = [
+    `あなたは${role}として活動しているのですね。「${mission}」についてどう思いますか？`,
+    `「${skills}」から始めるなら、最初に何を避けるべきですか？`,
+    `さきほどの「${detail}」は、私の任務とどうつながりますか？`,
+    `あなたの経験では、このアイデアはどこで詰まりやすいですか？`,
+    `初対面なら、まず私にどんな質問をしますか？`,
+  ];
+  const thTemplates = [
+    `คุณทำงานกับ${role} คุณคิดอย่างไรกับ “${mission}”?`,
+    `ถ้าฉันเริ่มจาก “${skills}” ควรระวังอะไรเป็นอย่างแรก?`,
+    `คุณพูดถึง “${detail}” สิ่งนี้เกี่ยวกับภารกิจของฉันอย่างไร?`,
+    `จากประสบการณ์ของคุณ ไอเดียนี้อาจติดขัดตรงไหน?`,
+    `ถ้าเราเพิ่งรู้จักกัน คุณจะถามฉันเรื่องอะไรก่อน?`,
+  ];
+  const templatesByLanguage: Record<LanguageCode, string[]> = {
+    'zh-TW': zhTemplates,
+    en: enTemplates,
+    ja: jaTemplates,
+    th: thTemplates,
+  };
+  const templates = templatesByLanguage[language];
   return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
 }
 
@@ -236,7 +260,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       });
       setMessages((prev) => [...prev, { speaker: persona.name, text: answer }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'DeepSeek proxy request failed.');
+      setError(err instanceof Error ? err.message : t(language, 'dialogue.requestFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -259,7 +283,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <PixelAvatar avatar={npcAvatar} label={persona.name} />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker text-lg uppercase tracking-wide text-accent-bright mb-2">{t(language, 'wanderAndTalk')}</p>
+              <p className="rpg-dialogue-kicker text-lg uppercase tracking-wide text-accent-bright mb-2">{t(language, 'home.wanderAndTalk')}</p>
               <h2 className="rpg-dialogue-name text-2xl leading-none">{persona.name}</h2>
               <p className="rpg-dialogue-role text-xl text-text-muted mt-2">{persona.role}</p>
             </div>
@@ -282,7 +306,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             ))}
             {isLoading && (
               <p className="rpg-dialogue-thinking text-base text-text-muted">
-                {persona.name} {t(language, 'thinking')}
+                {persona.name} {t(language, 'dialogue.thinking')}
               </p>
             )}
           </div>
@@ -295,14 +319,14 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             aria-expanded={areSuggestionsOpen}
             onClick={() => setAreSuggestionsOpen((prev) => !prev)}
           >
-            {language === 'zh-TW' ? '問我一個問題' : 'Ask me a question'} {areSuggestionsOpen ? '▲' : '▼'}
+            {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
           </button>
           <button
             className="rpg-dialogue-wiki-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
             type="button"
             onClick={onOpenWiki}
           >
-            📚 {t(language, 'wiki')}
+            📚 {t(language, 'dialogue.openWiki')}
           </button>
           {areSuggestionsOpen && (
             <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
@@ -339,21 +363,21 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            placeholder={`${persona.name} - ${t(language, 'askAnything')}`}
+            placeholder={t(language, 'dialogue.inputPlaceholder', { name: persona.name })}
           />
           <button
             className="rpg-dialogue-submit bg-accent text-white border-2 border-accent px-10 py-5 text-xl disabled:opacity-50"
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? '...' : t(language, 'talk')}
+            {isLoading ? '...' : t(language, 'dialogue.talkButton')}
           </button>
           <button
             className="rpg-dialogue-close-secondary bg-bg text-text border-2 border-border px-10 py-5 text-xl"
             type="button"
             onClick={onClose}
           >
-            {t(language, 'close')}
+            {t(language, 'common.close')}
           </button>
         </form>
 

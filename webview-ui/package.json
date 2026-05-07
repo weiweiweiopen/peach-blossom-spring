@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "pretest": "npm run check:secrets",
-    "test": "node --import tsx/esm --test test/*.test.ts"
+    "test": "node --import tsx/esm --test test/*.test.ts",
+    "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
