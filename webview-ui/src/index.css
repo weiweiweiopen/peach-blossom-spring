@@ -2446,6 +2446,9 @@
   position: fixed;
   z-index: calc(var(--z-layer-hud) + 40);
 }
+.floating-ui-layer {
+  z-index: calc(var(--z-layer-hud) + 60) !important;
+}
 
 /* Question pets are colorful creatures now; keep the preview stage warm and neutral. */
 .question-pet-preview {
