@@ -2594,7 +2594,17 @@
 
   .question-hatch-device {
     order: 2;
+    min-height: auto;
     scroll-margin-top: max(18px, env(safe-area-inset-top));
+  }
+
+  .question-hatch-screen,
+  .question-hatch-actions {
+    width: min(100%, 220px);
+  }
+
+  .question-hatch-screen {
+    margin: 8px auto 10px;
   }
 }
 
