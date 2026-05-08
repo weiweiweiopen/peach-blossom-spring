@@ -2361,6 +2361,10 @@
   font-size: clamp(23px, 2.6vw, 34px);
 }
 
+:lang(zh-TW) .player-setup-description {
+  font-size: clamp(23px, 2.6vw, 34px);
+}
+
 :lang(en) .player-setup-label,
 :lang(en) .pet-card-label,
 :lang(en) .question-hatch-status {

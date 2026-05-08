@@ -18,9 +18,9 @@ const id: typeof zhTW = {
   },
   home: {
     ngmLabel: "Non-Governmental Matters",
-    title: "Peach Blossom Spring: Mengirim Simulator Kehidupan yang Berpikir",
+    title: "桃花源：可思考的生命模擬器派遣",
     subtitle: "Dimensi fabel interaktif untuk Non-Governmental Matters",
-    description: "Ini adalah dimensi fabel interaktif tempat teman-teman aneh membuat musik dan bereksperimen bersama. Kamu menemukan jalan ke sini secara tidak sengaja, dan kini kamu dapat menjelajah serta mengumpulkan cara membangun utopia. Bicaralah dengan bebas bersama teman-teman yang tinggal di sini; setiap pendapat menyimpan harta. Ingatlah bahwa semua tindakanmu memengaruhi dunia bebas ini, dan kamu mungkin menemukan bagaimana mimpi bertaut dengan kenyataan.",
+    description: "這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著，你無意間闖入這個世界並試圖探索並收集如何建造一個烏托邦的方法和試著記住回到這裡的路...\n\n這個遊戲的本體是一個研究訪談稿\"Non-Governmental Matters\"，該研究採訪了14位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。這些受訪者的看法被轉化成遊戲裡可以以自然語言進行交談的NPC，背後的大語言模型目前是經訪談逐字稿調校過後的Deepseek flash。你還可以用一個問題創造出一隻電子雞，這個電子雞會隨著與遊戲世界的互動而成長，最後得到一個經由社群集體智能處理過後的解決方案與回應。在遊戲的中央放置了研究案的文本、社群最新消息和社群地圖，歡迎隨便到處逛逛！",
     createProtagonist: "Buat protagonis",
     createTraveler: "Buat pengelana dunia lain",
     playerNameLabel: "Nama",

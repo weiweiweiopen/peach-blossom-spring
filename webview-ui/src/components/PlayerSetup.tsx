@@ -206,9 +206,6 @@ export function PlayerSetup({
                   fill
                 />
               </div>
-              <p className="pet-card-label question-hatch-status">
-                {t(language, "setup.fixedPetMenu")}
-              </p>
               <div className="question-hatch-actions">
                 <button
                   className="player-setup-action mode-primary"
