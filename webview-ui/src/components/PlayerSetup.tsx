@@ -1,10 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 
 import { type LanguageCode, t } from "../i18n.js";
-import {
-  generateQuestionPet,
-  makePetSeed,
-} from "../pets/generateQuestionPet.js";
+import { generateQuestionPet } from "../pets/generateQuestionPet.js";
 import { type PetDispatch } from "../pets/petStore.js";
 import { QuestionPetPreview } from "../pets/QuestionPetPreview.js";
 
@@ -39,31 +36,50 @@ interface PlayerSetupProps {
   onClearArchive: () => void;
 }
 
+const fixedPetRoles = [
+  "artist",
+  "scientist",
+  "engineer",
+  "cook",
+  "dancer",
+  "workshopologist",
+  "drinker",
+  "socialist",
+  "professor",
+  "fire maker",
+  "tailor",
+  "musician",
+  "shaman",
+  "bubble maker",
+  "architect",
+  "herbalist",
+] as const;
+
+function normalizeFixedPetRole(seed: string | undefined): string {
+  const value = seed?.startsWith("fixed-pet:") ? seed.slice("fixed-pet:".length) : seed;
+  return fixedPetRoles.find((role) => role === value) ?? fixedPetRoles[0];
+}
+
 export function PlayerSetup({
   language,
   onStart,
   defaultProfile,
 }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const hatchRef = useRef<HTMLElement | null>(null);
   const [question, setQuestion] = useState(
     defaultProfile?.question ?? defaultProfile?.mission ?? "",
   );
-  const [petSeed, setPetSeed] = useState(
-    () =>
-      defaultProfile?.petSeed ??
-      makePetSeed(defaultProfile?.question ?? "question-pet", 1),
+  const [selectedPetRole, setSelectedPetRole] = useState(() =>
+    normalizeFixedPetRole(defaultProfile?.petSeed),
   );
-  const [hasHatched, setHasHatched] = useState(false);
-  const [isBooting, setIsBooting] = useState(false);
   const appearance = useMemo(
-    () => generateQuestionPet(question || t(language, "setup.questionPlaceholder"), petSeed),
-    [language, petSeed, question],
+    () => generateQuestionPet(selectedPetRole, `fixed-pet:${selectedPetRole}`),
+    [selectedPetRole],
   );
 
   function handleStart() {
     const formElement = formRef.current;
-    if (!formElement || isBooting) return;
+    if (!formElement) return;
     const form = new FormData(formElement);
     const name = String(form.get("name") ?? "").trim();
     const questionText = String(form.get("question") ?? "").trim();
@@ -72,30 +88,21 @@ export function PlayerSetup({
       formElement.reportValidity();
       return;
     }
-    const nextSeed = makePetSeed(`${name}|${questionText}|${skills}`);
-    setPetSeed(nextSeed);
-    setHasHatched(true);
-    setIsBooting(true);
-    window.requestAnimationFrame(() => {
-      hatchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    window.setTimeout(() => {
-      const hatched = generateQuestionPet(questionText, nextSeed);
-      onStart(
-        {
-          name,
-          palette: hatched.seed % 6,
-          avatarTitle: t(language, "setup.keeper"),
-          currentRole: t(language, "setup.keeper"),
-          mission: questionText,
-          question: questionText,
-          constraints: "",
-          skills,
-          petSeed: nextSeed,
-        },
-        "interactive",
-      );
-    }, 3000);
+    const petSeed = `fixed-pet:${selectedPetRole}`;
+    onStart(
+      {
+        name,
+        palette: appearance.seed % 6,
+        avatarTitle: selectedPetRole,
+        currentRole: t(language, "setup.keeper"),
+        mission: questionText,
+        question: questionText,
+        constraints: "",
+        skills,
+        petSeed,
+      },
+      "interactive",
+    );
   }
 
   return (
@@ -109,7 +116,6 @@ export function PlayerSetup({
         }}
       >
         <header className="player-setup-header">
-          <p className="player-setup-kicker">{t(language, "setup.kicker")}</p>
           <h1 className="player-setup-title">{t(language, "home.title")}</h1>
           <p className="player-setup-description">
             {t(language, "home.description")}
@@ -136,6 +142,23 @@ export function PlayerSetup({
                 autoFocus
               />
 
+              <label className="player-setup-label" htmlFor="question-pet-role">
+                {language === "zh-TW" ? "選擇電子雞" : "Choose pet"}
+              </label>
+              <select
+                id="question-pet-role"
+                name="petRole"
+                className="player-setup-field"
+                value={selectedPetRole}
+                onChange={(event) => setSelectedPetRole(event.target.value)}
+              >
+                {fixedPetRoles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+
               <label
                 className="player-setup-label"
                 htmlFor="question-pet-question"
@@ -151,7 +174,6 @@ export function PlayerSetup({
                 value={question}
                 onChange={(event) => {
                   setQuestion(event.target.value);
-                  setHasHatched(false);
                 }}
                 placeholder={t(language, "setup.questionPlaceholder")}
               />
@@ -170,36 +192,27 @@ export function PlayerSetup({
               />
 
               <button
-                className={`player-setup-action mode-primary ${isBooting ? "is-booting" : ""}`}
+                className="player-setup-action mode-primary"
                 type="submit"
-                disabled={isBooting}
               >
                 <span>{t(language, "home.startButton")}</span>
-                {isBooting && (
-                  <span className="pixel-spinner" aria-hidden="true" />
-                )}
               </button>
             </section>
 
             <aside
-              ref={hatchRef}
-              className={`question-hatch-device ${hasHatched ? "is-hatching" : ""}`}
+              className="question-hatch-device is-hatching"
               aria-live="polite"
             >
-              <p className="pet-card-label">{t(language, "setup.title")}</p>
+              <p className="pet-card-label">{selectedPetRole}</p>
               <div className="question-hatch-screen">
-                {hasHatched ? (
-                  <QuestionPetPreview
-                    question={question || t(language, "setup.questionPlaceholder")}
-                    appearance={appearance}
-                    size={12}
-                  />
-                ) : (
-                  <div className="question-hatch-egg">?</div>
-                )}
+                <QuestionPetPreview
+                  question={selectedPetRole}
+                  appearance={appearance}
+                  size={12}
+                />
               </div>
               <p className="pet-card-label question-hatch-status">
-                {hasHatched ? t(language, "setup.born") : t(language, "setup.blank")}
+                {language === "zh-TW" ? "固定電子雞選單" : "Fixed pet menu"}
               </p>
             </aside>
           </div>

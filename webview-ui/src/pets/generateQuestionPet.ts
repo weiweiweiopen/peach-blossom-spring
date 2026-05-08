@@ -384,7 +384,11 @@ export function makePetSeed(question: string, nonce = Date.now()): string {
 
 export function generateQuestionPet(question: string, seedKey?: string): QuestionPetAppearance {
   const normalizedSeedKey = seedKey ?? hashQuestion(question || "question-pet").toString(36);
-  const seed = hashQuestion(`${question || "question-pet"}|${normalizedSeedKey}`);
+  const fixedPetName = normalizedSeedKey.startsWith("fixed-pet:")
+    ? normalizedSeedKey.slice("fixed-pet:".length)
+    : null;
+  const seedSource = fixedPetName || question || "question-pet";
+  const seed = hashQuestion(`${seedSource}|${normalizedSeedKey}`);
   const rng = mulberry32(seed);
   const bodyType = bodyTypes[Math.floor(rng() * bodyTypes.length)];
   const eyeType = eyeTypes[Math.floor(rng() * eyeTypes.length)];
