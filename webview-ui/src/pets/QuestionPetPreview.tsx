@@ -6,9 +6,10 @@ interface Props {
   question: string;
   appearance?: QuestionPetAppearance;
   size?: number;
+  fill?: boolean;
 }
 
-export function QuestionPetPreview({ question, appearance, size = 8 }: Props) {
+export function QuestionPetPreview({ question, appearance, size = 8, fill = false }: Props) {
   const pet = useMemo(() => appearance ?? generateQuestionPet(question), [appearance, question]);
   const frames = useMemo(() => appearanceToAnimationData(pet), [pet]);
   const [frameIndex, setFrameIndex] = useState(0);
@@ -27,10 +28,11 @@ export function QuestionPetPreview({ question, appearance, size = 8 }: Props) {
       className="question-pet-preview inline-grid border-2"
       style={{
         gridTemplateColumns: 'repeat(16, 1fr)',
-        width: 16 * size,
-        height: 16 * size,
+        gridTemplateRows: 'repeat(16, 1fr)',
+        width: fill ? '100%' : 16 * size,
+        height: fill ? '100%' : 16 * size,
         borderColor: pet.palette.outline,
-        background: '#F9E9C2',
+        background: '#fff',
         imageRendering: 'pixelated',
       }}
       aria-label={`16x16 animated question pet preview: ${pet.moodType}`}

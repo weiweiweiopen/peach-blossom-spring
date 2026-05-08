@@ -20,7 +20,6 @@ import {
   PlayerSetup,
   type StartMode,
 } from "./components/PlayerSetup.js";
-import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
@@ -407,7 +406,6 @@ function App() {
   } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>("camp");
-  const [isBootScreenVisible, setIsBootScreenVisible] = useState(true);
   const [appMode, setAppMode] = useState<AppMode>("interactive");
   const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() =>
     petStore.listPets(),
@@ -1468,15 +1466,11 @@ function App() {
     setIsSplitExpanded(false);
   }, []);
 
-  if (isBootScreenVisible) {
-    return <RetroBootScreen onStart={() => setIsBootScreenVisible(false)} />;
-  }
-
   if (!layoutReady) {
     return (
       <div className="boot-loading-screen" role="status" aria-live="polite">
         <div className="boot-loading-card">
-          <p className="boot-loading-title">Wise Mouse Culture</p>
+          <p className="boot-loading-title">Peach Blossom Spring</p>
           <p className="boot-loading-copy">Loading Peach Blossom Spring...</p>
           <span className="boot-loading-dots" aria-hidden="true" />
         </div>

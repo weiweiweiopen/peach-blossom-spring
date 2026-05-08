@@ -36,43 +36,10 @@
         background: #f9e9c2;
         color: #315b63;
       }
-
-      .initial-boot-screen {
-        display: grid;
-        min-height: 100%;
-        place-items: center;
-        font-family: monospace;
-        text-align: center;
-      }
-
-      .initial-boot-card {
-        padding: 24px 28px;
-        border: 4px solid #315b63;
-        background: #ffd4ff;
-        box-shadow: 8px 8px 0 #69c3aa;
-      }
-
-      .initial-boot-title {
-        margin: 0 0 10px;
-        font-size: clamp(26px, 5vw, 48px);
-        line-height: 1;
-      }
-
-      .initial-boot-subtitle {
-        margin: 0;
-        font-size: clamp(14px, 2.5vw, 20px);
-      }
     </style>
   </head>
   <body>
-    <div id="root">
-      <div class="initial-boot-screen" role="status" aria-live="polite">
-        <div class="initial-boot-card">
-          <p class="initial-boot-title">Peach Blossom Spring</p>
-          <p class="initial-boot-subtitle">Booting NGM Office...</p>
-        </div>
-      </div>
-    </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

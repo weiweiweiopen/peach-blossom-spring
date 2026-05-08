@@ -2219,9 +2219,9 @@
 
 .player-setup-merged-panel {
   display: flex;
-  flex-direction: column;
+  align-items: stretch;
   gap: clamp(22px, 3vw, 34px);
-  width: min(760px, 100%);
+  width: min(1040px, 100%);
   padding: clamp(22px, 3vw, 36px);
   background: var(--palette-cream);
   border: 5px solid #000;
@@ -2239,6 +2239,7 @@
 .player-setup-controls {
   display: flex;
   flex-direction: column;
+  flex: 1 1 0;
   padding: 0;
 }
 
@@ -2275,12 +2276,23 @@
 .question-hatch-device {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 0 0 min(360px, 42%);
   min-height: 360px;
   padding: clamp(20px, 3vw, 34px);
   text-align: center;
   border: 4px solid #000;
   border-radius: 0;
+}
+
+.question-hatch-selector {
+  width: min(100%, 300px);
+  margin: 0 auto 10px;
+  text-align: left;
+}
+
+.question-hatch-selector .player-setup-field {
+  margin-bottom: 0;
 }
 
 .player-setup-console .question-hatch-device::after {
@@ -2293,10 +2305,16 @@
   place-items: center;
   width: min(100%, 300px);
   aspect-ratio: 1;
-  margin: 18px auto;
-  background: var(--palette-yellow);
+  margin: 12px auto 14px;
+  padding: 0;
+  background: #fff;
   border: 5px solid #000;
   box-shadow: 6px 6px 0 var(--palette-silver);
+}
+
+.question-hatch-actions {
+  width: min(100%, 300px);
+  margin: 14px auto 0;
 }
 
 .question-hatch-egg {
@@ -2326,13 +2344,35 @@
   justify-content: center;
   gap: 12px;
   width: 100%;
-  margin-top: auto;
+  margin-top: 0;
   padding: 18px 22px;
   border: 4px solid #000 !important;
   color: #000;
   background: var(--palette-yellow) !important;
   box-shadow: 6px 6px 0 var(--palette-silver);
   font-size: clamp(20px, 2vw, 28px);
+}
+
+:lang(en) .player-setup-title {
+  font-size: clamp(52px, 7.4vw, 96px);
+}
+
+:lang(en) .player-setup-description {
+  font-size: clamp(23px, 2.6vw, 34px);
+}
+
+:lang(en) .player-setup-label,
+:lang(en) .pet-card-label,
+:lang(en) .question-hatch-status {
+  font-size: clamp(22px, 2.2vw, 29px);
+}
+
+:lang(en) .player-setup-field {
+  font-size: clamp(23px, 2.3vw, 31px);
+}
+
+:lang(en) .player-setup-action {
+  font-size: clamp(27px, 2.8vw, 38px);
 }
 
 .player-setup-action.is-booting {
@@ -2378,7 +2418,7 @@
 
 /* Pets: LCD matrix instead of smooth/vector pixel art. */
 .question-pet-preview {
-  background: var(--lcd-screen) !important;
+  background: #fff !important;
   border: 0 !important;
   image-rendering: pixelated;
 }
@@ -2454,9 +2494,9 @@
   z-index: calc(var(--z-layer-hud) + 60) !important;
 }
 
-/* Question pets are colorful creatures now; keep the preview stage warm and neutral. */
+/* Question pets render as black LCD pixels on white. */
 .question-pet-preview {
-  background: var(--palette-cream) !important;
+  background: #fff !important;
 }
 
 /* 2026-05 interaction fixes: one monochrome globe, restored half split, and cleaner dialogue chrome. */
@@ -2501,6 +2541,8 @@
   border: 3px solid #000 !important;
   box-shadow: 3px 3px 0 #000;
   line-height: 1;
+  font-size: 34px !important;
+  transform: translateY(-1px);
 }
 
 .rpg-dialogue-header {
@@ -2539,6 +2581,11 @@
 
   .player-setup-console {
     display: flex;
+  }
+
+  .player-setup-merged-panel {
+    flex-direction: column;
+    width: min(760px, 100%);
   }
 
   .player-setup-controls {

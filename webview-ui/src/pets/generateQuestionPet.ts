@@ -47,6 +47,63 @@ type Stamp = readonly string[];
 
 const FRAME_COUNT = 12;
 
+const fixedPetBodyTypes: Record<string, string> = {
+  artist: "petArtist",
+  scientist: "petScientist",
+  engineer: "petEngineer",
+  cook: "petCook",
+  dancer: "petDancer",
+  workshopologist: "petWorkshopologist",
+  drinker: "petDrinker",
+  socialist: "petSocialist",
+  professor: "petProfessor",
+  "fire maker": "petFireMaker",
+  tailor: "petTailor",
+  musician: "petMusician",
+  shaman: "petShaman",
+  "bubble maker": "petBubbleMaker",
+  architect: "petArchitect",
+  herbalist: "petHerbalist",
+};
+
+const fixedPetPalettes: Record<string, Palette> = {
+  petArtist: { primary: "#ffd4ff", skin: "#ffd4ff", secondary: "#f9e9c2", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+  petScientist: { primary: "#bac3d9", skin: "#bac3d9", secondary: "#f9e9c2", accent: "#69c3aa", outline: "#315b63", eyes: "#315b63" },
+  petEngineer: { primary: "#69c3aa", skin: "#69c3aa", secondary: "#bac3d9", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+  petCook: { primary: "#f9e9c2", skin: "#f9e9c2", secondary: "#ffd4ff", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+  petDancer: { primary: "#fcf46b", skin: "#fcf46b", secondary: "#ffd4ff", accent: "#69c3aa", outline: "#315b63", eyes: "#315b63" },
+  petWorkshopologist: { primary: "#bac3d9", skin: "#bac3d9", secondary: "#69c3aa", accent: "#ffd4ff", outline: "#315b63", eyes: "#315b63" },
+  petDrinker: { primary: "#f9e9c2", skin: "#f9e9c2", secondary: "#69c3aa", accent: "#ffd4ff", outline: "#315b63", eyes: "#315b63" },
+  petSocialist: { primary: "#ffd4ff", skin: "#ffd4ff", secondary: "#69c3aa", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+  petProfessor: { primary: "#bac3d9", skin: "#bac3d9", secondary: "#fcf46b", accent: "#f9e9c2", outline: "#315b63", eyes: "#315b63" },
+  petFireMaker: { primary: "#fcf46b", skin: "#fcf46b", secondary: "#f9e9c2", accent: "#ffd4ff", outline: "#315b63", eyes: "#315b63" },
+  petTailor: { primary: "#69c3aa", skin: "#69c3aa", secondary: "#ffd4ff", accent: "#f9e9c2", outline: "#315b63", eyes: "#315b63" },
+  petMusician: { primary: "#ffd4ff", skin: "#ffd4ff", secondary: "#bac3d9", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+  petShaman: { primary: "#f9e9c2", skin: "#f9e9c2", secondary: "#bac3d9", accent: "#69c3aa", outline: "#315b63", eyes: "#315b63" },
+  petBubbleMaker: { primary: "#bac3d9", skin: "#bac3d9", secondary: "#ffd4ff", accent: "#69c3aa", outline: "#315b63", eyes: "#315b63" },
+  petArchitect: { primary: "#69c3aa", skin: "#69c3aa", secondary: "#fcf46b", accent: "#bac3d9", outline: "#315b63", eyes: "#315b63" },
+  petHerbalist: { primary: "#69c3aa", skin: "#69c3aa", secondary: "#f9e9c2", accent: "#fcf46b", outline: "#315b63", eyes: "#315b63" },
+};
+
+const fixedPetColorCounts: Record<string, 1 | 2 | 3 | 4> = {
+  petArtist: 4,
+  petScientist: 2,
+  petEngineer: 3,
+  petCook: 2,
+  petDancer: 4,
+  petWorkshopologist: 3,
+  petDrinker: 1,
+  petSocialist: 4,
+  petProfessor: 2,
+  petFireMaker: 3,
+  petTailor: 4,
+  petMusician: 3,
+  petShaman: 1,
+  petBubbleMaker: 4,
+  petArchitect: 2,
+  petHerbalist: 3,
+};
+
 const bodyTypes = [
   "batabatchiWings",
   "ichigotchiBerry",
@@ -177,6 +234,297 @@ const bodyStamps: Record<string, Stamp> = {
   ],
 };
 
+const pixelArtStamps: Record<string, Stamp> = {
+  petArtist: [
+    "................",
+    "................",
+    "......11........",
+    ".....1..1.......",
+    "....122221......",
+    "...12222221.....",
+    "...12122121..1..",
+    "...12222221.1...",
+    "...122112211....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+  petScientist: [
+    "................",
+    ".......1........",
+    ".......1........",
+    "......111.......",
+    ".....12221......",
+    "....1222221.....",
+    "....1212121.....",
+    "....1222221.....",
+    "....1221221.....",
+    ".....12221......",
+    "......111.......",
+    ".....12221......",
+    "....1222221.....",
+    ".....1...1......",
+    "....11...11.....",
+    "................",
+  ],
+  petEngineer: [
+    "................",
+    "................",
+    ".....11111......",
+    "....1.2221......",
+    "...11222211.....",
+    "...12222221.....",
+    "..1121221211....",
+    "..1222222221....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+  petCook: [
+    "................",
+    ".....1111.......",
+    "....1....1......",
+    "...11111111.....",
+    "....122221......",
+    "...12222221.....",
+    "...12122121.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+  petDancer: [
+    "................",
+    "................",
+    "....1......1....",
+    ".....111111.....",
+    "....1222221.....",
+    "...122122121....",
+    "..1.1222221.1...",
+    "....1221121.....",
+    ".....12221......",
+    "....112211......",
+    "...1.1221.1.....",
+    "..1..1..1..1....",
+    ".....1..1.......",
+    "....11..11......",
+    "................",
+    "................",
+  ],
+  petWorkshopologist: [
+    "................",
+    "....1.....1.....",
+    ".....11111......",
+    "....1222221.....",
+    "...122222221....",
+    "...121222121....",
+    "..11222222211...",
+    "..12221122221...",
+    "...122222221....",
+    "....1222221.....",
+    ".....11111......",
+    "....1222221.....",
+    "...1..1.1..1....",
+    "......111.......",
+    ".....11.11......",
+    "................",
+  ],
+  petDrinker: [
+    "................",
+    "................",
+    "......111.......",
+    ".....12221......",
+    "....1222221.....",
+    "...11212211.....",
+    "...12222221..1..",
+    "...12211221.1...",
+    "....122221.1....",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+    "................",
+  ],
+  petSocialist: [
+    "................",
+    "................",
+    ".....11.11......",
+    "....1222221.....",
+    "...122222221....",
+    "...121222121....",
+    "..11222222211...",
+    "..12221122221...",
+    "...122222221....",
+    "....1222221.....",
+    ".....11111......",
+    "...111222111....",
+    "..1..12221..1...",
+    ".....1...1......",
+    "....11...11.....",
+    "................",
+  ],
+  petProfessor: [
+    "................",
+    "....1111111.....",
+    "...1.......1....",
+    "...111111111....",
+    ".....12221......",
+    "....1212121.....",
+    "....1222221.....",
+    "....1221221.....",
+    ".....12221......",
+    "......111.......",
+    ".....12221......",
+    "....1222221.....",
+    "...1..222..1....",
+    ".....1...1......",
+    "....11...11.....",
+    "................",
+  ],
+  petFireMaker: [
+    "................",
+    ".......1........",
+    "......111.......",
+    ".....11111......",
+    "....1.2221......",
+    "...12222221.....",
+    "...12122121.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+  petTailor: [
+    "................",
+    "................",
+    "....11....11....",
+    ".....12221......",
+    "....1222221.....",
+    "...11212211.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+    "................",
+  ],
+  petMusician: [
+    "................",
+    "..........11....",
+    "..........1.1...",
+    "....111...11....",
+    "...12221........",
+    "..1222221.......",
+    "..1212211.......",
+    "..1222221.......",
+    "...12211........",
+    "....111.........",
+    "...12221........",
+    "..1222221.......",
+    "...1....1.......",
+    "..11....11......",
+    "................",
+    "................",
+  ],
+  petShaman: [
+    "................",
+    "...1...1...1....",
+    "....1.111.1.....",
+    ".....12221......",
+    "....1222221.....",
+    "...11212211.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+    "................",
+  ],
+  petBubbleMaker: [
+    "............11..",
+    "...11......1221.",
+    "..1221......11..",
+    "...11..1111.....",
+    ".....1122221....",
+    "....12222221....",
+    "...11212211.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+  petArchitect: [
+    "................",
+    ".....111111.....",
+    "....1222221.....",
+    "...122222221....",
+    "...121222121....",
+    "..11222222211...",
+    "..12222222221...",
+    "...122211221....",
+    "....1222221.....",
+    ".....11111......",
+    "....1222221.....",
+    "...122222221....",
+    "....1.222.1.....",
+    ".....1...1......",
+    "....11...11.....",
+    "................",
+  ],
+  petHerbalist: [
+    "................",
+    "......1.........",
+    ".....1.1........",
+    "......1.........",
+    ".....1111.......",
+    "....122221......",
+    "...12122121.....",
+    "...12222221.....",
+    "...12211221.....",
+    "....122221......",
+    ".....1111.......",
+    "....122221......",
+    "...12222221.....",
+    "....1....1......",
+    "...11....11.....",
+    "................",
+  ],
+};
+
 function makePalette(seed: number, rng: () => number): Palette {
   const pick = (items: string[], salt: number): string => items[(seed + salt + Math.floor(rng() * items.length)) % items.length];
   const skin = pick(colorBanks.skin, 0);
@@ -200,6 +548,45 @@ function stamp(grid: number[][], pattern: Stamp, ox: number, oy: number, value: 
       if (cell === "1") set(grid, ox + x, oy + y, value);
     });
   });
+}
+
+function pixelArt(grid: number[][], pattern: Stamp): void {
+  pattern.forEach((row, y) => {
+    [...row].forEach((cell, x) => {
+      if (cell === "1") set(grid, x, y, 1);
+      if (cell === "2") set(grid, x, y, 2);
+    });
+  });
+}
+
+function addPixelArtAccent(grid: number[][], bodyType: string): void {
+  const colorCount = fixedPetColorCounts[bodyType] ?? 2;
+  const fillCells: Array<[number, number]> = [];
+  grid.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell === 2) fillCells.push([x, y]);
+    });
+  });
+  if (fillCells.length === 0) return;
+  if (colorCount === 1) {
+    fillCells.forEach(([x, y]) => set(grid, x, y, 1));
+    return;
+  }
+  if (colorCount === 2) return;
+  const midX = Math.floor((Math.min(...fillCells.map(([x]) => x)) + Math.max(...fillCells.map(([x]) => x))) / 2);
+  let changed = 0;
+  fillCells.forEach(([x, y]) => {
+    if (x > midX && y > 3 && y < 13) {
+      set(grid, x, y, 3);
+      changed += 1;
+    }
+  });
+  if (changed === 0) fillCells.slice(-Math.max(1, Math.floor(fillCells.length / 4))).forEach(([x, y]) => set(grid, x, y, 3));
+  if (colorCount === 4) {
+    fillCells.forEach(([x, y], index) => {
+      if (index % 5 === 0 && y > 4 && y < 12) set(grid, x, y, 4);
+    });
+  }
 }
 
 function cloneGrid(grid: number[][]): number[][] {
@@ -298,6 +685,12 @@ function addAccessory(grid: number[][], accessoryType: string): void {
 
 function makeBaseSprite(bodyType: string, eyeType: string, mouthType: string, accessoryType: string, seed: number): number[][] {
   const grid = Array.from({ length: 16 }, () => Array.from({ length: 16 }, () => 0));
+  const pixelStamp = pixelArtStamps[bodyType];
+  if (pixelStamp) {
+    pixelArt(grid, pixelStamp);
+    addPixelArtAccent(grid, bodyType);
+    return grid;
+  }
   stamp(grid, bodyStamps[bodyType], seed % 2 === 0 ? 1 : 2, 4, 2);
   outlineSprite(grid);
   addFaceDetails(grid, seed);
@@ -358,8 +751,31 @@ function poseOffset(mood: PetMoodType, frame: number): { dx: number; dy: number 
   if (mood === "Dance") return { dx: frame % 4 < 2 ? -1 : 1, dy: frame % 3 === 0 ? -1 : 0 };
   if (mood === "Happy" || mood === "Cute") return { dx: 0, dy: frame % 4 === 0 ? -1 : 0 };
   if (mood === "Sleep") return { dx: 0, dy: frame % 6 === 0 ? 1 : 0 };
-  if (mood === "Idle") return { dx: 0, dy: frame % 6 === 0 ? -1 : 0 };
+  if (mood === "Idle") {
+    const offsets = [
+      { dx: 0, dy: 0 },
+      { dx: 0, dy: -1 },
+      { dx: 1, dy: -1 },
+      { dx: 1, dy: 0 },
+      { dx: 0, dy: 1 },
+      { dx: -1, dy: 0 },
+      { dx: -1, dy: -1 },
+      { dx: 0, dy: -1 },
+    ];
+    return offsets[frame % offsets.length];
+  }
   return { dx: 0, dy: 0 };
+}
+
+function animateFeet(grid: number[][], frame: number): void {
+  const y = 15;
+  if (frame % 4 === 1) {
+    set(grid, 4, y, 2);
+    set(grid, 11, y, 0);
+  } else if (frame % 4 === 3) {
+    set(grid, 4, y, 0);
+    set(grid, 11, y, 2);
+  }
 }
 
 function makeFrame(base: number[][], mood: PetMoodType, frame: number): number[][] {
@@ -369,6 +785,7 @@ function makeFrame(base: number[][], mood: PetMoodType, frame: number): number[]
   if (mood === "Underwater Theme") replaceValue(next, 4, frame % 2 === 0 ? 3 : 4);
   emoteEyes(next, mood, frame);
   themedOverlay(next, mood, frame);
+  animateFeet(next, frame);
   return next;
 }
 
@@ -391,22 +808,23 @@ export function generateQuestionPet(question: string, seedKey?: string): Questio
   const seed = hashQuestion(`${seedSource}|${normalizedSeedKey}`);
   const rng = mulberry32(seed);
   const bodyType = bodyTypes[Math.floor(rng() * bodyTypes.length)];
+  const fixedBodyType = fixedPetName ? fixedPetBodyTypes[fixedPetName] : undefined;
   const eyeType = eyeTypes[Math.floor(rng() * eyeTypes.length)];
   const mouthType = mouthTypes[Math.floor(rng() * mouthTypes.length)];
   const accessoryType = accessoryTypes[Math.floor(rng() * accessoryTypes.length)];
-  const moodType = petMoodTypes[Math.floor(rng() * petMoodTypes.length)];
-  const sprite16 = makeBaseSprite(bodyType, eyeType, mouthType, accessoryType, seed);
+  const moodType = fixedBodyType ? "Idle" : petMoodTypes[Math.floor(rng() * petMoodTypes.length)];
+  const sprite16 = makeBaseSprite(fixedBodyType ?? bodyType, eyeType, mouthType, accessoryType, seed);
   const animations = makeAnimations(sprite16);
 
   return {
     seed,
     seedKey: normalizedSeedKey,
-    bodyType,
+    bodyType: fixedBodyType ?? bodyType,
     eyeType,
     mouthType,
     accessoryType,
     moodType,
-    palette: makePalette(seed, rng),
+    palette: fixedBodyType ? fixedPetPalettes[fixedBodyType] : makePalette(seed, rng),
     sprite16,
     animations,
   };

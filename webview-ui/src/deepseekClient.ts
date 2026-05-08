@@ -11,6 +11,7 @@
 //      caller that depends on the older shape.
 
 import type { LanguageCode } from './i18n.js';
+import { readStoredDeepSeekApiKey } from './apiKeyStorage.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
 interface KnowledgeBase {
@@ -154,10 +155,13 @@ export async function askDeepSeekPersona({
   knowledge,
   preferredLanguage,
 }: AskPersonaArgs): Promise<string> {
-  const chatApiUrl = document
-    .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
-    ?.getAttribute('content')
-    ?.trim();
+  const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+  const chatApiUrl = isLocalHost
+    ? '/api/chat'
+    : document
+        .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
+        ?.getAttribute('content')
+        ?.trim();
 
   if (!chatApiUrl) {
     throw new Error('DeepSeek proxy is not configured.');
@@ -199,29 +203,47 @@ export async function askDeepSeekPersona({
   ];
   const prompt = trimMessage(promptParts.join('\n'));
 
-  const res = await fetch(chatApiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      mode: 'chat',
-      messages: [
-        { role: 'system', content: prompt },
-        { role: 'user', content: `${playerName}: ${question}` },
-      ],
-      max_tokens: 700,
-    }),
-  });
+  const localApiKey = isLocalHost ? readStoredDeepSeekApiKey() : '';
+  const res = await fetch(chatApiUrl, isLocalHost
+    ? {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(localApiKey ? { 'x-deepseek-api-key': localApiKey } : {}),
+        },
+        body: JSON.stringify({
+          systemPrompt: prompt,
+          prompt: `${playerName}: ${question}`,
+          max_tokens: 700,
+        }),
+      }
+    : {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mode: 'chat',
+          messages: [
+            { role: 'system', content: prompt },
+            { role: 'user', content: `${playerName}: ${question}` },
+          ],
+          max_tokens: 700,
+        }),
+      });
 
   if (!res.ok) {
     const details = await res.text();
     throw new Error(`DeepSeek request failed (${res.status.toString()}): ${details}`);
   }
 
-  const data = (await res.json()) as { content?: string; error?: string };
+  const data = (await res.json()) as {
+    content?: string;
+    error?: string;
+    choices?: Array<{ message?: { content?: string } }>;
+  };
   if (data.error) throw new Error(data.error);
-  return data.content?.trim() ?? '...';
+  return data.content?.trim() ?? data.choices?.[0]?.message?.content?.trim() ?? '...';
 }
 
 export type { KnowledgeBase, PersonaShape };

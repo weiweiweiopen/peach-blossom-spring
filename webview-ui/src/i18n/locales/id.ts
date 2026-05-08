@@ -55,6 +55,8 @@ const id: typeof zhTW = {
     born: "Bip! Ia lahir. Kelihatannya sudah siap kabur.",
     keeper: "Penjaga Question Pet",
     petControls: "Kontrol peliharaan",
+    choosePet: "Pilih peliharaan",
+    fixedPetMenu: "Menu peliharaan tetap",
   },
   dialogue: {
     title: "Dialog",

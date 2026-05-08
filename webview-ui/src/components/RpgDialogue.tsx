@@ -450,13 +450,22 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <PixelAvatar avatar={npcAvatar} label={persona.name} />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker text-lg uppercase tracking-wide text-accent-bright mb-2">{t(language, 'home.wanderAndTalk')}</p>
+              <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
+                <p className="rpg-dialogue-kicker text-lg uppercase tracking-wide text-accent-bright m-0">{t(language, 'home.wanderAndTalk')}</p>
+                <button
+                  className="rpg-dialogue-wiki-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+                  type="button"
+                  onClick={onOpenWiki}
+                >
+                  📚 {t(language, 'dialogue.openWiki')}
+                </button>
+              </div>
               <h2 className="rpg-dialogue-name text-2xl leading-none">{persona.name}</h2>
               <p className="rpg-dialogue-role text-xl text-text-muted mt-2">{persona.role}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x text-2xl text-text-muted hover:text-text" type="button" onClick={onClose}>
-            x
+            ×
           </button>
         </div>
 
@@ -479,23 +488,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           </div>
         </div>
 
-        <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
-          <button
-            className="rpg-dialogue-question-toggle rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
-            type="button"
-            aria-expanded={areSuggestionsOpen}
-            onClick={() => setAreSuggestionsOpen((prev) => !prev)}
-          >
-            {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
-          </button>
-          <button
-            className="rpg-dialogue-wiki-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
-            type="button"
-            onClick={onOpenWiki}
-          >
-            📚 {t(language, 'dialogue.openWiki')}
-          </button>
-          {areSuggestionsOpen && (
+        {areSuggestionsOpen && (
+          <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
             <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
               <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
                 {fixedQuestions.map((item) => (
@@ -522,8 +516,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                 ))}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4">
           <input
@@ -533,18 +527,19 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             placeholder={t(language, 'dialogue.inputPlaceholder', { name: persona.name })}
           />
           <button
+            className="rpg-dialogue-question-toggle rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
+            type="button"
+            aria-expanded={areSuggestionsOpen}
+            onClick={() => setAreSuggestionsOpen((prev) => !prev)}
+          >
+            {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
+          </button>
+          <button
             className="rpg-dialogue-submit bg-accent text-white border-2 border-accent px-10 py-5 text-xl disabled:opacity-50"
             type="submit"
             disabled={isLoading}
           >
             {isLoading ? '...' : t(language, 'dialogue.talkButton')}
-          </button>
-          <button
-            className="rpg-dialogue-close-secondary bg-bg text-text border-2 border-border px-10 py-5 text-xl"
-            type="button"
-            onClick={onClose}
-          >
-            {t(language, 'common.close')}
           </button>
         </form>
 

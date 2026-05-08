@@ -142,23 +142,6 @@ export function PlayerSetup({
                 autoFocus
               />
 
-              <label className="player-setup-label" htmlFor="question-pet-role">
-                {language === "zh-TW" ? "選擇電子雞" : "Choose pet"}
-              </label>
-              <select
-                id="question-pet-role"
-                name="petRole"
-                className="player-setup-field"
-                value={selectedPetRole}
-                onChange={(event) => setSelectedPetRole(event.target.value)}
-              >
-                {fixedPetRoles.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-
               <label
                 className="player-setup-label"
                 htmlFor="question-pet-question"
@@ -191,29 +174,49 @@ export function PlayerSetup({
                 placeholder={t(language, "setup.skillsPlaceholder")}
               />
 
-              <button
-                className="player-setup-action mode-primary"
-                type="submit"
-              >
-                <span>{t(language, "home.startButton")}</span>
-              </button>
             </section>
 
             <aside
               className="question-hatch-device is-hatching"
               aria-live="polite"
             >
+              <div className="question-hatch-selector">
+                <label className="player-setup-label" htmlFor="question-pet-role">
+                  {t(language, "setup.choosePet")}
+                </label>
+                <select
+                  id="question-pet-role"
+                  name="petRole"
+                  className="player-setup-field"
+                  value={selectedPetRole}
+                  onChange={(event) => setSelectedPetRole(event.target.value)}
+                >
+                  {fixedPetRoles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <p className="pet-card-label">{selectedPetRole}</p>
               <div className="question-hatch-screen">
                 <QuestionPetPreview
                   question={selectedPetRole}
                   appearance={appearance}
-                  size={12}
+                  fill
                 />
               </div>
               <p className="pet-card-label question-hatch-status">
-                {language === "zh-TW" ? "固定電子雞選單" : "Fixed pet menu"}
+                {t(language, "setup.fixedPetMenu")}
               </p>
+              <div className="question-hatch-actions">
+                <button
+                  className="player-setup-action mode-primary"
+                  type="submit"
+                >
+                  <span>{t(language, "home.startButton")}</span>
+                </button>
+              </div>
             </aside>
           </div>
         </div>

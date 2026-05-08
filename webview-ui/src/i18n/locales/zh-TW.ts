@@ -53,6 +53,8 @@ const zhTW = {
     born: "嗶！牠出生了。牠看起來已經想逃跑。",
     keeper: "問題電子雞飼主",
     petControls: "電子雞控制",
+    choosePet: "選擇電子雞",
+    fixedPetMenu: "固定電子雞選單",
   },
   dialogue: {
     title: "對話",

@@ -55,6 +55,8 @@ const de: typeof zhTW = {
     born: "Piep! Es wurde geboren. Es sieht schon bereit aus wegzulaufen.",
     keeper: "Question-Pet-Hüter:in",
     petControls: "Pet-Steuerung",
+    choosePet: "Pet auswählen",
+    fixedPetMenu: "Festes Pet-Menü",
   },
   dialogue: {
     title: "Dialog",
