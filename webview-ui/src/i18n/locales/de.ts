@@ -18,9 +18,9 @@ const de: typeof zhTW = {
   },
   home: {
     ngmLabel: "Non-Governmental Matters",
-    title: "桃花源：可思考的生命模擬器派遣",
+    title: "Peach Blossom Spring: Einen denkenden Lebenssimulator entsenden",
     subtitle: "Eine interaktive Fabeldimension für Non-Governmental Matters",
-    description: "這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著，你無意間闖入這個世界並試圖探索並收集如何建造一個烏托邦的方法和試著記住回到這裡的路...\n\n這個遊戲的本體是一個研究訪談稿\"Non-Governmental Matters\"，該研究採訪了14位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。這些受訪者的看法被轉化成遊戲裡可以以自然語言進行交談的NPC，背後的大語言模型目前是經訪談逐字稿調校過後的Deepseek flash。你還可以用一個問題創造出一隻電子雞，這個電子雞會隨著與遊戲世界的互動而成長，最後得到一個經由社群集體智能處理過後的解決方案與回應。在遊戲的中央放置了研究案的文本、社群最新消息和社群地圖，歡迎隨便到處逛逛！",
+    description: "Dies ist eine interaktive Fabeldimension, in der viele seltsame Freund:innen zusammenleben, seltsame Experimente und Musik machen, kochen und Alltag teilen. Du bist zufällig in diese Welt geraten und versuchst, Wege zum Bau einer Utopie zu erkunden und zu sammeln, während du dir auch den Weg zurück hierher merken möchtest...\n\nDer Körper dieses Spiels ist das Forschungsinterview-Transkript \"Non-Governmental Matters\", eine Studie, für die 14 unabhängige Technologie-Kunst-Organisator:innen und Künstler:innen zu ihren Perspektiven auf nachhaltige Community-Arbeit befragt wurden. Die Ansichten dieser Befragten wurden in NPCs verwandelt, mit denen du im Spiel in natürlicher Sprache sprechen kannst; das große Sprachmodell dahinter ist derzeit Deepseek flash, feinabgestimmt mit den Interviewtranskripten. Du kannst außerdem aus einer einzigen Frage ein Question Pet erschaffen. Dieses elektronische Haustier wächst durch die Interaktionen mit der Spielwelt und erhält am Ende eine Lösung und Antwort, die durch die kollektive Intelligenz der Community verarbeitet wurde. In der Mitte des Spiels befinden sich der Forschungstext, die neuesten Community-Nachrichten und die Community-Karte. Schau dich gern überall um!",
     createProtagonist: "Protagonist:in erstellen",
     createTraveler: "Reisende:n aus einer anderen Welt erstellen",
     playerNameLabel: "Name",
