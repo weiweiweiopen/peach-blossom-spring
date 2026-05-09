@@ -15,6 +15,7 @@ import { ChangelogModal } from "./components/ChangelogModal.js";
 import { DebugView } from "./components/DebugView.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
+import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import {
   type PlayerProfile,
   PlayerSetup,
@@ -406,6 +407,7 @@ function App() {
   } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>("camp");
+  const [isBootScreenVisible, setIsBootScreenVisible] = useState(true);
   const [appMode, setAppMode] = useState<AppMode>("interactive");
   const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() =>
     petStore.listPets(),
@@ -1465,6 +1467,10 @@ function App() {
     setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
+
+  if (isBootScreenVisible) {
+    return <RetroBootScreen onStart={() => setIsBootScreenVisible(false)} />;
+  }
 
   if (!layoutReady) {
     return (
