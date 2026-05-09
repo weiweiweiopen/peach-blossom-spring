@@ -177,6 +177,59 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return t(language, "archive.tree");
 }
 
+
+const EXTERNAL_EMBED_TIMEOUT_MS = 6500;
+
+function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" }> }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(false);
+    setHasTimedOut(false);
+
+    const timeoutId = window.setTimeout(() => {
+      setHasTimedOut(true);
+    }, EXTERNAL_EMBED_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [link.url]);
+
+  return (
+    <div className="world-split-embed">
+      {link.description && (
+        <p className="world-split-embed-description">{link.description}</p>
+      )}
+      <div className="world-split-external-status">
+        <div>
+          <strong>{isLoaded ? "Preview loaded" : "Loading external preview…"}</strong>
+          <span>
+            {hasTimedOut && !isLoaded
+              ? "This site is slow or blocks in-game embedding. Open it directly if the preview stays blank."
+              : "Some wiki and personal sites block embedded readers; the direct link is always available."}
+          </span>
+        </div>
+        <a href={link.url} target="_blank" rel="noreferrer">
+          Open site ↗
+        </a>
+      </div>
+      <iframe
+        key={link.url}
+        title={link.title}
+        src={link.url}
+        className="world-split-iframe"
+        loading="eager"
+        referrerPolicy="no-referrer-when-downgrade"
+        onLoad={() => {
+          setIsLoaded(true);
+          setHasTimedOut(false);
+        }}
+        onError={() => setHasTimedOut(true)}
+      />
+    </div>
+  );
+}
+
 function petResponsesKey(petId: string): string {
   return `pbs:pet:${petId}:responses`;
 }
@@ -2327,20 +2380,7 @@ function App() {
                 ))}
               </div>
             ) : splitPanel.kind === "externalLink" ? (
-              <div className="world-split-embed">
-                {splitPanel.description && (
-                  <p className="world-split-embed-description">
-                    {splitPanel.description}
-                  </p>
-                )}
-                <iframe
-                  title={splitPanel.title}
-                  src={splitPanel.url}
-                  className="world-split-iframe"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              <ExternalLinkEmbed link={splitPanel} />
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
                 title="NGM PDF embedded ebook"

@@ -1290,6 +1290,33 @@
   font-size: 15px;
   line-height: 1.4;
 }
+
+.world-split-external-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 2px solid #000;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.world-split-external-status div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.world-split-external-status span {
+  color: #333;
+}
+.world-split-external-status a {
+  flex: 0 0 auto;
+  color: #000;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .world-split-embed .world-split-iframe {
   flex: 1;
 }
