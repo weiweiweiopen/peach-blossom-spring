@@ -163,7 +163,7 @@
   display: grid;
   grid-template-columns: repeat(14, var(--pet-pixel, 6px));
   grid-auto-rows: var(--pet-pixel, 6px);
-  --pet-pixel: clamp(5px, 0.8vw, 8px);
+  --pet-pixel: clamp(4px, 0.64vw, 6.4px);
   filter: none;
   animation: retro-pet-run 0.34s steps(2, end) infinite;
 }
