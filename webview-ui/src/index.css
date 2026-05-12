@@ -2703,7 +2703,7 @@
   position: fixed;
   left: 50%;
   bottom: 96px;
-  z-index: 55;
+  z-index: calc(var(--z-layer-dialogue-front) + 10);
   width: min(420px, calc(100vw - 32px));
   transform: translateX(-50%);
   padding: 14px;
@@ -2727,6 +2727,7 @@
 }
 
 .video-encounter-actions button,
+.pbs-video-permission button,
 .pbs-chat-form button,
 .pbs-encounter-close {
   border: 3px solid var(--palette-ink);
@@ -2739,6 +2740,7 @@
 }
 
 .video-encounter-actions button:hover,
+.pbs-video-permission button:hover,
 .pbs-chat-form button:hover,
 .pbs-encounter-close:hover {
   background: var(--palette-yellow);
@@ -2752,7 +2754,7 @@
   position: fixed;
   right: 18px;
   bottom: 84px;
-  z-index: 58;
+  z-index: calc(var(--z-layer-dialogue-front) + 20);
   display: flex;
   flex-direction: column;
   width: min(620px, calc(100vw - 36px));
@@ -2813,6 +2815,26 @@
   flex: 1;
   flex-direction: column;
   gap: 8px;
+}
+
+.pbs-video-permission {
+  display: grid;
+  gap: 10px;
+  place-items: center;
+  min-height: min(52dvh, 430px);
+  border: 3px solid var(--palette-ink);
+  padding: 18px;
+  background: color-mix(in srgb, var(--palette-yellow) 18%, white 82%);
+  text-align: center;
+}
+
+.pbs-video-permission p {
+  margin: 0;
+}
+
+.pbs-video-permission button:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .pbs-video-frame-wrap iframe {
