@@ -1670,12 +1670,17 @@ function App() {
     ? chatMessages.filter((message) => message.encounterId === encounterPanel.encounterId)
     : [];
   const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
+  const activeEncounterJitsiUrl =
+    encounterPanel?.kind === "video" && multiplayerConfig
+      ? jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)
+      : null;
 
   return (
     <div
       ref={containerRef}
       className={`game-world-layer pbs-interaction-root w-full h-full relative overflow-hidden ${isSplitOpen ? "world-split-active" : ""} ${isSplitExpanded ? "world-split-expanded" : ""}`}
-      data-modal-layer={activeDialoguePersona || splitPanel ? "open" : "closed"}
+      data-modal-layer={activeDialoguePersona || splitPanel || isEncounterUiOpen ? "open" : "closed"}
+      data-encounter-layer={isEncounterUiOpen ? "open" : "closed"}
       style={{
         touchAction:
           showMobileControls && appMode === "interactive" && !isSplitOpen
@@ -2670,11 +2675,13 @@ function App() {
           </p>
           {encounterPanel.kind === "video" ? (
             <div className="pbs-video-frame-wrap">
-              {videoPermissionStatus === "granted" ? (
+              {videoPermissionStatus === "granted" && activeEncounterJitsiUrl ? (
                 <iframe
+                  key={encounterPanel.encounterId}
                   title={`Jitsi video chat with ${encounterPanel.partner.displayName}`}
-                  src={jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)}
-                  allow="camera; microphone; fullscreen; display-capture; autoplay"
+                  src={activeEncounterJitsiUrl}
+                  allow="camera *; microphone *; fullscreen *; display-capture *; autoplay *"
+                  allowFullScreen
                   referrerPolicy="no-referrer"
                 />
               ) : (

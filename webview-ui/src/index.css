@@ -1959,6 +1959,7 @@
   --z-layer-bubbles: 120;
   --z-layer-dialogue: 700;
   --z-layer-dialogue-front: 760;
+  --z-layer-encounter: 1200;
   --z-layer-hud: 300;
   --hud-safe-inline: calc(
     var(--safe-right) + (var(--control-size) * 2) + (var(--floating-gap) * 3)
@@ -2699,11 +2700,17 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
 }
 
+.pbs-interaction-root[data-encounter-layer="open"] .mobile-talk-prompt,
+.pbs-interaction-root[data-encounter-layer="open"] .abao-speech-bubble,
+.pbs-interaction-root[data-encounter-layer="open"] .npc-name-tag {
+  display: none !important;
+}
+
 .video-encounter-card {
   position: fixed;
   left: 50%;
   bottom: 96px;
-  z-index: calc(var(--z-layer-dialogue-front) + 10);
+  z-index: var(--z-layer-encounter);
   width: min(420px, calc(100vw - 32px));
   transform: translateX(-50%);
   padding: 14px;
@@ -2754,7 +2761,7 @@
   position: fixed;
   right: 18px;
   bottom: 84px;
-  z-index: calc(var(--z-layer-dialogue-front) + 20);
+  z-index: var(--z-layer-encounter);
   display: flex;
   flex-direction: column;
   width: min(620px, calc(100vw - 36px));
