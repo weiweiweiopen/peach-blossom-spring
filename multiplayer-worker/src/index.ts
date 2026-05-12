@@ -13,6 +13,16 @@ interface Presence {
   lastActive: number;
 }
 
+interface ChatMessage {
+  id: string;
+  room: string;
+  encounterId: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  timestamp: number;
+}
+
 interface ClientState {
   socket: WebSocket;
   presence: Presence | null;
@@ -22,6 +32,7 @@ interface ClientMessage {
   type?: string;
   room?: string;
   presence?: Partial<Presence>;
+  message?: Partial<ChatMessage>;
 }
 
 const corsHeaders = {
@@ -93,6 +104,13 @@ export class RoomPresence {
       return;
     }
 
+    if (message.type === "chat_message") {
+      const chatMessage = normalizeChatMessage(message.message, message.room);
+      if (!chatMessage) return;
+      this.broadcast({ type: "chat_message", message: chatMessage });
+      return;
+    }
+
     if (message.type === "leave_room") {
       this.removeClient(state);
     }
@@ -120,6 +138,24 @@ export class RoomPresence {
   private send(socket: WebSocket, payload: unknown): void {
     socket.send(JSON.stringify(payload));
   }
+}
+
+function normalizeChatMessage(input: Partial<ChatMessage> | undefined, room: string | undefined): ChatMessage | null {
+  if (!input || typeof room !== "string") return null;
+  if (typeof input.id !== "string" || typeof input.encounterId !== "string") return null;
+  if (typeof input.senderId !== "string" || typeof input.senderName !== "string") return null;
+  if (typeof input.text !== "string" || typeof input.timestamp !== "number") return null;
+  const text = input.text.trim().slice(0, 500);
+  if (!text) return null;
+  return {
+    id: input.id.slice(0, 96),
+    room: room.slice(0, 96),
+    encounterId: input.encounterId.slice(0, 160),
+    senderId: input.senderId.slice(0, 96),
+    senderName: input.senderName.slice(0, 48),
+    text,
+    timestamp: Number.isFinite(input.timestamp) ? input.timestamp : Date.now(),
+  };
 }
 
 function normalizePresence(input: Partial<Presence> | undefined, room: string | undefined): Presence | null {
