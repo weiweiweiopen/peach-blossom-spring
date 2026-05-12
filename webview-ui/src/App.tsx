@@ -462,6 +462,10 @@ function App() {
   );
   const multiplayerClientRef = useRef<MultiplayerPresenceClient | null>(null);
   const [encounterPanel, setEncounterPanel] = useState<EncounterPanel | null>(null);
+  const [videoPermissionStatus, setVideoPermissionStatus] = useState<
+    "idle" | "requesting" | "granted" | "denied" | "unsupported"
+  >("idle");
+  const [videoPermissionError, setVideoPermissionError] = useState("");
   const [chatMessages, setChatMessages] = useState<MultiplayerChatMessage[]>([]);
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
@@ -935,6 +939,37 @@ function App() {
     },
     [multiplayerConfig],
   );
+
+  useEffect(() => {
+    setVideoPermissionStatus("idle");
+    setVideoPermissionError("");
+  }, [encounterPanel?.encounterId, encounterPanel?.kind]);
+
+  const authorizeVideoChat = useCallback(async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setVideoPermissionStatus("unsupported");
+      setVideoPermissionError("This browser cannot request camera and microphone access here.");
+      return;
+    }
+
+    setVideoPermissionStatus("requesting");
+    setVideoPermissionError("");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      stream.getTracks().forEach((track) => track.stop());
+      setVideoPermissionStatus("granted");
+    } catch (error) {
+      setVideoPermissionStatus("denied");
+      setVideoPermissionError(
+        error instanceof Error
+          ? error.message
+          : "Camera or microphone permission was not granted.",
+      );
+    }
+  }, []);
 
   const sendChatMessage = useCallback(() => {
     if (!multiplayerConfig || !playerProfile || !encounterPanel || encounterPanel.kind !== "chat") return;
@@ -1634,6 +1669,7 @@ function App() {
   const activeEncounterMessages = encounterPanel
     ? chatMessages.filter((message) => message.encounterId === encounterPanel.encounterId)
     : [];
+  const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
 
   return (
     <div
@@ -1856,7 +1892,7 @@ function App() {
               </button>
             )}
 
-          {!activeDialoguePersona && !splitPanel && nameTags.map((tag) => (
+          {!isEncounterUiOpen && !activeDialoguePersona && !splitPanel && nameTags.map((tag) => (
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
@@ -1884,7 +1920,8 @@ function App() {
             isNearAbao &&
             abaoBubble &&
             promptPosition &&
-            !activeDialoguePersona && (
+            !activeDialoguePersona &&
+            !isEncounterUiOpen && (
               <div
                 className="abao-speech-bubble"
                 style={{
@@ -2633,12 +2670,30 @@ function App() {
           </p>
           {encounterPanel.kind === "video" ? (
             <div className="pbs-video-frame-wrap">
-              <iframe
-                title={`Jitsi video chat with ${encounterPanel.partner.displayName}`}
-                src={jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)}
-                allow="camera; microphone; fullscreen; display-capture; autoplay"
-                referrerPolicy="no-referrer"
-              />
+              {videoPermissionStatus === "granted" ? (
+                <iframe
+                  title={`Jitsi video chat with ${encounterPanel.partner.displayName}`}
+                  src={jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)}
+                  allow="camera; microphone; fullscreen; display-capture; autoplay"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="pbs-video-permission">
+                  <p>請先同意授權視訊與麥克風，才能開啟 video chat。</p>
+                  <button
+                    type="button"
+                    onClick={() => void authorizeVideoChat()}
+                    disabled={videoPermissionStatus === "requesting"}
+                  >
+                    {videoPermissionStatus === "requesting"
+                      ? "Requesting permission..."
+                      : "同意授權視訊 / Allow camera & mic"}
+                  </button>
+                  {videoPermissionError && (
+                    <p className="pbs-encounter-note">{videoPermissionError}</p>
+                  )}
+                </div>
+              )}
               <p className="pbs-encounter-note">
                 If this public Jitsi server blocks iframe embedding in your browser, use Text chat only; PBS chat does not depend on Jitsi.
               </p>
