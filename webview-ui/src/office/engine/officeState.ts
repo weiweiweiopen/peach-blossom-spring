@@ -364,6 +364,7 @@ export class OfficeState {
     row: number,
   ): void {
     let ch = this.characters.get(id);
+    const isNewRemotePlayer = !ch;
     if (!ch) {
       ch = createCharacter(id, palette, null, null, 0);
       ch.isRemotePlayer = true;
@@ -375,15 +376,45 @@ export class OfficeState {
       this.characters.set(id, ch);
     }
 
+    const targetCol = Math.max(0, Math.min(this.layout.cols - 1, Math.round(col)));
+    const targetRow = Math.max(0, Math.min(this.layout.rows - 1, Math.round(row)));
+
     ch.folderName = name;
     ch.palette = palette;
     ch.seatId = null;
-    ch.path = [];
     ch.moveProgress = 0;
-    ch.tileCol = Math.max(0, Math.min(this.layout.cols - 1, Math.round(col)));
-    ch.tileRow = Math.max(0, Math.min(this.layout.rows - 1, Math.round(row)));
-    ch.x = ch.tileCol * TILE_SIZE + TILE_SIZE / 2;
-    ch.y = ch.tileRow * TILE_SIZE + TILE_SIZE / 2;
+
+    if (isNewRemotePlayer) {
+      const target = this.tileCenter(targetCol, targetRow);
+      ch.tileCol = targetCol;
+      ch.tileRow = targetRow;
+      ch.x = target.x;
+      ch.y = target.y;
+      return;
+    }
+
+    if (ch.tileCol === targetCol && ch.tileRow === targetRow) {
+      ch.path = [];
+      ch.state = CharacterState.IDLE;
+      return;
+    }
+
+    const target = this.tileCenter(targetCol, targetRow);
+    const distanceTiles = Math.hypot(targetCol - ch.tileCol, targetRow - ch.tileRow);
+    if (distanceTiles > 8) {
+      ch.path = [];
+      ch.tileCol = targetCol;
+      ch.tileRow = targetRow;
+      ch.x = target.x;
+      ch.y = target.y;
+      ch.state = CharacterState.IDLE;
+      ch.frame = 0;
+      return;
+    }
+
+    ch.path = [{ col: targetCol, row: targetRow }];
+    ch.moveSpeedMultiplier = Math.max(1, Math.min(4, distanceTiles));
+    ch.state = CharacterState.WALK;
   }
 
   removeRemotePlayer(id: number): void {

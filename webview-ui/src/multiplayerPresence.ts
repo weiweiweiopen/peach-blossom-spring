@@ -16,16 +16,28 @@ export interface MultiplayerPresence {
   lastActive: number;
 }
 
+export interface MultiplayerChatMessage {
+  id: string;
+  room: string;
+  encounterId: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  timestamp: number;
+}
+
 type PresenceHandler = (presence: MultiplayerPresence) => void;
 type SnapshotHandler = (players: MultiplayerPresence[]) => void;
 type LeaveHandler = (playerId: string) => void;
 type StatusHandler = (status: string) => void;
+type ChatMessageHandler = (message: MultiplayerChatMessage) => void;
 
 interface MultiplayerClientHandlers {
   onSnapshot: SnapshotHandler;
   onPresence: PresenceHandler;
   onLeave: LeaveHandler;
   onStatus: StatusHandler;
+  onChatMessage?: ChatMessageHandler;
 }
 
 interface IncomingMessage {
@@ -33,6 +45,7 @@ interface IncomingMessage {
   playerId?: string;
   presence?: Partial<MultiplayerPresence>;
   players?: Array<Partial<MultiplayerPresence>>;
+  message?: Partial<MultiplayerChatMessage>;
 }
 
 export function readMultiplayerConfig(): MultiplayerConfig | null {
@@ -80,10 +93,14 @@ export function createPresence(
 
 const JITSI_BASE_URL = "https://meet.ffmuc.net";
 
-export function jitsiUrlForEncounter(room: string, playerA: string, playerB: string): string {
+export function encounterIdForPlayers(room: string, playerA: string, playerB: string): string {
   const roomPart = safeJitsiPart(room);
   const ids = [playerA, playerB].map(safeJitsiPart).sort().join("-");
-  return `${JITSI_BASE_URL}/peach-${roomPart}-${ids}`;
+  return `peach-${roomPart}-${ids}`;
+}
+
+export function jitsiUrlForEncounter(room: string, playerA: string, playerB: string): string {
+  return `${JITSI_BASE_URL}/${encounterIdForPlayers(room, playerA, playerB)}`;
 }
 
 export function tileFromPixels(x: number, y: number): { col: number; row: number } {
@@ -95,6 +112,18 @@ export function tileFromPixels(x: number, y: number): { col: number; row: number
 
 function safeJitsiPart(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "anon";
+}
+
+function isChatMessage(value: Partial<MultiplayerChatMessage> | undefined): value is MultiplayerChatMessage {
+  return (
+    typeof value?.id === "string" &&
+    typeof value.room === "string" &&
+    typeof value.encounterId === "string" &&
+    typeof value.senderId === "string" &&
+    typeof value.senderName === "string" &&
+    typeof value.text === "string" &&
+    typeof value.timestamp === "number"
+  );
 }
 
 function isPresence(value: Partial<MultiplayerPresence> | undefined): value is MultiplayerPresence {
@@ -168,6 +197,11 @@ export class MultiplayerPresenceClient {
     this.send("presence_update", presence);
   }
 
+  sendChatMessage(message: MultiplayerChatMessage): void {
+    if (this.ws?.readyState !== WebSocket.OPEN) return;
+    this.ws.send(JSON.stringify({ type: "chat_message", room: this.config.room, message }));
+  }
+
   close(): void {
     this.closed = true;
     if (this.reconnectTimer !== null) window.clearTimeout(this.reconnectTimer);
@@ -196,6 +230,10 @@ export class MultiplayerPresenceClient {
     }
     if ((message.type === "presence_update" || message.type === "move_player") && isPresence(message.presence)) {
       this.handlers.onPresence(message.presence);
+      return;
+    }
+    if (message.type === "chat_message" && isChatMessage(message.message)) {
+      this.handlers.onChatMessage?.(message.message);
       return;
     }
     if (message.type === "leave_room" && typeof message.playerId === "string") {

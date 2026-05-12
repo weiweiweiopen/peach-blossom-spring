@@ -39,8 +39,10 @@ import {
 } from "./i18n.js";
 import {
   createPresence,
+  encounterIdForPlayers,
   getOrCreatePlayerId,
   jitsiUrlForEncounter,
+  type MultiplayerChatMessage,
   type MultiplayerConfig,
   type MultiplayerPresence,
   MultiplayerPresenceClient,
@@ -106,6 +108,7 @@ const topicLabels: Record<string, string> = {
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
+const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
 const archiveTreeZone =
   tamagotchiPeachForestZones.find((zone) => zone.kind === "archiveTree") ??
   null;
@@ -152,6 +155,12 @@ type SplitPanel =
   | { kind: "externalLink"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" };
+
+type EncounterPanel = {
+  kind: "video" | "chat";
+  partner: MultiplayerPresence;
+  encounterId: string;
+};
 const ExpeditionPanel = lazy(() =>
   import("./components/ExpeditionPanel.js").then((module) => ({
     default: module.ExpeditionPanel,
@@ -451,6 +460,10 @@ function App() {
   const [dismissedVideoEncounterId, setDismissedVideoEncounterId] = useState<string | null>(
     null,
   );
+  const multiplayerClientRef = useRef<MultiplayerPresenceClient | null>(null);
+  const [encounterPanel, setEncounterPanel] = useState<EncounterPanel | null>(null);
+  const [chatMessages, setChatMessages] = useState<MultiplayerChatMessage[]>([]);
+  const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
@@ -778,6 +791,7 @@ function App() {
       setRemotePresences(new Map());
       setVideoEncounter(null);
       setDismissedVideoEncounterId(null);
+      setEncounterPanel(null);
       officeState.clearRemotePlayers();
       setMultiplayerStatus(multiplayerConfig ? "waiting" : "disabled");
       return;
@@ -797,17 +811,15 @@ function App() {
 
     const client = new MultiplayerPresenceClient(multiplayerConfig, localPresence(), {
       onSnapshot: (players) => {
-        const next = new Map<string, MultiplayerPresence>();
-        const activeIds = new Set<number>();
-        for (const presence of players) {
-          if (presence.playerId === localPlayerId) continue;
-          next.set(presence.playerId, presence);
-          const id = remoteCharacterId(presence.playerId);
-          activeIds.add(id);
-          applyRemotePresence(presence, localPlayerId);
-        }
-        officeState.removeMissingRemotePlayers(activeIds);
-        setRemotePresences(next);
+        setRemotePresences((current) => {
+          const next = new Map(current);
+          for (const presence of players) {
+            if (presence.playerId === localPlayerId) continue;
+            next.set(presence.playerId, presence);
+            applyRemotePresence(presence, localPlayerId);
+          }
+          return next;
+        });
         console.info("[PBS multiplayer] room snapshot", multiplayerConfig.room, players.length);
       },
       onPresence: (presence) => {
@@ -829,15 +841,45 @@ function App() {
         });
       },
       onStatus: setMultiplayerStatus,
+      onChatMessage: (message) => {
+        setChatMessages((current) => {
+          if (current.some((item) => item.id === message.id)) return current;
+          return [...current.slice(-80), message];
+        });
+      },
     });
 
+    multiplayerClientRef.current = client;
     client.connect();
+    let lastSent = localPresence();
+    let lastSentAt = 0;
     const interval = window.setInterval(() => {
-      client.updatePresence(localPresence());
-    }, 500);
+      const nextPresence = localPresence();
+      const now = Date.now();
+      const moved = nextPresence.x !== lastSent.x || nextPresence.y !== lastSent.y;
+      if (moved || now - lastSentAt > 5000) {
+        client.updatePresence(nextPresence);
+        lastSent = nextPresence;
+        lastSentAt = now;
+      }
+    }, 750);
+    const staleInterval = window.setInterval(() => {
+      const now = Date.now();
+      setRemotePresences((current) => {
+        const next = new Map(current);
+        for (const [playerId, presence] of current) {
+          if (now - presence.lastActive <= MULTIPLAYER_STALE_TIMEOUT_MS) continue;
+          officeState.removeRemotePlayer(remoteCharacterId(playerId));
+          next.delete(playerId);
+        }
+        return next;
+      });
+    }, 2000);
 
     return () => {
       window.clearInterval(interval);
+      window.clearInterval(staleInterval);
+      if (multiplayerClientRef.current === client) multiplayerClientRef.current = null;
       client.close();
       officeState.clearRemotePlayers();
     };
@@ -879,6 +921,39 @@ function App() {
     playerProfile,
     remotePresences,
   ]);
+
+  const openEncounterPanel = useCallback(
+    (kind: "video" | "chat", partner: MultiplayerPresence) => {
+      if (!multiplayerConfig) return;
+      const localPlayerId = getOrCreatePlayerId();
+      setEncounterPanel({
+        kind,
+        partner,
+        encounterId: encounterIdForPlayers(multiplayerConfig.room, localPlayerId, partner.playerId),
+      });
+      setVideoEncounter(null);
+    },
+    [multiplayerConfig],
+  );
+
+  const sendChatMessage = useCallback(() => {
+    if (!multiplayerConfig || !playerProfile || !encounterPanel || encounterPanel.kind !== "chat") return;
+    const text = chatDraft.trim();
+    if (!text) return;
+    const senderId = getOrCreatePlayerId();
+    const message: MultiplayerChatMessage = {
+      id: `${senderId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      room: multiplayerConfig.room,
+      encounterId: encounterPanel.encounterId,
+      senderId,
+      senderName: playerProfile.name,
+      text,
+      timestamp: Date.now(),
+    };
+    multiplayerClientRef.current?.sendChatMessage(message);
+    setChatMessages((current) => [...current.slice(-80), message]);
+    setChatDraft("");
+  }, [chatDraft, encounterPanel, multiplayerConfig, playerProfile]);
 
   // 60 Hz render tick: forces React overlays (name tags, "Press Space" prompt,
   // archive-tree highlight, etc.) to recompute from the latest character.x/y
@@ -1554,6 +1629,11 @@ function App() {
       </div>
     );
   }
+
+
+  const activeEncounterMessages = encounterPanel
+    ? chatMessages.filter((message) => message.encounterId === encounterPanel.encounterId)
+    : [];
 
   return (
     <div
@@ -2504,25 +2584,15 @@ function App() {
         </div>
       )}
 
-      {playerProfile && multiplayerConfig && videoEncounter && (
-        <div className="video-encounter-card" role="dialog" aria-live="polite">
-          <p>你遇見 {videoEncounter.displayName}，Start video chat?</p>
-          <div className="video-encounter-actions">
-            <button
-              type="button"
-              onClick={() => {
-                window.open(
-                  jitsiUrlForEncounter(
-                    multiplayerConfig.room,
-                    getOrCreatePlayerId(),
-                    videoEncounter.playerId,
-                  ),
-                  "_blank",
-                  "noopener,noreferrer",
-                );
-              }}
-            >
-              Join video chat
+      {playerProfile && multiplayerConfig && videoEncounter && !encounterPanel && (
+        <div className="video-encounter-card pbs-encounter-card" role="dialog" aria-live="polite">
+          <p>你遇見 {videoEncounter.displayName}，choose an encounter:</p>
+          <div className="video-encounter-actions pbs-encounter-actions">
+            <button type="button" onClick={() => openEncounterPanel("video", videoEncounter)}>
+              Start video chat
+            </button>
+            <button type="button" onClick={() => openEncounterPanel("chat", videoEncounter)}>
+              Text chat only
             </button>
             <button
               type="button"
@@ -2531,9 +2601,85 @@ function App() {
                 setVideoEncounter(null);
               }}
             >
-              Later
+              Not now
             </button>
           </div>
+        </div>
+      )}
+
+      {playerProfile && multiplayerConfig && encounterPanel && (
+        <div className="pbs-encounter-panel" role="dialog" aria-modal="false" aria-labelledby="pbs-encounter-title">
+          <div className="pbs-encounter-panel-header">
+            <div>
+              <p className="pbs-encounter-kicker">Multiplayer encounter</p>
+              <h2 id="pbs-encounter-title">
+                {encounterPanel.kind === "video" ? "Video chat" : "Text chat"} · {encounterPanel.partner.displayName}
+              </h2>
+            </div>
+            <button
+              type="button"
+              className="pbs-encounter-close"
+              aria-label="Close encounter panel"
+              onClick={() => {
+                setDismissedVideoEncounterId(encounterPanel.partner.playerId);
+                setEncounterPanel(null);
+              }}
+            >
+              ×
+            </button>
+          </div>
+          <p className="pbs-encounter-status">
+            Room {multiplayerConfig.room} · Encounter {encounterPanel.encounterId}
+          </p>
+          {encounterPanel.kind === "video" ? (
+            <div className="pbs-video-frame-wrap">
+              <iframe
+                title={`Jitsi video chat with ${encounterPanel.partner.displayName}`}
+                src={jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)}
+                allow="camera; microphone; fullscreen; display-capture; autoplay"
+                referrerPolicy="no-referrer"
+              />
+              <p className="pbs-encounter-note">
+                If this public Jitsi server blocks iframe embedding in your browser, use Text chat only; PBS chat does not depend on Jitsi.
+              </p>
+            </div>
+          ) : (
+            <div className="pbs-chat-panel">
+              <div className="pbs-chat-log" aria-live="polite">
+                {activeEncounterMessages.length === 0 ? (
+                  <p className="pbs-chat-empty">No messages yet. Say hello without opening camera.</p>
+                ) : (
+                  activeEncounterMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`pbs-chat-message ${message.senderId === getOrCreatePlayerId() ? "is-local" : ""}`}
+                    >
+                      <span className="pbs-chat-meta">
+                        {message.senderName} · {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                      <span>{message.text}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+              <form
+                className="pbs-chat-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  sendChatMessage();
+                }}
+              >
+                <input
+                  type="text"
+                  value={chatDraft}
+                  onChange={(event) => setChatDraft(event.target.value)}
+                  maxLength={500}
+                  placeholder="Type a PBS message..."
+                />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          )}
         </div>
       )}
 
