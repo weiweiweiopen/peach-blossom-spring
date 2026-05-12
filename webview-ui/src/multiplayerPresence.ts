@@ -78,10 +78,12 @@ export function createPresence(
   };
 }
 
+const JITSI_BASE_URL = "https://meet.ffmuc.net";
+
 export function jitsiUrlForEncounter(room: string, playerA: string, playerB: string): string {
   const roomPart = safeJitsiPart(room);
   const ids = [playerA, playerB].map(safeJitsiPart).sort().join("-");
-  return `https://meet.jit.si/peach-${roomPart}-${ids}`;
+  return `${JITSI_BASE_URL}/peach-${roomPart}-${ids}`;
 }
 
 export function tileFromPixels(x: number, y: number): { col: number; row: number } {
