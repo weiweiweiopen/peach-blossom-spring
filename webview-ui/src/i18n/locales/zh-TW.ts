@@ -171,6 +171,9 @@ const zhTW = {
     abaoHint: "靠近阿爆，看看節奏如何改變問題。",
     hatchEnter: "孵化並進入",
   },
+  abao: {
+    lines: "WTF|哈哈|該怎麼辦！|為什麼～～～～！！|好無聊喔…|我喜歡研究意識|Wise Mouse Culture！|能源與身份到底是什麼？|AI agent 需要夢嗎？|今天有太陽嗎？|我要去黑客營",
+  },
   api: {
     keyMissing: "缺少 API key",
     keyMissingInstruction: "請在 webview-ui/.env.local 設定 VITE_DEEPSEEK_API_KEY，或使用本機瀏覽器儲存一次。",

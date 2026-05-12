@@ -570,20 +570,12 @@ function App() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const abaoLines = useMemo(
-    () => [
-      "WTF",
-      "haha",
-      "what do we do!",
-      "Whyyyyyyyyyy!!",
-      "好無聊喔…",
-      "我喜歡研究意識",
-      "Wise Mouse Culture！",
-      "能源與身份到底是什麼？",
-      "AI agent需要夢嗎？",
-      "今天有太陽嗎？",
-      "我要去黑客營",
-    ],
-    [],
+    () =>
+      t(selectedLanguage, "abao.lines")
+        .split("|")
+        .map((line) => line.trim())
+        .filter(Boolean),
+    [selectedLanguage],
   );
 
   const showAbaoBubble = useCallback(() => {
@@ -1901,13 +1893,13 @@ function App() {
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
-                tag.isQuestionPet
+                tag.isQuestionPet || tag.id === abaoAgentId
                   ? "pointer-events-auto cursor-pointer"
                   : "pointer-events-none"
               }`}
               style={{ left: tag.left, top: tag.top }}
               onClick={
-                tag.isQuestionPet
+                tag.isQuestionPet || tag.id === abaoAgentId
                   ? (event) => {
                       event.stopPropagation();
                       handleClick(tag.id);
