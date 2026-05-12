@@ -350,6 +350,56 @@ export class OfficeState {
     this.cameraFollowId = id;
   }
 
+  addOrUpdateRemotePlayer(
+    id: number,
+    palette: number,
+    name: string,
+    col: number,
+    row: number,
+  ): void {
+    let ch = this.characters.get(id);
+    if (!ch) {
+      ch = createCharacter(id, palette, null, null, 0);
+      ch.isRemotePlayer = true;
+      ch.isActive = false;
+      ch.state = CharacterState.IDLE;
+      ch.matrixEffect = 'spawn';
+      ch.matrixEffectTimer = 0;
+      ch.matrixEffectSeeds = matrixEffectSeeds();
+      this.characters.set(id, ch);
+    }
+
+    ch.folderName = name;
+    ch.palette = palette;
+    ch.seatId = null;
+    ch.path = [];
+    ch.moveProgress = 0;
+    ch.tileCol = Math.max(0, Math.min(this.layout.cols - 1, Math.round(col)));
+    ch.tileRow = Math.max(0, Math.min(this.layout.rows - 1, Math.round(row)));
+    ch.x = ch.tileCol * TILE_SIZE + TILE_SIZE / 2;
+    ch.y = ch.tileRow * TILE_SIZE + TILE_SIZE / 2;
+  }
+
+  removeRemotePlayer(id: number): void {
+    const ch = this.characters.get(id);
+    if (!ch?.isRemotePlayer) return;
+    this.characters.delete(id);
+  }
+
+  removeMissingRemotePlayers(activeIds: Set<number>): void {
+    for (const ch of this.characters.values()) {
+      if (ch.isRemotePlayer && !activeIds.has(ch.id)) {
+        this.characters.delete(ch.id);
+      }
+    }
+  }
+
+  clearRemotePlayers(): void {
+    for (const ch of this.characters.values()) {
+      if (ch.isRemotePlayer) this.characters.delete(ch.id);
+    }
+  }
+
 
   addQuestionPet(id: number, name: string, spriteOverride: SpriteData, col = 32, row = 32, spriteAnimation?: SpriteData[]): void {
     if (this.characters.has(id)) return;

@@ -182,6 +182,8 @@ export interface Character {
   folderName?: string;
   /** User-controlled protagonist, excluded from agent hit-testing and AI FSM. */
   isPlayer?: boolean;
+  /** Multiplayer presence avatar controlled by the WebSocket backend. */
+  isRemotePlayer?: boolean;
   /** Question-pet / 問題電子雞, clickable but controlled by simulation. */
   isQuestionPet?: boolean;
   /** Optional 16x16 generated sprite override for question pets. */
