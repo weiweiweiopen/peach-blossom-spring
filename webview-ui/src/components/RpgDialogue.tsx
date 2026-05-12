@@ -96,7 +96,7 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
-function makeFixedQuestions(language: LanguageCode): string[] {
+function makeFixedQuestions(language: LanguageCode, personaId: string): string[] {
   const questions: Record<LanguageCode, string[]> = {
     'zh-TW': ['你是誰？', '這裡是哪裡？', '你可以給我一些意見嗎？'],
     en: ['Who are you?', 'Where am I?', 'Can you give me some advice?'],
@@ -105,7 +105,70 @@ function makeFixedQuestions(language: LanguageCode): string[] {
     ja: ['あなたは誰？', 'ここはどこ？', '何か助言をもらえる？'],
     th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', 'ช่วยให้คำแนะนำฉันได้ไหม?'],
   };
-  return questions[language];
+  const fixed = [...questions[language]];
+  if (personaId === 'wukir-suryadi') fixed[2] = '你在找什麼歌嗎？';
+  return fixed;
+}
+
+
+const WUKIR_ALBUM_URL = 'https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual';
+const wukirDemoTracks = ['ZOOM0174_Tr1', 'ZOOM0176_Tr1', 'ZOOM0177_Tr1', 'ZOOM0175_Tr1'];
+
+function WukirArtistStation() {
+  const [liked, setLiked] = useState(false);
+  return (
+    <section className="wukir-station" aria-label="Wukir Suryadi artist station">
+      <div className="wukir-station-header">
+        <div>
+          <p className="wukir-station-kicker">External artist station</p>
+          <h3>Institutionalized Ritual</h3>
+          <p>Wukir Suryadi</p>
+        </div>
+        <button
+          className={`wukir-like-button${liked ? ' is-liked' : ''}`}
+          type="button"
+          aria-pressed={liked}
+          aria-label={liked ? 'Unlike Wukir station' : 'Like Wukir station'}
+          onClick={() => setLiked((current) => !current)}
+        >
+          ♥
+        </button>
+      </div>
+      <div className="wukir-control-row" aria-label="Visual station controls; playback is handled by the external preview">
+        <button type="button" aria-label="Previous track visual control">⏮</button>
+        <button type="button" aria-label="Play external preview visual control">▶</button>
+        <button type="button" aria-label="Pause external preview visual control">⏸</button>
+        <button type="button" aria-label="Stop external preview visual control">⏹</button>
+        <button type="button" aria-label="Next track visual control">⏭</button>
+      </div>
+      <div className="wukir-track-meta">
+        <span>Track preview</span>
+        <strong>{wukirDemoTracks[0]}</strong>
+        <small>Album/source: Institutionalized Ritual</small>
+      </div>
+      <div className="wukir-track-list" aria-label="Demo track list">
+        {wukirDemoTracks.map((track) => (
+          <span key={track}>{track}</span>
+        ))}
+      </div>
+      <div className="wukir-embed-frame">
+        <iframe
+          title="Bandcamp preview: Wukir Suryadi - Institutionalized Ritual"
+          src={WUKIR_ALBUM_URL}
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        />
+        <div className="wukir-embed-fallback">
+          <strong>External preview unavailable</strong>
+          <span>Institutionalized Ritual — Wukir Suryadi</span>
+          <a href={WUKIR_ALBUM_URL} target="_blank" rel="noreferrer">Open on Bandcamp</a>
+        </div>
+      </div>
+      <p className="wukir-station-note">
+        Playback controls belong to the external Bandcamp preview; local buttons are visual station metadata only.
+      </p>
+    </section>
+  );
 }
 
 function makeSuggestedQuestions(
@@ -342,7 +405,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     const transcript = language === 'zh-TW' ? knowledge.transcript_zh || knowledge.transcript_en : knowledge.transcript_en || knowledge.transcript_zh;
     return makeSuggestedQuestions(transcript, persona, player, language, questionSeed);
   }, [knowledge.transcript_en, knowledge.transcript_zh, language, persona, player, questionSeed]);
-  const fixedQuestions = useMemo(() => makeFixedQuestions(language), [language]);
+  const fixedQuestions = useMemo(() => makeFixedQuestions(language, persona.id), [language, persona.id]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -487,6 +550,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             )}
           </div>
         </div>
+
+        {persona.id === 'wukir-suryadi' && <WukirArtistStation />}
 
         {areSuggestionsOpen && (
           <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">

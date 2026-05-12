@@ -2915,3 +2915,150 @@
     flex-direction: column;
   }
 }
+
+.wukir-station {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 12px;
+  color: #000;
+  background: color-mix(in srgb, var(--palette-cream) 88%, #fff 12%);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.wukir-station-header,
+.wukir-control-row,
+.wukir-track-meta,
+.wukir-track-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wukir-station-header {
+  justify-content: space-between;
+}
+
+.wukir-station-header h3,
+.wukir-station-header p {
+  margin: 0;
+}
+
+.wukir-station-header h3 {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.wukir-station-kicker,
+.wukir-station-note,
+.wukir-track-meta small {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.wukir-station-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.wukir-like-button,
+.wukir-control-row button,
+.wukir-embed-fallback a {
+  min-height: 34px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.wukir-like-button {
+  width: 38px;
+  font-size: 22px;
+}
+
+.wukir-like-button.is-liked {
+  color: #b00046;
+  background: var(--palette-pink);
+}
+
+.wukir-control-row {
+  flex-wrap: wrap;
+}
+
+.wukir-control-row button {
+  min-width: 40px;
+  padding: 4px 8px;
+}
+
+.wukir-track-meta {
+  flex-wrap: wrap;
+}
+
+.wukir-track-meta strong {
+  font-size: 16px;
+}
+
+.wukir-track-meta span,
+.wukir-track-meta small,
+.wukir-station-note {
+  opacity: 0.78;
+}
+
+.wukir-track-list {
+  flex-wrap: wrap;
+}
+
+.wukir-track-list span {
+  padding: 3px 7px;
+  background: #fff;
+  border: 1px solid #000;
+  font-size: 12px;
+}
+
+.wukir-embed-frame {
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+  background: #fff;
+  border: 2px solid #000;
+}
+
+.wukir-embed-frame iframe {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 150px;
+  border: 0;
+}
+
+.wukir-embed-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  padding: 12px;
+  text-align: center;
+}
+
+.wukir-embed-fallback a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  text-decoration: none;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .wukir-station {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .wukir-embed-frame iframe {
+    height: 132px;
+  }
+}

@@ -164,6 +164,25 @@
       }
     },
     {
+      "id": "wukir-suryadi",
+      "name": "Wukir Suryadi",
+      "role": "artist station / experimental instrument practice",
+      "intro": "Wukir's persona is a compact listening station for experimental sound, instrument-making, and careful external previews. His transcript is pending and will be added later.",
+      "transcripts": {
+        "en": "docs/transcripts_en/wukir-suryadi.md",
+        "zh": "docs/transcripts_zh/wukir-suryadi.md"
+      },
+      "responses": {
+        "nomadic": "I would treat movement as listening before performing: carry the instrument, meet the place, and let the first rhythm come from the encounter.",
+        "camp": "A camp can become an artist station when people gather around sound, tools, and small rituals without turning the meeting into a spectacle.",
+        "independent": "Independent practice needs room to build, test, fail, and listen at a human scale. The work should not be flattened into a product demo.",
+        "artScience": "Art-science is strongest when technology remains touchable: material, vibration, body, and uncertainty should stay audible.",
+        "funding": "Use funding to protect time for making, rehearsing, documentation, and respectful sharing rather than only promotion.",
+        "exchange": "International exchange should let sound travel without erasing its local context. A preview can invite listening, but the source should remain visible.",
+        "sustainability": "Sustainability means the practice can keep sounding after the event: instruments maintained, links preserved, and listeners able to find the source."
+      }
+    },
+    {
       "id": "ryu-oyama",
       "name": "Ryu Toru Oyama",
       "role": "Oki Wonder Lab / island-chain host",

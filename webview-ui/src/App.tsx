@@ -629,6 +629,13 @@ function App() {
         showAbaoBubble();
         return;
       }
+      if (appMode === "interactive" && persona) {
+        setSelectedPet(null);
+        setSelectedDispatchPet(null);
+        setSelectedNpcInfo(null);
+        setActiveDialogueId(agentId);
+        return;
+      }
       if (appMode === "dispatch_observer" && persona) {
         setSelectedNpcInfo(persona);
         setSelectedDispatchPet(null);
