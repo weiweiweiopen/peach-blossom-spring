@@ -35,6 +35,8 @@ interface OfficeCanvasProps {
   onDeleteSelected: () => void;
   onRotateSelected: () => void;
   onDragMove: (uid: string, newCol: number, newRow: number) => void;
+  onMobileMapTap?: (col: number, row: number) => void;
+  mobileTapToMove: boolean;
   editorTick: number;
   zoom: number;
   onZoomChange: (zoom: number) => void;
@@ -52,6 +54,8 @@ export function OfficeCanvas({
   onDeleteSelected,
   onRotateSelected,
   onDragMove,
+  onMobileMapTap,
+  mobileTapToMove,
   editorTick: _editorTick,
   zoom,
   onZoomChange,
@@ -456,7 +460,9 @@ export function OfficeCanvas({
 
       const pos = screenToWorld(e.clientX, e.clientY);
       if (!pos) return;
-      const hitId = officeState.getCharacterAt(pos.worldX, pos.worldY);
+      const hitId =
+        officeState.getCharacterAt(pos.worldX, pos.worldY) ??
+        officeState.getBubbleAt(pos.worldX, pos.worldY);
       const tile = screenToTile(e.clientX, e.clientY);
       officeState.hoveredTile = tile;
       const canvas = canvasRef.current;
@@ -672,7 +678,9 @@ export function OfficeCanvas({
       const pos = screenToWorld(e.clientX, e.clientY);
       if (!pos) return;
 
-      const hitId = officeState.getCharacterAt(pos.worldX, pos.worldY);
+      const hitId =
+        officeState.getCharacterAt(pos.worldX, pos.worldY) ??
+        officeState.getBubbleAt(pos.worldX, pos.worldY);
       if (hitId !== null) {
         // Dismiss any active bubble on click
         officeState.dismissBubble(hitId);
@@ -727,8 +735,23 @@ export function OfficeCanvas({
         officeState.selectedAgentId = null;
         officeState.cameraFollowId = null;
       }
+
+      if (mobileTapToMove) {
+        const tile = screenToTile(e.clientX, e.clientY);
+        if (tile) {
+          onMobileMapTap?.(tile.col, tile.row);
+        }
+      }
     },
-    [officeState, onClick, screenToWorld, screenToTile, isEditMode],
+    [
+      officeState,
+      onClick,
+      onMobileMapTap,
+      screenToWorld,
+      screenToTile,
+      isEditMode,
+      mobileTapToMove,
+    ],
   );
 
   const handleMouseLeave = useCallback(() => {

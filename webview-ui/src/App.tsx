@@ -106,9 +106,6 @@ const topicLabels: Record<string, string> = {
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
-const MOBILE_THUMB_GUIDE_BOTTOM_PX = 148;
-const MOBILE_THUMB_GUIDE_DIAMETER_PX = 112;
-const MOBILE_THUMB_ACTIVE_RADIUS_PX = 60;
 const archiveTreeZone =
   tamagotchiPeachForestZones.find((zone) => zone.kind === "archiveTree") ??
   null;
@@ -555,24 +552,6 @@ function App() {
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const mobileDragRef = useRef({
-    pointerId: null as number | null,
-    clientX: 0,
-    clientY: 0,
-    raf: 0,
-    nextAt: 0,
-  });
-  const getMobileControlCenter = useCallback(
-    () => ({
-      x: window.innerWidth / 2,
-      y:
-        window.innerHeight -
-        MOBILE_THUMB_GUIDE_BOTTOM_PX -
-        MOBILE_THUMB_GUIDE_DIAMETER_PX / 2,
-    }),
-    [],
-  );
-
   const abaoLines = useMemo(
     () => [
       "WTF",
@@ -1314,105 +1293,15 @@ function App() {
     };
   }, [appMode, layoutReady, officeState, playerProfile]);
 
-  const handleMoveCommand = useCallback(
-    (dCol: number, dRow: number, sprint = false) => {
-      officeState.setPlayerSpeedMultiplier(PLAYER_ID, sprint ? 3.1 : 1);
-      const moved = officeState.movePlayerBy(PLAYER_ID, dCol, dRow);
+  const handleMobileMapTap = useCallback(
+    (col: number, row: number) => {
+      const moved = officeState.walkToTile(PLAYER_ID, col, row);
       if (moved) {
         setPlayerMoveTick((tick) => tick + 1);
       }
-      return moved;
     },
     [officeState],
   );
-
-  const stepTowardMobilePointer = useCallback(() => {
-    const drag = mobileDragRef.current;
-    drag.raf = requestAnimationFrame(stepTowardMobilePointer);
-    if (drag.pointerId === null || activeDialogueIdRef.current !== null) return;
-    const now = performance.now();
-    if (now < drag.nextAt) return;
-    const controlCenter = getMobileControlCenter();
-    const dx = drag.clientX - controlCenter.x;
-    const dy = drag.clientY - controlCenter.y;
-    if (Math.hypot(dx, dy) < 24) return;
-    const moved =
-      Math.abs(dx) > Math.abs(dy)
-        ? handleMoveCommand(dx > 0 ? 1 : -1, 0)
-        : handleMoveCommand(0, dy > 0 ? 1 : -1);
-    if (moved) {
-      drag.nextAt = now + 90;
-    }
-  }, [getMobileControlCenter, handleMoveCommand]);
-
-  const handleMobilePointerDown = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (
-        !showMobileControls ||
-        !playerProfile ||
-        appMode !== "interactive" ||
-        activeDialogueIdRef.current !== null
-      )
-        return;
-      const target = event.target as HTMLElement | null;
-      if (
-        target?.closest(
-          'button, input, textarea, a, select, [data-no-mobile-drag="true"]',
-        )
-      )
-        return;
-      const controlCenter = getMobileControlCenter();
-      if (
-        Math.hypot(
-          event.clientX - controlCenter.x,
-          event.clientY - controlCenter.y,
-        ) > MOBILE_THUMB_ACTIVE_RADIUS_PX
-      )
-        return;
-      event.currentTarget.setPointerCapture(event.pointerId);
-      mobileDragRef.current.pointerId = event.pointerId;
-      mobileDragRef.current.clientX = event.clientX;
-      mobileDragRef.current.clientY = event.clientY;
-      mobileDragRef.current.nextAt = 0;
-      if (!mobileDragRef.current.raf) {
-        mobileDragRef.current.raf = requestAnimationFrame(
-          stepTowardMobilePointer,
-        );
-      }
-    },
-    [
-      appMode,
-      getMobileControlCenter,
-      playerProfile,
-      showMobileControls,
-      stepTowardMobilePointer,
-    ],
-  );
-
-  const handleMobilePointerMove = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (mobileDragRef.current.pointerId !== event.pointerId) return;
-      mobileDragRef.current.clientX = event.clientX;
-      mobileDragRef.current.clientY = event.clientY;
-    },
-    [],
-  );
-
-  const stopMobilePointer = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (mobileDragRef.current.pointerId !== event.pointerId) return;
-      mobileDragRef.current.pointerId = null;
-      mobileDragRef.current.nextAt = 0;
-    },
-    [],
-  );
-
-  useEffect(() => {
-    const drag = mobileDragRef.current;
-    return () => {
-      if (drag.raf) cancelAnimationFrame(drag.raf);
-    };
-  }, []);
 
   const handlePlayerStart = useCallback(
     (profile: PlayerProfile, mode: StartMode) => {
@@ -1586,6 +1475,7 @@ function App() {
         name: string;
         left: number;
         top: number;
+        isQuestionPet: boolean;
       }>;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -1605,6 +1495,7 @@ function App() {
         name: ch.folderName ?? "",
         left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
         top: (deviceOffsetY + (ch.y - 30) * editor.zoom) / dpr,
+        isQuestionPet: Boolean(ch.isQuestionPet),
       }));
   })();
 
@@ -1675,10 +1566,6 @@ function App() {
             ? "none"
             : undefined,
       }}
-      onPointerDown={handleMobilePointerDown}
-      onPointerMove={handleMobilePointerMove}
-      onPointerUp={stopMobilePointer}
-      onPointerCancel={stopMobilePointer}
     >
       {playerProfile && (
         <div className="pbs-world-map-layer">
@@ -1693,6 +1580,10 @@ function App() {
             onDeleteSelected={editor.handleDeleteSelected}
             onRotateSelected={editor.handleRotateSelected}
             onDragMove={editor.handleDragMove}
+            onMobileMapTap={handleMobileMapTap}
+            mobileTapToMove={
+              showMobileControls && appMode === "interactive" && !activeDialoguePersona
+            }
             editorTick={editor.editorTick}
             zoom={editor.zoom}
             onZoomChange={editor.handleZoomChange}
@@ -1888,8 +1779,20 @@ function App() {
           {!activeDialoguePersona && !splitPanel && nameTags.map((tag) => (
             <div
               key={tag.id}
-              className="npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base pointer-events-none"
+              className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
+                tag.isQuestionPet
+                  ? "pointer-events-auto cursor-pointer"
+                  : "pointer-events-none"
+              }`}
               style={{ left: tag.left, top: tag.top }}
+              onClick={
+                tag.isQuestionPet
+                  ? (event) => {
+                      event.stopPropagation();
+                      handleClick(tag.id);
+                    }
+                  : undefined
+              }
             >
               {tag.name}
             </div>
@@ -2402,20 +2305,6 @@ function App() {
             </section>
           )}
 
-          {showMobileControls &&
-            playerProfile &&
-            appMode === "interactive" &&
-            !activeDialoguePersona && (
-              <div
-                className="mobile-thumb-guide absolute z-46 pointer-events-none -translate-x-1/2 text-center"
-                style={{
-                  left: "50%",
-                  bottom: `calc(${MOBILE_THUMB_GUIDE_BOTTOM_PX}px + env(safe-area-inset-bottom))`,
-                }}
-              >
-                <div className="mx-auto h-42 w-42 rounded-full border border-white/20 bg-black/20" />
-              </div>
-            )}
         </>
       ) : (
         <DebugView

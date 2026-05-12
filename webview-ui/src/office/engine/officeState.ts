@@ -1,6 +1,8 @@
 import {
   AUTO_ON_FACING_DEPTH,
   AUTO_ON_SIDE_DEPTH,
+  BUBBLE_SITTING_OFFSET_PX,
+  BUBBLE_VERTICAL_OFFSET_PX,
   CHARACTER_HIT_HALF_WIDTH,
   CHARACTER_HIT_HEIGHT,
   CHARACTER_SITTING_OFFSET_PX,
@@ -36,6 +38,10 @@ import type {
 import { CharacterState, Direction, MATRIX_EFFECT_DURATION, TILE_SIZE } from '../types.js';
 import { createCharacter, updateCharacter } from './characters.js';
 import { matrixEffectSeeds } from './matrixEffect.js';
+
+const BUBBLE_HIT_WIDTH_PX = 11;
+const BUBBLE_HIT_HEIGHT_PX = 13;
+const BUBBLE_HIT_PADDING_PX = 8;
 
 export class OfficeState {
   layout: OfficeLayout;
@@ -944,6 +950,29 @@ export class OfficeState {
 
   getCharacters(): Character[] {
     return Array.from(this.characters.values());
+  }
+
+  /** Get visible bubble at pixel position (for hit testing). Returns character id or null. */
+  getBubbleAt(worldX: number, worldY: number): number | null {
+    const chars = this.getCharacters().sort((a, b) => b.y - a.y);
+    for (const ch of chars) {
+      if (ch.isPlayer || !ch.bubbleType) continue;
+      if (ch.matrixEffect === 'despawn') continue;
+      const sittingOffset = ch.state === CharacterState.TYPE ? BUBBLE_SITTING_OFFSET_PX : 0;
+      const left = ch.x - BUBBLE_HIT_WIDTH_PX / 2;
+      const right = ch.x + BUBBLE_HIT_WIDTH_PX / 2;
+      const bottom = ch.y + sittingOffset - BUBBLE_VERTICAL_OFFSET_PX - 1;
+      const top = bottom - BUBBLE_HIT_HEIGHT_PX;
+      if (
+        worldX >= left - BUBBLE_HIT_PADDING_PX &&
+        worldX <= right + BUBBLE_HIT_PADDING_PX &&
+        worldY >= top - BUBBLE_HIT_PADDING_PX &&
+        worldY <= bottom + BUBBLE_HIT_PADDING_PX
+      ) {
+        return ch.id;
+      }
+    }
+    return null;
   }
 
   /** Get character at pixel position (for hit testing). Returns id or null. */
