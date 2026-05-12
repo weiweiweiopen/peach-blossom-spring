@@ -74,6 +74,12 @@ export function OfficeCanvas({
   const isEraseDraggingRef = useRef(false);
   // Zoom scroll accumulator for trackpad pinch sensitivity
   const zoomAccumulatorRef = useRef(0);
+  const mobileHoldMoveRef = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    intervalId: number;
+  } | null>(null);
 
   // Clamp pan so the map edge can't go past a margin inside the viewport
   const clampPan = useCallback(
@@ -754,6 +760,58 @@ export function OfficeCanvas({
     ],
   );
 
+  const stopMobileHoldMove = useCallback((pointerId?: number) => {
+    const hold = mobileHoldMoveRef.current;
+    if (!hold || (pointerId !== undefined && hold.pointerId !== pointerId)) return;
+    window.clearInterval(hold.intervalId);
+    mobileHoldMoveRef.current = null;
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!mobileTapToMove || isEditMode || e.pointerType !== 'touch') return;
+
+      stopMobileHoldMove();
+      const pointerId = e.pointerId;
+      const moveTowardFinger = () => {
+        const hold = mobileHoldMoveRef.current;
+        if (!hold || hold.pointerId !== pointerId) return;
+        const tile = screenToTile(hold.clientX, hold.clientY);
+        const player = Array.from(officeState.characters.values()).find((ch) => ch.isPlayer);
+        if (tile && player) {
+          officeState.movePlayerTowardTile(player.id, tile.col, tile.row);
+        }
+      };
+
+      mobileHoldMoveRef.current = {
+        pointerId,
+        clientX: e.clientX,
+        clientY: e.clientY,
+        intervalId: window.setInterval(moveTowardFinger, 150),
+      };
+      e.currentTarget.setPointerCapture(pointerId);
+    },
+    [isEditMode, mobileTapToMove, officeState, screenToTile, stopMobileHoldMove],
+  );
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const hold = mobileHoldMoveRef.current;
+    if (!hold || hold.pointerId !== e.pointerId) return;
+    hold.clientX = e.clientX;
+    hold.clientY = e.clientY;
+  }, []);
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      stopMobileHoldMove(e.pointerId);
+    },
+    [stopMobileHoldMove],
+  );
+
+  useEffect(() => {
+    return () => stopMobileHoldMove();
+  }, [stopMobileHoldMove]);
+
   const handleMouseLeave = useCallback(() => {
     isPanningRef.current = false;
     isEraseDraggingRef.current = false;
@@ -812,6 +870,10 @@ export function OfficeCanvas({
     <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-bg">
       <canvas
         ref={canvasRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -821,6 +883,7 @@ export function OfficeCanvas({
         onWheel={handleWheel}
         onContextMenu={handleContextMenu}
         className="block"
+        style={{ touchAction: mobileTapToMove ? 'none' : undefined }}
       />
     </div>
   );

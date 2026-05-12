@@ -456,6 +456,32 @@ export class OfficeState {
     ch.moveSpeedMultiplier = Math.max(1, multiplier);
   }
 
+  movePlayerTowardTile(id: number, targetCol: number, targetRow: number): boolean {
+    const ch = this.characters.get(id);
+    if (!ch?.isPlayer || ch.path.length > 0) return false;
+
+    const dCol = targetCol - ch.tileCol;
+    const dRow = targetRow - ch.tileRow;
+    if (dCol === 0 && dRow === 0) return false;
+
+    const primaryHorizontal = Math.abs(dCol) >= Math.abs(dRow);
+    const steps = primaryHorizontal
+      ? [
+          { dCol: Math.sign(dCol), dRow: 0 },
+          { dCol: 0, dRow: Math.sign(dRow) },
+        ]
+      : [
+          { dCol: 0, dRow: Math.sign(dRow) },
+          { dCol: Math.sign(dCol), dRow: 0 },
+        ];
+
+    for (const step of steps) {
+      if (step.dCol === 0 && step.dRow === 0) continue;
+      if (this.movePlayerBy(id, step.dCol, step.dRow)) return true;
+    }
+    return false;
+  }
+
   faceCharacterToward(id: number, targetCol: number, targetRow: number): void {
     const ch = this.characters.get(id);
     if (!ch) return;
@@ -488,6 +514,11 @@ export class OfficeState {
     const dx = target.x - ch.x;
     const dy = target.y - ch.y;
     const dist = Math.hypot(dx, dy);
+    if (Math.abs(dx) > Math.abs(dy)) {
+      ch.dir = dx > 0 ? Direction.RIGHT : Direction.LEFT;
+    } else if (dy !== 0) {
+      ch.dir = dy > 0 ? Direction.DOWN : Direction.UP;
+    }
     const step = WALK_SPEED_PX_PER_SEC * 3.5 * speedMultiplier * dt;
     if (dist <= step || dist === 0) {
       ch.x = target.x;
