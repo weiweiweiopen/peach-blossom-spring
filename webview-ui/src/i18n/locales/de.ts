@@ -173,6 +173,9 @@ const de: typeof zhTW = {
     abaoHint: "Geh in die Nähe von Abao und sieh, wie Rhythmus die Frage verändert.",
     hatchEnter: "Schlüpfen lassen und eintreten",
   },
+  abao: {
+    lines: "WTF|haha|Was sollen wir tun!|Waruuuuuum!!|Mir ist so langweilig…|Ich erforsche gern Bewusstsein|Wise Mouse Culture!|Was sind Energie und Identität eigentlich?|Brauchen KI-Agenten Träume?|Scheint heute die Sonne?|Ich will ins Hacker-Camp",
+  },
   api: {
     keyMissing: "API key fehlt",
     keyMissingInstruction: "Setze VITE_DEEPSEEK_API_KEY in webview-ui/.env.local oder speichere ihn einmal im lokalen Browserspeicher.",

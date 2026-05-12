@@ -173,6 +173,9 @@ const id: typeof zhTW = {
     abaoHint: "Dekati Abao dan lihat bagaimana ritme mengubah pertanyaan.",
     hatchEnter: "Tetaskan dan masuk",
   },
+  abao: {
+    lines: "WTF|haha|Apa yang harus kita lakukan!|Kenapaaaaaaa!!|Aku bosan sekali…|Aku suka meneliti kesadaran|Wise Mouse Culture!|Apa sebenarnya energi dan identitas itu?|Apakah AI agent perlu mimpi?|Apakah hari ini ada matahari?|Aku ingin pergi ke hacker camp",
+  },
   api: {
     keyMissing: "API key tidak ada",
     keyMissingInstruction: "Atur VITE_DEEPSEEK_API_KEY di webview-ui/.env.local, atau simpan sekali di penyimpanan browser lokal.",
