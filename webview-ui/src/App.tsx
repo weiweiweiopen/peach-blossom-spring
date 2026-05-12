@@ -15,12 +15,12 @@ import { ChangelogModal } from "./components/ChangelogModal.js";
 import { DebugView } from "./components/DebugView.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
-import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import {
   type PlayerProfile,
   PlayerSetup,
   type StartMode,
 } from "./components/PlayerSetup.js";
+import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
@@ -37,6 +37,15 @@ import {
   t,
   writeStoredLanguage,
 } from "./i18n.js";
+import {
+  createPresence,
+  getOrCreatePlayerId,
+  jitsiUrlForEncounter,
+  type MultiplayerConfig,
+  type MultiplayerPresence,
+  MultiplayerPresenceClient,
+  readMultiplayerConfig,
+} from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
@@ -96,6 +105,7 @@ const topicLabels: Record<string, string> = {
 
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
+const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MOBILE_THUMB_GUIDE_BOTTOM_PX = 148;
 const MOBILE_THUMB_GUIDE_DIAMETER_PX = 112;
 const MOBILE_THUMB_ACTIVE_RADIUS_PX = 60;
@@ -314,6 +324,23 @@ function findShortNpcStep(
   candidates.sort((a, b) => a.score - b.score);
   return candidates[0] ?? null;
 }
+function remoteCharacterId(playerId: string): number {
+  let hash = 0;
+  for (let index = 0; index < playerId.length; index++) {
+    hash = (hash * 31 + playerId.charCodeAt(index)) | 0;
+  }
+  return -1000000 - Math.abs(hash % 900000);
+}
+
+function remotePalette(playerId: string, avatar: string): number {
+  const value = `${playerId}:${avatar}`;
+  let hash = 0;
+  for (let index = 0; index < value.length; index++) {
+    hash = (hash + value.charCodeAt(index)) % 6;
+  }
+  return hash;
+}
+
 function readSavedPlayerDefaults(): PlayerProfile | null {
   try {
     const raw = localStorage.getItem("peach_player_profile");
@@ -413,10 +440,23 @@ function App() {
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(
     null,
   );
+  const [multiplayerConfig] = useState<MultiplayerConfig | null>(() =>
+    readMultiplayerConfig(),
+  );
+  const [multiplayerStatus, setMultiplayerStatus] = useState("idle");
+  const [remotePresences, setRemotePresences] = useState<
+    Map<string, MultiplayerPresence>
+  >(() => new Map());
   const [nearbyNpcId, setNearbyNpcId] = useState<number | null>(null);
+  const [videoEncounter, setVideoEncounter] = useState<MultiplayerPresence | null>(
+    null,
+  );
+  const [dismissedVideoEncounterId, setDismissedVideoEncounterId] = useState<string | null>(
+    null,
+  );
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isNearTree, setIsNearTree] = useState(false);
-  const [, setPlayerMoveTick] = useState(0);
+  const [playerMoveTick, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
   const [promptAnchor, setPromptAnchor] = useState<{
     npcId: number;
@@ -738,6 +778,128 @@ function App() {
       officeState.cameraFollowId = null;
     }
   }, [appMode, layoutReady, officeState, playerProfile, worldInitialized]);
+
+  const applyRemotePresence = useCallback(
+    (presence: MultiplayerPresence, localPlayerId: string) => {
+      if (presence.playerId === localPlayerId) return;
+      const id = remoteCharacterId(presence.playerId);
+      officeState.addOrUpdateRemotePlayer(
+        id,
+        remotePalette(presence.playerId, presence.avatar),
+        presence.displayName,
+        presence.x,
+        presence.y,
+      );
+    },
+    [officeState],
+  );
+
+  useEffect(() => {
+    if (!multiplayerConfig || !layoutReady || !playerProfile || appMode !== "interactive") {
+      setRemotePresences(new Map());
+      setVideoEncounter(null);
+      setDismissedVideoEncounterId(null);
+      officeState.clearRemotePlayers();
+      setMultiplayerStatus(multiplayerConfig ? "waiting" : "disabled");
+      return;
+    }
+
+    const localPlayerId = getOrCreatePlayerId();
+    const localPresence = () => {
+      const player = officeState.characters.get(PLAYER_ID);
+      return createPresence(
+        multiplayerConfig,
+        localPlayerId,
+        playerProfile.name,
+        playerProfile.avatarTitle ?? `palette-${playerProfile.palette}`,
+        player ? { col: player.tileCol, row: player.tileRow } : { col: 1, row: 1 },
+      );
+    };
+
+    const client = new MultiplayerPresenceClient(multiplayerConfig, localPresence(), {
+      onSnapshot: (players) => {
+        const next = new Map<string, MultiplayerPresence>();
+        const activeIds = new Set<number>();
+        for (const presence of players) {
+          if (presence.playerId === localPlayerId) continue;
+          next.set(presence.playerId, presence);
+          const id = remoteCharacterId(presence.playerId);
+          activeIds.add(id);
+          applyRemotePresence(presence, localPlayerId);
+        }
+        officeState.removeMissingRemotePlayers(activeIds);
+        setRemotePresences(next);
+        console.info("[PBS multiplayer] room snapshot", multiplayerConfig.room, players.length);
+      },
+      onPresence: (presence) => {
+        if (presence.playerId === localPlayerId) return;
+        applyRemotePresence(presence, localPlayerId);
+        setRemotePresences((current) => {
+          const next = new Map(current);
+          next.set(presence.playerId, presence);
+          return next;
+        });
+        console.info("[PBS multiplayer] presence", presence.displayName, presence.x, presence.y);
+      },
+      onLeave: (playerId) => {
+        officeState.removeRemotePlayer(remoteCharacterId(playerId));
+        setRemotePresences((current) => {
+          const next = new Map(current);
+          next.delete(playerId);
+          return next;
+        });
+      },
+      onStatus: setMultiplayerStatus,
+    });
+
+    client.connect();
+    const interval = window.setInterval(() => {
+      client.updatePresence(localPresence());
+    }, 500);
+
+    return () => {
+      window.clearInterval(interval);
+      client.close();
+      officeState.clearRemotePlayers();
+    };
+  }, [
+    appMode,
+    applyRemotePresence,
+    layoutReady,
+    multiplayerConfig,
+    officeState,
+    playerProfile,
+  ]);
+
+  useEffect(() => {
+    if (!multiplayerConfig || !playerProfile || appMode !== "interactive") {
+      setVideoEncounter(null);
+      return;
+    }
+    const player = officeState.characters.get(PLAYER_ID);
+    if (!player) return;
+
+    let nearest: MultiplayerPresence | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    for (const presence of remotePresences.values()) {
+      if (presence.playerId === dismissedVideoEncounterId) continue;
+      const distance = Math.hypot(player.tileCol - presence.x, player.tileRow - presence.y);
+      if (distance <= MULTIPLAYER_PROXIMITY_DISTANCE_TILES && distance < nearestDistance) {
+        nearest = presence;
+        nearestDistance = distance;
+      }
+    }
+    if (!nearest) setDismissedVideoEncounterId(null);
+    setVideoEncounter(nearest);
+  }, [
+    appMode,
+    dismissedVideoEncounterId,
+    multiplayerConfig,
+    officeState,
+    playerMoveTick,
+    playerProfile,
+    remotePresences,
+  ]);
 
   // 60 Hz render tick: forces React overlays (name tags, "Press Space" prompt,
   // archive-tree highlight, etc.) to recompute from the latest character.x/y
@@ -2445,6 +2607,45 @@ function App() {
           onDismiss={handleWhatsNewDismiss}
           onOpenChangelog={handleOpenChangelog}
         />
+      )}
+
+      {playerProfile && multiplayerConfig && (
+        <div className="multiplayer-status-pill" data-status={multiplayerStatus}>
+          MP {multiplayerStatus} · {multiplayerConfig.room}
+        </div>
+      )}
+
+      {playerProfile && multiplayerConfig && videoEncounter && (
+        <div className="video-encounter-card" role="dialog" aria-live="polite">
+          <p>你遇見 {videoEncounter.displayName}，Start video chat?</p>
+          <div className="video-encounter-actions">
+            <button
+              type="button"
+              onClick={() => {
+                window.open(
+                  jitsiUrlForEncounter(
+                    multiplayerConfig.room,
+                    getOrCreatePlayerId(),
+                    videoEncounter.playerId,
+                  ),
+                  "_blank",
+                  "noopener,noreferrer",
+                );
+              }}
+            >
+              Join video chat
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDismissedVideoEncounterId(videoEncounter.playerId);
+                setVideoEncounter(null);
+              }}
+            >
+              Later
+            </button>
+          </div>
+        </div>
       )}
 
       {playerProfile && (
