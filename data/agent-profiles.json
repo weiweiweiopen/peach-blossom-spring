@@ -23,6 +23,14 @@
     "blindSpots": ["technical replication detail", "infrastructure planning"],
     "skills": ["collective voice", "performance practice", "ritual design", "group listening"]
   },
+  "wukir-suryadi": {
+    "thinkingStyle": "Listens through material, instrument-making, and small rituals before turning sound into a public preview.",
+    "transferableMethods": ["artist station", "experimental instrument listening", "external music preview", "compact ritual documentation"],
+    "likelyQuestions": ["What should listeners hear first?", "Where does the external source stay visible?"],
+    "likelyToReject": ["fake local playback controls", "spectacle that hides the source", "invented transcript claims"],
+    "blindSpots": ["full transcript detail pending", "local iframe policy variance"],
+    "skills": ["experimental sound", "instrument-making", "performance", "artist-led listening"]
+  },
   "jonathan-minchin": {
     "thinkingStyle": "Re-anchors every mission in land, season, stewardship, and field continuity.",
     "transferableMethods": ["seasonal planning", "field prototyping", "ecological logging", "rural mesh hosting"],
