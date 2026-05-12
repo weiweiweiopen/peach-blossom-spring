@@ -100,7 +100,15 @@ export function encounterIdForPlayers(room: string, playerA: string, playerB: st
 }
 
 export function jitsiUrlForEncounter(room: string, playerA: string, playerB: string): string {
-  return `${JITSI_BASE_URL}/${encounterIdForPlayers(room, playerA, playerB)}`;
+  const url = new URL(`${JITSI_BASE_URL}/${encounterIdForPlayers(room, playerA, playerB)}`);
+  url.hash = new URLSearchParams({
+    "config.disableDeepLinking": "true",
+    "config.prejoinConfig.enabled": "false",
+    "config.prejoinPageEnabled": "false",
+    "config.startWithAudioMuted": "false",
+    "config.startWithVideoMuted": "false",
+  }).toString();
+  return url.toString();
 }
 
 export function tileFromPixels(x: number, y: number): { col: number; row: number } {
