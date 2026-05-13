@@ -15,6 +15,7 @@ import { ChangelogModal } from "./components/ChangelogModal.js";
 import { DebugView } from "./components/DebugView.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
+import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import {
   type PlayerProfile,
   PlayerSetup,
@@ -471,6 +472,7 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() =>
     readStoredLanguage(),
   );
+  const [hasStarted, setHasStarted] = useState(false);
   const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
     () => readSavedPlayerDefaults(),
   );
@@ -1677,6 +1679,10 @@ function App() {
     setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
+
+  if (!hasStarted) {
+    return <RetroBootScreen onStart={() => setHasStarted(true)} />;
+  }
 
   if (!layoutReady) {
     return (
