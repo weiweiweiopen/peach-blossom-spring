@@ -2916,149 +2916,67 @@
   }
 }
 
-.wukir-station {
-  display: grid;
-  gap: 10px;
-  margin: 0 0 16px;
-  padding: 12px;
-  color: #000;
-  background: color-mix(in srgb, var(--palette-cream) 88%, #fff 12%);
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0 #000;
+.wukir-bandcamp-panel {
+  min-height: 0;
 }
 
-.wukir-station-header,
-.wukir-control-row,
-.wukir-track-meta,
-.wukir-track-list {
+.wukir-bandcamp-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  max-height: min(72dvh, 720px);
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid #000;
+}
+
+.wukir-bandcamp-frame iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: min(70dvh, 700px);
+  min-height: 420px;
+  border: 0;
+}
+
+.wukir-bandcamp-fallback {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-}
-
-.wukir-station-header {
-  justify-content: space-between;
-}
-
-.wukir-station-header h3,
-.wukir-station-header p {
-  margin: 0;
-}
-
-.wukir-station-header h3 {
-  font-size: 18px;
-  line-height: 1.1;
-}
-
-.wukir-station-kicker,
-.wukir-station-note,
-.wukir-track-meta small {
-  font-size: 12px;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  color: #000;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+  font-size: 14px;
   line-height: 1.35;
 }
 
-.wukir-station-kicker {
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.wukir-bandcamp-fallback strong {
+  font-size: 16px;
 }
 
-.wukir-like-button,
-.wukir-control-row button,
-.wukir-embed-fallback a {
+.wukir-bandcamp-fallback a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 34px;
+  padding: 6px 10px;
   color: #000;
   background: var(--palette-yellow);
   border: 2px solid #000;
   box-shadow: 2px 2px 0 #000;
-}
-
-.wukir-like-button {
-  width: 38px;
-  font-size: 22px;
-}
-
-.wukir-like-button.is-liked {
-  color: #b00046;
-  background: var(--palette-pink);
-}
-
-.wukir-control-row {
-  flex-wrap: wrap;
-}
-
-.wukir-control-row button {
-  min-width: 40px;
-  padding: 4px 8px;
-}
-
-.wukir-track-meta {
-  flex-wrap: wrap;
-}
-
-.wukir-track-meta strong {
-  font-size: 16px;
-}
-
-.wukir-track-meta span,
-.wukir-track-meta small,
-.wukir-station-note {
-  opacity: 0.78;
-}
-
-.wukir-track-list {
-  flex-wrap: wrap;
-}
-
-.wukir-track-list span {
-  padding: 3px 7px;
-  background: #fff;
-  border: 1px solid #000;
-  font-size: 12px;
-}
-
-.wukir-embed-frame {
-  position: relative;
-  overflow: hidden;
-  min-height: 120px;
-  background: #fff;
-  border: 2px solid #000;
-}
-
-.wukir-embed-frame iframe {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 150px;
-  border: 0;
-}
-
-.wukir-embed-fallback {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: grid;
-  place-content: center;
-  gap: 6px;
-  padding: 12px;
-  text-align: center;
-}
-
-.wukir-embed-fallback a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
   text-decoration: none;
 }
 
 @media (max-width: 900px), (pointer: coarse) {
-  .wukir-station {
-    gap: 8px;
-    padding: 10px;
+  .wukir-bandcamp-frame {
+    max-height: min(62dvh, 560px);
   }
 
-  .wukir-embed-frame iframe {
-    height: 132px;
+  .wukir-bandcamp-frame iframe {
+    height: min(60dvh, 540px);
+    min-height: 360px;
   }
 }
