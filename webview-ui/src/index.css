@@ -2381,16 +2381,14 @@
   font-size: clamp(20px, 2vw, 28px);
 }
 
-:lang(en) .player-setup-title {
-  font-size: clamp(52px, 7.4vw, 96px);
-}
+@media (min-width: 901px) and (pointer: fine) {
+  .player-setup-title {
+    font-size: clamp(52px, 7.4vw, 96px) !important;
+  }
 
-:lang(en) .player-setup-description {
-  font-size: clamp(23px, 2.6vw, 34px);
-}
-
-:lang(zh-TW) .player-setup-description {
-  font-size: clamp(23px, 2.6vw, 34px);
+  .player-setup-description {
+    font-size: var(--font-body-large) !important;
+  }
 }
 
 :lang(en) .player-setup-label,

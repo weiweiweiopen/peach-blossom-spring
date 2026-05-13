@@ -20,7 +20,6 @@ import {
   PlayerSetup,
   type StartMode,
 } from "./components/PlayerSetup.js";
-import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
@@ -511,7 +510,6 @@ function App() {
   } | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>("camp");
-  const [isBootScreenVisible, setIsBootScreenVisible] = useState(true);
   const [appMode, setAppMode] = useState<AppMode>("interactive");
   const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() =>
     petStore.listPets(),
@@ -1679,10 +1677,6 @@ function App() {
     setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
-
-  if (isBootScreenVisible) {
-    return <RetroBootScreen onStart={() => setIsBootScreenVisible(false)} />;
-  }
 
   if (!layoutReady) {
     return (
