@@ -138,6 +138,10 @@ const COMMUNITY_NEWS_LINKS = [
 const COMMUNITY_MAP_URL =
   "https://umap.openstreetmap.fr/en/map/non-governmental-matters_862535?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editinosmControl=false&moreControl=false&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false";
 
+const WUKIR_BANDCAMP_ALBUM_URL =
+  "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual";
+const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
+
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
 
@@ -151,6 +155,7 @@ interface PetBoardResponse {
 
 type SplitPanel =
   | { kind: "dialogue.openWiki"; persona: Persona }
+  | { kind: "wukirBandcamp" }
   | { kind: "communityLinks" }
   | { kind: "externalLink"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
@@ -178,6 +183,7 @@ function trimToFiftyChars(text: string): string {
 
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "dialogue.openWiki") return panel.persona.name;
+  if (panel.kind === "wukirBandcamp") return "Institutionalized Ritual";
   if (panel.kind === "communityLinks") return t(language, "archive.newsTitle");
   if (panel.kind === "externalLink") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
@@ -186,6 +192,7 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "dialogue.openWiki") return "World Wiki";
+  if (panel.kind === "wukirBandcamp") return "Wukir Suryadi · Bandcamp";
   if (panel.kind === "communityLinks") return t(language, "archive.communityPortals");
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
@@ -207,6 +214,31 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
         loading="eager"
         referrerPolicy="no-referrer-when-downgrade"
       />
+    </div>
+  );
+}
+
+function WukirBandcampEmbed() {
+  return (
+    <div className="world-split-embed wukir-bandcamp-panel">
+      <div className="wukir-bandcamp-fallback">
+        <strong>Institutionalized Ritual</strong>
+        <span>Wukir Suryadi</span>
+        <span>External Bandcamp preview unavailable</span>
+        <a href={WUKIR_BANDCAMP_ALBUM_URL} target="_blank" rel="noreferrer">
+          Open on Bandcamp
+        </a>
+      </div>
+      <div className="wukir-bandcamp-frame" aria-label="Wukir Suryadi Bandcamp player">
+        <iframe
+          title="Bandcamp player: Wukir Suryadi - Institutionalized Ritual"
+          src={WUKIR_BANDCAMP_PLAYER_URL}
+          loading="lazy"
+          allow="autoplay; encrypted-media"
+          referrerPolicy="no-referrer-when-downgrade"
+          seamless
+        />
+      </div>
     </div>
   );
 }
@@ -2026,6 +2058,18 @@ function App() {
                     });
                     setIsSplitExpanded(false);
                   }}
+                  onOpenMusic={
+                    activeDialoguePersona.id === "wukir-suryadi"
+                      ? () => {
+                          setSplitPanel({ kind: "wukirBandcamp" });
+                          setSplitPanelAnchor({
+                            kind: "npc",
+                            id: activeDialogueCharacter.id,
+                          });
+                          setIsSplitExpanded(false);
+                        }
+                      : undefined
+                  }
                   onSimEvent={(prompt) => {
                     const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(" ")}`;
                     const resonance = scorePromptResonance(
@@ -2495,6 +2539,8 @@ function App() {
                   </div>
                 );
               })()
+            ) : splitPanel.kind === "wukirBandcamp" ? (
+              <WukirBandcampEmbed />
             ) : splitPanel.kind === "communityLinks" ? (
               <div className="world-wiki-content">
                 {COMMUNITY_NEWS_LINKS.map((link) => (

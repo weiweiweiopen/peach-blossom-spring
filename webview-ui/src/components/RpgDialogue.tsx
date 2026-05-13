@@ -41,6 +41,7 @@ interface RpgDialogueProps {
   language: LanguageCode;
   onClose: () => void;
   onOpenWiki?: () => void;
+  onOpenMusic?: () => void;
   onSimEvent?: (prompt: string, topic: string) => void;
 }
 
@@ -110,66 +111,19 @@ function makeFixedQuestions(language: LanguageCode, personaId: string): string[]
   return fixed;
 }
 
-
-const WUKIR_ALBUM_URL = 'https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual';
-const wukirDemoTracks = ['ZOOM0174_Tr1', 'ZOOM0176_Tr1', 'ZOOM0177_Tr1', 'ZOOM0175_Tr1'];
-
-function WukirArtistStation() {
-  const [liked, setLiked] = useState(false);
+function WukirMusicButton({ onOpenMusic }: { onOpenMusic?: () => void }) {
+  if (!onOpenMusic) return null;
   return (
-    <section className="wukir-station" aria-label="Wukir Suryadi artist station">
-      <div className="wukir-station-header">
-        <div>
-          <p className="wukir-station-kicker">External artist station</p>
-          <h3>Institutionalized Ritual</h3>
-          <p>Wukir Suryadi</p>
-        </div>
-        <button
-          className={`wukir-like-button${liked ? ' is-liked' : ''}`}
-          type="button"
-          aria-pressed={liked}
-          aria-label={liked ? 'Unlike Wukir station' : 'Like Wukir station'}
-          onClick={() => setLiked((current) => !current)}
-        >
-          ♥
-        </button>
-      </div>
-      <div className="wukir-control-row" aria-label="Visual station controls; playback is handled by the external preview">
-        <button type="button" aria-label="Previous track visual control">⏮</button>
-        <button type="button" aria-label="Play external preview visual control">▶</button>
-        <button type="button" aria-label="Pause external preview visual control">⏸</button>
-        <button type="button" aria-label="Stop external preview visual control">⏹</button>
-        <button type="button" aria-label="Next track visual control">⏭</button>
-      </div>
-      <div className="wukir-track-meta">
-        <span>Track preview</span>
-        <strong>{wukirDemoTracks[0]}</strong>
-        <small>Album/source: Institutionalized Ritual</small>
-      </div>
-      <div className="wukir-track-list" aria-label="Demo track list">
-        {wukirDemoTracks.map((track) => (
-          <span key={track}>{track}</span>
-        ))}
-      </div>
-      <div className="wukir-embed-frame">
-        <iframe
-          title="Bandcamp preview: Wukir Suryadi - Institutionalized Ritual"
-          src={WUKIR_ALBUM_URL}
-          loading="lazy"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-        />
-        <div className="wukir-embed-fallback">
-          <strong>External preview unavailable</strong>
-          <span>Institutionalized Ritual — Wukir Suryadi</span>
-          <a href={WUKIR_ALBUM_URL} target="_blank" rel="noreferrer">Open on Bandcamp</a>
-        </div>
-      </div>
-      <p className="wukir-station-note">
-        Playback controls belong to the external Bandcamp preview; local buttons are visual station metadata only.
-      </p>
-    </section>
+    <button
+      className="rpg-dialogue-wukir-music-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+      type="button"
+      onClick={onOpenMusic}
+    >
+      🎧 聽 Wukir 的音樂
+    </button>
   );
 }
+
 
 function makeSuggestedQuestions(
   transcript: string,
@@ -388,7 +342,7 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
   return messages[language];
 }
 
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onSimEvent }: RpgDialogueProps) {
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onOpenMusic, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -522,6 +476,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                 >
                   📚 {t(language, 'dialogue.openWiki')}
                 </button>
+                {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
               </div>
               <h2 className="rpg-dialogue-name text-2xl leading-none">{persona.name}</h2>
               <p className="rpg-dialogue-role text-xl text-text-muted mt-2">{persona.role}</p>
@@ -550,8 +505,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             )}
           </div>
         </div>
-
-        {persona.id === 'wukir-suryadi' && <WukirArtistStation />}
 
         {areSuggestionsOpen && (
           <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
