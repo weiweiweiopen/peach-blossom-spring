@@ -1608,7 +1608,7 @@
   letter-spacing: 0.01em;
 }
 .player-setup-description {
-  font-size: var(--font-body-large) !important;
+  font-size: clamp(20px, 3.5vw, 22px) !important;
   line-height: 1.65 !important;
 }
 .player-setup-label {
@@ -2387,7 +2387,7 @@
   }
 
   .player-setup-description {
-    font-size: var(--font-body-large) !important;
+    font-size: clamp(20px, 3.5vw, 22px) !important;
   }
 }
 
