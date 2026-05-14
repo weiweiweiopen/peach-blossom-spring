@@ -62,6 +62,9 @@ import {
 } from "./pets/generateQuestionPet.js";
 import { type PetDispatch, petStore, tagsFromText } from "./pets/petStore.js";
 import { QuestionPetPreview } from "./pets/QuestionPetPreview.js";
+import { DossierPanel } from "./throngletProducer/DossierPanel.js";
+import { dossierStore } from "./throngletProducer/localDossierStore.js";
+import type { QuestionDossier } from "./throngletProducer/types.js";
 import { isBrowserRuntime } from "./runtime.js";
 import {
   applyPlayerNpcDialogue,
@@ -518,6 +521,8 @@ function App() {
   );
   const [selectedDispatchPet, setSelectedDispatchPet] =
     useState<PetDispatch | null>(null);
+  const [selectedDossier, setSelectedDossier] =
+    useState<QuestionDossier | null>(null);
   const [selectedNpcInfo, setSelectedNpcInfo] = useState<Persona | null>(null);
   const [mobileRulesOpen, setMobileRulesOpen] = useState(false);
   const [worldNotice, setWorldNotice] = useState<string | null>(null);
@@ -1481,6 +1486,24 @@ function App() {
     [selectedLanguage, showMobileControls],
   );
 
+  useEffect(() => {
+    setSelectedDossier(
+      selectedDispatchPet
+        ? dossierStore.ensureSeedDossierForPet(selectedDispatchPet)
+        : null,
+    );
+  }, [selectedDispatchPet]);
+
+  const handleCreateMockCouncilReview = useCallback(() => {
+    if (!selectedDispatchPet) return;
+    setSelectedDossier(dossierStore.ensureMockCouncilReview(selectedDispatchPet));
+  }, [selectedDispatchPet]);
+
+  const handleCreateProposalDraft = useCallback(() => {
+    if (!selectedDispatchPet) return;
+    setSelectedDossier(dossierStore.ensureGuardedProposalDraft(selectedDispatchPet));
+  }, [selectedDispatchPet]);
+
   const handleLanguageChange = useCallback((language: LanguageCode) => {
     setSelectedLanguage(language);
     setLanguageMenuOpen(false);
@@ -2298,6 +2321,13 @@ function App() {
                             )}
                           </div>
                         </div>
+                        {selectedDossier && (
+                          <DossierPanel
+                            dossier={selectedDossier}
+                            onCreateMockReview={handleCreateMockCouncilReview}
+                            onCreateProposalDraft={handleCreateProposalDraft}
+                          />
+                        )}
                         <p className="type-caption mt-4 opacity-80">
                           {t(selectedLanguage, "pet.localOnlyNotice")}
                         </p>
