@@ -2441,7 +2441,7 @@ function App() {
                           <QuestionPetPreview
                             question={selectedDispatchPet.question}
                             appearance={appearance}
-                            size={6}
+                            size={4}
                             socialSignals={selectedDispatchPet.stats}
                           />
                           <div>
@@ -2643,7 +2643,7 @@ function App() {
                 <QuestionPetPreview
                   question={selectedPet.question.text}
                   appearance={selectedPet.appearance}
-                  size={6}
+                  size={4}
                   socialSignals={selectedPet.state}
                   currentAction={selectedPet.currentAction}
                 />
@@ -2731,20 +2731,6 @@ function App() {
                       </p>
                     ))}
                   </div>
-                  {selectedPetFinalDocument.images?.length ? (
-                    <div className="final-document-images">
-                      {selectedPetFinalDocument.images.map((image) => (
-                        <figure key={image.url}>
-                          <img src={image.url} alt={image.alt} loading="lazy" />
-                          <figcaption>
-                            <a href={image.sourceUrl} target="_blank" rel="noreferrer">
-                              {image.caption}
-                            </a>
-                          </figcaption>
-                        </figure>
-                      ))}
-                    </div>
-                  ) : null}
                   <details className="final-document-log">
                     <summary>Conversation log preview ({finalDocumentReviewLog.length})</summary>
                     {finalDocumentReviewLog.map((entry, index) => (

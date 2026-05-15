@@ -17,7 +17,7 @@ export interface A2ATurnEvaluation { usefulReferences: string[]; mentaleseAttrib
 export interface A2ATurn { id: string; speakerId: string; targetId: string; text: string; evaluation: A2ATurnEvaluation; }
 export interface A2AExchange { id: string; petId: string; tick: number; targetId: string; targetLabel: string; turns: A2ATurn[]; summary: string; nutrientSources?: A2ANutrientSource[]; }
 export interface A2AState { nextExchangeTick: number; exchangeCount: number; turnCount: number; requiredExchanges: number; requiredTurns: number; }
-export type FinalDocumentMode = 'story' | 'poem' | 'manufacturing_technical_file' | 'travel_plan' | 'philosophical_debate';
+export type FinalDocumentMode = 'story' | 'poem' | 'nomadic_research' | 'manufacturing_technical_file' | 'travel_plan' | 'philosophical_debate';
 export interface FinalDocumentLogEntry { tick: number; speaker: string; target?: string; text: string; source: 'a2a' | 'player'; }
 export interface FinalDocument { id: string; petId: string; tick: number; title: string; mode: FinalDocumentMode; modeLabel: string; body: string; references: Array<{ label: string; url: string; anchorText: string }>; reviewLog: FinalDocumentLogEntry[]; sourceExchangeIds: string[]; images?: Array<{ url: string; alt: string; sourceUrl: string; caption: string }>; }
 export interface Thronglet extends SimEntity { kind: 'thronglet'; question: DispatchedQuestion; currentAction: SimAction; currentZoneId?: string; targetCharacterId?: number; throngId?: string; appearance: QuestionPetAppearance; personaJson?: PetPersonaJson; knowledgeJson?: PetKnowledgeJson; problemMaturation?: ProblemMaturationProfile; a2aState?: A2AState; }

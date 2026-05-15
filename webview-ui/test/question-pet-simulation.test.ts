@@ -12,6 +12,7 @@ import { chooseThrongletExpression, throngletMvpAnimation } from '../src/pets/th
 import { createThrongletWaAnimation, createThrongletWaDirectionalAnimations } from '../src/pets/throngletWaSprites.js';
 import { clampState } from '../src/simulation/defaults.js';
 import { createInitialSnapshot, createThronglet, tickSimulation } from '../src/simulation/engine.js';
+import { buildNomadicResearchReport, dedupeNomadicResearchNodes, exportNomadicResearchGeoJson, validateNomadicResearchNode, type NomadicResearchNode } from '../src/simulation/nomadicResearch.js';
 import { scorePromptResonance } from '../src/simulation/resonance.js';
 import { scoreEvent } from '../src/simulation/scoring.js';
 import { shouldTriggerThought } from '../src/simulation/thoughtTriggers.js';
@@ -431,11 +432,11 @@ test('final documents treat supplied URLs as sources, not answers', () => {
     },
   });
   const document = next.finalDocuments[0];
-  assert.ok(['manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
+  assert.ok(['nomadic_research', 'manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
   assert.ok(!document.body.includes('最強的線索'));
   assert.ok(!document.body.includes('shihweichieh、com'));
   assert.ok(document.body.includes('原始問題'));
-  assert.ok(document.body.includes('Day Dream') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
+  assert.ok(document.body.includes('Day Dream') || document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
 });
 
 test('compact final appears in demo window with concise body and log', () => {
@@ -470,14 +471,283 @@ test('compact final appears in demo window with concise body and log', () => {
   const document = snapshot.finalDocuments[0];
   assert.ok(document, 'expected final document by tick 75');
   assert.ok(document.tick >= 28 && document.tick <= 75);
-  assert.ok(['manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
+  assert.ok(['nomadic_research', 'manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
   assert.ok(document.body.split('\n\n').length <= 5);
-  assert.ok(/計劃 1|路線 1|詩節 1/.test(document.body));
-  assert.ok(document.body.includes('製造／Camp') || document.body.includes('旅行 uMap') || document.body.includes('Day Dream'));
+  assert.ok(/田野 1|計劃 1|路線 1|詩節 1|Alive check protocol/.test(document.body));
+  assert.ok(document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap') || document.body.includes('Day Dream'));
   assert.ok(!document.body.includes('夢境、修補、工具'));
   assert.ok(!document.references.every((reference) => ['夢境', '修補', '工具'].includes(reference.anchorText)));
   assert.ok(document.reviewLog.length <= 6);
   assert.ok(new Set(document.sourceExchangeIds).size >= 2);
+});
+
+test('nomadic research mode generates local visit plan and uMap data', () => {
+  const pet = createThronglet('Japan; experimental performance venues and DIY bio labs', 'Tester', 0, 10000, undefined, '問題電子雞', {
+    intentMode: 'nomadic_research',
+    personalArchive: 'I want active hackerspaces, fablabs, art labs, university labs, meetups, open days, fees, language, and intro needs.',
+    skills: 'field research open hardware sound performance uMap interviewing',
+  });
+  let snapshot = createInitialSnapshot([pet], [
+    { id: 'npc-lab', characterId: 1, name: 'Lab Cartographer', personaId: 'lab-cartographer', text: 'hackerspace fablab art lab university lab meetup active workshop open day' },
+    { id: 'npc-field', characterId: 2, name: 'Field Host', personaId: 'field-host', text: 'field note interview intro fee language equipment local culture map' },
+  ]);
+  const knowledge = {
+    'npc-lab': {
+      personaId: 'lab-cartographer',
+      name: 'Lab Cartographer',
+      role: 'lab mapper',
+      intro: 'checks whether labs are active through events and community evidence',
+      links: [{ title: 'Tokyo active lab notes', url: 'https://lab.example/tokyo', description: 'recent workshops, public events, equipment and contact rhythms' }],
+    },
+    'npc-field': {
+      personaId: 'field-host',
+      name: 'Field Host',
+      role: 'fieldwork host',
+      intro: 'plans introductions, language notes, fees, interview questions and local culture maps',
+      links: [{ title: 'Japan fieldwork network', url: 'https://field.example/japan', description: 'artist-run spaces, university lab contacts, meetups and open days' }],
+    },
+  };
+  for (let index = 0; index < 75 && snapshot.finalDocuments.length === 0; index++) {
+    snapshot = tickSimulation(snapshot, {}, knowledge);
+  }
+  const document = snapshot.finalDocuments[0];
+  assert.ok(document, 'expected nomadic research document by tick 75');
+  assert.equal(document.mode, 'nomadic_research');
+  assert.equal(document.modeLabel, 'Nomadic Research');
+  assert.ok(document.body.includes('Alive check protocol'));
+  assert.ok(document.body.includes('Mapped nodes'));
+  assert.ok(document.body.includes('Needs verification'));
+  assert.ok(document.body.includes('Network / non-location nodes'));
+  assert.ok(document.body.includes('Sources checked'));
+  assert.ok(document.body.includes('Suggested next search queries'));
+  assert.ok(document.body.includes('uMap GeoJSON'));
+  assert.ok(document.body.includes('"type": "FeatureCollection"'));
+  assert.ok(document.body.includes('introNeeded'));
+  assert.ok(!document.body.includes('city-level node'));
+  assert.ok(!document.body.includes('people / and / convert / them'));
+});
+
+test('nomadic research pipeline rejects fake locations and only maps evidence locations', () => {
+  const report = buildNomadicResearchReport({
+    question: 'SWISS, berlin, London, AI and cognition philosophy',
+    sourceAnchors: 'local test',
+    targets: [],
+    nutrients: [
+      {
+        title: 'Fablab Taipei Facebook group',
+        url: 'https://facebook.example/fablab-taipei',
+        description: 'Fablab Taipei has public workshop notes and event traces in Taipei.',
+        extractedText: 'Recent workshop notes mention Taipei makers and public events.',
+      },
+      {
+        title: 'https://facebook.example/fablab-taipei',
+        url: 'https://facebook.example/fablab-taipei?ref=duplicate',
+        description: 'duplicate URL for the same Fablab Taipei source',
+        extractedText: 'duplicate source should not create a URL node',
+      },
+      {
+        title: 'Fab City Global Network',
+        url: 'https://fab.city/network',
+        description: 'Fab City is a global network, not a single mappable lab address.',
+        extractedText: 'network concept for cities and distributed labs',
+      },
+      {
+        title: 'people / and / convert / them',
+        url: 'https://bad.example/generated',
+        description: 'city-level node 1 generated placeholder',
+        extractedText: 'bad generated relevance fragment',
+      },
+    ],
+    references: [],
+  });
+  assert.ok(!report.body.includes('city-level node 1'));
+  assert.ok(!report.body.includes('people / and / convert / them ('));
+  const taipei = report.nodes.find((node) => node.name === 'Fablab Taipei Facebook group');
+  assert.ok(taipei, 'expected Fablab Taipei node');
+  assert.equal(taipei.city, 'Taipei');
+  assert.deepEqual(taipei.coordinates, [121.5654, 25.033]);
+  assert.ok(!taipei.coordinates?.includes(13.405));
+  const network = report.nodes.find((node) => node.name === 'Fab City Global Network');
+  assert.equal(network?.mapConfidence, 'network_node');
+  assert.equal(network?.coordinates, undefined);
+  const bad = report.nodes.find((node) => node.sourceUrls.includes('https://bad.example/generated'));
+  assert.equal(bad?.mapConfidence, 'rejected');
+  assert.ok(!report.geojson.features.some((feature) => feature.properties.sourceUrls === bad?.sourceUrls));
+  assert.ok(report.geojson.features.every((feature) => Array.isArray(feature.properties.sourceUrls) && (feature.properties.sourceUrls as string[]).length > 0));
+  assert.ok(report.geojson.features.every((feature) => typeof feature.properties.evidenceSummary === 'string' && feature.properties.evidenceSummary));
+  const coords = report.geojson.features[0]?.geometry.coordinates;
+  assert.deepEqual(coords, [121.5654, 25.033]);
+});
+
+test('nomadic research GeoJSON excludes network and needs-location nodes', () => {
+  const baseEvidence = [{
+    title: 'Source',
+    sourceUrl: 'https://example.test/source',
+    snippet: 'verified source',
+    retrievedAt: new Date(0).toISOString(),
+    sourceType: 'local_evidence' as const,
+    confidenceHint: 'medium' as const,
+  }];
+  const nodes: NomadicResearchNode[] = [
+    {
+      name: 'Mapped Taipei Lab',
+      type: 'fablab',
+      country: 'Taiwan',
+      city: 'Taipei',
+      aliveStatus: 'probably_active',
+      introNeeded: 'unknown',
+      evidence: baseEvidence,
+      sourceUrls: ['https://example.test/taipei'],
+      mapConfidence: 'city_level',
+      coordinates: [121.5654, 25.033],
+      warnings: [],
+    },
+    {
+      name: 'Global Network',
+      type: 'network',
+      country: 'unknown',
+      city: '',
+      aliveStatus: 'unknown',
+      introNeeded: 'unknown',
+      evidence: baseEvidence,
+      sourceUrls: ['https://example.test/network'],
+      mapConfidence: 'network_node',
+      warnings: [],
+    },
+    {
+      name: 'Needs Location Lab',
+      type: 'unknown',
+      country: 'unknown',
+      city: '',
+      aliveStatus: 'uncertain',
+      introNeeded: 'unknown',
+      evidence: baseEvidence,
+      sourceUrls: ['https://example.test/unknown'],
+      mapConfidence: 'needs_location',
+      warnings: [],
+    },
+  ];
+  const geojson = exportNomadicResearchGeoJson(nodes);
+  assert.equal(geojson.type, 'FeatureCollection');
+  assert.equal(geojson.features.length, 1);
+  assert.equal(geojson.features[0].properties.name, 'Mapped Taipei Lab');
+  assert.deepEqual(geojson.features[0].geometry.coordinates, [121.5654, 25.033]);
+  assert.equal(validateNomadicResearchNode(nodes[0]).length, 0);
+  assert.equal(validateNomadicResearchNode({ ...nodes[0], sourceUrls: [] }).includes('missing sourceUrls'), true);
+});
+
+test('nomadic research dedupes by normalized source URL', () => {
+  const evidence = [{
+    title: 'Duplicate source',
+    sourceUrl: 'https://example.test/source',
+    snippet: 'same source',
+    retrievedAt: new Date(0).toISOString(),
+    sourceType: 'local_evidence' as const,
+    confidenceHint: 'medium' as const,
+  }];
+  const nodes: NomadicResearchNode[] = [
+    { name: 'Fablab Taipei', type: 'fablab', country: 'Taiwan', city: 'Taipei', aliveStatus: 'probably_active', introNeeded: 'unknown', evidence, sourceUrls: ['https://example.test/source?utm=1'], mapConfidence: 'city_level', coordinates: [121.5654, 25.033], warnings: [] },
+    { name: 'Fablab Taipei', type: 'fablab', country: 'Taiwan', city: 'Taipei', aliveStatus: 'probably_active', introNeeded: 'unknown', evidence, sourceUrls: ['https://example.test/source'], mapConfidence: 'city_level', coordinates: [121.5654, 25.033], warnings: [] },
+  ];
+  assert.equal(dedupeNomadicResearchNodes(nodes).length, 1);
+});
+
+test('nomadic research enriches locations only from explicit evidence', () => {
+  const report = buildNomadicResearchReport({
+    question: 'SWISS, berlin, London, AI and cognition philosophy',
+    sourceAnchors: 'local test',
+    targets: [],
+    nutrients: [
+      {
+        title: 'Hackteria Wikipedia',
+        url: 'https://en.wikipedia.org/wiki/Hackteria',
+        description: 'Hackteria is a Swiss art/science network and open source biological art platform.',
+        extractedText: 'Swiss network, no explicit city or address in this evidence card.',
+      },
+      {
+        title: 'Open Source Beehives / IAAC',
+        url: 'https://opensourcebeehives.net/iaac',
+        description: 'Open Source Beehives project includes IAAC Barcelona documentation and workshops.',
+        extractedText: 'IAAC Barcelona appears as the explicit institutional location in the source text.',
+      },
+      {
+        title: 'Hackteria Wiki / Dusjagr',
+        url: 'https://hackteria.org/wiki/Dusjagr',
+        description: 'Dusjagr is a person/network page with collaborations but no explicit lab address.',
+        extractedText: 'Personal and network evidence only.',
+      },
+      {
+        title: 'dusjagr labs',
+        url: 'https://dusjagr.example/labs',
+        description: 'Project page mentions labs as practice, no city or street address.',
+        extractedText: 'No fixed lab address is present.',
+      },
+      {
+        title: 'https://hackteria.org/handbook.pdf',
+        url: 'https://hackteria.org/handbook.pdf',
+        description: 'Hackteria handbook PDF mentions workshops and Barcelona but title is URL fallback.',
+        extractedText: 'PDF fallback names must not create uMap points.',
+      },
+      {
+        title: 'hackteria.org Marc Dusseiller bio',
+        url: 'https://www.hackteria.org/wiki/Marc_Dusseiller_bio',
+        description: 'Marc Dusseiller bio mentions Zurich as a source stated city.',
+        extractedText: 'Zurich appears in the biography evidence text.',
+      },
+    ],
+    references: [],
+  });
+  const hackteria = report.nodes.find((node) => node.name === 'Hackteria Wikipedia');
+  assert.equal(hackteria?.country, 'Switzerland');
+  assert.equal(hackteria?.city, '');
+  assert.equal(hackteria?.mapConfidence, 'network_node');
+  assert.equal(hackteria?.coordinates, undefined);
+
+  const iaac = report.nodes.find((node) => node.name === 'Open Source Beehives / IAAC');
+  assert.equal(iaac?.city, 'Barcelona');
+  assert.equal(iaac?.country, 'Spain');
+  assert.equal(iaac?.mapConfidence, 'city_level');
+  assert.deepEqual(iaac?.coordinates, [2.1734, 41.3851]);
+
+  const dusjagr = report.nodes.find((node) => node.name === 'Hackteria Wiki / Dusjagr');
+  assert.equal(dusjagr?.mapConfidence, 'network_node');
+  assert.equal(dusjagr?.coordinates, undefined);
+  const dusjagrLabs = report.nodes.find((node) => node.name === 'dusjagr labs');
+  assert.equal(dusjagrLabs?.mapConfidence, 'needs_location');
+
+  const pdf = report.nodes.find((node) => node.sourceUrls.includes('https://hackteria.org/handbook.pdf'));
+  assert.equal(pdf?.mapConfidence, 'needs_location');
+  assert.equal(pdf?.coordinates, undefined);
+
+  const marc = report.nodes.find((node) => node.name === 'hackteria.org Marc Dusseiller bio');
+  assert.equal(marc?.city, 'Zurich');
+  assert.equal(marc?.mapConfidence, 'city_level');
+  assert.deepEqual(marc?.coordinates, [8.5417, 47.3769]);
+
+  const featureNames = report.geojson.features.map((feature) => feature.properties.name);
+  assert.ok(featureNames.includes('Open Source Beehives / IAAC'));
+  assert.ok(featureNames.includes('hackteria.org Marc Dusseiller bio'));
+  assert.ok(!featureNames.includes('Hackteria Wikipedia'));
+  assert.ok(!featureNames.includes('Hackteria Wiki / Dusjagr'));
+  assert.ok(!featureNames.includes('dusjagr labs'));
+  assert.ok(!featureNames.includes('hackteria.org'));
+});
+
+test('nomadic research empty maps ask for location enrichment', () => {
+  const report = buildNomadicResearchReport({
+    question: 'AI cognition philosophy labs',
+    sourceAnchors: 'local test',
+    targets: [],
+    nutrients: [{
+      title: 'Unlocated lab note',
+      url: 'https://example.test/unlocated',
+      description: 'A lab note without verified city or address.',
+      extractedText: 'No mappable location here.',
+    }],
+    references: [],
+  });
+  assert.equal(report.geojson.features.length, 0);
+  assert.ok(report.body.includes('No mapped nodes yet; run location enrichment'));
 });
 
 test('thronglet MVP animation has 22 PNG frames for every expression', () => {

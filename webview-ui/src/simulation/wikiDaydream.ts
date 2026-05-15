@@ -43,6 +43,7 @@ function unique<T>(items: T[], key: (item: T) => string): T[] {
 }
 
 function daydreamMode(question: string): FinalDocumentMode {
+  if (/nomadic|hackerspace|fablab|art lab|university lab|meetup|umap|field note|拜訪|田野|國家/i.test(question)) return 'nomadic_research';
   if (/穿在身上|電子小作品|穿戴|wearable|e-?textile|soft circuit/i.test(question)) return 'manufacturing_technical_file';
   if (/找人|連結|旅行|visit|network|people/i.test(question)) return 'travel_plan';
   if (/為什麼|意義|fame|有名|有錢|money|rich/i.test(question)) return 'philosophical_debate';
@@ -52,6 +53,7 @@ function daydreamMode(question: string): FinalDocumentMode {
 const modeLabels: Record<FinalDocumentMode, string> = {
   story: 'Wiki Daydream Report',
   poem: 'Wiki Daydream Poem',
+  nomadic_research: 'Wiki Nomadic Research',
   manufacturing_technical_file: 'Wiki Daydream Technical File',
   travel_plan: 'Wiki Daydream Travel Plan',
   philosophical_debate: 'Wiki Daydream Debate',
@@ -103,6 +105,7 @@ function bodyFromEvidence(question: string, evidence: ChatEvidence[], mode: Fina
   const modeAction: Record<FinalDocumentMode, string> = {
     story: '把資料整理成一個可行的小故事：先做一個最小公開實驗，再觀察誰真的回應。',
     poem: '保留矛盾，但把每個意象綁到一個可驗證材料或人物。',
+    nomadic_research: '先做一張可拜訪的本地技術文化地圖：列出活躍證據、intro 需求、設備、開放日、語言、費用與 uMap 節點。',
     manufacturing_technical_file: '先做一個最小原型：一個材料、一個感測或連接方式、一份失敗記錄、一個可分享步驟。',
     travel_plan: '先列出三個可拜訪或可聯繫節點，每個節點都要有一個具體邀請或交換。',
     philosophical_debate: '先區分收入、名聲、社群信任與創作自由；不要把可見度誤認成可持續生活。',

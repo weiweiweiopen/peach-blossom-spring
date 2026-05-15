@@ -21,7 +21,7 @@ interface PlayerProfile {
 }
 
 type StartMode = "interactive" | "dispatch_observer";
-type PlayerIntentMode = "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why";
+type PlayerIntentMode = "nomadic_research" | "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why";
 
 interface ArchiveSummary {
   total: number;
@@ -60,13 +60,13 @@ const fixedPetRoles = [
 ] as const;
 
 const intentOptions: Array<{ value: PlayerIntentMode; zh: string; en: string }> = [
-  { value: "manufacturing_technical_file", zh: "製造／Camp 計劃", en: "Make / organize a camp plan" },
+  { value: "nomadic_research", zh: "遊牧研究", en: "Nomadic Research" },
   { value: "travel_plan", zh: "旅行 uMap 動線", en: "Travel uMap route" },
   { value: "poem", zh: "Day Dream 詩", en: "Day Dream poem" },
 ];
 
 function normalizeIntentMode(mode: PlayerIntentMode | undefined): PlayerIntentMode {
-  if (mode === "manufacturing_technical_file" || mode === "how_to_do" || mode === "survive") return "manufacturing_technical_file";
+  if (mode === "nomadic_research" || mode === "manufacturing_technical_file" || mode === "how_to_do" || mode === "survive") return "nomadic_research";
   if (mode === "travel_plan" || mode === "find_people") return "travel_plan";
   return "poem";
 }
@@ -78,6 +78,14 @@ function setupCopy(language: LanguageCode) {
       ? "生命探測器會把你的抽象問題孵化成電子雞，透過 A2A 協定與 NPC、知識庫和其他電子雞互動，讓問題得到本質提升與擴大，最後生成一份帶來源索引的意外文件。"
       : "The life-detector hatches your abstract question into a Tamagotchi, lets it communicate through A2A with NPCs, knowledge systems, and other pets, then matures the question into a referenced surprise document.",
     intentLabel: zh ? "這次你想產生哪一種文件？" : "What kind of final document do you want?",
+    questionLabel: zh ? "國家／地區 + 研究題目" : "Country / region + research topic",
+    questionPlaceholder: zh
+      ? "例：Japan；實驗展演場域、DIY bio lab、可以拜訪的 hackerspace / fablab / art lab"
+      : "Example: Japan; experimental performance venues, DIY bio labs, active hackerspaces / fablabs / art labs to visit",
+    skillsLabel: zh ? "你能帶去交換的技能／作品／訪談方法" : "Skills / works / interview methods you can bring",
+    skillsPlaceholder: zh
+      ? "例：田野研究、開源硬體、聲音演出、工作坊、訪談、uMap 製圖"
+      : "Field research, open hardware, sound performance, workshops, interviewing, uMap mapping",
     archiveLabel: zh ? "個人資料、食譜、材料或任何你想餵給電子雞的文本" : "Personal data, recipes, materials, or any text you want to feed the pet",
     archivePlaceholder: zh
       ? "越具體越好：背景、技能、限制、材料、想見的人、口味、禁忌、已知資料、夢、失敗經驗...這會形成電子雞的 persona / knowledge JSON。"
@@ -182,6 +190,23 @@ export function PlayerSetup({
               className="player-setup-controls"
               aria-label={t(language, "setup.petControls")}
             >
+              <label className="player-setup-label" htmlFor="question-pet-intent">
+                {copy.intentLabel}
+              </label>
+              <select
+                id="question-pet-intent"
+                name="intentMode"
+                className="player-setup-field"
+                value={intentMode}
+                onChange={(event) => setIntentMode(event.target.value as PlayerIntentMode)}
+              >
+                {intentOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {language === "zh-TW" ? option.zh : option.en}
+                  </option>
+                ))}
+              </select>
+
               <label className="player-setup-label" htmlFor="question-pet-name">
                 {t(language, "setup.nameLabel")}
               </label>
@@ -203,7 +228,7 @@ export function PlayerSetup({
                 className="player-setup-label"
                 htmlFor="question-pet-question"
               >
-                {t(language, "setup.questionLabel")}
+                {intentMode === "nomadic_research" ? copy.questionLabel : t(language, "setup.questionLabel")}
               </label>
               <textarea
                 id="question-pet-question"
@@ -215,28 +240,11 @@ export function PlayerSetup({
                 onChange={(event) => {
                   setQuestion(event.target.value);
                 }}
-                placeholder={t(language, "setup.questionPlaceholder")}
+                placeholder={intentMode === "nomadic_research" ? copy.questionPlaceholder : t(language, "setup.questionPlaceholder")}
               />
 
-              <label className="player-setup-label" htmlFor="question-pet-intent">
-                {copy.intentLabel}
-              </label>
-              <select
-                id="question-pet-intent"
-                name="intentMode"
-                className="player-setup-field"
-                value={intentMode}
-                onChange={(event) => setIntentMode(event.target.value as PlayerIntentMode)}
-              >
-                {intentOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {language === "zh-TW" ? `${option.zh} / ${option.en}` : option.en}
-                  </option>
-                ))}
-              </select>
-
               <label className="player-setup-label" htmlFor="question-pet-skills">
-                {t(language, "setup.skillsLabel")}
+                {intentMode === "nomadic_research" ? copy.skillsLabel : t(language, "setup.skillsLabel")}
               </label>
               <textarea
                 id="question-pet-skills"
@@ -248,7 +256,7 @@ export function PlayerSetup({
                 onChange={(event) => {
                   setSkills(event.target.value);
                 }}
-                placeholder={t(language, "setup.skillsPlaceholder")}
+                placeholder={intentMode === "nomadic_research" ? copy.skillsPlaceholder : t(language, "setup.skillsPlaceholder")}
               />
 
               <label className="player-setup-label" htmlFor="question-pet-archive">

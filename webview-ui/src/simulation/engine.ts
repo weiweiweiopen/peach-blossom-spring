@@ -13,6 +13,7 @@ import {
   deterministicThought,
   shouldTriggerThought,
 } from "./thoughtTriggers.js";
+import { buildNomadicResearchReport } from './nomadicResearch.js';
 import type {
   A2AExchange,
   A2ANutrientSource,
@@ -87,6 +88,7 @@ function maturityStage(exchangeCount: number, turnCount: number): ProblemMaturat
 function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson {
   const intentMode = context.intentMode ?? "why";
   const mentaleseByIntent: Record<string, string[]> = {
+    nomadic_research: ["country", "active space", "field note", "uMap"],
     manufacturing_technical_file: ["material", "method", "prototype", "constraint"],
     travel_plan: ["route", "exchange", "invitation", "place"],
     poem: ["desire", "material", "metaphor", "borrowed structure"],
@@ -99,7 +101,7 @@ function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson
     role: context.petRole ?? "question pet",
     intentMode,
     mentaleseBias: mentaleseByIntent[intentMode] ?? mentaleseByIntent.why,
-    voice: intentMode === "how_to_do" || intentMode === "manufacturing_technical_file" ? "practical indexed muse" : "poetic indexed muse",
+    voice: intentMode === "how_to_do" || intentMode === "manufacturing_technical_file" || intentMode === "nomadic_research" ? "practical indexed muse" : "poetic indexed muse",
     constraints: splitTags(context.personalArchive ?? "").slice(0, 6),
     revision: 1,
     growthLog: [],
@@ -110,12 +112,13 @@ function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson
 function createPetKnowledgeJson(context: ThrongletCreationContext): PetKnowledgeJson {
   const tags = splitTags(`${context.skills ?? ""} ${context.personalArchive ?? ""}`);
   const modeByIntent: Record<string, string[]> = {
+    nomadic_research: ["nomadic_research"],
     manufacturing_technical_file: ["manufacturing_technical_file"],
     travel_plan: ["travel_plan"],
     poem: ["poem"],
     find_people: ["travel_plan", "story", "philosophical_debate"],
     survive: ["manufacturing_technical_file", "travel_plan", "story"],
-    how_to_do: ["manufacturing_technical_file", "travel_plan", "philosophical_debate"],
+    how_to_do: ["nomadic_research", "travel_plan", "philosophical_debate"],
     why: ["poem", "philosophical_debate", "story"],
   };
   return {
@@ -282,13 +285,15 @@ const referencePool = [
 const finalModeLabels: Record<FinalDocumentMode, string> = {
   story: "Day Dream 詩",
   poem: "Day Dream 詩",
+  nomadic_research: "Nomadic Research",
   manufacturing_technical_file: "製造／Camp 計劃",
   travel_plan: "旅行 uMap 動線",
   philosophical_debate: "Day Dream 詩",
 };
 
 function normalizeDocumentMode(mode: string | undefined): FinalDocumentMode {
-  if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "manufacturing_technical_file";
+  if (mode === "nomadic_research" || mode?.includes("nomadic") || mode?.includes("field") || mode?.includes("fablab") || mode?.includes("hackerspace")) return "nomadic_research";
+  if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "nomadic_research";
   if (mode === "travel_plan" || mode?.includes("travel") || mode?.includes("route") || mode?.includes("map") || mode?.includes("social")) return "travel_plan";
   return "poem";
 }
@@ -394,6 +399,11 @@ function modeActions(mode: FinalDocumentMode, args: { question: string; attribut
       `詩節 2：[[${anchorOne}]] 曾經支撐另一種工作；現在把那個結構借給玩家的文字、物件與慾望。`,
       `詩節 3：保留問題裡的荒謬感，讓跨領域挪用變成啟發，而不是教程。`,
     ],
+    nomadic_research: [
+      `田野 1：先把「${args.question}」拆成國家／地區、研究題目、可拜訪節點與活躍證據，不把 Google Maps 存在當成活著。`,
+      `田野 2：用 [[${anchorOne}]] 與 [[${anchorTwo}]] 當 wiki / corpus 入口，整理 hackerspace、fablab、art lab、university lab、meetup 或 artist-run venue。`,
+      `田野 3：輸出 field note、interview plan、local tech culture map 與 uMap GeoJSON；每個節點標出 intro 是否需要、費用／語言／設備未知處。`,
+    ],
     manufacturing_technical_file: [
       `計劃 1：把問題拆成目標、材料、場地、人力、時間與失敗條件。第一輪只測 ${attributePair} 是否真的能被操作。`,
       `計劃 2：用 [[${anchorOne}]] 做第一個材料或方法入口，整理成可製造的步驟；若是組織 camp，轉成招募、分工、共食、紀錄與收尾。`,
@@ -431,7 +441,7 @@ function bestResponseDirection(pet: Thronglet, exchanges: A2AExchange[]): string
   const hypothesis = hypotheses[0]
     ? `暫時假設：${hypotheses[0]}`
     : `暫時假設：這個問題真正要問的不是「${question}」的捷徑，而是哪些關係、能力與資源能承受它`;
-  const practicalTurn = intent === 'how_to_do' || intent === 'survive' || intent === 'manufacturing_technical_file'
+  const practicalTurn = intent === 'how_to_do' || intent === 'survive' || intent === 'manufacturing_technical_file' || intent === 'nomadic_research'
     ? '把回應收斂成一個七天內能試做、能失敗、能被別人檢查的小原型'
     : '把回應保持成一個可以邀請他人加入、也可以被反駁的敘事或論證';
   return `${hypothesis}。最好的回應不是把來源名稱當答案，而是：${socialProof}；${evidence}；接著${practicalTurn}。`;
@@ -661,7 +671,7 @@ function applyExchangeToPet(pet: Thronglet, exchange: A2AExchange, tick: number)
 }
 
 function shouldCreateFinalDocument(pet: Thronglet, scores: SimScores, existing: FinalDocument[]): boolean {
-  if (existing.some((document) => document.petId === pet.id && document.images?.length)) return false;
+  if (existing.some((document) => document.petId === pet.id)) return false;
   const a2a = pet.a2aState;
   if (!a2a) return false;
   const enoughA2A = a2a.exchangeCount >= a2a.requiredExchanges || (a2a.exchangeCount >= 2 && a2a.turnCount >= a2a.requiredTurns);
@@ -714,6 +724,13 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
   });
   const compactClosing = `暫定回應：${responseDirection}`;
+  const nomadicReport = buildNomadicResearchReport({
+    question: pet.question.text,
+    targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
+    references,
+    nutrients,
+    sourceAnchors,
+  });
   const manufacturingFrame = `【製造／Camp 計劃】這不是答案摘要，而是一份可被重做的方案。原始問題：「${pet.question.text}」。輸入：${tags}。協作者／測試者：${evidenceTargets}。參考入口：${sourceAnchors}。`;
   const travelFrame = `【旅行 uMap 動線】這份清單把旅行路線、hacker space、曾發生過的活動與社群節點放在同一張想像地圖上。原始問題：「${pet.question.text}」。起點材料：${tags}。可訪問對象：${evidenceTargets}。`;
   const poemFrame = `【Day Dream 詩】這首詩使用玩家提供的文字與物件，借用不同領域的結構做挪用。原始問題：「${pet.question.text}」。可借來的材料／聲部：${tags}。回聲來自：${sourceAnchors}。`;
@@ -730,6 +747,7 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
       directionTwo,
       directionThree,
     ].join("\n\n"),
+    nomadic_research: nomadicReport.body,
     manufacturing_technical_file: [
       manufacturingFrame,
       directionOne,
@@ -761,15 +779,6 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     references,
     reviewLog: log.slice(0, 6),
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
-    images: nutrients
-      .filter((source): source is A2ANutrientSource & { imageUrl: string } => Boolean(source.imageUrl))
-      .slice(0, 1)
-      .map((source) => ({
-        url: source.imageUrl,
-        alt: source.title,
-        sourceUrl: source.url,
-        caption: `Image extracted from community/wiki source: ${source.title}`,
-      })),
   };
 }
 
