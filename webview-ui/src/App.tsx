@@ -1125,11 +1125,16 @@ function App() {
       !simSnapshot
     )
       return;
+    const completedPetIds = new Set(simSnapshot.finalDocuments.map((document) => document.petId));
     simSnapshot.thronglets.forEach((pet, index) => {
+      const character = officeState.characters.get(pet.characterId);
+      if (completedPetIds.has(pet.id)) {
+        if (character?.isQuestionPet) officeState.characters.delete(pet.characterId);
+        return;
+      }
       const label = t(selectedLanguage, "pet.questionPet");
       const roleSlug = resolvePetRoleSlug(pet.appearance.bodyType, pet.appearance.seed);
       const animation = createThrongletWaDirectionalAnimations(chooseThrongletExpression(pet.state, pet.currentAction), roleSlug);
-      const character = officeState.characters.get(pet.characterId);
       if (character) {
         character.folderName = label;
         character.spriteAnimationsByDirection = animation;
@@ -1172,7 +1177,9 @@ function App() {
     if (petRunawayDoneRef.current === runawayKey) return;
     petRunawayDoneRef.current = runawayKey;
     const timeout = window.setTimeout(() => {
+      const completedPetIds = new Set(simSnapshot.finalDocuments.map((document) => document.petId));
       simSnapshot.thronglets.forEach((pet, index) => {
+        if (completedPetIds.has(pet.id)) return;
         const ch = officeState.characters.get(pet.characterId);
         if (!ch) return;
         ch.moveSpeedMultiplier = 4.2;
@@ -1230,7 +1237,13 @@ function App() {
           }),
         );
         const next = tickSimulation(current, contexts, npcKnowledgeContexts);
+        const completedPetIds = new Set(next.finalDocuments.map((document) => document.petId));
         for (const pet of next.thronglets) {
+          if (completedPetIds.has(pet.id)) {
+            const ch = officeState.characters.get(pet.characterId);
+            if (ch?.isQuestionPet) officeState.characters.delete(pet.characterId);
+            continue;
+          }
           const ch = officeState.characters.get(pet.characterId);
           if (!ch || ch.path.length > 0) continue;
           const targets =
@@ -1775,6 +1788,18 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!selectedPet || !simSnapshot) return;
+    const latestPet = simSnapshot.thronglets.find((pet) => pet.id === selectedPet.id);
+    if (latestPet && latestPet !== selectedPet) setSelectedPet(latestPet);
+  }, [selectedPet, simSnapshot]);
+
+  useEffect(() => {
+    if (!selectedDispatchPet) return;
+    const latestPet = activeDispatchPets.find((pet) => pet.id === selectedDispatchPet.id);
+    if (latestPet && latestPet !== selectedDispatchPet) setSelectedDispatchPet(latestPet);
+  }, [activeDispatchPets, selectedDispatchPet]);
+
   if (!hasStarted) {
     return <RetroBootScreen onStart={handleBootStart} />;
   }
@@ -1803,7 +1828,6 @@ function App() {
   const selectedPetFinalDocument = selectedPet
     ? (simSnapshot?.finalDocuments.find((document) => document.petId === selectedPet.id) ?? null)
     : null;
-  const latestA2AExchange = simSnapshot?.a2aExchanges[0] ?? null;
   const finalDocumentReviewLog = selectedPetFinalDocument
     ? [
         ...(selectedPetFinalDocument.reviewLog ?? []).slice(0, 6),
@@ -2248,6 +2272,10 @@ function App() {
               </Suspense>
             )}
 
+          {worldNotice && (
+            <div className="world-resonance-notice">{worldNotice}</div>
+          )}
+
           {simSnapshot &&
             playerProfile &&
             appMode === "interactive" &&
@@ -2294,42 +2322,44 @@ function App() {
                 )}
                 {!isQuestionSimMinimized && (
                   <>
-                    {simSnapshot.thronglets.map((pet) => (
-                      <button
-                        key={pet.id}
-                        className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
-                        type="button"
-                        onClick={() => {
-                          setSelectedPet(pet);
-                          setPetChatReply(null);
-                          setPetChatDraft("");
-                        }}
-                      >
-                        <div className="flex gap-4 items-center">
-                          <QuestionPetPreview
-                            question={pet.question.text}
-                            appearance={pet.appearance}
-                            size={4}
-                            socialSignals={pet.state}
-                            currentAction={pet.currentAction}
-                          />
-                          <span className="text-base leading-snug">
-                            {pet.question.text}
-                          </span>
-                        </div>
-                        <p className="text-sm mt-3">
-                          {pet.currentAction} / {t(selectedLanguage, "pet.energy")}
-                          {" "}
-                          {pet.state.energy.toFixed(0)} {" "}
-                          {t(selectedLanguage, "pet.stress")}
-                          {" "}
-                          {pet.state.stress.toFixed(0)} {" "}
-                          {t(selectedLanguage, "pet.bond")}
-                          {" "}
-                          {pet.state.groupBond.toFixed(0)}
-                        </p>
-                      </button>
-                    ))}
+                    {simSnapshot.thronglets
+                      .filter((pet) => !simSnapshot.finalDocuments.some((document) => document.petId === pet.id))
+                      .map((pet) => (
+                        <button
+                          key={pet.id}
+                          className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
+                          type="button"
+                          onClick={() => {
+                            setSelectedPet(pet);
+                            setPetChatReply(null);
+                            setPetChatDraft("");
+                          }}
+                        >
+                          <div className="flex gap-4 items-center">
+                            <QuestionPetPreview
+                              question={pet.question.text}
+                              appearance={pet.appearance}
+                              size={4}
+                              socialSignals={pet.state}
+                              currentAction={pet.currentAction}
+                            />
+                            <span className="text-base leading-snug">
+                              {pet.question.text}
+                            </span>
+                          </div>
+                          <p className="text-sm mt-3">
+                            {pet.currentAction} / {t(selectedLanguage, "pet.energy")}
+                            {" "}
+                            {pet.state.energy.toFixed(0)} {" "}
+                            {t(selectedLanguage, "pet.stress")}
+                            {" "}
+                            {pet.state.stress.toFixed(0)} {" "}
+                            {t(selectedLanguage, "pet.bond")}
+                            {" "}
+                            {pet.state.groupBond.toFixed(0)}
+                          </p>
+                        </button>
+                      ))}
                     <div className="grid grid-cols-2 gap-2 text-sm mb-4">
                       {Object.entries(simSnapshot.scores).map(([key, value]) => (
                         <p key={key}>
@@ -2342,9 +2372,9 @@ function App() {
                         THRONG: {throng.topic} ({throng.memberIds.length})
                       </p>
                     ))}
-                    {latestA2AExchange && (
+                    {simSnapshot.a2aExchanges[0] && (
                       <p className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
-                        A2A: {latestA2AExchange.summary}
+                        A2A: {simSnapshot.a2aExchanges[0].summary}
                       </p>
                     )}
                     {simSnapshot.finalDocuments.map((document) => (
@@ -2377,10 +2407,6 @@ function App() {
                 )}
               </section>
             )}
-
-          {worldNotice && (
-            <div className="world-resonance-notice">{worldNotice}</div>
-          )}
 
           {(selectedDispatchPet || selectedNpcInfo) && (
             <section

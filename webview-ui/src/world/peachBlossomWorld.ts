@@ -68,8 +68,9 @@ const templeColor: ColorValue = { ...paletteYellow, b: 2, c: 24 };
 const thaiTempleColor: ColorValue = { ...paletteYellow, b: 16, c: 20 };
 const cafeColor: ColorValue = { ...paletteCream, b: 10, c: 18 };
 
-export const NEXT_ROOM_GRID_SIZE = 6;
-export const NEXT_ROOM_MAP_PADDING = 2;
+export const NEXT_ROOM_GRID_SIZE = 15;
+export const NEXT_ROOM_MAP_SIZE = 20;
+export const NEXT_ROOM_MAP_PADDING = Math.floor((NEXT_ROOM_MAP_SIZE - NEXT_ROOM_GRID_SIZE) / 2);
 
 function fillRect(
   tiles: TileTypeVal[],
@@ -398,10 +399,10 @@ export const tamagotchiNpcPlacements: NpcPlacement[] = [
 
 export const nextTinyRoomNpcPlacements: NpcPlacement[] = [
   { personaId: 'marc-dusseiller', col: 3, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'mika-satomi', col: 5, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'anastassia-pistofidou', col: 7, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'christian-dils', col: 4, row: 6, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'abao', col: 6, row: 6, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'mika-satomi', col: 6, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'anastassia-pistofidou', col: 10, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'christian-dils', col: 4, row: 8, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'abao', col: 10, row: 8, zoneId: 'tiny-room', idleBehavior: 'stand' },
 ];
 
 export function createTamagotchiPeachForestLayout(): OfficeLayout {
@@ -529,27 +530,30 @@ export function createTamagotchiPeachForestLayout(): OfficeLayout {
 export function createNextTinyRoomLayout(): OfficeLayout {
   const roomSize = NEXT_ROOM_GRID_SIZE;
   const padding = NEXT_ROOM_MAP_PADDING;
-  const cols = roomSize + padding * 2;
-  const rows = roomSize + padding * 2;
-  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_8);
-  const tileColors = new Array<ColorValue | null>(cols * rows).fill(treeColor);
+  const cols = NEXT_ROOM_MAP_SIZE;
+  const rows = NEXT_ROOM_MAP_SIZE;
+  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_5);
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill(petalGroundColor);
   const furniture: PlacedFurniture[] = [];
   const room = { col: padding, row: padding, w: roomSize, h: roomSize };
+  const entranceCol = padding + Math.floor(roomSize / 2) - 1;
+  const topEntranceRow = padding;
+  const bottomEntranceRow = padding + roomSize - 1;
 
   fillRect(tiles, tileColors, cols, room, TileType.FLOOR_1, officeFloorColor());
-  addFurniture(furniture, 'PC_FRONT_ON_1', padding + 1, padding, { h: 220, s: 60, b: 5, c: 25 });
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const inRoom = col >= room.col && col < room.col + room.w && row >= room.row && row < room.row + room.h;
-      if (!inRoom) addFurniture(furniture, (col + row) % 2 === 0 ? 'PLANT_2' : 'PLANT', col, row, peachBloomColor);
-    }
-  }
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: room.w, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row + room.h - 1, w: room.w, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: 1, h: room.h }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: room.col + room.w - 1, row: room.row, w: 1, h: room.h }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: topEntranceRow, w: 2, h: 1 }, TileType.FLOOR_1, officeFloorColor());
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: bottomEntranceRow, w: 2, h: 1 }, TileType.FLOOR_1, officeFloorColor());
+  addFurniture(furniture, 'PC_FRONT_ON_1', padding + Math.floor(roomSize / 2), padding + Math.floor(roomSize / 2), { h: 220, s: 60, b: 5, c: 25 });
 
   return {
     version: 1,
     cols,
     rows,
-    layoutRevision: 13,
+    layoutRevision: 14,
     tiles,
     tileColors,
     furniture,

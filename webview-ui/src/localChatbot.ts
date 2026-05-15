@@ -125,9 +125,16 @@ const intentExpansions: Array<{ match: RegExp; terms: string[] }> = [
   },
 ];
 
+export function expandIntent(message: string): string[] {
+  return Array.from(new Set(intentExpansions.flatMap((entry) => entry.match.test(message) ? entry.terms : [])));
+}
+
+export function buildRetrievalQuery(message: string, retrievalContext = ''): string {
+  return [message, retrievalContext, ...expandIntent(message)].filter(Boolean).join('\n');
+}
+
 export function expandRetrievalQuery(message: string, retrievalContext = ''): string {
-  const expandedTerms = intentExpansions.flatMap((entry) => entry.match.test(message) ? entry.terms : []);
-  return [message, retrievalContext, ...Array.from(new Set(expandedTerms))].filter(Boolean).join('\n');
+  return buildRetrievalQuery(message, retrievalContext);
 }
 
 function hasCjk(text: string): boolean {
@@ -148,18 +155,6 @@ function naturalUserMessage(text: string): string {
       .replace(/\s+/g, ' '),
     72,
   );
-}
-
-function naturalFocusTerms(message: string): string {
-  const clean = naturalUserMessage(message);
-  if (hasCjk(clean)) {
-    const chars = cjkCharacters(clean).filter((char) => !'的是你我他她它了嗎呢啊和與或在有'.includes(char));
-    return chars.slice(0, 5).join('、') || clean;
-  }
-  return tokens(clean)
-    .filter((word) => !['artist', 'station', 'experimental', 'instrument', 'practice', 'topic', 'hint'].includes(word))
-    .slice(0, 5)
-    .join('、') || clean;
 }
 
 function scoreEvidence(query: string, queryTokens: string[], queryBigrams: string[], item: Omit<ChatEvidence, 'score'>): ChatEvidence {
@@ -235,6 +230,24 @@ function seedCorpusCandidates(knowledge: LocalChatKnowledgeBase): Array<Omit<Cha
   return corpusSeeds.filter((item) => !item.personaAffinity?.length || item.personaAffinity.includes(knowledge.id));
 }
 
+export function buildSeedCorpusCandidates(personaId?: string): Array<Omit<ChatEvidence, 'score'>> {
+  return corpusSeeds.filter((item) => !personaId || !item.personaAffinity?.length || item.personaAffinity.includes(personaId));
+}
+
+export function buildKnowledgeBaseEvidenceCandidates(knowledge: LocalChatKnowledgeBase): Array<Omit<ChatEvidence, 'score'>> {
+  return [
+    ...Object.entries(knowledge.responses).map(([key, value]) => ({
+      id: `${knowledge.id}-response-${key}`,
+      label: `${knowledge.name} / ${key}`,
+      text: value,
+      source: 'persona' as const,
+    })),
+    ...buildTranscriptEvidenceChunks(`${knowledge.transcript_zh}\n${knowledge.transcript_en}`, knowledge.id, knowledge.name),
+    ...wikiCandidates(knowledge),
+    ...seedCorpusCandidates(knowledge),
+  ];
+}
+
 function stripRetrievalLabels(reply: string, evidence: ChatEvidence[] = []): string {
   let cleaned = reply
     .replace(/https?:\/\/\S+/gi, '')
@@ -264,79 +277,46 @@ export function calibratePersonaReply(args: {
   knowledge: LocalChatKnowledgeBase;
   evidence?: ChatEvidence[];
 }): string {
-  const { draft, message, knowledge, evidence = [] } = args;
+  const { draft, evidence = [] } = args;
   const cleaned = sanitizeNpcReply(draft, evidence);
-  const naturalMessage = naturalUserMessage(message);
-  const hasDirectQuestionResponse = cleaned.includes(naturalMessage) || /你問|我會|先|start|try|begin|開始/.test(cleaned);
-  const prefix = hasDirectQuestionResponse ? '' : `你問的是「${naturalMessage}」。`;
-  const role = knowledge.role.toLowerCase();
-  const gesture = role.includes('textile') || role.includes('wearable')
-    ? '我會先把材料攤在桌上，摸一下哪裡可以縫、哪裡需要先測。'
-    : role.includes('hackteria') || role.includes('hardware') || role.includes('lab')
-      ? '我會先把它丟到工作桌上，用便宜工具試一個會失敗的小版本。'
-      : '';
-  return compact([prefix, gesture, cleaned].filter(Boolean).join(' '), 620);
+  return compact(cleaned, 620);
 }
 
-function personaOpening(knowledge: LocalChatKnowledgeBase, message: string): string {
-  const role = knowledge.role.toLowerCase();
-  const cleanMessage = naturalUserMessage(message);
-  const focus = naturalFocusTerms(message);
-  if (isLikelyJokeQuestion(message)) {
-    return `哈哈，我先把「${cleanMessage}」當成一句半開玩笑的願望，不把它當成功學考題。`;
+export function buildLocalGroundedAnswerDraft(args: {
+  message: string;
+  knowledge: LocalChatKnowledgeBase;
+  evidence: ChatEvidence[];
+}): string {
+  const { message, knowledge, evidence } = args;
+  if (evidence.length === 0) {
+    return `${knowledge.name}: 離線模式目前沒有找到足夠的 transcript 或 source 片段來回答「${naturalUserMessage(message)}」。`;
   }
-  if (role.includes('sound') || role.includes('music')) {
-    return `你問的是「${cleanMessage}」。我會先把它當成一段聲音來聽：${focus} 哪裡有節奏，哪裡只是噪音。`;
-  }
-  if (role.includes('textile') || role.includes('fabric') || role.includes('wearable')) {
-    return `你問的是「${cleanMessage}」。我會先摸它的材料邊緣：${focus} 哪些能縫、哪些會裂。`;
-  }
-  if (role.includes('lab') || role.includes('fabrication') || role.includes('research')) {
-    return `你問的是「${cleanMessage}」。我會把它放進工作台：先看材料、限制、誰會一起維護。`;
-  }
-  if (message.length < 12) {
-    return `你問的是「${cleanMessage}」。這句話還很短，我會先把它拉開成：${focus} 跟誰、用什麼、在哪裡發生。`;
-  }
-  return `你問的是「${cleanMessage}」。我先把它拆成 ${focus}，再用我的場域判斷哪一部分可以被測試。`;
+  const transcriptEvidence = evidence.find((item) => item.source === 'transcript') ?? evidence[0];
+  return `${knowledge.name}: 離線模式只能先整理檢索到的材料，完整自然回答會交給 DeepSeek。${transcriptEvidence.text}`;
 }
 
-function isLikelyJokeQuestion(message: string): boolean {
-  const normalized = naturalUserMessage(message).toLowerCase();
-  const hasBigShortcut = /怎麼變.*(有錢|有名|富|紅)|如何.*(變有錢|出名)|how.*(rich|famous)/.test(normalized);
-  const hasAbsurdMoneyAgent = /(兔子|貓|狗|雞|鴨|鳥|魚|老鼠|怪物|外星人|鬼|機器人|電子雞).*(幫我|替我|讓我).*(賺錢|有錢|出名|有名|發財)|(做|造|生|養).*?(兔子|貓|狗|雞|鴨|鳥|魚|怪物|外星人|鬼|機器人|電子雞).*?(賺錢|有錢|出名|有名|發財)/.test(normalized);
-  const hasMagicShortcut = /(一夜|突然|躺著|不用工作|自動|魔法|許願).*(賺錢|有錢|出名|有名|發財)/.test(normalized);
-  const hasNoConcreteMaterial = !/(預算|收入|作品|專案|材料|技能|客戶|觀眾|deadline|budget|project|skill|client|audience)/i.test(normalized);
-  return (hasBigShortcut || hasAbsurdMoneyAgent || hasMagicShortcut) && hasNoConcreteMaterial;
+export function rewriteLocalPersonaVoice(args: {
+  draft: string;
+  message: string;
+  knowledge: LocalChatKnowledgeBase;
+  evidence?: ChatEvidence[];
+}): string {
+  const { draft, message, knowledge, evidence = [] } = args;
+  return calibratePersonaReply({ draft: `${knowledge.name}: ${draft}`, message, knowledge, evidence });
 }
 
-function personaGuidance(knowledge: LocalChatKnowledgeBase, message: string): string {
-  const lower = message.toLowerCase();
-  const asksAboutMoneyOrFame = /有錢|錢|富|收入|資源|有名|名聲|出名|fame|famous|money|rich|income|resource/.test(lower);
-  if (isLikelyJokeQuestion(message)) {
-    if (/(兔子|貓|狗|雞|鴨|鳥|魚|怪物|外星人|鬼|機器人|電子雞)/.test(naturalUserMessage(message))) {
-      return '好，這題我會先笑出來：如果一隻兔子真的會幫你賺錢，我第一個問題不是商業模式，是牠有沒有簽勞動契約。把玩笑留下來吧，它其實在問：你想讓哪個荒謬角色替你承擔現實壓力？';
-    }
-    if (knowledge.id === 'abao') {
-      return '如果你真的要答案，我會說：先發明一個會被朋友笑、但他們還是想轉述的故事。它不一定立刻變收入，但可以測試生活支撐、可見度、名聲和社群交換是不是正在長出來。';
-    }
-    if (knowledge.id === 'wukir-suryadi') {
-      return '我會先敲一下這句話，聽它是不是空心的。也許第一步不是變有名，而是做一個怪到有人願意停下來聽的聲音。';
-    }
-    if (knowledge.id === 'anastassia-pistofidou') {
-      return '我會笑一下，然後把它變成一個課程練習：不要問怎麼突然有錢有名，先問誰願意和你一起做一個小版本，還願意承認它很荒謬。';
-    }
-    return '我會先笑一下：這題太像把人生丟進販賣機。比較好的玩法是把它改成一個小實驗：先做一個別人願意回應的小東西，測試收入和生活支撐從哪裡來、可見度和名聲會不會變成負擔，以及社群交換能不能讓工作持續。';
-  }
-  if (asksAboutMoneyOrFame) {
-    if (knowledge.id === 'marc-dusseiller') {
-      return '如果是我，我不會先追「變有名」；我會先做一個便宜、開放、別人能複製的小東西，帶去工作坊讓朋友改壞、改好。錢比較像後面長出的維護費：誰真的用到、誰願意一起養，才有下一步。';
-    }
-    if (knowledge.id === 'abao') {
-      return '我會把「有錢又有名」拆開看：有錢是能不能讓作品和生活繼續呼吸，有名是別人記得哪一個故事。先做一個很小但有辨識度的作品，讓它被一群真正會回話的人聽見，而不是只追一個很亮的招牌。';
-    }
-    return '我會先把「有錢」和「有名」拆成兩個可測試的問題：誰會因為你的作品得到幫助，誰願意付出資源讓它繼續發生。先找三個會誠實回應的人，做一個小版本給他們用，再看哪一種支持真的留下來。';
-  }
-  return '我找到的材料不是要替你下結論，而是幫你決定下一句怎麼問：先做一個小測試，把問題拿去問一個會受影響的人，並記下對方拒絕或補充的部分。';
+export function buildNpcReplyWithEvidence(args: {
+  message: string;
+  retrievalContext?: string;
+  knowledge: LocalChatKnowledgeBase;
+}): LocalChatReply {
+  const { message, retrievalContext = '', knowledge } = args;
+  const evidence = retrieveNpcEvidence({ message, retrievalContext, knowledge });
+  const draft = buildLocalGroundedAnswerDraft({ message, knowledge, evidence });
+  return {
+    reply: rewriteLocalPersonaVoice({ draft, message, knowledge, evidence }),
+    evidence,
+  };
 }
 
 export function localNpcChat(args: {
@@ -344,19 +324,7 @@ export function localNpcChat(args: {
   retrievalContext?: string;
   knowledge: LocalChatKnowledgeBase;
 }): LocalChatReply {
-  const { message, retrievalContext = '', knowledge } = args;
-  const evidence = retrieveNpcEvidence({ message, retrievalContext, knowledge });
-  if (evidence.length === 0) {
-    return {
-      reply: calibratePersonaReply({ draft: `${knowledge.name}: 我先誠實停一下。以我的角色來說，這題還缺材料；如果你給我一個場景、工具、失敗經驗或想找的人，我才能從訪談稿和網站資料裡把它接起來。`, message, knowledge, evidence }),
-      evidence,
-    };
-  }
-  const draft = `${knowledge.name}: ${personaOpening(knowledge, message)} ${personaGuidance(knowledge, message)}`;
-  return {
-    reply: calibratePersonaReply({ draft, message, knowledge, evidence }),
-    evidence,
-  };
+  return buildNpcReplyWithEvidence(args);
 }
 
 export function retrieveNpcEvidence(args: {
@@ -444,7 +412,7 @@ export function localPetChat(args: {
   };
   if (evidence.length === 0) {
     return {
-      reply: `${pet.displayName}: 啾。我的肚子裡還沒有足夠材料。下一步小實驗：請餵我一個具體場景、一個可用工具、或一個你已經失敗過的版本；我再把它帶去問 NPC。`,
+      reply: `${pet.displayName}: 啾。我的肚子裡還沒有足夠材料。下一步：請餵我一個具體場景、一個可用工具、或一個你已經失敗過的版本；我再把它帶去問 NPC。`,
       evidence,
       memoryEvent,
     };

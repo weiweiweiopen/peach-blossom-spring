@@ -5,8 +5,8 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import type { LocalChatKnowledgeBase, WebsiteCorpusRecord } from '../src/localChatbot.js';
-import { buildTranscriptEvidenceChunks, buildWebsiteEvidenceChunks, calibratePersonaReply, localNpcChat, localPetChat, rankEvidence, retrieveNpcEvidence, sanitizeNpcReply } from '../src/localChatbot.js';
-import { Direction } from '../src/office/types.js';
+import { buildLocalGroundedAnswerDraft, buildNpcReplyWithEvidence, buildTranscriptEvidenceChunks, buildWebsiteEvidenceChunks, calibratePersonaReply, expandIntent, localNpcChat, localPetChat, rankEvidence, retrieveNpcEvidence, rewriteLocalPersonaVoice, sanitizeNpcReply } from '../src/localChatbot.js';
+import { Direction, TileType } from '../src/office/types.js';
 import { generateQuestionPet, petMoodTypes } from '../src/pets/generateQuestionPet.js';
 import { chooseThrongletExpression, throngletMvpAnimation } from '../src/pets/throngletAssets.js';
 import { createThrongletWaAnimation, createThrongletWaDirectionalAnimations } from '../src/pets/throngletWaSprites.js';
@@ -16,7 +16,8 @@ import { scorePromptResonance } from '../src/simulation/resonance.js';
 import { scoreEvent } from '../src/simulation/scoring.js';
 import { shouldTriggerThought } from '../src/simulation/thoughtTriggers.js';
 import type { SimEvent, SimScores, SimState } from '../src/simulation/types.js';
-import { createNextTinyRoomLayout, NEXT_ROOM_GRID_SIZE, NEXT_ROOM_MAP_PADDING } from '../src/world/peachBlossomWorld.js';
+import { generateWikiDaydreamReport } from '../src/simulation/wikiDaydream.js';
+import { createNextTinyRoomLayout, NEXT_ROOM_GRID_SIZE, NEXT_ROOM_MAP_PADDING, NEXT_ROOM_MAP_SIZE } from '../src/world/peachBlossomWorld.js';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 const wikiRoot = resolve(testDir, '../../data/wiki/interviewees');
@@ -103,7 +104,7 @@ test('every persona wiki link becomes a readable website evidence chunk', () => 
   }
 });
 
-test('local NPC chat uses persona voice and readable evidence labels', () => {
+test('local NPC fallback returns clean evidence summary and readable evidence labels', () => {
   const knowledge: LocalChatKnowledgeBase = {
     id: 'tester',
     name: 'Tester NPC',
@@ -118,9 +119,10 @@ test('local NPC chat uses persona voice and readable evidence labels', () => {
   assert.ok(reply.evidence.length >= 1);
   assert.ok(reply.reply.includes('Tester NPC'));
   assert.ok(!reply.reply.includes('最可靠的說法是'));
-  assert.ok(reply.reply.includes('你問的是'));
+  assert.ok(reply.reply.includes('repair') || reply.reply.includes('solar') || reply.reply.includes('工具'));
   assert.ok(reply.reply.includes('repair') || reply.reply.includes('solar'));
   assert.ok(reply.evidence.some((item) => item.label.includes('Tester NPC / Solar repair wiki')));
+  for (const item of reply.evidence) assert.ok(!reply.reply.includes(item.label));
 });
 
 test('local NPC chat keeps internal topic hints out of natural reply', () => {
@@ -137,7 +139,7 @@ test('local NPC chat keeps internal topic hints out of natural reply', () => {
   const reply = localNpcChat({ message: '怎麼變的有錢又有名？', retrievalContext: 'nomadic', knowledge });
   assert.ok(!reply.reply.toLowerCase().includes('topic hint'));
   assert.ok(!reply.reply.includes('nomadic」'));
-  assert.ok(reply.reply.includes('怎麼變的有錢又有名'));
+  assert.ok(reply.reply.length > 20);
 });
 
 test('local NPC chat does not leak technical role tags into Chinese natural reply', () => {
@@ -152,7 +154,7 @@ test('local NPC chat does not leak technical role tags into Chinese natural repl
     responses: {},
   };
   const reply = localNpcChat({ message: '你剛剛提到「artist station / experimental instrument practice」，這跟我的任務有什麼關係？', knowledge });
-  assert.ok(reply.reply.includes('你問的是'));
+  assert.ok(reply.reply.length > 20);
   assert.ok(!reply.reply.includes('artist station'));
   assert.ok(!reply.reply.includes('experimental instrument practice'));
 });
@@ -181,8 +183,6 @@ test('Marc and ABao money/fame replies keep source labels in evidence only', () 
 
   for (const knowledge of [marc, abao]) {
     const reply = localNpcChat({ message: '怎麼變的有錢又有名？', knowledge });
-    assert.ok(reply.reply.includes('有錢'));
-    assert.ok(reply.reply.includes('有名'));
     assert.ok(reply.evidence.length > 0);
     assert.ok(reply.evidence.some((item) => item.source === 'wiki'));
     for (const item of reply.evidence) {
@@ -192,7 +192,7 @@ test('Marc and ABao money/fame replies keep source labels in evidence only', () 
   }
 });
 
-test('obvious money and fame shortcut question is treated as playful', () => {
+test('local NPC fallback does not synthesize canned money/fame advice', () => {
   const knowledge: LocalChatKnowledgeBase = {
     id: 'anastassia-pistofidou',
     name: 'Anastassia Pistofidou',
@@ -204,12 +204,12 @@ test('obvious money and fame shortcut question is treated as playful', () => {
     responses: {},
   };
   const reply = localNpcChat({ message: '怎麼變的有錢又有名？', knowledge });
-  assert.ok(reply.reply.includes('開玩笑') || reply.reply.includes('笑'));
   assert.ok(!reply.reply.includes('兩個可測試的問題'));
   assert.ok(!reply.reply.includes('誰會因為你的作品得到幫助'));
+  assert.ok(reply.reply.includes('離線模式'));
 });
 
-test('absurd animal money prompt is treated as a joke', () => {
+test('local NPC fallback does not contain animal-regex joke templates', () => {
   const knowledge: LocalChatKnowledgeBase = {
     id: 'christian-dils',
     name: 'Christian Dils',
@@ -221,9 +221,9 @@ test('absurd animal money prompt is treated as a joke', () => {
     responses: {},
   };
   const reply = localNpcChat({ message: '我想做一個兔子幫我賺錢', knowledge });
-  assert.ok(reply.reply.includes('兔子'));
-  assert.ok(reply.reply.includes('笑'));
-  assert.ok(reply.reply.includes('勞動契約') || reply.reply.includes('荒謬'));
+  assert.ok(!reply.reply.includes('勞動契約'));
+  assert.ok(!reply.reply.includes('荒謬'));
+  assert.ok(!reply.reply.includes('兔子真的'));
   assert.ok(!reply.reply.includes('誰會因為你的作品得到幫助'));
 });
 
@@ -242,7 +242,7 @@ test('Marc Hackteria livelihood question retrieves corpus and keeps reply clean'
   const evidence = retrieveNpcEvidence({ message, knowledge });
   assert.ok(evidence.some((item) => /Hackteria|open hardware|workshop|community lab/i.test(`${item.label} ${item.text} ${item.tags?.join(' ') ?? ''}`)));
   const reply = localNpcChat({ message, knowledge });
-  assert.ok(reply.reply.includes('你問的是') || reply.reply.includes('先'));
+  assert.ok(reply.reply.includes('Hackteria') || reply.reply.includes('工作坊') || reply.reply.includes('open hardware'));
   assertCleanNpcReply(reply.reply);
   for (const item of reply.evidence) assert.ok(!reply.reply.includes(item.label));
 });
@@ -261,11 +261,11 @@ test('Mika wearable question retrieves How To Get What You Want corpus and keeps
   const message = '我想做一個可以穿在身上的電子小作品，怎麼開始？';
   const reply = localNpcChat({ message, knowledge });
   assert.ok(reply.evidence.some((item) => /e-textiles|soft circuits|wearable technology|DIY electronics/i.test(`${item.text} ${item.tags?.join(' ') ?? ''}`)));
-  assert.ok(reply.reply.includes('你問的是') || reply.reply.includes('我會'));
+  assert.ok(reply.reply.includes('離線模式'));
   assertCleanNpcReply(reply.reply);
 });
 
-test('money and fame reply uses expanded livelihood concepts without evidence leakage', () => {
+test('money and fame retrieval uses expanded livelihood concepts without evidence leakage', () => {
   const knowledge: LocalChatKnowledgeBase = {
     id: 'marc-dusseiller',
     name: 'Marc Dusseiller',
@@ -277,11 +277,68 @@ test('money and fame reply uses expanded livelihood concepts without evidence le
     responses: {},
   };
   const reply = localNpcChat({ message: '怎麼變得有錢又有名？', knowledge });
-  for (const concept of ['收入', '生活支撐', '可見度', '名聲', '社群交換', '持續', '小實驗']) assert.ok(reply.reply.includes(concept));
   assertCleanNpcReply(reply.reply);
   assert.ok(reply.evidence.length > 0);
   assert.ok(reply.evidence.some((item) => item.label.includes('Hackteria')));
   for (const item of reply.evidence) assert.ok(!reply.reply.includes(item.label));
+});
+
+test('money and fame intent expansion adds livelihood retrieval concepts', () => {
+  const concepts = expandIntent('怎麼變得有錢又有名？');
+  for (const expected of ['livelihood', 'visibility', 'community exchange', 'sustainable creative work', 'cost of fame', 'small experiment']) {
+    assert.ok(concepts.includes(expected), `missing concept: ${expected}`);
+  }
+});
+
+test('two-stage local NPC fallback keeps grounded draft separate from clean persona reply', () => {
+  const knowledge: LocalChatKnowledgeBase = {
+    id: 'marc-dusseiller',
+    name: 'Marc Dusseiller',
+    role: 'Hackteria / nomadic workshopologist',
+    intro: 'Values low-cost open hardware, workshops, friends, and failure as pedagogy.',
+    transcript_en: 'Q1: Livelihood grew through workshop invitations, low-cost tools, shared protocols, and community labs.',
+    transcript_zh: 'Q1: 生活支撐來自工作坊邀請、低成本工具、共享流程與社群實驗室。',
+    wikiLinks: [{ title: 'Hackteria Wiki / Marc', url: 'https://www.hackteria.org/wiki/Marc_Dusseiller', description: 'open hardware workshop livelihood community lab documentation' }],
+    responses: {},
+  };
+  const message = '怎麼變得有錢又有名？';
+  const evidence = retrieveNpcEvidence({ message, knowledge });
+  const draft = buildLocalGroundedAnswerDraft({ message, knowledge, evidence });
+  const rewritten = rewriteLocalPersonaVoice({ draft, message, knowledge, evidence });
+  const wrapped = buildNpcReplyWithEvidence({ message, knowledge });
+
+  assert.ok(draft.includes('離線模式'));
+  assert.ok(draft.includes('工作坊') || draft.includes('workshop'));
+  assert.ok(wrapped.evidence.length > 0);
+  assert.equal(wrapped.reply, rewritten);
+  assertCleanNpcReply(rewritten);
+  for (const item of evidence) {
+    assert.ok(!rewritten.includes(item.label));
+    assert.ok(!item.url || !rewritten.includes(item.url));
+  }
+});
+
+test('local NPC fallback avoids canned roleplay phrases without leaking evidence', () => {
+  const knowledge: LocalChatKnowledgeBase = {
+    id: 'marc-dusseiller',
+    name: 'Marc Dusseiller',
+    role: 'Hackteria / nomadic workshopologist',
+    intro: 'Values low-cost open hardware, workshops, friends, and failure as pedagogy.',
+    transcript_en: 'Q1: Livelihood grew through workshop invitations, low-cost tools, shared protocols, and community labs.',
+    transcript_zh: 'Q1: 生活支撐來自工作坊邀請、低成本工具、共享流程與社群實驗室。',
+    wikiLinks: [{ title: 'Hackteria Wiki / Marc', url: 'https://www.hackteria.org/wiki/Marc_Dusseiller', description: 'open hardware workshop livelihood community lab documentation' }],
+    responses: {},
+  };
+  const replies = [
+    localNpcChat({ message: '怎麼變得有錢又有名？', knowledge }),
+    localNpcChat({ message: '如果我想靠藝術科學社群維持生活，第一步要做什麼？', knowledge }),
+    localNpcChat({ message: '我想讓作品被更多人看見，但不要變成空的名聲，怎麼開始？', knowledge }),
+  ];
+  for (const reply of replies) {
+    assertCleanNpcReply(reply.reply);
+    assert.ok(!/工作桌|材料邊緣|手掌大小|勞動契約|販賣機|你問的是/.test(reply.reply));
+    for (const item of reply.evidence) assert.ok(!reply.reply.includes(item.label));
+  }
 });
 
 test('NPC reply sanitizer strips retrieval labels while preserving evidence', () => {
@@ -297,7 +354,7 @@ test('NPC reply sanitizer strips retrieval labels while preserving evidence', ()
     knowledge: { id: 'marc-dusseiller', name: 'Marc', role: 'Hackteria / nomadic workshopologist', intro: 'hands-on', transcript_en: '', transcript_zh: '', wikiLinks: [], responses: {} },
     evidence,
   });
-  assert.ok(calibrated.includes('你問的是'));
+  assert.ok(calibrated.includes('open hardware'));
   assertCleanNpcReply(calibrated);
 });
 
@@ -465,14 +522,87 @@ test('thought trigger works', () => {
   assert.equal(shouldTriggerThought(state, { id: 'e', type: 'thronglet_interaction', createdAt: 0, tick: 1, actorId: 'pet', delta: {}, significance: 50 }), true);
 });
 
-test('next tiny room config is 6x6 in a 10x10 map with a computer and surrounding trees', () => {
+test('next tiny room config is 15x15 in a 20x20 map with top and bottom entrances and clear outer path', () => {
   const layout = createNextTinyRoomLayout();
-  assert.equal(NEXT_ROOM_GRID_SIZE, 6);
-  assert.equal(layout.cols, NEXT_ROOM_GRID_SIZE + NEXT_ROOM_MAP_PADDING * 2);
-  assert.equal(layout.rows, NEXT_ROOM_GRID_SIZE + NEXT_ROOM_MAP_PADDING * 2);
-  assert.equal(layout.cols, 10);
-  assert.equal(layout.rows, 10);
-  assert.ok(layout.furniture.some((item) => item.type === 'PC_FRONT_ON_1'));
+  assert.equal(NEXT_ROOM_GRID_SIZE, 15);
+  assert.equal(NEXT_ROOM_MAP_SIZE, 20);
+  assert.equal(layout.cols, NEXT_ROOM_MAP_SIZE);
+  assert.equal(layout.rows, NEXT_ROOM_MAP_SIZE);
+  assert.ok(layout.furniture.some((item) => item.type === 'PC_FRONT_ON_1' && item.col === 9 && item.row === 9));
+  const entranceCol = NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2) - 1;
+  const topEntranceRow = NEXT_ROOM_MAP_PADDING;
+  const bottomEntranceRow = NEXT_ROOM_MAP_PADDING + NEXT_ROOM_GRID_SIZE - 1;
+  assert.notEqual(layout.tiles[topEntranceRow * layout.cols + entranceCol], TileType.WALL);
+  assert.notEqual(layout.tiles[topEntranceRow * layout.cols + entranceCol + 1], TileType.WALL);
+  assert.notEqual(layout.tiles[bottomEntranceRow * layout.cols + entranceCol], TileType.WALL);
+  assert.notEqual(layout.tiles[bottomEntranceRow * layout.cols + entranceCol + 1], TileType.WALL);
+  for (let row = 0; row < layout.rows; row++) {
+    for (let col = 0; col < layout.cols; col++) {
+      const isOuterPath = col === 0 || row === 0 || col === layout.cols - 1 || row === layout.rows - 1;
+      if (!isOuterPath) continue;
+      assert.notEqual(layout.tiles[row * layout.cols + col], TileType.WALL);
+      assert.ok(!layout.furniture.some((item) => item.col === col && item.row === row));
+    }
+  }
   const treeCount = layout.furniture.filter((item) => item.type === 'PLANT' || item.type === 'PLANT_2').length;
-  assert.ok(treeCount >= layout.cols * layout.rows - NEXT_ROOM_GRID_SIZE * NEXT_ROOM_GRID_SIZE);
+  assert.equal(treeCount, 0);
+});
+
+test('wiki daydream mode generates final report from wiki and corpus without external APIs', () => {
+  const pet = createThronglet('我想做一個可以穿在身上的電子小作品，怎麼開始？', 'Tester', 0, 10099);
+  const report = generateWikiDaydreamReport({
+    question: pet.question.text,
+    pet,
+    readingHistory: [{
+      id: 'soft-circuit-note',
+      title: 'Soft circuit reading note',
+      sourceLabel: 'Local reading history',
+      sourceType: 'reading-history',
+      text: 'A wearable experiment can begin with one handmade textile sensor, visible conductive thread, careful documentation, and a tiny prototype that another person can remake.',
+      tags: ['wearable technology', 'e-textiles', 'soft circuits', 'documentation'],
+      url: 'https://example.test/soft-circuit',
+    }],
+    knowledgeBases: [{
+      id: 'mika-satomi',
+      name: 'Mika Satomi',
+      role: 'KOBAKANT / e-textile exchange',
+      intro: 'Works with handmade wearable electronics and textile sensors.',
+      transcript_en: 'Q1: A wearable electronic project starts from a soft circuit, a small sensor, and documentation of failure.',
+      transcript_zh: '',
+      wikiLinks: [{ title: 'How To Get What You Want', url: 'https://www.kobakant.at/DIY/', description: 'DIY wearable electronics and e-textile documentation' }],
+      responses: {},
+    }],
+    tick: 12,
+  });
+  assert.equal(report.mode, 'manufacturing_technical_file');
+  assert.equal(report.petId, pet.id);
+  assert.ok(report.body.includes('Wiki Daydream Mode'));
+  assert.ok(report.body.includes('最小原型'));
+  assert.ok(report.body.includes('documentation') || report.body.includes('文件'));
+  assert.ok(report.references.some((reference) => reference.label.includes('How To Get What You Want') || reference.label.includes('Local reading history')));
+  assert.ok(!/https?:\/\//i.test(report.body));
+  assert.ok(!/domain:/i.test(report.body));
+});
+
+test('wiki daydream mode uses Hackteria concepts for art science livelihood questions', () => {
+  const report = generateWikiDaydreamReport({
+    question: '我想把藝術、科學和社群變成可以維持生活的工作，要怎麼開始？',
+    readingHistory: [{
+      id: 'hackteria-note',
+      title: 'Hackteria workshop note',
+      text: 'Hackteria workshops connect DIY biology, open hardware, low-cost tools, community labs, nomadic science, and art/science collaboration through informal learning.',
+      tags: ['Hackteria', 'DIY biology', 'open hardware', 'community lab', 'workshops'],
+      sourceLabel: 'Local reading history',
+    }],
+    websiteRecords: [{
+      intervieweeId: 'marc-dusseiller',
+      name: 'Marc Dusseiller',
+      links: [{ title: 'Hackteria', url: 'https://hackteria.org', description: 'Open hardware, DIY biology, community lab, and art/science workshop network.' }],
+    }],
+    tick: 8,
+  });
+  assert.ok(report.body.includes('社群') || report.body.includes('community'));
+  assert.ok(report.body.includes('open hardware') || report.body.includes('工具'));
+  assert.ok(report.sourceExchangeIds.length >= 1);
+  assert.ok(!/sourceLabel|sourceType|Retrieved evidence/i.test(report.body));
 });

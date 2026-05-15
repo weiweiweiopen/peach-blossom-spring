@@ -141,6 +141,109 @@ function parseChatResponse(data: { content?: string; error?: string; choices?: A
   return data.content?.trim() ?? data.choices?.[0]?.message?.content?.trim() ?? '...';
 }
 
+async function postWorkerChat(systemPrompt: string, userPrompt: string, maxTokens = 700): Promise<string> {
+  const chatApiUrl = configuredWorkerChatApiUrl();
+  if (!chatApiUrl) {
+    throw new Error('DeepSeek Worker proxy is not configured.');
+  }
+
+  const res = await fetch(chatApiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode: 'chat',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      max_tokens: maxTokens,
+    }),
+  });
+
+  if (!res.ok) {
+    const details = await res.text();
+    throw new Error(`DeepSeek request failed (${res.status.toString()}): ${details}`);
+  }
+
+  const data = (await res.json()) as {
+    content?: string;
+    error?: string;
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  return parseChatResponse(data);
+}
+
+function evidenceGroundingBlock(evidence: ChatEvidence[]): string {
+  return evidence.length > 0
+    ? evidence.map((item, index) => [
+        `Source fragment ${index + 1}`,
+        item.text,
+      ].filter(Boolean).join('\n')).join('\n\n')
+    : '(no retrieved source fragments)';
+}
+
+function transcriptForReasoning(knowledge: KnowledgeBase, preferredLanguage: LanguageCode): string {
+  const primary = preferredLanguage === 'zh-TW'
+    ? knowledge.transcript_zh || knowledge.transcript_en
+    : knowledge.transcript_en || knowledge.transcript_zh;
+  const secondary = preferredLanguage === 'zh-TW' ? knowledge.transcript_en : knowledge.transcript_zh;
+  return [primary, secondary && secondary !== primary ? secondary : ''].filter(Boolean).join('\n\n--- second language transcript ---\n\n');
+}
+
+export async function askDeepSeekGroundedAnswer({
+  playerName,
+  question,
+  knowledge,
+  preferredLanguage,
+  evidence,
+}: AskPersonaWithEvidenceArgs): Promise<string> {
+  const transcript = transcriptForReasoning(knowledge, preferredLanguage);
+  const systemPrompt = trimMessage([
+    languageInstruction(preferredLanguage),
+    'You are the first reasoning pass for an NPC answer. Read the NGM interview transcript first, then use source fragments only as secondary context.',
+    'Do actual reasoning from the transcript: identify what the interviewee appears to care about, what tensions they name, and what they would likely question in the player prompt.',
+    'Do not imitate a template. Do not produce stock advice. Do not include source labels, URLs, citations, role tags, or retrieval metadata.',
+    'If the prompt is playful, absurd, or under-specified, treat that as part of the player intent rather than matching it with a hard-coded joke.',
+    'Return a compact reasoning draft for the second pass: 3 to 6 sentences, concrete, conversational, and specific to this question.',
+    '',
+    `NPC context: ${knowledge.name}, ${knowledge.role}. ${knowledge.intro}`,
+    '',
+    '--- NGM transcript to reason from ---',
+    transcript || '(no transcript available)',
+    '--- end NGM transcript ---',
+    '',
+    '--- Secondary source fragments, if relevant ---',
+    evidenceGroundingBlock(evidence),
+    '--- end secondary source fragments ---',
+  ].join('\n'));
+  return postWorkerChat(systemPrompt, `${playerName}: ${question}`, 900);
+}
+
+export async function askDeepSeekPersonaRewrite({
+  playerName,
+  question,
+  knowledge,
+  preferredLanguage,
+  groundedDraft,
+}: AskPersonaWithEvidenceArgs & { groundedDraft: string }): Promise<string> {
+  const systemPrompt = trimMessage([
+    knowledge.systemPrompt,
+    languageInstruction(preferredLanguage),
+    'You are the second pass. Transform the reasoning draft into a natural NPC reply inside a game dialogue.',
+    'Speak naturally in first person as the NPC, but do not over-perform persona mannerisms.',
+    'Do not paste source labels, URLs, role tags, citations, or retrieval metadata.',
+    'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
+    'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
+    'If the transcript does not support a confident answer, be honest without collapsing into boilerplate.',
+    'Keep the final reply concise: 3 to 6 sentences.',
+    '',
+    `NPC: ${knowledge.name} (${knowledge.role})`,
+    `Intro: ${knowledge.intro}`,
+    'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report.',
+  ].join('\n'));
+  return postWorkerChat(systemPrompt, `${playerName}: ${question}\n\nGrounded draft to rewrite:\n${groundedDraft}`, 700);
+}
+
 function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, transcriptZhRaw: string): KnowledgeBase {
   const transcript_en = trimTranscript(transcriptEnRaw);
   const transcript_zh = trimTranscript(transcriptZhRaw);
@@ -270,60 +373,8 @@ export async function askDeepSeekPersonaWithEvidence({
   preferredLanguage,
   evidence,
 }: AskPersonaWithEvidenceArgs): Promise<string> {
-  const chatApiUrl = configuredWorkerChatApiUrl();
-  if (!chatApiUrl) {
-    throw new Error('DeepSeek Worker proxy is not configured.');
-  }
-
-  const evidenceBlock = evidence.length > 0
-    ? evidence.map((item, index) => [
-        `Evidence ${index + 1}: ${item.label}`,
-        `Source type: ${item.source}`,
-        item.url ? `URL: ${item.url}` : '',
-        item.text,
-      ].filter(Boolean).join('\n')).join('\n\n')
-    : '(no retrieved evidence)';
-  const systemPrompt = trimMessage([
-    knowledge.systemPrompt,
-    languageInstruction(preferredLanguage),
-    'You are inside a game dialogue. Sound like the NPC, not like a citation bot.',
-    'Use the retrieved evidence as grounding, but do not paste source labels, URLs, role tags, or technical retrieval hints into the natural reply.',
-    'If the player is joking, teasing, or asking an absurd shortcut question, acknowledge the joke naturally first, then redirect with the NPC perspective.',
-    'If evidence is thin, say what is missing conversationally instead of inventing facts.',
-    'Keep the answer concise: 2 to 5 sentences.',
-    '',
-    `NPC: ${knowledge.name} (${knowledge.role})`,
-    `Intro: ${knowledge.intro}`,
-    '',
-    '--- Retrieved evidence for grounding ---',
-    evidenceBlock,
-    '--- end retrieved evidence ---',
-  ].join('\n'));
-
-  const res = await fetch(chatApiUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      mode: 'chat',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `${playerName}: ${question}` },
-      ],
-      max_tokens: 700,
-    }),
-  });
-
-  if (!res.ok) {
-    const details = await res.text();
-    throw new Error(`DeepSeek request failed (${res.status.toString()}): ${details}`);
-  }
-
-  const data = (await res.json()) as {
-    content?: string;
-    error?: string;
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  return parseChatResponse(data);
+  const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence });
+  return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, groundedDraft });
 }
 
 export type { PersonaShape };
