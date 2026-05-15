@@ -4714,3 +4714,162 @@
     margin-bottom: 7px !important;
   }
 }
+
+/* Phone readability pass: match non-pet windows to the readable pet-detail scale.
+   Keep character/pet name bubbles untouched so they do not cover the map again. */
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root {
+    --mobile-readable-title: clamp(34px, 8.2vw, 44px);
+    --mobile-readable-subtitle: clamp(28px, 6.8vw, 36px);
+    --mobile-readable-body: clamp(24px, 5.8vw, 31px);
+    --mobile-readable-label: clamp(21px, 5vw, 27px);
+    --mobile-readable-control: clamp(23px, 5.4vw, 30px);
+  }
+
+  .archive-tree-menu {
+    padding: 16px !important;
+  }
+
+  .archive-tree-menu.F1 h1,
+  .archive-tree-menu h1 {
+    font-size: var(--mobile-readable-title) !important;
+    line-height: 1.12 !important;
+  }
+
+  .archive-tree-menu :where(p, .archive-tree-kicker) {
+    font-size: var(--mobile-readable-label) !important;
+    line-height: 1.25 !important;
+  }
+
+  .archive-tree-menu.F1 .archive-tree-options button,
+  .archive-tree-options button,
+  .archive-tree-close {
+    min-height: 58px !important;
+    padding: 14px 18px !important;
+    font-size: var(--mobile-readable-control) !important;
+    line-height: 1.22 !important;
+  }
+
+  .rpg-dialogue-panel {
+    padding: 16px !important;
+  }
+
+  .rpg-dialogue-kicker,
+  .rpg-dialogue-role,
+  .rpg-dialogue-evidence,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-kicker,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-role {
+    font-size: var(--mobile-readable-label) !important;
+    line-height: 1.28 !important;
+  }
+
+  .rpg-dialogue-name,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-name {
+    font-size: var(--mobile-readable-subtitle) !important;
+    line-height: 1.14 !important;
+  }
+
+  .rpg-dialogue-log,
+  .rpg-dialogue-message,
+  .rpg-dialogue-thinking,
+  .rpg-dialogue-log p,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-log,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-message,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-thinking {
+    font-size: var(--mobile-readable-body) !important;
+    line-height: 1.45 !important;
+  }
+
+  .rpg-dialogue-input,
+  .rpg-dialogue-chip,
+  .rpg-dialogue-more,
+  .rpg-dialogue-submit,
+  .rpg-dialogue-question-toggle,
+  .rpg-dialogue-wiki-button,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
+    font-size: var(--mobile-readable-control) !important;
+    line-height: 1.24 !important;
+  }
+
+  .rpg-dialogue-input {
+    min-height: 62px !important;
+    padding: 14px 16px !important;
+  }
+
+  .rpg-dialogue-chip,
+  .rpg-dialogue-more,
+  .rpg-dialogue-submit,
+  .rpg-dialogue-question-toggle,
+  .rpg-dialogue-wiki-button {
+    min-height: 54px !important;
+    padding: 12px 16px !important;
+  }
+
+  .rpg-dialogue-x,
+  .world-split-actions button,
+  .archive-tree-close,
+  .final-document-window .question-response-window-actions .pbs-frame-action {
+    width: 50px !important;
+    min-width: 50px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+  }
+
+  .world-split-toolbar h2,
+  .mobile-rules-drawer h2,
+  .world-wiki-content :where(strong, h2, h3),
+  .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
+    font-size: var(--mobile-readable-subtitle) !important;
+    line-height: 1.16 !important;
+  }
+
+  .world-wiki-content,
+  .world-wiki-content :where(p, a, button, span),
+  .mobile-rules-drawer :where(p, span, button, .text-sm, .text-base),
+  .question-status-panel :where(p, span, button, .text-sm, .text-base) {
+    font-size: var(--mobile-readable-body) !important;
+    line-height: 1.42 !important;
+  }
+
+  .world-wiki-content a,
+  .world-wiki-content button,
+  .mobile-rules-drawer button,
+  .question-status-panel button {
+    min-height: 56px !important;
+    padding: 13px 16px !important;
+  }
+
+  .mobile-stats-bar {
+    min-height: 50px !important;
+    max-height: 58px !important;
+    padding: 8px 12px !important;
+    font-size: clamp(18px, 4.4vw, 24px) !important;
+    line-height: 1.2 !important;
+  }
+
+  .mobile-stats-bar span {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+
+  .final-document-window .final-document-body,
+  .final-document-window .final-document-body p,
+  .final-document-window .final-document-log p,
+  .final-document-window figcaption {
+    font-size: var(--mobile-readable-body) !important;
+    line-height: 1.48 !important;
+  }
+
+  .final-document-log h4,
+  .final-document-window .pet-detail-kicker,
+  .final-document-window .type-label,
+  .final-document-window .type-caption {
+    font-size: var(--mobile-readable-label) !important;
+    line-height: 1.24 !important;
+  }
+}
