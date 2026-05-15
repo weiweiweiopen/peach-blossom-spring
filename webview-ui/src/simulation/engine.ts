@@ -274,19 +274,17 @@ const referencePool = [
 ];
 
 const finalModeLabels: Record<FinalDocumentMode, string> = {
-  story: "故事",
-  poem: "詩",
-  manufacturing_technical_file: "製造技術文件",
-  travel_plan: "旅行方案",
-  philosophical_debate: "哲學辯論",
+  story: "Day Dream 詩",
+  poem: "Day Dream 詩",
+  manufacturing_technical_file: "製造／Camp 計劃",
+  travel_plan: "旅行 uMap 動線",
+  philosophical_debate: "Day Dream 詩",
 };
 
 function normalizeDocumentMode(mode: string | undefined): FinalDocumentMode {
-  if (mode === "story" || mode === "poem" || mode === "manufacturing_technical_file" || mode === "travel_plan" || mode === "philosophical_debate") return mode;
-  if (mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("material")) return "manufacturing_technical_file";
-  if (mode?.includes("travel") || mode?.includes("social")) return "travel_plan";
-  if (mode?.includes("debate")) return "philosophical_debate";
-  return "story";
+  if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "manufacturing_technical_file";
+  if (mode === "travel_plan" || mode?.includes("travel") || mode?.includes("route") || mode?.includes("map") || mode?.includes("social")) return "travel_plan";
+  return "poem";
 }
 
 function chooseFinalDocumentMode(pet: Thronglet, exchanges: A2AExchange[]): FinalDocumentMode {
@@ -381,29 +379,29 @@ function modeActions(mode: FinalDocumentMode, args: { question: string; attribut
   const targetText = args.targets.length ? args.targets.join('、') : '兩個不同場域的人';
   const plans: Record<FinalDocumentMode, string[]> = {
     story: [
-      `方向 1：把「${args.question}」改寫成一段會被別人打斷的場景。測試方式：讓 ${targetText} 各自指出一個不可信的地方，留下被打斷後仍成立的部分。`,
-      `方向 2：用 ${attributePair} 做一個小型公開版本。測試方式：不要收集稱讚，只記錄誰願意補充、反對或接手。`,
-      `方向 3：把 [[${anchorOne}]] 與 [[${anchorTwo}]] 當作兩個入口。測試方式：追蹤它們分別帶來的合作、拒絕與成本。`,
+      `詩節 1：把「${args.question}」拆成一個借來的結構。${attributePair} 不回答問題，只改變它承重的方式。`,
+      `詩節 2：曾有人用 [[${anchorOne}]] 或 [[${anchorTwo}]] 做過別的用途；把那個用途挪到你的文字與物件之間，讓材料替你思考。`,
+      `詩節 3：不要把聯想收成結論。讓 ${targetText} 留下一個尚未解釋的洞，讓玩家帶走。`,
     ],
     poem: [
-      `方向 1：不要把詩寫成漂亮答案。測試方式：先列出 ${tagOne}、${tagTwo} 之間互相牴觸的句子。`,
-      `方向 2：每一段都要連到一個可驗證的人、材料或交換。測試方式：檢查 [[${anchorOne}]] 是否真的帶來行動，而不是只變成裝飾。`,
-      `方向 3：保留問題裡的荒謬感。測試方式：刪掉沒有下一步行動的意象。`,
+      `詩節 1：不要把詩寫成漂亮答案。先讓 ${tagOne} 與 ${tagTwo} 互相誤用，像工具被帶到錯的房間。`,
+      `詩節 2：[[${anchorOne}]] 曾經支撐另一種工作；現在把那個結構借給玩家的文字、物件與慾望。`,
+      `詩節 3：保留問題裡的荒謬感，讓跨領域挪用變成啟發，而不是教程。`,
     ],
     manufacturing_technical_file: [
-      `方向 1：把問題拆成輸入、輸出、失敗條件三欄。測試方式：先測 ${attributePair} 是否真的能被操作。`,
-      `方向 2：用 [[${anchorOne}]] 做第一個材料入口。測試方式：記錄它產生的限制，而不是只記來源名稱。`,
-      `方向 3：請 ${targetText} 測一次。測試方式：若他們無法重做或反駁，文件還不是技術文件。`,
+      `計劃 1：把問題拆成目標、材料、場地、人力、時間與失敗條件。第一輪只測 ${attributePair} 是否真的能被操作。`,
+      `計劃 2：用 [[${anchorOne}]] 做第一個材料或方法入口，整理成可製造的步驟；若是組織 camp，轉成招募、分工、共食、紀錄與收尾。`,
+      `計劃 3：請 ${targetText} 測一次。若他們無法重做、反駁或接手，文件還不是具有深度的製造／camp 方案。`,
     ],
     travel_plan: [
-      `方向 1：不要先排景點。測試方式：先排三次對話，分別問 ${targetText} 這個問題在哪裡失真。`,
-      `方向 2：把 [[${anchorOne}]] 當第一個節點。測試方式：每個節點都必須有邀請、交換或拒絕紀錄。`,
-      `方向 3：旅程結束時只保留能改變原問題的路線。測試方式：刪掉只增加名單的停靠點。`,
+      `路線 1：不要先排景點。先把 ${targetText} 變成訪問節點，標出每站要問的問題、可交換的技術與可能拒絕。`,
+      `路線 2：把 [[${anchorOne}]] 當第一個 uMap 節點，再沿著 [[${anchorTwo}]] 找 hacker space、曾發生過的活動、工作坊或社群場域。`,
+      `路線 3：輸出清單：節點名稱、城市／場域、為何停留、要拜訪誰、可帶去的物件、下一站連線。刪掉只增加名單但不改變原問題的停靠點。`,
     ],
     philosophical_debate: [
-      `方向 1：先拆開 ${attributePair}。測試方式：確認它們沒有被同一個成功答案吞掉。`,
-      `方向 2：讓 ${targetText} 分別反駁這個問題。測試方式：如果反駁都一樣，代表問題還不夠清楚。`,
-      `方向 3：用 [[${anchorOne}]] 和 [[${anchorTwo}]] 檢查承諾。測試方式：標出哪些會帶來收入、信任、依賴或新的負擔。`,
+      `詩節 1：先拆開 ${attributePair}，不要讓它們被同一個成功答案吞掉。`,
+      `詩節 2：讓 ${targetText} 的反駁變成聲部；如果聲音太像，就讓 [[${anchorOne}]] 切開它。`,
+      `詩節 3：用 [[${anchorTwo}]] 檢查承諾：哪些會帶來收入、信任、依賴或新的負擔。`,
     ],
   };
   return plans[mode];
@@ -702,7 +700,6 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
   const anchor = (index: number) => `[[${references[index % references.length].anchorText}]]`;
   const evidenceTargets = unique(petExchanges.map((exchange) => exchange.targetLabel)).join("、") || "NPC";
   const sourceAnchors = nutrients.length ? nutrients.slice(0, 3).map((_, index) => anchor(index)).join("、") : `${anchor(0)}、${anchor(1)}`;
-  const commonFrame = `【模式：${modeLabel}】原始問題是「${pet.question.text}」。壓縮證據：${petExchanges.length} 次交換、${pet.a2aState?.turnCount ?? 0} 回合，對象包含 ${evidenceTargets}；材料標籤是 ${tags}；參考入口是 ${sourceAnchors}。`;
   const [directionOne, directionTwo, directionThree] = modeActions(mode, {
     question: pet.question.text,
     attributes: attributeList,
@@ -711,36 +708,40 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
   });
   const compactClosing = `暫定回應：${responseDirection}`;
+  const manufacturingFrame = `【製造／Camp 計劃】這不是答案摘要，而是一份可被重做的方案。原始問題：「${pet.question.text}」。輸入：${tags}。協作者／測試者：${evidenceTargets}。參考入口：${sourceAnchors}。`;
+  const travelFrame = `【旅行 uMap 動線】這份清單把旅行路線、hacker space、曾發生過的活動與社群節點放在同一張想像地圖上。原始問題：「${pet.question.text}」。起點材料：${tags}。可訪問對象：${evidenceTargets}。`;
+  const poemFrame = `【Day Dream 詩】這首詩使用玩家提供的文字與物件，借用不同領域的結構做挪用。原始問題：「${pet.question.text}」。可借來的材料／聲部：${tags}。回聲來自：${sourceAnchors}。`;
   const bodyByMode: Record<FinalDocumentMode, string> = {
     story: [
-      commonFrame,
+      poemFrame,
       directionOne,
       directionTwo,
-      compactClosing,
+      directionThree,
     ].join("\n\n"),
     poem: [
-      commonFrame,
+      poemFrame,
       directionOne,
       directionTwo,
       directionThree,
     ].join("\n\n"),
     manufacturing_technical_file: [
-      commonFrame,
+      manufacturingFrame,
       directionOne,
       directionTwo,
       directionThree,
+      compactClosing,
     ].join("\n\n"),
     travel_plan: [
-      commonFrame,
+      travelFrame,
       directionOne,
       directionTwo,
       directionThree,
     ].join("\n\n"),
     philosophical_debate: [
-      commonFrame,
+      poemFrame,
       directionOne,
       directionTwo,
-      compactClosing,
+      directionThree,
     ].join("\n\n"),
   };
   return {

@@ -548,6 +548,7 @@ function App() {
     nonce: number;
   } | null>(null);
   const petRunawayDoneRef = useRef<string | null>(null);
+  const seenFinalDocumentIdsRef = useRef<Set<string>>(new Set());
 
   const activeDispatchPets = useMemo(
     () => dispatchedPets.filter((pet) => pet.status === "active"),
@@ -1760,8 +1761,26 @@ function App() {
   useEffect(() => {
     if (!selectedPet || !simSnapshot) return;
     const latestPet = simSnapshot.thronglets.find((pet) => pet.id === selectedPet.id);
-    if (latestPet && latestPet !== selectedPet) setSelectedPet(latestPet);
+    if (!latestPet) {
+      setSelectedPet(null);
+      return;
+    }
+    if (latestPet !== selectedPet) setSelectedPet(latestPet);
   }, [selectedPet, simSnapshot]);
+
+  useEffect(() => {
+    if (!simSnapshot) return;
+    const seen = seenFinalDocumentIdsRef.current;
+    const newest = simSnapshot.finalDocuments.find((document) => !seen.has(document.id));
+    for (const document of simSnapshot.finalDocuments) seen.add(document.id);
+    if (!newest) return;
+    const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
+    if (!pet) return;
+    setSelectedPet(pet);
+    setSelectedDispatchPet(null);
+    setSelectedNpcInfo(null);
+    setIsSelectedPetPanelExpanded(true);
+  }, [simSnapshot]);
 
   useEffect(() => {
     if (!selectedDispatchPet) return;
@@ -1805,6 +1824,29 @@ function App() {
         })),
       ]
     : [];
+
+  function closeSelectedPetPanel(): void {
+    if (selectedPetFinalDocument && selectedPet) {
+      officeState.characters.delete(selectedPet.characterId);
+      setSimSnapshot((current) => {
+        if (!current) return current;
+        const nextThronglets = current.thronglets.filter((pet) => pet.id !== selectedPet.id);
+        const nextDocuments = current.finalDocuments.filter((document) => document.petId !== selectedPet.id);
+        if (nextThronglets.length === 0 && nextDocuments.length === 0) return null;
+        return {
+          ...current,
+          thronglets: nextThronglets,
+          finalDocuments: nextDocuments,
+          a2aExchanges: current.a2aExchanges.filter((exchange) => exchange.petId !== selectedPet.id),
+          throngs: current.throngs.filter((throng) => !throng.memberIds.includes(selectedPet.id)),
+        };
+      });
+    }
+    setSelectedPet(null);
+    setIsSelectedPetPanelExpanded(false);
+    setPetChatDraft("");
+    setPetChatReply(null);
+  }
 
   function handlePetLocalChat(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
@@ -2574,27 +2616,24 @@ function App() {
             <section
               className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
                 isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""
-              }`}
+              } ${selectedPetFinalDocument ? "final-document-window" : ""}`}
               data-no-mobile-drag="true"
             >
               <div className="question-response-window-actions">
-                <button
-                  className="question-response-expand pbs-frame-action"
-                  type="button"
-                  onClick={() => setIsSelectedPetPanelExpanded((expanded) => !expanded)}
-                  aria-label={isSelectedPetPanelExpanded ? "Minimize pet panel" : "Maximize pet panel"}
-                >
-                  {isSelectedPetPanelExpanded ? "↙" : "⤢"}
-                </button>
+                {!selectedPetFinalDocument && (
+                  <button
+                    className="question-response-expand pbs-frame-action"
+                    type="button"
+                    onClick={() => setIsSelectedPetPanelExpanded((expanded) => !expanded)}
+                    aria-label={isSelectedPetPanelExpanded ? "Minimize pet panel" : "Maximize pet panel"}
+                  >
+                    {isSelectedPetPanelExpanded ? "↙" : "⤢"}
+                  </button>
+                )}
                 <button
                   className="question-response-close pbs-frame-action"
                   type="button"
-                  onClick={() => {
-                    setSelectedPet(null);
-                    setIsSelectedPetPanelExpanded(false);
-                    setPetChatReply(null);
-                    setPetChatDraft("");
-                  }}
+                  onClick={closeSelectedPetPanel}
                   aria-label={t(selectedLanguage, "common.close")}
                 >
                   ×

@@ -431,10 +431,11 @@ test('final documents treat supplied URLs as sources, not answers', () => {
     },
   });
   const document = next.finalDocuments[0];
-  assert.ok(document.body.includes('最好的回應'));
+  assert.ok(['manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
   assert.ok(!document.body.includes('最強的線索'));
   assert.ok(!document.body.includes('shihweichieh、com'));
-  assert.ok(document.body.includes('不是把來源名稱當答案'));
+  assert.ok(document.body.includes('原始問題'));
+  assert.ok(document.body.includes('Day Dream') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
 });
 
 test('compact final appears in demo window with concise body and log', () => {
@@ -469,9 +470,10 @@ test('compact final appears in demo window with concise body and log', () => {
   const document = snapshot.finalDocuments[0];
   assert.ok(document, 'expected final document by tick 75');
   assert.ok(document.tick >= 28 && document.tick <= 75);
-  assert.ok(document.body.split('\n\n').length <= 4);
-  assert.ok(document.body.includes('方向 1'));
-  assert.ok(document.body.includes('測試方式'));
+  assert.ok(['manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
+  assert.ok(document.body.split('\n\n').length <= 5);
+  assert.ok(/計劃 1|路線 1|詩節 1/.test(document.body));
+  assert.ok(document.body.includes('製造／Camp') || document.body.includes('旅行 uMap') || document.body.includes('Day Dream'));
   assert.ok(!document.body.includes('夢境、修補、工具'));
   assert.ok(!document.references.every((reference) => ['夢境', '修補', '工具'].includes(reference.anchorText)));
   assert.ok(document.reviewLog.length <= 6);
