@@ -2771,12 +2771,13 @@ function App() {
             </div>
             <div className="world-split-actions">
               <button
+                className="world-split-expand"
                 type="button"
                 onClick={() => setIsSplitExpanded((expanded) => !expanded)}
               >
                 {isSplitExpanded ? "↙" : "⤢"}
               </button>
-              <button type="button" onClick={closeSplitPanel}>
+              <button className="world-split-close" type="button" onClick={closeSplitPanel}>
                 ✕
               </button>
             </div>

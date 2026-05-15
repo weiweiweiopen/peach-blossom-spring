@@ -5254,3 +5254,76 @@
     line-height: 1.08 !important;
   }
 }
+
+/* Mobile wiki/info surfaces overlap the map like NPC dialogue instead of
+   splitting the viewport. Desktop split behavior remains unchanged. */
+@media (max-width: 900px), (pointer: coarse) {
+  .game-world-layer.world-split-active:not(.world-split-expanded),
+  .game-world-layer.world-split-expanded {
+    width: 100vw !important;
+    height: 100dvh !important;
+  }
+
+  .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel,
+  .world-split-panel,
+  .world-split-panel.is-expanded {
+    position: fixed !important;
+    inset: auto 8px max(8px, var(--safe-bottom)) 8px !important;
+    z-index: var(--z-layer-dialogue-front) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: auto !important;
+    height: min(86dvh, 680px) !important;
+    max-width: none !important;
+    max-height: calc(100dvh - max(16px, var(--safe-top)) - max(16px, var(--safe-bottom))) !important;
+    overflow: hidden !important;
+    padding: 10px !important;
+    border: 4px solid #000 !important;
+    box-shadow: 4px 4px 0 var(--palette-blue) !important;
+  }
+
+  .world-split-toolbar {
+    flex: 0 0 auto;
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+
+  .world-split-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 10px !important;
+  }
+
+  .world-split-expand {
+    display: none !important;
+  }
+
+  .world-split-close {
+    width: 50px !important;
+    min-width: 50px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+  }
+
+  .world-split-iframe,
+  .world-split-panel.is-expanded .world-split-iframe {
+    flex: 1 1 auto;
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+
+  .question-response-panel.info-card.rpg-message-frame {
+    position: fixed !important;
+    inset: auto 8px max(8px, var(--safe-bottom)) 8px !important;
+    z-index: var(--z-layer-dialogue-front) !important;
+    width: auto !important;
+    height: min(86dvh, 680px) !important;
+    max-height: calc(100dvh - max(16px, var(--safe-top)) - max(16px, var(--safe-bottom))) !important;
+    overflow: auto !important;
+    padding: 14px !important;
+    box-shadow: 4px 4px 0 var(--palette-blue) !important;
+  }
+}
