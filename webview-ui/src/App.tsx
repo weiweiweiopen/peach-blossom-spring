@@ -42,7 +42,6 @@ import {
   createPresence,
   encounterIdForPlayers,
   getOrCreatePlayerId,
-  jitsiUrlForEncounter,
   type MultiplayerChatMessage,
   type MultiplayerConfig,
   type MultiplayerPresence,
@@ -75,7 +74,6 @@ import {
 } from "./simulation/engine.js";
 import { scorePromptResonance } from "./simulation/resonance.js";
 import type { FinalDocument, SimSnapshot, Thronglet } from "./simulation/types.js";
-import { shouldEnableVideoEncounter } from "./videoEncounter.js";
 import { vscode } from "./vscodeApi.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
@@ -160,7 +158,6 @@ type SplitPanel =
   | { kind: "archiveMap" };
 
 type EncounterPanel = {
-  kind: "video" | "chat";
   partner: MultiplayerPresence;
   encounterId: string;
 };
@@ -506,11 +503,8 @@ function App() {
     null,
   );
   const multiplayerClientRef = useRef<MultiplayerPresenceClient | null>(null);
+  const chatLogRef = useRef<HTMLDivElement | null>(null);
   const [encounterPanel, setEncounterPanel] = useState<EncounterPanel | null>(null);
-  const [videoPermissionStatus, setVideoPermissionStatus] = useState<
-    "idle" | "requesting" | "granted" | "denied" | "unsupported"
-  >("idle");
-  const [videoPermissionError, setVideoPermissionError] = useState("");
   const [chatMessages, setChatMessages] = useState<MultiplayerChatMessage[]>([]);
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
@@ -977,11 +971,10 @@ function App() {
   ]);
 
   const openEncounterPanel = useCallback(
-    (kind: "video" | "chat", partner: MultiplayerPresence) => {
+    (partner: MultiplayerPresence) => {
       if (!multiplayerConfig) return;
       const localPlayerId = getOrCreatePlayerId();
       setEncounterPanel({
-        kind,
         partner,
         encounterId: encounterIdForPlayers(multiplayerConfig.room, localPlayerId, partner.playerId),
       });
@@ -990,39 +983,8 @@ function App() {
     [multiplayerConfig],
   );
 
-  useEffect(() => {
-    setVideoPermissionStatus("idle");
-    setVideoPermissionError("");
-  }, [encounterPanel?.encounterId, encounterPanel?.kind]);
-
-  const authorizeVideoChat = useCallback(async () => {
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setVideoPermissionStatus("unsupported");
-      setVideoPermissionError("This browser cannot request camera and microphone access here.");
-      return;
-    }
-
-    setVideoPermissionStatus("requesting");
-    setVideoPermissionError("");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      stream.getTracks().forEach((track) => track.stop());
-      setVideoPermissionStatus("granted");
-    } catch (error) {
-      setVideoPermissionStatus("denied");
-      setVideoPermissionError(
-        error instanceof Error
-          ? error.message
-          : "Camera or microphone permission was not granted.",
-      );
-    }
-  }, []);
-
   const sendChatMessage = useCallback(() => {
-    if (!multiplayerConfig || !playerProfile || !encounterPanel || encounterPanel.kind !== "chat") return;
+    if (!multiplayerConfig || !playerProfile || !encounterPanel) return;
     const text = chatDraft.trim();
     if (!text) return;
     const senderId = getOrCreatePlayerId();
@@ -1039,6 +1001,13 @@ function App() {
     setChatMessages((current) => [...current.slice(-80), message]);
     setChatDraft("");
   }, [chatDraft, encounterPanel, multiplayerConfig, playerProfile]);
+
+  useEffect(() => {
+    if (!encounterPanel) return;
+    const log = chatLogRef.current;
+    if (!log) return;
+    log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
+  }, [chatMessages, encounterPanel]);
 
   // 60 Hz render tick: forces React overlays (name tags, "Press Space" prompt,
   // archive-tree highlight, etc.) to recompute from the latest character.x/y
@@ -1820,11 +1789,8 @@ function App() {
   const activeEncounterMessages = encounterPanel
     ? chatMessages.filter((message) => message.encounterId === encounterPanel.encounterId)
     : [];
+  const localMultiplayerPlayerId = multiplayerConfig ? getOrCreatePlayerId() : "";
   const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
-  const activeEncounterJitsiUrl =
-    encounterPanel?.kind === "video" && multiplayerConfig
-      ? jitsiUrlForEncounter(multiplayerConfig.room, getOrCreatePlayerId(), encounterPanel.partner.playerId)
-      : null;
   const selectedPetFinalDocument = selectedPet
     ? (simSnapshot?.finalDocuments.find((document) => document.petId === selectedPet.id) ?? null)
     : null;
@@ -2124,8 +2090,6 @@ function App() {
               {tag.name}
             </div>
           ))}
-
-          {shouldEnableVideoEncounter() && <></>}
 
           {appMode === "interactive" &&
             isNearAbao &&
@@ -2952,13 +2916,10 @@ function App() {
 
       {playerProfile && multiplayerConfig && videoEncounter && !encounterPanel && (
         <div className="video-encounter-card pbs-encounter-card" role="dialog" aria-live="polite">
-          <p>你遇見 {videoEncounter.displayName}，choose an encounter:</p>
+          <p>你遇見 {videoEncounter.displayName}</p>
           <div className="video-encounter-actions pbs-encounter-actions">
-            <button type="button" onClick={() => openEncounterPanel("video", videoEncounter)}>
-              Start video chat
-            </button>
-            <button type="button" onClick={() => openEncounterPanel("chat", videoEncounter)}>
-              Text chat only
+            <button type="button" onClick={() => openEncounterPanel(videoEncounter)}>
+              文字交談
             </button>
             <button
               type="button"
@@ -2977,10 +2938,8 @@ function App() {
         <div className="pbs-encounter-panel" role="dialog" aria-modal="false" aria-labelledby="pbs-encounter-title">
           <div className="pbs-encounter-panel-header">
             <div>
-              <p className="pbs-encounter-kicker">Multiplayer encounter</p>
-              <h2 id="pbs-encounter-title">
-                {encounterPanel.kind === "video" ? "Video chat" : "Text chat"} · {encounterPanel.partner.displayName}
-              </h2>
+              <p className="pbs-encounter-kicker">Multiplayer</p>
+              <h2 id="pbs-encounter-title">{encounterPanel.partner.displayName}</h2>
             </div>
             <button
               type="button"
@@ -2994,78 +2953,42 @@ function App() {
               ×
             </button>
           </div>
-          <p className="pbs-encounter-status">
-            Room {multiplayerConfig.room} · Encounter {encounterPanel.encounterId}
-          </p>
-          {encounterPanel.kind === "video" ? (
-            <div className="pbs-video-frame-wrap">
-              {videoPermissionStatus === "granted" && activeEncounterJitsiUrl ? (
-                <iframe
-                  key={encounterPanel.encounterId}
-                  title={`Jitsi video chat with ${encounterPanel.partner.displayName}`}
-                  src={activeEncounterJitsiUrl}
-                  allow="camera *; microphone *; fullscreen *; display-capture *; autoplay *"
-                  allowFullScreen
-                  referrerPolicy="no-referrer"
-                />
+          <div className="pbs-chat-panel">
+            <div className="pbs-chat-log" ref={chatLogRef} aria-live="polite">
+              {activeEncounterMessages.length === 0 ? (
+                <p className="pbs-chat-empty">還沒有訊息。</p>
               ) : (
-                <div className="pbs-video-permission">
-                  <p>請先同意授權視訊與麥克風，才能開啟 video chat。</p>
-                  <button
-                    type="button"
-                    onClick={() => void authorizeVideoChat()}
-                    disabled={videoPermissionStatus === "requesting"}
-                  >
-                    {videoPermissionStatus === "requesting"
-                      ? "Requesting permission..."
-                      : "同意授權視訊 / Allow camera & mic"}
-                  </button>
-                  {videoPermissionError && (
-                    <p className="pbs-encounter-note">{videoPermissionError}</p>
-                  )}
-                </div>
-              )}
-              <p className="pbs-encounter-note">
-                If this public Jitsi server blocks iframe embedding in your browser, use Text chat only; PBS chat does not depend on Jitsi.
-              </p>
-            </div>
-          ) : (
-            <div className="pbs-chat-panel">
-              <div className="pbs-chat-log" aria-live="polite">
-                {activeEncounterMessages.length === 0 ? (
-                  <p className="pbs-chat-empty">No messages yet. Say hello without opening camera.</p>
-                ) : (
-                  activeEncounterMessages.map((message) => (
+                activeEncounterMessages.map((message) => {
+                  const isLocal = message.senderId === localMultiplayerPlayerId;
+                  return (
                     <div
                       key={message.id}
-                      className={`pbs-chat-message ${message.senderId === getOrCreatePlayerId() ? "is-local" : ""}`}
+                      className={`pbs-chat-message ${isLocal ? "is-local" : "is-remote"}`}
+                      aria-label={isLocal ? "你的訊息" : `${message.senderName} 的訊息`}
                     >
-                      <span className="pbs-chat-meta">
-                        {message.senderName} · {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </span>
                       <span>{message.text}</span>
                     </div>
-                  ))
-                )}
-              </div>
-              <form
-                className="pbs-chat-form"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  sendChatMessage();
-                }}
-              >
-                <input
-                  type="text"
-                  value={chatDraft}
-                  onChange={(event) => setChatDraft(event.target.value)}
-                  maxLength={500}
-                  placeholder="Type a PBS message..."
-                />
-                <button type="submit">Send</button>
-              </form>
+                  );
+                })
+              )}
             </div>
-          )}
+            <form
+              className="pbs-chat-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                sendChatMessage();
+              }}
+            >
+              <input
+                type="text"
+                value={chatDraft}
+                onChange={(event) => setChatDraft(event.target.value)}
+                maxLength={500}
+                placeholder="輸入訊息..."
+              />
+              <button type="submit">送出</button>
+            </form>
+          </div>
         </div>
       )}
 
