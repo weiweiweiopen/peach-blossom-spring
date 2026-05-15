@@ -3572,9 +3572,9 @@
 
 @media (max-width: 700px) {
   .pbs-encounter-panel {
-    inset: auto 6px 68px 6px;
+    inset: max(8px, var(--safe-top)) 6px max(86px, calc(var(--safe-bottom) + 72px)) 6px;
     width: auto;
-    height: 56dvh;
+    height: auto;
     padding: 8px;
   }
 
