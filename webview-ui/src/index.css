@@ -4068,14 +4068,15 @@
 }
 
 .question-response-window-actions {
-  position: sticky;
-  top: 0;
+  position: absolute;
+  top: clamp(18px, 2.4vw, 32px);
+  right: clamp(18px, 2.4vw, 32px);
   z-index: 4;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-bottom: 12px;
-  background: #fff;
+  margin: 0;
+  background: transparent;
 }
 
 .question-response-window-actions .pbs-frame-action {
@@ -4096,6 +4097,16 @@
   width: 50vw !important;
   max-height: 100dvh !important;
   padding: clamp(26px, 3vw, 42px) !important;
+}
+
+.question-response-panel .pet-detail-header {
+  margin-top: 0 !important;
+  padding-right: clamp(118px, 10vw, 180px);
+  align-items: flex-start;
+}
+
+.question-response-panel .pet-detail-header .pet-detail-kicker {
+  margin-top: 0 !important;
 }
 
 .final-document-panel {

@@ -265,12 +265,12 @@ const EXCHANGE_TICK_MIN = 14;
 const EXCHANGE_TICK_SPAN = 16;
 
 const referencePool = [
-  { label: "Hackteria", url: "https://hackteria.org", anchorText: "夢境" },
-  { label: "Lifepatch", url: "https://lifepatch.org", anchorText: "修補" },
-  { label: "Fabricademy", url: "https://fabricademy.org", anchorText: "織法" },
-  { label: "Fablab Taipei", url: "https://www.fablabtaipei.tw", anchorText: "工具" },
-  { label: "Green FabLab", url: "https://greenfablab.org", anchorText: "太陽" },
-  { label: "Non-Governmental Matters", url: "https://www.nonmatter.tw", anchorText: "桃花源" },
+  { label: "Hackteria", url: "https://hackteria.org", anchorText: "Hackteria" },
+  { label: "Lifepatch", url: "https://lifepatch.org", anchorText: "Lifepatch" },
+  { label: "Fabricademy", url: "https://fabricademy.org", anchorText: "Fabricademy" },
+  { label: "Fablab Taipei", url: "https://www.fablabtaipei.tw", anchorText: "Fablab Taipei" },
+  { label: "Green FabLab", url: "https://greenfablab.org", anchorText: "Green FabLab" },
+  { label: "Non-Governmental Matters", url: "https://www.nonmatter.tw", anchorText: "NGM" },
 ];
 
 const finalModeLabels: Record<FinalDocumentMode, string> = {
@@ -349,6 +349,64 @@ function evidenceLabel(text: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 120);
+}
+
+function anchorToken(text: string): string {
+  return text
+    .replace(/https?:\/\/\S+/gi, '')
+    .replace(/[^\p{L}\p{N}\s_-]+/gu, ' ')
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter((word) => word.length >= 2 && !/^(source|wiki|com|www|https?|the|and|for|with)$/i.test(word))
+    .sort((a, b) => b.length - a.length)[0]
+    ?.slice(0, 18) || 'source';
+}
+
+function referenceAnchor(ref: { label: string; url: string; anchorText?: string }, index: number, signals: string[]): string {
+  const signal = signals[index % Math.max(1, signals.length)];
+  if (signal && !/^(夢境|修補|工具)$/i.test(signal)) return compactAnchor(signal);
+  return compactAnchor(ref.anchorText ?? anchorToken(ref.label) ?? domainOf(ref.url) ?? `source-${index + 1}`);
+}
+
+function compactAnchor(text: string): string {
+  return text.replace(/\s+/g, ' ').trim().slice(0, 18) || 'source';
+}
+
+function modeActions(mode: FinalDocumentMode, args: { question: string; attributes: string[]; tags: string[]; anchors: string[]; targets: string[] }): string[] {
+  const attributePair = args.attributes.slice(0, 2).join('／') || args.tags.slice(0, 2).join('／') || '關係／資源';
+  const tagOne = args.tags[0] ?? args.attributes[0] ?? '問題';
+  const tagTwo = args.tags[1] ?? args.attributes[1] ?? '回應';
+  const anchorOne = args.anchors[0] ?? tagOne;
+  const anchorTwo = args.anchors[1] ?? tagTwo;
+  const targetText = args.targets.length ? args.targets.join('、') : '兩個不同場域的人';
+  const plans: Record<FinalDocumentMode, string[]> = {
+    story: [
+      `方向 1：把「${args.question}」改寫成一段會被別人打斷的場景。測試方式：讓 ${targetText} 各自指出一個不可信的地方，留下被打斷後仍成立的部分。`,
+      `方向 2：用 ${attributePair} 做一個小型公開版本。測試方式：不要收集稱讚，只記錄誰願意補充、反對或接手。`,
+      `方向 3：把 [[${anchorOne}]] 與 [[${anchorTwo}]] 當作兩個入口。測試方式：追蹤它們分別帶來的合作、拒絕與成本。`,
+    ],
+    poem: [
+      `方向 1：不要把詩寫成漂亮答案。測試方式：先列出 ${tagOne}、${tagTwo} 之間互相牴觸的句子。`,
+      `方向 2：每一段都要連到一個可驗證的人、材料或交換。測試方式：檢查 [[${anchorOne}]] 是否真的帶來行動，而不是只變成裝飾。`,
+      `方向 3：保留問題裡的荒謬感。測試方式：刪掉沒有下一步行動的意象。`,
+    ],
+    manufacturing_technical_file: [
+      `方向 1：把問題拆成輸入、輸出、失敗條件三欄。測試方式：先測 ${attributePair} 是否真的能被操作。`,
+      `方向 2：用 [[${anchorOne}]] 做第一個材料入口。測試方式：記錄它產生的限制，而不是只記來源名稱。`,
+      `方向 3：請 ${targetText} 測一次。測試方式：若他們無法重做或反駁，文件還不是技術文件。`,
+    ],
+    travel_plan: [
+      `方向 1：不要先排景點。測試方式：先排三次對話，分別問 ${targetText} 這個問題在哪裡失真。`,
+      `方向 2：把 [[${anchorOne}]] 當第一個節點。測試方式：每個節點都必須有邀請、交換或拒絕紀錄。`,
+      `方向 3：旅程結束時只保留能改變原問題的路線。測試方式：刪掉只增加名單的停靠點。`,
+    ],
+    philosophical_debate: [
+      `方向 1：先拆開 ${attributePair}。測試方式：確認它們沒有被同一個成功答案吞掉。`,
+      `方向 2：讓 ${targetText} 分別反駁這個問題。測試方式：如果反駁都一樣，代表問題還不夠清楚。`,
+      `方向 3：用 [[${anchorOne}]] 和 [[${anchorTwo}]] 檢查承諾。測試方式：標出哪些會帶來收入、信任、依賴或新的負擔。`,
+    ],
+  };
+  return plans[mode];
 }
 
 function bestResponseDirection(pet: Thronglet, exchanges: A2AExchange[]): string {
@@ -620,16 +678,18 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
       ].map((ref) => [ref.url, ref]),
     ).values(),
   ).slice(0, 6);
-  const references = (refs.length > 0 ? refs : referencePool.slice(0, 3)).map((ref, index) => ({
-    ...ref,
-    anchorText: ref.anchorText ?? ["夢境", "修補", "工具", "太陽", "織法", "桃花源"][index % 6],
-  }));
   const mode = chooseFinalDocumentMode(pet, petExchanges);
   const modeLabel = finalModeLabels[mode];
   const maturation = pet.problemMaturation ?? deriveProblemMaturationProfile(pet, petExchanges, tick);
-  const attributes = maturation.mentaleseAttributes.join("、") || pet.personaJson?.mentaleseBias.join("、") || "慾望、資源、矛盾";
+  const attributeList = maturation.mentaleseAttributes.length ? maturation.mentaleseAttributes : pet.personaJson?.mentaleseBias ?? ["慾望", "資源", "矛盾"];
+  const materialTags = maturation.materialSignals.length ? maturation.materialSignals : pet.knowledgeJson?.tags ?? splitTags(pet.question.text);
+  const anchorSignals = unique([...materialTags, ...attributeList, ...refs.map((ref) => anchorToken(ref.label))]).filter((item) => !/^(夢境|修補|工具)$/i.test(item));
+  const references = (refs.length > 0 ? refs : referencePool.slice(0, 3)).map((ref, index) => ({
+    ...ref,
+    anchorText: referenceAnchor(ref, index, anchorSignals),
+  }));
   const responseDirection = bestResponseDirection(pet, petExchanges);
-  const tags = maturation.materialSignals.slice(0, 5).join("、") || "尚未命名的材料";
+  const tags = materialTags.slice(0, 5).join("、") || "尚未命名的材料";
   const log: FinalDocumentLogEntry[] = petExchanges.flatMap((exchange) =>
     exchange.turns.map((turn) => ({
       tick: exchange.tick,
@@ -643,9 +703,13 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
   const evidenceTargets = unique(petExchanges.map((exchange) => exchange.targetLabel)).join("、") || "NPC";
   const sourceAnchors = nutrients.length ? nutrients.slice(0, 3).map((_, index) => anchor(index)).join("、") : `${anchor(0)}、${anchor(1)}`;
   const commonFrame = `【模式：${modeLabel}】原始問題是「${pet.question.text}」。壓縮證據：${petExchanges.length} 次交換、${pet.a2aState?.turnCount ?? 0} 回合，對象包含 ${evidenceTargets}；材料標籤是 ${tags}；參考入口是 ${sourceAnchors}。`;
-  const directionOne = `方向 1：做一個「反成功學交換台」。把問題改成一張交換清單：你能提供什麼、誰願意回應、哪一種名聲會傷害你。測試方式：7 天內向 3 個人提出一個可交換小任務；若沒有人願意回應，這個方向就被反駁。`;
-  const directionTwo = `方向 2：做一個「小型可見度原型」。用 ${attributes.split("、").slice(0, 2).join("／") || "慾望／資源"} 設計一個公開作品、工具或服務，不追求爆紅，只追蹤誰真的使用。測試方式：發布最小版本並記錄 5 個真實反饋；若反饋只稱讚風格、沒有產生行動，就必須重做。`;
-  const directionThree = `方向 3：做一份「可被反駁的資源地圖」。把 ${sourceAnchors} 當入口，但不要把來源名當答案；列出能帶來收入、信任、合作的節點。測試方式：每個節點都要有下一步聯絡或實驗；若只剩名人、網址或幻想，該節點刪除。`;
+  const [directionOne, directionTwo, directionThree] = modeActions(mode, {
+    question: pet.question.text,
+    attributes: attributeList,
+    tags: materialTags,
+    anchors: references.map((reference) => reference.anchorText),
+    targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
+  });
   const compactClosing = `暫定回應：${responseDirection}`;
   const bodyByMode: Record<FinalDocumentMode, string> = {
     story: [

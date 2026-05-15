@@ -472,6 +472,8 @@ test('compact final appears in demo window with concise body and log', () => {
   assert.ok(document.body.split('\n\n').length <= 4);
   assert.ok(document.body.includes('方向 1'));
   assert.ok(document.body.includes('測試方式'));
+  assert.ok(!document.body.includes('夢境、修補、工具'));
+  assert.ok(!document.references.every((reference) => ['夢境', '修補', '工具'].includes(reference.anchorText)));
   assert.ok(document.reviewLog.length <= 6);
   assert.ok(new Set(document.sourceExchangeIds).size >= 2);
 });
