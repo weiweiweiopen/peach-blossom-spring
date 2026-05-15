@@ -1,0 +1,120 @@
+{
+  "generatedFrom": "src/pets/homePetVisuals.ts",
+  "frame": {
+    "width": 16,
+    "height": 32,
+    "columns": 7,
+    "rows": 3,
+    "rowOrder": [
+      "down",
+      "up",
+      "right"
+    ]
+  },
+  "roles": [
+    {
+      "slug": "artist",
+      "label": "artist",
+      "shape": "round",
+      "accessory": "ears"
+    },
+    {
+      "slug": "scientist",
+      "label": "scientist",
+      "shape": "tower",
+      "accessory": "antenna"
+    },
+    {
+      "slug": "engineer",
+      "label": "engineer",
+      "shape": "squat",
+      "accessory": "cap"
+    },
+    {
+      "slug": "cook",
+      "label": "cook",
+      "shape": "mushroom",
+      "accessory": "halo"
+    },
+    {
+      "slug": "dancer",
+      "label": "dancer",
+      "shape": "bird",
+      "accessory": "tail"
+    },
+    {
+      "slug": "workshopologist",
+      "label": "workshopologist",
+      "shape": "tall",
+      "accessory": "sprout"
+    },
+    {
+      "slug": "drinker",
+      "label": "drinker",
+      "shape": "drop",
+      "accessory": "cap"
+    },
+    {
+      "slug": "socialist",
+      "label": "socialist",
+      "shape": "round",
+      "accessory": "tail"
+    },
+    {
+      "slug": "professor",
+      "label": "professor",
+      "shape": "tall",
+      "accessory": "halo"
+    },
+    {
+      "slug": "fire-maker",
+      "label": "fire maker",
+      "shape": "drop",
+      "accessory": "horns"
+    },
+    {
+      "slug": "tailor",
+      "label": "tailor",
+      "shape": "squat",
+      "accessory": "sprout"
+    },
+    {
+      "slug": "musician",
+      "label": "musician",
+      "shape": "bird",
+      "accessory": "antenna"
+    },
+    {
+      "slug": "shaman",
+      "label": "shaman",
+      "shape": "blob",
+      "accessory": "halo"
+    },
+    {
+      "slug": "bubble-maker",
+      "label": "bubble maker",
+      "shape": "round",
+      "accessory": "antenna"
+    },
+    {
+      "slug": "architect",
+      "label": "architect",
+      "shape": "tower",
+      "accessory": "cap"
+    },
+    {
+      "slug": "herbalist",
+      "label": "herbalist",
+      "shape": "tall",
+      "accessory": "tail"
+    }
+  ],
+  "expressions": [
+    "idle",
+    "social",
+    "happy",
+    "curious",
+    "stressed",
+    "sleepy"
+  ]
+}

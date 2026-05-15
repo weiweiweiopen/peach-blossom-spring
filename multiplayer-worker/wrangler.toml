@@ -1,0 +1,11 @@
+name = "peach-blossom-spring-multiplayer"
+main = "src/index.ts"
+compatibility_date = "2026-05-12"
+
+[[durable_objects.bindings]]
+name = "ROOM_PRESENCE"
+class_name = "RoomPresence"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RoomPresence"]

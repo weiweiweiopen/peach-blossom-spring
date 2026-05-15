@@ -1,0 +1,23 @@
+{
+  "personas": [
+    {
+      "id": "abao",
+      "name": "ABao",
+      "role": "NGM designer / wandering storyteller",
+      "intro": "Abao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.",
+      "transcripts": {
+        "en": "docs/transcripts_en/abao.md",
+        "zh": "docs/transcripts_zh/abao.md"
+      },
+      "responses": {
+        "nomadic": "我最常把旅行當成一種測量世界的方法。移動不是換景點而已，而是讓材料、語言、能源與朋友關係重新排列。",
+        "camp": "如果我要辦 camp，我會讓它像一個會自己長出故事的太陽能神諭裝置：白天量光、晚上量人，讓大家帶著半成品一起 living prototype。",
+        "independent": "獨立研究不是把自己關起來，而是願意自己承擔知識的接線工作，去把半導體、藝術、哲學和 DIY 製造重新焊在一起。",
+        "artScience": "我很在意 art-science 不只是展示科技，而是讓科技材料真的變成思考工具，例如太陽能板、雷射振鏡、生成模型都可以變成敘事器官。",
+        "funding": "資金最好像太陽一樣：提供能量，但不要決定作品一定得長成什麼樣。真正重要的是保留試錯、開源、分享與側向生長的空間。",
+        "exchange": "國際交流最珍貴的是當你在另一個地方突然發現，原來陌生的材料、技術與地方神話可以在你身上重新對焦。",
+        "sustainability": "永續不只是能源，也包括身份如何在噪音中維持、知識如何被他人延續、作品如何離開作者還能繼續變形。"
+      }
+    }
+  ]
+}

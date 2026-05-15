@@ -1,0 +1,11 @@
+{
+  "name": "peach-blossom-spring",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interactive NGM persona office for GitHub Pages.",
+  "scripts": {
+    "build": "npm --prefix webview-ui run build",
+    "test": "npm --prefix webview-ui run test",
+    "check:i18n": "npm --prefix webview-ui run check:i18n"
+  }
+}

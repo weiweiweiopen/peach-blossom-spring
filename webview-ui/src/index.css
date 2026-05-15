@@ -1,0 +1,4152 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "FS Pixel Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/FSPixelSansUnicode-Regular.ttf") format("truetype");
+}
+
+/*
+ * CJK glyphs in the pixel font render visually larger than its Latin glyphs
+ * (the Han/Hangul/Hiragana grids are denser than the 5×7 Latin grid).
+ * Map CJK Unicode ranges to system CJK fonts and shrink them with size-adjust
+ * so they appear at the same x-height as the pixel Latin glyphs.
+ *
+ * size-adjust: 78%   → roughly matches the FS Pixel Sans cap-height visually.
+ * Tweak this number if Chinese still looks larger or smaller than English.
+ */
+@font-face {
+  font-family: "CJK Pixel Match";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 78%;
+  unicode-range:
+    U+3000-303F, U+3040-309F, U+30A0-30FF, U+3100-312F, U+3130-318F,
+    U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7AF, U+F900-FAFF,
+    U+FE30-FE4F, U+FF00-FFEF;
+  src:
+    local("PingFang TC"), local("PingFang SC"), local("Hiragino Sans"),
+    local("Hiragino Sans GB"), local("Microsoft JhengHei"),
+    local("Microsoft YaHei"), local("Noto Sans CJK TC"),
+    local("Noto Sans CJK SC"), local("Source Han Sans TC"),
+    local("Source Han Sans SC");
+}
+
+:root {
+  /* Core palette */
+  --palette-yellow: #fcf46b;
+  --palette-blue: #69c3aa;
+  --palette-silver: #bac3d9;
+  --palette-pink: #ffd4ff;
+  --palette-cream: #f9e9c2;
+  --palette-ink: #315b63;
+  --color-bg: var(--palette-cream);
+  --color-bg-dark: var(--palette-silver);
+  --color-bg-thumb: var(--palette-silver);
+  --color-border: var(--palette-blue);
+  --color-accent: var(--palette-blue);
+  --color-accent-bright: var(--palette-yellow);
+
+  /* Text */
+  --color-text: var(--palette-ink);
+  --color-text-muted: color-mix(
+    in srgb,
+    var(--palette-ink) 68%,
+    var(--palette-silver) 32%
+  );
+
+  /* Buttons */
+  --color-btn-bg: var(--palette-pink);
+  --color-btn-hover: var(--palette-yellow);
+  --color-active-bg: var(--palette-blue);
+
+  /* Semantic */
+  --color-reset-text: #ecc;
+  --color-danger: #d14249;
+  --color-warning: #ff8d14;
+
+  /* Status */
+  --color-status-permission: #cca700;
+  --color-status-active: #3794ff;
+  --color-status-success: #89d185;
+  --color-status-error: var(--color-danger);
+
+  /* Shadow */
+  --shadow-pixel: 3px 3px 0px
+    color-mix(in srgb, var(--palette-blue) 70%, var(--palette-ink) 30%);
+
+  /* Non-utility values */
+  --vignette: radial-gradient(
+    ellipse at center,
+    transparent 58%,
+    color-mix(in srgb, var(--palette-silver) 72%, transparent) 100%
+  );
+  --btn-disabled-opacity: 0.35;
+
+  /* Safe-area and shared floating UI */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --floating-gap: 8px;
+  --control-size: 52px;
+  --z-window: 100;
+  --z-modal: 200;
+  --z-floating-global: 400;
+
+  /* Centralized typography scale */
+  --font-display: clamp(40px, 9vw, 78px);
+  --font-title: clamp(30px, 6.5vw, 52px);
+  --font-heading: clamp(22px, 4.8vw, 36px);
+  --font-subheading: clamp(18px, 3.8vw, 26px);
+  --font-body-large: clamp(17px, 3.5vw, 22px);
+  --font-body: clamp(15px, 3.1vw, 18px);
+  --font-label: clamp(12px, 2.6vw, 14px);
+  --font-caption: clamp(10px, 2.3vw, 12px);
+  --font-micro: clamp(8px, 2vw, 10px);
+
+  --line-display: 0.92;
+  --line-title: 0.98;
+  --line-heading: 1.08;
+  --line-subheading: 1.18;
+  --line-body: 1.45;
+  --line-label: 1.2;
+  --line-caption: 1.25;
+  --line-micro: 1.15;
+}
+
+.type-display {
+  font-size: var(--font-display);
+  line-height: var(--line-display);
+}
+.type-title {
+  font-size: var(--font-title);
+  line-height: var(--line-title);
+}
+.type-heading {
+  font-size: var(--font-heading);
+  line-height: var(--line-heading);
+}
+.type-subheading {
+  font-size: var(--font-subheading);
+  line-height: var(--line-subheading);
+}
+.type-body-large {
+  font-size: var(--font-body-large);
+  line-height: var(--line-body);
+}
+.type-body {
+  font-size: var(--font-body);
+  line-height: var(--line-body);
+}
+.type-label {
+  font-size: var(--font-label);
+  line-height: var(--line-label);
+}
+.type-caption {
+  font-size: var(--font-caption);
+  line-height: var(--line-caption);
+}
+.type-micro {
+  font-size: var(--font-micro);
+  line-height: var(--line-micro);
+}
+
+@theme inline {
+  /* 1px base so Tailwind spacing maps directly to pixels (pixel-art project) */
+  --spacing: 1px;
+
+  --font-pixel: "FS Pixel Sans", "CJK Pixel Match", monospace;
+
+  /* Text sizes (pixel-art scale, base = 22px, unified CJK/EN size) */
+  --text-*: initial;
+  --text-2xs: 22px;
+  --text-xs: 26px;
+  --text-sm: 30px;
+  --text-base: 34px;
+  --text-lg: 38px;
+  --text-xl: 44px;
+  --text-2xl: 52px;
+  --text-3xl: 60px;
+  --text-4xl: 70px;
+  --text-5xl: 84px;
+
+  /* Colors — reference :root vars so VS Code shows swatches */
+  --color-bg: var(--color-bg);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-thumb: var(--color-bg-thumb);
+  --color-border: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-btn-bg: var(--color-btn-bg);
+  --color-btn-hover: var(--color-btn-hover);
+  --color-active-bg: var(--color-active-bg);
+  --color-accent-bright: var(--color-accent-bright);
+  --color-reset-text: var(--color-reset-text);
+  --color-danger: var(--color-danger);
+  --color-warning: var(--color-warning);
+  --color-status-permission: var(--color-status-permission);
+  --color-status-active: var(--color-status-active);
+  --color-status-success: var(--color-status-success);
+  --color-status-error: var(--color-status-error);
+
+  /* Shadow */
+  --shadow-pixel: var(--shadow-pixel);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply m-0 w-full h-full overflow-hidden font-pixel text-base text-text;
+  }
+
+  * {
+    @apply font-pixel;
+  }
+}
+
+
+.boot-loading-screen {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  padding: 24px;
+  color: var(--palette-ink);
+  background:
+    radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--palette-yellow) 62%, transparent) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 78%, color-mix(in srgb, var(--palette-pink) 70%, transparent) 0 12%, transparent 13%),
+    var(--palette-cream);
+}
+
+.boot-loading-card {
+  min-width: min(520px, 100%);
+  padding: clamp(22px, 5vw, 38px);
+  text-align: center;
+  background: color-mix(in srgb, var(--palette-pink) 72%, var(--palette-cream) 28%);
+  border: 4px solid var(--palette-ink);
+  box-shadow: 8px 8px 0 var(--palette-blue);
+}
+
+.boot-loading-title {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 7vw, 58px);
+  line-height: 0.98;
+}
+
+.boot-loading-copy {
+  margin: 0 0 20px;
+  font-size: clamp(16px, 3vw, 24px);
+  line-height: 1.35;
+}
+
+.boot-loading-dots {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: var(--palette-ink);
+  box-shadow:
+    22px 0 0 var(--palette-ink),
+    44px 0 0 var(--palette-ink);
+  animation: tama-spinner 800ms steps(3, end) infinite;
+}
+
+/* PBS frame primitives for future layouts.
+   F1 = boot console frame; F2 = NPC dialogue/information frame; F3 = boot-loading text frame.
+   Each frame defines: surface, background, border, shadow, text scale, title hierarchy, body panels, actions, focus, and scrollbars. */
+.pbs-frame {
+  color: var(--pbs-frame-text, #000);
+  background: var(--pbs-frame-surface, #fff);
+  border: var(--pbs-frame-border-width, 4px) solid var(--pbs-frame-border, #000);
+  border-radius: 0;
+  box-shadow: var(--pbs-frame-shadow, none);
+  font-family: var(--pbs-frame-font, var(--font-pixel));
+  line-height: var(--pbs-frame-line, 1.35);
+  image-rendering: pixelated;
+}
+
+.F1,
+.pbs-frame-f1 {
+  --pbs-frame-text: #000;
+  --pbs-frame-surface:
+    linear-gradient(#FFD4FF 0 24%, #FCF46B 24% 36%, #69C3AA 36% 100%);
+  --pbs-frame-border: #000;
+  --pbs-frame-border-width: 5px;
+  --pbs-frame-shadow: 12px 12px 0 #BAC3D9;
+  --pbs-frame-body: #F9E9C2;
+  --pbs-frame-accent: #FCF46B;
+  --pbs-frame-muted: #BAC3D9;
+  --pbs-frame-title-size: clamp(42px, 7.2vw, 86px);
+  --pbs-frame-subtitle-size: clamp(18px, 3.6vw, 40px);
+  --pbs-frame-label-size: clamp(13px, 2.3vw, 24px);
+  --pbs-frame-button-bg: #FCF46B;
+  --pbs-frame-button-shadow: 6px 6px 0 #BAC3D9;
+}
+
+.F2,
+.pbs-frame-f2 {
+  --pbs-frame-text: #000;
+  --pbs-frame-surface: #fff;
+  --pbs-frame-border: #000;
+  --pbs-frame-border-width: 4px;
+  --pbs-frame-shadow: 8px 8px 0 var(--palette-blue);
+  --pbs-frame-body: #fff;
+  --pbs-frame-accent: var(--palette-blue);
+  --pbs-frame-muted: color-mix(in srgb, #000 62%, var(--palette-silver) 38%);
+  --pbs-frame-title-size: clamp(34px, 4.2vw, 64px);
+  --pbs-frame-subtitle-size: clamp(24px, 3vw, 42px);
+  --pbs-frame-label-size: clamp(16px, 1.8vw, 24px);
+  --pbs-frame-button-bg: var(--palette-cream);
+  --pbs-frame-button-shadow: 3px 3px 0 #000;
+}
+
+.F3,
+.pbs-frame-f3 {
+  --pbs-frame-text: var(--palette-ink);
+  --pbs-frame-surface: color-mix(in srgb, var(--palette-pink) 72%, var(--palette-cream) 28%);
+  --pbs-frame-border: var(--palette-ink);
+  --pbs-frame-border-width: 4px;
+  --pbs-frame-shadow: 8px 8px 0 var(--palette-blue);
+  --pbs-frame-body: color-mix(in srgb, var(--palette-pink) 72%, var(--palette-cream) 28%);
+  --pbs-frame-accent: var(--palette-blue);
+  --pbs-frame-muted: color-mix(in srgb, var(--palette-ink) 70%, var(--palette-silver) 30%);
+  --pbs-frame-title-size: clamp(30px, 7vw, 58px);
+  --pbs-frame-subtitle-size: clamp(16px, 3vw, 24px);
+  --pbs-frame-label-size: clamp(12px, 2.4vw, 18px);
+  --pbs-frame-button-bg: var(--palette-pink);
+  --pbs-frame-button-shadow: 3px 3px 0 var(--palette-blue);
+}
+
+.pbs-frame-title {
+  margin: 0;
+  color: var(--pbs-frame-text, #000);
+  font-size: var(--pbs-frame-title-size, var(--font-heading));
+  line-height: 1.05;
+}
+
+.pbs-frame-subtitle {
+  margin: 0;
+  color: var(--pbs-frame-text, #000);
+  font-size: var(--pbs-frame-subtitle-size, var(--font-subheading));
+  line-height: 1.16;
+}
+
+.pbs-frame-kicker,
+.pbs-frame-label {
+  margin: 0;
+  color: var(--pbs-frame-muted, #555);
+  font-size: var(--pbs-frame-label-size, var(--font-label));
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pbs-frame-body {
+  color: var(--pbs-frame-text, #000);
+  background: var(--pbs-frame-body, transparent);
+  border-color: var(--pbs-frame-border, #000);
+}
+
+.pbs-frame-button,
+.pbs-frame-action {
+  color: var(--pbs-frame-text, #000) !important;
+  background: var(--pbs-frame-button-bg, #fff) !important;
+  border: 3px solid var(--pbs-frame-border, #000) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--pbs-frame-button-shadow, 2px 2px 0 #000) !important;
+  font-family: var(--pbs-frame-font, var(--font-pixel));
+  cursor: pointer;
+}
+
+.pbs-frame-button:focus-visible,
+.pbs-frame-action:focus-visible {
+  outline: 3px solid var(--pbs-frame-accent, #000);
+  outline-offset: 3px;
+}
+
+.pbs-frame-scroll {
+  overflow: auto;
+  scrollbar-color: var(--pbs-frame-border, #000) var(--pbs-frame-body, #fff);
+}
+
+@layer components {
+  /* Panel with standard pixel-art border + shadow */
+  .pixel-panel {
+    @apply bg-bg border-2 border-border rounded-none shadow-pixel;
+  }
+
+  /* Horizontal carousel for editor items */
+  .carousel {
+    @apply flex gap-8 overflow-x-auto flex-nowrap pb-2;
+  }
+
+  /* Pulsing dot animation (DebugView, ToolOverlay) */
+  .pixel-pulse {
+    animation: pixel-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes pixel-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.map-zoom-controls {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 90;
+  display: inline-flex;
+  align-items: stretch;
+  height: 44px;
+  overflow: hidden;
+  color: #000;
+  background: color-mix(in srgb, #fff 92%, transparent);
+  border: 1px solid color-mix(in srgb, #000 18%, transparent);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px color-mix(in srgb, #000 22%, transparent);
+  user-select: none;
+}
+.map-zoom-controls button {
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  color: #000;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font:
+    400 26px/1 Arial,
+    Helvetica,
+    sans-serif;
+  touch-action: manipulation;
+}
+.map-zoom-controls button + button {
+  border-left: 1px solid color-mix(in srgb, #000 14%, transparent);
+}
+.map-zoom-controls button:not(:disabled):hover {
+  background: color-mix(in srgb, #000 6%, transparent);
+}
+.map-zoom-controls button:disabled {
+  opacity: 0.34;
+  cursor: default;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  :root {
+    --vignette: radial-gradient(
+      ellipse at center,
+      transparent 64%,
+      color-mix(in srgb, var(--palette-silver) 62%, transparent) 100%
+    );
+  }
+
+  .mobile-talk-prompt {
+    max-width: min(82vw, 360px);
+    padding: 8px 10px;
+    background: color-mix(
+      in srgb,
+      var(--palette-cream) 88%,
+      transparent
+    ) !important;
+  }
+
+  .mobile-talk-prompt p:nth-child(2) {
+    display: none;
+  }
+
+  .mobile-thumb-guide {
+    opacity: 0.78;
+  }
+
+  .player-setup-overlay {
+    align-items: flex-start;
+    padding: max(12px, env(safe-area-inset-top)) 10px
+      max(12px, env(safe-area-inset-bottom));
+  }
+
+  .player-setup-panel {
+    width: min(100%, 620px);
+    max-height: calc(
+      100dvh - max(24px, env(safe-area-inset-top)) -
+        max(24px, env(safe-area-inset-bottom))
+    );
+    padding: 14px;
+  }
+
+  .player-setup-topbar {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .player-setup-kicker {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .player-setup-language {
+    gap: 8px;
+    font-size: 18px;
+  }
+  .player-setup-select {
+    padding: 8px 10px;
+    font-size: 18px;
+  }
+  .player-setup-title {
+    margin-bottom: 12px;
+    font-size: 30px;
+    line-height: 1.2;
+  }
+  .player-setup-description {
+    margin-bottom: 16px;
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .player-setup-divider {
+    margin-bottom: 16px;
+  }
+  .player-setup-label {
+    margin-bottom: 7px;
+    font-size: 18px;
+  }
+  .player-setup-field {
+    margin-bottom: 16px;
+    padding: 12px;
+    font-size: 20px;
+    line-height: 1.35;
+  }
+  .player-setup-textarea-large {
+    min-height: 104px;
+  }
+  .player-setup-textarea {
+    min-height: 76px;
+  }
+  .player-setup-avatar-heading {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+  .player-setup-avatar-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .player-setup-avatar-choice {
+    padding: 10px 12px;
+  }
+  .player-setup-radio {
+    margin-right: 8px;
+  }
+  .player-setup-avatar-title {
+    font-size: 30px;
+    line-height: 1.2;
+  }
+  .player-setup-avatar-note {
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .player-setup-actions {
+    gap: 8px;
+  }
+  .player-setup-action {
+    padding: 12px 14px;
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .player-setup-hint {
+    margin-top: 14px;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .rpg-dialogue-overlay {
+    align-items: flex-end;
+    padding: 0;
+    background: color-mix(in srgb, var(--palette-silver) 46%, transparent);
+  }
+
+  .rpg-dialogue-panel {
+    width: 100vw;
+    min-width: 0;
+    height: min(78dvh, 620px);
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    padding: 14px 14px max(14px, env(safe-area-inset-bottom));
+  }
+
+  .rpg-dialogue-header {
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .rpg-dialogue-title {
+    min-width: 0;
+    gap: 10px;
+  }
+  .rpg-dialogue-avatars {
+    display: none;
+  }
+  .rpg-dialogue-kicker {
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+  .rpg-dialogue-name {
+    font-size: 28px;
+  }
+  .rpg-dialogue-role {
+    margin-top: 4px;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .rpg-dialogue-x {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 30px;
+  }
+  .rpg-dialogue-main {
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  .rpg-dialogue-log {
+    padding: 12px;
+    font-size: 20px;
+  }
+  .rpg-dialogue-message {
+    margin-bottom: 12px;
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .rpg-dialogue-thinking {
+    font-size: 20px;
+    line-height: 1.45;
+  }
+
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-kicker {
+    font-size: 17px;
+  }
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-name {
+    font-size: 26px;
+  }
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-role {
+    font-size: 17px;
+  }
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-log {
+    font-size: 18px;
+  }
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-message,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-thinking,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
+    font-size: 18px;
+    line-height: 1.42;
+  }
+
+  .rpg-dialogue-wiki {
+    position: absolute;
+    inset: 70px 10px 104px;
+    width: auto;
+    z-index: 1;
+    padding: 12px;
+  }
+
+  .rpg-dialogue-fixed,
+  .rpg-dialogue-suggestion-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 4px;
+  }
+
+  .rpg-dialogue-chip {
+    flex: 0 0 auto;
+    max-width: 74vw;
+    padding: 9px 12px;
+    font-size: 18px;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
+  .rpg-dialogue-suggestions {
+    margin-bottom: 10px;
+  }
+  .rpg-dialogue-more {
+    display: block;
+    font-size: 18px;
+  }
+  .rpg-dialogue-suggestion-list:not(.is-open) {
+    display: none;
+  }
+  .rpg-dialogue-form {
+    gap: 8px;
+  }
+  .rpg-dialogue-input {
+    min-width: 0;
+    padding: 12px;
+    font-size: 20px;
+  }
+  .rpg-dialogue-submit {
+    padding: 10px 14px;
+    font-size: 20px;
+  }
+  .rpg-dialogue-close-secondary {
+    display: none;
+  }
+}
+
+/* Non-reference frame corrections. Do not alter boot, NPC dialogue, or boot-loading frames. */
+.player-setup-merged-panel.rpg-message-frame,
+.player-setup-controls.rpg-message-frame,
+.question-hatch-device.rpg-message-frame {
+  background: var(--palette-cream) !important;
+  border-color: #000 !important;
+  box-shadow: 8px 8px 0 var(--palette-silver) !important;
+}
+
+.player-setup-merged-panel.rpg-message-frame::before,
+.player-setup-controls.rpg-message-frame::before,
+.question-hatch-device.rpg-message-frame::before,
+.question-status-panel.rpg-message-frame::before,
+.question-response-panel.rpg-message-frame::before {
+  content: none !important;
+  display: none !important;
+}
+
+.pet-role-grid,
+.pet-role-option,
+.question-hatch-screen {
+  background: var(--palette-cream) !important;
+}
+
+.pet-role-option.is-selected {
+  background: color-mix(in srgb, var(--palette-yellow) 58%, var(--palette-cream) 42%) !important;
+}
+
+.question-pet-preview {
+  background: transparent !important;
+}
+
+.question-pet-preview span {
+  background-clip: padding-box;
+}
+
+.question-hatch-screen .question-pet-preview,
+.pet-role-option .question-pet-preview {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.question-hatch-screen {
+  overflow: hidden;
+  border: 5px solid #000 !important;
+  box-shadow: 6px 6px 0 var(--palette-silver) !important;
+}
+
+.question-status-panel.rpg-message-frame {
+  left: max(12px, env(safe-area-inset-left)) !important;
+  right: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+.question-status-panel .question-status-header {
+  border-bottom: 3px solid #000;
+  padding-bottom: 8px;
+}
+
+.question-status-panel button {
+  color: #000 !important;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+}
+
+.question-status-panel .question-status-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-status-panel-minimized {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.question-response-panel.rpg-message-frame {
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+/* Shared RPG message windows: keep copy, controls, and system panels inside framed boxes. */
+.rpg-message-frame {
+  position: relative;
+  color: #000 !important;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #fff 94%, var(--palette-cream) 6%), #fff) !important;
+  border: 5px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow:
+    8px 8px 0 var(--palette-silver),
+    inset 0 0 0 5px var(--palette-yellow) !important;
+}
+
+.rpg-message-frame::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  border: 2px solid color-mix(in srgb, #000 84%, transparent);
+}
+
+.rpg-message-frame-inner {
+  box-shadow: inset 0 0 0 4px var(--palette-cream) !important;
+}
+
+.rpg-message-frame-title {
+  padding: clamp(18px, 2.8vw, 34px) clamp(18px, 3.6vw, 44px) !important;
+}
+
+.rpg-message-scroll {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: #000 var(--palette-cream);
+  scrollbar-width: auto;
+}
+
+.rpg-message-scroll::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.rpg-message-scroll::-webkit-scrollbar-track {
+  background: var(--palette-cream);
+  border-left: 2px solid #000;
+}
+
+.rpg-message-scroll::-webkit-scrollbar-thumb {
+  background: var(--palette-yellow);
+  border: 3px solid #000;
+}
+
+.player-setup-overlay {
+  align-items: flex-start;
+  background:
+    linear-gradient(90deg, var(--palette-blue) 0 50%, var(--palette-cream) 50% 100%) !important;
+}
+
+.player-setup-shell {
+  display: grid;
+  gap: clamp(18px, 2.4vw, 30px);
+}
+
+.player-setup-header {
+  margin-bottom: 0 !important;
+  text-align: left !important;
+}
+
+.player-setup-title {
+  margin-bottom: clamp(12px, 1.6vw, 20px) !important;
+  text-align: center;
+}
+
+.player-setup-description {
+  max-height: min(30dvh, 360px);
+  padding: clamp(12px, 1.6vw, 18px);
+  background: var(--palette-cream);
+  border: 3px solid #000;
+  white-space: pre-line;
+}
+
+.player-setup-merged-panel {
+  gap: clamp(18px, 2.4vw, 28px) !important;
+  padding: clamp(16px, 2.5vw, 30px) !important;
+}
+
+.player-setup-controls,
+.question-hatch-device {
+  padding: clamp(14px, 2vw, 24px) !important;
+}
+
+.player-setup-field,
+.field-note-input,
+.rpg-dialogue-input,
+.question-response-panel textarea {
+  box-shadow: 4px 4px 0 var(--palette-silver) !important;
+}
+
+.pet-role-grid,
+.question-hatch-screen,
+.rpg-dialogue-log,
+.rpg-dialogue-question-drawer,
+.world-split-content,
+.pet-response-list {
+  background: var(--palette-cream) !important;
+  border-color: #000 !important;
+}
+
+.question-status-panel,
+.question-response-panel,
+.world-split-panel,
+.mobile-rules-drawer,
+.video-encounter-card,
+.pbs-encounter-panel {
+  color: #000 !important;
+  background: #fff !important;
+  border: 5px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow:
+    8px 8px 0 var(--palette-silver),
+    inset 0 0 0 5px var(--palette-yellow) !important;
+}
+
+.world-split-panel {
+  border-left-width: 5px !important;
+}
+
+.world-split-toolbar,
+.pet-detail-section,
+.pet-response-item,
+.world-wiki-intro,
+.world-wiki-content button,
+.world-split-embed-description,
+.world-split-external-status,
+.mobile-stats-bar {
+  color: #000 !important;
+  background: var(--palette-cream) !important;
+  border: 3px solid #000 !important;
+}
+
+.world-split-toolbar {
+  border-width: 0 0 4px !important;
+}
+
+.question-status-panel p,
+.question-status-panel h2,
+.question-response-panel p,
+.question-response-panel h2,
+.question-response-panel h3,
+.world-split-panel p,
+.world-split-panel h2,
+.rpg-dialogue-panel p,
+.rpg-dialogue-panel h2,
+.rpg-dialogue-panel span {
+  overflow-wrap: anywhere;
+}
+
+.rpg-dialogue-panel {
+  min-width: min(860px, calc(100vw - 24px)) !important;
+}
+
+.rpg-dialogue-log {
+  max-height: 100%;
+}
+
+.retro-start-button,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.question-status-panel button,
+.question-response-panel button,
+.world-split-actions button,
+.player-setup-action,
+.pet-role-option {
+  border-radius: 0 !important;
+  touch-action: manipulation;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .player-setup-shell,
+  .player-setup-header,
+  .player-setup-merged-panel {
+    width: min(100%, 760px) !important;
+    max-width: none !important;
+  }
+
+  .player-setup-description {
+    max-width: none !important;
+    max-height: 34dvh;
+  }
+
+  .player-setup-merged-panel {
+    flex-direction: column !important;
+  }
+
+  .question-hatch-device {
+    flex-basis: auto !important;
+  }
+
+  .pet-role-grid {
+    max-height: 220px;
+  }
+
+  .rpg-dialogue-panel {
+    min-width: 0 !important;
+    padding: 16px !important;
+  }
+
+  .rpg-dialogue-main,
+  .rpg-dialogue-form {
+    flex-direction: column !important;
+  }
+
+  .retro-title-card {
+    width: min(92%, 560px) !important;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape),
+  (pointer: coarse) and (max-height: 520px) {
+  .rpg-dialogue-panel {
+    height: 100dvh;
+    padding: max(8px, env(safe-area-inset-top)) 12px
+      max(8px, env(safe-area-inset-bottom));
+  }
+
+  .rpg-dialogue-header {
+    margin-bottom: 6px;
+  }
+  .rpg-dialogue-kicker,
+  .rpg-dialogue-role {
+    display: none;
+  }
+  .rpg-dialogue-main {
+    margin-bottom: 6px;
+  }
+  .rpg-dialogue-log {
+    padding: 8px 10px;
+  }
+  .rpg-dialogue-message,
+  .rpg-dialogue-thinking {
+    margin-bottom: 8px;
+    font-size: 18px;
+    line-height: 1.35;
+  }
+  .rpg-dialogue-fixed {
+    margin-bottom: 4px;
+  }
+  .rpg-dialogue-chip,
+  .rpg-dialogue-more,
+  .rpg-dialogue-input,
+  .rpg-dialogue-submit {
+    font-size: 17px;
+  }
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
+    font-size: 16px;
+  }
+  .rpg-dialogue-chip {
+    padding: 7px 10px;
+  }
+  .rpg-dialogue-input {
+    padding: 9px 10px;
+  }
+}
+
+@layer components {
+  .tamagotchi-bg {
+    background:
+      radial-gradient(
+        circle at 18% 18%,
+        color-mix(in srgb, var(--palette-yellow) 52%, transparent) 0 3px,
+        transparent 4px
+      ),
+      radial-gradient(
+        circle at 75% 24%,
+        color-mix(in srgb, var(--palette-pink) 56%, transparent) 0 2px,
+        transparent 3px
+      ),
+      linear-gradient(135deg, var(--palette-cream), var(--palette-silver));
+  }
+
+  .question-hatch-panel,
+  .question-status-panel,
+  .question-response-panel {
+    background: var(--palette-cream);
+    border: 6px solid var(--palette-blue);
+    box-shadow:
+      8px 8px 0 var(--palette-silver),
+      inset 0 0 0 6px var(--palette-yellow);
+    border-radius: 22px;
+    color: var(--palette-ink);
+  }
+
+  .question-hatch-device {
+    background: var(--palette-yellow);
+    border: 5px solid var(--palette-blue);
+    border-radius: 26px;
+    box-shadow: inset 0 -10px 0
+      color-mix(in srgb, var(--palette-silver) 52%, transparent);
+  }
+
+  .question-status-panel,
+  .question-response-panel {
+    background: var(--palette-cream);
+  }
+
+  .question-status-panel::after,
+  .question-response-panel::after,
+  .question-hatch-device::after {
+    content: "";
+    display: block;
+    width: 58px;
+    height: 22px;
+    margin: 14px auto 0;
+    border: 4px solid var(--palette-blue);
+    border-radius: 999px;
+    background: var(--palette-pink);
+  }
+
+  .question-pet-preview span {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+:root {
+  --tama-yellow: var(--palette-yellow);
+  --tama-yellow-light: var(--palette-cream);
+  --tama-mint: var(--palette-silver);
+  --tama-teal: var(--palette-blue);
+  --tama-lcd: var(--palette-cream);
+  --tama-ink: var(--palette-ink);
+  --color-bg: var(--palette-cream);
+  --color-bg-dark: var(--palette-silver);
+  --color-bg-thumb: var(--palette-silver);
+  --color-border: var(--palette-blue);
+  --color-accent: var(--palette-blue);
+  --color-accent-bright: var(--palette-yellow);
+  --color-text: var(--palette-ink);
+  --color-text-muted: color-mix(
+    in srgb,
+    var(--palette-ink) 70%,
+    var(--palette-silver) 30%
+  );
+  --color-btn-bg: var(--palette-pink);
+  --color-btn-hover: var(--palette-yellow);
+  --color-active-bg: var(--palette-blue);
+  --shadow-pixel: 3px 3px 0
+    color-mix(in srgb, var(--palette-blue) 70%, var(--palette-ink) 30%);
+  --vignette: radial-gradient(
+    ellipse at center,
+    transparent 56%,
+    color-mix(in srgb, var(--palette-silver) 58%, transparent) 100%
+  );
+}
+
+.tamagotchi-bg {
+  background:
+    radial-gradient(
+      circle at 20% 15%,
+      color-mix(in srgb, var(--palette-yellow) 74%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(135deg, var(--palette-cream), var(--palette-silver));
+}
+
+.question-hatch-panel,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer {
+  color: var(--tama-ink);
+  background: color-mix(in srgb, var(--tama-mint) 88%, var(--palette-cream) 12%);
+  border: 4px solid var(--tama-ink);
+  box-shadow: var(--shadow-pixel);
+}
+
+.question-hatch-panel {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--palette-yellow) 72%, transparent),
+      color-mix(in srgb, var(--palette-silver) 90%, transparent)
+    ),
+    var(--tama-yellow-light);
+}
+
+.question-hatch-device,
+.dispatch-archive,
+.archive-inbox {
+  background: var(--tama-mint);
+  border: 3px solid var(--tama-ink);
+  box-shadow: 2px 2px 0 var(--tama-ink);
+}
+
+.player-setup-title {
+  font-size: clamp(24px, 3.5vw, 38px);
+}
+.player-setup-description {
+  font-size: var(--text-xl);
+  line-height: 1.45;
+}
+.player-setup-label {
+  font-size: 14px;
+}
+.player-setup-field {
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--tama-ink);
+  background: var(--tama-lcd);
+  border: 4px solid var(--tama-ink);
+}
+.player-setup-field:focus {
+  border-color: var(--palette-pink);
+}
+.player-setup-action {
+  font-size: 21px;
+  border: 4px solid var(--tama-ink);
+  color: var(--tama-ink);
+}
+.mode-primary {
+  background: var(--tama-teal);
+  border: 3px solid var(--tama-ink);
+  color: var(--tama-ink);
+}
+.player-setup-action.mode-primary {
+  background: var(--palette-yellow);
+}
+.mode-secondary {
+  background: var(--tama-yellow-light);
+  border: 3px solid var(--tama-ink);
+  color: var(--tama-ink);
+}
+.pet-card-label {
+  font-size: var(--font-label);
+  line-height: var(--line-label);
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-description {
+    font-size: 20px;
+  }
+}
+
+.question-pet-preview,
+.question-pet-preview * {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.question-pet-preview {
+  aspect-ratio: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: var(--tama-lcd) !important;
+}
+.question-status-panel .question-pet-preview,
+.question-response-panel .question-pet-preview {
+  flex: 0 0 auto;
+}
+
+.global-language-select {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  color: var(--tama-ink);
+  background: color-mix(in srgb, var(--palette-silver) 94%, transparent);
+  border: 2px solid var(--tama-ink);
+  box-shadow: 2px 2px 0 var(--tama-ink);
+  font-size: 13px;
+}
+.global-language-select select {
+  max-width: 128px;
+  color: var(--tama-ink);
+  background: var(--tama-yellow-light);
+  border: 2px solid var(--tama-ink);
+  font-size: 13px;
+}
+
+.observer-close {
+  position: fixed;
+  top: max(54px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 90;
+  width: 38px;
+  height: 38px;
+  color: var(--tama-ink);
+  background: var(--tama-yellow-light);
+  border: 3px solid var(--tama-ink);
+  box-shadow: 2px 2px 0 var(--tama-ink);
+  font-size: 24px;
+  line-height: 1;
+}
+.observer-zoom {
+  position: fixed;
+  top: max(100px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.observer-zoom button {
+  width: 38px;
+  height: 34px;
+  color: var(--tama-ink);
+  background: var(--tama-mint);
+  border: 3px solid var(--tama-ink);
+  box-shadow: 2px 2px 0 var(--tama-ink);
+  font-size: 20px;
+}
+.world-resonance-notice {
+  position: fixed;
+  left: 50%;
+  top: 72px;
+  z-index: 70;
+  transform: translateX(-50%);
+  max-width: min(720px, calc(100vw - 32px));
+  padding: 12px 16px;
+  color: var(--tama-ink);
+  background: var(--tama-yellow-light);
+  border: 3px solid var(--tama-ink);
+  box-shadow: var(--shadow-pixel);
+  font-size: 16px;
+}
+.field-note-input {
+  color: var(--tama-ink);
+  background: var(--tama-lcd);
+  border: 3px solid var(--tama-ink);
+  font-size: 16px;
+}
+
+.mobile-stats-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .player-setup-overlay {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .player-setup-panel {
+    padding: 14px;
+  }
+  .player-setup-title {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+  .player-setup-description {
+    font-size: 15px;
+  }
+  .player-setup-field {
+    font-size: 18px;
+    padding: 12px;
+  }
+  .player-setup-action {
+    font-size: 18px;
+    padding: 13px 14px;
+  }
+  .question-hatch-device {
+    padding: 14px;
+  }
+  .global-language-select {
+    right: 66px;
+    max-width: calc(100vw - 132px);
+  }
+  .global-language-select span {
+    display: none;
+  }
+  .observer-close {
+    top: max(10px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+  }
+  .observer-zoom {
+    top: max(58px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+  }
+  .question-status-panel {
+    display: none;
+  }
+  .question-response-panel.info-card,
+  .question-response-panel {
+    left: 10px;
+    right: 10px;
+    bottom: calc(58px + env(safe-area-inset-bottom));
+    z-index: 78;
+    width: auto;
+    max-height: 48dvh;
+    overflow: auto;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .question-response-panel textarea {
+    scroll-margin-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+  .mobile-stats-bar {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: max(6px, env(safe-area-inset-bottom));
+    z-index: 65;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-height: 52px;
+    overflow-x: auto;
+    padding: 8px 10px;
+    color: var(--tama-ink);
+    background: color-mix(in srgb, var(--palette-silver) 94%, transparent);
+    border: 3px solid var(--tama-ink);
+    box-shadow: 2px 2px 0 var(--tama-ink);
+    font-size: 14px;
+    white-space: nowrap;
+    touch-action: manipulation;
+  }
+  .mobile-stats-bar span {
+    flex: 0 0 auto;
+  }
+  .mobile-rules-drawer {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: calc(58px + env(safe-area-inset-bottom));
+    z-index: 76;
+    max-height: 44dvh;
+    overflow: auto;
+    padding: 14px;
+  }
+  .mobile-thumb-guide {
+    bottom: calc(58px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+.rpg-dialogue-overlay {
+  background: color-mix(
+    in srgb,
+    var(--palette-silver) 42%,
+    transparent
+  ) !important;
+}
+
+.rpg-dialogue-panel {
+  color: var(--palette-ink);
+  background: var(--palette-cream);
+  border-color: var(--palette-blue);
+}
+
+.rpg-dialogue-log,
+.rpg-dialogue-wiki,
+.rpg-dialogue-input,
+.rpg-dialogue-close-secondary,
+.rpg-dialogue-suggestion-list .rpg-dialogue-chip {
+  color: var(--palette-ink);
+  background: color-mix(
+    in srgb,
+    var(--palette-pink) 32%,
+    var(--palette-cream) 68%
+  );
+  border-color: var(--palette-blue);
+}
+
+.rpg-dialogue-chip,
+.rpg-dialogue-submit {
+  color: var(--palette-ink) !important;
+  background: var(--palette-yellow) !important;
+  border-color: var(--palette-blue) !important;
+}
+
+.rpg-dialogue-kicker,
+.rpg-dialogue-message span,
+.rpg-dialogue-more,
+.rpg-dialogue-wiki h3,
+.rpg-dialogue-wiki a p:first-child {
+  color: color-mix(
+    in srgb,
+    var(--palette-blue) 82%,
+    var(--palette-ink) 18%
+  ) !important;
+}
+
+.rpg-dialogue-role,
+.rpg-dialogue-thinking,
+.rpg-dialogue-wiki p,
+.rpg-dialogue-x,
+.rpg-dialogue-avatars span {
+  color: color-mix(
+    in srgb,
+    var(--palette-ink) 68%,
+    var(--palette-silver) 32%
+  ) !important;
+}
+
+.rpg-dialogue-input::placeholder {
+  color: color-mix(in srgb, var(--palette-ink) 54%, var(--palette-silver) 46%);
+}
+
+/* High-contrast information and text surfaces: white background, black text. */
+.pixel-panel,
+.question-hatch-panel,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer,
+.dispatch-archive,
+.archive-inbox,
+.global-language-select,
+.global-language-select select,
+.mobile-talk-prompt,
+.world-resonance-notice,
+.field-note-input,
+.rpg-dialogue-panel,
+.rpg-dialogue-log,
+.rpg-dialogue-wiki,
+.rpg-dialogue-input,
+.rpg-dialogue-close-secondary,
+.rpg-dialogue-suggestion-list .rpg-dialogue-chip,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.question-status-panel button,
+.question-response-panel button,
+.question-response-panel textarea {
+  color: #000 !important;
+  background: #fff !important;
+  border-color: #000 !important;
+}
+
+.pixel-panel *,
+.question-hatch-panel *,
+.question-status-panel *,
+.question-response-panel *,
+.mobile-rules-drawer *,
+.dispatch-archive *,
+.archive-inbox *,
+.global-language-select *,
+.mobile-talk-prompt *,
+.world-resonance-notice *,
+.rpg-dialogue-panel * {
+  color: #000 !important;
+}
+
+.pixel-panel details,
+.pixel-panel summary,
+.pixel-panel a,
+.question-status-panel button,
+.question-response-panel button,
+.rpg-dialogue-wiki a,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit {
+  background: #fff !important;
+  border-color: #000 !important;
+}
+
+.field-note-input::placeholder,
+.rpg-dialogue-input::placeholder,
+.question-response-panel textarea::placeholder {
+  color: #555 !important;
+}
+
+.question-hatch-panel input,
+.question-hatch-panel textarea,
+.question-hatch-panel select,
+.question-hatch-panel button,
+.question-status-panel input,
+.question-status-panel textarea,
+.question-status-panel select,
+.question-response-panel input,
+.question-response-panel textarea,
+.question-response-panel select,
+.mobile-rules-drawer button,
+.mobile-stats-bar,
+.observer-close,
+.observer-zoom button,
+.global-archive-trigger,
+.map-zoom-controls button {
+  color: #000 !important;
+  background: #fff !important;
+  border-color: #000 !important;
+}
+
+/* Mobile-first discoverable game UI pass */
+.global-language-menu {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 68;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.global-language-trigger,
+.global-archive-trigger {
+  min-width: 44px;
+  min-height: 44px;
+  color: #000;
+  background: color-mix(in srgb, #fff 82%, transparent);
+  border: 3px solid #000;
+  border-radius: 16px 16px 16px 4px;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 22px;
+  touch-action: manipulation;
+}
+
+.global-archive-trigger {
+  display: inline-grid;
+  place-items: center;
+}
+
+.global-archive-peach {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+}
+.global-language-options {
+  min-width: 168px;
+  padding: 8px;
+  color: #000;
+  background: color-mix(in srgb, #fff 90%, transparent);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+}
+.global-language-options button {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #000;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font-size: 16px;
+}
+.global-language-options button.is-active {
+  background: var(--palette-yellow);
+  outline: 2px solid #000;
+}
+
+.world-split-active {
+  width: 50% !important;
+  height: 100% !important;
+}
+.world-split-expanded {
+  width: 0 !important;
+}
+.world-split-panel {
+  position: fixed;
+  pointer-events: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 86;
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  color: #000;
+  background: color-mix(in srgb, #fff 94%, transparent);
+  border-left: 4px solid #000;
+  box-shadow: -4px 0 0 color-mix(in srgb, #000 18%, transparent);
+}
+.world-split-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(14px, env(safe-area-inset-top)) 14px 12px;
+  border-bottom: 3px solid #000;
+  background: color-mix(in srgb, var(--palette-cream) 88%, transparent);
+}
+.world-split-toolbar p {
+  margin: 0 0 4px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.world-split-toolbar h2 {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.12;
+}
+.world-split-actions {
+  display: flex;
+  gap: 8px;
+}
+.world-split-actions button,
+.archive-tree-close {
+  min-width: 42px;
+  min-height: 42px;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  font-size: 20px;
+  touch-action: manipulation;
+}
+.world-split-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.world-split-panel.is-expanded {
+  left: 0;
+  width: 100vw;
+  border-left: 0;
+}
+.world-split-panel.is-expanded .world-split-iframe {
+  min-height: calc(100dvh - 96px);
+}
+.world-split-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  background: #fff;
+  border: 2px solid #000;
+}
+.world-split-embed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100%;
+}
+.world-split-embed-description {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.world-split-external-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 2px solid #000;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.world-split-external-status div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.world-split-external-status span {
+  color: #333;
+}
+.world-split-external-status a {
+  flex: 0 0 auto;
+  color: #000;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.world-split-embed .world-split-iframe {
+  flex: 1;
+}
+.world-wiki-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 17px;
+  line-height: 1.48;
+}
+.world-wiki-role {
+  font-size: 18px;
+  font-weight: 700;
+}
+.world-wiki-intro {
+  padding: 12px;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+}
+.world-wiki-content a,
+.world-wiki-content button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 44px;
+  padding: 12px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  text-decoration: none;
+}
+.world-wiki-content a strong,
+.world-wiki-content button strong {
+  font-size: 18px;
+}
+.world-wiki-content a span,
+.world-wiki-content button span {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.archive-tree-menu {
+  position: absolute;
+  top: 56px;
+  right: 20px;
+  z-index: 45;
+  width: min(380px, calc(100vw - 24px));
+  padding: 18px;
+  color: #000;
+  background: color-mix(in srgb, #fff 92%, transparent) !important;
+}
+.archive-tree-close {
+  float: right;
+  margin-left: 12px;
+}
+.archive-tree-kicker {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.archive-tree-menu h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.1;
+}
+.archive-tree-menu p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+.archive-tree-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.archive-tree-options button {
+  min-height: 44px;
+  padding: 12px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  text-align: left;
+  font-size: 18px;
+}
+
+.archive-tree-menu.F2 {
+  color: var(--pbs-frame-text) !important;
+  background: var(--pbs-frame-surface) !important;
+  border: var(--pbs-frame-border-width) solid var(--pbs-frame-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--pbs-frame-shadow) !important;
+}
+
+.archive-tree-menu.F2 h1 {
+  font-size: var(--pbs-frame-title-size);
+}
+
+.archive-tree-menu.F2 .archive-tree-options button {
+  background: var(--pbs-frame-button-bg) !important;
+  border-color: var(--pbs-frame-border) !important;
+  box-shadow: var(--pbs-frame-button-shadow) !important;
+}
+
+.abao-speech-bubble {
+  position: absolute;
+  z-index: 48;
+  transform: translate(-50%, -100%);
+  max-width: min(300px, 78vw);
+  padding: 12px 14px;
+  color: #000;
+  background: color-mix(in srgb, #fff 94%, transparent);
+  border: 3px solid #000;
+  border-radius: 18px 18px 18px 5px;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 20px;
+  line-height: 1.25;
+  pointer-events: none;
+}
+.abao-speech-bubble::after {
+  content: "";
+  position: absolute;
+  left: 24px;
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  border-right: 3px solid #000;
+  border-bottom: 3px solid #000;
+  transform: rotate(45deg);
+}
+
+.rpg-dialogue-actions {
+  flex: 0 0 auto;
+}
+.rpg-dialogue-question-toggle,
+.rpg-dialogue-wiki-button,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.rpg-dialogue-close-secondary {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.rpg-dialogue-question-drawer {
+  max-height: 24vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rpg-dialogue-wiki-button {
+  background: var(--palette-cream) !important;
+}
+
+.question-status-panel {
+  background: color-mix(in srgb, #fff 82%, transparent) !important;
+  max-height: 38vh !important;
+  padding: 14px !important;
+  font-size: 16px !important;
+}
+.question-status-panel h2,
+.question-status-panel .text-lg {
+  font-size: 19px !important;
+}
+.question-status-panel .text-sm,
+.question-status-panel p {
+  font-size: 14px !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .world-split-active {
+    width: 100% !important;
+    height: 50dvh !important;
+  }
+  .world-split-expanded {
+    height: 0 !important;
+  }
+  .world-split-panel {
+    top: 50dvh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    border-top: 4px solid #000;
+    border-left: 0;
+    box-shadow: 0 -3px 0 color-mix(in srgb, #000 18%, transparent);
+  }
+  .world-split-panel.is-expanded {
+    top: 0;
+    height: 100dvh;
+  }
+  .world-split-panel.is-expanded .world-split-iframe {
+    min-height: calc(100dvh - 86px);
+  }
+  .world-split-toolbar {
+    padding: 10px 12px;
+  }
+  .world-split-toolbar h2 {
+    font-size: 20px;
+  }
+  .world-split-content {
+    padding: 10px;
+  }
+  .world-split-iframe {
+    min-height: 330px;
+  }
+  .world-wiki-content {
+    font-size: 18px;
+  }
+  .world-wiki-content a strong,
+  .world-wiki-content button strong {
+    font-size: 19px;
+  }
+  .world-wiki-content a span,
+  .world-wiki-content button span {
+    font-size: 16px;
+  }
+  .global-language-menu {
+    top: max(10px, env(safe-area-inset-top));
+    right: calc(max(10px, env(safe-area-inset-right)) + 54px);
+  }
+  .archive-tree-menu {
+    top: max(62px, env(safe-area-inset-top));
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 44dvh;
+    overflow: auto;
+    padding: 14px;
+  }
+  .archive-tree-menu h1 {
+    font-size: 22px;
+  }
+  .archive-tree-menu p {
+    font-size: 16px;
+  }
+  .archive-tree-options button {
+    min-height: 46px;
+    font-size: 18px;
+  }
+  .mobile-talk-prompt {
+    min-width: 154px;
+    min-height: 48px;
+    padding: 10px 12px !important;
+  }
+  .mobile-talk-prompt p:first-child {
+    font-size: 21px !important;
+  }
+  .mobile-talk-prompt p:last-child {
+    font-size: 18px !important;
+  }
+  .rpg-dialogue-panel {
+    height: min(82dvh, 640px) !important;
+    padding: 14px !important;
+  }
+  .rpg-dialogue-log {
+    font-size: 21px !important;
+  }
+  .rpg-dialogue-message,
+  .rpg-dialogue-thinking {
+    font-size: 20px !important;
+    line-height: 1.45 !important;
+  }
+  .rpg-dialogue-question-drawer {
+    max-height: 23dvh;
+  }
+  .rpg-dialogue-chip,
+  .rpg-dialogue-more,
+  .rpg-dialogue-input,
+  .rpg-dialogue-submit,
+  .rpg-dialogue-close-secondary {
+    min-height: 42px;
+    font-size: 19px !important;
+  }
+  .rpg-dialogue-form {
+    align-items: stretch;
+  }
+  .rpg-dialogue-input {
+    padding: 11px 12px !important;
+  }
+  .rpg-dialogue-submit {
+    padding: 10px 14px !important;
+  }
+  .mobile-stats-bar {
+    min-height: 44px;
+    max-height: 46px;
+    padding: 7px 10px;
+    background: color-mix(in srgb, #fff 78%, transparent) !important;
+    font-size: 16px;
+  }
+}
+.world-split-panel.is-expanded {
+  left: 0;
+  width: 100vw;
+}
+@media (max-width: 900px), (pointer: coarse) {
+  .world-split-panel.is-expanded {
+    top: 0;
+    height: 100dvh;
+  }
+}
+
+/* 2026 flow cleanup: readable low-res Tamagotchi boot UI, reliable split controls. */
+.player-setup-panel.question-hatch-panel {
+  border-color: var(--palette-ink);
+  box-shadow: 6px 6px 0 var(--palette-ink);
+}
+.player-setup-title {
+  font-size: var(--font-title) !important;
+  letter-spacing: 0.01em;
+}
+.player-setup-description {
+  font-size: clamp(20px, 3.5vw, 22px) !important;
+  line-height: 1.65 !important;
+}
+.player-setup-label {
+  font-size: var(--font-label) !important;
+  color: var(--palette-ink);
+}
+.player-setup-field {
+  font-size: var(--font-body-large) !important;
+  border-color: var(--palette-ink) !important;
+  box-shadow: inset 3px 3px 0
+    color-mix(in srgb, var(--palette-ink) 12%, transparent);
+}
+.player-setup-action {
+  min-height: 58px;
+  font-size: var(--font-subheading) !important;
+  border-color: var(--palette-ink) !important;
+  box-shadow: 4px 4px 0 var(--palette-ink) !important;
+}
+.question-hatch-device {
+  border-color: var(--palette-ink) !important;
+  box-shadow: 4px 4px 0 var(--palette-ink) !important;
+}
+.question-hatch-screen {
+  display: grid;
+  place-items: center;
+  width: min(176px, 100%);
+  min-height: 176px;
+  margin-inline: auto;
+  background:
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--palette-yellow) 34%, transparent) 25%,
+      transparent 25% 75%,
+      color-mix(in srgb, var(--palette-pink) 38%, transparent) 75%
+    ),
+    var(--palette-cream);
+  background-size: 18px 18px;
+  border: 4px solid var(--palette-ink);
+  box-shadow: inset 3px 3px 0
+    color-mix(in srgb, var(--palette-ink) 16%, transparent);
+}
+.question-hatch-egg {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 118px;
+  color: var(--palette-ink);
+  background: var(--palette-yellow);
+  border: 4px solid var(--palette-ink);
+  border-radius: 48% 48% 44% 44%;
+  font-size: 42px;
+}
+.question-hatch-device.is-hatching .question-pet-preview {
+  animation: pet-hatch-pop 0.78s steps(4, end) both;
+  border-color: var(--palette-ink) !important;
+}
+@keyframes pet-hatch-pop {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+    filter: brightness(2);
+  }
+  45% {
+    transform: scale(1.18);
+    opacity: 1;
+    filter: brightness(1.8);
+  }
+  70% {
+    transform: scale(0.92);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.global-language-menu {
+  z-index: 68;
+}
+.world-split-panel {
+  z-index: 92;
+}
+.world-split-toolbar {
+  position: relative;
+  z-index: 2;
+  padding-right: max(14px, env(safe-area-inset-right));
+}
+.world-split-actions button {
+  cursor: pointer;
+}
+.world-wiki-content button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 48px;
+  padding: 12px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  text-align: left;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 #000;
+}
+.world-wiki-content button strong {
+  font-size: 19px;
+}
+.world-wiki-content button span {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.question-status-panel {
+  width: min(560px, calc(100vw - 24px)) !important;
+  max-height: 52vh !important;
+  border-color: #000 !important;
+  color: #000 !important;
+  font-size: 26px !important;
+}
+.question-status-panel h2,
+.question-status-panel .text-lg {
+  font-size: 33px !important;
+}
+.question-status-panel .text-base,
+.question-status-panel p,
+.question-status-panel .text-sm {
+  font-size: 25px !important;
+  line-height: 1.5 !important;
+}
+.question-status-panel button {
+  border-color: #000 !important;
+  font-size: 25px !important;
+}
+
+.mobile-thumb-guide > div {
+  width: 38px !important;
+  height: 38px !important;
+  border: 0 !important;
+  background: color-mix(in srgb, #000 22%, transparent) !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .player-setup-panel {
+    padding: 18px !important;
+  }
+  .player-setup-title {
+    font-size: clamp(28px, 8vw, 38px) !important;
+  }
+  .player-setup-description,
+  .player-setup-label,
+  .player-setup-field,
+  .player-setup-action {
+    font-size: 20px !important;
+  }
+  .question-hatch-screen {
+    min-height: 148px;
+  }
+  .world-split-toolbar {
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+  .world-split-actions button,
+  .archive-tree-close {
+    min-width: 46px;
+    min-height: 46px;
+  }
+  .question-status-panel {
+    left: 8px !important;
+    bottom: 8px !important;
+    width: calc(100vw - 16px) !important;
+    max-height: 34vh !important;
+  }
+  .map-zoom-controls {
+    top: max(10px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
+    height: 44px;
+  }
+  .map-zoom-controls button {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .mobile-thumb-guide {
+    bottom: calc(148px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Keep system windows above pet/social overlays and iframes. */
+.global-language-menu {
+  z-index: 110;
+}
+.archive-tree-menu {
+  z-index: 104;
+}
+.rpg-dialogue-overlay {
+  z-index: 106 !important;
+}
+.world-split-panel {
+  z-index: 108;
+}
+.world-resonance-notice,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer,
+.mobile-stats-bar {
+  z-index: 70 !important;
+}
+
+/* Professional UI cleanup guardrail: all always-visible top-right controls must live inside .floating-ui-layer. Do not independently position new top-right controls. */
+.floating-ui-layer {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--floating-gap));
+  right: calc(var(--safe-right) + var(--floating-gap));
+  z-index: var(--z-floating-global);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: var(--floating-gap);
+  max-width: min(
+    340px,
+    calc(
+      100vw - var(--safe-left) - var(--safe-right) - (var(--floating-gap) * 2)
+    )
+  );
+  pointer-events: none;
+}
+.floating-ui-layer > *,
+.floating-ui-layer button,
+.floating-ui-layer select {
+  pointer-events: auto;
+}
+.floating-ui-layer .global-language-menu,
+.floating-ui-layer .map-zoom-controls,
+.floating-ui-layer .observer-close,
+.floating-ui-layer .observer-zoom {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+}
+.floating-ui-layer .global-language-menu {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--floating-gap);
+}
+.floating-ui-layer .observer-close {
+  order: 2;
+  width: var(--control-size);
+  height: var(--control-size);
+}
+.floating-ui-layer .map-zoom-controls {
+  order: 3;
+  height: var(--control-size);
+}
+.floating-ui-layer .map-zoom-controls button,
+.floating-ui-layer .global-language-trigger,
+.floating-ui-layer .global-archive-trigger {
+  width: var(--control-size);
+  min-width: var(--control-size);
+  min-height: var(--control-size);
+}
+.world-split-toolbar,
+.question-response-panel,
+.mobile-rules-drawer,
+.rpg-dialogue-header {
+  padding-right: max(
+    72px,
+    calc(var(--safe-right) + var(--control-size) + (var(--floating-gap) * 2))
+  ) !important;
+}
+.question-response-panel > button.float-right,
+.mobile-rules-drawer > button.float-right {
+  margin-right: calc(-1 * max(48px, var(--control-size)));
+}
+.pet-detail-header {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.pet-detail-section {
+  margin-top: 16px;
+}
+.pet-detail-kicker {
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pet-response-input {
+  margin-top: 10px;
+  line-height: var(--line-body);
+}
+.pet-response-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.pet-response-item {
+  padding: 10px 0;
+  border-top: 2px solid #000;
+}
+.pet-response-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+  opacity: 0.72;
+}
+.pet-response-empty {
+  margin-top: 10px;
+  opacity: 0.72;
+}
+
+.final-document-panel {
+  padding-top: 14px;
+  border-top: 3px solid #000;
+}
+
+.final-document-body {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  max-height: 220px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.final-document-images {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.final-document-images figure {
+  margin: 0;
+  padding: 12px;
+  background: var(--palette-cream);
+  border: 4px solid #000;
+}
+
+.final-document-images img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border: 3px solid #000;
+  image-rendering: auto;
+}
+
+.final-document-images figcaption {
+  margin-top: 8px;
+  font-size: clamp(18px, 1.4vw, 24px);
+  line-height: 1.35;
+}
+
+.final-document-images a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.final-document-references {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.final-document-references a {
+  color: #000;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+  padding: 6px 8px;
+  text-decoration: underline;
+}
+@media (max-width: 430px) {
+  .floating-ui-layer {
+    max-width: calc((var(--control-size) * 2) + var(--floating-gap));
+  }
+  .floating-ui-layer .global-language-menu {
+    max-width: 100%;
+  }
+  .global-language-options {
+    max-width: calc(
+      100vw - var(--safe-left) - var(--safe-right) - (var(--floating-gap) * 2)
+    );
+  }
+  .question-response-panel,
+  .mobile-rules-drawer,
+  .world-split-toolbar,
+  .rpg-dialogue-header {
+    padding-right: 14px !important;
+  }
+  .question-response-panel > button.float-right,
+  .mobile-rules-drawer > button.float-right {
+    margin-right: 0;
+  }
+  .pet-detail-header {
+    gap: 12px;
+  }
+}
+
+/* Tamagotchi interaction refactor: four fixed layers with isolated HUD/home/pet rules. */
+:root {
+  --z-layer-map: 1;
+  --z-layer-bubbles: 120;
+  --z-layer-dialogue: 700;
+  --z-layer-dialogue-front: 760;
+  --z-layer-encounter: 1200;
+  --z-layer-hud: 300;
+  --hud-safe-inline: calc(
+    var(--safe-right) + (var(--control-size) * 2) + (var(--floating-gap) * 3)
+  );
+  --hud-safe-block: calc(
+    var(--safe-top) + var(--control-size) + (var(--floating-gap) * 2)
+  );
+  --lcd-screen: var(--palette-cream);
+  --lcd-ink: var(--palette-ink);
+  --lcd-mid: var(--palette-silver);
+}
+
+.pbs-interaction-root {
+  isolation: isolate;
+}
+
+.pbs-world-map-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-layer-map);
+  pointer-events: auto;
+}
+
+.pbs-interaction-root[data-modal-layer="open"] .pbs-world-map-layer {
+  pointer-events: auto;
+}
+
+.mobile-talk-prompt,
+.abao-speech-bubble,
+.archive-tree-menu,
+.question-status-panel,
+.question-response-panel,
+.mobile-stats-bar,
+.mobile-rules-drawer,
+.world-resonance-notice {
+  z-index: var(--z-layer-bubbles) !important;
+}
+
+.mobile-talk-prompt,
+.abao-speech-bubble,
+.archive-tree-menu,
+.question-status-panel,
+.question-response-panel,
+.mobile-rules-drawer {
+  z-index: var(--z-layer-dialogue) !important;
+}
+
+.npc-name-tag {
+  z-index: var(--z-layer-bubbles);
+  translate: -50% -100%;
+  transform: scale(var(--npc-tag-scale, 1)) !important;
+  transform-origin: center bottom;
+}
+
+.question-status-header {
+  align-items: flex-start;
+}
+
+.question-status-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.question-status-actions button {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 3px 8px;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  line-height: 1;
+}
+
+.question-status-panel-minimized {
+  overflow: visible;
+}
+
+.question-status-panel-minimized .question-status-header {
+  margin-bottom: 0 !important;
+}
+
+.archive-tree-menu,
+.question-response-panel,
+.mobile-rules-drawer {
+  animation: tama-panel-in 160ms steps(3, end);
+}
+
+.world-split-panel {
+  z-index: var(--z-layer-dialogue) !important;
+  animation: tama-panel-in 180ms steps(4, end);
+}
+
+.rpg-dialogue-overlay {
+  z-index: var(--z-layer-dialogue-front) !important;
+  animation: tama-panel-in 180ms steps(4, end);
+}
+
+.rpg-dialogue-overlay {
+  padding: var(--hud-safe-block) var(--hud-safe-inline)
+    max(22px, var(--safe-bottom)) max(22px, var(--safe-left)) !important;
+  pointer-events: none;
+}
+
+.rpg-dialogue-panel {
+  width: min(
+    1120px,
+    calc(100vw - var(--hud-safe-inline) - max(22px, var(--safe-left)))
+  ) !important;
+  height: min(76vh, 720px) !important;
+  min-width: 0 !important;
+  pointer-events: auto;
+}
+
+.world-split-panel {
+  top: var(--hud-safe-block) !important;
+  right: var(--hud-safe-inline) !important;
+  max-width: min(
+    760px,
+    calc(100vw - var(--hud-safe-inline) - max(18px, var(--safe-left)))
+  ) !important;
+  max-height: calc(
+    100dvh - var(--hud-safe-block) - max(18px, var(--safe-bottom))
+  ) !important;
+  pointer-events: auto;
+}
+
+.world-split-panel.is-expanded {
+  inset: var(--hud-safe-block) var(--hud-safe-inline)
+    max(18px, var(--safe-bottom)) max(18px, var(--safe-left)) !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.floating-ui-layer,
+.hud-ui-layer {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--floating-gap));
+  z-index: var(--z-layer-hud) !important;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--floating-gap);
+  pointer-events: none;
+}
+
+.floating-ui-layer {
+  right: calc(var(--safe-right) + var(--floating-gap));
+  left: auto;
+  justify-content: flex-end;
+  max-width: min(
+    260px,
+    calc(100vw - var(--safe-left) - var(--safe-right) - 16px)
+  );
+}
+
+.hud-ui-layer {
+  left: calc(var(--safe-left) + var(--floating-gap));
+  right: auto;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: min(
+    340px,
+    calc(100vw - var(--safe-left) - var(--safe-right) - 16px)
+  );
+}
+
+.floating-ui-layer > *,
+.floating-ui-layer button,
+.hud-ui-layer > *,
+.hud-ui-layer button {
+  pointer-events: auto;
+}
+
+.floating-ui-layer .global-language-menu,
+.hud-ui-layer .map-zoom-controls,
+.hud-ui-layer .observer-close {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+}
+
+.floating-ui-layer .global-language-menu {
+  align-items: flex-start;
+}
+
+.global-language-options {
+  right: 0;
+  left: auto;
+}
+
+.hud-ui-layer .map-zoom-controls {
+  order: 2;
+}
+
+.hud-ui-layer .observer-close {
+  order: 1;
+  width: var(--control-size);
+  height: var(--control-size);
+}
+
+.hud-ui-layer .map-zoom-controls button,
+.floating-ui-layer .global-language-trigger,
+.floating-ui-layer .global-archive-trigger {
+  width: var(--control-size);
+  min-width: var(--control-size);
+  min-height: var(--control-size);
+}
+
+.world-split-toolbar,
+.question-response-panel,
+.mobile-rules-drawer,
+.rpg-dialogue-header {
+  padding-right: 14px !important;
+}
+
+.question-response-panel > button.float-right,
+.mobile-rules-drawer > button.float-right {
+  margin-right: 0 !important;
+}
+
+@keyframes tama-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Homepage: fixed-width handheld composition instead of stretched form. */
+.player-setup-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+  padding: max(34px, env(safe-area-inset-top)) 18px
+    max(20px, env(safe-area-inset-bottom));
+  background:
+    linear-gradient(90deg, var(--palette-blue) 0 50%, var(--palette-cream) 50% 100%);
+}
+
+.player-setup-shell {
+  width: min(1120px, 100%);
+  color: #000;
+}
+
+.player-setup-header {
+  max-width: 760px;
+  margin: 0 auto 26px;
+  text-align: center;
+}
+
+.player-setup-kicker {
+  margin: 0 0 10px;
+  font-size: clamp(16px, 1.6vw, 22px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.player-setup-title {
+  margin: 0 0 14px;
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 800;
+  line-height: 0.95;
+  text-shadow: 5px 5px 0 var(--palette-yellow);
+}
+
+.player-setup-description {
+  margin: 0 auto;
+  max-width: 920px;
+  font-size: clamp(18px, 2vw, 25px);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.player-setup-console {
+  display: flex;
+  justify-content: center;
+}
+
+.player-setup-merged-panel {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(22px, 3vw, 34px);
+  width: min(1040px, 100%);
+  padding: clamp(22px, 3vw, 36px);
+  background: var(--palette-cream);
+  border: 5px solid #000;
+  border-radius: 0;
+  box-shadow: 10px 10px 0 var(--palette-silver);
+}
+
+.player-setup-controls,
+.question-hatch-device {
+  background: var(--palette-cream);
+  border: 0;
+  box-shadow: none !important;
+}
+
+.player-setup-controls {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  padding: 0;
+}
+
+.player-setup-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: clamp(17px, 1.7vw, 22px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.player-setup-field {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  color: #000;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  outline: none;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.35;
+  box-shadow: 4px 4px 0 var(--palette-silver);
+}
+
+.player-setup-textarea-large {
+  min-height: 132px;
+}
+
+.player-setup-textarea {
+  min-height: 98px;
+}
+
+.player-setup-mode-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.player-setup-mode-row span {
+  padding: 10px 12px;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 var(--palette-silver);
+  font-size: clamp(15px, 1.4vw, 18px);
+}
+
+.player-setup-mode-row span[aria-disabled="true"] {
+  color: #555;
+  background: var(--palette-cream);
+}
+
+.question-hatch-device {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 0 0 min(360px, 42%);
+  min-height: 360px;
+  padding: clamp(20px, 3vw, 34px);
+  text-align: center;
+  border: 4px solid #000;
+  border-radius: 0;
+}
+
+.question-hatch-selector {
+  width: min(100%, 300px);
+  margin: 0 auto 10px;
+  text-align: left;
+}
+
+.question-hatch-selector .player-setup-field {
+  margin-bottom: 0;
+}
+
+.pet-role-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 176px;
+  margin-top: 8px;
+  padding: 8px;
+  overflow: auto;
+  background: #fff9d7;
+  border: 3px solid #000;
+}
+
+.pet-role-option {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  padding: 4px;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 var(--palette-silver);
+  cursor: pointer;
+}
+
+.pet-role-option.is-selected {
+  background: var(--palette-yellow);
+  box-shadow: 3px 3px 0 #000;
+  transform: translate(-1px, -1px);
+}
+
+.pet-role-option .question-pet-preview {
+  border: 0;
+  background: transparent;
+}
+
+.player-setup-console .question-hatch-device::after {
+  content: none;
+  display: none;
+}
+
+.question-hatch-screen {
+  display: grid;
+  place-items: center;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  --question-pet-pixel: clamp(5px, 0.64vw, 9px);
+  margin: 12px auto 14px;
+  padding: 0;
+  background: #fff;
+  border: 5px solid #000;
+  box-shadow: 6px 6px 0 var(--palette-silver);
+}
+
+.question-hatch-actions {
+  width: min(100%, 300px);
+  margin: 14px auto 0;
+}
+
+.question-hatch-egg {
+  display: grid;
+  place-items: center;
+  width: 156px;
+  height: 188px;
+  color: var(--lcd-ink);
+  background: #fff;
+  border: 5px solid var(--lcd-ink);
+  border-radius: 48% 48% 44% 44%;
+  font-size: 72px;
+  animation: tama-egg-wobble 1.2s steps(2, end) infinite;
+}
+
+.pet-card-label,
+.question-hatch-status {
+  margin: 0;
+  color: #000;
+  font-size: clamp(16px, 1.5vw, 21px);
+  line-height: 1.35;
+}
+
+.player-setup-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 0;
+  padding: 18px 22px;
+  border: 4px solid #000 !important;
+  color: #000;
+  background: var(--palette-yellow) !important;
+  box-shadow: 6px 6px 0 var(--palette-silver);
+  cursor: pointer !important;
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.player-setup-action:disabled {
+  cursor: default !important;
+}
+
+@media (min-width: 901px) and (pointer: fine) {
+  .player-setup-title {
+    font-size: clamp(52px, 7.4vw, 96px) !important;
+  }
+
+  .player-setup-description {
+    font-size: clamp(20px, 3.5vw, 22px) !important;
+  }
+}
+
+:lang(en) .player-setup-label,
+:lang(en) .pet-card-label,
+:lang(en) .question-hatch-status {
+  font-size: clamp(22px, 2.2vw, 29px);
+}
+
+:lang(en) .player-setup-field {
+  font-size: clamp(23px, 2.3vw, 31px);
+}
+
+:lang(en) .player-setup-action {
+  font-size: clamp(27px, 2.8vw, 38px);
+}
+
+.player-setup-action.is-booting {
+  animation: tama-border-blink 700ms steps(2, end) infinite;
+}
+
+.pixel-spinner {
+  width: 12px;
+  height: 12px;
+  background: var(--lcd-ink);
+  box-shadow:
+    18px 0 0 var(--lcd-ink),
+    36px 0 0 var(--lcd-ink);
+  animation: tama-spinner 800ms steps(3, end) infinite;
+}
+
+@keyframes tama-spinner {
+  0% {
+    opacity: 0.25;
+  }
+  33% {
+    opacity: 0.55;
+  }
+  66%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes tama-border-blink {
+  50% {
+    box-shadow:
+      0 0 0 4px var(--lcd-screen),
+      var(--shadow-pixel);
+  }
+}
+
+@keyframes tama-egg-wobble {
+  50% {
+    transform: translateX(4px) rotate(2deg);
+  }
+}
+
+/* Pets: LCD matrix instead of smooth/vector pixel art. */
+.question-pet-preview {
+  background: #fff !important;
+  border: 0 !important;
+  image-rendering: pixelated;
+}
+
+.question-pet-preview span {
+  border-radius: 0 !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  :root {
+    --hud-safe-inline: calc(
+      var(--safe-right) + var(--control-size) + (var(--floating-gap) * 2)
+    );
+  }
+
+  .rpg-dialogue-overlay {
+    padding: calc(var(--safe-top) + 72px) 12px max(12px, var(--safe-bottom)) !important;
+    align-items: center !important;
+  }
+
+  .rpg-dialogue-panel {
+    width: min(100%, 560px) !important;
+    height: min(78dvh, 680px) !important;
+  }
+
+  .world-split-panel,
+  .world-split-panel.is-expanded {
+    inset: calc(var(--safe-top) + 72px) 10px max(10px, var(--safe-bottom)) 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  .player-setup-console {
+    display: flex;
+  }
+
+  .question-hatch-device {
+    min-height: 320px;
+  }
+}
+
+/* Restore the archive/wiki split to an even half-screen panel on desktop.
+   The map HUD now stays below the split panel instead of shrinking the panel. */
+.world-split-panel {
+  z-index: calc(var(--z-layer-hud) + 20) !important;
+}
+@media (min-width: 901px) and (pointer: fine) {
+  .world-split-active {
+    width: 50% !important;
+    height: 100% !important;
+  }
+  .world-split-panel {
+    inset: 0 0 0 auto !important;
+    width: 50vw !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  .world-split-panel.is-expanded {
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+}
+
+/* Keep the create-character console above any boot-time world/layout paint. */
+.player-setup-overlay {
+  position: fixed;
+  z-index: calc(var(--z-layer-hud) + 40);
+}
+.floating-ui-layer {
+  z-index: calc(var(--z-layer-hud) + 60) !important;
+}
+
+/* Question pets render as black LCD pixels on white. */
+.question-pet-preview {
+  background: #fff !important;
+}
+
+/* 2026-05 interaction fixes: one monochrome globe, restored half split, and cleaner dialogue chrome. */
+.global-language-trigger,
+.global-archive-trigger {
+  display: inline-grid !important;
+  place-items: center;
+  color: #000 !important;
+  background: #fff !important;
+}
+
+.global-language-globe {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 34px;
+  border: 3px solid #000;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent 44%, #000 44% 56%, transparent 56%),
+    linear-gradient(0deg, transparent 44%, #000 44% 56%, transparent 56%),
+    radial-gradient(ellipse at center, transparent 46%, #000 47% 53%, transparent 54%);
+}
+
+.rpg-dialogue-panel {
+  position: relative;
+}
+
+.rpg-dialogue-x {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000;
+  line-height: 1;
+  font-size: 34px !important;
+  transform: translateY(-1px);
+}
+
+.rpg-dialogue-header {
+  padding-right: 58px !important;
+}
+
+.world-split-panel {
+  z-index: var(--z-layer-dialogue) !important;
+}
+
+.rpg-dialogue-overlay {
+  z-index: var(--z-layer-dialogue-front) !important;
+}
+
+@media (min-width: 901px) and (pointer: fine) {
+  .world-split-active .rpg-dialogue-overlay {
+    padding: max(18px, var(--safe-top)) 18px max(18px, var(--safe-bottom)) max(18px, var(--safe-left)) !important;
+  }
+
+  .world-split-active .rpg-dialogue-panel {
+    width: 100% !important;
+    height: calc(100dvh - max(18px, var(--safe-top)) - max(18px, var(--safe-bottom))) !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    align-items: flex-start;
+    padding-top: max(24px, env(safe-area-inset-top));
+  }
+
+  .player-setup-header {
+    margin-bottom: 18px;
+  }
+
+  .player-setup-console {
+    display: flex;
+  }
+
+  .player-setup-merged-panel {
+    flex-direction: column;
+    width: min(760px, 100%);
+  }
+
+  .player-setup-controls {
+    order: 1;
+  }
+
+  .question-hatch-device {
+    order: 2;
+    min-height: auto;
+    scroll-margin-top: max(18px, env(safe-area-inset-top));
+  }
+
+  .question-hatch-screen,
+  .question-hatch-actions {
+    width: min(100%, 220px);
+  }
+
+  .question-hatch-screen {
+    margin: 8px auto 10px;
+  }
+}
+
+/* 2026-05: use a native earth emoji and force linked content back to true 1/2 split. */
+.global-language-globe {
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.game-world-layer.world-split-active:not(.world-split-expanded) {
+  width: 50vw !important;
+  height: 100dvh !important;
+}
+
+.game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel {
+  inset: 0 0 0 auto !important;
+  width: 50vw !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-top: 0 !important;
+  border-left: 4px solid #000 !important;
+  box-shadow: -4px 0 0 color-mix(in srgb, #000 18%, transparent) !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .game-world-layer.world-split-active:not(.world-split-expanded) {
+    width: 100vw !important;
+    height: 50dvh !important;
+  }
+
+  .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel {
+    inset: 50dvh 0 0 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-top: 4px solid #000 !important;
+    border-left: 0 !important;
+    box-shadow: 0 -3px 0 color-mix(in srgb, #000 18%, transparent) !important;
+  }
+}
+
+.multiplayer-status-pill {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 45;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(24, 28, 38, 0.78);
+  color: #fff7d6;
+  font-size: 12px;
+  line-height: 1.2;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.pbs-interaction-root[data-encounter-layer="open"] .mobile-talk-prompt,
+.pbs-interaction-root[data-encounter-layer="open"] .abao-speech-bubble,
+.pbs-interaction-root[data-encounter-layer="open"] .npc-name-tag {
+  display: none !important;
+}
+
+.video-encounter-card {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: var(--z-layer-encounter);
+  width: min(420px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 14px;
+  border: 4px solid var(--palette-ink);
+  background: color-mix(in srgb, var(--palette-cream) 88%, var(--palette-pink) 12%);
+  color: var(--palette-ink);
+  text-align: center;
+  box-shadow: var(--shadow-pixel);
+}
+
+.video-encounter-card p {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.video-encounter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.video-encounter-actions button,
+.pbs-video-permission button,
+.pbs-chat-form button,
+.pbs-encounter-close {
+  border: 3px solid var(--palette-ink);
+  padding: 7px 12px;
+  background: var(--palette-pink);
+  color: var(--palette-ink);
+  font-weight: 700;
+  box-shadow: 3px 3px 0 var(--palette-blue);
+  cursor: pointer;
+}
+
+.video-encounter-actions button:hover,
+.pbs-video-permission button:hover,
+.pbs-chat-form button:hover,
+.pbs-encounter-close:hover {
+  background: var(--palette-yellow);
+}
+
+.video-encounter-actions button:last-child {
+  background: var(--palette-cream);
+}
+
+.pbs-encounter-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 84px;
+  z-index: var(--z-layer-encounter);
+  display: flex;
+  flex-direction: column;
+  width: min(620px, calc(100vw - 36px));
+  max-height: min(76dvh, 640px);
+  padding: 14px;
+  border: 4px solid var(--palette-ink);
+  background: color-mix(in srgb, var(--palette-cream) 88%, white 12%);
+  color: var(--palette-ink);
+  box-shadow: 8px 8px 0 var(--palette-blue);
+}
+
+.pbs-encounter-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 3px solid var(--palette-blue);
+  padding-bottom: 8px;
+}
+
+.pbs-encounter-kicker,
+.pbs-encounter-status,
+.pbs-encounter-note,
+.pbs-chat-meta,
+.pbs-chat-empty {
+  font-size: var(--font-caption);
+  line-height: var(--line-caption);
+  color: var(--color-text-muted);
+}
+
+.pbs-encounter-kicker {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pbs-encounter-panel h2 {
+  margin: 0;
+  font-size: var(--font-body-large);
+  line-height: var(--line-subheading);
+}
+
+.pbs-encounter-close {
+  min-width: 34px;
+  padding: 2px 8px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.pbs-encounter-status {
+  margin: 8px 0 10px;
+  overflow-wrap: anywhere;
+}
+
+.pbs-video-frame-wrap {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pbs-video-permission {
+  display: grid;
+  gap: 10px;
+  place-items: center;
+  min-height: min(52dvh, 430px);
+  border: 3px solid var(--palette-ink);
+  padding: 18px;
+  background: color-mix(in srgb, var(--palette-yellow) 18%, white 82%);
+  text-align: center;
+}
+
+.pbs-video-permission p {
+  margin: 0;
+}
+
+.pbs-video-permission button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.pbs-video-frame-wrap iframe {
+  width: 100%;
+  min-height: min(52dvh, 430px);
+  border: 3px solid var(--palette-ink);
+  background: #111;
+}
+
+.pbs-encounter-note {
+  margin: 0;
+}
+
+.pbs-chat-panel {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pbs-chat-log {
+  min-height: 180px;
+  max-height: min(48dvh, 360px);
+  overflow-y: auto;
+  padding: 10px;
+  border: 3px solid var(--palette-ink);
+  background: color-mix(in srgb, var(--palette-yellow) 16%, white 84%);
+}
+
+.pbs-chat-empty {
+  margin: 0;
+}
+
+.pbs-chat-message {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 2px solid var(--palette-blue);
+  background: var(--palette-cream);
+  overflow-wrap: anywhere;
+}
+
+.pbs-chat-message.is-local {
+  border-color: var(--palette-ink);
+  background: color-mix(in srgb, var(--palette-pink) 42%, var(--palette-cream) 58%);
+}
+
+.pbs-chat-form {
+  display: flex;
+  gap: 8px;
+}
+
+.pbs-chat-form input {
+  min-width: 0;
+  flex: 1;
+  border: 3px solid var(--palette-ink);
+  padding: 8px 10px;
+  background: white;
+  color: var(--palette-ink);
+}
+
+@media (max-width: 700px) {
+  .pbs-encounter-panel {
+    inset: auto 12px 76px 12px;
+    width: auto;
+  }
+
+  .pbs-chat-form {
+    flex-direction: column;
+  }
+}
+
+.wukir-bandcamp-panel {
+  min-height: 0;
+}
+
+.wukir-bandcamp-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  max-height: min(72dvh, 720px);
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid #000;
+}
+
+.wukir-bandcamp-frame iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: min(70dvh, 700px);
+  min-height: 420px;
+  border: 0;
+}
+
+.wukir-bandcamp-fallback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  color: #000;
+  background: var(--palette-cream);
+  border: 2px solid #000;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.wukir-bandcamp-fallback strong {
+  font-size: 16px;
+}
+
+.wukir-bandcamp-fallback a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  text-decoration: none;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .wukir-bandcamp-frame {
+    max-height: min(62dvh, 560px);
+  }
+
+  .wukir-bandcamp-frame iframe {
+    height: min(60dvh, 540px);
+    min-height: 360px;
+  }
+}
+
+/* Player setup typography authority.
+   One semantic scale, then one language correction layer. Keep this late and
+   scoped so older global/Tamagotchi rules cannot pin setup text to 20px. */
+.player-setup-overlay {
+  --setup-scale-display: 1;
+  --setup-scale-title: 1;
+  --setup-scale-body: 1;
+  --setup-scale-control: 1;
+  --setup-scale-caption: 1;
+
+  --setup-step-display: clamp(74px, 6.8vw, 124px);
+  --setup-step-title: clamp(48px, 3.6vw, 76px);
+  --setup-step-body: clamp(34px, 2.2vw, 44px);
+  --setup-step-control: clamp(26px, 1.45vw, 36px);
+  --setup-step-caption: clamp(18px, 1.05vw, 23px);
+
+  --setup-type-display: calc(var(--setup-step-display) * var(--setup-scale-display));
+  --setup-type-title: calc(var(--setup-step-title) * var(--setup-scale-title));
+  --setup-type-body: calc(var(--setup-step-body) * var(--setup-scale-body));
+  --setup-type-control: calc(var(--setup-step-control) * var(--setup-scale-control));
+  --setup-type-name: calc(var(--setup-step-control) * var(--setup-scale-body));
+  --setup-type-caption: calc(var(--setup-step-caption) * var(--setup-scale-caption));
+
+  --setup-line-display: 0.96;
+  --setup-line-body: 1.5;
+  --setup-line-control: 1.35;
+}
+
+:lang(zh-TW) .player-setup-overlay {
+  --setup-scale-display: 0.74;
+  --setup-scale-title: 0.82;
+  --setup-scale-body: 0.82;
+  --setup-scale-control: 0.88;
+  --setup-scale-caption: 0.9;
+  --setup-line-display: 1.02;
+  --setup-line-body: 1.58;
+}
+
+:lang(ja) .player-setup-overlay {
+  --setup-scale-display: 0.68;
+  --setup-scale-title: 0.78;
+  --setup-scale-body: 0.78;
+  --setup-scale-control: 0.84;
+  --setup-scale-caption: 0.88;
+  --setup-line-display: 1.04;
+  --setup-line-body: 1.6;
+}
+
+:lang(th) .player-setup-overlay {
+  --setup-scale-display: 0.58;
+  --setup-scale-title: 0.7;
+  --setup-scale-body: 0.74;
+  --setup-scale-control: 0.8;
+  --setup-scale-caption: 0.86;
+  --setup-line-display: 1.08;
+  --setup-line-body: 1.65;
+}
+
+:lang(de) .player-setup-overlay {
+  --setup-scale-display: 0.9;
+  --setup-scale-title: 0.94;
+}
+
+.question-status-panel::after {
+  content: none !important;
+  display: none !important;
+}
+
+.player-setup-header {
+  max-width: min(1320px, 86vw) !important;
+}
+
+.player-setup-title {
+  font-size: var(--setup-type-display) !important;
+  line-height: var(--setup-line-display) !important;
+}
+
+.player-setup-description {
+  max-width: min(1260px, 86vw) !important;
+  font-size: var(--setup-type-body) !important;
+  line-height: var(--setup-line-body) !important;
+}
+
+.player-setup-label {
+  font-size: var(--setup-type-caption) !important;
+  line-height: 1.22 !important;
+}
+
+.player-setup-field {
+  font-size: var(--setup-type-control) !important;
+  line-height: var(--setup-line-control) !important;
+}
+
+.pet-card-label,
+.question-hatch-status {
+  font-size: var(--setup-type-name) !important;
+  line-height: 1.25 !important;
+}
+
+.player-setup-action {
+  font-size: var(--setup-type-title) !important;
+  line-height: 1.12 !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-overlay {
+    --setup-step-display: clamp(42px, 10vw, 68px);
+    --setup-step-title: clamp(30px, 6.8vw, 44px);
+    --setup-step-body: clamp(24px, 5.8vw, 34px);
+    --setup-step-control: clamp(22px, 5vw, 30px);
+    --setup-step-caption: clamp(16px, 3.8vw, 22px);
+    --setup-line-body: 1.42;
+  }
+
+  .player-setup-header,
+  .player-setup-description {
+    max-width: min(760px, 92vw) !important;
+  }
+}
+
+/* Final non-reference frame corrections. Baseline frames (boot, NPC dialogue, boot-loading) stay untouched. */
+.player-setup-merged-panel.rpg-message-frame,
+.player-setup-controls,
+.question-hatch-device {
+  background: #fff !important;
+  border-color: #000 !important;
+  border-radius: 0 !important;
+}
+
+.player-setup-merged-panel.rpg-message-frame::before,
+.question-status-panel.rpg-message-frame::before,
+.question-response-panel.rpg-message-frame::before {
+  content: none !important;
+  display: none !important;
+}
+
+.player-setup-shell {
+  width: min(1120px, 100%) !important;
+}
+
+.player-setup-merged-panel.rpg-message-frame {
+  display: grid !important;
+  gap: clamp(18px, 2.4vw, 30px) !important;
+  width: min(1120px, 100%) !important;
+  padding: clamp(18px, 3vw, 34px) !important;
+  background: #fff !important;
+  border: 5px solid #000 !important;
+  box-shadow: 10px 10px 0 var(--palette-silver) !important;
+}
+
+.player-setup-header {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.player-setup-description {
+  max-width: none !important;
+  background: #fff !important;
+}
+
+.player-setup-console {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  gap: clamp(18px, 2.4vw, 28px) !important;
+  align-items: stretch;
+}
+
+.player-setup-controls,
+.question-hatch-device {
+  border: 5px solid #000 !important;
+  box-shadow: none !important;
+}
+
+.pet-role-grid,
+.pet-role-option,
+.question-hatch-screen {
+  background: var(--palette-cream) !important;
+}
+
+.pet-role-option.is-selected {
+  background: color-mix(in srgb, var(--palette-yellow) 58%, var(--palette-cream) 42%) !important;
+}
+
+.question-pet-preview {
+  background: transparent !important;
+}
+
+.question-hatch-screen .question-pet-preview,
+.pet-role-option .question-pet-preview {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.question-hatch-screen {
+  overflow: hidden;
+  border: 5px solid #000 !important;
+  box-shadow: 6px 6px 0 var(--palette-silver) !important;
+}
+
+.question-status-panel.rpg-message-frame {
+  position: fixed !important;
+  left: 12px !important;
+  right: auto !important;
+  bottom: 12px !important;
+  top: auto !important;
+  width: min(430px, calc(100vw - 24px)) !important;
+  max-height: min(460px, calc(100dvh - 24px)) !important;
+  overflow: auto !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+.question-status-panel .question-status-header {
+  border-bottom: 3px solid #000;
+  padding-bottom: 8px;
+}
+
+.question-status-panel button,
+.question-response-panel button {
+  color: #000 !important;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+}
+
+.question-status-panel .question-status-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-status-panel-minimized {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.question-status-compact {
+  border-top: 3px solid #000;
+  padding-top: 8px;
+}
+
+.question-status-compact p {
+  margin: 0;
+}
+
+.question-response-panel.rpg-message-frame {
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+/* NPC dialogue baseline: white box, black border, pale green drop shadow only. */
+.rpg-dialogue-panel {
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 8px 8px 0 var(--palette-blue) !important;
+}
+
+.rpg-dialogue-panel::before,
+.rpg-dialogue-panel::after {
+  content: none !important;
+  display: none !important;
+}
+
+.rpg-dialogue-log,
+.rpg-dialogue-question-drawer,
+.rpg-dialogue-input,
+.rpg-dialogue-submit,
+.rpg-dialogue-chip {
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .player-setup-console {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pet HUD layout lock: own pet bottom-left, selected pet bottom-right. */
+.question-status-panel.rpg-message-frame {
+  position: fixed !important;
+  left: 12px !important;
+  right: auto !important;
+  bottom: 12px !important;
+  top: auto !important;
+  width: min(430px, calc(100vw - 24px)) !important;
+  max-height: min(552px, calc(100dvh - 24px)) !important;
+}
+
+.question-response-panel.rpg-message-frame {
+  position: fixed !important;
+  right: 12px !important;
+  left: auto !important;
+  bottom: 12px !important;
+  top: auto !important;
+  width: min(430px, calc(100vw - 24px)) !important;
+  max-height: min(552px, calc(100dvh - 24px)) !important;
+  overflow: auto !important;
+  padding: 24px !important;
+}
+
+/* Protected F1/F2 frame authority for archive and selected-pet windows. */
+.archive-tree-menu.F1 {
+  width: min(520px, calc(100vw - 24px)) !important;
+  padding: clamp(22px, 3vw, 34px) !important;
+  color: var(--pbs-frame-text) !important;
+  background: var(--pbs-frame-surface) !important;
+  border: var(--pbs-frame-border-width) solid var(--pbs-frame-border) !important;
+  box-shadow: var(--pbs-frame-shadow) !important;
+}
+
+.archive-tree-menu.F1 h1 {
+  margin-bottom: 14px;
+  font-size: clamp(38px, 4.8vw, 64px) !important;
+}
+
+.archive-tree-menu.F1 .archive-tree-kicker {
+  font-size: clamp(15px, 1.5vw, 20px) !important;
+}
+
+.archive-tree-menu.F1 .archive-tree-options {
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.archive-tree-menu.F1 .archive-tree-options button {
+  min-height: 58px;
+  background: var(--pbs-frame-button-bg) !important;
+  border-color: var(--pbs-frame-border) !important;
+  box-shadow: var(--pbs-frame-button-shadow) !important;
+  font-size: clamp(21px, 2.1vw, 28px) !important;
+}
+
+.question-response-panel.F2.rpg-message-frame {
+  color: var(--pbs-frame-text) !important;
+  background: var(--pbs-frame-surface) !important;
+  border: var(--pbs-frame-border-width) solid var(--pbs-frame-border) !important;
+  box-shadow: var(--pbs-frame-shadow) !important;
+}
+
+.question-response-panel > button.float-right,
+.question-response-panel > .question-response-close {
+  float: none !important;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 0 8px auto !important;
+}
+
+.question-status-panel-minimized.rpg-message-frame {
+  width: min(760px, calc(100vw - 24px)) !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.question-status-panel-minimized .question-status-header {
+  margin-bottom: 8px !important;
+}
+
+.question-status-panel-minimized .question-status-compact {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 14px !important;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.question-status-panel-minimized .question-status-compact p {
+  flex: 0 0 auto;
+  font-size: 14px !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .question-status-panel.rpg-message-frame,
+  .question-response-panel.rpg-message-frame {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: min(58dvh, 552px) !important;
+  }
+
+  .question-status-panel-minimized.rpg-message-frame {
+    max-height: none !important;
+  }
+}
+
+/* L2+ selected-pet document window: readable public text scale, not tiny HUD copy. */
+.question-response-panel.rpg-message-frame {
+  font-size: clamp(26px, 2.2vw, 34px) !important;
+  line-height: 1.45 !important;
+}
+
+.question-response-panel .type-micro,
+.question-response-panel .type-caption,
+.question-response-panel .type-label,
+.question-response-panel .text-sm {
+  font-size: clamp(22px, 1.8vw, 28px) !important;
+  line-height: 1.38 !important;
+}
+
+.question-response-panel .type-body,
+.question-response-panel .type-body-large,
+.question-response-panel .text-base,
+.question-response-panel p,
+.question-response-panel textarea,
+.question-response-panel button {
+  font-size: clamp(27px, 2.25vw, 36px) !important;
+  line-height: 1.48 !important;
+}
+
+.question-response-panel .type-subheading,
+.question-response-panel .type-heading,
+.question-response-panel h2,
+.question-response-panel h3 {
+  font-size: clamp(34px, 3vw, 48px) !important;
+  line-height: 1.18 !important;
+}
+
+.question-response-window-actions {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.question-response-window-actions .pbs-frame-action {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
+}
+
+.question-response-panel-expanded.rpg-message-frame {
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: 50vw !important;
+  max-height: 100dvh !important;
+  padding: clamp(26px, 3vw, 42px) !important;
+}
+
+.final-document-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.final-document-body {
+  max-height: none;
+  padding: 16px;
+  background: #fff;
+  border: 4px solid #000;
+}
+
+.final-document-body a {
+  color: #000;
+  background: var(--palette-yellow);
+  border-bottom: 4px solid #000;
+  text-decoration: none;
+}
+
+.final-document-log {
+  display: grid;
+  gap: 12px;
+  max-height: min(42dvh, 520px);
+  overflow: auto;
+  padding: 14px;
+  background: var(--palette-cream);
+  border: 4px solid #000;
+}
+
+.final-document-log h4 {
+  margin: 0;
+  font-size: clamp(28px, 2.4vw, 38px);
+}
+
+.final-document-log article {
+  padding-top: 10px;
+  border-top: 3px solid #000;
+}
+
+.final-document-log-meta {
+  margin: 0 0 6px;
+  font-size: clamp(20px, 1.6vw, 26px) !important;
+  opacity: 0.74;
+}
+
+.pet-response-compose-section .mode-primary {
+  background: #fff !important;
+  border-color: #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .question-response-panel-expanded.rpg-message-frame {
+    inset: calc(var(--safe-top) + 72px) 10px max(10px, var(--safe-bottom)) 10px !important;
+    width: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* L3 world-wiki reading scale: NPC wiki pages must be readable beside dialogue. */
+.world-wiki-content {
+  gap: 18px !important;
+  font-size: clamp(22px, 1.45vw, 30px) !important;
+  line-height: 1.5 !important;
+}
+
+.world-wiki-role,
+.world-wiki-intro,
+.world-wiki-content p {
+  font-size: clamp(22px, 1.45vw, 30px) !important;
+  line-height: 1.5 !important;
+}
+
+.world-wiki-content a,
+.world-wiki-content button {
+  gap: 12px !important;
+  min-height: 78px !important;
+  padding: 20px 22px !important;
+}
+
+.world-wiki-content a strong,
+.world-wiki-content button strong {
+  font-size: clamp(24px, 1.6vw, 32px) !important;
+  line-height: 1.25 !important;
+}
+
+.world-wiki-content a span,
+.world-wiki-content button span {
+  font-size: clamp(21px, 1.35vw, 28px) !important;
+  line-height: 1.45 !important;
+}
+
+/* L2 language menu scale. */
+.floating-ui-layer .global-language-menu {
+  position: relative !important;
+}
+
+.global-language-options {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
+  left: auto !important;
+  min-width: 240px !important;
+  padding: 12px !important;
+  z-index: calc(var(--z-floating-global) + 1) !important;
+}
+
+.global-language-options button {
+  min-height: 58px !important;
+  padding: 12px 16px !important;
+  font-size: clamp(24px, 1.8vw, 34px) !important;
+  line-height: 1.2 !important;
+}
