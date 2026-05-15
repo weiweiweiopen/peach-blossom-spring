@@ -68,7 +68,7 @@ const templeColor: ColorValue = { ...paletteYellow, b: 2, c: 24 };
 const thaiTempleColor: ColorValue = { ...paletteYellow, b: 16, c: 20 };
 const cafeColor: ColorValue = { ...paletteCream, b: 10, c: 18 };
 
-export const NEXT_ROOM_GRID_SIZE = 3;
+export const NEXT_ROOM_GRID_SIZE = 6;
 export const NEXT_ROOM_MAP_PADDING = 2;
 
 function fillRect(
@@ -397,11 +397,11 @@ export const tamagotchiNpcPlacements: NpcPlacement[] = [
 ];
 
 export const nextTinyRoomNpcPlacements: NpcPlacement[] = [
-  { personaId: 'marc-dusseiller', col: 2, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'mika-satomi', col: 3, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'anastassia-pistofidou', col: 4, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'christian-dils', col: 2, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'abao', col: 4, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'marc-dusseiller', col: 3, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'mika-satomi', col: 5, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'anastassia-pistofidou', col: 7, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'christian-dils', col: 4, row: 6, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'abao', col: 6, row: 6, zoneId: 'tiny-room', idleBehavior: 'stand' },
 ];
 
 export function createTamagotchiPeachForestLayout(): OfficeLayout {

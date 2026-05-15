@@ -102,11 +102,12 @@
   --font-title: clamp(30px, 6.5vw, 52px);
   --font-heading: clamp(22px, 4.8vw, 36px);
   --font-subheading: clamp(18px, 3.8vw, 26px);
-  --font-body-large: clamp(17px, 3.5vw, 22px);
-  --font-body: clamp(15px, 3.1vw, 18px);
-  --font-label: clamp(12px, 2.6vw, 14px);
-  --font-caption: clamp(10px, 2.3vw, 12px);
-  --font-micro: clamp(8px, 2vw, 10px);
+  --font-l2-min: 30px;
+  --font-body-large: max(clamp(17px, 3.5vw, 22px), var(--font-l2-min));
+  --font-body: max(clamp(15px, 3.1vw, 18px), var(--font-l2-min));
+  --font-label: max(clamp(12px, 2.6vw, 14px), var(--font-l2-min));
+  --font-caption: max(clamp(10px, 2.3vw, 12px), var(--font-l2-min));
+  --font-micro: max(clamp(8px, 2vw, 10px), var(--font-l2-min));
 
   --line-display: 0.92;
   --line-title: 0.98;
@@ -155,6 +156,61 @@
   line-height: var(--line-micro);
 }
 
+/* Global readability floor: in the live PBS UI, nothing should drop below L2.
+   Pixel sprites/canvas are unaffected because this targets text-bearing UI only. */
+.pbs-interaction-root :where(
+  .text-2xs,
+  .text-xs,
+  .text-sm,
+  .type-micro,
+  .type-caption,
+  small,
+  figcaption,
+  time,
+  label,
+  .world-wiki-content,
+  .world-wiki-content *,
+  .archive-tree-menu,
+  .archive-tree-menu *,
+  .question-status-panel,
+  .question-status-panel *,
+  .question-response-panel,
+  .question-response-panel *,
+  .mobile-rules-drawer,
+  .mobile-rules-drawer *,
+  .mobile-stats-bar,
+  .mobile-stats-bar *,
+  .pet-response-meta,
+  .pet-response-meta *,
+  .rpg-dialogue-evidence
+) {
+  font-size: max(1em, var(--font-l2-min)) !important;
+  line-height: 1.28 !important;
+}
+
+.pbs-interaction-root :where(
+  p,
+  li,
+  span,
+  button,
+  input,
+  textarea,
+  select,
+  label,
+  a,
+  time,
+  figcaption,
+  summary,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6
+):not(.question-pet-preview):not(.question-pet-preview *) {
+  font-size: max(1em, var(--font-l2-min)) !important;
+}
+
 @theme inline {
   /* 1px base so Tailwind spacing maps directly to pixels (pixel-art project) */
   --spacing: 1px;
@@ -163,8 +219,8 @@
 
   /* Text sizes (pixel-art scale, base = 22px, unified CJK/EN size) */
   --text-*: initial;
-  --text-2xs: 22px;
-  --text-xs: 26px;
+  --text-2xs: 30px;
+  --text-xs: 30px;
   --text-sm: 30px;
   --text-base: 34px;
   --text-lg: 38px;
@@ -1745,7 +1801,7 @@
   padding: 10px 12px;
   background: #fff;
   border: 2px solid #000;
-  font-size: 14px;
+  font-size: var(--font-l2-min);
   line-height: 1.35;
 }
 .world-split-external-status div {
@@ -1770,11 +1826,11 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-size: 17px;
+  font-size: var(--font-l2-min);
   line-height: 1.48;
 }
 .world-wiki-role {
-  font-size: 18px;
+  font-size: var(--font-l2-min);
   font-weight: 700;
 }
 .world-wiki-intro {
@@ -1796,11 +1852,11 @@
 }
 .world-wiki-content a strong,
 .world-wiki-content button strong {
-  font-size: 18px;
+  font-size: var(--font-l2-min);
 }
 .world-wiki-content a span,
 .world-wiki-content button span {
-  font-size: 15px;
+  font-size: var(--font-l2-min);
   line-height: 1.4;
 }
 
@@ -1820,7 +1876,7 @@
 }
 .archive-tree-kicker {
   margin: 0 0 8px;
-  font-size: 13px;
+  font-size: var(--font-l2-min);
   text-transform: uppercase;
 }
 .archive-tree-menu h1 {
@@ -1918,15 +1974,15 @@
   background: color-mix(in srgb, #fff 82%, transparent) !important;
   max-height: 38vh !important;
   padding: 14px !important;
-  font-size: 16px !important;
+  font-size: var(--font-l2-min) !important;
 }
 .question-status-panel h2,
 .question-status-panel .text-lg {
-  font-size: 19px !important;
+  font-size: 34px !important;
 }
 .question-status-panel .text-sm,
 .question-status-panel p {
-  font-size: 14px !important;
+  font-size: var(--font-l2-min) !important;
 }
 
 @media (max-width: 900px), (pointer: coarse) {

@@ -465,11 +465,13 @@ test('thought trigger works', () => {
   assert.equal(shouldTriggerThought(state, { id: 'e', type: 'thronglet_interaction', createdAt: 0, tick: 1, actorId: 'pet', delta: {}, significance: 50 }), true);
 });
 
-test('next tiny room config is 3x3 with a computer and surrounding trees', () => {
+test('next tiny room config is 6x6 in a 10x10 map with a computer and surrounding trees', () => {
   const layout = createNextTinyRoomLayout();
-  assert.equal(NEXT_ROOM_GRID_SIZE, 3);
+  assert.equal(NEXT_ROOM_GRID_SIZE, 6);
   assert.equal(layout.cols, NEXT_ROOM_GRID_SIZE + NEXT_ROOM_MAP_PADDING * 2);
   assert.equal(layout.rows, NEXT_ROOM_GRID_SIZE + NEXT_ROOM_MAP_PADDING * 2);
+  assert.equal(layout.cols, 10);
+  assert.equal(layout.rows, 10);
   assert.ok(layout.furniture.some((item) => item.type === 'PC_FRONT_ON_1'));
   const treeCount = layout.furniture.filter((item) => item.type === 'PLANT' || item.type === 'PLANT_2').length;
   assert.ok(treeCount >= layout.cols * layout.rows - NEXT_ROOM_GRID_SIZE * NEXT_ROOM_GRID_SIZE);

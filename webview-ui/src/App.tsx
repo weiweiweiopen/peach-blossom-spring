@@ -1141,8 +1141,8 @@ function App() {
           pet.characterId,
           label,
           appearanceToSpriteData(pet.appearance),
-          3 + index,
-          3,
+          3 + (index % 3),
+          7,
         );
         const added = officeState.characters.get(pet.characterId);
         if (added) {
@@ -1176,7 +1176,7 @@ function App() {
         const ch = officeState.characters.get(pet.characterId);
         if (!ch) return;
         ch.moveSpeedMultiplier = 4.2;
-        void officeState.walkToTile(pet.characterId, 52 - index * 2, 49);
+        void officeState.walkToTile(pet.characterId, 7 - (index % 3), 7);
       });
       setWorldNotice(
         selectedLanguage === "zh-TW"
