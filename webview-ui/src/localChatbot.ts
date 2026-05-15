@@ -247,7 +247,7 @@ function stripRetrievalLabels(reply: string, evidence: ChatEvidence[] = []): str
     .trim();
   for (const item of evidence) {
     for (const label of [item.label, item.sourceLabel].filter(Boolean) as string[]) {
-      cleaned = cleaned.replaceAll(label, '').replace(/\s+/g, ' ').trim();
+      cleaned = cleaned.split(label).join('').replace(/\s+/g, ' ').trim();
     }
   }
   return cleaned;

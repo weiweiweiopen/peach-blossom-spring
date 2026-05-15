@@ -36,7 +36,10 @@ interface Persona {
 
 const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
 
-const personaAgentIds = personas.map((_, index) => index + 1);
+const visiblePersonaIds = new Set(['marc-dusseiller', 'mika-satomi', 'anastassia-pistofidou', 'christian-dils', 'abao']);
+const personaAgentIds = personas
+  .map((persona, index) => visiblePersonaIds.has(persona.id) ? index + 1 : null)
+  .filter((id): id is number => id !== null);
 
 function personaFolderNames(): Record<number, string> {
   return Object.fromEntries(personas.map((persona, index) => [index + 1, persona.name]));

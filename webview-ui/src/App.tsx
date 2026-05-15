@@ -21,6 +21,7 @@ import {
   type StartMode,
 } from "./components/PlayerSetup.js";
 import { RetroBootScreen } from "./components/RetroBootScreen.js";
+import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
@@ -78,8 +79,8 @@ import { shouldEnableVideoEncounter } from "./videoEncounter.js";
 import { vscode } from "./vscodeApi.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
-  createTamagotchiPeachForestLayout,
-  tamagotchiNpcPlacements,
+  createNextTinyRoomLayout,
+  nextTinyRoomNpcPlacements,
 } from "./world/peachBlossomWorld.js";
 
 interface Persona {
@@ -168,12 +169,6 @@ const ExpeditionPanel = lazy(() =>
     default: module.ExpeditionPanel,
   })),
 );
-const RpgDialogue = lazy(() =>
-  import("./components/RpgDialogue.js").then((module) => ({
-    default: module.RpgDialogue,
-  })),
-);
-
 function trimToFiftyChars(text: string): string {
   return text.length > 50 ? `${text.slice(0, 50)}...` : text;
 }
@@ -814,7 +809,7 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     if (!worldInitialized) {
-      officeState.rebuildFromLayout(createTamagotchiPeachForestLayout());
+      officeState.rebuildFromLayout(createNextTinyRoomLayout());
       setWorldInitialized(true);
     }
     if (appMode === "interactive") {
@@ -1065,7 +1060,7 @@ function App() {
       personas.map((persona, index) => [persona.id, index + 1]),
     );
     const occupied = new Set<string>();
-    for (const placement of tamagotchiNpcPlacements) {
+    for (const placement of nextTinyRoomNpcPlacements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId || !agents.includes(agentId)) continue;
       const ch = officeState.characters.get(agentId);

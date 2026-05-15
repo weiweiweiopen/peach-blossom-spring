@@ -396,6 +396,14 @@ export const tamagotchiNpcPlacements: NpcPlacement[] = [
   { personaId: 'abao', col: 37, row: 51, zoneId: 'archive-cafe', idleBehavior: 'stand' },
 ];
 
+export const nextTinyRoomNpcPlacements: NpcPlacement[] = [
+  { personaId: 'marc-dusseiller', col: 2, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'mika-satomi', col: 3, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'anastassia-pistofidou', col: 4, row: 3, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'christian-dils', col: 2, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'abao', col: 4, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
+];
+
 export function createTamagotchiPeachForestLayout(): OfficeLayout {
   const cols = 64;
   const rows = 64;
