@@ -2698,7 +2698,7 @@ function App() {
                     {t(selectedLanguage, "pet.responses")}
                   </h3>
                   <p className="type-body pet-response-empty">
-                    電子雞正在尋找 NPC 與 wiki/community 養分；此處不再提供粉紅送出按鈕。
+                    電子雞正在尋找 NPC 與 wiki/community 養分；此處不提供回覆輸入控制。
                   </p>
                   {petBoardResponses.length > 0 && (
                     <div className="pet-response-list">
