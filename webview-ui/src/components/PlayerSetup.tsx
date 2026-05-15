@@ -21,7 +21,7 @@ interface PlayerProfile {
 }
 
 type StartMode = "interactive" | "dispatch_observer";
-type PlayerIntentMode = "find_people" | "survive" | "how_to_do" | "why";
+type PlayerIntentMode = "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why";
 
 interface ArchiveSummary {
   total: number;
@@ -60,11 +60,16 @@ const fixedPetRoles = [
 ] as const;
 
 const intentOptions: Array<{ value: PlayerIntentMode; zh: string; en: string }> = [
-  { value: "find_people", zh: "我想找人", en: "I wanna find people" },
-  { value: "survive", zh: "怎麼生存？", en: "How to survive?" },
-  { value: "how_to_do", zh: "我想知道怎麼做", en: "How to do?" },
-  { value: "why", zh: "我只是想知道為什麼", en: "I just wanna know why" },
+  { value: "manufacturing_technical_file", zh: "製造／Camp 計劃", en: "Make / organize a camp plan" },
+  { value: "travel_plan", zh: "旅行 uMap 動線", en: "Travel uMap route" },
+  { value: "poem", zh: "Day Dream 詩", en: "Day Dream poem" },
 ];
+
+function normalizeIntentMode(mode: PlayerIntentMode | undefined): PlayerIntentMode {
+  if (mode === "manufacturing_technical_file" || mode === "how_to_do" || mode === "survive") return "manufacturing_technical_file";
+  if (mode === "travel_plan" || mode === "find_people") return "travel_plan";
+  return "poem";
+}
 
 function setupCopy(language: LanguageCode) {
   const zh = language === "zh-TW";
@@ -72,7 +77,7 @@ function setupCopy(language: LanguageCode) {
     constitution: zh
       ? "生命探測器會把你的抽象問題孵化成電子雞，透過 A2A 協定與 NPC、知識庫和其他電子雞互動，讓問題得到本質提升與擴大，最後生成一份帶來源索引的意外文件。"
       : "The life-detector hatches your abstract question into a Tamagotchi, lets it communicate through A2A with NPCs, knowledge systems, and other pets, then matures the question into a referenced surprise document.",
-    intentLabel: zh ? "這次你主要想做什麼？" : "What do you mainly want this run to do?",
+    intentLabel: zh ? "這次你想產生哪一種文件？" : "What kind of final document do you want?",
     archiveLabel: zh ? "個人資料、食譜、材料或任何你想餵給電子雞的文本" : "Personal data, recipes, materials, or any text you want to feed the pet",
     archivePlaceholder: zh
       ? "越具體越好：背景、技能、限制、材料、想見的人、口味、禁忌、已知資料、夢、失敗經驗...這會形成電子雞的 persona / knowledge JSON。"
@@ -100,7 +105,7 @@ export function PlayerSetup({
   );
   const [skills, setSkills] = useState(defaultProfile?.skills ?? "");
   const [intentMode, setIntentMode] = useState<PlayerIntentMode>(
-    defaultProfile?.intentMode ?? "why",
+    normalizeIntentMode(defaultProfile?.intentMode),
   );
   const [personalArchive, setPersonalArchive] = useState(
     defaultProfile?.personalArchive ?? defaultProfile?.constraints ?? "",

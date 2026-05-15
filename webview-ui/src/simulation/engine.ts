@@ -87,6 +87,9 @@ function maturityStage(exchangeCount: number, turnCount: number): ProblemMaturat
 function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson {
   const intentMode = context.intentMode ?? "why";
   const mentaleseByIntent: Record<string, string[]> = {
+    manufacturing_technical_file: ["material", "method", "prototype", "constraint"],
+    travel_plan: ["route", "exchange", "invitation", "place"],
+    poem: ["desire", "material", "metaphor", "borrowed structure"],
     find_people: ["affinity", "trust", "exchange", "invitation"],
     survive: ["care", "resource", "shelter", "risk"],
     how_to_do: ["material", "method", "prototype", "constraint"],
@@ -96,7 +99,7 @@ function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson
     role: context.petRole ?? "question pet",
     intentMode,
     mentaleseBias: mentaleseByIntent[intentMode] ?? mentaleseByIntent.why,
-    voice: intentMode === "how_to_do" ? "practical indexed muse" : "poetic indexed muse",
+    voice: intentMode === "how_to_do" || intentMode === "manufacturing_technical_file" ? "practical indexed muse" : "poetic indexed muse",
     constraints: splitTags(context.personalArchive ?? "").slice(0, 6),
     revision: 1,
     growthLog: [],
@@ -107,6 +110,9 @@ function createPetPersonaJson(context: ThrongletCreationContext): PetPersonaJson
 function createPetKnowledgeJson(context: ThrongletCreationContext): PetKnowledgeJson {
   const tags = splitTags(`${context.skills ?? ""} ${context.personalArchive ?? ""}`);
   const modeByIntent: Record<string, string[]> = {
+    manufacturing_technical_file: ["manufacturing_technical_file"],
+    travel_plan: ["travel_plan"],
+    poem: ["poem"],
     find_people: ["travel_plan", "story", "philosophical_debate"],
     survive: ["manufacturing_technical_file", "travel_plan", "story"],
     how_to_do: ["manufacturing_technical_file", "travel_plan", "philosophical_debate"],
@@ -158,7 +164,7 @@ function deriveProblemMaturationProfile(
     'decompose the player question before answering it',
     'collect NPC evidence and community sources before forming conclusions',
     'ask what material, social, and emotional conditions are missing',
-    pet.personaJson?.intentMode === 'how_to_do'
+    pet.personaJson?.intentMode === 'how_to_do' || pet.personaJson?.intentMode === 'manufacturing_technical_file'
       ? 'convert abstract tension into a small prototype or technical file'
       : 'preserve poetic ambiguity until enough evidence exists',
   ]).slice(0, 6);
@@ -425,7 +431,7 @@ function bestResponseDirection(pet: Thronglet, exchanges: A2AExchange[]): string
   const hypothesis = hypotheses[0]
     ? `暫時假設：${hypotheses[0]}`
     : `暫時假設：這個問題真正要問的不是「${question}」的捷徑，而是哪些關係、能力與資源能承受它`;
-  const practicalTurn = intent === 'how_to_do' || intent === 'survive'
+  const practicalTurn = intent === 'how_to_do' || intent === 'survive' || intent === 'manufacturing_technical_file'
     ? '把回應收斂成一個七天內能試做、能失敗、能被別人檢查的小原型'
     : '把回應保持成一個可以邀請他人加入、也可以被反駁的敘事或論證';
   return `${hypothesis}。最好的回應不是把來源名稱當答案，而是：${socialProof}；${evidence}；接著${practicalTurn}。`;
