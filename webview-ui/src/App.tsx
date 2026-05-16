@@ -554,6 +554,27 @@ function App() {
     () => dispatchedPets.filter((pet) => pet.status === "active"),
     [dispatchedPets],
   );
+
+  const removeCompletedLocalDispatchPet = useCallback(
+    (finishedQuestion: string): void => {
+      if (!playerProfile) return;
+      const ownerId = petStore.getOwnerId();
+      const currentQuestion = (playerProfile.question || playerProfile.mission || "").trim();
+      const currentSeed = playerProfile.petSeed ?? "";
+      const normalizedFinishedQuestion = finishedQuestion.trim();
+      const nextPets = petStore.listPets().filter((pet) => {
+        if (pet.ownerId !== ownerId) return true;
+        if (currentSeed && pet.seed === currentSeed) return false;
+        if (currentQuestion && pet.question.trim() === currentQuestion) return false;
+        if (normalizedFinishedQuestion && pet.question.trim() === normalizedFinishedQuestion) return false;
+        return true;
+      });
+      petStore.updatePets(nextPets);
+      setDispatchedPets(nextPets);
+    },
+    [playerProfile],
+  );
+
   const archiveSummary = useMemo(
     () => ({
       total: dispatchedPets.length,
@@ -1535,6 +1556,10 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
+    const maxVisibleDispatchCharacters = 40;
+    for (let index = activeDispatchPets.length; index < maxVisibleDispatchCharacters; index += 1) {
+      officeState.characters.delete(20000 + index);
+    }
     activeDispatchPets.forEach((pet, index) => {
       const id = 20000 + index;
       const label = t(selectedLanguage, "pet.questionPet");
@@ -1776,11 +1801,12 @@ function App() {
     if (!newest) return;
     const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
     if (!pet) return;
+    removeCompletedLocalDispatchPet(pet.question.text);
     setSelectedPet(pet);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
     setIsSelectedPetPanelExpanded(true);
-  }, [simSnapshot]);
+  }, [removeCompletedLocalDispatchPet, simSnapshot]);
 
   useEffect(() => {
     if (!selectedDispatchPet) return;
