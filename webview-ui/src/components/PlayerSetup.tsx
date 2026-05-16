@@ -92,6 +92,8 @@ function setupCopy(language: LanguageCode) {
       : "More detail helps: background, skills, constraints, materials, people to find, tastes, taboos, known data, dreams, failed attempts... This becomes the pet persona / knowledge JSON.",
     htmlMode: zh ? "HTML 沉浸模式" : "HTML immersive mode",
     cliMode: zh ? "CLI 模式（尚未開發）" : "CLI mode (not developed yet)",
+    clearPets: zh ? "清掉舊電子雞" : "Clear old pets",
+    petArchiveStatus: zh ? "目前電子雞" : "Current pets",
   };
 }
 
@@ -104,6 +106,8 @@ export function PlayerSetup({
   language,
   onStart,
   defaultProfile,
+  archiveSummary,
+  onClearArchive,
 }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const startRequestedRef = useRef(false);
@@ -334,6 +338,16 @@ export function PlayerSetup({
                 >
                   <span>{t(language, "home.startButton")}</span>
                 </button>
+                {archiveSummary.total > 0 && (
+                  <button
+                    className="player-setup-action"
+                    type="button"
+                    onClick={onClearArchive}
+                    title={`${copy.petArchiveStatus}: ${archiveSummary.active}/${archiveSummary.total}`}
+                  >
+                    <span>{copy.clearPets}</span>
+                  </button>
+                )}
               </div>
             </aside>
           </div>
