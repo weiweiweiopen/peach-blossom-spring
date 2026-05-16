@@ -1,0 +1,9 @@
+# October 11th 2014
+
+Entity type: times
+
+Cards: 1
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/All your segments are belong to me [5227]|All your segments are belong to me]] `htgwyw` semantic:`tools`

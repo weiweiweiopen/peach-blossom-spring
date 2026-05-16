@@ -1,0 +1,58 @@
+# SGMK Unclassified or Sparse Notes
+
+Tags: #pbs/source/sgmk #pbs/source-theme/sgmk
+
+SGMK pages that did not match the current thematic clusters. Keep as review queue for future taxonomy refinement.
+
+Members: 48
+
+## Pages
+
+- [[Sources/SGMK Full/20 pix display [69]|20 pix display]]
+- [[Sources/SGMK Full/Archipelago [2248]|Archipelago]]
+- [[Sources/SGMK Full/Atari Amiga C64 SNES NES to USB Adapter [1072]|Atari Amiga C64 SNES NES to USB Adapter]]
+- [[Sources/SGMK Full/BalanZBot [1346]|BalanZBot]]
+- [[Sources/SGMK Full/Boxology [222]|Boxology]]
+- [[Sources/SGMK Full/Brushograph [2370]|Brushograph]]
+- [[Sources/SGMK Full/CapSense (QTouchADC) [1018]|CapSense (QTouchADC)]]
+- [[Sources/SGMK Full/Digitalu Tranqulaisaao (In't) [207]|Digitalu Tranqulaisaao (In't)]]
+- [[Sources/SGMK Full/Diskussion - Politik und Technik [1320]|Diskussion: Politik und Technik]]
+- [[Sources/SGMK Full/DIY Gathering - Flick the World [1477]|DIY Gathering - Flick the World]]
+- [[Sources/SGMK Full/DIYBikesharing [1581]|DIYBikesharing]]
+- [[Sources/SGMK Full/Espd [2176]|Espd]]
+- [[Sources/SGMK Full/EtchingBox [1036]|EtchingBox]]
+- [[Sources/SGMK Full/FastFashionDetektor [2233]|FastFashionDetektor]]
+- [[Sources/SGMK Full/Fermento Mods [1035]|Fermento Mods]]
+- [[Sources/SGMK Full/Flick the World 2019 [1541]|Flick the World 2019]]
+- [[Sources/SGMK Full/Flick the World 2019 dev [1542]|Flick the World 2019 dev]]
+- [[Sources/SGMK Full/HeK 2012 - Sensing Place [339]|HeK 2012 - Sensing Place]]
+- [[Sources/SGMK Full/I [199]|I]]
+- [[Sources/SGMK Full/II [167]|II]]
+- [[Sources/SGMK Full/Krabbenarm [1750]|Krabbenarm]]
+- [[Sources/SGMK Full/LDR - Cell Phone Door Opener [1333]|LDR - Cell Phone Door Opener]]
+- [[Sources/SGMK Full/Meet notos29.4 [1947]|Meet notos29.4]]
+- [[Sources/SGMK Full/Merch [2519]|Merch]]
+- [[Sources/SGMK Full/Motörheadz [1330]|Motörheadz]]
+- [[Sources/SGMK Full/Parts [292]|Parts]]
+- [[Sources/SGMK Full/Pixel drift [1368]|Pixel drift]]
+- [[Sources/SGMK Full/Projects - simple soap [1339]|Projects/simple soap]]
+- [[Sources/SGMK Full/Quadnammotorbulator [1962]|Quadnammotorbulator]]
+- [[Sources/SGMK Full/SGMKduino [254]|SGMKduino]]
+- [[Sources/SGMK Full/Shruti Hacking - Radel Nano Dx [294]|Shruti Hacking - Radel Nano Dx]]
+- [[Sources/SGMK Full/SIDuino i2c [288]|SIDuino i2c]]
+- [[Sources/SGMK Full/Simple soap [1341]|Simple soap]]
+- [[Sources/SGMK Full/SmartHomeNightLight [1361]|SmartHomeNightLight]]
+- [[Sources/SGMK Full/Synergies [2262]|Synergies]]
+- [[Sources/SGMK Full/Three [323]|Three]]
+- [[Sources/SGMK Full/Thymio-Show 2014 [1044]|Thymio-Show 2014]]
+- [[Sources/SGMK Full/Topfüber [2499]|Topfüber]]
+- [[Sources/SGMK Full/Toprüber [2500]|Toprüber]]
+- [[Sources/SGMK Full/Vive la Resistance aka NanoSmano Sajica [130]|Vive la Resistance aka NanoSmano Sajica]]
+- [[Sources/SGMK Full/Vorstellung Programm 2017 [1394]|Vorstellung Programm 2017]]
+- [[Sources/SGMK Full/Vorstellung Programm 2017 - 2018 [1388]|Vorstellung Programm 2017/2018]]
+- [[Sources/SGMK Full/Vorstellung Programm 2019 [1514]|Vorstellung Programm 2019]]
+- [[Sources/SGMK Full/VVV [2576]|VVV]]
+- [[Sources/SGMK Full/WatchOut [357]|WatchOut]]
+- [[Sources/SGMK Full/Water Project [1467]|Water Project]]
+- [[Sources/SGMK Full/太陽能神喻隨身聽 [2516]|太陽能神喻隨身聽]]
+- [[Sources/SGMK Full/太陽能神諭隨身聽 [2515]|太陽能神諭隨身聽]]

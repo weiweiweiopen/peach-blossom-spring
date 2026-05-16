@@ -1,0 +1,132 @@
+# Electronics and circuits
+
+Layer: [[Sources/PBS Semantic Layers/Tools|Tools]]
+
+## Source balance
+
+- hackteria: 15
+- htgwyw: 104
+- sgmk: 1
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/Beautiful Circuits [9486]|Beautiful Circuits]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/Conductive Tapes [2176]|Conductive Tapes]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/Lulu Bee [7483]|Lulu Bee]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI [2376]|MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/Piano T-Shirt [1589]|Piano T-Shirt]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/Wearable Sound Experiment II [2179]|Wearable Sound Experiment II]] `htgwyw` score:5
+- [[Sources/How To Get What You Want Full/Chip-Man-Band [5044]|Chip-Man-Band]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/desoldering wick [2652]|desoldering wick]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Etching Flex Circuits [240]|Etching Flex Circuits]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Fabricademy - Soft Circuits and Textiles Sensors [6745]|Fabricademy: Soft Circuits and Textiles Sensors]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Flex PCB and Solder Mask Supplies [4915]|Flex PCB and Solder Mask Supplies]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Interactive KnitBook [4855]|Interactive KnitBook]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Lasercut Fabric Circuits and Traces [244]|Lasercut Fabric Circuits and Traces]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/lulu masks [8704]|lulu masks]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Perfboard [669]|Perfboard]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Playing with electronic textiles [9812]|Playing with electronic textiles]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Plotted Flex PCB [5371]|Plotted Flex PCB]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Soft & Tiny Pillow Speaker Workshop [3959]|Soft & Tiny Pillow Speaker Workshop]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Sound Amplifying Circuits [3794]|Sound Amplifying Circuits]] `htgwyw` score:4
+- [[Sources/Hackteria Full/Arduino Programming and making Circuits [2448]|Arduino Programming and making Circuits.]] `hackteria` score:3
+- [[Sources/Hackteria Full/Bioelectronix [4]|Bioelectronix]] `hackteria` score:3
+- [[Sources/Hackteria Full/Shahrukh Faquih [2159]|Shahrukh Faquih]] `hackteria` score:3
+- [[Sources/How To Get What You Want Full/A Kit-of-No-Parts at Weissensee [5144]|A Kit-of-No-Parts at Weissensee]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Alpaca T-Shirt Hack [7054]|Alpaca T-Shirt Hack]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Arduino Overview [1155]|Arduino Overview]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/ATtiny Programming Shield [3996]|ATtiny Programming Shield]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Chaining Components [7676]|Chaining Components]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Cheap Electronic Toys [488]|Cheap Electronic Toys]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/CNC Milling Machine [466]|CNC Milling Machine]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Electronic Textiles Live [4305]|Electronic Textiles Live]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Electronics as Material III [6464]|Electronics as Material III]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Example Circuits and Code [6315]|Example Circuits and Code]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Fab Intro - Continuity Bracelet [5986]|Fab Intro: Continuity Bracelet]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/fabric meets electronics [2266]|fabric meets electronics]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Hard - Soft Connections [1272]|Hard/Soft Connections]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Laser- and Vinylcut Solder Masks [4909]|Laser- and Vinylcut Solder Masks]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/LED with Light Sensor [1940]|LED with Light Sensor]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Liquid Electrical Tape [450]|Liquid Electrical Tape]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Lulu as 4-Way Adapter [7773]|Lulu as 4-Way Adapter]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Making Connections [7077]|Making Connections]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Non-Stretchy Traces [587]|Non-Stretchy Traces]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/ohmHook [6171]|ohmHook]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Printed Copper Traces [2501]|Printed Copper Traces]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Sewing an electronic circuit [2647]|Sewing an electronic circuit]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Solar T-Shirt [1314]|Solar T-Shirt]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Textile Sensor Demos for Summer School [6924]|Textile Sensor Demos for Summer School]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Transistor Switch [6118]|Transistor Switch]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Vinylcut Copper & Fabric PCB [1132]|Vinylcut Copper & Fabric PCB]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/WishLab II Workshop [4967]|WishLab II Workshop]] `htgwyw` score:3
+- [[Sources/SGMK Full/MechArtLab Infrastructure [16]|MechArtLab Infrastructure]] `sgmk` score:3
+- [[Sources/Hackteria Full/Akshaya Zachariah [2215]|Akshaya Zachariah]] `hackteria` score:2
+- [[Sources/Hackteria Full/Bonbontronix - Introduction DIY electronics workshops [13712]|Bonbontronix - Introduction DIY electronics workshops]] `hackteria` score:2
+- [[Sources/Hackteria Full/Chandni Venkataraman [3943]|Chandni Venkataraman]] `hackteria` score:2
+- [[Sources/Hackteria Full/CocoMake7 [4490]|CocoMake7]] `hackteria` score:2
+- [[Sources/Hackteria Full/Day 8 - 1st February, 2013 - Paper Circuits [2298]|Day 8 - 1st February, 2013 - Paper Circuits]] `hackteria` score:2
+- [[Sources/Hackteria Full/Gär Lämpli [6223]|Gär Lämpli]] `hackteria` score:2
+- [[Sources/Hackteria Full/Laser-Technologie 2000 [5845]|Laser-Technologie 2000]] `hackteria` score:2
+- [[Sources/Hackteria Full/Main Page [6159]|Main Page]] `hackteria` score:2
+- [[Sources/Hackteria Full/ROSA - Impressions from soldering sessions at gudskul [14011]|ROSA - Impressions from soldering sessions at gudskul]] `hackteria` score:2
+- [[Sources/Hackteria Full/ROŠA - Regional Open Science Hardware & Art, Indonesia [13519]|ROŠA - Regional Open Science Hardware & Art, Indonesia]] `hackteria` score:2
+- [[Sources/Hackteria Full/SesiSolder [13951]|SesiSolder]] `hackteria` score:2
+- [[Sources/Hackteria Full/Tushar Satyanath [2156]|Tushar Satyanath]] `hackteria` score:2
+- [[Sources/How To Get What You Want Full/Arduino as Bluetooth HID [3310]|Arduino as Bluetooth HID]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny Snap Diamond [6703]|ATtiny Snap Diamond]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny - Programming [3742]|ATtiny: Programming]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny - Soft Fade [3393]|ATtiny: Soft Fade]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny - Sound [4382]|ATtiny: Sound]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Bend, sew, touch, feel, read [1583]|Bend, sew, touch, feel, read]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Bluetooth Mate [2797]|Bluetooth Mate]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Blurring Boundaries [7540]|Blurring Boundaries]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Breadboard Pincushion [3106]|Breadboard Pincushion]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Conductive Pen [1014]|Conductive Pen]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Conductive Play-Doh [2628]|Conductive Play-Doh]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Crafting Sensory Surfaces [7758]|Crafting Sensory Surfaces]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Critical Critters [7873]|Critical Critters]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Designing “Soft Circuits” [7075]|Designing “Soft Circuits”]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/DressCode Examples [4588]|DressCode Examples]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/E-Textile Tooling - ohmHook [6043]|E-Textile Tooling: ohmHook]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electronics as Material II [5460]|Electronics as Material II]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electronics Surgery [5786]|Electronics Surgery]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electroplating Conductive Farbrics [2999]|Electroplating Conductive Farbrics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Elektronik und Handwerk [4698]|Elektronik und Handwerk]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/eTextile Summer Camp 2013 [4223]|eTextile Summer Camp 2013]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/fabric button circuit [7092]|fabric button circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fabric LED Strip [4632]|Fabric LED Strip]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Felted DIP socket [7963]|Felted DIP socket]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Flapping Wing Swatch Example [5900]|Flapping Wing Swatch Example]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fluffy MIDI [9948]|Fluffy MIDI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Flux [1206]|Flux]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Flux Test [1138]|Flux Test]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Frequency Finger Gloves [5523]|Frequency Finger Gloves]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/from SPACE to SPACE [8182]|from SPACE to SPACE]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/FT1 - Tailoring with Electronic Textiles I [6994]|FT1: Tailoring with Electronic Textiles I]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Granny Square MIDI [2836]|Granny Square MIDI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors in Vienna [3011]|Handcrafting Textile Sensors in Vienna]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Heat Controlling Circuit [2909]|Heat Controlling Circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Human Hacked Orchestra [3513]|Human Hacked Orchestra]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Interactive Solar T-Shirt [1591]|Interactive Solar T-Shirt]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ISP Alligator Clip Extension [3638]|ISP Alligator Clip Extension]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/JoySlippers [567]|JoySlippers]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knit Breadboard Circuit [5032]|Knit Breadboard Circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Light Dependent Relationship [8794]|Light Dependent Relationship]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268]|LilyPad Arduino Programming]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/LilyPad SnapRing [4457]|LilyPad SnapRing]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Lithium Polymer Batteries [472]|Lithium Polymer Batteries]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Machine-Sewing Solderable Traces [3395]|Machine-Sewing Solderable Traces]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Machine-sewn Neopixel Strip [7040]|Machine-sewn Neopixel Strip]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Making Soft Noise [8601]|Making Soft Noise]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/MATERIALS & CRAFTMANSHIP [1962]|MATERIALS & CRAFTMANSHIP]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Matrix - Kapton + Copper [7443]|Matrix: Kapton + Copper]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Meet the Materials [8012]|Meet the Materials]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Meet the Materials Workshop [5007]|Meet the Materials Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Metal Beads [490]|Metal Beads]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Metal Fasteners [932]|Metal Fasteners]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Moving Textile [6662]|Moving Textile]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Neoprene LED Light Pouch [2139]|Neoprene LED Light Pouch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Plated Fabric Traces [2977]|Plated Fabric Traces]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/pressure matrix code + circuit [7943]|pressure matrix code + circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Prototyping with Snaps [7076]|Prototyping with Snaps]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Salt and Vinegar Etching [2575]|Salt and Vinegar Etching]] `htgwyw` score:2

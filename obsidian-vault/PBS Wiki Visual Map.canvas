@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"pbs","type":"file","file":"Peach Blossom Spring.md","x":0,"y":0,"width":280,"height":180},
+		{"id":"home","type":"file","file":"Home.md","x":0,"y":240,"width":280,"height":160},
+		{"id":"hack-index","type":"file","file":"Sources/Hackteria Full Index.md","x":420,"y":-40,"width":320,"height":200},
+		{"id":"hack-summary","type":"file","file":"Sources/Hackteria Wiki.md","x":420,"y":220,"width":320,"height":180},
+		{"id":"sgmk","type":"file","file":"Sources/SGMK Index.md","x":820,"y":-40,"width":300,"height":180},
+		{"id":"kobakant","type":"file","file":"Sources/How To Get What You Want - KOBAKANT DIY.md","x":820,"y":220,"width":340,"height":180},
+		{"id":"stats","type":"text","text":"Hackteria full crawl\n\n• 1410 public main-namespace pages\n• 0 failures\n• Text pages only\n• Images/files not mirrored yet\n\nNext possible crawls:\n• KOBAKANT full archive\n• SGMK external wiki\n• Hackteria categories/files","x":0,"y":460,"width":350,"height":240},
+		{"id":"key-pages","type":"group","label":"Seed key pages","x":1240,"y":-80,"width":390,"height":520},
+		{"id":"abao","type":"file","file":"Sources/Hackteria/Abao Nano Doctor Blade Hacker Residency.md","x":1280,"y":-20,"width":310,"height":120},
+		{"id":"sgmk-bio","type":"file","file":"Sources/Hackteria/Hackteria & SGMK BioCyberKidzz.md","x":1280,"y":130,"width":310,"height":120},
+		{"id":"arch","type":"file","file":"Sources/Hackteria/Wiki Digital Archeology Research - SGMK.md","x":1280,"y":280,"width":310,"height":120}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"pbs","fromSide":"right","toNode":"hack-index","toSide":"left"},
+		{"id":"e2","fromNode":"pbs","fromSide":"right","toNode":"sgmk","toSide":"left"},
+		{"id":"e3","fromNode":"pbs","fromSide":"right","toNode":"kobakant","toSide":"left"},
+		{"id":"e4","fromNode":"home","fromSide":"right","toNode":"hack-summary","toSide":"left"},
+		{"id":"e5","fromNode":"hack-summary","fromSide":"right","toNode":"hack-index","toSide":"left"},
+		{"id":"e6","fromNode":"hack-index","fromSide":"right","toNode":"sgmk","toSide":"left"},
+		{"id":"e7","fromNode":"sgmk","fromSide":"right","toNode":"sgmk-bio","toSide":"left"},
+		{"id":"e8","fromNode":"sgmk","fromSide":"right","toNode":"arch","toSide":"left"},
+		{"id":"e9","fromNode":"hack-summary","fromSide":"right","toNode":"abao","toSide":"left"},
+		{"id":"e10","fromNode":"stats","fromSide":"right","toNode":"hack-index","toSide":"bottom"}
+	]
+}

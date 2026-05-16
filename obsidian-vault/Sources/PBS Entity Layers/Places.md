@@ -1,0 +1,81 @@
+# Places
+
+Entity layer: Places.
+
+Unique entities: 73
+
+## Strong entities
+
+- [[Sources/PBS Entity Layers/Places/Yogyakarta|Yogyakarta]] — 59 cards
+- [[Sources/PBS Entity Layers/Places/Bangalore|Bangalore]] — 30 cards
+- [[Sources/PBS Entity Layers/Places/Ljubljana|Ljubljana]] — 21 cards
+- [[Sources/PBS Entity Layers/Places/UGM|UGM]] — 20 cards
+- [[Sources/PBS Entity Layers/Places/Indonesia|Indonesia]] — 19 cards
+- [[Sources/PBS Entity Layers/Places/Bitwäscherei|Bitwäscherei]] — 16 cards
+- [[Sources/PBS Entity Layers/Places/Zurich|Zurich]] — 15 cards
+- [[Sources/PBS Entity Layers/Places/Switzerland|Switzerland]] — 14 cards
+- [[Sources/PBS Entity Layers/Places/Geneva|Geneva]] — 12 cards
+- [[Sources/PBS Entity Layers/Places/Maribor|Maribor]] — 11 cards
+- [[Sources/PBS Entity Layers/Places/Zagreb|Zagreb]] — 11 cards
+- [[Sources/PBS Entity Layers/Places/Luzern|Luzern]] — 10 cards
+- [[Sources/PBS Entity Layers/Places/Zürich|Zürich]] — 10 cards
+- [[Sources/PBS Entity Layers/Places/UCSB|UCSB]] — 9 cards
+- [[Sources/PBS Entity Layers/Places/GaudiLabs|GaudiLabs]] — 8 cards
+- [[Sources/PBS Entity Layers/Places/Taiwan|Taiwan]] — 8 cards
+- [[Sources/PBS Entity Layers/Places/Chiang Mai|Chiang Mai]] — 7 cards
+- [[Sources/PBS Entity Layers/Places/RADIONA|RADIONA]] — 6 cards
+- [[Sources/PBS Entity Layers/Places/India|India]] — 5 cards
+- [[Sources/PBS Entity Layers/Places/Betahaus, Berlin|Betahaus, Berlin]] — 2 cards
+- [[Sources/PBS Entity Layers/Places/eLab, Weissensee Art Academy Berlin|eLab, Weissensee Art Academy Berlin]] — 2 cards
+- [[Sources/PBS Entity Layers/Places/100km by camel, usage -  5 years, disposal -  recycling|100km by camel, usage: 5 years, disposal: recycling]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/5000km by train, usage -  5 years, disposal -  recyling & downcycling (re-use|5000km by train, usage: 5 years, disposal: recyling & downcycling (re-use]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Croatia|Croatia]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/dev - cu…|dev/cu…]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/eLab, Weissensee Art Academy Berlin In this 2 days workshop, we will explore met|eLab, Weissensee Art Academy Berlin In this 2 days workshop, we will explore met]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/eLab, Weissensee Art Academy Berlin This workshop is only open to KHB students T|eLab, Weissensee Art Academy Berlin This workshop is only open to KHB students T]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Frankfurt|Frankfurt]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Himbeer Atelier, Linz, Austria|Himbeer Atelier, Linz, Austria]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Himbeer Atelier, Linz, Austria Date -  Aug 13th, 14th (13 17h) Aug 20th, 21st (13|Himbeer Atelier, Linz, Austria Date: Aug 13th, 14th (13 17h) Aug 20th, 21st (13]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Himbeer Atelier, Linz, Austria Date -  Aug 13th, 14th (13-17h) Aug 20th, 21st (13-|Himbeer Atelier, Linz, Austria Date: Aug 13th, 14th (13-17h) Aug 20th, 21st (13-]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Hochschule für Technik und Wirtschaft (HTW), Wilhelminenhofstraße 75A, Berlin|Hochschule für Technik und Wirtschaft (HTW), Wilhelminenhofstraße 75A, Berlin]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Interface Cultures, Kunstuniversitat Linz, Austria|Interface Cultures, Kunstuniversitat Linz, Austria]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Interface Cultures, Kunstuniversitat Linz, Austria Time -  31th May,1st, 2nd June|Interface Cultures, Kunstuniversitat Linz, Austria Time: 31th May,1st, 2nd June]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Kunstraum Walcheturm|Kunstraum Walcheturm]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Kunstraum Walcheturm Kanonengasse 20 – 8004 Zürich Date -  Nov 20 2010 (Saturday|Kunstraum Walcheturm Kanonengasse 20 – 8004 Zürich Date: Nov 20 2010 (Saturday]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/LIWOLI 10, Kunstuniversitat Linz, Austria|LIWOLI 10, Kunstuniversitat Linz, Austria]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/LIWOLI 10, Kunstuniversitat Linz, Austria Time -  15th April, 2010, 11 17h Content|LIWOLI 10, Kunstuniversitat Linz, Austria Time: 15th April, 2010, 11 17h Content]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/LIWOLI 10, Kunstuniversitat Linz, Austria Time -  15th April, 2010, 11 17h In this|LIWOLI 10, Kunstuniversitat Linz, Austria Time: 15th April, 2010, 11 17h In this]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/LIWOLI 10, Kunstuniversitat Linz, Austria Time -  15th April, 2010, 11-17h|LIWOLI 10, Kunstuniversitat Linz, Austria Time: 15th April, 2010, 11-17h]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Part of Maker Weekend at Betahaus, Berlin|Part of Maker Weekend at Betahaus, Berlin]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/plug.in|plug.in]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/plug.in] St. Alban Rheinweg 64 – 4052 Basel Date -  Nov 21 2010 (Sunday) 10.00 –|plug.in] St. Alban Rheinweg 64 – 4052 Basel Date: Nov 21 2010 (Sunday) 10.00 –]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/plug.in] St. Alban-Rheinweg 64 – 4052 Basel Date -  Nov 21 2010 (Sunday) 10.00 –|plug.in] St. Alban-Rheinweg 64 – 4052 Basel Date: Nov 21 2010 (Sunday) 10.00 –]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Post, Rotterdam The Netherlands|Post, Rotterdam The Netherlands]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Post, Rotterdam The Netherlands, The workshop is a part of DEAF festival worksho|Post, Rotterdam The Netherlands, The workshop is a part of DEAF festival worksho]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Print Lab and eLab, Weissensee Art Academy Berlin|Print Lab and eLab, Weissensee Art Academy Berlin]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Print Lab and eLab, Weissensee Art Academy Berlin In this second part of the Sof|Print Lab and eLab, Weissensee Art Academy Berlin In this second part of the Sof]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/RADIONA, Zagreb, Croatia|RADIONA, Zagreb, Croatia]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/RADIONA, Zagreb, Croatia In this two evening workshop, Mika will introduce how y|RADIONA, Zagreb, Croatia In this two evening workshop, Mika will introduce how y]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Raum D, MuseumsQuartier|Raum D, MuseumsQuartier]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Raum D, MuseumsQuartier Content July 28+29 2012, 10am – 5pm, MQ, Vienna - Austria|Raum D, MuseumsQuartier Content July 28+29 2012, 10am – 5pm, MQ, Vienna/Austria]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Raum D, MuseumsQuartier This workshop will take place in the year 2037. Imagine|Raum D, MuseumsQuartier This workshop will take place in the year 2037. Imagine]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Serial.begin(9600|Serial.begin(9600]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Serial.println(analogRead(pinNumber|Serial.println(analogRead(pinNumber]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/Soldered LEDS|Soldered LEDS]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/TATE Exchange (New building of TATE modern 5th floor) London, UK|TATE Exchange (New building of TATE modern 5th floor) London, UK]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/TechShop SF, Conference Room, 926 Howard Street|TechShop SF, Conference Room, 926 Howard Street]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/TechShop SF, Conference Room, 926 Howard Street Content Wednesday June 13 2012|TechShop SF, Conference Room, 926 Howard Street Content Wednesday June 13 2012]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/TechShop SF, Conference Room, 926 Howard Street Map -  http - goo.gl - maps - LiHy Tim|TechShop SF, Conference Room, 926 Howard Street Map: http://goo.gl/maps/LiHy Tim]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/the Apartment Project Berlin (Hetzbergstrasse 13, 12055 Berlin) http - berlin.a|the Apartment Project Berlin (Hetzbergstrasse 13, 12055 Berlin) http://berlin.a]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/the Apartment Project Berlin (Hetzbergstrasse 13, 12055 Berlin) http - berlin.ap|the Apartment Project Berlin (Hetzbergstrasse 13, 12055 Berlin) http://berlin.ap]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Royal Academy of Art in The Hague|The Royal Academy of Art in The Hague]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textile|The Swedish School of Textile]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textile Date -  March 22 26th 2010 In this five days worksho|The Swedish School of Textile Date: March 22 26th 2010 In this five days worksho]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textile Date -  March 22-26th 2010 In this five days worksho|The Swedish School of Textile Date: March 22-26th 2010 In this five days worksho]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textiles, Boras Sweden|The Swedish School of Textiles, Boras Sweden]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textiles, Boras Sweden Date -  8 - 12 Wednesday 10.30 16.30 9 -|The Swedish School of Textiles, Boras Sweden Date: 8/12 Wednesday 10.30 16.30 9/]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textiles, Boras Sweden Date -  8 - 12 Wednesday 10.30-16.30 9 -|The Swedish School of Textiles, Boras Sweden Date: 8/12 Wednesday 10.30-16.30 9/]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textiles, Borås, Sweden|The Swedish School of Textiles, Borås, Sweden]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/The Swedish School of Textiles, Borås, Sweden Lecturer -  Mika Satomi The course i|The Swedish School of Textiles, Borås, Sweden Lecturer: Mika Satomi The course i]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/train, usage -  5 years, disposal -  recyclable|train, usage: 5 years, disposal: recyclable]] — 1 cards
+- [[Sources/PBS Entity Layers/Places/– tables, chairs, space with good light|– tables, chairs, space with good light]] — 1 cards

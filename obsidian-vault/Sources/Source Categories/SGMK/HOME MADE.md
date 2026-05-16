@@ -1,0 +1,30 @@
+# HOME MADE
+
+Tags: #pbs/source/sgmk #pbs/source-category
+
+Source category system: SGMK-SSAM-WIKI MediaWiki categories
+
+Members: 20
+
+## Pages
+
+- [[Sources/SGMK Full/ANYMA 2015 [1108]|ANYMA 2015]]
+- [[Sources/SGMK Full/DIY Arbeitswoche [119]|DIY Arbeitswoche]]
+- [[Sources/SGMK Full/HOME MADE 2007 [1370]|HOME MADE 2007]]
+- [[Sources/SGMK Full/HOME MADE 2009 [121]|HOME MADE 2009]]
+- [[Sources/SGMK Full/HOME MADE 2010 [123]|HOME MADE 2010]]
+- [[Sources/SGMK Full/HOME MADE 2011 [118]|HOME MADE 2011]]
+- [[Sources/SGMK Full/HOME MADE 2012 [248]|HOME MADE 2012]]
+- [[Sources/SGMK Full/HOME MADE 2013 [406]|HOME MADE 2013]]
+- [[Sources/SGMK Full/HOME MADE 2014 [1037]|HOME MADE 2014]]
+- [[Sources/SGMK Full/HOME MADE 2015 [1105]|HOME MADE 2015]]
+- [[Sources/SGMK Full/HOME MADE 2016 [1202]|HOME MADE 2016]]
+- [[Sources/SGMK Full/HOME MADE 2017 [1384]|HOME MADE 2017]]
+- [[Sources/SGMK Full/HOME MADE 2018 [1433]|HOME MADE 2018]]
+- [[Sources/SGMK Full/HOME MADE 2019 [1534]|HOME MADE 2019]]
+- [[Sources/SGMK Full/HOME MADE 2020 [1726]|HOME MADE 2020]]
+- [[Sources/SGMK Full/HOME MADE 2021 [1821]|HOME MADE 2021]]
+- [[Sources/SGMK Full/HOME MADE 2022 [1950]|HOME MADE 2022]]
+- [[Sources/SGMK Full/HOME MADE 2023 [2031]|HOME MADE 2023]]
+- [[Sources/SGMK Full/HOME MADE 2024 [2227]|HOME MADE 2024]]
+- [[Sources/SGMK Full/HOME MADE 2025 [2318]|HOME MADE 2025]]

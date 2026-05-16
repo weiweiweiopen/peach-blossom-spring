@@ -1,0 +1,220 @@
+{
+  "main": {
+    "id": "2523ebc886727b3d",
+    "type": "split",
+    "children": [
+      {
+        "id": "fd99725a9b74ee8e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f98bbbaf3e333170",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7313037ffcfea29c",
+    "type": "split",
+    "children": [
+      {
+        "id": "21c963571efb9c6c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6f2e19c3b299f9c7",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1d86cc6e55361d29",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜尋"
+            }
+          },
+          {
+            "id": "404dd10250981a13",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "書籤"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 232.5
+  },
+  "right": {
+    "id": "91bee5ec6b336e9f",
+    "type": "split",
+    "children": [
+      {
+        "id": "0c5de6370125bfde",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1a085ad46818aff3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向連結"
+            }
+          },
+          {
+            "id": "5c8debb32d51c8b3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "對外連結"
+            }
+          },
+          {
+            "id": "df12336ed7765c4b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "標籤"
+            }
+          },
+          {
+            "id": "580c782363f3f5aa",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "所有屬性"
+            }
+          },
+          {
+            "id": "b848a69925734d44",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大綱"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "f98bbbaf3e333170",
+  "lastOpenFiles": [
+    "Sources/PBS Semantic Layers/SOURCE_COLORS.md",
+    "Sources/Source Categories/README.md",
+    "Sources/Source Categories/HTGWYW/Workshops.md",
+    "Sources/Source Categories/HTGWYW/Wireless.md",
+    "Sources/Source Categories/HTGWYW/Traces.md",
+    "Sources/Source Categories/HTGWYW/Tools.md",
+    "Sources/Source Categories/HTGWYW/Thinking Out Loud.md",
+    "Sources/Source Categories/HTGWYW/Technique.md",
+    "Sources/Source Categories/HTGWYW/Sensors.md",
+    "Sources/Source Categories/HTGWYW/Power.md",
+    "Sources/Source Categories/HTGWYW/Non-Conductive Materials.md",
+    "Sources/Source Categories/HTGWYW/Meet the Materials.md",
+    "Sources/Source Categories/HTGWYW/Footprints.md",
+    "Sources/Source Categories/HTGWYW/Example Projects.md",
+    "Sources/Source Categories/HTGWYW/Connections.md",
+    "Sources/Source Categories/HTGWYW/Conductive Materials.md",
+    "Sources/Source Categories/HTGWYW/Circuits and Code.md",
+    "Sources/Source Categories/HTGWYW/Actuators.md",
+    "Sources/Source Categories/HTGWYW/Announcements.md",
+    "Sources/Source Categories/HTGWYW",
+    "Sources/Source Categories/SGMK/Workshops.md",
+    "Sources/Source Categories/SGMK/Workshop.md",
+    "Sources/Source Categories/SGMK/SGMK admin.md",
+    "Sources/Source Categories/SGMK/Projects.md",
+    "Sources/Source Categories/SGMK/Pages with syntax highlighting errors.md",
+    "Sources/Source Categories/SGMK/Pages with broken file links.md",
+    "Sources/Source Categories/SGMK/MechArtLab.md",
+    "Sources/Source Categories/SGMK",
+    "Sources/Source Categories",
+    "Sources/PBS Entity Layers/Time 2",
+    "Sources/PBS Entity Layers/People",
+    "Sources/PBS Entity Layers/Places",
+    "Sources/PBS Entity Layers/Time",
+    "Sources/PBS Entity Layers",
+    "Sources/PBS Semantic Layers/Events",
+    "Sources/PBS Semantic Layers/Concepts",
+    "Sources/How To Get What You Want Full/未命名.canvas",
+    "PBS Wiki Visual Map.canvas"
+  ]
+}

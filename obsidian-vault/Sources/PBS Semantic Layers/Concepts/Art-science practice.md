@@ -1,0 +1,131 @@
+# Art-science practice
+
+Layer: [[Sources/PBS Semantic Layers/Concepts|Concepts]]
+
+## Source balance
+
+- hackteria: 111
+- htgwyw: 9
+
+## Linked source cards
+
+- [[Sources/Hackteria Full/Coconut Research at Pantai Nanddong, 2022 [13721]|Coconut Research at Pantai Nanddong, 2022]] `hackteria` score:3
+- [[Sources/How To Get What You Want Full/Human Hacked Orchestra [3513]|Human Hacked Orchestra]] `htgwyw` score:3
+- [[Sources/Hackteria Full/Art & Science towards Citizen Empowerement Symposium @ UGM [2958]|Art & Science towards Citizen Empowerement Symposium @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/Art vs. Citizen Science Symposium @ UGM [2952]|Art vs. Citizen Science Symposium @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/Artist Talk - GG Babystepper [13705]|Artist Talk: GG Babystepper]] `hackteria` score:2
+- [[Sources/Hackteria Full/ArtScience IGEM team [11]|ArtScience IGEM team]] `hackteria` score:2
+- [[Sources/Hackteria Full/ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers [1334]|ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers]] `hackteria` score:2
+- [[Sources/Hackteria Full/ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers [508]|ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers]] `hackteria` score:2
+- [[Sources/Hackteria Full/ArtScienceBangalore 2011-Nanotechnology for Artists and Designers [1406]|ArtScienceBangalore 2011-Nanotechnology for Artists and Designers]] `hackteria` score:2
+- [[Sources/Hackteria Full/ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers [1277]|ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers]] `hackteria` score:2
+- [[Sources/Hackteria Full/BioArt vs. Citizen Science Symposium @ UGM [2854]|BioArt vs. Citizen Science Symposium @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/Bonbontronix - Introduction DIY electronics workshops [13712]|Bonbontronix - Introduction DIY electronics workshops]] `hackteria` score:2
+- [[Sources/Hackteria Full/Citizen-Science Symposium @ UGM [2963]|Citizen-Science Symposium @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/CMCF [15164]|CMCF]] `hackteria` score:2
+- [[Sources/Hackteria Full/Diy-CAD [6249]|Diy-CAD]] `hackteria` score:2
+- [[Sources/Hackteria Full/GBMN [14251]|GBMN]] `hackteria` score:2
+- [[Sources/Hackteria Full/Hackteria Network Zines Library - Art-Science [16108]|Hackteria Network Zines Library/Art-Science]] `hackteria` score:2
+- [[Sources/Hackteria Full/HackteriaLab 2014 MobileLabs [2830]|HackteriaLab 2014 MobileLabs]] `hackteria` score:2
+- [[Sources/Hackteria Full/HLab Reflections [15798]|HLab Reflections]] `hackteria` score:2
+- [[Sources/Hackteria Full/HLab14 Symposium - Citizen Initiatives in Art & Science @ UGM [2857]|HLab14 Symposium - Citizen Initiatives in Art & Science @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/HLab14-Symposium [2996]|HLab14-Symposium]] `hackteria` score:2
+- [[Sources/Hackteria Full/HSC [3403]|HSC]] `hackteria` score:2
+- [[Sources/Hackteria Full/Jurus Sulam Listrik workshop 2022 [13646]|Jurus Sulam Listrik workshop 2022]] `hackteria` score:2
+- [[Sources/Hackteria Full/LatamTrip24 [15594]|LatamTrip24]] `hackteria` score:2
+- [[Sources/Hackteria Full/Old Main Page [1]|Old Main Page]] `hackteria` score:2
+- [[Sources/Hackteria Full/Pechblenda [3048]|Pechblenda]] `hackteria` score:2
+- [[Sources/Hackteria Full/Pura Pura Residency [13724]|Pura Pura Residency]] `hackteria` score:2
+- [[Sources/Hackteria Full/Reflow 0603 SMT components at Home [14022]|Reflow 0603 SMT components at Home]] `hackteria` score:2
+- [[Sources/Hackteria Full/ROSA [13520]|ROSA]] `hackteria` score:2
+- [[Sources/Hackteria Full/ROŠA [13521]|ROŠA]] `hackteria` score:2
+- [[Sources/Hackteria Full/ROŠA - Regional Open Science Hardware & Art, Indonesia [13519]|ROŠA - Regional Open Science Hardware & Art, Indonesia]] `hackteria` score:2
+- [[Sources/Hackteria Full/SesiSolder [13951]|SesiSolder]] `hackteria` score:2
+- [[Sources/Hackteria Full/Symposium - Citizen Initiatives in Art & Science @ UGM [2983]|Symposium - Citizen Initiatives in Art & Science @ UGM]] `hackteria` score:2
+- [[Sources/Hackteria Full/Synthetic Biology for Artists and Designers [5363]|Synthetic Biology for Artists and Designers]] `hackteria` score:2
+- [[Sources/Hackteria Full/Technobiological Futures Co-Laboratories [15993]|Technobiological Futures Co-Laboratories]] `hackteria` score:2
+- [[Sources/Hackteria Full/UROS [12939]|UROS]] `hackteria` score:2
+- [[Sources/Hackteria Full/Visit to Widya Teknologi Hayati, 2022 [13495]|Visit to Widya Teknologi Hayati, 2022]] `hackteria` score:2
+- [[Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045]|Wiki Digital Archeology Research: Hackteria]] `hackteria` score:2
+- [[Sources/Hackteria Full/Workshops Overview [6170]|Workshops Overview]] `hackteria` score:2
+- [[Sources/How To Get What You Want Full/Absurd Musical Interfaces [7748]|Absurd Musical Interfaces]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Between the Alternative Future and the Reality [6016]|Between the Alternative Future and the Reality]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Chic bend and Sleek stretch [6350]|Chic bend and Sleek stretch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Crafting Robots [7745]|Crafting Robots]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Critical Critters [7873]|Critical Critters]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/I - 3 ATtiny [9046]|I <3 ATtiny]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Pulp in Motion [6368]|Pulp in Motion]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Starting to Think [6152]|Starting to Think]] `htgwyw` score:2
+- [[Sources/Hackteria Full/- Open speculations [5483]|* Open speculations]] `hackteria` score:1
+- [[Sources/Hackteria Full/15 - 2 - 2013 research on Arsenic [2349]|15/2/2013 research on Arsenic]] `hackteria` score:1
+- [[Sources/Hackteria Full/Akshaya Zachariah [2215]|Akshaya Zachariah]] `hackteria` score:1
+- [[Sources/Hackteria Full/Akustikologi [2970]|Akustikologi]] `hackteria` score:1
+- [[Sources/Hackteria Full/Andreas Siagian [5735]|Andreas Siagian]] `hackteria` score:1
+- [[Sources/Hackteria Full/Art [447]|Art]] `hackteria` score:1
+- [[Sources/Hackteria Full/Art and Politics [446]|Art and Politics]] `hackteria` score:1
+- [[Sources/Hackteria Full/Art Practices [2855]|Art Practices]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bio+Hacker+Art-Space Tour California 2012 [1873]|Bio+Hacker+Art-Space Tour California 2012]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bio-Hacking meets Citizen Science [5331]|Bio-Hacking meets Citizen Science]] `hackteria` score:1
+- [[Sources/Hackteria Full/BIO-reSEARCH [3148]|BIO-reSEARCH]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioArt Practices for Participatory Intervention [2856]|BioArt Practices for Participatory Intervention]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioart Re-enactment [5374]|Bioart Re-enactment]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioart Wet-Workshop - Hybrid DNA Isolation [16012]|Bioart Wet-Workshop: Hybrid DNA Isolation]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioAutonomy [4546]|BioAutonomy]] `hackteria` score:1
+- [[Sources/Hackteria Full/Biodiversity conservation in Wonosadi Forest [2716]|Biodiversity conservation in Wonosadi Forest]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019 [7897]|BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronics for artists @ CEMA [467]|Bioelectronics for artists @ CEMA]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronix for artists @ piksel09 [470]|Bioelectronix for artists @ piksel09]] `hackteria` score:1
+- [[Sources/Hackteria Full/BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki [1012]|BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronix for artists @ playaround09, Taipei [506]|Bioelectronix for artists @ playaround09, Taipei]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronix for artists @ videotage, Hong Kong [497]|Bioelectronix for artists @ videotage, Hong Kong]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioElectronix for Artists and Geeks, Ljubljana [1983]|BioElectronix for Artists and Geeks, Ljubljana]] `hackteria` score:1
+- [[Sources/Hackteria Full/Biorecovery of Volcanic Soil [2714]|Biorecovery of Volcanic Soil]] `hackteria` score:1
+- [[Sources/Hackteria Full/BIOSC - BIOLOGICAL ORCHESTRA EXPLOITATION PROJECT [3118]|BIOSC: BIOLOGICAL ORCHESTRA EXPLOITATION PROJECT]] `hackteria` score:1
+- [[Sources/Hackteria Full/Book - Homemade Biological Art [1766]|Book: Homemade Biological Art]] `hackteria` score:1
+- [[Sources/Hackteria Full/Brewing Up [5437]|Brewing Up]] `hackteria` score:1
+- [[Sources/Hackteria Full/Cave µ-Safari, Science Gallery, Dublin [2643]|Cave µ-Safari, Science Gallery, Dublin]] `hackteria` score:1
+- [[Sources/Hackteria Full/Chaitrali Bhide [2157]|Chaitrali Bhide]] `hackteria` score:1
+- [[Sources/Hackteria Full/Chhavi Jatwani [1452]|Chhavi Jatwani]] `hackteria` score:1
+- [[Sources/Hackteria Full/CNX OpenLab [15318]|CNX OpenLab]] `hackteria` score:1
+- [[Sources/Hackteria Full/CoLabs Chiang Mai [15995]|CoLabs Chiang Mai]] `hackteria` score:1
+- [[Sources/Hackteria Full/Collection of DIY Biology, Open Source Art Projects [6201]|Collection of DIY Biology, Open Source Art Projects]] `hackteria` score:1
+- [[Sources/Hackteria Full/Collection of Open Source Art Projects [6253]|Collection of Open Source Art Projects]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 14 - 15th February, 2013 - Secondary Research on Arsenic [2311]|Day 14 - 15th February, 2013 - Secondary Research on Arsenic]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 15 & 16 - 21st & 22nd February, 2013 - Research on legal aspects [2369]|Day 15 & 16 - 21st & 22nd February, 2013 - Research on legal aspects]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 18 - 14th March, 2013 - Secondary Research [2372]|Day 18 - 14th March, 2013 - Secondary Research]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 2 - Discussions and Research [2217]|Day 2: Discussions and Research]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 5 - The Living Art [2447]|Day 5 : The Living Art]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 5-The art of Making Wine [2307]|Day 5-The art of Making Wine]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS [2296]|Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS]] `hackteria` score:1
+- [[Sources/Hackteria Full/Dildomancy hacking science and DIY - DIWO low cost pleasure and vaginal trainning [5030]|Dildomancy hacking science and DIY/DIWO low cost pleasure and vaginal trainning]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY & Low-Cost Laboratory Infrastructure [2764]|DIY & Low-Cost Laboratory Infrastructure]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Fermentation or the Art of making Wine [706]|DIY Fermentation or the Art of making Wine]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY microscopy [232]|DIY microscopy]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY microscopy @ CEMA [469]|DIY microscopy @ CEMA]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Sharing Playground [8305]|DIY-MedTech Sharing Playground]] `hackteria` score:1
+- [[Sources/Hackteria Full/DNA- apart from carriers of genetic information [1632]|DNA- apart from carriers of genetic information]] `hackteria` score:1
+- [[Sources/Hackteria Full/Domaći mikroskop @ Science Picnic, Zagreb [3502]|Domaći mikroskop @ Science Picnic, Zagreb]] `hackteria` score:1
+- [[Sources/Hackteria Full/Drbrian [14214]|Drbrian]] `hackteria` score:1
+- [[Sources/Hackteria Full/DSSC Laser sonic art with Neutone [15949]|DSSC Laser sonic art with Neutone]] `hackteria` score:1
+- [[Sources/Hackteria Full/Environmental Monitoring of the Rivers in Yogya [2715]|Environmental Monitoring of the Rivers in Yogya]] `hackteria` score:1
+- [[Sources/Hackteria Full/Espectrum microscope for micro-macro especulation [4978]|Espectrum microscope for micro-macro especulation]] `hackteria` score:1
+- [[Sources/Hackteria Full/Euglena Burger [5454]|Euglena Burger]] `hackteria` score:1
+- [[Sources/Hackteria Full/Exploracion submarina [3528]|Exploracion submarina]] `hackteria` score:1
+- [[Sources/Hackteria Full/Field-Trips [2852]|Field-Trips]] `hackteria` score:1
+- [[Sources/Hackteria Full/Fostering Duckweed [5645]|Fostering Duckweed]] `hackteria` score:1
+- [[Sources/Hackteria Full/Generic Lab Equipment [4177]|Generic Lab Equipment]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gentle But Make Noise ‘Drinking Woodo's Sky’ (Yogyakarta version) [14235]|Gentle But Make Noise ‘Drinking Woodo's Sky’ (Yogyakarta version)]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gita Upmale [2202]|Gita Upmale]] `hackteria` score:1
+- [[Sources/Hackteria Full/Glow of the earthworm [6998]|Glow of the earthworm]] `hackteria` score:1
+- [[Sources/Hackteria Full/GynePUNK biolabs [3433]|GynePUNK biolabs]] `hackteria` score:1
+- [[Sources/Hackteria Full/GYNEpunk gynecologyLAB reSEARCH Session 2016 [5740]|GYNEpunk gynecologyLAB reSEARCH Session 2016]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria BioLab @ SHARE - Republika, Rijeka [2601]|Hackteria BioLab @ SHARE - Republika, Rijeka]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria FoodHacking - BioLab @ CynetArt - Dresden, Germany [2605]|Hackteria FoodHacking - BioLab @ CynetArt - Dresden, Germany]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Lab Participants [694]|Hackteria Lab Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2010 - Dock18 - Zürich [693]|HackteriaLab 2010 - Dock18/Zürich]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 - Romainmotier [1104]|HackteriaLab 2011 - Romainmotier]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 Participants [1371]|HackteriaLab 2011 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Bangalore [2016]|HackteriaLab 2013 - Bangalore]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - National Center for Biological Sciences [2503]|HackteriaLab 2013 - National Center for Biological Sciences]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Welcome kit for participants [2252]|HackteriaLab 2013 - Welcome kit for participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 Participants [2079]|HackteriaLab 2013 Participants]] `hackteria` score:1

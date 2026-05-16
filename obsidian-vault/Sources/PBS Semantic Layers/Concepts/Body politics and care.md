@@ -1,0 +1,130 @@
+# Body politics and care
+
+Layer: [[Sources/PBS Semantic Layers/Concepts|Concepts]]
+
+## Source balance
+
+- hackteria: 120
+
+## Linked source cards
+
+- [[Sources/Hackteria Full/Dildomancy hacking science and DIY - DIWO low cost pleasure and vaginal trainning [5030]|Dildomancy hacking science and DIY/DIWO low cost pleasure and vaginal trainning]] `hackteria` score:2
+- [[Sources/Hackteria Full/Main Page [6159]|Main Page]] `hackteria` score:2
+- [[Sources/Hackteria Full/Openlab gynecologyDIT [5283]|Openlab gynecologyDIT]] `hackteria` score:2
+- [[Sources/Hackteria Full/Pechblenda [3048]|Pechblenda]] `hackteria` score:2
+- [[Sources/Hackteria Full/Pelvic or Transvaginal Ultrasound [3195]|Pelvic or Transvaginal Ultrasound]] `hackteria` score:2
+- [[Sources/Hackteria Full/Alligators [7416]|Alligators]] `hackteria` score:1
+- [[Sources/Hackteria Full/AnarchaGLAM SPELL [3617]|AnarchaGLAM SPELL]] `hackteria` score:1
+- [[Sources/Hackteria Full/Arduino Code für Mitsubishi Roboter [6871]|Arduino Code für Mitsubishi Roboter]] `hackteria` score:1
+- [[Sources/Hackteria Full/Backyard Brains Fablab Luzern KresseShield [6774]|Backyard Brains Fablab Luzern KresseShield]] `hackteria` score:1
+- [[Sources/Hackteria Full/BadLab @ Open Source Body [12924]|BadLab @ Open Source Body]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bananaplug [15372]|Bananaplug]] `hackteria` score:1
+- [[Sources/Hackteria Full/BIO-reSEARCH [3148]|BIO-reSEARCH]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioAutonomy [4546]|BioAutonomy]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bitácora [4730]|Bitácora]] `hackteria` score:1
+- [[Sources/Hackteria Full/BreakOut Methoden [6468]|BreakOut Methoden]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bärenbrüder [7418]|Bärenbrüder]] `hackteria` score:1
+- [[Sources/Hackteria Full/CABINET de CURIOSIDADES - gYNEpuNK biolabs & otras bioLencias - [4988]|CABINET de CURIOSIDADES \"gYNEpuNK biolabs & otras bioLencias\]] `hackteria` score:1
+- [[Sources/Hackteria Full/Cervical Cone Biopsy [3193]|Cervical Cone Biopsy]] `hackteria` score:1
+- [[Sources/Hackteria Full/De-colonize gender healers [4836]|De-colonize gender healers]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY MedTech Mentors 2021 [12805]|DIY MedTech Mentors 2021]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY MedTech WishList [6790]|DIY MedTech WishList]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech [8304]|DIY-MedTech]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech - Günstig Reisen mit dusjagr [7511]|DIY-MedTech - Günstig Reisen mit dusjagr]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech 3D Druck - Team Dr. Octopus [6599]|DIY-MedTech 3D Druck - Team Dr. Octopus]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Anatomie - Team Fantastic Three [6594]|DIY-MedTech Anatomie - Team Fantastic Three]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Arduino [6648]|DIY-MedTech Arduino]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Arduino Basics - Team Tamberg [6649]|DIY-MedTech Arduino Basics - Team Tamberg]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Arduino Programmieren - Team Jay [6623]|DIY-MedTech Arduino Programmieren - Team Jay]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Bildgebende Verfahren [7634]|DIY-MedTech Bildgebende Verfahren]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Bildgebende Verfahren-Unterschiedliche Bildeindrücke - Team Frosch [8657]|DIY-MedTech Bildgebende Verfahren-Unterschiedliche Bildeindrücke - Team Frosch]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Destillieren - Team Enterprise [7517]|DIY-MedTech Destillieren - Team Enterprise]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Dronen fliegen - Team Dagobert [7461]|DIY-MedTech Dronen fliegen - Team Dagobert]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Dumspter Diving - Team Gaudi [6593]|DIY-MedTech Dumspter Diving - Team Gaudi]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Elektro-Physiologie - Team Iguana [6626]|DIY-MedTech Elektro-Physiologie - Team Iguana]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Fisch ausnehmen - Team Gustav [7448]|DIY-MedTech Fisch ausnehmen - Team Gustav]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Fotografie - Team Giraffe [6596]|DIY-MedTech Fotografie - Team Giraffe]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Human-Computer-Interfaces - gaudi [7551]|DIY-MedTech Human-Computer-Interfaces - gaudi]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Jonglieren - Team Babos [6651]|DIY-MedTech Jonglieren - Team Babos]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Kreativität - Team A-Team [6617]|DIY-MedTech Kreativität - Team A-Team]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Kreativitätstechniken - Team A-Team [6674]|DIY-MedTech Kreativitätstechniken - Team A-Team]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Laser - Team CreateIt [6602]|DIY-MedTech Laser - Team CreateIt]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech LaTex - Team Bärenbrüder [7661]|DIY-MedTech LaTex - Team Bärenbrüder]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Löten - Team Alligators [7449]|DIY-MedTech Löten - Team Alligators]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Medizinlabor Führung - Team Enter [6850]|DIY-MedTech Medizinlabor Führung - Team Enter]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Photoshop - Team Lion [6618]|DIY-MedTech Photoshop - Team Lion]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Resources [8306]|DIY-MedTech Resources]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Roboter Basics - Team Hacker [6692]|DIY-MedTech Roboter Basics - Team Hacker]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Rätoromanisch Grundkurs - Team Han Solo [7489]|DIY-MedTech Rätoromanisch Grundkurs - Team Han Solo]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Sharing Playground [8305]|DIY-MedTech Sharing Playground]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Sinnvolle Anwendungen - Team Krokodil [6658]|DIY-MedTech Sinnvolle Anwendungen - Team Krokodil]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Ski wachsen - Team Fanta 4 [7631]|DIY-MedTech Ski wachsen - Team Fanta 4]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Skillshare - Zombie Apokalypse - Greg Gage [12362]|DIY-MedTech Skillshare - Zombie Apokalypse - Greg Gage]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Synths&Soundzz - dusjagr [12363]|DIY-MedTech Synths&Soundzz - dusjagr]] `hackteria` score:1
+- [[Sources/Hackteria Full/Dusjagr's mini-residency [4231]|Dusjagr's mini-residency]] `hackteria` score:1
+- [[Sources/Hackteria Full/Espectrum microscope for micro-macro especulation [4978]|Espectrum microscope for micro-macro especulation]] `hackteria` score:1
+- [[Sources/Hackteria Full/Especultivo inkubator based on the Fermento one [4995]|Especultivo inkubator based on the Fermento one]] `hackteria` score:1
+- [[Sources/Hackteria Full/Exoglands - lista materiales [4661]|Exoglands/lista materiales]] `hackteria` score:1
+- [[Sources/Hackteria Full/Find Career Path [969]|Find Career Path]] `hackteria` score:1
+- [[Sources/Hackteria Full/Generic Lab Equipment [4177]|Generic Lab Equipment]] `hackteria` score:1
+- [[Sources/Hackteria Full/GynePUNK [3601]|GynePUNK]] `hackteria` score:1
+- [[Sources/Hackteria Full/GynePUNK biolabs [3433]|GynePUNK biolabs]] `hackteria` score:1
+- [[Sources/Hackteria Full/GYNEpunk gynecologyLAB reSEARCH Session 2016 [5740]|GYNEpunk gynecologyLAB reSEARCH Session 2016]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gynepunkfuge [4994]|Gynepunkfuge]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hacked Hard-disc Centrifuge [2033]|Hacked Hard-disc Centrifuge]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Network Zines Library - Transfeminism & Body Politics [16120]|Hackteria Network Zines Library/Transfeminism & Body Politics]] `hackteria` score:1
+- [[Sources/Hackteria Full/Heartbeat Controlled Acoustic Levitation Synthesizer [6870]|Heartbeat Controlled Acoustic Levitation Synthesizer]] `hackteria` score:1
+- [[Sources/Hackteria Full/HPV [4660]|HPV]] `hackteria` score:1
+- [[Sources/Hackteria Full/Ich Komme Nicht Draus [8442]|Ich Komme Nicht Draus]] `hackteria` score:1
+- [[Sources/Hackteria Full/Ich mache eine Seite [14288]|Ich mache eine Seite]] `hackteria` score:1
+- [[Sources/Hackteria Full/Input Lectures on DIY, MedTech and Hacklabs [6872]|Input Lectures on DIY, MedTech and Hacklabs]] `hackteria` score:1
+- [[Sources/Hackteria Full/KOH - microscopio [5299]|KOH/ microscopio]] `hackteria` score:1
+- [[Sources/Hackteria Full/Lmao funny guy But u know anybody with gold post them my way 83 [1159]|Lmao funny guy But u know anybody with gold post them my way 83]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY [12761]|Medizintechnik DIY]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY 2018 [7358]|Medizintechnik DIY 2018]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY 2019 [8301]|Medizintechnik DIY 2019]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY 2020 [6298]|Medizintechnik DIY 2020]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY hs21 [13219]|Medizintechnik DIY hs21]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY hs22 [14176]|Medizintechnik DIY hs22]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY hs23 [14642]|Medizintechnik DIY hs23]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY Material [15559]|Medizintechnik DIY Material]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY Resources [8303]|Medizintechnik DIY Resources]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY ws21 [12947]|Medizintechnik DIY ws21]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY ws22 [13755]|Medizintechnik DIY ws22]] `hackteria` score:1
+- [[Sources/Hackteria Full/Medizintechnik DIY ws23 [14641]|Medizintechnik DIY ws23]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTech-DIY [6303]|MedTech-DIY]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTech-DIY Student projects all-stars [13270]|MedTech-DIY Student projects all-stars]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Another Team [8444]|MedTechDIY20 Another Team]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Autonomes Nervensystem und das Hören in der Medizin [8670]|MedTechDIY20 Autonomes Nervensystem und das Hören in der Medizin]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Bananas In Pajamas [8464]|MedTechDIY20 Bananas In Pajamas]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Die Profis [8459]|MedTechDIY20 Die Profis]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 DIY-MedTech Skillshare - Zombie Apokalypse - Greg Gage [8979]|MedTechDIY20 DIY-MedTech Skillshare - Zombie Apokalypse - Greg Gage]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 DIY-MedTech Synths&Soundzz - dusjagr [8713]|MedTechDIY20 DIY-MedTech Synths&Soundzz - dusjagr]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team 2020 Mentorzz [8445]|MedTechDIY20 Team 2020 Mentorzz]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team Corona [8447]|MedTechDIY20 Team Corona]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team Eehhh [8446]|MedTechDIY20 Team Eehhh]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team Frosch [8452]|MedTechDIY20 Team Frosch]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team G2020 [8458]|MedTechDIY20 Team G2020]] `hackteria` score:1
+- [[Sources/Hackteria Full/MedTechDIY20 Team HustlerzZ [8453]|MedTechDIY20 Team HustlerzZ]] `hackteria` score:1
+- [[Sources/Hackteria Full/Meine Seite Juuhuuu [13768]|Meine Seite Juuhuuu]] `hackteria` score:1
+- [[Sources/Hackteria Full/Microscopic Experiments at THF [3616]|Microscopic Experiments at THF]] `hackteria` score:1
+- [[Sources/Hackteria Full/MobileLABS tipoLOgy [4658]|MobileLABS tipoLOgy]] `hackteria` score:1
+- [[Sources/Hackteria Full/My diet only consists of unhealthy food 38 [1218]|My diet only consists of unhealthy food 38]] `hackteria` score:1
+- [[Sources/Hackteria Full/Mémoires from Germline Hacks and Body Mods [12612]|Mémoires from Germline Hacks and Body Mods]] `hackteria` score:1
+- [[Sources/Hackteria Full/Nano hacking science and DIY - DIWO low cost diagnosis [5028]|Nano hacking science and DIY/DIWO low cost diagnosis]] `hackteria` score:1
+- [[Sources/Hackteria Full/Old Main Page [1]|Old Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/Open Source Estrogen [5750]|Open Source Estrogen]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pap Smear [3191]|Pap Smear]] `hackteria` score:1
+- [[Sources/Hackteria Full/Performative labody Ritual [6376]|Performative labody Ritual]] `hackteria` score:1
+- [[Sources/Hackteria Full/Piano Hack [12997]|Piano Hack]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pornoisenicolaou stain [5462]|Pornoisenicolaou stain]] `hackteria` score:1
+- [[Sources/Hackteria Full/Q & A with Greg - Backyard Brains 2019 [7502]|Q & A with Greg - Backyard Brains 2019]] `hackteria` score:1
+- [[Sources/Hackteria Full/Radical Reproduction [4233]|Radical Reproduction]] `hackteria` score:1
+- [[Sources/Hackteria Full/Seeds of Contend - Bioassay in your own dirt - PTsD [14283]|Seeds of Contend / Bioassay in your own dirt/PTsD]] `hackteria` score:1
+- [[Sources/Hackteria Full/Skill Share - Arduino is so 2008, now we do ESP [13791]|Skill Share: Arduino is so 2008, now we do ESP]] `hackteria` score:1
+- [[Sources/Hackteria Full/Speculum speculorum [5300]|Speculum speculorum]] `hackteria` score:1
+- [[Sources/Hackteria Full/StudiTest22 [13757]|StudiTest22]] `hackteria` score:1
+- [[Sources/Hackteria Full/Team 34 ist cool [12951]|Team 34 ist cool]] `hackteria` score:1
+- [[Sources/Hackteria Full/Team A - Einführung Schach [12798]|Team A - Einführung Schach]] `hackteria` score:1
+- [[Sources/Hackteria Full/Team A-Team [6547]|Team A-Team]] `hackteria` score:1
+- [[Sources/Hackteria Full/Team Abartig [13770]|Team Abartig]] `hackteria` score:1

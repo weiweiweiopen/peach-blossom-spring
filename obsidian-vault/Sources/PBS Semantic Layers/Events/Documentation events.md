@@ -1,0 +1,132 @@
+# Documentation events
+
+Layer: [[Sources/PBS Semantic Layers/Events|Events]]
+
+## Source balance
+
+- hackteria: 16
+- htgwyw: 56
+- sgmk: 48
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/Sewing an electronic circuit [2647]|Sewing an electronic circuit]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Solar T-shirt Workshop [2816]|Solar T-shirt Workshop]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/DEAF - Crafting the Future Workshop [3472]|DEAF: Crafting the Future Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Embroidery gone Electronic [3444]|Embroidery gone Electronic]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/fabric meets electronics [2266]|fabric meets electronics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fluffy MIDI [9948]|Fluffy MIDI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI [2376]|MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Soft Interactive Technology Course at KHB [7229]|Soft Interactive Technology Course at KHB]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Toy Piano T-shirt workshop [2902]|Toy Piano T-shirt workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Wearable Studio Workshops at ARS [5763]|Wearable Studio Workshops at ARS]] `htgwyw` score:2
+- [[Sources/SGMK Full/HOME MADE 2025 [2318]|HOME MADE 2025]] `sgmk` score:2
+- [[Sources/SGMK Full/HOME MADE 2025 Fields Of Results [2451]|HOME MADE 2025 Fields Of Results]] `sgmk` score:2
+- [[Sources/SGMK Full/HOME MADE 2025 Participants [2366]|HOME MADE 2025 Participants]] `sgmk` score:2
+- [[Sources/Hackteria Full/Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS [2296]|Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS]] `hackteria` score:1
+- [[Sources/Hackteria Full/Drbrian [14214]|Drbrian]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Lab Participants [694]|Hackteria Lab Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2010 - Dock18 - Zürich [693]|HackteriaLab 2010 - Dock18/Zürich]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 - Romainmotier [1104]|HackteriaLab 2011 - Romainmotier]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 Participants [1371]|HackteriaLab 2011 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Bangalore [2016]|HackteriaLab 2013 - Bangalore]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Welcome kit for participants [2252]|HackteriaLab 2013 - Welcome kit for participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 Participants [2079]|HackteriaLab 2013 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2014 - Info-kit for participants [2685]|HackteriaLab 2014 - Info-kit for participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2014 - Yogyakarta [2476]|HackteriaLab 2014 - Yogyakarta]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2014 Participants [2684]|HackteriaLab 2014 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLabX Fellows [8024]|HLabX Fellows]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLabX Jogja Meeting [7903]|HLabX Jogja Meeting]] `hackteria` score:1
+- [[Sources/Hackteria Full/Who wants to be my prom date 73 [1238]|Who wants to be my prom date 73]] `hackteria` score:1
+- [[Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045]|Wiki Digital Archeology Research: Hackteria]] `hackteria` score:1
+- [[Sources/How To Get What You Want Full/Arduino meets Wearables Workshop [4141]|Arduino meets Wearables Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Bike+Light Workshop [4174]|Bike+Light Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Card Weaving Workshop [4718]|Card Weaving Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Chip-Man-Band [5044]|Chip-Man-Band]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Designing for the loop Workshop [3709]|Designing for the loop Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Designing “Soft Circuits” [7075]|Designing “Soft Circuits”]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Workshop Berlin [4669]|DressCode Workshop Berlin]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Workshop Shambala [4156]|DressCode Workshop Shambala]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Electric Embroidery Monday [3208]|Electric Embroidery Monday]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Electric Embroidery Tuesday [3338]|Electric Embroidery Tuesday]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Embroidered Speaker Workshop [3652]|Embroidered Speaker Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/eTextile Summer Camp 2016 [6056]|eTextile Summer Camp 2016]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Game controller hack [1587]|Game controller hack]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Games Workshop II [2430]|Games Workshop II]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Handcrafting a textile sensor from scratch [2322]|Handcrafting a textile sensor from scratch]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Mice [2752]|Handcrafting Textile Mice]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors from Scratch [2181]|Handcrafting Textile Sensors from Scratch]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors in Vienna [3011]|Handcrafting Textile Sensors in Vienna]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Human Hacked Orchestra [3513]|Human Hacked Orchestra]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/In All Different Colors [6755]|In All Different Colors]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Interactive Solar T-Shirt [1591]|Interactive Solar T-Shirt]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Jenny’s Playlist Costume [5309]|Jenny’s Playlist Costume]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Knitting, hacking, hanging, sound [5530]|Knitting, hacking, hanging, sound]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268]|LilyPad Arduino Programming]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Linlow Performance in Berlin [6831]|Linlow Performance in Berlin]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Making Textile Sensors from Scratch at TEI [2327]|Making Textile Sensors from Scratch at TEI]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/MATERIALS & CRAFTMANSHIP [1962]|MATERIALS & CRAFTMANSHIP]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Meet the Materials - Note [9265]|Meet the Materials : Note]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Moving Textile [6662]|Moving Textile]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Playing with electronic textiles [9812]|Playing with electronic textiles]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Resistive and Piezoresistive Fabrics [913]|Resistive and Piezoresistive Fabrics]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Soft & Tiny Arduino Workshop [3655]|Soft & Tiny Arduino Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Soft & Tiny Pillow Speaker Workshop [3959]|Soft & Tiny Pillow Speaker Workshop]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/soft interactive technologies [8321]|soft interactive technologies]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Technical Intimacy [5301]|Technical Intimacy]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Technology + Textiles [3268]|Technology + Textiles]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Textile Sensoren und Aktuatoren in Handarbeit [9424]|Textile Sensoren und Aktuatoren in Handarbeit]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Tinkering with Textiles & Electronics [4085]|Tinkering with Textiles & Electronics]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Tool time [1954]|Tool time]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Visualization - Pressure Sensor Matrix [3363]|Visualization: Pressure Sensor Matrix]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Wearable sound experiment [1593]|Wearable sound experiment]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Wearable Sound Experiment II [2179]|Wearable Sound Experiment II]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Wearable Sound Toy Orchestra [2869]|Wearable Sound Toy Orchestra]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/What is Variables - [8995]|What is Variables?]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Wireless JoySlippers [565]|Wireless JoySlippers]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Xbee FirmwareUpdate [163]|Xbee FirmwareUpdate]] `htgwyw` score:1
+- [[Sources/SGMK Full/2022 End Meeting notes [1984]|2022 End Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/April 2020 Meeting notes [1711]|April 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Feb 2019 Meeting Notes [1486]|Feb 2019 Meeting Notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Feb 2021 Meeting notes [1813]|Feb 2021 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Feb 2022 Meeting notes [1925]|Feb 2022 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2012 [248]|HOME MADE 2012]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2012 Participants [313]|HOME MADE 2012 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2014 [1037]|HOME MADE 2014]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2014 Participants [1043]|HOME MADE 2014 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2015 [1105]|HOME MADE 2015]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2015 Participants [1114]|HOME MADE 2015 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2016 [1202]|HOME MADE 2016]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2016 Participants [1275]|HOME MADE 2016 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2017 [1384]|HOME MADE 2017]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2017 Participants [1385]|HOME MADE 2017 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2018 [1433]|HOME MADE 2018]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2018 Participants [1434]|HOME MADE 2018 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2019 [1534]|HOME MADE 2019]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2019 Participants [1591]|HOME MADE 2019 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2020 [1726]|HOME MADE 2020]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2020 Participants [1735]|HOME MADE 2020 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2021 [1821]|HOME MADE 2021]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2021 Participants [1826]|HOME MADE 2021 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2022 [1950]|HOME MADE 2022]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2022 Participants [1951]|HOME MADE 2022 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2023 [2031]|HOME MADE 2023]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2023 Participants [2038]|HOME MADE 2023 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2024 [2227]|HOME MADE 2024]] `sgmk` score:1
+- [[Sources/SGMK Full/HOME MADE 2024 Participants [2254]|HOME MADE 2024 Participants]] `sgmk` score:1
+- [[Sources/SGMK Full/Jan 2020 Meeting notes [1646]|Jan 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Juli 2020 - Erstes Meeting mit neuem Vorstand [1736]|Juli 2020 - Erstes Meeting mit neuem Vorstand]] `sgmk` score:1
+- [[Sources/SGMK Full/Juni 2023 Meeting notes [2055]|Juni 2023 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Juni 29.6 2021 [1828]|Juni 29.6 2021]] `sgmk` score:1
+- [[Sources/SGMK Full/KIBLIX 2011 - Participants List [127]|KIBLIX 2011 - Participants List]] `sgmk` score:1
+- [[Sources/SGMK Full/Mai 2020 Meeting notes [1722]|Mai 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/March 2020 Meeting notes [1688]|March 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/May 2019 Meeting Notes [1574]|May 2019 Meeting Notes]] `sgmk` score:1
+- [[Sources/SGMK Full/März 2021 Meeting notes [1819]|März 2021 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Nov 2020 Meeting notes [1772]|Nov 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Nov 2021 Meeting notes [1908]|Nov 2021 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Nov 2022 Meeting notes [1983]|Nov 2022 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Okt 2023 Meeting notes [2153]|Okt 2023 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Sep 2020 Meeting notes [1771]|Sep 2020 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/Sep 2022 Meeting notes [1970]|Sep 2022 Meeting notes]] `sgmk` score:1
+- [[Sources/SGMK Full/SGMK admin [1386]|SGMK admin]] `sgmk` score:1

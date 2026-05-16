@@ -1,0 +1,5524 @@
+{
+  "imported": "2026-05-16 10:16",
+  "count": 613,
+  "failures": [],
+  "posts": [
+    {
+      "id": 20,
+      "title": "Neoprene Bend Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=20",
+      "path": "Sources/How To Get What You Want Full/Neoprene Bend Sensor [20].md",
+      "date": "2009-03-11T15:47:48",
+      "modified": "2015-04-28T07:19:48",
+      "chars": 5457
+    },
+    {
+      "id": 45,
+      "title": "Neoprene Motor Pouch",
+      "url": "https://www.kobakant.at/DIY/?p=45",
+      "path": "Sources/How To Get What You Want Full/Neoprene Motor Pouch [45].md",
+      "date": "2009-03-12T07:55:35",
+      "modified": "2009-07-15T17:31:26",
+      "chars": 65
+    },
+    {
+      "id": 48,
+      "title": "Fabric Button",
+      "url": "https://www.kobakant.at/DIY/?p=48",
+      "path": "Sources/How To Get What You Want Full/Fabric Button [48].md",
+      "date": "2009-03-12T07:57:17",
+      "modified": "2013-06-21T05:12:33",
+      "chars": 496
+    },
+    {
+      "id": 52,
+      "title": "Neoprene Battery Pouches",
+      "url": "https://www.kobakant.at/DIY/?p=52",
+      "path": "Sources/How To Get What You Want Full/Neoprene Battery Pouches [52].md",
+      "date": "2009-03-12T08:02:46",
+      "modified": "2009-06-28T10:17:43",
+      "chars": 1956
+    },
+    {
+      "id": 65,
+      "title": "Neoprene Pressure Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=65",
+      "path": "Sources/How To Get What You Want Full/Neoprene Pressure Sensor [65].md",
+      "date": "2009-03-13T14:56:49",
+      "modified": "2011-06-01T08:14:36",
+      "chars": 1410
+    },
+    {
+      "id": 67,
+      "title": "Polymorph",
+      "url": "https://www.kobakant.at/DIY/?p=67",
+      "path": "Sources/How To Get What You Want Full/Polymorph [67].md",
+      "date": "2009-03-13T14:58:59",
+      "modified": "2010-06-23T02:12:46",
+      "chars": 664
+    },
+    {
+      "id": 70,
+      "title": "Metal Poppers",
+      "url": "https://www.kobakant.at/DIY/?p=70",
+      "path": "Sources/How To Get What You Want Full/Metal Poppers [70].md",
+      "date": "2009-03-13T15:00:11",
+      "modified": "2009-09-22T23:15:45",
+      "chars": 3322
+    },
+    {
+      "id": 163,
+      "title": "Xbee FirmwareUpdate",
+      "url": "https://www.kobakant.at/DIY/?p=163",
+      "path": "Sources/How To Get What You Want Full/Xbee FirmwareUpdate [163].md",
+      "date": "2009-03-30T15:10:54",
+      "modified": "2009-06-23T18:12:17",
+      "chars": 3440
+    },
+    {
+      "id": 172,
+      "title": "DIY 3V Step-Up (Joule Thief)",
+      "url": "https://www.kobakant.at/DIY/?p=172",
+      "path": "Sources/How To Get What You Want Full/DIY 3V Step-Up (Joule Thief) [172].md",
+      "date": "2009-03-30T15:30:11",
+      "modified": "2011-12-28T12:01:30",
+      "chars": 640
+    },
+    {
+      "id": 178,
+      "title": "Time Sensing Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=178",
+      "path": "Sources/How To Get What You Want Full/Time Sensing Bracelet [178].md",
+      "date": "2009-03-30T17:08:44",
+      "modified": "2009-08-12T11:18:29",
+      "chars": 207
+    },
+    {
+      "id": 181,
+      "title": "Wire Wrap Tool",
+      "url": "https://www.kobakant.at/DIY/?p=181",
+      "path": "Sources/How To Get What You Want Full/Wire Wrap Tool [181].md",
+      "date": "2009-03-30T17:14:25",
+      "modified": "2009-06-06T18:32:00",
+      "chars": 62
+    },
+    {
+      "id": 183,
+      "title": "Popper Machines",
+      "url": "https://www.kobakant.at/DIY/?p=183",
+      "path": "Sources/How To Get What You Want Full/Popper Machines [183].md",
+      "date": "2009-03-30T17:18:23",
+      "modified": "2012-10-03T16:28:09",
+      "chars": 533
+    },
+    {
+      "id": 190,
+      "title": "Fabric Markers",
+      "url": "https://www.kobakant.at/DIY/?p=190",
+      "path": "Sources/How To Get What You Want Full/Fabric Markers [190].md",
+      "date": "2009-03-30T17:34:14",
+      "modified": "2011-11-23T00:31:55",
+      "chars": 441
+    },
+    {
+      "id": 194,
+      "title": "File",
+      "url": "https://www.kobakant.at/DIY/?p=194",
+      "path": "Sources/How To Get What You Want Full/File [194].md",
+      "date": "2009-03-30T17:36:34",
+      "modified": "2009-03-30T17:36:34",
+      "chars": 102
+    },
+    {
+      "id": 196,
+      "title": "Fabric Scissors",
+      "url": "https://www.kobakant.at/DIY/?p=196",
+      "path": "Sources/How To Get What You Want Full/Fabric Scissors [196].md",
+      "date": "2009-03-30T17:38:43",
+      "modified": "2009-03-30T17:38:43",
+      "chars": 98
+    },
+    {
+      "id": 201,
+      "title": "Tilt Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=201",
+      "path": "Sources/How To Get What You Want Full/Tilt Sensor [201].md",
+      "date": "2009-03-30T18:51:30",
+      "modified": "2010-03-26T12:48:57",
+      "chars": 798
+    },
+    {
+      "id": 204,
+      "title": "Xbee dongle",
+      "url": "https://www.kobakant.at/DIY/?p=204",
+      "path": "Sources/How To Get What You Want Full/Xbee dongle [204].md",
+      "date": "2009-03-30T18:52:56",
+      "modified": "2009-07-02T11:19:11",
+      "chars": 1965
+    },
+    {
+      "id": 210,
+      "title": "Fabric Stretch Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=210",
+      "path": "Sources/How To Get What You Want Full/Fabric Stretch Sensors [210].md",
+      "date": "2009-03-30T18:56:07",
+      "modified": "2010-10-17T01:38:57",
+      "chars": 684
+    },
+    {
+      "id": 213,
+      "title": "Matrix: Neoprene",
+      "url": "https://www.kobakant.at/DIY/?p=213",
+      "path": "Sources/How To Get What You Want Full/Matrix - Neoprene [213].md",
+      "date": "2009-03-30T18:59:43",
+      "modified": "2018-12-15T19:38:12",
+      "chars": 1223
+    },
+    {
+      "id": 214,
+      "title": "Xbee Direct (Xbee-Xbee)",
+      "url": "https://www.kobakant.at/DIY/?p=214",
+      "path": "Sources/How To Get What You Want Full/Xbee Direct (Xbee-Xbee) [214].md",
+      "date": "2009-03-30T19:14:30",
+      "modified": "2013-05-13T11:24:55",
+      "chars": 2181
+    },
+    {
+      "id": 218,
+      "title": "Knit Touchpad",
+      "url": "https://www.kobakant.at/DIY/?p=218",
+      "path": "Sources/How To Get What You Want Full/Knit Touchpad [218].md",
+      "date": "2009-03-30T19:06:26",
+      "modified": "2009-03-30T19:06:26",
+      "chars": 1157
+    },
+    {
+      "id": 232,
+      "title": "Simple Fabric Pressure Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=232",
+      "path": "Sources/How To Get What You Want Full/Simple Fabric Pressure Sensors [232].md",
+      "date": "2009-03-30T19:27:12",
+      "modified": "2009-06-07T15:56:54",
+      "chars": 890
+    },
+    {
+      "id": 234,
+      "title": "Fold Over Elastic (FOE)",
+      "url": "https://www.kobakant.at/DIY/?p=234",
+      "path": "Sources/How To Get What You Want Full/Fold Over Elastic (FOE) [234].md",
+      "date": "2009-03-31T16:04:59",
+      "modified": "2009-06-28T18:47:36",
+      "chars": 449
+    },
+    {
+      "id": 240,
+      "title": "Etching Flex Circuits",
+      "url": "https://www.kobakant.at/DIY/?p=240",
+      "path": "Sources/How To Get What You Want Full/Etching Flex Circuits [240].md",
+      "date": "2013-05-16T14:48:35",
+      "modified": "2013-05-31T14:03:34",
+      "chars": 4958
+    },
+    {
+      "id": 244,
+      "title": "Lasercut Fabric Circuits and Traces",
+      "url": "https://www.kobakant.at/DIY/?p=244",
+      "path": "Sources/How To Get What You Want Full/Lasercut Fabric Circuits and Traces [244].md",
+      "date": "2009-04-02T16:31:36",
+      "modified": "2014-12-09T22:54:43",
+      "chars": 3993
+    },
+    {
+      "id": 247,
+      "title": "Xbee Direct (Sensor-Xbee-Comp)",
+      "url": "https://www.kobakant.at/DIY/?p=247",
+      "path": "Sources/How To Get What You Want Full/Xbee Direct (Sensor-Xbee-Comp) [247].md",
+      "date": "2009-04-03T15:22:47",
+      "modified": "2009-07-02T11:09:08",
+      "chars": 1394
+    },
+    {
+      "id": 270,
+      "title": "Xbee Direct (Multiple Xbee – Xbee- comp)",
+      "url": "https://www.kobakant.at/DIY/?p=270",
+      "path": "Sources/How To Get What You Want Full/Xbee Direct (Multiple Xbee – Xbee- comp) [270].md",
+      "date": "2009-04-07T11:21:29",
+      "modified": "2009-07-02T10:21:19",
+      "chars": 1436
+    },
+    {
+      "id": 360,
+      "title": "Fabric Glues",
+      "url": "https://www.kobakant.at/DIY/?p=360",
+      "path": "Sources/How To Get What You Want Full/Fabric Glues [360].md",
+      "date": "2009-04-15T17:36:48",
+      "modified": "2009-06-28T18:45:54",
+      "chars": 417
+    },
+    {
+      "id": 362,
+      "title": "Conductive Velcro",
+      "url": "https://www.kobakant.at/DIY/?p=362",
+      "path": "Sources/How To Get What You Want Full/Conductive Velcro [362].md",
+      "date": "2009-04-15T17:40:58",
+      "modified": "2009-06-28T13:18:30",
+      "chars": 819
+    },
+    {
+      "id": 376,
+      "title": "Conductive Fabrics",
+      "url": "https://www.kobakant.at/DIY/?p=376",
+      "path": "Sources/How To Get What You Want Full/Conductive Fabrics [376].md",
+      "date": "2009-04-17T17:57:01",
+      "modified": "2010-08-31T10:54:49",
+      "chars": 4869
+    },
+    {
+      "id": 379,
+      "title": "Conductive Threads",
+      "url": "https://www.kobakant.at/DIY/?p=379",
+      "path": "Sources/How To Get What You Want Full/Conductive Threads [379].md",
+      "date": "2009-08-11T18:01:34",
+      "modified": "2019-04-12T12:37:50",
+      "chars": 5862
+    },
+    {
+      "id": 381,
+      "title": "Velostat",
+      "url": "https://www.kobakant.at/DIY/?p=381",
+      "path": "Sources/How To Get What You Want Full/Velostat [381].md",
+      "date": "2009-04-17T18:03:03",
+      "modified": "2012-02-07T05:10:07",
+      "chars": 1942
+    },
+    {
+      "id": 409,
+      "title": "Laser Cutter",
+      "url": "https://www.kobakant.at/DIY/?p=409",
+      "path": "Sources/How To Get What You Want Full/Laser Cutter [409].md",
+      "date": "2009-04-21T17:35:06",
+      "modified": "2009-06-29T15:28:29",
+      "chars": 431
+    },
+    {
+      "id": 412,
+      "title": "Washability Tests",
+      "url": "https://www.kobakant.at/DIY/?p=412",
+      "path": "Sources/How To Get What You Want Full/Washability Tests [412].md",
+      "date": "2009-04-21T19:08:09",
+      "modified": "2009-06-27T11:51:27",
+      "chars": 511
+    },
+    {
+      "id": 429,
+      "title": "Stickytape Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=429",
+      "path": "Sources/How To Get What You Want Full/Stickytape Sensors [429].md",
+      "date": "2009-04-24T13:39:06",
+      "modified": "2012-12-10T10:15:31",
+      "chars": 1368
+    },
+    {
+      "id": 432,
+      "title": "Fabrics",
+      "url": "https://www.kobakant.at/DIY/?p=432",
+      "path": "Sources/How To Get What You Want Full/Fabrics [432].md",
+      "date": "2009-04-24T13:48:29",
+      "modified": "2009-07-20T12:32:41",
+      "chars": 703
+    },
+    {
+      "id": 440,
+      "title": "Wireless Communication 101",
+      "url": "https://www.kobakant.at/DIY/?p=440",
+      "path": "Sources/How To Get What You Want Full/Wireless Communication 101 [440].md",
+      "date": "2009-05-04T11:43:56",
+      "modified": "2009-06-08T14:39:10",
+      "chars": 738
+    },
+    {
+      "id": 442,
+      "title": "Conductive Gel",
+      "url": "https://www.kobakant.at/DIY/?p=442",
+      "path": "Sources/How To Get What You Want Full/Conductive Gel [442].md",
+      "date": "2009-05-04T11:47:34",
+      "modified": "2009-06-28T13:17:23",
+      "chars": 351
+    },
+    {
+      "id": 448,
+      "title": "Graphite Powder",
+      "url": "https://www.kobakant.at/DIY/?p=448",
+      "path": "Sources/How To Get What You Want Full/Graphite Powder [448].md",
+      "date": "2009-05-04T11:51:53",
+      "modified": "2009-07-02T15:03:05",
+      "chars": 314
+    },
+    {
+      "id": 450,
+      "title": "Liquid Electrical Tape",
+      "url": "https://www.kobakant.at/DIY/?p=450",
+      "path": "Sources/How To Get What You Want Full/Liquid Electrical Tape [450].md",
+      "date": "2009-05-04T11:52:43",
+      "modified": "2009-06-30T11:19:01",
+      "chars": 411
+    },
+    {
+      "id": 455,
+      "title": "Craft Iron",
+      "url": "https://www.kobakant.at/DIY/?p=455",
+      "path": "Sources/How To Get What You Want Full/Craft Iron [455].md",
+      "date": "2009-05-04T11:54:46",
+      "modified": "2009-06-29T15:12:02",
+      "chars": 186
+    },
+    {
+      "id": 457,
+      "title": "Neoprene",
+      "url": "https://www.kobakant.at/DIY/?p=457",
+      "path": "Sources/How To Get What You Want Full/Neoprene [457].md",
+      "date": "2009-05-04T11:55:38",
+      "modified": "2011-11-17T18:34:11",
+      "chars": 2079
+    },
+    {
+      "id": 459,
+      "title": "Hole Maker",
+      "url": "https://www.kobakant.at/DIY/?p=459",
+      "path": "Sources/How To Get What You Want Full/Hole Maker [459].md",
+      "date": "2009-05-04T11:56:08",
+      "modified": "2009-06-05T20:44:50",
+      "chars": 31
+    },
+    {
+      "id": 466,
+      "title": "CNC Milling Machine",
+      "url": "https://www.kobakant.at/DIY/?p=466",
+      "path": "Sources/How To Get What You Want Full/CNC Milling Machine [466].md",
+      "date": "2009-05-04T12:00:46",
+      "modified": "2011-12-28T11:48:39",
+      "chars": 212
+    },
+    {
+      "id": 472,
+      "title": "Lithium Polymer Batteries",
+      "url": "https://www.kobakant.at/DIY/?p=472",
+      "path": "Sources/How To Get What You Want Full/Lithium Polymer Batteries [472].md",
+      "date": "2009-05-25T19:22:19",
+      "modified": "2009-09-12T03:10:35",
+      "chars": 1880
+    },
+    {
+      "id": 488,
+      "title": "Cheap Electronic Toys",
+      "url": "https://www.kobakant.at/DIY/?p=488",
+      "path": "Sources/How To Get What You Want Full/Cheap Electronic Toys [488].md",
+      "date": "2009-05-28T12:54:32",
+      "modified": "2013-07-25T16:10:18",
+      "chars": 1874
+    },
+    {
+      "id": 490,
+      "title": "Metal Beads",
+      "url": "https://www.kobakant.at/DIY/?p=490",
+      "path": "Sources/How To Get What You Want Full/Metal Beads [490].md",
+      "date": "2009-05-29T16:54:47",
+      "modified": "2009-06-08T19:10:30",
+      "chars": 704
+    },
+    {
+      "id": 514,
+      "title": "Thin Flexible Wire",
+      "url": "https://www.kobakant.at/DIY/?p=514",
+      "path": "Sources/How To Get What You Want Full/Thin Flexible Wire [514].md",
+      "date": "2009-06-01T16:43:51",
+      "modified": "2012-10-19T07:36:33",
+      "chars": 3249
+    },
+    {
+      "id": 527,
+      "title": "Wireless Tilt Sensing Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=527",
+      "path": "Sources/How To Get What You Want Full/Wireless Tilt Sensing Bracelet [527].md",
+      "date": "2009-06-05T19:45:42",
+      "modified": "2009-07-07T10:25:56",
+      "chars": 542
+    },
+    {
+      "id": 529,
+      "title": "Tilt Sensing Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=529",
+      "path": "Sources/How To Get What You Want Full/Tilt Sensing Bracelet [529].md",
+      "date": "2009-06-05T19:46:32",
+      "modified": "2009-06-28T11:56:15",
+      "chars": 999
+    },
+    {
+      "id": 531,
+      "title": "Sensitive Fingertips",
+      "url": "https://www.kobakant.at/DIY/?p=531",
+      "path": "Sources/How To Get What You Want Full/Sensitive Fingertips [531].md",
+      "date": "2009-06-05T19:48:16",
+      "modified": "2015-03-23T14:41:11",
+      "chars": 1606
+    },
+    {
+      "id": 539,
+      "title": "Puppeteer Costume",
+      "url": "https://www.kobakant.at/DIY/?p=539",
+      "path": "Sources/How To Get What You Want Full/Puppeteer Costume [539].md",
+      "date": "2009-06-05T19:58:43",
+      "modified": "2009-06-30T12:39:32",
+      "chars": 3985
+    },
+    {
+      "id": 543,
+      "title": "Fabric Potentiometer",
+      "url": "https://www.kobakant.at/DIY/?p=543",
+      "path": "Sources/How To Get What You Want Full/Fabric Potentiometer [543].md",
+      "date": "2009-06-05T20:01:43",
+      "modified": "2009-08-12T11:16:25",
+      "chars": 2157
+    },
+    {
+      "id": 551,
+      "title": "Puppeteer Gloves",
+      "url": "https://www.kobakant.at/DIY/?p=551",
+      "path": "Sources/How To Get What You Want Full/Puppeteer Gloves [551].md",
+      "date": "2009-06-05T20:14:38",
+      "modified": "2009-06-28T12:27:53",
+      "chars": 250
+    },
+    {
+      "id": 553,
+      "title": "Massage my feet",
+      "url": "https://www.kobakant.at/DIY/?p=553",
+      "path": "Sources/How To Get What You Want Full/Massage my feet [553].md",
+      "date": "2009-06-05T20:33:12",
+      "modified": "2009-06-26T18:26:11",
+      "chars": 630
+    },
+    {
+      "id": 561,
+      "title": "Lilypad XBee Shield",
+      "url": "https://www.kobakant.at/DIY/?p=561",
+      "path": "Sources/How To Get What You Want Full/Lilypad XBee Shield [561].md",
+      "date": "2009-06-05T20:37:30",
+      "modified": "2009-06-09T01:02:57",
+      "chars": 1026
+    },
+    {
+      "id": 563,
+      "title": "Sewable 3.3V Regulator",
+      "url": "https://www.kobakant.at/DIY/?p=563",
+      "path": "Sources/How To Get What You Want Full/Sewable 3.3V Regulator [563].md",
+      "date": "2009-06-05T20:39:22",
+      "modified": "2009-06-23T16:58:07",
+      "chars": 1398
+    },
+    {
+      "id": 565,
+      "title": "Wireless JoySlippers",
+      "url": "https://www.kobakant.at/DIY/?p=565",
+      "path": "Sources/How To Get What You Want Full/Wireless JoySlippers [565].md",
+      "date": "2009-06-05T20:41:33",
+      "modified": "2009-06-28T11:20:24",
+      "chars": 1568
+    },
+    {
+      "id": 567,
+      "title": "JoySlippers",
+      "url": "https://www.kobakant.at/DIY/?p=567",
+      "path": "Sources/How To Get What You Want Full/JoySlippers [567].md",
+      "date": "2009-06-05T20:42:47",
+      "modified": "2010-08-18T18:58:54",
+      "chars": 17297
+    },
+    {
+      "id": 577,
+      "title": "Fine Steel Wool",
+      "url": "https://www.kobakant.at/DIY/?p=577",
+      "path": "Sources/How To Get What You Want Full/Fine Steel Wool [577].md",
+      "date": "2009-06-05T21:07:21",
+      "modified": "2009-06-08T19:34:35",
+      "chars": 258
+    },
+    {
+      "id": 587,
+      "title": "Non-Stretchy Traces",
+      "url": "https://www.kobakant.at/DIY/?p=587",
+      "path": "Sources/How To Get What You Want Full/Non-Stretchy Traces [587].md",
+      "date": "2009-06-05T22:23:51",
+      "modified": "2009-07-02T17:30:13",
+      "chars": 1777
+    },
+    {
+      "id": 634,
+      "title": "Conductive Paints and Inks",
+      "url": "https://www.kobakant.at/DIY/?p=634",
+      "path": "Sources/How To Get What You Want Full/Conductive Paints and Inks [634].md",
+      "date": "2009-06-06T18:37:28",
+      "modified": "2014-08-09T08:34:13",
+      "chars": 2952
+    },
+    {
+      "id": 660,
+      "title": "Custom Plugs",
+      "url": "https://www.kobakant.at/DIY/?p=660",
+      "path": "Sources/How To Get What You Want Full/Custom Plugs [660].md",
+      "date": "2009-05-06T20:02:15",
+      "modified": "2011-12-28T12:00:17",
+      "chars": 1209
+    },
+    {
+      "id": 669,
+      "title": "Perfboard",
+      "url": "https://www.kobakant.at/DIY/?p=669",
+      "path": "Sources/How To Get What You Want Full/Perfboard [669].md",
+      "date": "2009-06-06T20:25:04",
+      "modified": "2012-02-08T17:37:51",
+      "chars": 716
+    },
+    {
+      "id": 735,
+      "title": "Spudger",
+      "url": "https://www.kobakant.at/DIY/?p=735",
+      "path": "Sources/How To Get What You Want Full/Spudger [735].md",
+      "date": "2009-06-06T23:44:57",
+      "modified": "2011-07-11T12:13:54",
+      "chars": 269
+    },
+    {
+      "id": 739,
+      "title": "Headers",
+      "url": "https://www.kobakant.at/DIY/?p=739",
+      "path": "Sources/How To Get What You Want Full/Headers [739].md",
+      "date": "2009-06-06T23:47:26",
+      "modified": "2013-09-02T16:23:27",
+      "chars": 1568
+    },
+    {
+      "id": 772,
+      "title": "Xbee Serial Communication",
+      "url": "https://www.kobakant.at/DIY/?p=772",
+      "path": "Sources/How To Get What You Want Full/Xbee Serial Communication [772].md",
+      "date": "2009-06-07T00:37:16",
+      "modified": "2009-06-23T18:17:28",
+      "chars": 1394
+    },
+    {
+      "id": 792,
+      "title": "Stroke Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=792",
+      "path": "Sources/How To Get What You Want Full/Stroke Sensor [792].md",
+      "date": "2009-06-07T13:05:30",
+      "modified": "2010-01-11T19:27:44",
+      "chars": 2934
+    },
+    {
+      "id": 838,
+      "title": "Pull-up Resistors",
+      "url": "https://www.kobakant.at/DIY/?p=838",
+      "path": "Sources/How To Get What You Want Full/Pull-up Resistors [838].md",
+      "date": "2009-06-07T15:45:00",
+      "modified": "2016-05-09T14:30:26",
+      "chars": 2120
+    },
+    {
+      "id": 879,
+      "title": "Resistive Rubbers",
+      "url": "https://www.kobakant.at/DIY/?p=879",
+      "path": "Sources/How To Get What You Want Full/Resistive Rubbers [879].md",
+      "date": "2009-06-07T17:01:08",
+      "modified": "2009-07-02T17:03:23",
+      "chars": 1562
+    },
+    {
+      "id": 913,
+      "title": "Resistive and Piezoresistive Fabrics",
+      "url": "https://www.kobakant.at/DIY/?p=913",
+      "path": "Sources/How To Get What You Want Full/Resistive and Piezoresistive Fabrics [913].md",
+      "date": "2009-06-08T14:32:56",
+      "modified": "2014-07-14T10:56:22",
+      "chars": 3301
+    },
+    {
+      "id": 924,
+      "title": "Foam",
+      "url": "https://www.kobakant.at/DIY/?p=924",
+      "path": "Sources/How To Get What You Want Full/Foam [924].md",
+      "date": "2009-06-08T15:28:35",
+      "modified": "2009-06-08T15:28:35",
+      "chars": 221
+    },
+    {
+      "id": 932,
+      "title": "Metal Fasteners",
+      "url": "https://www.kobakant.at/DIY/?p=932",
+      "path": "Sources/How To Get What You Want Full/Metal Fasteners [932].md",
+      "date": "2009-06-08T15:39:59",
+      "modified": "2011-07-20T09:59:12",
+      "chars": 620
+    },
+    {
+      "id": 948,
+      "title": "Resistive Paper",
+      "url": "https://www.kobakant.at/DIY/?p=948",
+      "path": "Sources/How To Get What You Want Full/Resistive Paper [948].md",
+      "date": "2009-06-08T16:09:04",
+      "modified": "2009-06-28T18:08:36",
+      "chars": 144
+    },
+    {
+      "id": 950,
+      "title": "Anti-static Foam",
+      "url": "https://www.kobakant.at/DIY/?p=950",
+      "path": "Sources/How To Get What You Want Full/Anti-static Foam [950].md",
+      "date": "2009-06-08T16:09:57",
+      "modified": "2009-06-08T20:40:54",
+      "chars": 502
+    },
+    {
+      "id": 992,
+      "title": "Circuit Sewing Tips",
+      "url": "https://www.kobakant.at/DIY/?p=992",
+      "path": "Sources/How To Get What You Want Full/Circuit Sewing Tips [992].md",
+      "date": "2009-06-08T19:43:36",
+      "modified": "2012-11-20T12:01:21",
+      "chars": 1124
+    },
+    {
+      "id": 1014,
+      "title": "Conductive Pen",
+      "url": "https://www.kobakant.at/DIY/?p=1014",
+      "path": "Sources/How To Get What You Want Full/Conductive Pen [1014].md",
+      "date": "2009-06-08T19:59:30",
+      "modified": "2010-08-31T12:39:19",
+      "chars": 411
+    },
+    {
+      "id": 1118,
+      "title": "Visualization: Graph",
+      "url": "https://www.kobakant.at/DIY/?p=1118",
+      "path": "Sources/How To Get What You Want Full/Visualization - Graph [1118].md",
+      "date": "2009-06-14T15:12:44",
+      "modified": "2013-06-23T09:56:45",
+      "chars": 1232
+    },
+    {
+      "id": 1132,
+      "title": "Vinylcut Copper & Fabric PCB",
+      "url": "https://www.kobakant.at/DIY/?p=1132",
+      "path": "Sources/How To Get What You Want Full/Vinylcut Copper & Fabric PCB [1132].md",
+      "date": "2009-06-15T11:01:02",
+      "modified": "2013-11-27T20:30:58",
+      "chars": 3735
+    },
+    {
+      "id": 1138,
+      "title": "Flux Test",
+      "url": "https://www.kobakant.at/DIY/?p=1138",
+      "path": "Sources/How To Get What You Want Full/Flux Test [1138].md",
+      "date": "2009-06-16T16:52:35",
+      "modified": "2011-12-28T11:46:05",
+      "chars": 848
+    },
+    {
+      "id": 1144,
+      "title": "Circular Knitting Machines",
+      "url": "https://www.kobakant.at/DIY/?p=1144",
+      "path": "Sources/How To Get What You Want Full/Circular Knitting Machines [1144].md",
+      "date": "2009-06-23T07:46:11",
+      "modified": "2011-10-26T08:55:19",
+      "chars": 4024
+    },
+    {
+      "id": 1155,
+      "title": "Arduino Overview",
+      "url": "https://www.kobakant.at/DIY/?p=1155",
+      "path": "Sources/How To Get What You Want Full/Arduino Overview [1155].md",
+      "date": "2009-06-23T12:41:56",
+      "modified": "2013-06-23T10:02:39",
+      "chars": 3537
+    },
+    {
+      "id": 1206,
+      "title": "Flux",
+      "url": "https://www.kobakant.at/DIY/?p=1206",
+      "path": "Sources/How To Get What You Want Full/Flux [1206].md",
+      "date": "2009-06-23T17:01:40",
+      "modified": "2009-06-23T17:01:40",
+      "chars": 372
+    },
+    {
+      "id": 1215,
+      "title": "Xbee",
+      "url": "https://www.kobakant.at/DIY/?p=1215",
+      "path": "Sources/How To Get What You Want Full/Xbee [1215].md",
+      "date": "2009-06-23T17:34:44",
+      "modified": "2009-07-02T10:39:41",
+      "chars": 1384
+    },
+    {
+      "id": 1245,
+      "title": "Solar Powered Motor Circuit",
+      "url": "https://www.kobakant.at/DIY/?p=1245",
+      "path": "Sources/How To Get What You Want Full/Solar Powered Motor Circuit [1245].md",
+      "date": "2009-06-23T18:20:48",
+      "modified": "2010-04-01T15:21:51",
+      "chars": 235
+    },
+    {
+      "id": 1272,
+      "title": "Hard/Soft Connections",
+      "url": "https://www.kobakant.at/DIY/?p=1272",
+      "path": "Sources/How To Get What You Want Full/Hard - Soft Connections [1272].md",
+      "date": "2011-11-02T13:21:38",
+      "modified": "2013-02-08T17:00:46",
+      "chars": 5710
+    },
+    {
+      "id": 1290,
+      "title": "Battery 101",
+      "url": "https://www.kobakant.at/DIY/?p=1290",
+      "path": "Sources/How To Get What You Want Full/Battery 101 [1290].md",
+      "date": "2009-06-26T14:12:46",
+      "modified": "2011-12-28T12:00:47",
+      "chars": 1626
+    },
+    {
+      "id": 1300,
+      "title": "Stretchy Traces",
+      "url": "https://www.kobakant.at/DIY/?p=1300",
+      "path": "Sources/How To Get What You Want Full/Stretchy Traces [1300].md",
+      "date": "2009-06-26T13:50:11",
+      "modified": "2009-07-02T17:38:34",
+      "chars": 1793
+    },
+    {
+      "id": 1304,
+      "title": "Isolating Traces",
+      "url": "https://www.kobakant.at/DIY/?p=1304",
+      "path": "Sources/How To Get What You Want Full/Isolating Traces [1304].md",
+      "date": "2009-06-26T13:57:27",
+      "modified": "2010-06-22T22:41:49",
+      "chars": 2849
+    },
+    {
+      "id": 1312,
+      "title": "Piano T-Shirt",
+      "url": "https://www.kobakant.at/DIY/?p=1312",
+      "path": "Sources/How To Get What You Want Full/Piano T-Shirt [1312].md",
+      "date": "2009-06-26T14:08:33",
+      "modified": "2010-03-18T14:32:35",
+      "chars": 436
+    },
+    {
+      "id": 1314,
+      "title": "Solar T-Shirt",
+      "url": "https://www.kobakant.at/DIY/?p=1314",
+      "path": "Sources/How To Get What You Want Full/Solar T-Shirt [1314].md",
+      "date": "2009-06-26T14:12:17",
+      "modified": "2010-08-19T12:41:39",
+      "chars": 1775
+    },
+    {
+      "id": 1324,
+      "title": "Wearable Toy Piano",
+      "url": "https://www.kobakant.at/DIY/?p=1324",
+      "path": "Sources/How To Get What You Want Full/Wearable Toy Piano [1324].md",
+      "date": "2009-06-26T14:19:50",
+      "modified": "2009-06-26T14:24:04",
+      "chars": 494
+    },
+    {
+      "id": 1358,
+      "title": "Wearable Sound Experiment",
+      "url": "https://www.kobakant.at/DIY/?p=1358",
+      "path": "Sources/How To Get What You Want Full/Wearable Sound Experiment [1358].md",
+      "date": "2009-06-26T17:48:20",
+      "modified": "2009-06-26T21:02:18",
+      "chars": 343
+    },
+    {
+      "id": 1378,
+      "title": "Speaker Solutions",
+      "url": "https://www.kobakant.at/DIY/?p=1378",
+      "path": "Sources/How To Get What You Want Full/Speaker Solutions [1378].md",
+      "date": "2009-06-26T18:11:44",
+      "modified": "2009-06-28T13:08:03",
+      "chars": 68
+    },
+    {
+      "id": 1438,
+      "title": "Fabric JoyPad",
+      "url": "https://www.kobakant.at/DIY/?p=1438",
+      "path": "Sources/How To Get What You Want Full/Fabric JoyPad [1438].md",
+      "date": "2009-01-28T10:38:29",
+      "modified": "2009-12-14T06:21:57",
+      "chars": 572
+    },
+    {
+      "id": 1480,
+      "title": "Wearable Waste of Energy",
+      "url": "https://www.kobakant.at/DIY/?p=1480",
+      "path": "Sources/How To Get What You Want Full/Wearable Waste of Energy [1480].md",
+      "date": "2009-06-28T12:22:27",
+      "modified": "2009-06-28T12:26:35",
+      "chars": 3884
+    },
+    {
+      "id": 1490,
+      "title": "LED Solutions",
+      "url": "https://www.kobakant.at/DIY/?p=1490",
+      "path": "Sources/How To Get What You Want Full/LED Solutions [1490].md",
+      "date": "2009-06-28T12:35:03",
+      "modified": "2009-07-15T17:26:52",
+      "chars": 612
+    },
+    {
+      "id": 1541,
+      "title": "Sewing Machines",
+      "url": "https://www.kobakant.at/DIY/?p=1541",
+      "path": "Sources/How To Get What You Want Full/Sewing Machines [1541].md",
+      "date": "2009-06-29T15:57:00",
+      "modified": "2009-06-29T15:57:00",
+      "chars": 37
+    },
+    {
+      "id": 1548,
+      "title": "stretchy cable",
+      "url": "https://www.kobakant.at/DIY/?p=1548",
+      "path": "Sources/How To Get What You Want Full/stretchy cable [1548].md",
+      "date": "2009-06-29T16:53:52",
+      "modified": "2009-06-29T16:58:19",
+      "chars": 539
+    },
+    {
+      "id": 1583,
+      "title": "Bend, sew, touch, feel, read",
+      "url": "https://www.kobakant.at/DIY/?p=1583",
+      "path": "Sources/How To Get What You Want Full/Bend, sew, touch, feel, read [1583].md",
+      "date": "2009-07-27T12:05:54",
+      "modified": "2009-08-04T15:26:06",
+      "chars": 2786
+    },
+    {
+      "id": 1585,
+      "title": "Sewing Fabric Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=1585",
+      "path": "Sources/How To Get What You Want Full/Sewing Fabric Sensors [1585].md",
+      "date": "2009-06-30T11:47:04",
+      "modified": "2010-03-18T15:01:00",
+      "chars": 1121
+    },
+    {
+      "id": 1587,
+      "title": "Game controller hack",
+      "url": "https://www.kobakant.at/DIY/?p=1587",
+      "path": "Sources/How To Get What You Want Full/Game controller hack [1587].md",
+      "date": "2009-06-30T11:47:54",
+      "modified": "2009-06-30T12:00:33",
+      "chars": 2456
+    },
+    {
+      "id": 1589,
+      "title": "Piano T-Shirt",
+      "url": "https://www.kobakant.at/DIY/?p=1589",
+      "path": "Sources/How To Get What You Want Full/Piano T-Shirt [1589].md",
+      "date": "2009-06-30T11:49:03",
+      "modified": "2010-03-18T14:36:57",
+      "chars": 1522
+    },
+    {
+      "id": 1591,
+      "title": "Interactive Solar T-Shirt",
+      "url": "https://www.kobakant.at/DIY/?p=1591",
+      "path": "Sources/How To Get What You Want Full/Interactive Solar T-Shirt [1591].md",
+      "date": "2009-06-30T11:51:07",
+      "modified": "2010-03-18T14:50:58",
+      "chars": 2449
+    },
+    {
+      "id": 1593,
+      "title": "Wearable sound experiment",
+      "url": "https://www.kobakant.at/DIY/?p=1593",
+      "path": "Sources/How To Get What You Want Full/Wearable sound experiment [1593].md",
+      "date": "2009-06-30T11:53:17",
+      "modified": "2009-06-30T11:59:21",
+      "chars": 1616
+    },
+    {
+      "id": 1611,
+      "title": "Fusible Interfacing",
+      "url": "https://www.kobakant.at/DIY/?p=1611",
+      "path": "Sources/How To Get What You Want Full/Fusible Interfacing [1611].md",
+      "date": "2011-11-02T15:00:32",
+      "modified": "2013-12-05T12:27:37",
+      "chars": 1073
+    },
+    {
+      "id": 1618,
+      "title": "Knit Contact Switch",
+      "url": "https://www.kobakant.at/DIY/?p=1618",
+      "path": "Sources/How To Get What You Want Full/Knit Contact Switch [1618].md",
+      "date": "2009-07-01T17:07:04",
+      "modified": "2009-07-02T18:18:54",
+      "chars": 149
+    },
+    {
+      "id": 1682,
+      "title": "Felt",
+      "url": "https://www.kobakant.at/DIY/?p=1682",
+      "path": "Sources/How To Get What You Want Full/Felt [1682].md",
+      "date": "2009-07-13T13:09:27",
+      "modified": "2009-07-15T15:16:42",
+      "chars": 626
+    },
+    {
+      "id": 1718,
+      "title": "Soldering Conductive Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=1718",
+      "path": "Sources/How To Get What You Want Full/Soldering Conductive Fabric [1718].md",
+      "date": "2009-07-15T17:16:18",
+      "modified": "2009-07-15T17:22:41",
+      "chars": 354
+    },
+    {
+      "id": 1720,
+      "title": "Soldering Conductive Thread",
+      "url": "https://www.kobakant.at/DIY/?p=1720",
+      "path": "Sources/How To Get What You Want Full/Soldering Conductive Thread [1720].md",
+      "date": "2009-07-15T17:16:58",
+      "modified": "2009-07-15T17:21:47",
+      "chars": 780
+    },
+    {
+      "id": 1733,
+      "title": "Loop Stitch",
+      "url": "https://www.kobakant.at/DIY/?p=1733",
+      "path": "Sources/How To Get What You Want Full/Loop Stitch [1733].md",
+      "date": "2009-07-16T11:42:19",
+      "modified": "2009-08-05T17:08:48",
+      "chars": 2049
+    },
+    {
+      "id": 1736,
+      "title": "Knitting",
+      "url": "https://www.kobakant.at/DIY/?p=1736",
+      "path": "Sources/How To Get What You Want Full/Knitting [1736].md",
+      "date": "2009-08-16T11:52:05",
+      "modified": "2010-06-22T22:30:42",
+      "chars": 587
+    },
+    {
+      "id": 1762,
+      "title": "Knit Stretch Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=1762",
+      "path": "Sources/How To Get What You Want Full/Knit Stretch Sensors [1762].md",
+      "date": "2009-07-16T20:51:08",
+      "modified": "2011-11-05T13:08:02",
+      "chars": 2888
+    },
+    {
+      "id": 1781,
+      "title": "Constructed Stretch Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=1781",
+      "path": "Sources/How To Get What You Want Full/Constructed Stretch Sensors [1781].md",
+      "date": "2009-07-18T14:46:03",
+      "modified": "2009-07-18T16:57:47",
+      "chars": 744
+    },
+    {
+      "id": 1836,
+      "title": "painted stretch sensor",
+      "url": "https://www.kobakant.at/DIY/?p=1836",
+      "path": "Sources/How To Get What You Want Full/painted stretch sensor [1836].md",
+      "date": "2009-08-10T20:10:58",
+      "modified": "2009-08-19T16:36:08",
+      "chars": 2402
+    },
+    {
+      "id": 1843,
+      "title": "Crochet Tilt Potentiometer",
+      "url": "https://www.kobakant.at/DIY/?p=1843",
+      "path": "Sources/How To Get What You Want Full/Crochet Tilt Potentiometer [1843].md",
+      "date": "2009-08-11T12:07:29",
+      "modified": "2011-06-01T08:08:11",
+      "chars": 307
+    },
+    {
+      "id": 1856,
+      "title": "crochet pressure sensor",
+      "url": "https://www.kobakant.at/DIY/?p=1856",
+      "path": "Sources/How To Get What You Want Full/crochet pressure sensor [1856].md",
+      "date": "2009-08-18T17:23:19",
+      "modified": "2009-08-18T17:23:19",
+      "chars": 463
+    },
+    {
+      "id": 1858,
+      "title": "Crochet",
+      "url": "https://www.kobakant.at/DIY/?p=1858",
+      "path": "Sources/How To Get What You Want Full/Crochet [1858].md",
+      "date": "2009-08-19T10:51:36",
+      "modified": "2010-06-22T22:30:18",
+      "chars": 1173
+    },
+    {
+      "id": 1860,
+      "title": "Solar cells",
+      "url": "https://www.kobakant.at/DIY/?p=1860",
+      "path": "Sources/How To Get What You Want Full/Solar cells [1860].md",
+      "date": "2009-08-19T16:42:27",
+      "modified": "2010-09-15T14:03:51",
+      "chars": 1769
+    },
+    {
+      "id": 1895,
+      "title": "Needle Felting",
+      "url": "https://www.kobakant.at/DIY/?p=1895",
+      "path": "Sources/How To Get What You Want Full/Needle Felting [1895].md",
+      "date": "2010-02-24T08:40:14",
+      "modified": "2010-02-24T15:10:04",
+      "chars": 554
+    },
+    {
+      "id": 1927,
+      "title": "Crochet Button",
+      "url": "https://www.kobakant.at/DIY/?p=1927",
+      "path": "Sources/How To Get What You Want Full/Crochet Button [1927].md",
+      "date": "2009-08-26T10:20:50",
+      "modified": "2010-03-28T20:27:03",
+      "chars": 566
+    },
+    {
+      "id": 1932,
+      "title": "Thin nose pliers",
+      "url": "https://www.kobakant.at/DIY/?p=1932",
+      "path": "Sources/How To Get What You Want Full/Thin nose pliers [1932].md",
+      "date": "2009-09-02T09:42:09",
+      "modified": "2009-09-02T09:42:09",
+      "chars": 176
+    },
+    {
+      "id": 1938,
+      "title": "Crochet LED Throwie",
+      "url": "https://www.kobakant.at/DIY/?p=1938",
+      "path": "Sources/How To Get What You Want Full/Crochet LED Throwie [1938].md",
+      "date": "2009-09-09T13:35:57",
+      "modified": "2009-09-09T13:35:57",
+      "chars": 594
+    },
+    {
+      "id": 1940,
+      "title": "LED with Light Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=1940",
+      "path": "Sources/How To Get What You Want Full/LED with Light Sensor [1940].md",
+      "date": "2009-09-09T14:45:35",
+      "modified": "2009-09-12T18:21:54",
+      "chars": 1048
+    },
+    {
+      "id": 1944,
+      "title": "Vinylcutter",
+      "url": "https://www.kobakant.at/DIY/?p=1944",
+      "path": "Sources/How To Get What You Want Full/Vinylcutter [1944].md",
+      "date": "2009-06-12T03:11:56",
+      "modified": "2010-01-02T14:02:06",
+      "chars": 315
+    },
+    {
+      "id": 1954,
+      "title": "Tool time",
+      "url": "https://www.kobakant.at/DIY/?p=1954",
+      "path": "Sources/How To Get What You Want Full/Tool time [1954].md",
+      "date": "2009-09-17T15:26:21",
+      "modified": "2009-11-30T11:53:28",
+      "chars": 437
+    },
+    {
+      "id": 1962,
+      "title": "MATERIALS & CRAFTMANSHIP",
+      "url": "https://www.kobakant.at/DIY/?p=1962",
+      "path": "Sources/How To Get What You Want Full/MATERIALS & CRAFTMANSHIP [1962].md",
+      "date": "2009-09-17T15:48:43",
+      "modified": "2010-04-01T15:42:18",
+      "chars": 1255
+    },
+    {
+      "id": 1978,
+      "title": "Conductive Yarns",
+      "url": "https://www.kobakant.at/DIY/?p=1978",
+      "path": "Sources/How To Get What You Want Full/Conductive Yarns [1978].md",
+      "date": "2011-11-11T18:20:28",
+      "modified": "2019-07-01T12:19:53",
+      "chars": 3915
+    },
+    {
+      "id": 1993,
+      "title": "Crochet/Knit Pressure Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=1993",
+      "path": "Sources/How To Get What You Want Full/Crochet - Knit Pressure Sensors [1993].md",
+      "date": "2009-11-29T21:38:03",
+      "modified": "2011-02-02T22:41:15",
+      "chars": 1191
+    },
+    {
+      "id": 1996,
+      "title": "Circular Knit Inflation Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=1996",
+      "path": "Sources/How To Get What You Want Full/Circular Knit Inflation Sensor [1996].md",
+      "date": "2009-11-29T21:38:06",
+      "modified": "2009-11-29T21:56:46",
+      "chars": 1240
+    },
+    {
+      "id": 2022,
+      "title": "Stretch Sensitive Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=2022",
+      "path": "Sources/How To Get What You Want Full/Stretch Sensitive Bracelet [2022].md",
+      "date": "2009-11-30T14:45:02",
+      "modified": "2010-03-02T18:37:04",
+      "chars": 234
+    },
+    {
+      "id": 2028,
+      "title": "Conductive Pompom",
+      "url": "https://www.kobakant.at/DIY/?p=2028",
+      "path": "Sources/How To Get What You Want Full/Conductive Pompom [2028].md",
+      "date": "2009-11-30T15:37:21",
+      "modified": "2009-11-30T15:45:44",
+      "chars": 599
+    },
+    {
+      "id": 2036,
+      "title": "Star Light",
+      "url": "https://www.kobakant.at/DIY/?p=2036",
+      "path": "Sources/How To Get What You Want Full/Star Light [2036].md",
+      "date": "2009-11-30T18:27:12",
+      "modified": "2009-11-30T18:32:28",
+      "chars": 765
+    },
+    {
+      "id": 2043,
+      "title": "Needle Threader",
+      "url": "https://www.kobakant.at/DIY/?p=2043",
+      "path": "Sources/How To Get What You Want Full/Needle Threader [2043].md",
+      "date": "2009-11-30T23:11:18",
+      "modified": "2010-01-02T14:04:27",
+      "chars": 510
+    },
+    {
+      "id": 2048,
+      "title": "Circular Sock Knitting Machines",
+      "url": "https://www.kobakant.at/DIY/?p=2048",
+      "path": "Sources/How To Get What You Want Full/Circular Sock Knitting Machines [2048].md",
+      "date": "2009-12-09T04:46:53",
+      "modified": "2009-12-09T05:09:32",
+      "chars": 472
+    },
+    {
+      "id": 2067,
+      "title": "Circular Knitting Looms",
+      "url": "https://www.kobakant.at/DIY/?p=2067",
+      "path": "Sources/How To Get What You Want Full/Circular Knitting Looms [2067].md",
+      "date": "2009-12-09T05:36:24",
+      "modified": "2010-03-08T16:08:02",
+      "chars": 1339
+    },
+    {
+      "id": 2068,
+      "title": "Circular Weaving Looms",
+      "url": "https://www.kobakant.at/DIY/?p=2068",
+      "path": "Sources/How To Get What You Want Full/Circular Weaving Looms [2068].md",
+      "date": "2009-12-09T05:36:19",
+      "modified": "2009-12-09T05:45:18",
+      "chars": 198
+    },
+    {
+      "id": 2108,
+      "title": "Circular Knit Stretch Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=2108",
+      "path": "Sources/How To Get What You Want Full/Circular Knit Stretch Sensors [2108].md",
+      "date": "2010-03-29T12:25:50",
+      "modified": "2011-06-01T08:53:07",
+      "chars": 3140
+    },
+    {
+      "id": 2123,
+      "title": "Data Logging",
+      "url": "https://www.kobakant.at/DIY/?p=2123",
+      "path": "Sources/How To Get What You Want Full/Data Logging [2123].md",
+      "date": "2010-01-05T23:45:12",
+      "modified": "2013-07-02T08:47:40",
+      "chars": 3092
+    },
+    {
+      "id": 2139,
+      "title": "Neoprene LED Light Pouch",
+      "url": "https://www.kobakant.at/DIY/?p=2139",
+      "path": "Sources/How To Get What You Want Full/Neoprene LED Light Pouch [2139].md",
+      "date": "2010-01-09T23:38:53",
+      "modified": "2010-01-09T23:42:28",
+      "chars": 2798
+    },
+    {
+      "id": 2149,
+      "title": "Crochet finger Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=2149",
+      "path": "Sources/How To Get What You Want Full/Crochet finger Sensor [2149].md",
+      "date": "2010-01-21T20:36:30",
+      "modified": "2010-01-21T21:21:28",
+      "chars": 809
+    },
+    {
+      "id": 2176,
+      "title": "Conductive Tapes",
+      "url": "https://www.kobakant.at/DIY/?p=2176",
+      "path": "Sources/How To Get What You Want Full/Conductive Tapes [2176].md",
+      "date": "2009-09-09T01:57:35",
+      "modified": "2011-09-21T21:44:59",
+      "chars": 1269
+    },
+    {
+      "id": 2179,
+      "title": "Wearable Sound Experiment II",
+      "url": "https://www.kobakant.at/DIY/?p=2179",
+      "path": "Sources/How To Get What You Want Full/Wearable Sound Experiment II [2179].md",
+      "date": "2010-02-11T21:23:59",
+      "modified": "2010-03-28T17:36:59",
+      "chars": 3176
+    },
+    {
+      "id": 2181,
+      "title": "Handcrafting Textile Sensors from Scratch",
+      "url": "https://www.kobakant.at/DIY/?p=2181",
+      "path": "Sources/How To Get What You Want Full/Handcrafting Textile Sensors from Scratch [2181].md",
+      "date": "2009-12-14T21:24:24",
+      "modified": "2010-03-27T08:43:54",
+      "chars": 785
+    },
+    {
+      "id": 2245,
+      "title": "knitted stretchy cable",
+      "url": "https://www.kobakant.at/DIY/?p=2245",
+      "path": "Sources/How To Get What You Want Full/knitted stretchy cable [2245].md",
+      "date": "2010-02-27T15:59:03",
+      "modified": "2010-03-03T13:05:01",
+      "chars": 1950
+    },
+    {
+      "id": 2255,
+      "title": "Knitting dolly",
+      "url": "https://www.kobakant.at/DIY/?p=2255",
+      "path": "Sources/How To Get What You Want Full/Knitting dolly [2255].md",
+      "date": "2010-02-27T16:43:52",
+      "modified": "2010-03-05T18:44:05",
+      "chars": 430
+    },
+    {
+      "id": 2260,
+      "title": "Granny Squares",
+      "url": "https://www.kobakant.at/DIY/?p=2260",
+      "path": "Sources/How To Get What You Want Full/Granny Squares [2260].md",
+      "date": "2010-03-01T13:51:00",
+      "modified": "2010-07-14T17:13:07",
+      "chars": 308
+    },
+    {
+      "id": 2266,
+      "title": "fabric meets electronics",
+      "url": "https://www.kobakant.at/DIY/?p=2266",
+      "path": "Sources/How To Get What You Want Full/fabric meets electronics [2266].md",
+      "date": "2010-03-03T12:58:31",
+      "modified": "2010-08-17T00:27:35",
+      "chars": 2893
+    },
+    {
+      "id": 2322,
+      "title": "Handcrafting a textile sensor from scratch",
+      "url": "https://www.kobakant.at/DIY/?p=2322",
+      "path": "Sources/How To Get What You Want Full/Handcrafting a textile sensor from scratch [2322].md",
+      "date": "2010-03-26T18:47:58",
+      "modified": "2010-03-27T08:40:35",
+      "chars": 493
+    },
+    {
+      "id": 2327,
+      "title": "Making Textile Sensors from Scratch at TEI",
+      "url": "https://www.kobakant.at/DIY/?p=2327",
+      "path": "Sources/How To Get What You Want Full/Making Textile Sensors from Scratch at TEI [2327].md",
+      "date": "2010-01-27T08:39:33",
+      "modified": "2017-03-02T15:12:56",
+      "chars": 633
+    },
+    {
+      "id": 2331,
+      "title": "Embroidered Potentiometers",
+      "url": "https://www.kobakant.at/DIY/?p=2331",
+      "path": "Sources/How To Get What You Want Full/Embroidered Potentiometers [2331].md",
+      "date": "2010-03-27T11:09:19",
+      "modified": "2010-03-29T11:01:25",
+      "chars": 645
+    },
+    {
+      "id": 2337,
+      "title": "Pemotex",
+      "url": "https://www.kobakant.at/DIY/?p=2337",
+      "path": "Sources/How To Get What You Want Full/Pemotex [2337].md",
+      "date": "2010-03-28T20:43:06",
+      "modified": "2010-06-22T22:36:31",
+      "chars": 809
+    },
+    {
+      "id": 2370,
+      "title": "digital USB microscope",
+      "url": "https://www.kobakant.at/DIY/?p=2370",
+      "path": "Sources/How To Get What You Want Full/digital USB microscope [2370].md",
+      "date": "2010-03-31T16:35:25",
+      "modified": "2019-09-18T10:57:17",
+      "chars": 884
+    },
+    {
+      "id": 2376,
+      "title": "MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI",
+      "url": "https://www.kobakant.at/DIY/?p=2376",
+      "path": "Sources/How To Get What You Want Full/MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI [2376].md",
+      "date": "2010-04-01T15:31:56",
+      "modified": "2017-03-02T15:13:03",
+      "chars": 2063
+    },
+    {
+      "id": 2387,
+      "title": "Fabric Ribbon Cable",
+      "url": "https://www.kobakant.at/DIY/?p=2387",
+      "path": "Sources/How To Get What You Want Full/Fabric Ribbon Cable [2387].md",
+      "date": "2010-04-02T13:45:19",
+      "modified": "2010-07-14T17:15:05",
+      "chars": 430
+    },
+    {
+      "id": 2395,
+      "title": "Felted Pompom Pressure Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=2395",
+      "path": "Sources/How To Get What You Want Full/Felted Pompom Pressure Sensor [2395].md",
+      "date": "2010-04-06T22:21:03",
+      "modified": "2012-02-03T20:12:46",
+      "chars": 1118
+    },
+    {
+      "id": 2404,
+      "title": "Pompom Maker",
+      "url": "https://www.kobakant.at/DIY/?p=2404",
+      "path": "Sources/How To Get What You Want Full/Pompom Maker [2404].md",
+      "date": "2010-04-06T22:34:26",
+      "modified": "2011-12-09T19:22:48",
+      "chars": 446
+    },
+    {
+      "id": 2409,
+      "title": "Pompom Tilt Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=2409",
+      "path": "Sources/How To Get What You Want Full/Pompom Tilt Sensor [2409].md",
+      "date": "2010-04-08T17:33:12",
+      "modified": "2013-04-11T09:05:59",
+      "chars": 499
+    },
+    {
+      "id": 2430,
+      "title": "Games Workshop II",
+      "url": "https://www.kobakant.at/DIY/?p=2430",
+      "path": "Sources/How To Get What You Want Full/Games Workshop II [2430].md",
+      "date": "2010-05-31T08:55:05",
+      "modified": "2010-08-17T00:24:52",
+      "chars": 2593
+    },
+    {
+      "id": 2497,
+      "title": "Teensy as HID Device",
+      "url": "https://www.kobakant.at/DIY/?p=2497",
+      "path": "Sources/How To Get What You Want Full/Teensy as HID Device [2497].md",
+      "date": "2010-08-12T19:36:04",
+      "modified": "2013-07-02T08:36:02",
+      "chars": 11660
+    },
+    {
+      "id": 2501,
+      "title": "Printed Copper Traces",
+      "url": "https://www.kobakant.at/DIY/?p=2501",
+      "path": "Sources/How To Get What You Want Full/Printed Copper Traces [2501].md",
+      "date": "2010-07-01T13:39:06",
+      "modified": "2012-11-20T12:00:47",
+      "chars": 662
+    },
+    {
+      "id": 2506,
+      "title": "Embroidering Mirrors",
+      "url": "https://www.kobakant.at/DIY/?p=2506",
+      "path": "Sources/How To Get What You Want Full/Embroidering Mirrors [2506].md",
+      "date": "2010-03-01T19:12:57",
+      "modified": "2010-07-01T19:18:24",
+      "chars": 515
+    },
+    {
+      "id": 2529,
+      "title": "Conductive Fabric Substitute",
+      "url": "https://www.kobakant.at/DIY/?p=2529",
+      "path": "Sources/How To Get What You Want Full/Conductive Fabric Substitute [2529].md",
+      "date": "2010-07-07T15:53:24",
+      "modified": "2010-07-08T14:16:16",
+      "chars": 594
+    },
+    {
+      "id": 2539,
+      "title": "Aluminum Foil Tilt Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=2539",
+      "path": "Sources/How To Get What You Want Full/Aluminum Foil Tilt Sensor [2539].md",
+      "date": "2010-07-07T16:06:05",
+      "modified": "2010-07-08T14:21:25",
+      "chars": 1071
+    },
+    {
+      "id": 2542,
+      "title": "Sensor Sleeve",
+      "url": "https://www.kobakant.at/DIY/?p=2542",
+      "path": "Sources/How To Get What You Want Full/Sensor Sleeve [2542].md",
+      "date": "2010-07-07T16:19:30",
+      "modified": "2010-07-07T16:21:51",
+      "chars": 891
+    },
+    {
+      "id": 2567,
+      "title": "Large Scale Knit, Crochet and Knotting",
+      "url": "https://www.kobakant.at/DIY/?p=2567",
+      "path": "Sources/How To Get What You Want Full/Large Scale Knit, Crochet and Knotting [2567].md",
+      "date": "2010-02-04T16:33:02",
+      "modified": "2010-07-14T17:16:05",
+      "chars": 863
+    },
+    {
+      "id": 2575,
+      "title": "Salt and Vinegar Etching",
+      "url": "https://www.kobakant.at/DIY/?p=2575",
+      "path": "Sources/How To Get What You Want Full/Salt and Vinegar Etching [2575].md",
+      "date": "2010-07-14T17:06:08",
+      "modified": "2013-05-24T09:47:34",
+      "chars": 2237
+    },
+    {
+      "id": 2589,
+      "title": "Paper Yarn",
+      "url": "https://www.kobakant.at/DIY/?p=2589",
+      "path": "Sources/How To Get What You Want Full/Paper Yarn [2589].md",
+      "date": "2010-07-15T22:19:26",
+      "modified": "2010-07-15T22:20:49",
+      "chars": 233
+    },
+    {
+      "id": 2592,
+      "title": "Improved Electrical Contact",
+      "url": "https://www.kobakant.at/DIY/?p=2592",
+      "path": "Sources/How To Get What You Want Full/Improved Electrical Contact [2592].md",
+      "date": "2010-07-16T00:49:48",
+      "modified": "2012-12-13T15:34:20",
+      "chars": 1414
+    },
+    {
+      "id": 2597,
+      "title": "DJ Hoodie",
+      "url": "https://www.kobakant.at/DIY/?p=2597",
+      "path": "Sources/How To Get What You Want Full/DJ Hoodie [2597].md",
+      "date": "2010-07-19T11:28:48",
+      "modified": "2010-09-23T10:02:11",
+      "chars": 2210
+    },
+    {
+      "id": 2620,
+      "title": "Zipper Switch",
+      "url": "https://www.kobakant.at/DIY/?p=2620",
+      "path": "Sources/How To Get What You Want Full/Zipper Switch [2620].md",
+      "date": "2010-07-19T13:33:43",
+      "modified": "2010-07-27T12:56:31",
+      "chars": 1034
+    },
+    {
+      "id": 2627,
+      "title": "Zipper Slider",
+      "url": "https://www.kobakant.at/DIY/?p=2627",
+      "path": "Sources/How To Get What You Want Full/Zipper Slider [2627].md",
+      "date": "2010-07-19T16:38:59",
+      "modified": "2010-07-27T12:55:41",
+      "chars": 1170
+    },
+    {
+      "id": 2628,
+      "title": "Conductive Play-Doh",
+      "url": "https://www.kobakant.at/DIY/?p=2628",
+      "path": "Sources/How To Get What You Want Full/Conductive Play-Doh [2628].md",
+      "date": "2010-07-19T11:00:38",
+      "modified": "2010-11-11T21:36:36",
+      "chars": 186
+    },
+    {
+      "id": 2647,
+      "title": "Sewing an electronic circuit",
+      "url": "https://www.kobakant.at/DIY/?p=2647",
+      "path": "Sources/How To Get What You Want Full/Sewing an electronic circuit [2647].md",
+      "date": "2010-07-29T12:56:09",
+      "modified": "2010-09-02T09:43:28",
+      "chars": 3518
+    },
+    {
+      "id": 2652,
+      "title": "desoldering wick",
+      "url": "https://www.kobakant.at/DIY/?p=2652",
+      "path": "Sources/How To Get What You Want Full/desoldering wick [2652].md",
+      "date": "2010-07-29T13:37:31",
+      "modified": "2010-07-29T13:38:40",
+      "chars": 910
+    },
+    {
+      "id": 2671,
+      "title": "Mouse in a Hole",
+      "url": "https://www.kobakant.at/DIY/?p=2671",
+      "path": "Sources/How To Get What You Want Full/Mouse in a Hole [2671].md",
+      "date": "2010-08-13T11:13:00",
+      "modified": "2017-11-25T10:33:48",
+      "chars": 232
+    },
+    {
+      "id": 2672,
+      "title": "Lasercut Fabric Breakout",
+      "url": "https://www.kobakant.at/DIY/?p=2672",
+      "path": "Sources/How To Get What You Want Full/Lasercut Fabric Breakout [2672].md",
+      "date": "2010-08-13T11:12:53",
+      "modified": "2012-11-20T11:59:51",
+      "chars": 1145
+    },
+    {
+      "id": 2752,
+      "title": "Handcrafting Textile Mice",
+      "url": "https://www.kobakant.at/DIY/?p=2752",
+      "path": "Sources/How To Get What You Want Full/Handcrafting Textile Mice [2752].md",
+      "date": "2010-08-23T12:38:55",
+      "modified": "2010-08-23T12:38:55",
+      "chars": 99
+    },
+    {
+      "id": 2763,
+      "title": "Solar T-shirt II",
+      "url": "https://www.kobakant.at/DIY/?p=2763",
+      "path": "Sources/How To Get What You Want Full/Solar T-shirt II [2763].md",
+      "date": "2010-08-26T17:41:48",
+      "modified": "2010-11-15T16:16:43",
+      "chars": 3861
+    },
+    {
+      "id": 2789,
+      "title": "stretch conductive fabric comparison",
+      "url": "https://www.kobakant.at/DIY/?p=2789",
+      "path": "Sources/How To Get What You Want Full/stretch conductive fabric comparison [2789].md",
+      "date": "2010-08-31T10:53:52",
+      "modified": "2010-08-31T10:55:30",
+      "chars": 1030
+    },
+    {
+      "id": 2797,
+      "title": "Bluetooth Mate",
+      "url": "https://www.kobakant.at/DIY/?p=2797",
+      "path": "Sources/How To Get What You Want Full/Bluetooth Mate [2797].md",
+      "date": "2010-09-01T18:05:03",
+      "modified": "2013-07-24T13:51:39",
+      "chars": 1738
+    },
+    {
+      "id": 2800,
+      "title": "Multi-Conductor Fabrics",
+      "url": "https://www.kobakant.at/DIY/?p=2800",
+      "path": "Sources/How To Get What You Want Full/Multi-Conductor Fabrics [2800].md",
+      "date": "2014-05-22T16:13:55",
+      "modified": "2016-08-21T06:47:37",
+      "chars": 2513
+    },
+    {
+      "id": 2806,
+      "title": "Touch Sensitive Glove",
+      "url": "https://www.kobakant.at/DIY/?p=2806",
+      "path": "Sources/How To Get What You Want Full/Touch Sensitive Glove [2806].md",
+      "date": "2010-09-14T13:12:37",
+      "modified": "2010-09-14T14:49:30",
+      "chars": 2183
+    },
+    {
+      "id": 2816,
+      "title": "Solar T-shirt Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=2816",
+      "path": "Sources/How To Get What You Want Full/Solar T-shirt Workshop [2816].md",
+      "date": "2010-09-14T13:41:01",
+      "modified": "2015-11-21T15:25:41",
+      "chars": 1034
+    },
+    {
+      "id": 2836,
+      "title": "Granny Square MIDI",
+      "url": "https://www.kobakant.at/DIY/?p=2836",
+      "path": "Sources/How To Get What You Want Full/Granny Square MIDI [2836].md",
+      "date": "2010-09-24T20:14:05",
+      "modified": "2010-09-25T12:48:55",
+      "chars": 2022
+    },
+    {
+      "id": 2850,
+      "title": "felting yarn",
+      "url": "https://www.kobakant.at/DIY/?p=2850",
+      "path": "Sources/How To Get What You Want Full/felting yarn [2850].md",
+      "date": "2010-09-25T12:23:34",
+      "modified": "2010-09-25T12:23:34",
+      "chars": 343
+    },
+    {
+      "id": 2852,
+      "title": "felted crochet pressure sensor",
+      "url": "https://www.kobakant.at/DIY/?p=2852",
+      "path": "Sources/How To Get What You Want Full/felted crochet pressure sensor [2852].md",
+      "date": "2010-09-25T12:26:44",
+      "modified": "2010-09-25T12:44:23",
+      "chars": 868
+    },
+    {
+      "id": 2862,
+      "title": "needle felting (wet)",
+      "url": "https://www.kobakant.at/DIY/?p=2862",
+      "path": "Sources/How To Get What You Want Full/needle felting (wet) [2862].md",
+      "date": "2010-09-25T13:05:21",
+      "modified": "2010-09-25T13:30:58",
+      "chars": 2004
+    },
+    {
+      "id": 2869,
+      "title": "Wearable Sound Toy Orchestra",
+      "url": "https://www.kobakant.at/DIY/?p=2869",
+      "path": "Sources/How To Get What You Want Full/Wearable Sound Toy Orchestra [2869].md",
+      "date": "2010-10-18T16:57:47",
+      "modified": "2010-12-06T14:07:37",
+      "chars": 1584
+    },
+    {
+      "id": 2884,
+      "title": "Nitinol/Shape Memory Alloy",
+      "url": "https://www.kobakant.at/DIY/?p=2884",
+      "path": "Sources/How To Get What You Want Full/Nitinol - Shape Memory Alloy [2884].md",
+      "date": "2009-11-21T17:56:15",
+      "modified": "2011-09-13T23:51:53",
+      "chars": 1130
+    },
+    {
+      "id": 2902,
+      "title": "Toy Piano T-shirt workshop",
+      "url": "https://www.kobakant.at/DIY/?p=2902",
+      "path": "Sources/How To Get What You Want Full/Toy Piano T-shirt workshop [2902].md",
+      "date": "2010-12-09T10:31:49",
+      "modified": "2010-12-09T10:37:43",
+      "chars": 793
+    },
+    {
+      "id": 2909,
+      "title": "Heat Controlling Circuit",
+      "url": "https://www.kobakant.at/DIY/?p=2909",
+      "path": "Sources/How To Get What You Want Full/Heat Controlling Circuit [2909].md",
+      "date": "2011-01-26T09:54:32",
+      "modified": "2016-01-21T22:38:08",
+      "chars": 2234
+    },
+    {
+      "id": 2936,
+      "title": "Fabric Speakers",
+      "url": "https://www.kobakant.at/DIY/?p=2936",
+      "path": "Sources/How To Get What You Want Full/Fabric Speakers [2936].md",
+      "date": "2012-07-05T12:34:40",
+      "modified": "2022-05-05T18:18:00",
+      "chars": 2498
+    },
+    {
+      "id": 2977,
+      "title": "Plated Fabric Traces",
+      "url": "https://www.kobakant.at/DIY/?p=2977",
+      "path": "Sources/How To Get What You Want Full/Plated Fabric Traces [2977].md",
+      "date": "2011-03-23T17:01:41",
+      "modified": "2011-05-10T23:37:01",
+      "chars": 1025
+    },
+    {
+      "id": 2992,
+      "title": "Controlling EL Panel and EL Wire",
+      "url": "https://www.kobakant.at/DIY/?p=2992",
+      "path": "Sources/How To Get What You Want Full/Controlling EL Panel and EL Wire [2992].md",
+      "date": "2011-04-28T18:22:30",
+      "modified": "2012-11-20T12:03:15",
+      "chars": 1387
+    },
+    {
+      "id": 2999,
+      "title": "Electroplating Conductive Farbrics",
+      "url": "https://www.kobakant.at/DIY/?p=2999",
+      "path": "Sources/How To Get What You Want Full/Electroplating Conductive Farbrics [2999].md",
+      "date": "2011-05-10T23:24:27",
+      "modified": "2013-12-03T16:46:04",
+      "chars": 922
+    },
+    {
+      "id": 3011,
+      "title": "Handcrafting Textile Sensors in Vienna",
+      "url": "https://www.kobakant.at/DIY/?p=3011",
+      "path": "Sources/How To Get What You Want Full/Handcrafting Textile Sensors in Vienna [3011].md",
+      "date": "2011-05-26T15:39:59",
+      "modified": "2011-06-08T11:23:50",
+      "chars": 2623
+    },
+    {
+      "id": 3087,
+      "title": "Conductive Wool",
+      "url": "https://www.kobakant.at/DIY/?p=3087",
+      "path": "Sources/How To Get What You Want Full/Conductive Wool [3087].md",
+      "date": "2011-07-22T21:10:10",
+      "modified": "2011-09-17T17:31:52",
+      "chars": 240
+    },
+    {
+      "id": 3089,
+      "title": "Needle Felting Conductive Wool",
+      "url": "https://www.kobakant.at/DIY/?p=3089",
+      "path": "Sources/How To Get What You Want Full/Needle Felting Conductive Wool [3089].md",
+      "date": "2011-07-22T22:00:19",
+      "modified": "2012-06-14T02:02:13",
+      "chars": 796
+    },
+    {
+      "id": 3099,
+      "title": "Knit Accelerometer",
+      "url": "https://www.kobakant.at/DIY/?p=3099",
+      "path": "Sources/How To Get What You Want Full/Knit Accelerometer [3099].md",
+      "date": "2011-07-22T22:39:13",
+      "modified": "2011-11-05T13:07:58",
+      "chars": 652
+    },
+    {
+      "id": 3102,
+      "title": "Seam-Ripping Continuity Meter",
+      "url": "https://www.kobakant.at/DIY/?p=3102",
+      "path": "Sources/How To Get What You Want Full/Seam-Ripping Continuity Meter [3102].md",
+      "date": "2011-08-25T22:10:59",
+      "modified": "2011-08-25T22:14:03",
+      "chars": 613
+    },
+    {
+      "id": 3105,
+      "title": "Vibrating Crochet Hook",
+      "url": "https://www.kobakant.at/DIY/?p=3105",
+      "path": "Sources/How To Get What You Want Full/Vibrating Crochet Hook [3105].md",
+      "date": "2011-08-25T22:06:59",
+      "modified": "2011-08-25T22:08:26",
+      "chars": 467
+    },
+    {
+      "id": 3106,
+      "title": "Breadboard Pincushion",
+      "url": "https://www.kobakant.at/DIY/?p=3106",
+      "path": "Sources/How To Get What You Want Full/Breadboard Pincushion [3106].md",
+      "date": "2011-08-25T22:07:53",
+      "modified": "2011-08-25T22:15:12",
+      "chars": 456
+    },
+    {
+      "id": 3124,
+      "title": "Sewable Surface Mount LEDs",
+      "url": "https://www.kobakant.at/DIY/?p=3124",
+      "path": "Sources/How To Get What You Want Full/Sewable Surface Mount LEDs [3124].md",
+      "date": "2011-09-17T15:53:56",
+      "modified": "2011-11-04T13:15:52",
+      "chars": 2598
+    },
+    {
+      "id": 3175,
+      "title": "Crochet/Knit Squeeze Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=3175",
+      "path": "Sources/How To Get What You Want Full/Crochet - Knit Squeeze Sensors [3175].md",
+      "date": "2011-11-05T13:21:00",
+      "modified": "2011-12-09T19:16:29",
+      "chars": 1445
+    },
+    {
+      "id": 3183,
+      "title": "Thermochromic Ink",
+      "url": "https://www.kobakant.at/DIY/?p=3183",
+      "path": "Sources/How To Get What You Want Full/Thermochromic Ink [3183].md",
+      "date": "2011-11-15T14:04:09",
+      "modified": "2016-10-04T10:45:20",
+      "chars": 1791
+    },
+    {
+      "id": 3208,
+      "title": "Electric Embroidery Monday",
+      "url": "https://www.kobakant.at/DIY/?p=3208",
+      "path": "Sources/How To Get What You Want Full/Electric Embroidery Monday [3208].md",
+      "date": "2011-11-29T07:53:13",
+      "modified": "2012-01-15T21:06:26",
+      "chars": 3951
+    },
+    {
+      "id": 3223,
+      "title": "Piezoresistive Fabric Touchpad",
+      "url": "https://www.kobakant.at/DIY/?p=3223",
+      "path": "Sources/How To Get What You Want Full/Piezoresistive Fabric Touchpad [3223].md",
+      "date": "2011-12-06T16:55:28",
+      "modified": "2017-06-17T13:28:41",
+      "chars": 998
+    },
+    {
+      "id": 3268,
+      "title": "Technology + Textiles",
+      "url": "https://www.kobakant.at/DIY/?p=3268",
+      "path": "Sources/How To Get What You Want Full/Technology + Textiles [3268].md",
+      "date": "2011-12-19T10:36:13",
+      "modified": "2017-03-02T15:25:02",
+      "chars": 3135
+    },
+    {
+      "id": 3310,
+      "title": "Arduino as Bluetooth HID",
+      "url": "https://www.kobakant.at/DIY/?p=3310",
+      "path": "Sources/How To Get What You Want Full/Arduino as Bluetooth HID [3310].md",
+      "date": "2012-01-01T15:04:11",
+      "modified": "2013-07-02T08:35:56",
+      "chars": 5140
+    },
+    {
+      "id": 3314,
+      "title": "Visualization: 2×2 Matrix",
+      "url": "https://www.kobakant.at/DIY/?p=3314",
+      "path": "Sources/How To Get What You Want Full/Visualization - 2×2 Matrix [3314].md",
+      "date": "2009-06-14T16:21:26",
+      "modified": "2021-02-18T11:49:38",
+      "chars": 3213
+    },
+    {
+      "id": 3316,
+      "title": "Visualization: Touchpad",
+      "url": "https://www.kobakant.at/DIY/?p=3316",
+      "path": "Sources/How To Get What You Want Full/Visualization - Touchpad [3316].md",
+      "date": "2009-06-14T16:22:42",
+      "modified": "2013-06-23T09:56:15",
+      "chars": 314
+    },
+    {
+      "id": 3338,
+      "title": "Electric Embroidery Tuesday",
+      "url": "https://www.kobakant.at/DIY/?p=3338",
+      "path": "Sources/How To Get What You Want Full/Electric Embroidery Tuesday [3338].md",
+      "date": "2012-01-04T02:16:09",
+      "modified": "2012-01-04T04:45:01",
+      "chars": 590
+    },
+    {
+      "id": 3347,
+      "title": "RGB Colour Fade",
+      "url": "https://www.kobakant.at/DIY/?p=3347",
+      "path": "Sources/How To Get What You Want Full/RGB Colour Fade [3347].md",
+      "date": "2009-06-14T17:24:27",
+      "modified": "2013-06-23T09:21:14",
+      "chars": 296
+    },
+    {
+      "id": 3363,
+      "title": "Visualization: Pressure Sensor Matrix",
+      "url": "https://www.kobakant.at/DIY/?p=3363",
+      "path": "Sources/How To Get What You Want Full/Visualization - Pressure Sensor Matrix [3363].md",
+      "date": "2011-06-19T18:48:37",
+      "modified": "2013-06-23T09:55:14",
+      "chars": 604
+    },
+    {
+      "id": 3382,
+      "title": "Visualization: Drawing",
+      "url": "https://www.kobakant.at/DIY/?p=3382",
+      "path": "Sources/How To Get What You Want Full/Visualization - Drawing [3382].md",
+      "date": "2009-02-19T19:54:09",
+      "modified": "2013-06-23T09:56:56",
+      "chars": 380
+    },
+    {
+      "id": 3393,
+      "title": "ATtiny: Soft Fade",
+      "url": "https://www.kobakant.at/DIY/?p=3393",
+      "path": "Sources/How To Get What You Want Full/ATtiny - Soft Fade [3393].md",
+      "date": "2012-03-09T04:23:07",
+      "modified": "2013-06-23T09:24:24",
+      "chars": 1030
+    },
+    {
+      "id": 3395,
+      "title": "Machine-Sewing Solderable Traces",
+      "url": "https://www.kobakant.at/DIY/?p=3395",
+      "path": "Sources/How To Get What You Want Full/Machine-Sewing Solderable Traces [3395].md",
+      "date": "2012-03-09T05:24:50",
+      "modified": "2012-11-20T11:59:31",
+      "chars": 384
+    },
+    {
+      "id": 3396,
+      "title": "Moving Fabric Petals",
+      "url": "https://www.kobakant.at/DIY/?p=3396",
+      "path": "Sources/How To Get What You Want Full/Moving Fabric Petals [3396].md",
+      "date": "2012-03-09T05:22:06",
+      "modified": "2012-03-09T05:22:06",
+      "chars": 239
+    },
+    {
+      "id": 3435,
+      "title": "Capacitive LED Fower",
+      "url": "https://www.kobakant.at/DIY/?p=3435",
+      "path": "Sources/How To Get What You Want Full/Capacitive LED Fower [3435].md",
+      "date": "2012-05-07T21:54:38",
+      "modified": "2012-11-20T12:12:58",
+      "chars": 291
+    },
+    {
+      "id": 3444,
+      "title": "Embroidery gone Electronic",
+      "url": "https://www.kobakant.at/DIY/?p=3444",
+      "path": "Sources/How To Get What You Want Full/Embroidery gone Electronic [3444].md",
+      "date": "2012-06-05T09:34:54",
+      "modified": "2012-08-02T17:55:17",
+      "chars": 6341
+    },
+    {
+      "id": 3472,
+      "title": "DEAF: Crafting the Future Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=3472",
+      "path": "Sources/How To Get What You Want Full/DEAF - Crafting the Future Workshop [3472].md",
+      "date": "2012-05-24T16:40:32",
+      "modified": "2012-05-29T17:26:48",
+      "chars": 2405
+    },
+    {
+      "id": 3489,
+      "title": "Finger Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=3489",
+      "path": "Sources/How To Get What You Want Full/Finger Sensor [3489].md",
+      "date": "2012-06-07T22:55:52",
+      "modified": "2012-06-14T01:12:17",
+      "chars": 558
+    },
+    {
+      "id": 3500,
+      "title": "CNC Textile Machines",
+      "url": "https://www.kobakant.at/DIY/?p=3500",
+      "path": "Sources/How To Get What You Want Full/CNC Textile Machines [3500].md",
+      "date": "2011-06-12T02:08:22",
+      "modified": "2012-07-01T12:47:41",
+      "chars": 636
+    },
+    {
+      "id": 3513,
+      "title": "Human Hacked Orchestra",
+      "url": "https://www.kobakant.at/DIY/?p=3513",
+      "path": "Sources/How To Get What You Want Full/Human Hacked Orchestra [3513].md",
+      "date": "2012-06-06T18:19:09",
+      "modified": "2012-09-02T17:12:18",
+      "chars": 625
+    },
+    {
+      "id": 3515,
+      "title": "E-Textile Meet-up",
+      "url": "https://www.kobakant.at/DIY/?p=3515",
+      "path": "Sources/How To Get What You Want Full/E-Textile Meet-up [3515].md",
+      "date": "2012-06-04T18:26:47",
+      "modified": "2012-07-04T07:16:41",
+      "chars": 411
+    },
+    {
+      "id": 3517,
+      "title": "E-Textile Open Lab at CNMAT",
+      "url": "https://www.kobakant.at/DIY/?p=3517",
+      "path": "Sources/How To Get What You Want Full/E-Textile Open Lab at CNMAT [3517].md",
+      "date": "2012-06-03T18:49:19",
+      "modified": "2012-06-13T06:07:58",
+      "chars": 807
+    },
+    {
+      "id": 3529,
+      "title": "Machine Felting",
+      "url": "https://www.kobakant.at/DIY/?p=3529",
+      "path": "Sources/How To Get What You Want Full/Machine Felting [3529].md",
+      "date": "2012-06-14T01:16:19",
+      "modified": "2012-07-04T07:32:52",
+      "chars": 211
+    },
+    {
+      "id": 3536,
+      "title": "Stretch Conductors",
+      "url": "https://www.kobakant.at/DIY/?p=3536",
+      "path": "Sources/How To Get What You Want Full/Stretch Conductors [3536].md",
+      "date": "2012-06-14T02:08:37",
+      "modified": "2012-06-14T02:08:37",
+      "chars": 324
+    },
+    {
+      "id": 3540,
+      "title": "Musical Pillow",
+      "url": "https://www.kobakant.at/DIY/?p=3540",
+      "path": "Sources/How To Get What You Want Full/Musical Pillow [3540].md",
+      "date": "2012-06-15T20:40:00",
+      "modified": "2012-06-18T10:13:27",
+      "chars": 2431
+    },
+    {
+      "id": 3563,
+      "title": "Fabric Pleating",
+      "url": "https://www.kobakant.at/DIY/?p=3563",
+      "path": "Sources/How To Get What You Want Full/Fabric Pleating [3563].md",
+      "date": "2012-07-04T07:26:49",
+      "modified": "2014-08-22T18:50:36",
+      "chars": 964
+    },
+    {
+      "id": 3638,
+      "title": "ISP Alligator Clip Extension",
+      "url": "https://www.kobakant.at/DIY/?p=3638",
+      "path": "Sources/How To Get What You Want Full/ISP Alligator Clip Extension [3638].md",
+      "date": "2012-08-20T13:09:30",
+      "modified": "2013-06-23T09:16:30",
+      "chars": 69
+    },
+    {
+      "id": 3649,
+      "title": "Weaving Conductive Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=3649",
+      "path": "Sources/How To Get What You Want Full/Weaving Conductive Fabric [3649].md",
+      "date": "2012-10-01T09:59:12",
+      "modified": "2012-11-30T13:54:58",
+      "chars": 6327
+    },
+    {
+      "id": 3652,
+      "title": "Embroidered Speaker Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=3652",
+      "path": "Sources/How To Get What You Want Full/Embroidered Speaker Workshop [3652].md",
+      "date": "2012-09-30T00:00:00",
+      "modified": "2012-10-20T21:31:50",
+      "chars": 253
+    },
+    {
+      "id": 3655,
+      "title": "Soft & Tiny Arduino Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=3655",
+      "path": "Sources/How To Get What You Want Full/Soft & Tiny Arduino Workshop [3655].md",
+      "date": "2012-10-15T00:39:30",
+      "modified": "2012-11-19T20:31:00",
+      "chars": 7333
+    },
+    {
+      "id": 3709,
+      "title": "Designing for the loop Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=3709",
+      "path": "Sources/How To Get What You Want Full/Designing for the loop Workshop [3709].md",
+      "date": "2012-10-20T20:44:42",
+      "modified": "2017-03-02T14:58:27",
+      "chars": 9015
+    },
+    {
+      "id": 3742,
+      "title": "ATtiny: Programming",
+      "url": "https://www.kobakant.at/DIY/?p=3742",
+      "path": "Sources/How To Get What You Want Full/ATtiny - Programming [3742].md",
+      "date": "2012-11-16T18:32:24",
+      "modified": "2013-06-23T09:36:44",
+      "chars": 5419
+    },
+    {
+      "id": 3794,
+      "title": "Sound Amplifying Circuits",
+      "url": "https://www.kobakant.at/DIY/?p=3794",
+      "path": "Sources/How To Get What You Want Full/Sound Amplifying Circuits [3794].md",
+      "date": "2012-11-20T12:21:33",
+      "modified": "2013-06-23T09:23:38",
+      "chars": 1391
+    },
+    {
+      "id": 3800,
+      "title": "ATtiny: 7-Segment Display",
+      "url": "https://www.kobakant.at/DIY/?p=3800",
+      "path": "Sources/How To Get What You Want Full/ATtiny - 7-Segment Display [3800].md",
+      "date": "2012-11-20T14:01:51",
+      "modified": "2013-06-23T09:23:26",
+      "chars": 640
+    },
+    {
+      "id": 3857,
+      "title": "Amplified Pillow Speaker",
+      "url": "https://www.kobakant.at/DIY/?p=3857",
+      "path": "Sources/How To Get What You Want Full/Amplified Pillow Speaker [3857].md",
+      "date": "2012-12-25T20:05:05",
+      "modified": "2013-02-25T14:52:50",
+      "chars": 3541
+    },
+    {
+      "id": 3920,
+      "title": "simple heat circuit",
+      "url": "https://www.kobakant.at/DIY/?p=3920",
+      "path": "Sources/How To Get What You Want Full/simple heat circuit [3920].md",
+      "date": "2012-12-14T09:10:24",
+      "modified": "2012-12-14T09:15:02",
+      "chars": 803
+    },
+    {
+      "id": 3923,
+      "title": "Volume Detection",
+      "url": "https://www.kobakant.at/DIY/?p=3923",
+      "path": "Sources/How To Get What You Want Full/Volume Detection [3923].md",
+      "date": "2012-12-16T17:00:36",
+      "modified": "2013-06-23T09:22:40",
+      "chars": 640
+    },
+    {
+      "id": 3959,
+      "title": "Soft & Tiny Pillow Speaker Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=3959",
+      "path": "Sources/How To Get What You Want Full/Soft & Tiny Pillow Speaker Workshop [3959].md",
+      "date": "2013-02-06T08:17:33",
+      "modified": "2013-04-26T08:41:09",
+      "chars": 2915
+    },
+    {
+      "id": 3996,
+      "title": "ATtiny Programming Shield",
+      "url": "https://www.kobakant.at/DIY/?p=3996",
+      "path": "Sources/How To Get What You Want Full/ATtiny Programming Shield [3996].md",
+      "date": "2013-02-20T20:37:36",
+      "modified": "2013-02-23T14:48:15",
+      "chars": 2799
+    },
+    {
+      "id": 4008,
+      "title": "Silent Pillow Speaker",
+      "url": "https://www.kobakant.at/DIY/?p=4008",
+      "path": "Sources/How To Get What You Want Full/Silent Pillow Speaker [4008].md",
+      "date": "2013-02-20T21:43:06",
+      "modified": "2013-03-08T15:47:42",
+      "chars": 9203
+    },
+    {
+      "id": 4085,
+      "title": "Tinkering with Textiles & Electronics",
+      "url": "https://www.kobakant.at/DIY/?p=4085",
+      "path": "Sources/How To Get What You Want Full/Tinkering with Textiles & Electronics [4085].md",
+      "date": "2013-02-26T14:20:35",
+      "modified": "2017-03-02T14:56:41",
+      "chars": 4109
+    },
+    {
+      "id": 4101,
+      "title": "EL panel/wire inverter hack",
+      "url": "https://www.kobakant.at/DIY/?p=4101",
+      "path": "Sources/How To Get What You Want Full/EL panel - wire inverter hack [4101].md",
+      "date": "2013-03-07T16:46:22",
+      "modified": "2014-08-12T10:46:36",
+      "chars": 2903
+    },
+    {
+      "id": 4123,
+      "title": "Dyeing Conductive Yarn",
+      "url": "https://www.kobakant.at/DIY/?p=4123",
+      "path": "Sources/How To Get What You Want Full/Dyeing Conductive Yarn [4123].md",
+      "date": "2013-03-27T12:40:58",
+      "modified": "2013-04-02T13:10:34",
+      "chars": 3084
+    },
+    {
+      "id": 4141,
+      "title": "Arduino meets Wearables Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4141",
+      "path": "Sources/How To Get What You Want Full/Arduino meets Wearables Workshop [4141].md",
+      "date": "2013-05-08T13:22:44",
+      "modified": "2017-03-02T14:53:41",
+      "chars": 2619
+    },
+    {
+      "id": 4143,
+      "title": "Crochet and Code",
+      "url": "https://www.kobakant.at/DIY/?p=4143",
+      "path": "Sources/How To Get What You Want Full/Crochet and Code [4143].md",
+      "date": "2013-04-02T13:38:51",
+      "modified": "2013-04-23T22:06:28",
+      "chars": 106
+    },
+    {
+      "id": 4156,
+      "title": "DressCode Workshop Shambala",
+      "url": "https://www.kobakant.at/DIY/?p=4156",
+      "path": "Sources/How To Get What You Want Full/DressCode Workshop Shambala [4156].md",
+      "date": "2013-08-11T14:10:21",
+      "modified": "2015-06-09T11:06:19",
+      "chars": 785
+    },
+    {
+      "id": 4174,
+      "title": "Bike+Light Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4174",
+      "path": "Sources/How To Get What You Want Full/Bike+Light Workshop [4174].md",
+      "date": "2013-04-11T07:04:10",
+      "modified": "2013-04-11T07:47:04",
+      "chars": 345
+    },
+    {
+      "id": 4209,
+      "title": "E-Textile Knitting Circle",
+      "url": "https://www.kobakant.at/DIY/?p=4209",
+      "path": "Sources/How To Get What You Want Full/E-Textile Knitting Circle [4209].md",
+      "date": "2013-04-23T09:35:41",
+      "modified": "2013-06-05T09:01:28",
+      "chars": 305
+    },
+    {
+      "id": 4223,
+      "title": "eTextile Summer Camp 2013",
+      "url": "https://www.kobakant.at/DIY/?p=4223",
+      "path": "Sources/How To Get What You Want Full/eTextile Summer Camp 2013 [4223].md",
+      "date": "2013-05-03T18:48:04",
+      "modified": "2013-05-04T10:50:13",
+      "chars": 1866
+    },
+    {
+      "id": 4240,
+      "title": "Voodoo Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=4240",
+      "path": "Sources/How To Get What You Want Full/Voodoo Sensor [4240].md",
+      "date": "2013-05-04T07:58:41",
+      "modified": "2020-06-05T15:17:17",
+      "chars": 398
+    },
+    {
+      "id": 4247,
+      "title": "Openwear Finger Bend Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=4247",
+      "path": "Sources/How To Get What You Want Full/Openwear Finger Bend Sensor [4247].md",
+      "date": "2013-05-08T07:17:49",
+      "modified": "2013-05-10T20:50:20",
+      "chars": 1530
+    },
+    {
+      "id": 4268,
+      "title": "LilyPad Arduino Programming",
+      "url": "https://www.kobakant.at/DIY/?p=4268",
+      "path": "Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268].md",
+      "date": "2013-05-14T23:08:23",
+      "modified": "2013-05-26T10:36:16",
+      "chars": 3713
+    },
+    {
+      "id": 4296,
+      "title": "Matrix: Woven (non-stretch)",
+      "url": "https://www.kobakant.at/DIY/?p=4296",
+      "path": "Sources/How To Get What You Want Full/Matrix - Woven (non-stretch) [4296].md",
+      "date": "2013-07-26T10:02:21",
+      "modified": "2018-12-15T19:38:39",
+      "chars": 398
+    },
+    {
+      "id": 4305,
+      "title": "Electronic Textiles Live",
+      "url": "https://www.kobakant.at/DIY/?p=4305",
+      "path": "Sources/How To Get What You Want Full/Electronic Textiles Live [4305].md",
+      "date": "2014-09-12T07:41:09",
+      "modified": "2014-11-12T13:10:22",
+      "chars": 8438
+    },
+    {
+      "id": 4317,
+      "title": "Knit Stroke Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=4317",
+      "path": "Sources/How To Get What You Want Full/Knit Stroke Sensors [4317].md",
+      "date": "2009-07-27T15:39:12",
+      "modified": "2015-10-30T12:13:14",
+      "chars": 468
+    },
+    {
+      "id": 4324,
+      "title": "Wish Lab Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4324",
+      "path": "Sources/How To Get What You Want Full/Wish Lab Workshop [4324].md",
+      "date": "2013-06-05T06:55:34",
+      "modified": "2014-03-15T07:37:22",
+      "chars": 433
+    },
+    {
+      "id": 4342,
+      "title": "Multiplexed Matrix",
+      "url": "https://www.kobakant.at/DIY/?p=4342",
+      "path": "Sources/How To Get What You Want Full/Multiplexed Matrix [4342].md",
+      "date": "2011-06-05T08:23:46",
+      "modified": "2013-06-23T10:04:51",
+      "chars": 687
+    },
+    {
+      "id": 4345,
+      "title": "Multiplexed Pillow",
+      "url": "https://www.kobakant.at/DIY/?p=4345",
+      "path": "Sources/How To Get What You Want Full/Multiplexed Pillow [4345].md",
+      "date": "2011-06-05T08:36:58",
+      "modified": "2017-03-05T19:00:30",
+      "chars": 539
+    },
+    {
+      "id": 4363,
+      "title": "ATtiny: Soft Serial",
+      "url": "https://www.kobakant.at/DIY/?p=4363",
+      "path": "Sources/How To Get What You Want Full/ATtiny - Soft Serial [4363].md",
+      "date": "2012-07-19T11:11:18",
+      "modified": "2013-06-23T09:27:45",
+      "chars": 513
+    },
+    {
+      "id": 4382,
+      "title": "ATtiny: Sound",
+      "url": "https://www.kobakant.at/DIY/?p=4382",
+      "path": "Sources/How To Get What You Want Full/ATtiny - Sound [4382].md",
+      "date": "2012-06-23T09:30:10",
+      "modified": "2013-08-09T11:54:42",
+      "chars": 1822
+    },
+    {
+      "id": 4384,
+      "title": "ATtiny: Capacitive Sensing",
+      "url": "https://www.kobakant.at/DIY/?p=4384",
+      "path": "Sources/How To Get What You Want Full/ATtiny - Capacitive Sensing [4384].md",
+      "date": "2012-06-23T09:34:37",
+      "modified": "2013-06-23T09:35:10",
+      "chars": 136
+    },
+    {
+      "id": 4393,
+      "title": "Breakout Boards",
+      "url": "https://www.kobakant.at/DIY/?p=4393",
+      "path": "Sources/How To Get What You Want Full/Breakout Boards [4393].md",
+      "date": "2012-06-23T09:50:19",
+      "modified": "2013-06-23T09:51:20",
+      "chars": 109
+    },
+    {
+      "id": 4421,
+      "title": "Data Logging Broach",
+      "url": "https://www.kobakant.at/DIY/?p=4421",
+      "path": "Sources/How To Get What You Want Full/Data Logging Broach [4421].md",
+      "date": "2010-07-02T08:40:11",
+      "modified": "2013-07-02T08:48:39",
+      "chars": 3237
+    },
+    {
+      "id": 4432,
+      "title": "Lasercut Stretchy Battery Pocket",
+      "url": "https://www.kobakant.at/DIY/?p=4432",
+      "path": "Sources/How To Get What You Want Full/Lasercut Stretchy Battery Pocket [4432].md",
+      "date": "2013-07-11T19:16:03",
+      "modified": "2013-07-24T14:25:50",
+      "chars": 1186
+    },
+    {
+      "id": 4438,
+      "title": "Beaded Tilt Sensor Swatch",
+      "url": "https://www.kobakant.at/DIY/?p=4438",
+      "path": "Sources/How To Get What You Want Full/Beaded Tilt Sensor Swatch [4438].md",
+      "date": "2013-07-12T07:38:02",
+      "modified": "2020-06-05T15:09:16",
+      "chars": 2405
+    },
+    {
+      "id": 4445,
+      "title": "ATtiny Serial & Wireless Boards!",
+      "url": "https://www.kobakant.at/DIY/?p=4445",
+      "path": "Sources/How To Get What You Want Full/ATtiny Serial & Wireless Boards! [4445].md",
+      "date": "2013-08-11T13:54:46",
+      "modified": "2017-03-16T18:09:26",
+      "chars": 2940
+    },
+    {
+      "id": 4457,
+      "title": "LilyPad SnapRing",
+      "url": "https://www.kobakant.at/DIY/?p=4457",
+      "path": "Sources/How To Get What You Want Full/LilyPad SnapRing [4457].md",
+      "date": "2013-10-14T11:02:50",
+      "modified": "2013-10-14T11:47:35",
+      "chars": 799
+    },
+    {
+      "id": 4459,
+      "title": "Knit Ball Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=4459",
+      "path": "Sources/How To Get What You Want Full/Knit Ball Sensors [4459].md",
+      "date": "2013-09-06T14:44:14",
+      "modified": "2013-12-03T16:49:45",
+      "chars": 1505
+    },
+    {
+      "id": 4461,
+      "title": "Knit Wrist Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=4461",
+      "path": "Sources/How To Get What You Want Full/Knit Wrist Sensors [4461].md",
+      "date": "2013-07-26T14:44:54",
+      "modified": "2019-05-16T00:49:29",
+      "chars": 80
+    },
+    {
+      "id": 4463,
+      "title": "Magnetic Fur",
+      "url": "https://www.kobakant.at/DIY/?p=4463",
+      "path": "Sources/How To Get What You Want Full/Magnetic Fur [4463].md",
+      "date": "2013-07-26T14:45:26",
+      "modified": "2013-07-31T09:23:41",
+      "chars": 57
+    },
+    {
+      "id": 4465,
+      "title": "Knit Speakers",
+      "url": "https://www.kobakant.at/DIY/?p=4465",
+      "path": "Sources/How To Get What You Want Full/Knit Speakers [4465].md",
+      "date": "2013-07-26T14:46:37",
+      "modified": "2013-07-29T08:44:26",
+      "chars": 200
+    },
+    {
+      "id": 4476,
+      "title": "Weaving Multiconductor Bands",
+      "url": "https://www.kobakant.at/DIY/?p=4476",
+      "path": "Sources/How To Get What You Want Full/Weaving Multiconductor Bands [4476].md",
+      "date": "2013-07-26T15:01:59",
+      "modified": "2017-03-28T07:31:12",
+      "chars": 83
+    },
+    {
+      "id": 4479,
+      "title": "Batik Etching Conductive Fabrics",
+      "url": "https://www.kobakant.at/DIY/?p=4479",
+      "path": "Sources/How To Get What You Want Full/Batik Etching Conductive Fabrics [4479].md",
+      "date": "2013-07-26T15:05:34",
+      "modified": "2013-07-26T15:09:05",
+      "chars": 234
+    },
+    {
+      "id": 4492,
+      "title": "Ikat Woven Conductive Thread",
+      "url": "https://www.kobakant.at/DIY/?p=4492",
+      "path": "Sources/How To Get What You Want Full/Ikat Woven Conductive Thread [4492].md",
+      "date": "2013-07-29T10:08:20",
+      "modified": "2013-07-29T10:08:20",
+      "chars": 1160
+    },
+    {
+      "id": 4494,
+      "title": "Action Hero Tailoring",
+      "url": "https://www.kobakant.at/DIY/?p=4494",
+      "path": "Sources/How To Get What You Want Full/Action Hero Tailoring [4494].md",
+      "date": "2013-07-31T09:01:20",
+      "modified": "2013-08-08T11:28:32",
+      "chars": 1044
+    },
+    {
+      "id": 4511,
+      "title": "Crochet Conductive Bead",
+      "url": "https://www.kobakant.at/DIY/?p=4511",
+      "path": "Sources/How To Get What You Want Full/Crochet Conductive Bead [4511].md",
+      "date": "2013-08-06T13:54:44",
+      "modified": "2013-08-06T14:58:41",
+      "chars": 315
+    },
+    {
+      "id": 4523,
+      "title": "Jumpsuit for actionman",
+      "url": "https://www.kobakant.at/DIY/?p=4523",
+      "path": "Sources/How To Get What You Want Full/Jumpsuit for actionman [4523].md",
+      "date": "2013-08-07T22:18:33",
+      "modified": "2013-11-26T11:23:27",
+      "chars": 4053
+    },
+    {
+      "id": 4567,
+      "title": "BLE (Bluetooth Low Energy)",
+      "url": "https://www.kobakant.at/DIY/?p=4567",
+      "path": "Sources/How To Get What You Want Full/BLE (Bluetooth Low Energy) [4567].md",
+      "date": "2013-08-29T11:34:51",
+      "modified": "2013-10-09T10:28:59",
+      "chars": 4010
+    },
+    {
+      "id": 4588,
+      "title": "DressCode Examples",
+      "url": "https://www.kobakant.at/DIY/?p=4588",
+      "path": "Sources/How To Get What You Want Full/DressCode Examples [4588].md",
+      "date": "2013-09-01T10:08:33",
+      "modified": "2020-04-06T15:52:46",
+      "chars": 2883
+    },
+    {
+      "id": 4617,
+      "title": "Traces with Origin Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4617",
+      "path": "Sources/How To Get What You Want Full/Traces with Origin Workshop [4617].md",
+      "date": "2013-09-09T16:14:59",
+      "modified": "2013-10-02T19:52:45",
+      "chars": 663
+    },
+    {
+      "id": 4619,
+      "title": "Eeontex Projects",
+      "url": "https://www.kobakant.at/DIY/?p=4619",
+      "path": "Sources/How To Get What You Want Full/Eeontex Projects [4619].md",
+      "date": "2013-09-16T07:37:43",
+      "modified": "2013-10-10T14:26:19",
+      "chars": 2504
+    },
+    {
+      "id": 4632,
+      "title": "Fabric LED Strip",
+      "url": "https://www.kobakant.at/DIY/?p=4632",
+      "path": "Sources/How To Get What You Want Full/Fabric LED Strip [4632].md",
+      "date": "2013-10-01T13:03:08",
+      "modified": "2013-10-01T13:05:07",
+      "chars": 1010
+    },
+    {
+      "id": 4639,
+      "title": "DIY Arduino Data Gloves",
+      "url": "https://www.kobakant.at/DIY/?p=4639",
+      "path": "Sources/How To Get What You Want Full/DIY Arduino Data Gloves [4639].md",
+      "date": "2013-10-02T19:49:27",
+      "modified": "2020-05-13T09:58:53",
+      "chars": 854
+    },
+    {
+      "id": 4651,
+      "title": "Relief Embrodiery",
+      "url": "https://www.kobakant.at/DIY/?p=4651",
+      "path": "Sources/How To Get What You Want Full/Relief Embrodiery [4651].md",
+      "date": "2013-10-05T16:17:34",
+      "modified": "2013-10-05T16:22:53",
+      "chars": 838
+    },
+    {
+      "id": 4669,
+      "title": "DressCode Workshop Berlin",
+      "url": "https://www.kobakant.at/DIY/?p=4669",
+      "path": "Sources/How To Get What You Want Full/DressCode Workshop Berlin [4669].md",
+      "date": "2013-11-17T11:57:28",
+      "modified": "2013-12-09T14:11:11",
+      "chars": 3922
+    },
+    {
+      "id": 4681,
+      "title": "3D Printed Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=4681",
+      "path": "Sources/How To Get What You Want Full/3D Printed Sensors [4681].md",
+      "date": "2013-10-13T14:51:39",
+      "modified": "2013-10-13T15:02:25",
+      "chars": 1725
+    },
+    {
+      "id": 4698,
+      "title": "Elektronik und Handwerk",
+      "url": "https://www.kobakant.at/DIY/?p=4698",
+      "path": "Sources/How To Get What You Want Full/Elektronik und Handwerk [4698].md",
+      "date": "2013-11-11T23:00:14",
+      "modified": "2013-11-27T20:44:31",
+      "chars": 6628
+    },
+    {
+      "id": 4718,
+      "title": "Card Weaving Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4718",
+      "path": "Sources/How To Get What You Want Full/Card Weaving Workshop [4718].md",
+      "date": "2013-10-18T10:59:14",
+      "modified": "2013-10-26T17:53:01",
+      "chars": 4253
+    },
+    {
+      "id": 4725,
+      "title": "Physical Computing Stammtisch",
+      "url": "https://www.kobakant.at/DIY/?p=4725",
+      "path": "Sources/How To Get What You Want Full/Physical Computing Stammtisch [4725].md",
+      "date": "2013-10-24T11:52:12",
+      "modified": "2013-10-24T11:56:57",
+      "chars": 357
+    },
+    {
+      "id": 4732,
+      "title": "Action Figure Motion-Capture",
+      "url": "https://www.kobakant.at/DIY/?p=4732",
+      "path": "Sources/How To Get What You Want Full/Action Figure Motion-Capture [4732].md",
+      "date": "2013-10-25T17:11:03",
+      "modified": "2013-10-25T17:31:50",
+      "chars": 729
+    },
+    {
+      "id": 4739,
+      "title": "Kinder Egg WishLab",
+      "url": "https://www.kobakant.at/DIY/?p=4739",
+      "path": "Sources/How To Get What You Want Full/Kinder Egg WishLab [4739].md",
+      "date": "2013-10-26T17:36:40",
+      "modified": "2013-10-26T18:20:18",
+      "chars": 1029
+    },
+    {
+      "id": 4760,
+      "title": "TrafoPop LED Jacket",
+      "url": "https://www.kobakant.at/DIY/?p=4760",
+      "path": "Sources/How To Get What You Want Full/TrafoPop LED Jacket [4760].md",
+      "date": "2013-11-04T11:44:52",
+      "modified": "2013-11-04T18:21:49",
+      "chars": 1539
+    },
+    {
+      "id": 4779,
+      "title": "Xbee lilypad shield PCB",
+      "url": "https://www.kobakant.at/DIY/?p=4779",
+      "path": "Sources/How To Get What You Want Full/Xbee lilypad shield PCB [4779].md",
+      "date": "2013-11-08T17:13:48",
+      "modified": "2014-08-15T09:38:49",
+      "chars": 2122
+    },
+    {
+      "id": 4855,
+      "title": "Interactive KnitBook",
+      "url": "https://www.kobakant.at/DIY/?p=4855",
+      "path": "Sources/How To Get What You Want Full/Interactive KnitBook [4855].md",
+      "date": "2013-11-28T11:51:32",
+      "modified": "2017-10-25T20:24:48",
+      "chars": 13310
+    },
+    {
+      "id": 4882,
+      "title": "Embroidered LilyBLE Module",
+      "url": "https://www.kobakant.at/DIY/?p=4882",
+      "path": "Sources/How To Get What You Want Full/Embroidered LilyBLE Module [4882].md",
+      "date": "2013-12-03T16:27:53",
+      "modified": "2013-12-03T17:19:32",
+      "chars": 1720
+    },
+    {
+      "id": 4909,
+      "title": "Laser- and Vinylcut Solder Masks",
+      "url": "https://www.kobakant.at/DIY/?p=4909",
+      "path": "Sources/How To Get What You Want Full/Laser- and Vinylcut Solder Masks [4909].md",
+      "date": "2013-12-05T12:27:52",
+      "modified": "2014-10-14T21:48:29",
+      "chars": 183
+    },
+    {
+      "id": 4915,
+      "title": "Flex PCB and Solder Mask Supplies",
+      "url": "https://www.kobakant.at/DIY/?p=4915",
+      "path": "Sources/How To Get What You Want Full/Flex PCB and Solder Mask Supplies [4915].md",
+      "date": "2013-12-05T12:32:49",
+      "modified": "2014-08-09T10:44:42",
+      "chars": 1446
+    },
+    {
+      "id": 4920,
+      "title": "DressCode Dress Shirt",
+      "url": "https://www.kobakant.at/DIY/?p=4920",
+      "path": "Sources/How To Get What You Want Full/DressCode Dress Shirt [4920].md",
+      "date": "2013-12-06T16:49:29",
+      "modified": "2013-12-06T17:20:45",
+      "chars": 2826
+    },
+    {
+      "id": 4926,
+      "title": "ATTINY POV",
+      "url": "https://www.kobakant.at/DIY/?p=4926",
+      "path": "Sources/How To Get What You Want Full/ATTINY POV [4926].md",
+      "date": "2013-12-05T23:28:09",
+      "modified": "2015-05-15T12:42:12",
+      "chars": 1501
+    },
+    {
+      "id": 4948,
+      "title": "DressCode Vest",
+      "url": "https://www.kobakant.at/DIY/?p=4948",
+      "path": "Sources/How To Get What You Want Full/DressCode Vest [4948].md",
+      "date": "2013-12-06T17:20:25",
+      "modified": "2013-12-06T17:44:52",
+      "chars": 65
+    },
+    {
+      "id": 4954,
+      "title": "DressCode Necklace",
+      "url": "https://www.kobakant.at/DIY/?p=4954",
+      "path": "Sources/How To Get What You Want Full/DressCode Necklace [4954].md",
+      "date": "2013-12-06T17:16:49",
+      "modified": "2013-12-06T17:18:27",
+      "chars": 78
+    },
+    {
+      "id": 4967,
+      "title": "WishLab II Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=4967",
+      "path": "Sources/How To Get What You Want Full/WishLab II Workshop [4967].md",
+      "date": "2014-02-08T08:36:46",
+      "modified": "2014-03-15T07:37:03",
+      "chars": 1091
+    },
+    {
+      "id": 5007,
+      "title": "Meet the Materials Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=5007",
+      "path": "Sources/How To Get What You Want Full/Meet the Materials Workshop [5007].md",
+      "date": "2014-03-22T07:08:54",
+      "modified": "2014-03-23T21:13:52",
+      "chars": 408
+    },
+    {
+      "id": 5032,
+      "title": "Knit Breadboard Circuit",
+      "url": "https://www.kobakant.at/DIY/?p=5032",
+      "path": "Sources/How To Get What You Want Full/Knit Breadboard Circuit [5032].md",
+      "date": "2010-04-26T08:33:57",
+      "modified": "2014-06-23T07:00:11",
+      "chars": 447
+    },
+    {
+      "id": 5044,
+      "title": "Chip-Man-Band",
+      "url": "https://www.kobakant.at/DIY/?p=5044",
+      "path": "Sources/How To Get What You Want Full/Chip-Man-Band [5044].md",
+      "date": "2014-05-11T08:32:15",
+      "modified": "2017-05-10T16:00:57",
+      "chars": 7950
+    },
+    {
+      "id": 5053,
+      "title": "Danish Krown Slide-Switch",
+      "url": "https://www.kobakant.at/DIY/?p=5053",
+      "path": "Sources/How To Get What You Want Full/Danish Krown Slide-Switch [5053].md",
+      "date": "2014-05-03T15:42:56",
+      "modified": "2014-06-09T15:05:48",
+      "chars": 3155
+    },
+    {
+      "id": 5054,
+      "title": "Resistance Visualization Tool",
+      "url": "https://www.kobakant.at/DIY/?p=5054",
+      "path": "Sources/How To Get What You Want Full/Resistance Visualization Tool [5054].md",
+      "date": "2014-05-03T15:45:39",
+      "modified": "2014-05-03T15:45:39",
+      "chars": 310
+    },
+    {
+      "id": 5057,
+      "title": "Electronics as Material I",
+      "url": "https://www.kobakant.at/DIY/?p=5057",
+      "path": "Sources/How To Get What You Want Full/Electronics as Material I [5057].md",
+      "date": "2014-05-09T07:32:46",
+      "modified": "2017-03-02T14:47:54",
+      "chars": 3856
+    },
+    {
+      "id": 5136,
+      "title": "Balloon Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=5136",
+      "path": "Sources/How To Get What You Want Full/Balloon Sensor [5136].md",
+      "date": "2014-05-17T13:26:22",
+      "modified": "2014-05-17T13:43:38",
+      "chars": 846
+    },
+    {
+      "id": 5144,
+      "title": "A Kit-of-No-Parts at Weissensee",
+      "url": "https://www.kobakant.at/DIY/?p=5144",
+      "path": "Sources/How To Get What You Want Full/A Kit-of-No-Parts at Weissensee [5144].md",
+      "date": "2014-05-17T15:29:27",
+      "modified": "2015-10-17T09:46:40",
+      "chars": 10248
+    },
+    {
+      "id": 5184,
+      "title": "Conductive/Piezoresistive Leather!",
+      "url": "https://www.kobakant.at/DIY/?p=5184",
+      "path": "Sources/How To Get What You Want Full/Conductive - Piezoresistive Leather! [5184].md",
+      "date": "2014-05-29T11:46:14",
+      "modified": "2014-07-19T06:40:00",
+      "chars": 461
+    },
+    {
+      "id": 5185,
+      "title": "Motor on a String",
+      "url": "https://www.kobakant.at/DIY/?p=5185",
+      "path": "Sources/How To Get What You Want Full/Motor on a String [5185].md",
+      "date": "2014-05-29T11:47:22",
+      "modified": "2014-05-30T07:45:22",
+      "chars": 443
+    },
+    {
+      "id": 5207,
+      "title": "eTextile Summer Camp 2014",
+      "url": "https://www.kobakant.at/DIY/?p=5207",
+      "path": "Sources/How To Get What You Want Full/eTextile Summer Camp 2014 [5207].md",
+      "date": "2014-05-24T18:35:59",
+      "modified": "2014-06-24T18:46:11",
+      "chars": 471
+    },
+    {
+      "id": 5210,
+      "title": "Light Touch Pressure Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=5210",
+      "path": "Sources/How To Get What You Want Full/Light Touch Pressure Sensor [5210].md",
+      "date": "2014-06-24T19:51:25",
+      "modified": "2014-06-25T13:26:02",
+      "chars": 782
+    },
+    {
+      "id": 5222,
+      "title": "Clothspin Battery Holder",
+      "url": "https://www.kobakant.at/DIY/?p=5222",
+      "path": "Sources/How To Get What You Want Full/Clothspin Battery Holder [5222].md",
+      "date": "2014-06-24T20:23:57",
+      "modified": "2014-06-24T20:24:49",
+      "chars": 423
+    },
+    {
+      "id": 5227,
+      "title": "All your segments are belong to me",
+      "url": "https://www.kobakant.at/DIY/?p=5227",
+      "path": "Sources/How To Get What You Want Full/All your segments are belong to me [5227].md",
+      "date": "2014-10-09T15:57:11",
+      "modified": "2014-11-07T12:52:38",
+      "chars": 6388
+    },
+    {
+      "id": 5263,
+      "title": "Zebra Zebra Fabric (X-Zebra, Y-Eeonyx)",
+      "url": "https://www.kobakant.at/DIY/?p=5263",
+      "path": "Sources/How To Get What You Want Full/Zebra Zebra Fabric (X-Zebra, Y-Eeonyx) [5263].md",
+      "date": "2014-08-13T09:36:56",
+      "modified": "2014-08-13T09:47:15",
+      "chars": 1198
+    },
+    {
+      "id": 5276,
+      "title": "SMA Smocking",
+      "url": "https://www.kobakant.at/DIY/?p=5276",
+      "path": "Sources/How To Get What You Want Full/SMA Smocking [5276].md",
+      "date": "2014-08-15T21:15:13",
+      "modified": "2014-08-22T18:53:17",
+      "chars": 466
+    },
+    {
+      "id": 5277,
+      "title": "Igne Oyasi Motor",
+      "url": "https://www.kobakant.at/DIY/?p=5277",
+      "path": "Sources/How To Get What You Want Full/Igne Oyasi Motor [5277].md",
+      "date": "2014-08-15T21:03:33",
+      "modified": "2014-08-15T21:22:32",
+      "chars": 980
+    },
+    {
+      "id": 5283,
+      "title": "Screen-printed Copper Paint on Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=5283",
+      "path": "Sources/How To Get What You Want Full/Screen-printed Copper Paint on Fabric [5283].md",
+      "date": "2014-08-14T21:07:06",
+      "modified": "2014-08-15T22:08:33",
+      "chars": 223
+    },
+    {
+      "id": 5301,
+      "title": "Technical Intimacy",
+      "url": "https://www.kobakant.at/DIY/?p=5301",
+      "path": "Sources/How To Get What You Want Full/Technical Intimacy [5301].md",
+      "date": "2014-09-22T19:03:27",
+      "modified": "2017-05-10T16:00:53",
+      "chars": 6678
+    },
+    {
+      "id": 5309,
+      "title": "Jenny’s Playlist Costume",
+      "url": "https://www.kobakant.at/DIY/?p=5309",
+      "path": "Sources/How To Get What You Want Full/Jenny’s Playlist Costume [5309].md",
+      "date": "2014-08-31T13:19:00",
+      "modified": "2014-08-31T13:19:00",
+      "chars": 681
+    },
+    {
+      "id": 5371,
+      "title": "Plotted Flex PCB",
+      "url": "https://www.kobakant.at/DIY/?p=5371",
+      "path": "Sources/How To Get What You Want Full/Plotted Flex PCB [5371].md",
+      "date": "2014-10-14T21:56:26",
+      "modified": "2014-10-26T17:38:55",
+      "chars": 1922
+    },
+    {
+      "id": 5390,
+      "title": "Grias Di Hut",
+      "url": "https://www.kobakant.at/DIY/?p=5390",
+      "path": "Sources/How To Get What You Want Full/Grias Di Hut [5390].md",
+      "date": "2014-10-21T13:28:07",
+      "modified": "2014-10-23T12:08:38",
+      "chars": 3673
+    },
+    {
+      "id": 5403,
+      "title": "Hard to Soft Snap Connection",
+      "url": "https://www.kobakant.at/DIY/?p=5403",
+      "path": "Sources/How To Get What You Want Full/Hard to Soft Snap Connection [5403].md",
+      "date": "2014-10-22T13:57:53",
+      "modified": "2014-10-22T13:57:53",
+      "chars": 141
+    },
+    {
+      "id": 5411,
+      "title": "Plotted Flex AA Battery Holder",
+      "url": "https://www.kobakant.at/DIY/?p=5411",
+      "path": "Sources/How To Get What You Want Full/Plotted Flex AA Battery Holder [5411].md",
+      "date": "2014-10-26T18:03:52",
+      "modified": "2014-10-26T18:04:45",
+      "chars": 168
+    },
+    {
+      "id": 5414,
+      "title": "Soft Sensors for Soft Bodies",
+      "url": "https://www.kobakant.at/DIY/?p=5414",
+      "path": "Sources/How To Get What You Want Full/Soft Sensors for Soft Bodies [5414].md",
+      "date": "2015-04-24T14:30:48",
+      "modified": "2015-05-06T07:38:55",
+      "chars": 3883
+    },
+    {
+      "id": 5415,
+      "title": "Soft Sensors for Soft Bodies II",
+      "url": "https://www.kobakant.at/DIY/?p=5415",
+      "path": "Sources/How To Get What You Want Full/Soft Sensors for Soft Bodies II [5415].md",
+      "date": "2015-05-03T18:22:37",
+      "modified": "2015-05-11T14:51:14",
+      "chars": 717
+    },
+    {
+      "id": 5454,
+      "title": "The Sound of Nature",
+      "url": "https://www.kobakant.at/DIY/?p=5454",
+      "path": "Sources/How To Get What You Want Full/The Sound of Nature [5454].md",
+      "date": "2015-02-03T08:36:46",
+      "modified": "2015-03-15T14:04:46",
+      "chars": 1761
+    },
+    {
+      "id": 5460,
+      "title": "Electronics as Material II",
+      "url": "https://www.kobakant.at/DIY/?p=5460",
+      "path": "Sources/How To Get What You Want Full/Electronics as Material II [5460].md",
+      "date": "2015-03-15T14:24:45",
+      "modified": "2017-03-02T14:47:21",
+      "chars": 6568
+    },
+    {
+      "id": 5466,
+      "title": "Sounding Textiles",
+      "url": "https://www.kobakant.at/DIY/?p=5466",
+      "path": "Sources/How To Get What You Want Full/Sounding Textiles [5466].md",
+      "date": "2015-03-15T14:29:15",
+      "modified": "2022-04-15T07:17:14",
+      "chars": 4069
+    },
+    {
+      "id": 5495,
+      "title": "Wimper Switch",
+      "url": "https://www.kobakant.at/DIY/?p=5495",
+      "path": "Sources/How To Get What You Want Full/Wimper Switch [5495].md",
+      "date": "2015-03-28T01:40:08",
+      "modified": "2015-05-15T12:44:58",
+      "chars": 2616
+    },
+    {
+      "id": 5501,
+      "title": "machine embroidering",
+      "url": "https://www.kobakant.at/DIY/?p=5501",
+      "path": "Sources/How To Get What You Want Full/machine embroidering [5501].md",
+      "date": "2015-03-30T14:41:17",
+      "modified": "2015-05-15T12:44:07",
+      "chars": 1627
+    },
+    {
+      "id": 5509,
+      "title": "Woven Speaker",
+      "url": "https://www.kobakant.at/DIY/?p=5509",
+      "path": "Sources/How To Get What You Want Full/Woven Speaker [5509].md",
+      "date": "2015-04-17T06:53:52",
+      "modified": "2015-04-20T15:50:15",
+      "chars": 862
+    },
+    {
+      "id": 5519,
+      "title": "Fleckerlteppich Pressure Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=5519",
+      "path": "Sources/How To Get What You Want Full/Fleckerlteppich Pressure Sensor [5519].md",
+      "date": "2015-04-17T07:29:00",
+      "modified": "2015-04-20T15:50:41",
+      "chars": 1214
+    },
+    {
+      "id": 5523,
+      "title": "Frequency Finger Gloves",
+      "url": "https://www.kobakant.at/DIY/?p=5523",
+      "path": "Sources/How To Get What You Want Full/Frequency Finger Gloves [5523].md",
+      "date": "2015-04-17T07:49:01",
+      "modified": "2015-05-08T22:19:25",
+      "chars": 2006
+    },
+    {
+      "id": 5530,
+      "title": "Knitting, hacking, hanging, sound",
+      "url": "https://www.kobakant.at/DIY/?p=5530",
+      "path": "Sources/How To Get What You Want Full/Knitting, hacking, hanging, sound [5530].md",
+      "date": "2010-05-19T21:00:15",
+      "modified": "2015-04-19T21:01:40",
+      "chars": 1132
+    },
+    {
+      "id": 5539,
+      "title": "Sockpuppets",
+      "url": "https://www.kobakant.at/DIY/?p=5539",
+      "path": "Sources/How To Get What You Want Full/Sockpuppets [5539].md",
+      "date": "2015-04-23T15:17:38",
+      "modified": "2015-05-20T18:14:57",
+      "chars": 5664
+    },
+    {
+      "id": 5595,
+      "title": "Animating Textiles",
+      "url": "https://www.kobakant.at/DIY/?p=5595",
+      "path": "Sources/How To Get What You Want Full/Animating Textiles [5595].md",
+      "date": "2015-05-04T10:58:23",
+      "modified": "2015-05-06T11:19:06",
+      "chars": 2409
+    },
+    {
+      "id": 5615,
+      "title": "Sheath Bend Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=5615",
+      "path": "Sources/How To Get What You Want Full/Sheath Bend Sensor [5615].md",
+      "date": "2015-05-07T16:07:05",
+      "modified": "2015-05-09T12:07:23",
+      "chars": 397
+    },
+    {
+      "id": 5619,
+      "title": "glovephone",
+      "url": "https://www.kobakant.at/DIY/?p=5619",
+      "path": "Sources/How To Get What You Want Full/glovephone [5619].md",
+      "date": "2015-05-08T22:11:22",
+      "modified": "2015-05-13T09:35:15",
+      "chars": 1447
+    },
+    {
+      "id": 5639,
+      "title": "Heating with Eeonyx Test",
+      "url": "https://www.kobakant.at/DIY/?p=5639",
+      "path": "Sources/How To Get What You Want Full/Heating with Eeonyx Test [5639].md",
+      "date": "2015-05-17T22:20:18",
+      "modified": "2015-06-20T17:32:18",
+      "chars": 264
+    },
+    {
+      "id": 5647,
+      "title": "Engineers for Social Impact workshop at Mumbai : e-Diwali",
+      "url": "https://www.kobakant.at/DIY/?p=5647",
+      "path": "Sources/How To Get What You Want Full/Engineers for Social Impact workshop at Mumbai - e-Diwali [5647].md",
+      "date": "2015-05-20T18:35:51",
+      "modified": "2015-06-20T17:32:53",
+      "chars": 2100
+    },
+    {
+      "id": 5656,
+      "title": "Corset Breathing Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=5656",
+      "path": "Sources/How To Get What You Want Full/Corset Breathing Sensor [5656].md",
+      "date": "2015-05-20T19:38:55",
+      "modified": "2015-05-20T19:41:29",
+      "chars": 944
+    },
+    {
+      "id": 5660,
+      "title": "electromagnetic velcro",
+      "url": "https://www.kobakant.at/DIY/?p=5660",
+      "path": "Sources/How To Get What You Want Full/electromagnetic velcro [5660].md",
+      "date": "2015-05-21T17:24:51",
+      "modified": "2015-05-21T17:33:23",
+      "chars": 1932
+    },
+    {
+      "id": 5664,
+      "title": "E-Textile Pecha-Kucha at Schmiede",
+      "url": "https://www.kobakant.at/DIY/?p=5664",
+      "path": "Sources/How To Get What You Want Full/E-Textile Pecha-Kucha at Schmiede [5664].md",
+      "date": "2015-09-07T16:55:13",
+      "modified": "2015-09-11T15:59:03",
+      "chars": 5486
+    },
+    {
+      "id": 5689,
+      "title": "Resistive Sensors Overview",
+      "url": "https://www.kobakant.at/DIY/?p=5689",
+      "path": "Sources/How To Get What You Want Full/Resistive Sensors Overview [5689].md",
+      "date": "2015-06-16T15:33:12",
+      "modified": "2020-05-26T21:57:43",
+      "chars": 4558
+    },
+    {
+      "id": 5712,
+      "title": "My Segments Display",
+      "url": "https://www.kobakant.at/DIY/?p=5712",
+      "path": "Sources/How To Get What You Want Full/My Segments Display [5712].md",
+      "date": "2015-06-30T14:27:59",
+      "modified": "2015-07-01T11:07:36",
+      "chars": 1576
+    },
+    {
+      "id": 5763,
+      "title": "Wearable Studio Workshops at ARS",
+      "url": "https://www.kobakant.at/DIY/?p=5763",
+      "path": "Sources/How To Get What You Want Full/Wearable Studio Workshops at ARS [5763].md",
+      "date": "2015-08-26T13:46:57",
+      "modified": "2017-04-02T07:42:56",
+      "chars": 842
+    },
+    {
+      "id": 5780,
+      "title": "Position Sensing on the Body",
+      "url": "https://www.kobakant.at/DIY/?p=5780",
+      "path": "Sources/How To Get What You Want Full/Position Sensing on the Body [5780].md",
+      "date": "2015-10-15T13:27:05",
+      "modified": "2016-03-04T18:04:28",
+      "chars": 844
+    },
+    {
+      "id": 5786,
+      "title": "Electronics Surgery",
+      "url": "https://www.kobakant.at/DIY/?p=5786",
+      "path": "Sources/How To Get What You Want Full/Electronics Surgery [5786].md",
+      "date": "2015-10-17T14:12:09",
+      "modified": "2017-05-10T16:00:49",
+      "chars": 5137
+    },
+    {
+      "id": 5807,
+      "title": "Neoprene Stroke Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=5807",
+      "path": "Sources/How To Get What You Want Full/Neoprene Stroke Bracelet [5807].md",
+      "date": "2015-10-30T12:19:48",
+      "modified": "2016-07-29T22:39:48",
+      "chars": 104
+    },
+    {
+      "id": 5812,
+      "title": "From Swatches to Pockets",
+      "url": "https://www.kobakant.at/DIY/?p=5812",
+      "path": "Sources/How To Get What You Want Full/From Swatches to Pockets [5812].md",
+      "date": "2015-10-30T12:22:08",
+      "modified": "2020-01-28T08:23:05",
+      "chars": 6372
+    },
+    {
+      "id": 5847,
+      "title": "Pincushion Breadboard Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=5847",
+      "path": "Sources/How To Get What You Want Full/Pincushion Breadboard Bracelet [5847].md",
+      "date": "2015-11-23T14:57:33",
+      "modified": "2015-12-07T18:33:04",
+      "chars": 3347
+    },
+    {
+      "id": 5878,
+      "title": "Flip-Dot Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=5878",
+      "path": "Sources/How To Get What You Want Full/Flip-Dot Fabric [5878].md",
+      "date": "2015-11-28T14:02:38",
+      "modified": "2022-03-24T21:55:38",
+      "chars": 1803
+    },
+    {
+      "id": 5886,
+      "title": "Adopting Swatches",
+      "url": "https://www.kobakant.at/DIY/?p=5886",
+      "path": "Sources/How To Get What You Want Full/Adopting Swatches [5886].md",
+      "date": "2015-11-30T18:54:23",
+      "modified": "2015-12-27T12:21:21",
+      "chars": 5671
+    },
+    {
+      "id": 5900,
+      "title": "Flapping Wing Swatch Example",
+      "url": "https://www.kobakant.at/DIY/?p=5900",
+      "path": "Sources/How To Get What You Want Full/Flapping Wing Swatch Example [5900].md",
+      "date": "2015-12-09T18:06:06",
+      "modified": "2015-12-16T22:49:08",
+      "chars": 1829
+    },
+    {
+      "id": 5915,
+      "title": "Flip-Dot Swatch Example",
+      "url": "https://www.kobakant.at/DIY/?p=5915",
+      "path": "Sources/How To Get What You Want Full/Flip-Dot Swatch Example [5915].md",
+      "date": "2015-12-10T13:13:57",
+      "modified": "2015-12-15T10:50:28",
+      "chars": 3757
+    },
+    {
+      "id": 5935,
+      "title": "Fabric Speaker Swatch Example",
+      "url": "https://www.kobakant.at/DIY/?p=5935",
+      "path": "Sources/How To Get What You Want Full/Fabric Speaker Swatch Example [5935].md",
+      "date": "2015-12-10T16:14:32",
+      "modified": "2022-05-05T18:20:24",
+      "chars": 2611
+    },
+    {
+      "id": 5983,
+      "title": "E-Textile Sensor Wall",
+      "url": "https://www.kobakant.at/DIY/?p=5983",
+      "path": "Sources/How To Get What You Want Full/E-Textile Sensor Wall [5983].md",
+      "date": "2016-01-01T10:54:29",
+      "modified": "2017-01-09T17:48:05",
+      "chars": 655
+    },
+    {
+      "id": 5986,
+      "title": "Fab Intro: Continuity Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=5986",
+      "path": "Sources/How To Get What You Want Full/Fab Intro - Continuity Bracelet [5986].md",
+      "date": "2015-12-15T11:04:59",
+      "modified": "2017-04-02T08:17:12",
+      "chars": 4707
+    },
+    {
+      "id": 6005,
+      "title": "Woven Pressure sensors",
+      "url": "https://www.kobakant.at/DIY/?p=6005",
+      "path": "Sources/How To Get What You Want Full/Woven Pressure sensors [6005].md",
+      "date": "2015-12-28T10:24:25",
+      "modified": "2015-12-29T03:41:58",
+      "chars": 1395
+    },
+    {
+      "id": 6011,
+      "title": "woven heat fabric for thermochromic prints",
+      "url": "https://www.kobakant.at/DIY/?p=6011",
+      "path": "Sources/How To Get What You Want Full/woven heat fabric for thermochromic prints [6011].md",
+      "date": "2015-12-29T03:41:10",
+      "modified": "2015-12-29T03:42:01",
+      "chars": 1196
+    },
+    {
+      "id": 6016,
+      "title": "Between the Alternative Future and the Reality",
+      "url": "https://www.kobakant.at/DIY/?p=6016",
+      "path": "Sources/How To Get What You Want Full/Between the Alternative Future and the Reality [6016].md",
+      "date": "2016-01-20T09:13:07",
+      "modified": "2016-09-26T17:43:14",
+      "chars": 3216
+    },
+    {
+      "id": 6043,
+      "title": "E-Textile Tooling: ohmHook",
+      "url": "https://www.kobakant.at/DIY/?p=6043",
+      "path": "Sources/How To Get What You Want Full/E-Textile Tooling - ohmHook [6043].md",
+      "date": "2016-05-13T03:52:56",
+      "modified": "2017-05-29T13:58:12",
+      "chars": 2972
+    },
+    {
+      "id": 6056,
+      "title": "eTextile Summer Camp 2016",
+      "url": "https://www.kobakant.at/DIY/?p=6056",
+      "path": "Sources/How To Get What You Want Full/eTextile Summer Camp 2016 [6056].md",
+      "date": "2016-04-07T17:01:15",
+      "modified": "2017-03-02T15:06:26",
+      "chars": 1059
+    },
+    {
+      "id": 6063,
+      "title": "Sensing with Textiles",
+      "url": "https://www.kobakant.at/DIY/?p=6063",
+      "path": "Sources/How To Get What You Want Full/Sensing with Textiles [6063].md",
+      "date": "2016-04-26T17:43:54",
+      "modified": "2017-03-02T14:51:44",
+      "chars": 8427
+    },
+    {
+      "id": 6102,
+      "title": "Voltage Divider",
+      "url": "https://www.kobakant.at/DIY/?p=6102",
+      "path": "Sources/How To Get What You Want Full/Voltage Divider [6102].md",
+      "date": "2016-05-09T14:02:05",
+      "modified": "2021-12-10T18:37:20",
+      "chars": 2206
+    },
+    {
+      "id": 6118,
+      "title": "Transistor Switch",
+      "url": "https://www.kobakant.at/DIY/?p=6118",
+      "path": "Sources/How To Get What You Want Full/Transistor Switch [6118].md",
+      "date": "2016-05-09T14:46:50",
+      "modified": "2020-01-09T17:03:13",
+      "chars": 2236
+    },
+    {
+      "id": 6135,
+      "title": "Fish Scale Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=6135",
+      "path": "Sources/How To Get What You Want Full/Fish Scale Sensor [6135].md",
+      "date": "2016-07-07T17:12:59",
+      "modified": "2016-07-07T18:49:11",
+      "chars": 3492
+    },
+    {
+      "id": 6147,
+      "title": "FT1 – Material Mechanisms for Utopian Uniforms",
+      "url": "https://www.kobakant.at/DIY/?p=6147",
+      "path": "Sources/How To Get What You Want Full/FT1 – Material Mechanisms for Utopian Uniforms [6147].md",
+      "date": "2016-12-13T12:56:53",
+      "modified": "2017-10-19T08:19:05",
+      "chars": 7499
+    },
+    {
+      "id": 6152,
+      "title": "Starting to Think",
+      "url": "https://www.kobakant.at/DIY/?p=6152",
+      "path": "Sources/How To Get What You Want Full/Starting to Think [6152].md",
+      "date": "2016-01-01T06:56:14",
+      "modified": "2017-05-31T04:18:33",
+      "chars": 965
+    },
+    {
+      "id": 6161,
+      "title": "Pin Stroke Gauntlet",
+      "url": "https://www.kobakant.at/DIY/?p=6161",
+      "path": "Sources/How To Get What You Want Full/Pin Stroke Gauntlet [6161].md",
+      "date": "2015-10-29T22:22:22",
+      "modified": "2016-07-29T22:33:40",
+      "chars": 104
+    },
+    {
+      "id": 6163,
+      "title": "Zebra Fabric Stroke Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=6163",
+      "path": "Sources/How To Get What You Want Full/Zebra Fabric Stroke Sensors [6163].md",
+      "date": "2015-10-29T22:29:21",
+      "modified": "2016-07-29T22:35:08",
+      "chars": 20
+    },
+    {
+      "id": 6171,
+      "title": "ohmHook",
+      "url": "https://www.kobakant.at/DIY/?p=6171",
+      "path": "Sources/How To Get What You Want Full/ohmHook [6171].md",
+      "date": "2016-07-29T22:39:07",
+      "modified": "2017-05-29T13:57:35",
+      "chars": 9214
+    },
+    {
+      "id": 6184,
+      "title": "ohmGlove",
+      "url": "https://www.kobakant.at/DIY/?p=6184",
+      "path": "Sources/How To Get What You Want Full/ohmGlove [6184].md",
+      "date": "2016-08-01T20:47:32",
+      "modified": "2016-08-17T22:53:52",
+      "chars": 719
+    },
+    {
+      "id": 6186,
+      "title": "Conductive Fabric Microbial Fuel-Cell",
+      "url": "https://www.kobakant.at/DIY/?p=6186",
+      "path": "Sources/How To Get What You Want Full/Conductive Fabric Microbial Fuel-Cell [6186].md",
+      "date": "2016-08-01T20:51:50",
+      "modified": "2016-08-01T22:00:24",
+      "chars": 195
+    },
+    {
+      "id": 6188,
+      "title": "Analog Pin Stroke Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=6188",
+      "path": "Sources/How To Get What You Want Full/Analog Pin Stroke Sensor [6188].md",
+      "date": "2016-08-01T20:57:28",
+      "modified": "2016-08-01T21:59:27",
+      "chars": 692
+    },
+    {
+      "id": 6204,
+      "title": "Smart Rituals",
+      "url": "https://www.kobakant.at/DIY/?p=6204",
+      "path": "Sources/How To Get What You Want Full/Smart Rituals [6204].md",
+      "date": "2016-08-08T10:08:28",
+      "modified": "2016-09-04T14:47:20",
+      "chars": 14937
+    },
+    {
+      "id": 6218,
+      "title": "Tilt Sensor Demo",
+      "url": "https://www.kobakant.at/DIY/?p=6218",
+      "path": "Sources/How To Get What You Want Full/Tilt Sensor Demo [6218].md",
+      "date": "2016-08-01T17:36:24",
+      "modified": "2016-08-31T22:25:06",
+      "chars": 890
+    },
+    {
+      "id": 6219,
+      "title": "JoyButton",
+      "url": "https://www.kobakant.at/DIY/?p=6219",
+      "path": "Sources/How To Get What You Want Full/JoyButton [6219].md",
+      "date": "2015-11-17T17:34:20",
+      "modified": "2016-08-31T22:25:25",
+      "chars": 757
+    },
+    {
+      "id": 6231,
+      "title": "Tilt Potentiometer",
+      "url": "https://www.kobakant.at/DIY/?p=6231",
+      "path": "Sources/How To Get What You Want Full/Tilt Potentiometer [6231].md",
+      "date": "2016-01-27T18:35:14",
+      "modified": "2016-08-17T22:49:04",
+      "chars": 956
+    },
+    {
+      "id": 6237,
+      "title": "Spikey Stroke Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=6237",
+      "path": "Sources/How To Get What You Want Full/Spikey Stroke Sensors [6237].md",
+      "date": "2015-10-17T19:04:18",
+      "modified": "2016-08-17T19:09:06",
+      "chars": 134
+    },
+    {
+      "id": 6239,
+      "title": "Elastic Button Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=6239",
+      "path": "Sources/How To Get What You Want Full/Elastic Button Fabric [6239].md",
+      "date": "2016-05-17T20:02:16",
+      "modified": "2016-08-17T22:49:36",
+      "chars": 0
+    },
+    {
+      "id": 6270,
+      "title": "PIFpack Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=6270",
+      "path": "Sources/How To Get What You Want Full/PIFpack Workshop [6270].md",
+      "date": "2016-09-19T11:21:44",
+      "modified": "2018-04-05T18:42:16",
+      "chars": 406
+    },
+    {
+      "id": 6284,
+      "title": "Battery Snap Pouches",
+      "url": "https://www.kobakant.at/DIY/?p=6284",
+      "path": "Sources/How To Get What You Want Full/Battery Snap Pouches [6284].md",
+      "date": "2015-07-31T10:00:44",
+      "modified": "2016-08-31T10:15:13",
+      "chars": 1096
+    },
+    {
+      "id": 6292,
+      "title": "Matrix: Anti-Static Foam",
+      "url": "https://www.kobakant.at/DIY/?p=6292",
+      "path": "Sources/How To Get What You Want Full/Matrix - Anti-Static Foam [6292].md",
+      "date": "2016-08-26T10:56:05",
+      "modified": "2018-12-15T19:38:07",
+      "chars": 351
+    },
+    {
+      "id": 6315,
+      "title": "Example Circuits and Code",
+      "url": "https://www.kobakant.at/DIY/?p=6315",
+      "path": "Sources/How To Get What You Want Full/Example Circuits and Code [6315].md",
+      "date": "2016-01-13T18:31:34",
+      "modified": "2016-09-13T18:55:31",
+      "chars": 1646
+    },
+    {
+      "id": 6350,
+      "title": "Chic bend and Sleek stretch",
+      "url": "https://www.kobakant.at/DIY/?p=6350",
+      "path": "Sources/How To Get What You Want Full/Chic bend and Sleek stretch [6350].md",
+      "date": "2016-09-26T15:58:01",
+      "modified": "2016-09-26T16:33:15",
+      "chars": 953
+    },
+    {
+      "id": 6368,
+      "title": "Pulp in Motion",
+      "url": "https://www.kobakant.at/DIY/?p=6368",
+      "path": "Sources/How To Get What You Want Full/Pulp in Motion [6368].md",
+      "date": "2016-11-16T00:39:00",
+      "modified": "2016-11-30T16:32:12",
+      "chars": 3758
+    },
+    {
+      "id": 6378,
+      "title": "Textile Sensor Demo Station",
+      "url": "https://www.kobakant.at/DIY/?p=6378",
+      "path": "Sources/How To Get What You Want Full/Textile Sensor Demo Station [6378].md",
+      "date": "2016-11-24T08:30:20",
+      "modified": "2016-11-30T16:35:04",
+      "chars": 863
+    },
+    {
+      "id": 6396,
+      "title": "Soft Interactive Technology 1 at KHB",
+      "url": "https://www.kobakant.at/DIY/?p=6396",
+      "path": "Sources/How To Get What You Want Full/Soft Interactive Technology 1 at KHB [6396].md",
+      "date": "2016-12-01T12:28:56",
+      "modified": "2016-12-09T13:36:14",
+      "chars": 14491
+    },
+    {
+      "id": 6456,
+      "title": "Igne Oyasi Coin-Cell Holder",
+      "url": "https://www.kobakant.at/DIY/?p=6456",
+      "path": "Sources/How To Get What You Want Full/Igne Oyasi Coin-Cell Holder [6456].md",
+      "date": "2015-06-05T17:06:49",
+      "modified": "2016-12-21T17:08:46",
+      "chars": 115
+    },
+    {
+      "id": 6464,
+      "title": "Electronics as Material III",
+      "url": "https://www.kobakant.at/DIY/?p=6464",
+      "path": "Sources/How To Get What You Want Full/Electronics as Material III [6464].md",
+      "date": "2017-02-07T15:15:08",
+      "modified": "2019-01-15T16:04:25",
+      "chars": 6228
+    },
+    {
+      "id": 6472,
+      "title": "Sparkfun finally selling Eeontex!",
+      "url": "https://www.kobakant.at/DIY/?p=6472",
+      "path": "Sources/How To Get What You Want Full/Sparkfun finally selling Eeontex! [6472].md",
+      "date": "2017-02-14T10:58:40",
+      "modified": "2017-02-14T10:59:52",
+      "chars": 667
+    },
+    {
+      "id": 6526,
+      "title": "Cardwoven USB Cable",
+      "url": "https://www.kobakant.at/DIY/?p=6526",
+      "path": "Sources/How To Get What You Want Full/Cardwoven USB Cable [6526].md",
+      "date": "2013-09-22T20:28:15",
+      "modified": "2017-03-09T20:32:59",
+      "chars": 18
+    },
+    {
+      "id": 6529,
+      "title": "Woven Paper Cup Speaker Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=6529",
+      "path": "Sources/How To Get What You Want Full/Woven Paper Cup Speaker Workshop [6529].md",
+      "date": "2016-03-11T20:53:55",
+      "modified": "2018-01-07T10:10:54",
+      "chars": 675
+    },
+    {
+      "id": 6532,
+      "title": "Stirring Queen Mask",
+      "url": "https://www.kobakant.at/DIY/?p=6532",
+      "path": "Sources/How To Get What You Want Full/Stirring Queen Mask [6532].md",
+      "date": "2017-03-13T14:36:39",
+      "modified": "2017-03-14T07:42:34",
+      "chars": 5339
+    },
+    {
+      "id": 6539,
+      "title": "Hybrid Jewels",
+      "url": "https://www.kobakant.at/DIY/?p=6539",
+      "path": "Sources/How To Get What You Want Full/Hybrid Jewels [6539].md",
+      "date": "2017-03-13T19:21:03",
+      "modified": "2017-05-10T16:00:46",
+      "chars": 1570
+    },
+    {
+      "id": 6556,
+      "title": "ATtiny Breadboard Programming Piggyback Extension",
+      "url": "https://www.kobakant.at/DIY/?p=6556",
+      "path": "Sources/How To Get What You Want Full/ATtiny Breadboard Programming Piggyback Extension [6556].md",
+      "date": "2017-03-20T07:15:58",
+      "modified": "2017-03-28T07:41:08",
+      "chars": 0
+    },
+    {
+      "id": 6559,
+      "title": "Necklace Display – Beaded LED Matrix",
+      "url": "https://www.kobakant.at/DIY/?p=6559",
+      "path": "Sources/How To Get What You Want Full/Necklace Display – Beaded LED Matrix [6559].md",
+      "date": "2017-03-28T00:11:36",
+      "modified": "2017-04-16T14:19:54",
+      "chars": 274
+    },
+    {
+      "id": 6575,
+      "title": "Transparent and Dangerous",
+      "url": "https://www.kobakant.at/DIY/?p=6575",
+      "path": "Sources/How To Get What You Want Full/Transparent and Dangerous [6575].md",
+      "date": "2017-03-31T06:22:43",
+      "modified": "2017-05-10T16:03:48",
+      "chars": 3518
+    },
+    {
+      "id": 6577,
+      "title": "ATtiny Drawdio Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=6577",
+      "path": "Sources/How To Get What You Want Full/ATtiny Drawdio Bracelet [6577].md",
+      "date": "2015-08-02T07:36:03",
+      "modified": "2017-04-02T07:40:10",
+      "chars": 1457
+    },
+    {
+      "id": 6592,
+      "title": "Nature’s Wearables",
+      "url": "https://www.kobakant.at/DIY/?p=6592",
+      "path": "Sources/How To Get What You Want Full/Nature’s Wearables [6592].md",
+      "date": "2017-06-01T13:34:46",
+      "modified": "2017-10-03T17:28:58",
+      "chars": 3498
+    },
+    {
+      "id": 6607,
+      "title": "Capacitive Fabric Slider/Wheels",
+      "url": "https://www.kobakant.at/DIY/?p=6607",
+      "path": "Sources/How To Get What You Want Full/Capacitive Fabric Slider - Wheels [6607].md",
+      "date": "2017-04-20T16:23:23",
+      "modified": "2017-05-28T15:56:07",
+      "chars": 3789
+    },
+    {
+      "id": 6662,
+      "title": "Moving Textile",
+      "url": "https://www.kobakant.at/DIY/?p=6662",
+      "path": "Sources/How To Get What You Want Full/Moving Textile [6662].md",
+      "date": "2017-04-26T11:51:01",
+      "modified": "2017-05-01T12:28:22",
+      "chars": 9465
+    },
+    {
+      "id": 6682,
+      "title": "Shape Memory Alloy Training",
+      "url": "https://www.kobakant.at/DIY/?p=6682",
+      "path": "Sources/How To Get What You Want Full/Shape Memory Alloy Training [6682].md",
+      "date": "2017-04-26T20:08:38",
+      "modified": "2017-04-26T20:08:38",
+      "chars": 1832
+    },
+    {
+      "id": 6684,
+      "title": "Shape Memory Alloy connection",
+      "url": "https://www.kobakant.at/DIY/?p=6684",
+      "path": "Sources/How To Get What You Want Full/Shape Memory Alloy connection [6684].md",
+      "date": "2017-04-26T20:26:40",
+      "modified": "2017-04-26T20:26:58",
+      "chars": 1288
+    },
+    {
+      "id": 6687,
+      "title": "SMA Smocking Swatch Example",
+      "url": "https://www.kobakant.at/DIY/?p=6687",
+      "path": "Sources/How To Get What You Want Full/SMA Smocking Swatch Example [6687].md",
+      "date": "2017-04-26T20:46:28",
+      "modified": "2017-04-27T04:59:39",
+      "chars": 2000
+    },
+    {
+      "id": 6703,
+      "title": "ATtiny Snap Diamond",
+      "url": "https://www.kobakant.at/DIY/?p=6703",
+      "path": "Sources/How To Get What You Want Full/ATtiny Snap Diamond [6703].md",
+      "date": "2017-04-27T05:00:38",
+      "modified": "2017-05-05T23:12:16",
+      "chars": 7751
+    },
+    {
+      "id": 6706,
+      "title": "Fingertip Contact Switch",
+      "url": "https://www.kobakant.at/DIY/?p=6706",
+      "path": "Sources/How To Get What You Want Full/Fingertip Contact Switch [6706].md",
+      "date": "2016-08-09T06:43:22",
+      "modified": "2017-04-27T06:47:20",
+      "chars": 200
+    },
+    {
+      "id": 6730,
+      "title": "E-Textile Datagloves Overview",
+      "url": "https://www.kobakant.at/DIY/?p=6730",
+      "path": "Sources/How To Get What You Want Full/E-Textile Datagloves Overview [6730].md",
+      "date": "2017-05-28T17:43:21",
+      "modified": "2018-04-07T08:43:43",
+      "chars": 3692
+    },
+    {
+      "id": 6733,
+      "title": "Transparent and Dangerous II",
+      "url": "https://www.kobakant.at/DIY/?p=6733",
+      "path": "Sources/How To Get What You Want Full/Transparent and Dangerous II [6733].md",
+      "date": "2017-05-10T16:01:11",
+      "modified": "2017-05-10T21:46:37",
+      "chars": 3543
+    },
+    {
+      "id": 6745,
+      "title": "Fabricademy: Soft Circuits and Textiles Sensors",
+      "url": "https://www.kobakant.at/DIY/?p=6745",
+      "path": "Sources/How To Get What You Want Full/Fabricademy - Soft Circuits and Textiles Sensors [6745].md",
+      "date": "2017-09-18T11:00:40",
+      "modified": "2017-12-24T15:43:22",
+      "chars": 10244
+    },
+    {
+      "id": 6755,
+      "title": "In All Different Colors",
+      "url": "https://www.kobakant.at/DIY/?p=6755",
+      "path": "Sources/How To Get What You Want Full/In All Different Colors [6755].md",
+      "date": "2017-05-16T00:52:31",
+      "modified": "2017-05-18T16:02:58",
+      "chars": 5726
+    },
+    {
+      "id": 6771,
+      "title": "VVunsch VVerkstatt at NODE",
+      "url": "https://www.kobakant.at/DIY/?p=6771",
+      "path": "Sources/How To Get What You Want Full/VVunsch VVerkstatt at NODE [6771].md",
+      "date": "2017-05-24T12:06:58",
+      "modified": "2017-06-01T17:13:47",
+      "chars": 982
+    },
+    {
+      "id": 6831,
+      "title": "Linlow Performance in Berlin",
+      "url": "https://www.kobakant.at/DIY/?p=6831",
+      "path": "Sources/How To Get What You Want Full/Linlow Performance in Berlin [6831].md",
+      "date": "2017-05-31T01:20:31",
+      "modified": "2017-05-31T09:36:36",
+      "chars": 1011
+    },
+    {
+      "id": 6835,
+      "title": "Bonded Bend Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=6835",
+      "path": "Sources/How To Get What You Want Full/Bonded Bend Sensor [6835].md",
+      "date": "2017-05-31T00:37:51",
+      "modified": "2017-05-31T01:26:03",
+      "chars": 2177
+    },
+    {
+      "id": 6850,
+      "title": "E-Textile Summer Fest in France",
+      "url": "https://www.kobakant.at/DIY/?p=6850",
+      "path": "Sources/How To Get What You Want Full/E-Textile Summer Fest in France [6850].md",
+      "date": "2017-05-31T04:25:14",
+      "modified": "2017-06-11T23:43:36",
+      "chars": 1381
+    },
+    {
+      "id": 6853,
+      "title": "E-Textile Summer School in France",
+      "url": "https://www.kobakant.at/DIY/?p=6853",
+      "path": "Sources/How To Get What You Want Full/E-Textile Summer School in France [6853].md",
+      "date": "2017-04-14T04:28:24",
+      "modified": "2017-06-17T11:54:38",
+      "chars": 171
+    },
+    {
+      "id": 6886,
+      "title": "Adjustable Slider",
+      "url": "https://www.kobakant.at/DIY/?p=6886",
+      "path": "Sources/How To Get What You Want Full/Adjustable Slider [6886].md",
+      "date": "2015-06-17T13:04:45",
+      "modified": "2017-06-17T13:20:56",
+      "chars": 423
+    },
+    {
+      "id": 6889,
+      "title": "Matrix: Simple (by hand)",
+      "url": "https://www.kobakant.at/DIY/?p=6889",
+      "path": "Sources/How To Get What You Want Full/Matrix - Simple (by hand) [6889].md",
+      "date": "2015-06-17T13:04:48",
+      "modified": "2018-12-15T19:38:18",
+      "chars": 349
+    },
+    {
+      "id": 6900,
+      "title": "Matrix: Simple (by machine)",
+      "url": "https://www.kobakant.at/DIY/?p=6900",
+      "path": "Sources/How To Get What You Want Full/Matrix - Simple (by machine) [6900].md",
+      "date": "2015-06-17T13:24:05",
+      "modified": "2018-12-15T19:38:24",
+      "chars": 349
+    },
+    {
+      "id": 6906,
+      "title": "Common GND",
+      "url": "https://www.kobakant.at/DIY/?p=6906",
+      "path": "Sources/How To Get What You Want Full/Common GND [6906].md",
+      "date": "2017-07-01T15:24:50",
+      "modified": "2017-07-02T10:46:39",
+      "chars": 386
+    },
+    {
+      "id": 6910,
+      "title": "ohmBroach",
+      "url": "https://www.kobakant.at/DIY/?p=6910",
+      "path": "Sources/How To Get What You Want Full/ohmBroach [6910].md",
+      "date": "2017-07-28T06:02:40",
+      "modified": "2017-08-17T17:43:58",
+      "chars": 4081
+    },
+    {
+      "id": 6917,
+      "title": "Wrist-Flick-Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=6917",
+      "path": "Sources/How To Get What You Want Full/Wrist-Flick-Sensor [6917].md",
+      "date": "2017-08-16T07:11:41",
+      "modified": "2021-08-18T21:04:32",
+      "chars": 2429
+    },
+    {
+      "id": 6921,
+      "title": "E-Textile Cheat Sheet",
+      "url": "https://www.kobakant.at/DIY/?p=6921",
+      "path": "Sources/How To Get What You Want Full/E-Textile Cheat Sheet [6921].md",
+      "date": "2017-08-08T08:47:55",
+      "modified": "2017-08-08T08:48:11",
+      "chars": 301
+    },
+    {
+      "id": 6924,
+      "title": "Textile Sensor Demos for Summer School",
+      "url": "https://www.kobakant.at/DIY/?p=6924",
+      "path": "Sources/How To Get What You Want Full/Textile Sensor Demos for Summer School [6924].md",
+      "date": "2017-08-08T11:22:35",
+      "modified": "2017-08-09T17:24:19",
+      "chars": 590
+    },
+    {
+      "id": 6927,
+      "title": "Sonic Insoles for Magic Shoes",
+      "url": "https://www.kobakant.at/DIY/?p=6927",
+      "path": "Sources/How To Get What You Want Full/Sonic Insoles for Magic Shoes [6927].md",
+      "date": "2017-08-09T09:40:30",
+      "modified": "2017-09-13T08:52:28",
+      "chars": 3190
+    },
+    {
+      "id": 6928,
+      "title": "Wire to Conductive Fabric Connection",
+      "url": "https://www.kobakant.at/DIY/?p=6928",
+      "path": "Sources/How To Get What You Want Full/Wire to Conductive Fabric Connection [6928].md",
+      "date": "2017-08-09T09:40:20",
+      "modified": "2018-06-05T00:49:37",
+      "chars": 294
+    },
+    {
+      "id": 6963,
+      "title": "ohmTranslator",
+      "url": "https://www.kobakant.at/DIY/?p=6963",
+      "path": "Sources/How To Get What You Want Full/ohmTranslator [6963].md",
+      "date": "2017-08-17T17:32:22",
+      "modified": "2017-08-21T17:40:26",
+      "chars": 729
+    },
+    {
+      "id": 6977,
+      "title": "Textile Sensor Indulgence",
+      "url": "https://www.kobakant.at/DIY/?p=6977",
+      "path": "Sources/How To Get What You Want Full/Textile Sensor Indulgence [6977].md",
+      "date": "2018-09-19T17:33:13",
+      "modified": "2019-05-04T09:40:27",
+      "chars": 5904
+    },
+    {
+      "id": 6994,
+      "title": "FT1: Tailoring with Electronic Textiles I",
+      "url": "https://www.kobakant.at/DIY/?p=6994",
+      "path": "Sources/How To Get What You Want Full/FT1 - Tailoring with Electronic Textiles I [6994].md",
+      "date": "2017-10-19T07:51:22",
+      "modified": "2019-12-19T08:19:45",
+      "chars": 7914
+    },
+    {
+      "id": 7031,
+      "title": "Fiber Optic Poetry",
+      "url": "https://www.kobakant.at/DIY/?p=7031",
+      "path": "Sources/How To Get What You Want Full/Fiber Optic Poetry [7031].md",
+      "date": "2017-11-10T20:26:39",
+      "modified": "2017-12-08T15:20:15",
+      "chars": 2440
+    },
+    {
+      "id": 7040,
+      "title": "Machine-sewn Neopixel Strip",
+      "url": "https://www.kobakant.at/DIY/?p=7040",
+      "path": "Sources/How To Get What You Want Full/Machine-sewn Neopixel Strip [7040].md",
+      "date": "2017-11-08T14:09:44",
+      "modified": "2017-11-12T14:11:33",
+      "chars": 265
+    },
+    {
+      "id": 7041,
+      "title": "Beaded Multi-wire",
+      "url": "https://www.kobakant.at/DIY/?p=7041",
+      "path": "Sources/How To Get What You Want Full/Beaded Multi-wire [7041].md",
+      "date": "2017-11-09T14:05:29",
+      "modified": "2017-11-12T14:11:39",
+      "chars": 133
+    },
+    {
+      "id": 7042,
+      "title": "Snap Breakouts",
+      "url": "https://www.kobakant.at/DIY/?p=7042",
+      "path": "Sources/How To Get What You Want Full/Snap Breakouts [7042].md",
+      "date": "2017-11-12T14:04:47",
+      "modified": "2017-11-25T11:44:53",
+      "chars": 73
+    },
+    {
+      "id": 7054,
+      "title": "Alpaca T-Shirt Hack",
+      "url": "https://www.kobakant.at/DIY/?p=7054",
+      "path": "Sources/How To Get What You Want Full/Alpaca T-Shirt Hack [7054].md",
+      "date": "2017-11-19T14:54:27",
+      "modified": "2017-11-20T10:10:48",
+      "chars": 1350
+    },
+    {
+      "id": 7057,
+      "title": "Shopping List: Basic E-Textile Materials",
+      "url": "https://www.kobakant.at/DIY/?p=7057",
+      "path": "Sources/How To Get What You Want Full/Shopping List - Basic E-Textile Materials [7057].md",
+      "date": "2017-11-20T10:06:02",
+      "modified": "2017-11-20T10:06:02",
+      "chars": 4927
+    },
+    {
+      "id": 7064,
+      "title": "12 Ways to hold your coin-cells",
+      "url": "https://www.kobakant.at/DIY/?p=7064",
+      "path": "Sources/How To Get What You Want Full/12 Ways to hold your coin-cells [7064].md",
+      "date": "2017-11-25T09:52:01",
+      "modified": "2020-01-12T14:15:17",
+      "chars": 1178
+    },
+    {
+      "id": 7075,
+      "title": "Designing “Soft Circuits”",
+      "url": "https://www.kobakant.at/DIY/?p=7075",
+      "path": "Sources/How To Get What You Want Full/Designing “Soft Circuits” [7075].md",
+      "date": "2017-11-25T13:33:39",
+      "modified": "2017-11-25T13:42:35",
+      "chars": 260
+    },
+    {
+      "id": 7076,
+      "title": "Prototyping with Snaps",
+      "url": "https://www.kobakant.at/DIY/?p=7076",
+      "path": "Sources/How To Get What You Want Full/Prototyping with Snaps [7076].md",
+      "date": "2017-11-25T13:36:37",
+      "modified": "2017-11-25T13:36:37",
+      "chars": 389
+    },
+    {
+      "id": 7077,
+      "title": "Making Connections",
+      "url": "https://www.kobakant.at/DIY/?p=7077",
+      "path": "Sources/How To Get What You Want Full/Making Connections [7077].md",
+      "date": "2017-11-25T13:29:31",
+      "modified": "2017-11-25T16:33:45",
+      "chars": 857
+    },
+    {
+      "id": 7092,
+      "title": "fabric button circuit",
+      "url": "https://www.kobakant.at/DIY/?p=7092",
+      "path": "Sources/How To Get What You Want Full/fabric button circuit [7092].md",
+      "date": "2017-11-26T22:07:21",
+      "modified": "2017-11-26T22:17:15",
+      "chars": 767
+    },
+    {
+      "id": 7107,
+      "title": "Magnetic Pincushion Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=7107",
+      "path": "Sources/How To Get What You Want Full/Magnetic Pincushion Sensor [7107].md",
+      "date": "2017-12-01T01:46:10",
+      "modified": "2022-10-05T12:20:39",
+      "chars": 363
+    },
+    {
+      "id": 7113,
+      "title": "Dataglove Flex Sensor Rig",
+      "url": "https://www.kobakant.at/DIY/?p=7113",
+      "path": "Sources/How To Get What You Want Full/Dataglove Flex Sensor Rig [7113].md",
+      "date": "2017-12-07T23:08:09",
+      "modified": "2018-01-07T19:48:21",
+      "chars": 1135
+    },
+    {
+      "id": 7114,
+      "title": "Datagloves Overview",
+      "url": "https://www.kobakant.at/DIY/?p=7114",
+      "path": "Sources/How To Get What You Want Full/Datagloves Overview [7114].md",
+      "date": "2014-10-30T21:37:39",
+      "modified": "2020-05-13T10:02:30",
+      "chars": 14817
+    },
+    {
+      "id": 7135,
+      "title": "Elastic Waistband with Motor Pouches",
+      "url": "https://www.kobakant.at/DIY/?p=7135",
+      "path": "Sources/How To Get What You Want Full/Elastic Waistband with Motor Pouches [7135].md",
+      "date": "2018-01-15T18:32:52",
+      "modified": "2018-01-15T19:16:32",
+      "chars": 631
+    },
+    {
+      "id": 7145,
+      "title": "EMF amplifier",
+      "url": "https://www.kobakant.at/DIY/?p=7145",
+      "path": "Sources/How To Get What You Want Full/EMF amplifier [7145].md",
+      "date": "2018-02-03T18:43:45",
+      "modified": "2018-02-03T18:57:21",
+      "chars": 1654
+    },
+    {
+      "id": 7166,
+      "title": "Lulu Bumblebee",
+      "url": "https://www.kobakant.at/DIY/?p=7166",
+      "path": "Sources/How To Get What You Want Full/Lulu Bumblebee [7166].md",
+      "date": "2018-03-05T00:14:08",
+      "modified": "2022-03-16T19:41:59",
+      "chars": 1105
+    },
+    {
+      "id": 7182,
+      "title": "Body to Breadboard Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=7182",
+      "path": "Sources/How To Get What You Want Full/Body to Breadboard Bracelet [7182].md",
+      "date": "2018-03-18T10:39:01",
+      "modified": "2018-03-18T10:42:52",
+      "chars": 520
+    },
+    {
+      "id": 7190,
+      "title": "Safetypin Dataglove",
+      "url": "https://www.kobakant.at/DIY/?p=7190",
+      "path": "Sources/How To Get What You Want Full/Safetypin Dataglove [7190].md",
+      "date": "2018-04-05T11:41:58",
+      "modified": "2018-04-05T11:48:56",
+      "chars": 455
+    },
+    {
+      "id": 7197,
+      "title": "Modular Placement Prototyping Technique",
+      "url": "https://www.kobakant.at/DIY/?p=7197",
+      "path": "Sources/How To Get What You Want Full/Modular Placement Prototyping Technique [7197].md",
+      "date": "2018-04-08T12:49:23",
+      "modified": "2018-04-22T08:06:25",
+      "chars": 823
+    },
+    {
+      "id": 7203,
+      "title": "Constructing a Dataglove Pattern",
+      "url": "https://www.kobakant.at/DIY/?p=7203",
+      "path": "Sources/How To Get What You Want Full/Constructing a Dataglove Pattern [7203].md",
+      "date": "2018-04-22T08:13:38",
+      "modified": "2019-09-14T14:32:26",
+      "chars": 1877
+    },
+    {
+      "id": 7213,
+      "title": "KOBA School of WickedFabrics",
+      "url": "https://www.kobakant.at/DIY/?p=7213",
+      "path": "Sources/How To Get What You Want Full/KOBA School of WickedFabrics [7213].md",
+      "date": "2018-04-24T18:34:20",
+      "modified": "2018-04-24T18:34:40",
+      "chars": 700
+    },
+    {
+      "id": 7217,
+      "title": "Matrix: Woven (stretchy)",
+      "url": "https://www.kobakant.at/DIY/?p=7217",
+      "path": "Sources/How To Get What You Want Full/Matrix - Woven (stretchy) [7217].md",
+      "date": "2013-06-26T09:06:47",
+      "modified": "2018-12-15T19:38:32",
+      "chars": 215
+    },
+    {
+      "id": 7229,
+      "title": "Soft Interactive Technology Course at KHB",
+      "url": "https://www.kobakant.at/DIY/?p=7229",
+      "path": "Sources/How To Get What You Want Full/Soft Interactive Technology Course at KHB [7229].md",
+      "date": "2018-05-15T19:05:13",
+      "modified": "2018-05-29T16:56:00",
+      "chars": 7236
+    },
+    {
+      "id": 7246,
+      "title": "Lulu Protoboard",
+      "url": "https://www.kobakant.at/DIY/?p=7246",
+      "path": "Sources/How To Get What You Want Full/Lulu Protoboard [7246].md",
+      "date": "2018-04-25T07:20:33",
+      "modified": "2022-03-16T19:42:08",
+      "chars": 603
+    },
+    {
+      "id": 7258,
+      "title": "School of Wicked Fabrics: FOUNDATION /01",
+      "url": "https://www.kobakant.at/DIY/?p=7258",
+      "path": "Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 01 [7258].md",
+      "date": "2018-08-05T22:40:43",
+      "modified": "2018-08-06T00:14:46",
+      "chars": 6020
+    },
+    {
+      "id": 7260,
+      "title": "School of Wicked Fabrics: FOUNDATION /02",
+      "url": "https://www.kobakant.at/DIY/?p=7260",
+      "path": "Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 02 [7260].md",
+      "date": "2018-08-05T22:41:19",
+      "modified": "2018-08-06T22:27:44",
+      "chars": 2600
+    },
+    {
+      "id": 7280,
+      "title": "School of Wicked Fabrics: FOUNDATION /03",
+      "url": "https://www.kobakant.at/DIY/?p=7280",
+      "path": "Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 03 [7280].md",
+      "date": "2018-08-06T21:32:03",
+      "modified": "2018-08-13T13:44:52",
+      "chars": 1986
+    },
+    {
+      "id": 7310,
+      "title": "KOBA School of Wickedfabrics: TAILORING",
+      "url": "https://www.kobakant.at/DIY/?p=7310",
+      "path": "Sources/How To Get What You Want Full/KOBA School of Wickedfabrics - TAILORING [7310].md",
+      "date": "2018-08-18T14:12:11",
+      "modified": "2019-01-16T14:36:11",
+      "chars": 4256
+    },
+    {
+      "id": 7317,
+      "title": "DIY Mini Breadboard",
+      "url": "https://www.kobakant.at/DIY/?p=7317",
+      "path": "Sources/How To Get What You Want Full/DIY Mini Breadboard [7317].md",
+      "date": "2018-08-27T11:13:37",
+      "modified": "2018-08-27T11:13:51",
+      "chars": 295
+    },
+    {
+      "id": 7328,
+      "title": "Button Buttons",
+      "url": "https://www.kobakant.at/DIY/?p=7328",
+      "path": "Sources/How To Get What You Want Full/Button Buttons [7328].md",
+      "date": "2018-10-03T12:43:38",
+      "modified": "2018-10-21T07:49:54",
+      "chars": 1218
+    },
+    {
+      "id": 7334,
+      "title": "Pressure Button",
+      "url": "https://www.kobakant.at/DIY/?p=7334",
+      "path": "Sources/How To Get What You Want Full/Pressure Button [7334].md",
+      "date": "2018-10-08T13:31:34",
+      "modified": "2018-10-08T13:57:32",
+      "chars": 61
+    },
+    {
+      "id": 7349,
+      "title": "Button Switch",
+      "url": "https://www.kobakant.at/DIY/?p=7349",
+      "path": "Sources/How To Get What You Want Full/Button Switch [7349].md",
+      "date": "2018-10-23T15:39:52",
+      "modified": "2018-10-23T15:39:52",
+      "chars": 1396
+    },
+    {
+      "id": 7368,
+      "title": "Tester Tool: u-shape",
+      "url": "https://www.kobakant.at/DIY/?p=7368",
+      "path": "Sources/How To Get What You Want Full/Tester Tool - u-shape [7368].md",
+      "date": "2018-10-26T16:09:43",
+      "modified": "2019-09-29T21:52:52",
+      "chars": 456
+    },
+    {
+      "id": 7370,
+      "title": "Beaded Sway Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=7370",
+      "path": "Sources/How To Get What You Want Full/Beaded Sway Sensor [7370].md",
+      "date": "2018-10-29T19:12:57",
+      "modified": "2019-05-13T18:40:15",
+      "chars": 832
+    },
+    {
+      "id": 7380,
+      "title": "Elastic Conductive Thread",
+      "url": "https://www.kobakant.at/DIY/?p=7380",
+      "path": "Sources/How To Get What You Want Full/Elastic Conductive Thread [7380].md",
+      "date": "2018-11-07T17:56:27",
+      "modified": "2018-11-19T22:27:34",
+      "chars": 769
+    },
+    {
+      "id": 7394,
+      "title": "Soft Interactive Technology I",
+      "url": "https://www.kobakant.at/DIY/?p=7394",
+      "path": "Sources/How To Get What You Want Full/Soft Interactive Technology I [7394].md",
+      "date": "2018-12-02T14:56:50",
+      "modified": "2019-01-06T00:08:25",
+      "chars": 10089
+    },
+    {
+      "id": 7416,
+      "title": "Serpentine LED Strip",
+      "url": "https://www.kobakant.at/DIY/?p=7416",
+      "path": "Sources/How To Get What You Want Full/Serpentine LED Strip [7416].md",
+      "date": "2018-12-10T14:34:03",
+      "modified": "2018-12-10T14:38:59",
+      "chars": 719
+    },
+    {
+      "id": 7422,
+      "title": "WS2812MINI EDGE-MOUNT FOOTPRINT",
+      "url": "https://www.kobakant.at/DIY/?p=7422",
+      "path": "Sources/How To Get What You Want Full/WS2812MINI EDGE-MOUNT FOOTPRINT [7422].md",
+      "date": "2018-12-11T16:15:44",
+      "modified": "2018-12-11T16:18:05",
+      "chars": 12
+    },
+    {
+      "id": 7425,
+      "title": "Snap Press Options",
+      "url": "https://www.kobakant.at/DIY/?p=7425",
+      "path": "Sources/How To Get What You Want Full/Snap Press Options [7425].md",
+      "date": "2013-12-12T09:33:40",
+      "modified": "2018-12-12T09:33:56",
+      "chars": 649
+    },
+    {
+      "id": 7426,
+      "title": "Hot Air Gun",
+      "url": "https://www.kobakant.at/DIY/?p=7426",
+      "path": "Sources/How To Get What You Want Full/Hot Air Gun [7426].md",
+      "date": "2013-12-12T09:23:40",
+      "modified": "2018-12-12T09:23:59",
+      "chars": 0
+    },
+    {
+      "id": 7428,
+      "title": "SNIPS",
+      "url": "https://www.kobakant.at/DIY/?p=7428",
+      "path": "Sources/How To Get What You Want Full/SNIPS [7428].md",
+      "date": "2013-12-12T09:24:02",
+      "modified": "2018-12-12T09:24:22",
+      "chars": 0
+    },
+    {
+      "id": 7430,
+      "title": "MINI CLIP CLAMPS",
+      "url": "https://www.kobakant.at/DIY/?p=7430",
+      "path": "Sources/How To Get What You Want Full/MINI CLIP CLAMPS [7430].md",
+      "date": "2013-12-12T09:24:29",
+      "modified": "2018-12-12T09:24:51",
+      "chars": 0
+    },
+    {
+      "id": 7432,
+      "title": "FUSIBLE INTERFACING",
+      "url": "https://www.kobakant.at/DIY/?p=7432",
+      "path": "Sources/How To Get What You Want Full/FUSIBLE INTERFACING [7432].md",
+      "date": "2013-12-13T09:24:58",
+      "modified": "2018-12-12T09:25:25",
+      "chars": 0
+    },
+    {
+      "id": 7435,
+      "title": "Pivoting 3-Way Connection",
+      "url": "https://www.kobakant.at/DIY/?p=7435",
+      "path": "Sources/How To Get What You Want Full/Pivoting 3-Way Connection [7435].md",
+      "date": "2018-12-12T13:11:56",
+      "modified": "2018-12-15T20:10:20",
+      "chars": 808
+    },
+    {
+      "id": 7443,
+      "title": "Matrix: Kapton + Copper",
+      "url": "https://www.kobakant.at/DIY/?p=7443",
+      "path": "Sources/How To Get What You Want Full/Matrix - Kapton + Copper [7443].md",
+      "date": "2018-12-15T19:40:50",
+      "modified": "2018-12-15T20:38:06",
+      "chars": 3793
+    },
+    {
+      "id": 7470,
+      "title": "FT1: Tailoring with Electronic Textiles II",
+      "url": "https://www.kobakant.at/DIY/?p=7470",
+      "path": "Sources/How To Get What You Want Full/FT1 - Tailoring with Electronic Textiles II [7470].md",
+      "date": "2019-01-03T17:45:00",
+      "modified": "2019-12-19T08:21:09",
+      "chars": 2086
+    },
+    {
+      "id": 7483,
+      "title": "Lulu Bee",
+      "url": "https://www.kobakant.at/DIY/?p=7483",
+      "path": "Sources/How To Get What You Want Full/Lulu Bee [7483].md",
+      "date": "2019-01-12T15:38:44",
+      "modified": "2022-03-16T19:42:14",
+      "chars": 7205
+    },
+    {
+      "id": 7492,
+      "title": "KOBA Winter School of Wickedfabrics",
+      "url": "https://www.kobakant.at/DIY/?p=7492",
+      "path": "Sources/How To Get What You Want Full/KOBA Winter School of Wickedfabrics [7492].md",
+      "date": "2019-01-16T20:37:51",
+      "modified": "2019-04-09T19:59:55",
+      "chars": 5457
+    },
+    {
+      "id": 7496,
+      "title": "Unusual E-Textile Techniques",
+      "url": "https://www.kobakant.at/DIY/?p=7496",
+      "path": "Sources/How To Get What You Want Full/Unusual E-Textile Techniques [7496].md",
+      "date": "2019-01-21T21:25:08",
+      "modified": "2019-02-10T14:05:55",
+      "chars": 1504
+    },
+    {
+      "id": 7515,
+      "title": "Electronics of Materials IV",
+      "url": "https://www.kobakant.at/DIY/?p=7515",
+      "path": "Sources/How To Get What You Want Full/Electronics of Materials IV [7515].md",
+      "date": "2019-02-10T13:59:55",
+      "modified": "2019-05-04T09:34:27",
+      "chars": 1004
+    },
+    {
+      "id": 7519,
+      "title": "Cast Pressure Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=7519",
+      "path": "Sources/How To Get What You Want Full/Cast Pressure Sensor [7519].md",
+      "date": "2011-09-30T08:58:58",
+      "modified": "2019-02-23T09:12:37",
+      "chars": 162
+    },
+    {
+      "id": 7525,
+      "title": "Penguin Control",
+      "url": "https://www.kobakant.at/DIY/?p=7525",
+      "path": "Sources/How To Get What You Want Full/Penguin Control [7525].md",
+      "date": "2011-11-27T09:11:06",
+      "modified": "2019-02-23T09:11:59",
+      "chars": 103
+    },
+    {
+      "id": 7527,
+      "title": "Playing with Sideglow Optic-Fiber",
+      "url": "https://www.kobakant.at/DIY/?p=7527",
+      "path": "Sources/How To Get What You Want Full/Playing with Sideglow Optic-Fiber [7527].md",
+      "date": "2019-02-23T21:30:36",
+      "modified": "2019-02-25T22:24:49",
+      "chars": 1643
+    },
+    {
+      "id": 7536,
+      "title": "Lulu optic fiber swatches",
+      "url": "https://www.kobakant.at/DIY/?p=7536",
+      "path": "Sources/How To Get What You Want Full/Lulu optic fiber swatches [7536].md",
+      "date": "2019-02-25T14:17:54",
+      "modified": "2019-02-25T14:22:15",
+      "chars": 1675
+    },
+    {
+      "id": 7540,
+      "title": "Blurring Boundaries",
+      "url": "https://www.kobakant.at/DIY/?p=7540",
+      "path": "Sources/How To Get What You Want Full/Blurring Boundaries [7540].md",
+      "date": "2019-06-07T13:06:52",
+      "modified": "2020-03-17T14:05:02",
+      "chars": 8350
+    },
+    {
+      "id": 7550,
+      "title": "Crocheting Electronics",
+      "url": "https://www.kobakant.at/DIY/?p=7550",
+      "path": "Sources/How To Get What You Want Full/Crocheting Electronics [7550].md",
+      "date": "2019-03-05T12:16:27",
+      "modified": "2019-03-08T10:57:18",
+      "chars": 1955
+    },
+    {
+      "id": 7575,
+      "title": "Bela + Blanket",
+      "url": "https://www.kobakant.at/DIY/?p=7575",
+      "path": "Sources/How To Get What You Want Full/Bela + Blanket [7575].md",
+      "date": "2019-03-26T11:41:29",
+      "modified": "2019-04-02T13:19:20",
+      "chars": 8118
+    },
+    {
+      "id": 7584,
+      "title": "Adventuring with Materials",
+      "url": "https://www.kobakant.at/DIY/?p=7584",
+      "path": "Sources/How To Get What You Want Full/Adventuring with Materials [7584].md",
+      "date": "2019-03-30T00:23:23",
+      "modified": "2019-05-13T18:29:09",
+      "chars": 3897
+    },
+    {
+      "id": 7610,
+      "title": "Tester Overview",
+      "url": "https://www.kobakant.at/DIY/?p=7610",
+      "path": "Sources/How To Get What You Want Full/Tester Overview [7610].md",
+      "date": "2019-04-16T11:50:41",
+      "modified": "2019-09-29T21:56:41",
+      "chars": 1518
+    },
+    {
+      "id": 7617,
+      "title": "Tester Tool: simple strip",
+      "url": "https://www.kobakant.at/DIY/?p=7617",
+      "path": "Sources/How To Get What You Want Full/Tester Tool - simple strip [7617].md",
+      "date": "2019-02-08T11:58:51",
+      "modified": "2019-09-29T21:54:48",
+      "chars": 72
+    },
+    {
+      "id": 7633,
+      "title": "Relief Embroidery Workshop at Summercamp",
+      "url": "https://www.kobakant.at/DIY/?p=7633",
+      "path": "Sources/How To Get What You Want Full/Relief Embroidery Workshop at Summercamp [7633].md",
+      "date": "2014-08-13T08:37:38",
+      "modified": "2019-04-22T08:38:13",
+      "chars": 115
+    },
+    {
+      "id": 7639,
+      "title": "Matrix: Stretchy Touchpad",
+      "url": "https://www.kobakant.at/DIY/?p=7639",
+      "path": "Sources/How To Get What You Want Full/Matrix - Stretchy Touchpad [7639].md",
+      "date": "2019-05-10T21:34:38",
+      "modified": "2019-05-17T18:38:09",
+      "chars": 93
+    },
+    {
+      "id": 7643,
+      "title": "Make your own multi-touchpad",
+      "url": "https://www.kobakant.at/DIY/?p=7643",
+      "path": "Sources/How To Get What You Want Full/Make your own multi-touchpad [7643].md",
+      "date": "2019-05-13T10:09:09",
+      "modified": "2019-05-15T14:35:02",
+      "chars": 2774
+    },
+    {
+      "id": 7651,
+      "title": "Matrix: Soft Fabric",
+      "url": "https://www.kobakant.at/DIY/?p=7651",
+      "path": "Sources/How To Get What You Want Full/Matrix - Soft Fabric [7651].md",
+      "date": "2019-05-12T18:11:16",
+      "modified": "2019-05-17T18:41:10",
+      "chars": 165
+    },
+    {
+      "id": 7666,
+      "title": "ITP camp Workshops",
+      "url": "https://www.kobakant.at/DIY/?p=7666",
+      "path": "Sources/How To Get What You Want Full/ITP camp Workshops [7666].md",
+      "date": "2019-05-15T14:39:28",
+      "modified": "2019-05-15T18:21:10",
+      "chars": 272
+    },
+    {
+      "id": 7676,
+      "title": "Chaining Components",
+      "url": "https://www.kobakant.at/DIY/?p=7676",
+      "path": "Sources/How To Get What You Want Full/Chaining Components [7676].md",
+      "date": "2014-06-27T13:55:18",
+      "modified": "2019-05-17T13:55:43",
+      "chars": 2080
+    },
+    {
+      "id": 7684,
+      "title": "Soft Interactive Technology at Weissensee",
+      "url": "https://www.kobakant.at/DIY/?p=7684",
+      "path": "Sources/How To Get What You Want Full/Soft Interactive Technology at Weissensee [7684].md",
+      "date": "2019-05-23T10:24:25",
+      "modified": "2019-05-29T15:48:29",
+      "chars": 4942
+    },
+    {
+      "id": 7706,
+      "title": "Tilt Potentiometer II",
+      "url": "https://www.kobakant.at/DIY/?p=7706",
+      "path": "Sources/How To Get What You Want Full/Tilt Potentiometer II [7706].md",
+      "date": "2019-06-11T17:03:52",
+      "modified": "2019-06-11T21:29:30",
+      "chars": 740
+    },
+    {
+      "id": 7722,
+      "title": "Merino Wool conductive yarn from Bart and Francis",
+      "url": "https://www.kobakant.at/DIY/?p=7722",
+      "path": "Sources/How To Get What You Want Full/Merino Wool conductive yarn from Bart and Francis [7722].md",
+      "date": "2019-07-01T12:06:45",
+      "modified": "2019-07-01T12:07:34",
+      "chars": 2557
+    },
+    {
+      "id": 7737,
+      "title": "Make Your Tech and Wear It Too",
+      "url": "https://www.kobakant.at/DIY/?p=7737",
+      "path": "Sources/How To Get What You Want Full/Make Your Tech and Wear It Too [7737].md",
+      "date": "2019-08-10T17:56:53",
+      "modified": "2020-02-23T11:53:34",
+      "chars": 2046
+    },
+    {
+      "id": 7745,
+      "title": "Crafting Robots",
+      "url": "https://www.kobakant.at/DIY/?p=7745",
+      "path": "Sources/How To Get What You Want Full/Crafting Robots [7745].md",
+      "date": "2019-08-24T08:25:14",
+      "modified": "2019-10-09T15:34:58",
+      "chars": 17037
+    },
+    {
+      "id": 7747,
+      "title": "ETextile CARD10",
+      "url": "https://www.kobakant.at/DIY/?p=7747",
+      "path": "Sources/How To Get What You Want Full/ETextile CARD10 [7747].md",
+      "date": "2019-08-24T08:39:43",
+      "modified": "2019-08-26T07:05:36",
+      "chars": 3699
+    },
+    {
+      "id": 7748,
+      "title": "Absurd Musical Interfaces",
+      "url": "https://www.kobakant.at/DIY/?p=7748",
+      "path": "Sources/How To Get What You Want Full/Absurd Musical Interfaces [7748].md",
+      "date": "2019-08-24T08:28:25",
+      "modified": "2019-08-24T08:28:25",
+      "chars": 386
+    },
+    {
+      "id": 7758,
+      "title": "Crafting Sensory Surfaces",
+      "url": "https://www.kobakant.at/DIY/?p=7758",
+      "path": "Sources/How To Get What You Want Full/Crafting Sensory Surfaces [7758].md",
+      "date": "2019-08-28T11:20:19",
+      "modified": "2019-09-06T16:55:03",
+      "chars": 6951
+    },
+    {
+      "id": 7764,
+      "title": "Pin Pot",
+      "url": "https://www.kobakant.at/DIY/?p=7764",
+      "path": "Sources/How To Get What You Want Full/Pin Pot [7764].md",
+      "date": "2019-09-02T17:53:29",
+      "modified": "2022-10-05T12:18:53",
+      "chars": 1289
+    },
+    {
+      "id": 7773,
+      "title": "Lulu as 4-Way Adapter",
+      "url": "https://www.kobakant.at/DIY/?p=7773",
+      "path": "Sources/How To Get What You Want Full/Lulu as 4-Way Adapter [7773].md",
+      "date": "2019-09-02T20:24:45",
+      "modified": "2019-09-02T20:24:45",
+      "chars": 195
+    },
+    {
+      "id": 7777,
+      "title": "Spinning Sensor Yarn",
+      "url": "https://www.kobakant.at/DIY/?p=7777",
+      "path": "Sources/How To Get What You Want Full/Spinning Sensor Yarn [7777].md",
+      "date": "2019-09-24T10:14:28",
+      "modified": "2019-09-25T17:26:45",
+      "chars": 1189
+    },
+    {
+      "id": 7779,
+      "title": "TEXTILE ACTUATOR BOTS",
+      "url": "https://www.kobakant.at/DIY/?p=7779",
+      "path": "Sources/How To Get What You Want Full/TEXTILE ACTUATOR BOTS [7779].md",
+      "date": "2019-09-04T10:41:22",
+      "modified": "2019-09-04T10:58:51",
+      "chars": 379
+    },
+    {
+      "id": 7795,
+      "title": "Needle Felt Squeeze Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=7795",
+      "path": "Sources/How To Get What You Want Full/Needle Felt Squeeze Sensor [7795].md",
+      "date": "2019-09-05T16:35:00",
+      "modified": "2019-09-05T16:35:24",
+      "chars": 115
+    },
+    {
+      "id": 7823,
+      "title": "Tie-Poly Leggings and Dataglove",
+      "url": "https://www.kobakant.at/DIY/?p=7823",
+      "path": "Sources/How To Get What You Want Full/Tie-Poly Leggings and Dataglove [7823].md",
+      "date": "2019-09-14T14:21:27",
+      "modified": "2022-01-27T14:41:19",
+      "chars": 8660
+    },
+    {
+      "id": 7825,
+      "title": "Poly Resist Techniques: tie and wax",
+      "url": "https://www.kobakant.at/DIY/?p=7825",
+      "path": "Sources/How To Get What You Want Full/Poly Resist Techniques - tie and wax [7825].md",
+      "date": "2019-09-14T14:20:34",
+      "modified": "2020-06-21T07:46:03",
+      "chars": 961
+    },
+    {
+      "id": 7826,
+      "title": "In-Situ Polymerization",
+      "url": "https://www.kobakant.at/DIY/?p=7826",
+      "path": "Sources/How To Get What You Want Full/In-Situ Polymerization [7826].md",
+      "date": "2019-09-14T14:20:23",
+      "modified": "2020-06-21T07:34:53",
+      "chars": 765
+    },
+    {
+      "id": 7832,
+      "title": "Speculating about Piezoresistance",
+      "url": "https://www.kobakant.at/DIY/?p=7832",
+      "path": "Sources/How To Get What You Want Full/Speculating about Piezoresistance [7832].md",
+      "date": "2019-09-14T14:39:01",
+      "modified": "2019-09-17T12:43:34",
+      "chars": 5373
+    },
+    {
+      "id": 7841,
+      "title": "Hydrogen Peroxide Etching",
+      "url": "https://www.kobakant.at/DIY/?p=7841",
+      "path": "Sources/How To Get What You Want Full/Hydrogen Peroxide Etching [7841].md",
+      "date": "2019-09-17T13:08:38",
+      "modified": "2020-06-21T07:34:21",
+      "chars": 3038
+    },
+    {
+      "id": 7861,
+      "title": "– faser – faden – fiktion –",
+      "url": "https://www.kobakant.at/DIY/?p=7861",
+      "path": "Sources/How To Get What You Want Full/– faser – faden – fiktion – [7861].md",
+      "date": "2019-09-25T10:09:38",
+      "modified": "2020-05-28T15:28:22",
+      "chars": 22868
+    },
+    {
+      "id": 7871,
+      "title": "Button Lights",
+      "url": "https://www.kobakant.at/DIY/?p=7871",
+      "path": "Sources/How To Get What You Want Full/Button Lights [7871].md",
+      "date": "2019-09-29T21:42:48",
+      "modified": "2019-09-29T22:07:39",
+      "chars": 438
+    },
+    {
+      "id": 7873,
+      "title": "Critical Critters",
+      "url": "https://www.kobakant.at/DIY/?p=7873",
+      "path": "Sources/How To Get What You Want Full/Critical Critters [7873].md",
+      "date": "2019-09-29T21:45:16",
+      "modified": "2019-09-29T22:04:45",
+      "chars": 420
+    },
+    {
+      "id": 7881,
+      "title": "Tester Tool: bracelets",
+      "url": "https://www.kobakant.at/DIY/?p=7881",
+      "path": "Sources/How To Get What You Want Full/Tester Tool - bracelets [7881].md",
+      "date": "2019-09-29T21:53:50",
+      "modified": "2019-09-29T22:05:14",
+      "chars": 221
+    },
+    {
+      "id": 7884,
+      "title": "Tester Tool: circle",
+      "url": "https://www.kobakant.at/DIY/?p=7884",
+      "path": "Sources/How To Get What You Want Full/Tester Tool - circle [7884].md",
+      "date": "2019-09-29T21:56:02",
+      "modified": "2019-09-29T22:05:24",
+      "chars": 88
+    },
+    {
+      "id": 7890,
+      "title": "DIY USB",
+      "url": "https://www.kobakant.at/DIY/?p=7890",
+      "path": "Sources/How To Get What You Want Full/DIY USB [7890].md",
+      "date": "2015-09-29T22:01:50",
+      "modified": "2019-09-29T22:02:08",
+      "chars": 65
+    },
+    {
+      "id": 7901,
+      "title": "Copper Pompom",
+      "url": "https://www.kobakant.at/DIY/?p=7901",
+      "path": "Sources/How To Get What You Want Full/Copper Pompom [7901].md",
+      "date": "2019-09-30T14:54:47",
+      "modified": "2019-09-30T14:55:23",
+      "chars": 105
+    },
+    {
+      "id": 7916,
+      "title": "ohm’s law",
+      "url": "https://www.kobakant.at/DIY/?p=7916",
+      "path": "Sources/How To Get What You Want Full/ohm’s law [7916].md",
+      "date": "2019-10-08T15:34:14",
+      "modified": "2019-10-08T15:55:01",
+      "chars": 285
+    },
+    {
+      "id": 7940,
+      "title": "Taking Parts Apart Workshop at TH Nürnberg",
+      "url": "https://www.kobakant.at/DIY/?p=7940",
+      "path": "Sources/How To Get What You Want Full/Taking Parts Apart Workshop at TH Nürnberg [7940].md",
+      "date": "2019-10-23T09:44:14",
+      "modified": "2020-01-23T09:54:04",
+      "chars": 4955
+    },
+    {
+      "id": 7943,
+      "title": "pressure matrix code + circuit",
+      "url": "https://www.kobakant.at/DIY/?p=7943",
+      "path": "Sources/How To Get What You Want Full/pressure matrix code + circuit [7943].md",
+      "date": "2019-10-25T00:59:58",
+      "modified": "2020-05-06T19:37:48",
+      "chars": 6845
+    },
+    {
+      "id": 7956,
+      "title": "Stories from an etextile tailor",
+      "url": "https://www.kobakant.at/DIY/?p=7956",
+      "path": "Sources/How To Get What You Want Full/Stories from an etextile tailor [7956].md",
+      "date": "2019-11-01T09:15:59",
+      "modified": "2019-11-01T18:50:52",
+      "chars": 9420
+    },
+    {
+      "id": 7963,
+      "title": "Felted DIP socket",
+      "url": "https://www.kobakant.at/DIY/?p=7963",
+      "path": "Sources/How To Get What You Want Full/Felted DIP socket [7963].md",
+      "date": "2019-11-04T14:08:28",
+      "modified": "2019-11-04T14:08:28",
+      "chars": 1478
+    },
+    {
+      "id": 7966,
+      "title": "Super Stretchy & Robust Conductor",
+      "url": "https://www.kobakant.at/DIY/?p=7966",
+      "path": "Sources/How To Get What You Want Full/Super Stretchy & Robust Conductor [7966].md",
+      "date": "2019-11-26T17:49:11",
+      "modified": "2019-11-26T17:49:11",
+      "chars": 563
+    },
+    {
+      "id": 7968,
+      "title": "Graphing and Drawing Sensor Values",
+      "url": "https://www.kobakant.at/DIY/?p=7968",
+      "path": "Sources/How To Get What You Want Full/Graphing and Drawing Sensor Values [7968].md",
+      "date": "2019-12-02T17:15:37",
+      "modified": "2019-12-31T08:16:35",
+      "chars": 3654
+    },
+    {
+      "id": 7981,
+      "title": "Shape and Memorize",
+      "url": "https://www.kobakant.at/DIY/?p=7981",
+      "path": "Sources/How To Get What You Want Full/Shape and Memorize [7981].md",
+      "date": "2019-12-06T18:20:01",
+      "modified": "2022-05-05T18:00:38",
+      "chars": 5185
+    },
+    {
+      "id": 8012,
+      "title": "Meet the Materials",
+      "url": "https://www.kobakant.at/DIY/?p=8012",
+      "path": "Sources/How To Get What You Want Full/Meet the Materials [8012].md",
+      "date": "2019-12-15T18:37:52",
+      "modified": "2022-01-27T00:50:40",
+      "chars": 14597
+    },
+    {
+      "id": 8032,
+      "title": "ETextile Tester Bracelet",
+      "url": "https://www.kobakant.at/DIY/?p=8032",
+      "path": "Sources/How To Get What You Want Full/ETextile Tester Bracelet [8032].md",
+      "date": "2019-12-21T09:48:32",
+      "modified": "2020-01-06T16:29:26",
+      "chars": 11013
+    },
+    {
+      "id": 8044,
+      "title": "Spekulative Objekte",
+      "url": "https://www.kobakant.at/DIY/?p=8044",
+      "path": "Sources/How To Get What You Want Full/Spekulative Objekte [8044].md",
+      "date": "2019-12-31T10:01:28",
+      "modified": "2020-05-02T10:31:18",
+      "chars": 215
+    },
+    {
+      "id": 8050,
+      "title": "FT1: Moving Fabrics with Electrons",
+      "url": "https://www.kobakant.at/DIY/?p=8050",
+      "path": "Sources/How To Get What You Want Full/FT1 - Moving Fabrics with Electrons [8050].md",
+      "date": "2020-01-08T07:48:33",
+      "modified": "2020-01-21T16:48:16",
+      "chars": 7878
+    },
+    {
+      "id": 8058,
+      "title": "Flapping Wings",
+      "url": "https://www.kobakant.at/DIY/?p=8058",
+      "path": "Sources/How To Get What You Want Full/Flapping Wings [8058].md",
+      "date": "2020-01-07T19:52:17",
+      "modified": "2020-01-07T20:13:21",
+      "chars": 88
+    },
+    {
+      "id": 8059,
+      "title": "Fabric Flipdot with H-Bridge",
+      "url": "https://www.kobakant.at/DIY/?p=8059",
+      "path": "Sources/How To Get What You Want Full/Fabric Flipdot with H-Bridge [8059].md",
+      "date": "2020-01-07T19:52:14",
+      "modified": "2020-01-08T07:56:33",
+      "chars": 202
+    },
+    {
+      "id": 8063,
+      "title": "Jumping in a Ring",
+      "url": "https://www.kobakant.at/DIY/?p=8063",
+      "path": "Sources/How To Get What You Want Full/Jumping in a Ring [8063].md",
+      "date": "2020-01-07T20:06:37",
+      "modified": "2020-01-07T20:06:37",
+      "chars": 0
+    },
+    {
+      "id": 8097,
+      "title": "Overview: Electromagnetic Actuators",
+      "url": "https://www.kobakant.at/DIY/?p=8097",
+      "path": "Sources/How To Get What You Want Full/Overview - Electromagnetic Actuators [8097].md",
+      "date": "2020-01-21T16:54:11",
+      "modified": "2022-10-19T20:35:28",
+      "chars": 5539
+    },
+    {
+      "id": 8108,
+      "title": "Sewn USB Plug",
+      "url": "https://www.kobakant.at/DIY/?p=8108",
+      "path": "Sources/How To Get What You Want Full/Sewn USB Plug [8108].md",
+      "date": "2020-01-30T13:08:42",
+      "modified": "2020-01-30T13:11:52",
+      "chars": 861
+    },
+    {
+      "id": 8112,
+      "title": "Donut Pot",
+      "url": "https://www.kobakant.at/DIY/?p=8112",
+      "path": "Sources/How To Get What You Want Full/Donut Pot [8112].md",
+      "date": "2020-02-06T13:48:00",
+      "modified": "2020-02-06T13:48:00",
+      "chars": 124
+    },
+    {
+      "id": 8139,
+      "title": "#e-textile-adventures",
+      "url": "https://www.kobakant.at/DIY/?p=8139",
+      "path": "Sources/How To Get What You Want Full/#e-textile-adventures [8139].md",
+      "date": "2020-05-19T22:06:17",
+      "modified": "2022-03-21T10:00:40",
+      "chars": 7468
+    },
+    {
+      "id": 8152,
+      "title": "Making and Animating Dioramas",
+      "url": "https://www.kobakant.at/DIY/?p=8152",
+      "path": "Sources/How To Get What You Want Full/Making and Animating Dioramas [8152].md",
+      "date": "2020-03-10T17:53:51",
+      "modified": "2020-05-01T07:04:19",
+      "chars": 560
+    },
+    {
+      "id": 8160,
+      "title": "Textile Summer School in Kyoto Japan",
+      "url": "https://www.kobakant.at/DIY/?p=8160",
+      "path": "Sources/How To Get What You Want Full/Textile Summer School in Kyoto Japan [8160].md",
+      "date": "2020-03-27T13:48:42",
+      "modified": "2020-03-27T15:04:25",
+      "chars": 927
+    },
+    {
+      "id": 8171,
+      "title": "Breathing Belt",
+      "url": "https://www.kobakant.at/DIY/?p=8171",
+      "path": "Sources/How To Get What You Want Full/Breathing Belt [8171].md",
+      "date": "2020-04-14T16:07:40",
+      "modified": "2020-05-02T10:55:57",
+      "chars": 3048
+    },
+    {
+      "id": 8179,
+      "title": "VOLTAGE DIVIDER worksheet",
+      "url": "https://www.kobakant.at/DIY/?p=8179",
+      "path": "Sources/How To Get What You Want Full/VOLTAGE DIVIDER worksheet [8179].md",
+      "date": "2020-04-16T18:21:00",
+      "modified": "2020-05-02T10:56:20",
+      "chars": 663
+    },
+    {
+      "id": 8182,
+      "title": "from SPACE to SPACE",
+      "url": "https://www.kobakant.at/DIY/?p=8182",
+      "path": "Sources/How To Get What You Want Full/from SPACE to SPACE [8182].md",
+      "date": "2020-05-11T16:26:56",
+      "modified": "2024-04-20T20:56:04",
+      "chars": 13401
+    },
+    {
+      "id": 8184,
+      "title": "Material_Adventures",
+      "url": "https://www.kobakant.at/DIY/?p=8184",
+      "path": "Sources/How To Get What You Want Full/Material_Adventures [8184].md",
+      "date": "2020-03-15T06:55:00",
+      "modified": "2020-05-02T11:17:47",
+      "chars": 213
+    },
+    {
+      "id": 8212,
+      "title": "OPEN CALL: Study eTextiles and Play",
+      "url": "https://www.kobakant.at/DIY/?p=8212",
+      "path": "Sources/How To Get What You Want Full/OPEN CALL - Study eTextiles and Play [8212].md",
+      "date": "2020-05-02T10:10:12",
+      "modified": "2020-05-03T07:24:29",
+      "chars": 3135
+    },
+    {
+      "id": 8293,
+      "title": "Vibe Modules",
+      "url": "https://www.kobakant.at/DIY/?p=8293",
+      "path": "Sources/How To Get What You Want Full/Vibe Modules [8293].md",
+      "date": "2020-05-12T15:42:18",
+      "modified": "2020-05-12T15:46:36",
+      "chars": 616
+    },
+    {
+      "id": 8305,
+      "title": "Sole Sensing",
+      "url": "https://www.kobakant.at/DIY/?p=8305",
+      "path": "Sources/How To Get What You Want Full/Sole Sensing [8305].md",
+      "date": "2020-05-19T11:43:54",
+      "modified": "2020-05-19T17:02:41",
+      "chars": 841
+    },
+    {
+      "id": 8321,
+      "title": "soft interactive technologies",
+      "url": "https://www.kobakant.at/DIY/?p=8321",
+      "path": "Sources/How To Get What You Want Full/soft interactive technologies [8321].md",
+      "date": "2020-05-21T08:50:29",
+      "modified": "2021-12-10T18:34:27",
+      "chars": 8392
+    },
+    {
+      "id": 8354,
+      "title": "DON’T TOUCH, MOVE",
+      "url": "https://www.kobakant.at/DIY/?p=8354",
+      "path": "Sources/How To Get What You Want Full/DON’T TOUCH, MOVE [8354].md",
+      "date": "2020-06-03T07:50:15",
+      "modified": "2020-06-21T07:54:19",
+      "chars": 1617
+    },
+    {
+      "id": 8370,
+      "title": "connecting bubbles",
+      "url": "https://www.kobakant.at/DIY/?p=8370",
+      "path": "Sources/How To Get What You Want Full/connecting bubbles [8370].md",
+      "date": "2020-06-09T16:23:28",
+      "modified": "2020-07-02T18:53:12",
+      "chars": 31782
+    },
+    {
+      "id": 8450,
+      "title": "least likely",
+      "url": "https://www.kobakant.at/DIY/?p=8450",
+      "path": "Sources/How To Get What You Want Full/least likely [8450].md",
+      "date": "2020-11-15T23:12:48",
+      "modified": "2021-02-10T00:13:24",
+      "chars": 9789
+    },
+    {
+      "id": 8451,
+      "title": "soft soft",
+      "url": "https://www.kobakant.at/DIY/?p=8451",
+      "path": "Sources/How To Get What You Want Full/soft soft [8451].md",
+      "date": "2021-02-01T23:12:00",
+      "modified": "2021-03-10T16:04:47",
+      "chars": 4099
+    },
+    {
+      "id": 8467,
+      "title": "ETextile Swatch Exchange 2020",
+      "url": "https://www.kobakant.at/DIY/?p=8467",
+      "path": "Sources/How To Get What You Want Full/ETextile Swatch Exchange 2020 [8467].md",
+      "date": "2020-12-10T23:33:07",
+      "modified": "2020-12-10T23:33:07",
+      "chars": 642
+    },
+    {
+      "id": 8485,
+      "title": "under the influence",
+      "url": "https://www.kobakant.at/DIY/?p=8485",
+      "path": "Sources/How To Get What You Want Full/under the influence [8485].md",
+      "date": "2020-12-14T12:14:20",
+      "modified": "2021-01-26T13:16:20",
+      "chars": 1066
+    },
+    {
+      "id": 8488,
+      "title": "crochet crotch lemon",
+      "url": "https://www.kobakant.at/DIY/?p=8488",
+      "path": "Sources/How To Get What You Want Full/crochet crotch lemon [8488].md",
+      "date": "2020-12-14T12:35:34",
+      "modified": "2020-12-14T12:36:26",
+      "chars": 216
+    },
+    {
+      "id": 8497,
+      "title": "Kinesiology Tape bend sensor",
+      "url": "https://www.kobakant.at/DIY/?p=8497",
+      "path": "Sources/How To Get What You Want Full/Kinesiology Tape bend sensor [8497].md",
+      "date": "2021-01-08T20:09:36",
+      "modified": "2021-01-28T14:21:15",
+      "chars": 7703
+    },
+    {
+      "id": 8601,
+      "title": "Making Soft Noise",
+      "url": "https://www.kobakant.at/DIY/?p=8601",
+      "path": "Sources/How To Get What You Want Full/Making Soft Noise [8601].md",
+      "date": "2021-01-13T22:01:56",
+      "modified": "2021-11-24T14:07:21",
+      "chars": 19335
+    },
+    {
+      "id": 8637,
+      "title": "I AM Learning",
+      "url": "https://www.kobakant.at/DIY/?p=8637",
+      "path": "Sources/How To Get What You Want Full/I AM Learning [8637].md",
+      "date": "2021-01-25T18:41:08",
+      "modified": "2021-02-02T15:25:00",
+      "chars": 15740
+    },
+    {
+      "id": 8649,
+      "title": "Voltage Divider with Arduino",
+      "url": "https://www.kobakant.at/DIY/?p=8649",
+      "path": "Sources/How To Get What You Want Full/Voltage Divider with Arduino [8649].md",
+      "date": "2021-01-25T19:14:05",
+      "modified": "2021-01-25T20:47:21",
+      "chars": 2129
+    },
+    {
+      "id": 8704,
+      "title": "lulu masks",
+      "url": "https://www.kobakant.at/DIY/?p=8704",
+      "path": "Sources/How To Get What You Want Full/lulu masks [8704].md",
+      "date": "2021-01-29T19:37:26",
+      "modified": "2023-01-12T23:11:11",
+      "chars": 538
+    },
+    {
+      "id": 8757,
+      "title": "soft walk socks",
+      "url": "https://www.kobakant.at/DIY/?p=8757",
+      "path": "Sources/How To Get What You Want Full/soft walk socks [8757].md",
+      "date": "2021-03-09T22:36:11",
+      "modified": "2021-03-09T22:39:31",
+      "chars": 681
+    },
+    {
+      "id": 8762,
+      "title": "extreme knobbly knee sensor",
+      "url": "https://www.kobakant.at/DIY/?p=8762",
+      "path": "Sources/How To Get What You Want Full/extreme knobbly knee sensor [8762].md",
+      "date": "2021-03-09T22:46:31",
+      "modified": "2021-03-24T18:19:12",
+      "chars": 1332
+    },
+    {
+      "id": 8765,
+      "title": "multimeter hat",
+      "url": "https://www.kobakant.at/DIY/?p=8765",
+      "path": "Sources/How To Get What You Want Full/multimeter hat [8765].md",
+      "date": "2021-03-09T22:54:20",
+      "modified": "2021-03-09T23:04:44",
+      "chars": 917
+    },
+    {
+      "id": 8770,
+      "title": "interested sensor #1",
+      "url": "https://www.kobakant.at/DIY/?p=8770",
+      "path": "Sources/How To Get What You Want Full/interested sensor #1 [8770].md",
+      "date": "2021-03-09T23:07:49",
+      "modified": "2021-05-20T22:49:50",
+      "chars": 1930
+    },
+    {
+      "id": 8781,
+      "title": "interested sensor #2",
+      "url": "https://www.kobakant.at/DIY/?p=8781",
+      "path": "Sources/How To Get What You Want Full/interested sensor #2 [8781].md",
+      "date": "2021-03-24T18:12:19",
+      "modified": "2022-01-24T21:46:44",
+      "chars": 216
+    },
+    {
+      "id": 8788,
+      "title": "S01E01 steel and wool fibers",
+      "url": "https://www.kobakant.at/DIY/?p=8788",
+      "path": "Sources/How To Get What You Want Full/S01E01 steel and wool fibers [8788].md",
+      "date": "2021-03-24T18:34:25",
+      "modified": "2021-03-24T18:35:20",
+      "chars": 102
+    },
+    {
+      "id": 8791,
+      "title": "S01E02 metal wrapped threads",
+      "url": "https://www.kobakant.at/DIY/?p=8791",
+      "path": "Sources/How To Get What You Want Full/S01E02 metal wrapped threads [8791].md",
+      "date": "2021-03-24T18:36:30",
+      "modified": "2021-03-24T18:36:30",
+      "chars": 102
+    },
+    {
+      "id": 8794,
+      "title": "Light Dependent Relationship",
+      "url": "https://www.kobakant.at/DIY/?p=8794",
+      "path": "Sources/How To Get What You Want Full/Light Dependent Relationship [8794].md",
+      "date": "2021-03-30T12:56:11",
+      "modified": "2021-03-30T18:11:02",
+      "chars": 10951
+    },
+    {
+      "id": 8826,
+      "title": "Everything is Talkative",
+      "url": "https://www.kobakant.at/DIY/?p=8826",
+      "path": "Sources/How To Get What You Want Full/Everything is Talkative [8826].md",
+      "date": "2021-04-10T20:36:30",
+      "modified": "2021-04-10T20:44:11",
+      "chars": 468
+    },
+    {
+      "id": 8833,
+      "title": "Weigh, Measure, Count",
+      "url": "https://www.kobakant.at/DIY/?p=8833",
+      "path": "Sources/How To Get What You Want Full/Weigh, Measure, Count [8833].md",
+      "date": "2021-04-21T10:53:11",
+      "modified": "2021-04-27T17:35:23",
+      "chars": 17248
+    },
+    {
+      "id": 8852,
+      "title": "My First Arduino Connection Check",
+      "url": "https://www.kobakant.at/DIY/?p=8852",
+      "path": "Sources/How To Get What You Want Full/My First Arduino Connection Check [8852].md",
+      "date": "2021-04-22T12:53:04",
+      "modified": "2021-04-22T12:53:04",
+      "chars": 1147
+    },
+    {
+      "id": 8906,
+      "title": "Paper + Aluminum foil contact switch",
+      "url": "https://www.kobakant.at/DIY/?p=8906",
+      "path": "Sources/How To Get What You Want Full/Paper + Aluminum foil contact switch [8906].md",
+      "date": "2021-04-25T11:24:08",
+      "modified": "2022-10-28T11:05:19",
+      "chars": 1098
+    },
+    {
+      "id": 8936,
+      "title": "Paper + Aluminum foil pressure sensor",
+      "url": "https://www.kobakant.at/DIY/?p=8936",
+      "path": "Sources/How To Get What You Want Full/Paper + Aluminum foil pressure sensor [8936].md",
+      "date": "2021-04-25T11:59:26",
+      "modified": "2022-10-28T11:05:32",
+      "chars": 1563
+    },
+    {
+      "id": 8960,
+      "title": "Bits and Bytes Binary numbers",
+      "url": "https://www.kobakant.at/DIY/?p=8960",
+      "path": "Sources/How To Get What You Want Full/Bits and Bytes Binary numbers [8960].md",
+      "date": "2021-04-25T13:16:50",
+      "modified": "2021-04-25T13:55:29",
+      "chars": 2202
+    },
+    {
+      "id": 8995,
+      "title": "What is Variables?",
+      "url": "https://www.kobakant.at/DIY/?p=8995",
+      "path": "Sources/How To Get What You Want Full/What is Variables - [8995].md",
+      "date": "2021-04-25T15:16:47",
+      "modified": "2021-04-25T15:23:01",
+      "chars": 3257
+    },
+    {
+      "id": 9038,
+      "title": "#paper-adventures",
+      "url": "https://www.kobakant.at/DIY/?p=9038",
+      "path": "Sources/How To Get What You Want Full/#paper-adventures [9038].md",
+      "date": "2021-04-28T21:12:08",
+      "modified": "2022-03-21T10:00:44",
+      "chars": 2536
+    },
+    {
+      "id": 9046,
+      "title": "I <3 ATtiny",
+      "url": "https://www.kobakant.at/DIY/?p=9046",
+      "path": "Sources/How To Get What You Want Full/I - 3 ATtiny [9046].md",
+      "date": "2021-05-20T08:50:41",
+      "modified": "2021-05-23T18:47:47",
+      "chars": 1923
+    },
+    {
+      "id": 9064,
+      "title": "Touch the Tone",
+      "url": "https://www.kobakant.at/DIY/?p=9064",
+      "path": "Sources/How To Get What You Want Full/Touch the Tone [9064].md",
+      "date": "2021-05-26T14:15:40",
+      "modified": "2021-06-09T23:36:45",
+      "chars": 3191
+    },
+    {
+      "id": 9084,
+      "title": "Stocking Skin Stretch Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=9084",
+      "path": "Sources/How To Get What You Want Full/Stocking Skin Stretch Sensor [9084].md",
+      "date": "2021-06-29T11:13:10",
+      "modified": "2021-06-29T11:13:10",
+      "chars": 163
+    },
+    {
+      "id": 9086,
+      "title": "Skin Sensor",
+      "url": "https://www.kobakant.at/DIY/?p=9086",
+      "path": "Sources/How To Get What You Want Full/Skin Sensor [9086].md",
+      "date": "2021-06-29T11:41:34",
+      "modified": "2021-06-29T11:41:34",
+      "chars": 1829
+    },
+    {
+      "id": 9106,
+      "title": "Paper Lazer Projector",
+      "url": "https://www.kobakant.at/DIY/?p=9106",
+      "path": "Sources/How To Get What You Want Full/Paper Lazer Projector [9106].md",
+      "date": "2021-08-20T10:24:47",
+      "modified": "2022-01-24T21:53:45",
+      "chars": 782
+    },
+    {
+      "id": 9130,
+      "title": "ESP octopus sewable breakout",
+      "url": "https://www.kobakant.at/DIY/?p=9130",
+      "path": "Sources/How To Get What You Want Full/ESP octopus sewable breakout [9130].md",
+      "date": "2021-09-14T09:54:07",
+      "modified": "2023-03-13T21:51:52",
+      "chars": 255
+    },
+    {
+      "id": 9133,
+      "title": "Communicating Bodies",
+      "url": "https://www.kobakant.at/DIY/?p=9133",
+      "path": "Sources/How To Get What You Want Full/Communicating Bodies [9133].md",
+      "date": "2021-10-13T10:52:00",
+      "modified": "2022-05-18T10:51:02",
+      "chars": 9873
+    },
+    {
+      "id": 9137,
+      "title": "Spaghettimonster",
+      "url": "https://www.kobakant.at/DIY/?p=9137",
+      "path": "Sources/How To Get What You Want Full/Spaghettimonster [9137].md",
+      "date": "2021-09-25T23:13:59",
+      "modified": "2022-12-14T15:19:54",
+      "chars": 4821
+    },
+    {
+      "id": 9140,
+      "title": "MQTT Brokers and Clients",
+      "url": "https://www.kobakant.at/DIY/?p=9140",
+      "path": "Sources/How To Get What You Want Full/MQTT Brokers and Clients [9140].md",
+      "date": "2021-09-30T10:54:47",
+      "modified": "2021-11-15T07:51:33",
+      "chars": 9552
+    },
+    {
+      "id": 9247,
+      "title": "MQTT client",
+      "url": "https://www.kobakant.at/DIY/?p=9247",
+      "path": "Sources/How To Get What You Want Full/MQTT client [9247].md",
+      "date": "2021-10-28T11:46:11",
+      "modified": "2021-10-28T12:28:47",
+      "chars": 2019
+    },
+    {
+      "id": 9265,
+      "title": "Meet the Materials : Note",
+      "url": "https://www.kobakant.at/DIY/?p=9265",
+      "path": "Sources/How To Get What You Want Full/Meet the Materials - Note [9265].md",
+      "date": "2021-11-01T16:34:01",
+      "modified": "2021-11-01T16:40:47",
+      "chars": 2155
+    },
+    {
+      "id": 9271,
+      "title": "ETextile Tailoring",
+      "url": "https://www.kobakant.at/DIY/?p=9271",
+      "path": "Sources/How To Get What You Want Full/ETextile Tailoring [9271].md",
+      "date": "2021-11-09T21:20:56",
+      "modified": "2021-11-09T21:20:56",
+      "chars": 100
+    },
+    {
+      "id": 9331,
+      "title": "Bend Sensor Glove",
+      "url": "https://www.kobakant.at/DIY/?p=9331",
+      "path": "Sources/How To Get What You Want Full/Bend Sensor Glove [9331].md",
+      "date": "2021-12-15T20:36:37",
+      "modified": "2021-12-15T22:52:52",
+      "chars": 7197
+    },
+    {
+      "id": 9424,
+      "title": "Textile Sensoren und Aktuatoren in Handarbeit",
+      "url": "https://www.kobakant.at/DIY/?p=9424",
+      "path": "Sources/How To Get What You Want Full/Textile Sensoren und Aktuatoren in Handarbeit [9424].md",
+      "date": "2019-01-01T09:57:00",
+      "modified": "2021-12-16T09:59:36",
+      "chars": 432
+    },
+    {
+      "id": 9432,
+      "title": "dangle data gloves",
+      "url": "https://www.kobakant.at/DIY/?p=9432",
+      "path": "Sources/How To Get What You Want Full/dangle data gloves [9432].md",
+      "date": "2022-01-18T12:55:02",
+      "modified": "2022-01-18T13:03:41",
+      "chars": 217
+    },
+    {
+      "id": 9441,
+      "title": "Handedness",
+      "url": "https://www.kobakant.at/DIY/?p=9441",
+      "path": "Sources/How To Get What You Want Full/Handedness [9441].md",
+      "date": "2022-01-25T16:40:45",
+      "modified": "2022-01-28T12:24:04",
+      "chars": 6053
+    },
+    {
+      "id": 9486,
+      "title": "Beautiful Circuits",
+      "url": "https://www.kobakant.at/DIY/?p=9486",
+      "path": "Sources/How To Get What You Want Full/Beautiful Circuits [9486].md",
+      "date": "2022-02-17T09:30:33",
+      "modified": "2022-03-11T07:14:59",
+      "chars": 15367
+    },
+    {
+      "id": 9540,
+      "title": "Stitching Electronics | Woolly Noise",
+      "url": "https://www.kobakant.at/DIY/?p=9540",
+      "path": "Sources/How To Get What You Want Full/Stitching Electronics - Woolly Noise [9540].md",
+      "date": "2022-03-17T13:00:58",
+      "modified": "2022-03-24T10:21:42",
+      "chars": 7660
+    },
+    {
+      "id": 9545,
+      "title": "Sensitive Puppets",
+      "url": "https://www.kobakant.at/DIY/?p=9545",
+      "path": "Sources/How To Get What You Want Full/Sensitive Puppets [9545].md",
+      "date": "2022-03-21T10:06:53",
+      "modified": "2022-07-08T09:01:12",
+      "chars": 2521
+    },
+    {
+      "id": 9589,
+      "title": "Wireless Workshop",
+      "url": "https://www.kobakant.at/DIY/?p=9589",
+      "path": "Sources/How To Get What You Want Full/Wireless Workshop [9589].md",
+      "date": "2022-04-25T14:11:28",
+      "modified": "2022-04-27T15:50:39",
+      "chars": 650
+    },
+    {
+      "id": 9649,
+      "title": "Tone of the Things",
+      "url": "https://www.kobakant.at/DIY/?p=9649",
+      "path": "Sources/How To Get What You Want Full/Tone of the Things [9649].md",
+      "date": "2022-10-19T19:53:38",
+      "modified": "2022-10-26T18:52:16",
+      "chars": 7071
+    },
+    {
+      "id": 9714,
+      "title": "Rabbit Control Client on Bela",
+      "url": "https://www.kobakant.at/DIY/?p=9714",
+      "path": "Sources/How To Get What You Want Full/Rabbit Control Client on Bela [9714].md",
+      "date": "2022-10-28T10:20:08",
+      "modified": "2022-10-29T11:37:50",
+      "chars": 2168
+    },
+    {
+      "id": 9732,
+      "title": "RabbitControl on Bela",
+      "url": "https://www.kobakant.at/DIY/?p=9732",
+      "path": "Sources/How To Get What You Want Full/RabbitControl on Bela [9732].md",
+      "date": "2022-10-28T11:23:43",
+      "modified": "2022-10-29T11:55:57",
+      "chars": 5598
+    },
+    {
+      "id": 9812,
+      "title": "Playing with electronic textiles",
+      "url": "https://www.kobakant.at/DIY/?p=9812",
+      "path": "Sources/How To Get What You Want Full/Playing with electronic textiles [9812].md",
+      "date": "2023-01-11T22:30:33",
+      "modified": "2023-04-18T19:46:07",
+      "chars": 7888
+    },
+    {
+      "id": 9838,
+      "title": "Three Perspectives",
+      "url": "https://www.kobakant.at/DIY/?p=9838",
+      "path": "Sources/How To Get What You Want Full/Three Perspectives [9838].md",
+      "date": "2023-04-05T20:59:33",
+      "modified": "2023-10-02T23:21:00",
+      "chars": 5903
+    },
+    {
+      "id": 9948,
+      "title": "Fluffy MIDI",
+      "url": "https://www.kobakant.at/DIY/?p=9948",
+      "path": "Sources/How To Get What You Want Full/Fluffy MIDI [9948].md",
+      "date": "2024-06-12T11:59:53",
+      "modified": "2024-06-25T11:33:03",
+      "chars": 9809
+    }
+  ]
+}

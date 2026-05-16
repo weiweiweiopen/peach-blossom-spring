@@ -1,0 +1,4435 @@
+{
+  "imported": "2026-05-16 10:16",
+  "count": 334,
+  "failures": [],
+  "pages": [
+    {
+      "title": "1 Quartal 2024 notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/1_Quartal_2024_notes",
+      "path": "Sources/SGMK Full/1 Quartal 2024 notes [2168].md",
+      "pageid": 2168,
+      "touched": "2024-09-17T17:57:33Z",
+      "length": 5383,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "1 Quartal notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/1_Quartal_notes",
+      "path": "Sources/SGMK Full/1 Quartal notes [2167].md",
+      "pageid": 2167,
+      "touched": "2024-01-10T00:23:04Z",
+      "length": 367,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "10 Jahre SGMK",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/10_Jahre_SGMK",
+      "path": "Sources/SGMK Full/10 Jahre SGMK [1259].md",
+      "pageid": 1259,
+      "touched": "2016-09-15T15:56:10Z",
+      "length": 50,
+      "categories": [],
+      "links": [
+        "Festival der Mechatronischen Künste"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "18:00 General Versammlung",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/18:00_General_Versammlung",
+      "path": "Sources/SGMK Full/18 - 00 General Versammlung [1504].md",
+      "pageid": 1504,
+      "touched": "2019-03-12T21:17:35Z",
+      "length": 952,
+      "categories": [],
+      "links": [
+        "Abnahme Geschäftsbericht 2018",
+        "Bilder GV 2018",
+        "Vorstellung Programm 2019",
+        "Wahl der Vorstandmitglieder"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "2 March - L200 - GV preps",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/2_March_-_L200_-_GV_preps",
+      "path": "Sources/SGMK Full/2 March - L200 - GV preps [1493].md",
+      "pageid": 1493,
+      "touched": "2019-03-02T16:04:30Z",
+      "length": 2395,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "20 pix display",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/20_pix_display",
+      "path": "Sources/SGMK Full/20 pix display [69].md",
+      "pageid": 69,
+      "touched": "2011-03-24T10:57:44Z",
+      "length": 28,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "2022 End Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/2022_End_Meeting_notes",
+      "path": "Sources/SGMK Full/2022 End Meeting notes [1984].md",
+      "pageid": 1984,
+      "touched": "2023-01-01T17:26:41Z",
+      "length": 4699,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen",
+        "Mitgliederversammlung 2023",
+        "SGMK admin",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "2024 MechArtLab NutzerInnen Treffen",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/2024_MechArtLab_NutzerInnen_Treffen",
+      "path": "Sources/SGMK Full/2024 MechArtLab NutzerInnen Treffen [2376].md",
+      "pageid": 2376,
+      "touched": "2026-01-10T17:02:37Z",
+      "length": 44,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen Treffen"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "3rd Party Boards",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/3rd_Party_Boards",
+      "path": "Sources/SGMK Full/3rd Party Boards [1530].md",
+      "pageid": 1530,
+      "touched": "2025-05-03T15:49:34Z",
+      "length": 1023,
+      "categories": [],
+      "links": [
+        "Arduino MKR WAN 1300",
+        "ESP32 CAM",
+        "NXP i.MX 8M Plus on the Debix Model A SBC"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "4. Quartal 2024 notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/4._Quartal_2024_notes",
+      "path": "Sources/SGMK Full/4. Quartal 2024 notes [2316].md",
+      "pageid": 2316,
+      "touched": "2024-11-12T20:59:40Z",
+      "length": 5073,
+      "categories": [],
+      "links": [
+        "HOME MADE 2025",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "8bit Mix Tape",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/8bit_Mix_Tape",
+      "path": "Sources/SGMK Full/8bit Mix Tape [394].md",
+      "pageid": 394,
+      "touched": "2021-11-23T21:54:52Z",
+      "length": 15504,
+      "categories": [
+        "Pages with broken file links",
+        "Pages with syntax highlighting errors"
+      ],
+      "links": [
+        "8bit Mix Tape - Zagreb Code",
+        "Babygnusbuino",
+        "Babygnusbuino-v2",
+        "Dymax.iøn - 8bit Mixtape \"Berliner Schule\"",
+        "FabLab Neckar-Alb - 8bit MixTape Workshop",
+        "HEK - 8bit MixTape Workshop"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "8bit Mix Tape - Zagreb Code",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/8bit_Mix_Tape_-_Zagreb_Code",
+      "path": "Sources/SGMK Full/8bit Mix Tape - Zagreb Code [1005].md",
+      "pageid": 1005,
+      "touched": "2013-10-14T09:02:17Z",
+      "length": 6203,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "8step sequencer",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/8step_sequencer",
+      "path": "Sources/SGMK Full/8step sequencer [1050].md",
+      "pageid": 1050,
+      "touched": "2014-07-17T12:18:01Z",
+      "length": 273,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "9V MS20 HP-LP Filter",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/9V_MS20_HP-LP_Filter",
+      "path": "Sources/SGMK Full/9V MS20 HP-LP Filter [1067].md",
+      "pageid": 1067,
+      "touched": "2014-08-19T21:19:39Z",
+      "length": 162,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Abao",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Abao",
+      "path": "Sources/SGMK Full/Abao [2063].md",
+      "pageid": 2063,
+      "touched": "2026-04-19T07:22:13Z",
+      "length": 110,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Abnahme Geschäftsbericht 2017",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Abnahme_Gesch%C3%A4ftsbericht_2017",
+      "path": "Sources/SGMK Full/Abnahme Geschäftsbericht 2017 [1430].md",
+      "pageid": 1430,
+      "touched": "2018-03-17T18:07:25Z",
+      "length": 4792,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Advanced Nano Simplest Code",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Advanced_Nano_Simplest_Code",
+      "path": "Sources/SGMK Full/Advanced Nano Simplest Code [1068].md",
+      "pageid": 1068,
+      "touched": "2014-08-23T17:05:03Z",
+      "length": 3436,
+      "categories": [
+        "Pages with broken file links"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "AI@SGMK",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/AI@SGMK",
+      "path": "Sources/SGMK Full/AI@SGMK [2610].md",
+      "pageid": 2610,
+      "touched": "2026-05-12T16:45:44Z",
+      "length": 5328,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "ANYMA 2015",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ANYMA_2015",
+      "path": "Sources/SGMK Full/ANYMA 2015 [1108].md",
+      "pageid": 1108,
+      "touched": "2015-06-17T13:21:08Z",
+      "length": 5423,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "8bit Mix Tape"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "ANYMA 2016",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ANYMA_2016",
+      "path": "Sources/SGMK Full/ANYMA 2016 [1248].md",
+      "pageid": 1248,
+      "touched": "2016-05-08T17:09:30Z",
+      "length": 293,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "ANYMA Monitoring",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ANYMA_Monitoring",
+      "path": "Sources/SGMK Full/ANYMA Monitoring [2027].md",
+      "pageid": 2027,
+      "touched": "2023-04-05T14:40:13Z",
+      "length": 1842,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "April 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/April_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/April 2020 Meeting notes [1711].md",
+      "pageid": 1711,
+      "touched": "2020-04-20T03:28:19Z",
+      "length": 969,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Archipelago",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Archipelago",
+      "path": "Sources/SGMK Full/Archipelago [2248].md",
+      "pageid": 2248,
+      "touched": "2024-06-27T19:56:07Z",
+      "length": 16303,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Archive HOME MADE",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Archive_HOME_MADE",
+      "path": "Sources/SGMK Full/Archive HOME MADE [2178].md",
+      "pageid": 2178,
+      "touched": "2026-03-19T12:04:59Z",
+      "length": 15665,
+      "categories": [],
+      "links": [
+        "HOME MADE 2007",
+        "HOME MADE 2008",
+        "HOME MADE 2009",
+        "HOME MADE 2010",
+        "HOME MADE 2011",
+        "HOME MADE 2012",
+        "HOME MADE 2013",
+        "HOME MADE 2014",
+        "HOME MADE 2015",
+        "HOME MADE 2016",
+        "HOME MADE 2017",
+        "HOME MADE 2018",
+        "HOME MADE 2019",
+        "HOME MADE 2020",
+        "HOME MADE 2021",
+        "HOME MADE 2022",
+        "HOME MADE 2023",
+        "HOME MADE 2024",
+        "HOME MADE 2025",
+        "HOME MADE 2026"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Arduino MKR WAN 1300",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Arduino_MKR_WAN_1300",
+      "path": "Sources/SGMK Full/Arduino MKR WAN 1300 [1533].md",
+      "pageid": 1533,
+      "touched": "2019-03-29T07:53:05Z",
+      "length": 1044,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Arduino Uno R3 as HID",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Arduino_Uno_R3_as_HID",
+      "path": "Sources/SGMK Full/Arduino Uno R3 as HID [1070].md",
+      "pageid": 1070,
+      "touched": "2014-08-27T17:16:10Z",
+      "length": 6079,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Atari Amiga C64 SNES NES to USB Adapter",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Atari_Amiga_C64_SNES_NES_to_USB_Adapter",
+      "path": "Sources/SGMK Full/Atari Amiga C64 SNES NES to USB Adapter [1072].md",
+      "pageid": 1072,
+      "touched": "2014-12-12T11:26:40Z",
+      "length": 1710,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Audio over OSC Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Audio_over_OSC_Workshop",
+      "path": "Sources/SGMK Full/Audio over OSC Workshop [2253].md",
+      "pageid": 2253,
+      "touched": "2024-06-21T15:08:45Z",
+      "length": 954,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "AudioPool:Notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/AudioPool:Notes",
+      "path": "Sources/SGMK Full/AudioPool - Notes [1842].md",
+      "pageid": 1842,
+      "touched": "2021-08-19T15:35:38Z",
+      "length": 118,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "August 2020 - Vorstand Homemade 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/August_2020_-_Vorstand_Homemade_2020",
+      "path": "Sources/SGMK Full/August 2020 - Vorstand Homemade 2020 [1766].md",
+      "pageid": 1766,
+      "touched": "2020-09-26T10:30:13Z",
+      "length": 1867,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Axoloti",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Axoloti",
+      "path": "Sources/SGMK Full/Axoloti [1406].md",
+      "pageid": 1406,
+      "touched": "2017-09-11T12:43:14Z",
+      "length": 1605,
+      "categories": [],
+      "links": [
+        "Banking Account",
+        "MechArtLab"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Babygnusbuino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Babygnusbuino",
+      "path": "Sources/SGMK Full/Babygnusbuino [370].md",
+      "pageid": 370,
+      "touched": "2013-09-27T15:23:14Z",
+      "length": 16123,
+      "categories": [],
+      "links": [
+        "BabyGnusbuino code examples",
+        "Babygnusbuino-v2",
+        "Gnusbuino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "BabyGnusbuino code examples",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/BabyGnusbuino_code_examples",
+      "path": "Sources/SGMK Full/BabyGnusbuino code examples [412].md",
+      "pageid": 412,
+      "touched": "2013-09-21T22:07:01Z",
+      "length": 25694,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Babygnusbuino-v2",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Babygnusbuino-v2",
+      "path": "Sources/SGMK Full/Babygnusbuino-v2 [427].md",
+      "pageid": 427,
+      "touched": "2016-08-25T10:31:41Z",
+      "length": 13592,
+      "categories": [],
+      "links": [
+        "8bit Mix Tape",
+        "BabyGnusbuino code examples",
+        "Babygnusbuino",
+        "Babymidimultiplexgnusbuino",
+        "MIDI"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Babymidimultiplexgnusbuino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Babymidimultiplexgnusbuino",
+      "path": "Sources/SGMK Full/Babymidimultiplexgnusbuino [1053].md",
+      "pageid": 1053,
+      "touched": "2014-07-29T00:47:51Z",
+      "length": 646,
+      "categories": [],
+      "links": [
+        "Babygnusbuino-v2"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "BalanZBot",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/BalanZBot",
+      "path": "Sources/SGMK Full/BalanZBot [1346].md",
+      "pageid": 1346,
+      "touched": "2017-04-03T09:26:16Z",
+      "length": 465,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Banking Account",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Banking_Account",
+      "path": "Sources/SGMK Full/Banking Account [1407].md",
+      "pageid": 1407,
+      "touched": "2017-11-17T20:17:00Z",
+      "length": 238,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Beaglebone black",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Beaglebone_black",
+      "path": "Sources/SGMK Full/Beaglebone black [986].md",
+      "pageid": 986,
+      "touched": "2013-09-12T11:42:34Z",
+      "length": 963,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Bilder GV 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Bilder_GV_2018",
+      "path": "Sources/SGMK Full/Bilder GV 2018 [1513].md",
+      "pageid": 1513,
+      "touched": "2019-03-12T20:44:56Z",
+      "length": 139,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "BIR residensi",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/BIR_residensi",
+      "path": "Sources/SGMK Full/BIR residensi [2062].md",
+      "pageid": 2062,
+      "touched": "2024-01-26T07:59:57Z",
+      "length": 12559,
+      "categories": [],
+      "links": [
+        "ChatGPT says about DIY kits",
+        "Hacker-in-Residence Programme",
+        "PASAR SENGGOL"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/Bitwäscherei [1648].md",
+      "pageid": 1648,
+      "touched": "2020-10-21T17:01:48Z",
+      "length": 37,
+      "categories": [],
+      "links": [
+        "Documents Bitwäscherei"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Bitwäsching se Fjutscher",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Bitw%C3%A4sching_se_Fjutscher",
+      "path": "Sources/SGMK Full/Bitwäsching se Fjutscher [1669].md",
+      "pageid": 1669,
+      "touched": "2020-01-24T23:05:58Z",
+      "length": 4507,
+      "categories": [],
+      "links": [
+        "MechArtLab goes Bitwäscherei - Join the Fun"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Boxology",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Boxology",
+      "path": "Sources/SGMK Full/Boxology [222].md",
+      "pageid": 222,
+      "touched": "2021-10-26T20:51:09Z",
+      "length": 3301,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Brushograph",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Brushograph",
+      "path": "Sources/SGMK Full/Brushograph [2370].md",
+      "pageid": 2370,
+      "touched": "2026-03-29T11:34:51Z",
+      "length": 21689,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Calendar",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Calendar",
+      "path": "Sources/SGMK Full/Calendar [252].md",
+      "pageid": 252,
+      "touched": "2016-04-03T16:49:17Z",
+      "length": 107,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Cappaddy",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Cappaddy",
+      "path": "Sources/SGMK Full/Cappaddy [1226].md",
+      "pageid": 1226,
+      "touched": "2021-04-14T18:00:28Z",
+      "length": 13933,
+      "categories": [],
+      "links": [
+        "Cappaddy",
+        "STM32 dev"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "CapSense (QTouchADC)",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/CapSense_(QTouchADC)",
+      "path": "Sources/SGMK Full/CapSense (QTouchADC) [1018].md",
+      "pageid": 1018,
+      "touched": "2015-04-22T23:20:00Z",
+      "length": 8761,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "ChatGPT says about DIY kits",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ChatGPT_says_about_DIY_kits",
+      "path": "Sources/SGMK Full/ChatGPT says about DIY kits [2077].md",
+      "pageid": 2077,
+      "touched": "2023-07-25T09:10:55Z",
+      "length": 4981,
+      "categories": [],
+      "links": [
+        "BIR residensi"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "ChatGPT thinks about homemade",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ChatGPT_thinks_about_homemade",
+      "path": "Sources/SGMK Full/ChatGPT thinks about homemade [2099].md",
+      "pageid": 2099,
+      "touched": "2023-08-26T14:07:19Z",
+      "length": 5894,
+      "categories": [],
+      "links": [
+        "HOME MADE 2023"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Cirkulino - Borut Savski",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Cirkulino_-_Borut_Savski",
+      "path": "Sources/SGMK Full/Cirkulino - Borut Savski [420].md",
+      "pageid": 420,
+      "touched": "2013-05-07T14:22:18Z",
+      "length": 1939,
+      "categories": [],
+      "links": [
+        "MIDI"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "CocoTeens7 - Hit The Tune",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/CocoTeens7_-_Hit_The_Tune",
+      "path": "Sources/SGMK Full/CocoTeens7 - Hit The Tune [1251].md",
+      "pageid": 1251,
+      "touched": "2016-11-17T23:02:57Z",
+      "length": 3404,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "CyberDudelsack",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/CyberDudelsack",
+      "path": "Sources/SGMK Full/CyberDudelsack [315].md",
+      "pageid": 315,
+      "touched": "2012-05-15T19:55:46Z",
+      "length": 32,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Digitalu Tranqulaisaao (In't)",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Digitalu_Tranqulaisaao_(In%27t)",
+      "path": "Sources/SGMK Full/Digitalu Tranqulaisaao (In't) [207].md",
+      "pageid": 207,
+      "touched": "2011-11-20T12:20:18Z",
+      "length": 754,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Diskussion: Politik und Technik",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Diskussion:_Politik_und_Technik",
+      "path": "Sources/SGMK Full/Diskussion - Politik und Technik [1320].md",
+      "pageid": 1320,
+      "touched": "2016-07-27T12:42:03Z",
+      "length": 5,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "DIY Arbeitswoche",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIY_Arbeitswoche",
+      "path": "Sources/SGMK Full/DIY Arbeitswoche [119].md",
+      "pageid": 119,
+      "touched": "2016-03-30T18:22:24Z",
+      "length": 528,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "ANYMA 2015",
+        "HOME MADE 2009",
+        "HOME MADE 2010",
+        "HOME MADE 2011",
+        "HOME MADE 2012",
+        "HOME MADE 2013",
+        "HOME MADE 2014",
+        "HOME MADE 2015",
+        "HOME MADE 2016"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "DIY Gathering - Flick the World",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIY_Gathering_-_Flick_the_World",
+      "path": "Sources/SGMK Full/DIY Gathering - Flick the World [1477].md",
+      "pageid": 1477,
+      "touched": "2018-10-16T18:50:57Z",
+      "length": 7953,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "DIY LED-NEON Signs",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIY_LED-NEON_Signs",
+      "path": "Sources/SGMK Full/DIY LED-NEON Signs [1519].md",
+      "pageid": 1519,
+      "touched": "2023-07-02T14:48:39Z",
+      "length": 8777,
+      "categories": [],
+      "links": [
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "DIY Micro Laser Cutter",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIY_Micro_Laser_Cutter",
+      "path": "Sources/SGMK Full/DIY Micro Laser Cutter [146].md",
+      "pageid": 146,
+      "touched": "2011-09-29T12:59:49Z",
+      "length": 1749,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "DIY Solder Mask",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIY_Solder_Mask",
+      "path": "Sources/SGMK Full/DIY Solder Mask [1934].md",
+      "pageid": 1934,
+      "touched": "2022-02-04T13:22:19Z",
+      "length": 264,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "DIYBikesharing",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DIYBikesharing",
+      "path": "Sources/SGMK Full/DIYBikesharing [1581].md",
+      "pageid": 1581,
+      "touched": "2020-07-11T17:39:39Z",
+      "length": 0,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Docoments Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Docoments_Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/Docoments Bitwäscherei [1649].md",
+      "pageid": 1649,
+      "touched": "2020-10-21T17:01:48Z",
+      "length": 37,
+      "categories": [],
+      "links": [
+        "Documents Bitwäscherei"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Documents Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Documents_Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/Documents Bitwäscherei [1625].md",
+      "pageid": 1625,
+      "touched": "2020-10-21T17:27:44Z",
+      "length": 338,
+      "categories": [],
+      "links": [
+        "Bitwäsching se Fjutscher",
+        "MechArtLab goes Bitwäscherei - Join the Fun"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Draft Protokoll MV 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Draft_Protokoll_MV_2020",
+      "path": "Sources/SGMK Full/Draft Protokoll MV 2020 [1897].md",
+      "pageid": 1897,
+      "touched": "2021-11-06T15:34:39Z",
+      "length": 31,
+      "categories": [],
+      "links": [
+        "Protokoll MV 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "DroneSlider by FLipFloater",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/DroneSlider_by_FLipFloater",
+      "path": "Sources/SGMK Full/DroneSlider by FLipFloater [2577].md",
+      "pageid": 2577,
+      "touched": "2026-01-14T18:29:21Z",
+      "length": 903,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Dsp",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Dsp",
+      "path": "Sources/SGMK Full/Dsp [1844].md",
+      "pageid": 1844,
+      "touched": "2021-09-10T09:51:46Z",
+      "length": 555,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Dual TBridge Percussion",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Dual_TBridge_Percussion",
+      "path": "Sources/SGMK Full/Dual TBridge Percussion [1092].md",
+      "pageid": 1092,
+      "touched": "2017-10-24T20:56:19Z",
+      "length": 4057,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Dymax.iøn - 8bit Mixtape \"Berliner Schule\"",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Dymax.i%C3%B8n_-_8bit_Mixtape_%22Berliner_Schule%22",
+      "path": "Sources/SGMK Full/Dymax.iøn - 8bit Mixtape - Berliner Schule - [1244].md",
+      "pageid": 1244,
+      "touched": "2016-05-06T14:49:52Z",
+      "length": 2339,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "E-bow (Ralf)",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/E-bow_(Ralf)",
+      "path": "Sources/SGMK Full/E-bow (Ralf) [1935].md",
+      "pageid": 1935,
+      "touched": "2024-09-01T06:26:16Z",
+      "length": 5493,
+      "categories": [],
+      "links": [
+        "HOME MADE 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "EGO Labs",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/EGO_Labs",
+      "path": "Sources/SGMK Full/EGO Labs [497].md",
+      "pageid": 497,
+      "touched": "2013-07-03T17:19:16Z",
+      "length": 33,
+      "categories": [],
+      "links": [
+        "Klingenstrasse Zurich"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Electron Festival 2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Electron_Festival_2011",
+      "path": "Sources/SGMK Full/Electron Festival 2011 [71].md",
+      "pageid": 71,
+      "touched": "2021-04-19T18:04:58Z",
+      "length": 5769,
+      "categories": [
+        "Makeaway",
+        "Workshops"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Electronic Voodoo Doll Advanced",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Electronic_Voodoo_Doll_Advanced",
+      "path": "Sources/SGMK Full/Electronic Voodoo Doll Advanced [1266].md",
+      "pageid": 1266,
+      "touched": "2016-08-13T12:34:27Z",
+      "length": 603,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Elektronisches Heimatwerk Luzern 28.2.-10.3.2013",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Elektronisches_Heimatwerk_Luzern_28.2.-10.3.2013",
+      "path": "Sources/SGMK Full/Elektronisches Heimatwerk Luzern 28.2.-10.3.2013 [389].md",
+      "pageid": 389,
+      "touched": "2013-06-13T17:41:42Z",
+      "length": 4378,
+      "categories": [],
+      "links": [
+        "8bit Mix Tape"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "ELVESolar",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ELVESolar",
+      "path": "Sources/SGMK Full/ELVESolar [1907].md",
+      "pageid": 1907,
+      "touched": "2021-12-06T21:34:48Z",
+      "length": 5683,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Ender3",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Ender3",
+      "path": "Sources/SGMK Full/Ender3 [1543].md",
+      "pageid": 1543,
+      "touched": "2021-07-24T16:09:15Z",
+      "length": 1256,
+      "categories": [],
+      "links": [
+        "MicroDelta"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Ender3 v2",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Ender3_v2",
+      "path": "Sources/SGMK Full/Ender3 v2 [1834].md",
+      "pageid": 1834,
+      "touched": "2021-07-24T18:01:19Z",
+      "length": 1369,
+      "categories": [],
+      "links": [
+        "MicroDelta"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Erfrischungsraum Luzern",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Erfrischungsraum_Luzern",
+      "path": "Sources/SGMK Full/Erfrischungsraum Luzern [390].md",
+      "pageid": 390,
+      "touched": "2013-06-13T17:27:16Z",
+      "length": 62,
+      "categories": [],
+      "links": [
+        "Elektronisches Heimatwerk Luzern 28.2.-10.3.2013"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "ESP32 CAM",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ESP32_CAM",
+      "path": "Sources/SGMK Full/ESP32 CAM [1531].md",
+      "pageid": 1531,
+      "touched": "2019-03-29T07:25:52Z",
+      "length": 1240,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Espd",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Espd",
+      "path": "Sources/SGMK Full/Espd [2176].md",
+      "pageid": 2176,
+      "touched": "2024-02-15T21:58:35Z",
+      "length": 1052,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "EtchingBox",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/EtchingBox",
+      "path": "Sources/SGMK Full/EtchingBox [1036].md",
+      "pageid": 1036,
+      "touched": "2018-12-03T15:47:03Z",
+      "length": 5233,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "FabLab Neckar-Alb - 8bit MixTape Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/FabLab_Neckar-Alb_-_8bit_MixTape_Workshop",
+      "path": "Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md",
+      "pageid": 1220,
+      "touched": "2016-03-31T13:34:34Z",
+      "length": 7830,
+      "categories": [],
+      "links": [
+        "8bit Mix Tape"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Faker Faire",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Faker_Faire",
+      "path": "Sources/SGMK Full/Faker Faire [1185].md",
+      "pageid": 1185,
+      "touched": "2016-02-11T23:48:39Z",
+      "length": 11522,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "FastFashionDetektor",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/FastFashionDetektor",
+      "path": "Sources/SGMK Full/FastFashionDetektor [2233].md",
+      "pageid": 2233,
+      "touched": "2024-04-09T09:42:59Z",
+      "length": 4122,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Feb 2019 Meeting Notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Feb_2019_Meeting_Notes",
+      "path": "Sources/SGMK Full/Feb 2019 Meeting Notes [1486].md",
+      "pageid": 1486,
+      "touched": "2019-02-03T17:56:15Z",
+      "length": 5323,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Feb 2021 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Feb_2021_Meeting_notes",
+      "path": "Sources/SGMK Full/Feb 2021 Meeting notes [1813].md",
+      "pageid": 1813,
+      "touched": "2021-02-06T14:33:38Z",
+      "length": 3276,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Feb 2022 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Feb_2022_Meeting_notes",
+      "path": "Sources/SGMK Full/Feb 2022 Meeting notes [1925].md",
+      "pageid": 1925,
+      "touched": "2022-02-02T07:14:14Z",
+      "length": 2144,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Fermento Mods",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Fermento_Mods",
+      "path": "Sources/SGMK Full/Fermento Mods [1035].md",
+      "pageid": 1035,
+      "touched": "2014-03-27T05:47:56Z",
+      "length": 23476,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Festival der Mechatronischen Künste",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Festival_der_Mechatronischen_K%C3%BCnste",
+      "path": "Sources/SGMK Full/Festival der Mechatronischen Künste [1225].md",
+      "pageid": 1225,
+      "touched": "2016-09-15T15:56:09Z",
+      "length": 16272,
+      "categories": [
+        "Festivals",
+        "Pages with broken file links"
+      ],
+      "links": [
+        "Diskussion: Politik und Technik",
+        "HOME MADE 2016",
+        "SGMK-Festival Bedology",
+        "SGMK-Festival Künstler",
+        "SGMK-Festival Planning"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Finanzen SGMK 2017",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Finanzen_SGMK_2017",
+      "path": "Sources/SGMK Full/Finanzen SGMK 2017 [1429].md",
+      "pageid": 1429,
+      "touched": "2018-03-16T13:47:08Z",
+      "length": 4609,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "FlashDisc",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/FlashDisc",
+      "path": "Sources/SGMK Full/FlashDisc [1986].md",
+      "pageid": 1986,
+      "touched": "2023-03-11T17:16:58Z",
+      "length": 2513,
+      "categories": [],
+      "links": [
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Flick the World 2019",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Flick_the_World_2019",
+      "path": "Sources/SGMK Full/Flick the World 2019 [1541].md",
+      "pageid": 1541,
+      "touched": "2019-09-01T07:36:23Z",
+      "length": 11695,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Flick the World 2019 dev",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Flick_the_World_2019_dev",
+      "path": "Sources/SGMK Full/Flick the World 2019 dev [1542].md",
+      "pageid": 1542,
+      "touched": "2019-08-27T17:56:00Z",
+      "length": 10069,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Fête de la cité 2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/F%C3%AAte_de_la_cit%C3%A9_2011",
+      "path": "Sources/SGMK Full/Fête de la cité 2011 [308].md",
+      "pageid": 308,
+      "touched": "2012-04-05T21:57:24Z",
+      "length": 1236,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Füür Synthie mit Daisy Seed",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/F%C3%BC%C3%BCr_Synthie_mit_Daisy_Seed",
+      "path": "Sources/SGMK Full/Füür Synthie mit Daisy Seed [2220].md",
+      "pageid": 2220,
+      "touched": "2024-02-25T18:33:02Z",
+      "length": 98,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Game Publishing for Kids",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Game_Publishing_for_Kids",
+      "path": "Sources/SGMK Full/Game Publishing for Kids [1958].md",
+      "pageid": 1958,
+      "touched": "2022-06-29T08:58:27Z",
+      "length": 3717,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Gcode 2d-plotter",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Gcode_2d-plotter",
+      "path": "Sources/SGMK Full/Gcode 2d-plotter [1515].md",
+      "pageid": 1515,
+      "touched": "2019-03-20T08:45:13Z",
+      "length": 2162,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Gnusbuino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Gnusbuino",
+      "path": "Sources/SGMK Full/Gnusbuino [358].md",
+      "pageid": 358,
+      "touched": "2013-12-01T17:04:38Z",
+      "length": 2562,
+      "categories": [],
+      "links": [
+        "Babygnusbuino",
+        "Midignusbuino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "GreenMilk",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/GreenMilk",
+      "path": "Sources/SGMK Full/GreenMilk [2432].md",
+      "pageid": 2432,
+      "touched": "2025-08-12T20:56:21Z",
+      "length": 195,
+      "categories": [],
+      "links": [
+        "HOME MADE 2025"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "GrooveZeugs",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/GrooveZeugs",
+      "path": "Sources/SGMK Full/GrooveZeugs [2155].md",
+      "pageid": 2155,
+      "touched": "2023-10-31T14:18:32Z",
+      "length": 1926,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Hacker-in-Residence Programme",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Hacker-in-Residence_Programme",
+      "path": "Sources/SGMK Full/Hacker-in-Residence Programme [1874].md",
+      "pageid": 1874,
+      "touched": "2026-04-19T07:22:12Z",
+      "length": 58645,
+      "categories": [
+        "Biography"
+      ],
+      "links": [
+        "BIR residensi",
+        "PASAR SENGGOL",
+        "Puredata (Pd) Workshop with Servando",
+        "The Solar Mini-Disc Walkman: Cross-Modal Alignment of DSSC Fingerprints and Audio Latent Space"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Hands On AVR",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Hands_On_AVR",
+      "path": "Sources/SGMK Full/Hands On AVR [162].md",
+      "pageid": 162,
+      "touched": "2012-08-17T13:02:22Z",
+      "length": 13141,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Hardware Library",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Hardware_Library",
+      "path": "Sources/SGMK Full/Hardware Library [1184].md",
+      "pageid": 1184,
+      "touched": "2019-03-20T13:19:16Z",
+      "length": 76,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Hasrul",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Hasrul",
+      "path": "Sources/SGMK Full/Hasrul [2271].md",
+      "pageid": 2271,
+      "touched": "2026-04-19T07:22:13Z",
+      "length": 100,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HEK - 8bit MixTape Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HEK_-_8bit_MixTape_Workshop",
+      "path": "Sources/SGMK Full/HEK - 8bit MixTape Workshop [1116].md",
+      "pageid": 1116,
+      "touched": "2015-07-08T12:24:49Z",
+      "length": 7416,
+      "categories": [],
+      "links": [
+        "8bit Mix Tape"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HeK 2012 - Sensing Place",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HeK_2012_-_Sensing_Place",
+      "path": "Sources/SGMK Full/HeK 2012 - Sensing Place [339].md",
+      "pageid": 339,
+      "touched": "2021-11-23T21:45:38Z",
+      "length": 9833,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Helmi",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Helmi",
+      "path": "Sources/SGMK Full/Helmi [2047].md",
+      "pageid": 2047,
+      "touched": "2023-10-07T09:15:02Z",
+      "length": 26,
+      "categories": [],
+      "links": [
+        "PASAR SENGGOL"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Help",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Help",
+      "path": "Sources/SGMK Full/Help [2].md",
+      "pageid": 2,
+      "touched": "2021-11-23T22:05:12Z",
+      "length": 1131,
+      "categories": [
+        "Pages with syntax highlighting errors"
+      ],
+      "links": [
+        "Widget:Flickr"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2007",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2007",
+      "path": "Sources/SGMK Full/HOME MADE 2007 [1370].md",
+      "pageid": 1370,
+      "touched": "2016-12-07T19:58:20Z",
+      "length": 171,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2009",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2009",
+      "path": "Sources/SGMK Full/HOME MADE 2009 [121].md",
+      "pageid": 121,
+      "touched": "2011-06-29T17:45:49Z",
+      "length": 268,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2010",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2010",
+      "path": "Sources/SGMK Full/HOME MADE 2010 [123].md",
+      "pageid": 123,
+      "touched": "2011-06-29T17:47:09Z",
+      "length": 49,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2011",
+      "path": "Sources/SGMK Full/HOME MADE 2011 [118].md",
+      "pageid": 118,
+      "touched": "2011-06-30T01:08:34Z",
+      "length": 1930,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2012",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2012",
+      "path": "Sources/SGMK Full/HOME MADE 2012 [248].md",
+      "pageid": 248,
+      "touched": "2013-02-11T22:10:02Z",
+      "length": 3059,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2012 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2012 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2012_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2012 Participants [313].md",
+      "pageid": 313,
+      "touched": "2021-04-19T18:09:03Z",
+      "length": 6095,
+      "categories": [],
+      "links": [
+        "Hands On AVR"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2013",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2013",
+      "path": "Sources/SGMK Full/HOME MADE 2013 [406].md",
+      "pageid": 406,
+      "touched": "2015-04-06T14:52:18Z",
+      "length": 7910,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "8bit Mix Tape",
+        "Babygnusbuino-v2"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2014",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2014",
+      "path": "Sources/SGMK Full/HOME MADE 2014 [1037].md",
+      "pageid": 1037,
+      "touched": "2015-04-06T14:52:06Z",
+      "length": 560,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2014 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2014 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2014_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2014 Participants [1043].md",
+      "pageid": 1043,
+      "touched": "2014-08-04T16:55:33Z",
+      "length": 5007,
+      "categories": [],
+      "links": [
+        "Babymidimultiplexgnusbuino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2015",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2015",
+      "path": "Sources/SGMK Full/HOME MADE 2015 [1105].md",
+      "pageid": 1105,
+      "touched": "2015-08-17T22:52:10Z",
+      "length": 3492,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2015 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2015 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2015_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2015 Participants [1114].md",
+      "pageid": 1114,
+      "touched": "2015-07-24T20:58:48Z",
+      "length": 2569,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2016",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2016",
+      "path": "Sources/SGMK Full/HOME MADE 2016 [1202].md",
+      "pageid": 1202,
+      "touched": "2016-07-25T11:28:27Z",
+      "length": 4128,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "Festival der Mechatronischen Künste",
+        "HOME MADE 2016 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2016 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2016_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2016 Participants [1275].md",
+      "pageid": 1275,
+      "touched": "2016-07-22T08:32:40Z",
+      "length": 4733,
+      "categories": [],
+      "links": [
+        "HOME MADE 2016"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2017",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2017",
+      "path": "Sources/SGMK Full/HOME MADE 2017 [1384].md",
+      "pageid": 1384,
+      "touched": "2021-08-19T07:37:29Z",
+      "length": 1383,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2017 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2017 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2017_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2017 Participants [1385].md",
+      "pageid": 1385,
+      "touched": "2017-07-31T16:28:00Z",
+      "length": 6318,
+      "categories": [],
+      "links": [
+        "HOME MADE 2017"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2018",
+      "path": "Sources/SGMK Full/HOME MADE 2018 [1433].md",
+      "pageid": 1433,
+      "touched": "2018-08-11T19:03:40Z",
+      "length": 2466,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2018 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2018 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2018_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2018 Participants [1434].md",
+      "pageid": 1434,
+      "touched": "2018-08-22T10:44:17Z",
+      "length": 5595,
+      "categories": [],
+      "links": [
+        "HOME MADE 2018"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2019",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2019",
+      "path": "Sources/SGMK Full/HOME MADE 2019 [1534].md",
+      "pageid": 1534,
+      "touched": "2019-07-27T20:03:51Z",
+      "length": 7186,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2019 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2019 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2019_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2019 Participants [1591].md",
+      "pageid": 1591,
+      "touched": "2019-07-27T09:36:34Z",
+      "length": 4833,
+      "categories": [],
+      "links": [
+        "HOME MADE 2019"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2020",
+      "path": "Sources/SGMK Full/HOME MADE 2020 [1726].md",
+      "pageid": 1726,
+      "touched": "2020-12-27T12:09:39Z",
+      "length": 8474,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "HOME MADE 2020 Participants",
+        "HOME MADE 2020:7at7"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2020 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2020_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2020 Participants [1735].md",
+      "pageid": 1735,
+      "touched": "2020-12-29T12:23:22Z",
+      "length": 2861,
+      "categories": [],
+      "links": [
+        "HOME MADE 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2020:7at7",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2020:7at7",
+      "path": "Sources/SGMK Full/HOME MADE 2020 - 7at7 [1744].md",
+      "pageid": 1744,
+      "touched": "2020-08-04T12:10:01Z",
+      "length": 3190,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2021",
+      "path": "Sources/SGMK Full/HOME MADE 2021 [1821].md",
+      "pageid": 1821,
+      "touched": "2022-02-22T10:16:43Z",
+      "length": 8274,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "E-bow (Ralf)",
+        "HOME MADE 2021 Participants",
+        "Planning notes",
+        "Tails"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2021 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2021_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2021 Participants [1826].md",
+      "pageid": 1826,
+      "touched": "2021-08-08T23:44:07Z",
+      "length": 7373,
+      "categories": [],
+      "links": [
+        "HOME MADE 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2022",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2022",
+      "path": "Sources/SGMK Full/HOME MADE 2022 [1950].md",
+      "pageid": 1950,
+      "touched": "2022-08-23T17:22:05Z",
+      "length": 6171,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "Game Publishing for Kids",
+        "HOME MADE 2022 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2022 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2022_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2022 Participants [1951].md",
+      "pageid": 1951,
+      "touched": "2022-07-24T11:51:41Z",
+      "length": 2671,
+      "categories": [],
+      "links": [
+        "HOME MADE 2022"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2023",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2023",
+      "path": "Sources/SGMK Full/HOME MADE 2023 [2031].md",
+      "pageid": 2031,
+      "touched": "2026-04-16T17:54:51Z",
+      "length": 4293,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "ChatGPT thinks about homemade",
+        "HOME MADE 2021",
+        "HOME MADE 2022",
+        "HOME MADE 2023 Participants",
+        "Homemade 2023 walk"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2023 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2023_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2023 Participants [2038].md",
+      "pageid": 2038,
+      "touched": "2024-05-30T07:21:19Z",
+      "length": 6487,
+      "categories": [],
+      "links": [
+        "HOME MADE 2023"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2024",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2024",
+      "path": "Sources/SGMK Full/HOME MADE 2024 [2227].md",
+      "pageid": 2227,
+      "touched": "2024-08-25T16:36:42Z",
+      "length": 4482,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "Archive HOME MADE",
+        "HOME MADE 2024 Participants",
+        "Homemade 2024 walk from Passwang"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2024 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2024_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2024 Participants [2254].md",
+      "pageid": 2254,
+      "touched": "2024-07-28T10:38:02Z",
+      "length": 6184,
+      "categories": [],
+      "links": [
+        "HOME MADE 2024"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2025",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2025",
+      "path": "Sources/SGMK Full/HOME MADE 2025 [2318].md",
+      "pageid": 2318,
+      "touched": "2025-09-25T10:56:52Z",
+      "length": 21024,
+      "categories": [
+        "HOME MADE"
+      ],
+      "links": [
+        "Archipelago",
+        "Archive HOME MADE",
+        "HOME MADE 2025 Fields Of Results",
+        "HOME MADE 2025 Participants",
+        "Kitchen / Cooking responsibles"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2025 Fields Of Results",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2025_Fields_Of_Results",
+      "path": "Sources/SGMK Full/HOME MADE 2025 Fields Of Results [2451].md",
+      "pageid": 2451,
+      "touched": "2025-10-05T00:53:36Z",
+      "length": 23180,
+      "categories": [],
+      "links": [
+        "HOME MADE 2025",
+        "HOME MADE 2025 Participants"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2025 Participants",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2025_Participants",
+      "path": "Sources/SGMK Full/HOME MADE 2025 Participants [2366].md",
+      "pageid": 2366,
+      "touched": "2025-08-24T16:45:54Z",
+      "length": 21516,
+      "categories": [],
+      "links": [
+        "HOME MADE 2025",
+        "HOME MADE 2025 Fields Of Results"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2026",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2026",
+      "path": "Sources/SGMK Full/HOME MADE 2026 [2607].md",
+      "pageid": 2607,
+      "touched": "2026-04-19T12:36:03Z",
+      "length": 3272,
+      "categories": [],
+      "links": [
+        "Archive HOME MADE",
+        "HOME MADE 2026 planning",
+        "Homemade 2023 walk"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "HOME MADE 2026 planning",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/HOME_MADE_2026_planning",
+      "path": "Sources/SGMK Full/HOME MADE 2026 planning [2608].md",
+      "pageid": 2608,
+      "touched": "2026-04-03T18:01:49Z",
+      "length": 3739,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Homemade 2023 walk",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Homemade_2023_walk",
+      "path": "Sources/SGMK Full/Homemade 2023 walk [2065].md",
+      "pageid": 2065,
+      "touched": "2023-07-20T22:13:51Z",
+      "length": 723,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Homemade 2024 walk from Passwang",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Homemade_2024_walk_from_Passwang",
+      "path": "Sources/SGMK Full/Homemade 2024 walk from Passwang [2277].md",
+      "pageid": 2277,
+      "touched": "2024-07-27T10:43:27Z",
+      "length": 302,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "How to use the MechArtWiki",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/How_to_use_the_MechArtWiki",
+      "path": "Sources/SGMK Full/How to use the MechArtWiki [101].md",
+      "pageid": 101,
+      "touched": "2021-11-23T22:05:15Z",
+      "length": 18,
+      "categories": [],
+      "links": [
+        "Help"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "I",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/I",
+      "path": "Sources/SGMK Full/I [199].md",
+      "pageid": 199,
+      "touched": "2020-10-08T08:15:57Z",
+      "length": 3116,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Ideen Raumplanung Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Ideen_Raumplanung_Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/Ideen Raumplanung Bitwäscherei [1715].md",
+      "pageid": 1715,
+      "touched": "2020-05-10T14:40:31Z",
+      "length": 863,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "II",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/II",
+      "path": "Sources/SGMK Full/II [167].md",
+      "pageid": 167,
+      "touched": "2012-12-12T16:52:52Z",
+      "length": 1016,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "International Open Hackerspace Day 2023 - Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/International_Open_Hackerspace_Day_2023_-_Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/International Open Hackerspace Day 2023 - Bitwäscherei [1995].md",
+      "pageid": 1995,
+      "touched": "2023-03-27T09:10:10Z",
+      "length": 6505,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "IOHD 2023",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/IOHD_2023",
+      "path": "Sources/SGMK Full/IOHD 2023 [2003].md",
+      "pageid": 2003,
+      "touched": "2023-03-27T09:24:48Z",
+      "length": 68,
+      "categories": [],
+      "links": [
+        "International Open Hackerspace Day 2023 - Bitwäscherei"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "IOHD2023",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/IOHD2023",
+      "path": "Sources/SGMK Full/IOHD2023 [2004].md",
+      "pageid": 2004,
+      "touched": "2023-03-27T09:24:48Z",
+      "length": 68,
+      "categories": [],
+      "links": [
+        "International Open Hackerspace Day 2023 - Bitwäscherei"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "IoT Clock",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/IoT_Clock",
+      "path": "Sources/SGMK Full/IoT Clock [1193].md",
+      "pageid": 1193,
+      "touched": "2019-03-27T14:04:36Z",
+      "length": 1326,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "JACQNOISE Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/JACQNOISE_Workshop",
+      "path": "Sources/SGMK Full/JACQNOISE Workshop [1922].md",
+      "pageid": 1922,
+      "touched": "2026-05-01T07:36:29Z",
+      "length": 72,
+      "categories": [],
+      "links": [
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "JACQNOISE Worshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/JACQNOISE_Worshop",
+      "path": "Sources/SGMK Full/JACQNOISE Worshop [1923].md",
+      "pageid": 1923,
+      "touched": "2022-01-18T15:32:56Z",
+      "length": 32,
+      "categories": [],
+      "links": [
+        "JACQNOISE Workshop"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Jan 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Jan_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/Jan 2020 Meeting notes [1646].md",
+      "pageid": 1646,
+      "touched": "2020-01-07T22:36:28Z",
+      "length": 5407,
+      "categories": [],
+      "links": [
+        "Bitwäscherei",
+        "DIY LED-NEON Signs",
+        "Flick the World 2019",
+        "HOME MADE 2019",
+        "Join the Fun",
+        "SGMK Mitgliederversammlung 2019",
+        "SGMK On-Tour: WERK Spionage",
+        "SGMK on tour: odenwilusenz",
+        "Vorstellung Programm 2019"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Join the Fun",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Join_the_Fun",
+      "path": "Sources/SGMK Full/Join the Fun [1647].md",
+      "pageid": 1647,
+      "touched": "2020-05-20T07:53:01Z",
+      "length": 58,
+      "categories": [],
+      "links": [
+        "MechArtLab goes Bitwäscherei - Join the Fun"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Juli 2020 - Erstes Meeting mit neuem Vorstand",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Juli_2020_-_Erstes_Meeting_mit_neuem_Vorstand",
+      "path": "Sources/SGMK Full/Juli 2020 - Erstes Meeting mit neuem Vorstand [1736].md",
+      "pageid": 1736,
+      "touched": "2020-07-24T12:58:38Z",
+      "length": 4466,
+      "categories": [
+        "Pages with broken file links"
+      ],
+      "links": [
+        "MechArtLab Nutzer 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Juni 2023 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Juni_2023_Meeting_notes",
+      "path": "Sources/SGMK Full/Juni 2023 Meeting notes [2055].md",
+      "pageid": 2055,
+      "touched": "2023-06-15T18:26:00Z",
+      "length": 885,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Juni 29.6 2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Juni_29.6_2021",
+      "path": "Sources/SGMK Full/Juni 29.6 2021 [1828].md",
+      "pageid": 1828,
+      "touched": "2021-06-30T19:20:21Z",
+      "length": 4808,
+      "categories": [],
+      "links": [
+        "März 2021 Meeting notes"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "KaosGlam",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KaosGlam",
+      "path": "Sources/SGMK Full/KaosGlam [1974].md",
+      "pageid": 1974,
+      "touched": "2022-09-24T06:40:47Z",
+      "length": 6508,
+      "categories": [],
+      "links": [
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "KIBLIX 2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KIBLIX_2011",
+      "path": "Sources/SGMK Full/KIBLIX 2011 [126].md",
+      "pageid": 126,
+      "touched": "2018-09-20T10:25:53Z",
+      "length": 38317,
+      "categories": [
+        "Festivals"
+      ],
+      "links": [
+        "Art in a Suitcase - Effi Tanner (CH)",
+        "Digitalu Tranqulaisaao (In't)",
+        "Diy makeaway - SGMK, Urs Gaudenz (CH)",
+        "Ephemeral listening: creative radio conception and production - Patrick McGinley (EE) & Udo Noll (DE)",
+        "FoldMe - dimension plus (TW/HK)",
+        "KIBLIX 2011 - Organisational Team",
+        "KIBLIX 2011 - Travel info",
+        "KIBLIX Educational Outreach & Interventions",
+        "NoTours - Enrique Tomas (ES)",
+        "Omnimorph4D - Fabienne Mayer & Marc Widmer (CH)",
+        "Workshopology",
+        "YOU, in the center of the world - Tobias Hoffmann (DE/CH) and Pei Wen Liu (CH/TW)"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "KIBLIX 2011 - Organisational Team",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KIBLIX_2011_-_Organisational_Team",
+      "path": "Sources/SGMK Full/KIBLIX 2011 - Organisational Team [128].md",
+      "pageid": 128,
+      "touched": "2021-12-21T03:11:19Z",
+      "length": 5405,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "KIBLIX 2011 - Participants List",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KIBLIX_2011_-_Participants_List",
+      "path": "Sources/SGMK Full/KIBLIX 2011 - Participants List [127].md",
+      "pageid": 127,
+      "touched": "2021-04-19T17:56:43Z",
+      "length": 6117,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Kiilo",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Kiilo",
+      "path": "Sources/SGMK Full/Kiilo [50].md",
+      "pageid": 50,
+      "touched": "2011-03-17T20:14:02Z",
+      "length": 290,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Kiilo-ArduinoEthernetShield-Read/Write",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Kiilo-ArduinoEthernetShield-Read/Write",
+      "path": "Sources/SGMK Full/Kiilo-ArduinoEthernetShield-Read - Write [80].md",
+      "pageid": 80,
+      "touched": "2013-01-22T11:52:02Z",
+      "length": 10563,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Kit-Sprint Yogyakarta",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Kit-Sprint_Yogyakarta",
+      "path": "Sources/SGMK Full/Kit-Sprint Yogyakarta [1441].md",
+      "pageid": 1441,
+      "touched": "2018-08-25T03:19:35Z",
+      "length": 6384,
+      "categories": [],
+      "links": [
+        "KitSprint ANORG 2018",
+        "Shenzhen Ready"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Kitchen / Cooking responsibles",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Kitchen_/_Cooking_responsibles",
+      "path": "Sources/SGMK Full/Kitchen - Cooking responsibles [2397].md",
+      "pageid": 2397,
+      "touched": "2025-08-01T09:24:36Z",
+      "length": 7031,
+      "categories": [],
+      "links": [
+        "HOME MADE 2025"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "KitSprint @ ANORG 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KitSprint_@_ANORG_2018",
+      "path": "Sources/SGMK Full/KitSprint @ ANORG 2018 [1411].md",
+      "pageid": 1411,
+      "touched": "2018-07-12T04:44:41Z",
+      "length": 34,
+      "categories": [],
+      "links": [
+        "KitSprint ANORG 2018"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "KitSprint ANORG 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/KitSprint_ANORG_2018",
+      "path": "Sources/SGMK Full/KitSprint ANORG 2018 [1408].md",
+      "pageid": 1408,
+      "touched": "2018-07-12T04:44:41Z",
+      "length": 5991,
+      "categories": [],
+      "links": [
+        "Kit-Sprint Yogyakarta",
+        "Shenzhen Ready"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Klingenstrasse Zurich",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Klingenstrasse_Zurich",
+      "path": "Sources/SGMK Full/Klingenstrasse Zurich [541].md",
+      "pageid": 541,
+      "touched": "2013-07-03T18:48:12Z",
+      "length": 1274,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Krabbenarm",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Krabbenarm",
+      "path": "Sources/SGMK Full/Krabbenarm [1750].md",
+      "pageid": 1750,
+      "touched": "2023-09-18T14:04:40Z",
+      "length": 1744,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Kubulu Arduino Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Kubulu_Arduino_Workshop",
+      "path": "Sources/SGMK Full/Kubulu Arduino Workshop [268].md",
+      "pageid": 268,
+      "touched": "2012-02-11T00:21:47Z",
+      "length": 2810,
+      "categories": [],
+      "links": [
+        "SGMKduino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "L200 showcase",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/L200_showcase",
+      "path": "Sources/SGMK Full/L200 showcase [1536].md",
+      "pageid": 1536,
+      "touched": "2019-04-02T19:04:18Z",
+      "length": 1337,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Labor Kulturbüro Luzern",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Labor_Kulturb%C3%BCro_Luzern",
+      "path": "Sources/SGMK Full/Labor Kulturbüro Luzern [198].md",
+      "pageid": 198,
+      "touched": "2012-12-13T00:56:56Z",
+      "length": 2202,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "LDR - Cell Phone Door Opener",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/LDR_-_Cell_Phone_Door_Opener",
+      "path": "Sources/SGMK Full/LDR - Cell Phone Door Opener [1333].md",
+      "pageid": 1333,
+      "touched": "2016-09-29T22:23:33Z",
+      "length": 337,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Mai 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Mai_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/Mai 2020 Meeting notes [1722].md",
+      "pageid": 1722,
+      "touched": "2020-06-25T10:09:17Z",
+      "length": 9797,
+      "categories": [],
+      "links": [
+        "MechArtLab goes Bitwäscherei - Join the Fun"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Main Page",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
+      "path": "Sources/SGMK Full/Main Page [1].md",
+      "pageid": 1,
+      "touched": "2026-02-22T12:58:46Z",
+      "length": 6954,
+      "categories": [],
+      "links": [
+        "ANYMA 2016",
+        "Archipelago",
+        "Archive HOME MADE",
+        "Banking Account",
+        "Bitwäscherei",
+        "Bitwäsching se Fjutscher",
+        "Calendar",
+        "DIY Gathering - Flick the World",
+        "EGO Labs",
+        "Faker Faire",
+        "Festival der Mechatronischen Künste",
+        "Flick the World 2019",
+        "HOME MADE 2007",
+        "HOME MADE 2016",
+        "HOME MADE 2017",
+        "HOME MADE 2018",
+        "HOME MADE 2019",
+        "HOME MADE 2020",
+        "HOME MADE 2021",
+        "HOME MADE 2022",
+        "HOME MADE 2023",
+        "HOME MADE 2024",
+        "HOME MADE 2025",
+        "HOME MADE 2026",
+        "Hacker-in-Residence Programme",
+        "Help",
+        "International Open Hackerspace Day 2023 - Bitwäscherei",
+        "Join the Fun",
+        "KIBLIX 2011",
+        "KitSprint @ ANORG 2018",
+        "L200 showcase",
+        "MechArtLab",
+        "MechArtLab Infrastructure",
+        "MechArtLab NutzerInnen",
+        "MechArtLab Wishlist",
+        "MechArtLab at Bitwäscherei",
+        "MechArtLab goes Bitwäscherei - Join the Fun",
+        "Merch",
+        "OpenLab",
+        "Partners/Links",
+        "Parts",
+        "Projects",
+        "SGMK On-Tour: WERK Spionage",
+        "SGMK X-mas Umtrunk 2021",
+        "SGMK admin",
+        "SGMK on tour: odenwilusenz",
+        "SGMK on-Tour 005: Chill & Taste, St. Gallen",
+        "Sans-les-murs",
+        "Shenzhen Ready",
+        "Treasure trove",
+        "Water Project",
+        "Workshops",
+        "Xmas Umtrunk 2024",
+        "Xmas Umtrunk 2025"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Make some noise",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Make_some_noise",
+      "path": "Sources/SGMK Full/Make some noise [197].md",
+      "pageid": 197,
+      "touched": "2011-12-23T09:56:40Z",
+      "length": 2699,
+      "categories": [],
+      "links": [
+        "Labor Kulturbüro Luzern"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "March 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/March_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/March 2020 Meeting notes [1688].md",
+      "pageid": 1688,
+      "touched": "2020-05-03T08:04:34Z",
+      "length": 5834,
+      "categories": [],
+      "links": [
+        "Ideen Raumplanung Bitwäscherei",
+        "Jan 2020 Meeting notes",
+        "SGMK On-Tour: WERK Spionage"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "May 2019 Meeting Notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/May_2019_Meeting_Notes",
+      "path": "Sources/SGMK Full/May 2019 Meeting Notes [1574].md",
+      "pageid": 1574,
+      "touched": "2019-05-10T07:49:40Z",
+      "length": 4430,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab",
+      "path": "Sources/SGMK Full/MechArtLab [103].md",
+      "pageid": 103,
+      "touched": "2021-11-06T10:46:32Z",
+      "length": 720,
+      "categories": [
+        "MechArtLab"
+      ],
+      "links": [
+        "Ender3",
+        "MechArtLab Infrastructure",
+        "OpenLab",
+        "PCB Etching",
+        "SES",
+        "SGMK Calendar",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab at Bitwäscherei",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_at_Bitw%C3%A4scherei",
+      "path": "Sources/SGMK Full/MechArtLab at Bitwäscherei [2377].md",
+      "pageid": 2377,
+      "touched": "2025-05-13T19:44:18Z",
+      "length": 3370,
+      "categories": [],
+      "links": [
+        "Boxology",
+        "Documents Bitwäscherei",
+        "Ender3",
+        "MechArtLab Infrastructure",
+        "MicroDelta",
+        "PCB Etching"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab Calendar",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Calendar",
+      "path": "Sources/SGMK Full/MechArtLab Calendar [7].md",
+      "pageid": 7,
+      "touched": "2012-01-13T10:45:20Z",
+      "length": 0,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab goes Bitwäscherei - Join the Fun",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_goes_Bitw%C3%A4scherei_-_Join_the_Fun",
+      "path": "Sources/SGMK Full/MechArtLab goes Bitwäscherei - Join the Fun [1627].md",
+      "pageid": 1627,
+      "touched": "2020-05-20T07:53:01Z",
+      "length": 10017,
+      "categories": [],
+      "links": [
+        "Bitwäsching se Fjutscher",
+        "Boxology",
+        "Documents Bitwäscherei",
+        "Ender3",
+        "MechArtLab Infrastructure",
+        "MicroDelta",
+        "PCB Etching",
+        "SGMK On-Tour: WERK Spionage"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab Infrastructure",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Infrastructure",
+      "path": "Sources/SGMK Full/MechArtLab Infrastructure [16].md",
+      "pageid": 16,
+      "touched": "2026-01-11T08:13:09Z",
+      "length": 7433,
+      "categories": [
+        "MechArtLab"
+      ],
+      "links": [
+        "Ender3",
+        "Ender3 v2",
+        "Mask design and print",
+        "MicroDelta",
+        "PCB Etching",
+        "PDMS bioelectronix",
+        "Reflow soldering",
+        "Temperature sensor"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab Inventory",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Inventory",
+      "path": "Sources/SGMK Full/MechArtLab Inventory [1103].md",
+      "pageid": 1103,
+      "touched": "2015-05-13T00:18:55Z",
+      "length": 33,
+      "categories": [],
+      "links": [
+        "MechArtLab Wishlist"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab Nutzer 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Nutzer_2020",
+      "path": "Sources/SGMK Full/MechArtLab Nutzer 2020 [1748].md",
+      "pageid": 1748,
+      "touched": "2021-02-06T10:49:11Z",
+      "length": 41,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab NutzerInnen",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_NutzerInnen",
+      "path": "Sources/SGMK Full/MechArtLab NutzerInnen [1747].md",
+      "pageid": 1747,
+      "touched": "2026-01-10T18:22:45Z",
+      "length": 10652,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen Treffen"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab NutzerInnen 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_NutzerInnen_2020",
+      "path": "Sources/SGMK Full/MechArtLab NutzerInnen 2020 [1815].md",
+      "pageid": 1815,
+      "touched": "2026-01-10T18:22:50Z",
+      "length": 36,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab NutzerInnen Treffen",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_NutzerInnen_Treffen",
+      "path": "Sources/SGMK Full/MechArtLab NutzerInnen Treffen [2177].md",
+      "pageid": 2177,
+      "touched": "2026-01-10T17:02:36Z",
+      "length": 5715,
+      "categories": [],
+      "links": [
+        "MechArtLab Infrastructure",
+        "MechArtLab NutzerInnen",
+        "MechArtLab Wishlist"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "MechArtLab Wishlist",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Wishlist",
+      "path": "Sources/SGMK Full/MechArtLab Wishlist [1100].md",
+      "pageid": 1100,
+      "touched": "2015-05-13T00:18:54Z",
+      "length": 602,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Meet notos29.4",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Meet_notos29.4",
+      "path": "Sources/SGMK Full/Meet notos29.4 [1947].md",
+      "pageid": 1947,
+      "touched": "2022-04-14T15:21:08Z",
+      "length": 261,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Merch",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Merch",
+      "path": "Sources/SGMK Full/Merch [2519].md",
+      "pageid": 2519,
+      "touched": "2025-09-06T16:10:52Z",
+      "length": 532,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MicMacMC",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MicMacMC",
+      "path": "Sources/SGMK Full/MicMacMC [1190].md",
+      "pageid": 1190,
+      "touched": "2016-12-02T21:35:48Z",
+      "length": 961,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MicroDelta",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MicroDelta",
+      "path": "Sources/SGMK Full/MicroDelta [1485].md",
+      "pageid": 1485,
+      "touched": "2021-10-31T14:36:51Z",
+      "length": 532,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MicroNAND",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MicroNAND",
+      "path": "Sources/SGMK Full/MicroNAND [1006].md",
+      "pageid": 1006,
+      "touched": "2013-11-17T16:18:51Z",
+      "length": 1503,
+      "categories": [],
+      "links": [
+        "MicroRing"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Micronoise",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Micronoise",
+      "path": "Sources/SGMK Full/Micronoise [1476].md",
+      "pageid": 1476,
+      "touched": "2025-12-28T13:51:11Z",
+      "length": 461,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Micronoise pro",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Micronoise_pro",
+      "path": "Sources/SGMK Full/Micronoise pro [1025].md",
+      "pageid": 1025,
+      "touched": "2025-05-08T17:05:39Z",
+      "length": 2823,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MicroRing",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MicroRing",
+      "path": "Sources/SGMK Full/MicroRing [984].md",
+      "pageid": 984,
+      "touched": "2013-11-17T16:25:33Z",
+      "length": 1888,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MIDI",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MIDI",
+      "path": "Sources/SGMK Full/MIDI [413].md",
+      "pageid": 413,
+      "touched": "2015-04-24T20:12:39Z",
+      "length": 1071,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Midignusbuino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Midignusbuino",
+      "path": "Sources/SGMK Full/Midignusbuino [359].md",
+      "pageid": 359,
+      "touched": "2016-11-22T18:29:32Z",
+      "length": 15778,
+      "categories": [],
+      "links": [
+        "Gnusbuino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Mignon Gamekit Workshop",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Mignon_Gamekit_Workshop",
+      "path": "Sources/SGMK Full/Mignon Gamekit Workshop [1001].md",
+      "pageid": 1001,
+      "touched": "2013-10-19T11:12:04Z",
+      "length": 156,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "MindMa7h",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/MindMa7h",
+      "path": "Sources/SGMK Full/MindMa7h [1617].md",
+      "pageid": 1617,
+      "touched": "2020-07-11T17:38:32Z",
+      "length": 0,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Motörheadz",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Mot%C3%B6rheadz",
+      "path": "Sources/SGMK Full/Motörheadz [1330].md",
+      "pageid": 1330,
+      "touched": "2016-12-12T18:07:41Z",
+      "length": 723,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "März 2021 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/M%C3%A4rz_2021_Meeting_notes",
+      "path": "Sources/SGMK Full/März 2021 Meeting notes [1819].md",
+      "pageid": 1819,
+      "touched": "2021-03-19T20:36:17Z",
+      "length": 2598,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "News",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/News",
+      "path": "Sources/SGMK Full/News [44].md",
+      "pageid": 44,
+      "touched": "2011-06-12T05:49:14Z",
+      "length": 531,
+      "categories": [],
+      "links": [
+        "Dusjagr",
+        "PachubeHackathon2011"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Nov 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Nov_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/Nov 2020 Meeting notes [1772].md",
+      "pageid": 1772,
+      "touched": "2021-03-15T16:01:41Z",
+      "length": 2779,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Nov 2021 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Nov_2021_Meeting_notes",
+      "path": "Sources/SGMK Full/Nov 2021 Meeting notes [1908].md",
+      "pageid": 1908,
+      "touched": "2021-11-30T19:12:31Z",
+      "length": 1564,
+      "categories": [],
+      "links": [
+        "Juni 29.6 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Nov 2022 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Nov_2022_Meeting_notes",
+      "path": "Sources/SGMK Full/Nov 2022 Meeting notes [1983].md",
+      "pageid": 1983,
+      "touched": "2022-12-06T16:30:19Z",
+      "length": 6268,
+      "categories": [],
+      "links": [
+        "MechArtLab NutzerInnen",
+        "Mitgliederversammlung 2023",
+        "SGMK admin",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "NXP i.MX 8M Plus on the Debix Model A SBC",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/NXP_i.MX_8M_Plus_on_the_Debix_Model_A_SBC",
+      "path": "Sources/SGMK Full/NXP i.MX 8M Plus on the Debix Model A SBC [2374].md",
+      "pageid": 2374,
+      "touched": "2025-05-03T16:52:48Z",
+      "length": 6155,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Okt 2023 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Okt_2023_Meeting_notes",
+      "path": "Sources/SGMK Full/Okt 2023 Meeting notes [2153].md",
+      "pageid": 2153,
+      "touched": "2023-10-27T20:54:45Z",
+      "length": 3354,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "OnboardPreamps",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/OnboardPreamps",
+      "path": "Sources/SGMK Full/OnboardPreamps [1595].md",
+      "pageid": 1595,
+      "touched": "2019-07-19T09:59:03Z",
+      "length": 2109,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "OpenLab",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/OpenLab",
+      "path": "Sources/SGMK Full/OpenLab [9].md",
+      "pageid": 9,
+      "touched": "2022-01-06T22:27:20Z",
+      "length": 1203,
+      "categories": [
+        "MechArtLab"
+      ],
+      "links": [
+        "MechArtLab Infrastructure",
+        "SGMK Calendar"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "OpenLab Calendar",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/OpenLab_Calendar",
+      "path": "Sources/SGMK Full/OpenLab Calendar [104].md",
+      "pageid": 104,
+      "touched": "2012-01-13T10:45:21Z",
+      "length": 33,
+      "categories": [],
+      "links": [
+        "MechArtLab Calendar"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "PachubeHackathon2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PachubeHackathon2011",
+      "path": "Sources/SGMK Full/PachubeHackathon2011 [45].md",
+      "pageid": 45,
+      "touched": "2021-04-19T18:03:57Z",
+      "length": 6510,
+      "categories": [
+        "Workshops"
+      ],
+      "links": [
+        "Kiilo-ArduinoEthernetShield-Read/Write"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "PAMAMP",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PAMAMP",
+      "path": "Sources/SGMK Full/PAMAMP [1342].md",
+      "pageid": 1342,
+      "touched": "2021-04-14T17:53:10Z",
+      "length": 1185,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Partners/Links",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Partners/Links",
+      "path": "Sources/SGMK Full/Partners - Links [108].md",
+      "pageid": 108,
+      "touched": "2019-12-06T16:18:11Z",
+      "length": 969,
+      "categories": [],
+      "links": [
+        "TomasPospisek"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Parts",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Parts",
+      "path": "Sources/SGMK Full/Parts [292].md",
+      "pageid": 292,
+      "touched": "2020-03-26T14:04:05Z",
+      "length": 2604,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "PASAR SENGGOL",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PASAR_SENGGOL",
+      "path": "Sources/SGMK Full/PASAR SENGGOL [2092].md",
+      "pageid": 2092,
+      "touched": "2023-10-07T09:15:01Z",
+      "length": 9233,
+      "categories": [],
+      "links": [
+        "BIR residensi",
+        "HOME MADE 2023",
+        "Hacker-in-Residence Programme"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "PCB Etching",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PCB_Etching",
+      "path": "Sources/SGMK Full/PCB Etching [17].md",
+      "pageid": 17,
+      "touched": "2019-12-15T17:27:41Z",
+      "length": 3430,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "PCB tinning",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PCB_tinning",
+      "path": "Sources/SGMK Full/PCB tinning [1537].md",
+      "pageid": 1537,
+      "touched": "2019-04-03T21:07:50Z",
+      "length": 1399,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Personal footprint library",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Personal_footprint_library",
+      "path": "Sources/SGMK Full/Personal footprint library [1382].md",
+      "pageid": 1382,
+      "touched": "2017-04-11T07:11:36Z",
+      "length": 938,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Pimp Up Your Volca",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Pimp_Up_Your_Volca",
+      "path": "Sources/SGMK Full/Pimp Up Your Volca [1638].md",
+      "pageid": 1638,
+      "touched": "2019-12-10T12:08:30Z",
+      "length": 718,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Pixel drift",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Pixel_drift",
+      "path": "Sources/SGMK Full/Pixel drift [1368].md",
+      "pageid": 1368,
+      "touched": "2020-12-27T11:22:48Z",
+      "length": 1410,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Planning notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Planning_notes",
+      "path": "Sources/SGMK Full/Planning notes [1827].md",
+      "pageid": 1827,
+      "touched": "2021-07-21T18:56:02Z",
+      "length": 5455,
+      "categories": [],
+      "links": [
+        "HOME MADE 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Postduino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Postduino",
+      "path": "Sources/SGMK Full/Postduino [1040].md",
+      "pageid": 1040,
+      "touched": "2014-07-08T20:20:08Z",
+      "length": 1736,
+      "categories": [],
+      "links": [
+        "Babygnusbuino-v2",
+        "Gnusbuino"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "PowerSinkDriverArduinoShield",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/PowerSinkDriverArduinoShield",
+      "path": "Sources/SGMK Full/PowerSinkDriverArduinoShield [1016].md",
+      "pageid": 1016,
+      "touched": "2014-01-01T15:50:31Z",
+      "length": 37,
+      "categories": [],
+      "links": [
+        "SinkDriverArduinoShield"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "ProcessingDataDDisplay",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/ProcessingDataDDisplay",
+      "path": "Sources/SGMK Full/ProcessingDataDDisplay [424].md",
+      "pageid": 424,
+      "touched": "2013-05-07T21:21:44Z",
+      "length": 4540,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Projects",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Projects",
+      "path": "Sources/SGMK Full/Projects [107].md",
+      "pageid": 107,
+      "touched": "2026-04-14T17:27:57Z",
+      "length": 7722,
+      "categories": [
+        "Projects"
+      ],
+      "links": [
+        "20 pix display",
+        "3rd Party Boards",
+        "8bit Mix Tape",
+        "8step sequencer",
+        "AI@SGMK",
+        "Arduino Uno R3 as HID",
+        "Babygnusbuino",
+        "Babygnusbuino-v2",
+        "Babymidimultiplexgnusbuino",
+        "BalanZBot",
+        "Brushograph",
+        "CapSense (QTouchADC)",
+        "CocoTeens7 - Hit The Tune",
+        "CyberDudelsack",
+        "DIY LED-NEON Signs",
+        "DIY Micro Laser Cutter",
+        "DIY Solder Mask",
+        "Dual TBridge Percussion",
+        "E-bow (Ralf)",
+        "ELVESolar",
+        "Electronic Voodoo Doll Advanced",
+        "Elektronisches Heimatwerk Luzern 28.2.-10.3.2013",
+        "EtchingBox",
+        "FastFashionDetektor",
+        "Fermento Mods",
+        "Füür Synthie mit Daisy Seed",
+        "Game Publishing for Kids",
+        "Gcode 2d-plotter",
+        "Gnusbuino",
+        "GreenMilk",
+        "IoT Clock",
+        "Krabbenarm",
+        "LDR - Cell Phone Door Opener",
+        "MicMacMC",
+        "MicroNAND",
+        "MicroRing",
+        "Micronoise",
+        "Micronoise pro",
+        "Midignusbuino",
+        "Motörheadz",
+        "PCB tinning",
+        "Pimp Up Your Volca",
+        "Pixel drift",
+        "Postduino",
+        "ProcessingDataDDisplay",
+        "Quadnammotorbulator",
+        "Ralf's Piezo-Amp",
+        "SGMKduino",
+        "SGMKmorseAttacks",
+        "SGMKtiny",
+        "Shenzhen Ready",
+        "Shruti Hacking - Radel Nano Dx",
+        "Simple Theremin",
+        "SinkDriverArduinoShield",
+        "SmartHomeNightLight",
+        "Solar bird",
+        "Thermal IR-Camera",
+        "Tone sweep arduino",
+        "Vive la Resistance aka NanoSmano Sajica",
+        "Volx Micro Mechanic Macintosh Monitor",
+        "WatchOut",
+        "Workshopology"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Projects/simple soap",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Projects/simple_soap",
+      "path": "Sources/SGMK Full/Projects - simple soap [1339].md",
+      "pageid": 1339,
+      "touched": "2016-10-31T19:52:20Z",
+      "length": 0,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2020",
+      "path": "Sources/SGMK Full/Protokoll MV 2020 [1734].md",
+      "pageid": 1734,
+      "touched": "2021-11-06T15:34:39Z",
+      "length": 4640,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2021",
+      "path": "Sources/SGMK Full/Protokoll MV 2021 [1898].md",
+      "pageid": 1898,
+      "touched": "2021-11-07T18:43:52Z",
+      "length": 6084,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2022",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2022",
+      "path": "Sources/SGMK Full/Protokoll MV 2022 [2052].md",
+      "pageid": 2052,
+      "touched": "2023-06-04T15:17:56Z",
+      "length": 6579,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2023",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2023",
+      "path": "Sources/SGMK Full/Protokoll MV 2023 [2058].md",
+      "pageid": 2058,
+      "touched": "2023-06-26T10:24:35Z",
+      "length": 7242,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2024",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2024",
+      "path": "Sources/SGMK Full/Protokoll MV 2024 [2238].md",
+      "pageid": 2238,
+      "touched": "2024-04-15T10:03:26Z",
+      "length": 8791,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2023"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Protokoll MV 2025",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Protokoll_MV_2025",
+      "path": "Sources/SGMK Full/Protokoll MV 2025 [2379].md",
+      "pageid": 2379,
+      "touched": "2025-07-20T20:45:24Z",
+      "length": 5926,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Puredata (Pd) Workshop with Servando",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Puredata_(Pd)_Workshop_with_Servando",
+      "path": "Sources/SGMK Full/Puredata (Pd) Workshop with Servando [2170].md",
+      "pageid": 2170,
+      "touched": "2024-03-29T12:38:30Z",
+      "length": 8634,
+      "categories": [],
+      "links": [
+        "Espd",
+        "Füür Synthie mit Daisy Seed"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Quadnammotorbulator",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Quadnammotorbulator",
+      "path": "Sources/SGMK Full/Quadnammotorbulator [1962].md",
+      "pageid": 1962,
+      "touched": "2022-08-16T16:06:03Z",
+      "length": 338,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Ralf's Piezo-Amp",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Ralf%27s_Piezo-Amp",
+      "path": "Sources/SGMK Full/Ralf's Piezo-Amp [1776].md",
+      "pageid": 1776,
+      "touched": "2024-09-16T16:40:00Z",
+      "length": 3643,
+      "categories": [],
+      "links": [
+        "HOME MADE 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Raspberry Pi",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Raspberry_Pi",
+      "path": "Sources/SGMK Full/Raspberry Pi [1051].md",
+      "pageid": 1051,
+      "touched": "2016-01-06T17:37:02Z",
+      "length": 1793,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Rawcoco",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Rawcoco",
+      "path": "Sources/SGMK Full/Rawcoco [1205].md",
+      "pageid": 1205,
+      "touched": "2021-04-14T17:55:19Z",
+      "length": 7948,
+      "categories": [],
+      "links": [
+        "STM32 dev"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "RecordLabel:Notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/RecordLabel:Notes",
+      "path": "Sources/SGMK Full/RecordLabel - Notes [1843].md",
+      "pageid": 1843,
+      "touched": "2021-08-28T13:05:55Z",
+      "length": 768,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "RoboJam",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/RoboJam",
+      "path": "Sources/SGMK Full/RoboJam [1182].md",
+      "pageid": 1182,
+      "touched": "2016-01-01T11:11:21Z",
+      "length": 1074,
+      "categories": [
+        "Workshop"
+      ],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SandBox",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SandBox",
+      "path": "Sources/SGMK Full/SandBox [55].md",
+      "pageid": 55,
+      "touched": "2015-06-17T16:16:05Z",
+      "length": 66,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Sandbox",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Sandbox",
+      "path": "Sources/SGMK Full/Sandbox [102].md",
+      "pageid": 102,
+      "touched": "2025-03-18T19:23:25Z",
+      "length": 704,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Sans-les-murs",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Sans-les-murs",
+      "path": "Sources/SGMK Full/Sans-les-murs [1677].md",
+      "pageid": 1677,
+      "touched": "2020-05-20T07:53:01Z",
+      "length": 105,
+      "categories": [],
+      "links": [
+        "MechArtLab goes Bitwäscherei - Join the Fun"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Sep 2020 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Sep_2020_Meeting_notes",
+      "path": "Sources/SGMK Full/Sep 2020 Meeting notes [1771].md",
+      "pageid": 1771,
+      "touched": "2020-09-28T14:20:08Z",
+      "length": 4508,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Sep 2022 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Sep_2022_Meeting_notes",
+      "path": "Sources/SGMK Full/Sep 2022 Meeting notes [1970].md",
+      "pageid": 1970,
+      "touched": "2022-11-13T15:40:58Z",
+      "length": 2309,
+      "categories": [],
+      "links": [
+        "SGMK admin"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Sep 2025 notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Sep_2025_notes",
+      "path": "Sources/SGMK Full/Sep 2025 notes [2555].md",
+      "pageid": 2555,
+      "touched": "2025-09-25T14:28:38Z",
+      "length": 2015,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK admin",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_admin",
+      "path": "Sources/SGMK Full/SGMK admin [1386].md",
+      "pageid": 1386,
+      "touched": "2026-04-28T17:17:15Z",
+      "length": 3698,
+      "categories": [
+        "SGMK admin"
+      ],
+      "links": [
+        "1 Quartal 2024 notes",
+        "2 March - L200 - GV preps",
+        "2022 End Meeting notes",
+        "2024 MechArtLab NutzerInnen Treffen",
+        "4. Quartal 2024 notes",
+        "April 2020 Meeting notes",
+        "August 2020 - Vorstand Homemade 2020",
+        "Feb 2019 Meeting Notes",
+        "Feb 2021 Meeting notes",
+        "Feb 2022 Meeting notes",
+        "Jan 2020 Meeting notes",
+        "Juli 2020 - Erstes Meeting mit neuem Vorstand",
+        "Juni 2023 Meeting notes",
+        "Juni 29.6 2021",
+        "Mai 2020 Meeting notes",
+        "March 2020 Meeting notes",
+        "May 2019 Meeting Notes",
+        "März 2021 Meeting notes",
+        "Nov 2020 Meeting notes",
+        "Nov 2021 Meeting notes",
+        "Nov 2022 Meeting notes",
+        "Okt 2023 Meeting notes",
+        "SGMK Mitgliederversammlung 2017",
+        "SGMK Mitgliederversammlung 2018",
+        "SGMK Mitgliederversammlung 2019",
+        "SGMK Mitgliederversammlung 2020",
+        "SGMK Mitgliederversammlung 2021",
+        "SGMK Mitgliederversammlung 2022",
+        "SGMK Mitgliederversammlung 2023",
+        "SGMK Mitgliederversammlung 2024",
+        "SGMK Mitgliederversammlung 2025",
+        "SGMK Mitgliederversammlung 2026",
+        "Sep 2020 Meeting notes",
+        "Sep 2022 Meeting notes",
+        "Sep 2025 notes",
+        "Spring 2022 Meeting notes",
+        "Winter 2026 Meeting notes"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Calendar",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Calendar",
+      "path": "Sources/SGMK Full/SGMK Calendar [1224].md",
+      "pageid": 1224,
+      "touched": "2016-04-03T16:49:17Z",
+      "length": 22,
+      "categories": [],
+      "links": [
+        "Calendar"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2017",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2017",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2017 [1387].md",
+      "pageid": 1387,
+      "touched": "2017-06-30T16:01:15Z",
+      "length": 686,
+      "categories": [],
+      "links": [
+        "Vorstellung Programm 2017",
+        "Wahl der neuen Vorstandmitglieder"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2018",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2018 [1425].md",
+      "pageid": 1425,
+      "touched": "2019-03-12T20:44:56Z",
+      "length": 948,
+      "categories": [],
+      "links": [
+        "Abnahme Geschäftsbericht 2017",
+        "Bilder GV 2018",
+        "Vorstellung Programm 2018",
+        "Wahl der Vorstandmitglieder"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2019",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2019",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2019 [1487].md",
+      "pageid": 1487,
+      "touched": "2019-06-02T17:08:16Z",
+      "length": 3047,
+      "categories": [],
+      "links": [
+        "18:00 General Versammlung",
+        "SGMK wiki - knight rider - award"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2020",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2020",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2020 [1727].md",
+      "pageid": 1727,
+      "touched": "2021-11-06T15:34:51Z",
+      "length": 3477,
+      "categories": [],
+      "links": [
+        "Protokoll MV 2020",
+        "SGMK Mitgliederversammlung 2019"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2021",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2021 [1869].md",
+      "pageid": 1869,
+      "touched": "2021-11-07T16:15:42Z",
+      "length": 5665,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2021",
+        "SGMK Mitgliederversammlung 2020"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2022",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2022",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2022 [1979].md",
+      "pageid": 1979,
+      "touched": "2022-11-12T14:46:07Z",
+      "length": 3801,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2021",
+        "Workshops"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2023",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2023",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2023 [2051].md",
+      "pageid": 2051,
+      "touched": "2023-06-24T18:20:16Z",
+      "length": 5845,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2022"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2024",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2024",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2024 [2228].md",
+      "pageid": 2228,
+      "touched": "2025-07-02T09:40:33Z",
+      "length": 6047,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2023",
+        "Protokoll MV 2024"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2025",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2025",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2025 [2378].md",
+      "pageid": 2378,
+      "touched": "2025-08-29T17:27:00Z",
+      "length": 7209,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2024",
+        "Protokoll MV 2025"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK Mitgliederversammlung 2026",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_Mitgliederversammlung_2026",
+      "path": "Sources/SGMK Full/SGMK Mitgliederversammlung 2026 [2614].md",
+      "pageid": 2614,
+      "touched": "2026-04-30T02:33:18Z",
+      "length": 11944,
+      "categories": [],
+      "links": [
+        "Hacker-in-Residence Programme",
+        "MechArtLab NutzerInnen",
+        "Protokoll MV 2025"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK on tour: odenwilusenz",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_on_tour:_odenwilusenz",
+      "path": "Sources/SGMK Full/SGMK on tour - odenwilusenz [1585].md",
+      "pageid": 1585,
+      "touched": "2019-09-21T12:49:44Z",
+      "length": 2397,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK on-Tour",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_on-Tour",
+      "path": "Sources/SGMK Full/SGMK on-Tour [1837].md",
+      "pageid": 1837,
+      "touched": "2021-08-10T12:25:01Z",
+      "length": 18,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK on-Tour 005: Chill & Taste, St. Gallen",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_on-Tour_005:_Chill_%26_Taste,_St._Gallen",
+      "path": "Sources/SGMK Full/SGMK on-Tour 005 - Chill & Taste, St. Gallen [1840].md",
+      "pageid": 1840,
+      "touched": "2021-09-11T08:14:13Z",
+      "length": 52,
+      "categories": [],
+      "links": [
+        "SGMK on-Tour 005: Weltraum, St. Gallen"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK on-Tour 005: Weltraum, St. Gallen",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_on-Tour_005:_Weltraum,_St._Gallen",
+      "path": "Sources/SGMK Full/SGMK on-Tour 005 - Weltraum, St. Gallen [1838].md",
+      "pageid": 1838,
+      "touched": "2021-09-11T08:14:13Z",
+      "length": 924,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK On-Tour: WERK Spionage",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_On-Tour:_WERK_Spionage",
+      "path": "Sources/SGMK Full/SGMK On-Tour - WERK Spionage [1629].md",
+      "pageid": 1629,
+      "touched": "2020-03-04T15:06:21Z",
+      "length": 6124,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK wiki - knight rider - award",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_wiki_-_knight_rider_-_award",
+      "path": "Sources/SGMK Full/SGMK wiki - knight rider - award [1489].md",
+      "pageid": 1489,
+      "touched": "2026-04-30T02:16:24Z",
+      "length": 14390,
+      "categories": [],
+      "links": [
+        "Babymidimultiplexgnusbuino",
+        "EtchingBox",
+        "Gnusbuino",
+        "STM32 dev",
+        "Workshopology"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK X-mas Hybrid Exhibition",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_X-mas_Hybrid_Exhibition",
+      "path": "Sources/SGMK Full/SGMK X-mas Hybrid Exhibition [1797].md",
+      "pageid": 1797,
+      "touched": "2020-12-19T14:21:46Z",
+      "length": 2284,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK X-mas Umtrunk 2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK_X-mas_Umtrunk_2021",
+      "path": "Sources/SGMK Full/SGMK X-mas Umtrunk 2021 [1909].md",
+      "pageid": 1909,
+      "touched": "2021-12-17T12:55:59Z",
+      "length": 2054,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK-Festival Bedology",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK-Festival_Bedology",
+      "path": "Sources/SGMK Full/SGMK-Festival Bedology [1321].md",
+      "pageid": 1321,
+      "touched": "2016-07-27T15:44:14Z",
+      "length": 989,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMK-Festival Künstler",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK-Festival_K%C3%BCnstler",
+      "path": "Sources/SGMK Full/SGMK-Festival Künstler [1276].md",
+      "pageid": 1276,
+      "touched": "2016-07-29T13:00:30Z",
+      "length": 11108,
+      "categories": [],
+      "links": [
+        "Festival der Mechatronischen Künste"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMK-Festival Planning",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMK-Festival_Planning",
+      "path": "Sources/SGMK Full/SGMK-Festival Planning [1260].md",
+      "pageid": 1260,
+      "touched": "2016-07-27T13:54:09Z",
+      "length": 2224,
+      "categories": [],
+      "links": [
+        "Festival der Mechatronischen Künste"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMKduino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKduino",
+      "path": "Sources/SGMK Full/SGMKduino [254].md",
+      "pageid": 254,
+      "touched": "2012-02-25T08:32:32Z",
+      "length": 2367,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMKMitgliederversammlung2021",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKMitgliederversammlung2021",
+      "path": "Sources/SGMK Full/SGMKMitgliederversammlung2021 [1870].md",
+      "pageid": 1870,
+      "touched": "2021-11-07T15:43:32Z",
+      "length": 45,
+      "categories": [],
+      "links": [
+        "SGMK Mitgliederversammlung 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMKmorseAttack",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKmorseAttack",
+      "path": "Sources/SGMK Full/SGMKmorseAttack [1017].md",
+      "pageid": 1017,
+      "touched": "2021-11-23T21:41:52Z",
+      "length": 30,
+      "categories": [],
+      "links": [
+        "SGMKmorseAttacks"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMKmorseAttacks",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKmorseAttacks",
+      "path": "Sources/SGMK Full/SGMKmorseAttacks [353].md",
+      "pageid": 353,
+      "touched": "2021-11-23T21:41:47Z",
+      "length": 3278,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SGMKtiny",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKtiny",
+      "path": "Sources/SGMK Full/SGMKtiny [328].md",
+      "pageid": 328,
+      "touched": "2012-11-14T14:41:14Z",
+      "length": 9058,
+      "categories": [],
+      "links": [
+        "Hands On AVR"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SGMKtiny-SoftwareSerial",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SGMKtiny-SoftwareSerial",
+      "path": "Sources/SGMK Full/SGMKtiny-SoftwareSerial [332].md",
+      "pageid": 332,
+      "touched": "2012-08-31T21:16:10Z",
+      "length": 945,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Shenzhen Ready",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Shenzhen_Ready",
+      "path": "Sources/SGMK Full/Shenzhen Ready [1254].md",
+      "pageid": 1254,
+      "touched": "2020-11-28T15:25:40Z",
+      "length": 2895,
+      "categories": [],
+      "links": [
+        "Personal footprint library"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SHIFT Festival 2011",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SHIFT_Festival_2011",
+      "path": "Sources/SGMK Full/SHIFT Festival 2011 [159].md",
+      "pageid": 159,
+      "touched": "2021-04-19T18:06:30Z",
+      "length": 3081,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Shruti Hacking - Radel Nano Dx",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Shruti_Hacking_-_Radel_Nano_Dx",
+      "path": "Sources/SGMK Full/Shruti Hacking - Radel Nano Dx [294].md",
+      "pageid": 294,
+      "touched": "2012-03-14T22:27:39Z",
+      "length": 3500,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SIDuino i2c",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SIDuino_i2c",
+      "path": "Sources/SGMK Full/SIDuino i2c [288].md",
+      "pageid": 288,
+      "touched": "2012-02-25T11:15:02Z",
+      "length": 296,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Simple soap",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Simple_soap",
+      "path": "Sources/SGMK Full/Simple soap [1341].md",
+      "pageid": 1341,
+      "touched": "2016-10-31T22:33:49Z",
+      "length": 938,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Simple Theremin",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Simple_Theremin",
+      "path": "Sources/SGMK Full/Simple Theremin [1056].md",
+      "pageid": 1056,
+      "touched": "2016-10-01T02:39:40Z",
+      "length": 731,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SinkDriverArduinoShield",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SinkDriverArduinoShield",
+      "path": "Sources/SGMK Full/SinkDriverArduinoShield [1015].md",
+      "pageid": 1015,
+      "touched": "2014-01-01T15:50:31Z",
+      "length": 844,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SmartHomeNightLight",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SmartHomeNightLight",
+      "path": "Sources/SGMK Full/SmartHomeNightLight [1361].md",
+      "pageid": 1361,
+      "touched": "2016-12-02T22:26:09Z",
+      "length": 385,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Solar bird",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Solar_bird",
+      "path": "Sources/SGMK Full/Solar bird [1471].md",
+      "pageid": 1471,
+      "touched": "2020-10-11T09:46:04Z",
+      "length": 831,
+      "categories": [],
+      "links": [
+        "KitSprint ANORG 2018"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Solar mini disc walkman",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Solar_mini_disc_walkman",
+      "path": "Sources/SGMK Full/Solar mini disc walkman [2447].md",
+      "pageid": 2447,
+      "touched": "2025-08-16T17:37:28Z",
+      "length": 84,
+      "categories": [],
+      "links": [
+        "Solar Mini-Disc Walkman: Photovoltaic Fingerprints as Sonic Identities"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Solar Mini-Disc Walkman: Photovoltaic Fingerprints as Sonic Identities",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Solar_Mini-Disc_Walkman:_Photovoltaic_Fingerprints_as_Sonic_Identities",
+      "path": "Sources/SGMK Full/Solar Mini-Disc Walkman - Photovoltaic Fingerprints as Sonic Identities [2448].md",
+      "pageid": 2448,
+      "touched": "2025-08-27T14:23:59Z",
+      "length": 108,
+      "categories": [],
+      "links": [
+        "The Solar Mini-Disc Walkman: Cross-Modal Alignment of DSSC Fingerprints and Audio Latent Space"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SolarElves",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SolarElves",
+      "path": "Sources/SGMK Full/SolarElves [1867].md",
+      "pageid": 1867,
+      "touched": "2021-09-13T22:37:48Z",
+      "length": 2371,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "SolarRC",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SolarRC",
+      "path": "Sources/SGMK Full/SolarRC [1107].md",
+      "pageid": 1107,
+      "touched": "2016-01-21T16:49:21Z",
+      "length": 6954,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Spring 2022 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Spring_2022_Meeting_notes",
+      "path": "Sources/SGMK Full/Spring 2022 Meeting notes [1948].md",
+      "pageid": 1948,
+      "touched": "2022-05-06T18:21:13Z",
+      "length": 2454,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Starvation Synth by Ralf Schreiber",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Starvation_Synth_by_Ralf_Schreiber",
+      "path": "Sources/SGMK Full/Starvation Synth by Ralf Schreiber [2324].md",
+      "pageid": 2324,
+      "touched": "2024-11-19T14:42:12Z",
+      "length": 2747,
+      "categories": [],
+      "links": [
+        "Xmas Umtrunk 2024"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "STM32 dev",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/STM32_dev",
+      "path": "Sources/SGMK Full/STM32 dev [1196].md",
+      "pageid": 1196,
+      "touched": "2021-04-14T18:04:35Z",
+      "length": 36490,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Synergies",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Synergies",
+      "path": "Sources/SGMK Full/Synergies [2262].md",
+      "pageid": 2262,
+      "touched": "2024-06-27T19:56:07Z",
+      "length": 25,
+      "categories": [],
+      "links": [
+        "Archipelago"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "SyntaxHighlighting",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/SyntaxHighlighting",
+      "path": "Sources/SGMK Full/SyntaxHighlighting [165].md",
+      "pageid": 165,
+      "touched": "2011-10-05T17:38:11Z",
+      "length": 777,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "The Solar Mini-Disc Walkman: Cross-Modal Alignment of DSSC Fingerprints and Audio Latent Space",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/The_Solar_Mini-Disc_Walkman:_Cross-Modal_Alignment_of_DSSC_Fingerprints_and_Audio_Latent_Space",
+      "path": "Sources/SGMK Full/The Solar Mini-Disc Walkman - Cross-Modal Alignment of DSSC Fingerprints and Audio Latent Space [2502].md",
+      "pageid": 2502,
+      "touched": "2025-10-17T03:58:00Z",
+      "length": 38,
+      "categories": [],
+      "links": [
+        "The Solar Oracle Walkman"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "The Solar Oracle Walkman",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/The_Solar_Oracle_Walkman",
+      "path": "Sources/SGMK Full/The Solar Oracle Walkman [2440].md",
+      "pageid": 2440,
+      "touched": "2025-10-17T03:57:48Z",
+      "length": 25248,
+      "categories": [],
+      "links": [
+        "Blockchain Oracle",
+        "EIP-712",
+        "太陽能神喻隨身聽"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Thermal IR-Camera",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Thermal_IR-Camera",
+      "path": "Sources/SGMK Full/Thermal IR-Camera [988].md",
+      "pageid": 988,
+      "touched": "2013-09-19T10:39:02Z",
+      "length": 1813,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Three",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Three",
+      "path": "Sources/SGMK Full/Three [323].md",
+      "pageid": 323,
+      "touched": "2012-12-12T16:54:09Z",
+      "length": 1645,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Thymio-Show 2014",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Thymio-Show_2014",
+      "path": "Sources/SGMK Full/Thymio-Show 2014 [1044].md",
+      "pageid": 1044,
+      "touched": "2014-07-09T18:54:11Z",
+      "length": 415,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "TomasPospisek",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/TomasPospisek",
+      "path": "Sources/SGMK Full/TomasPospisek [43].md",
+      "pageid": 43,
+      "touched": "2011-04-21T05:42:08Z",
+      "length": 169,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Tone sweep arduino",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Tone_sweep_arduino",
+      "path": "Sources/SGMK Full/Tone sweep arduino [140].md",
+      "pageid": 140,
+      "touched": "2011-08-07T11:37:44Z",
+      "length": 132,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Topfüber",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Topf%C3%BCber",
+      "path": "Sources/SGMK Full/Topfüber [2499].md",
+      "pageid": 2499,
+      "touched": "2025-08-23T18:34:49Z",
+      "length": 353,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Toprüber",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Topr%C3%BCber",
+      "path": "Sources/SGMK Full/Toprüber [2500].md",
+      "pageid": 2500,
+      "touched": "2025-08-23T18:34:49Z",
+      "length": 23,
+      "categories": [],
+      "links": [
+        "Topfüber"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Traktanden",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Traktanden",
+      "path": "Sources/SGMK Full/Traktanden [1502].md",
+      "pageid": 1502,
+      "touched": "2019-03-12T21:17:35Z",
+      "length": 945,
+      "categories": [],
+      "links": [
+        "Abnahme Geschäftsbericht 2018",
+        "Vorstellung Programm 2019",
+        "Wahl der Vorstandmitglieder"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Traktanden:",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Traktanden:",
+      "path": "Sources/SGMK Full/Traktanden - [1575].md",
+      "pageid": 1575,
+      "touched": "2019-05-10T07:49:40Z",
+      "length": 36,
+      "categories": [],
+      "links": [
+        "May 2019 Meeting Notes"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Treasure trove",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Treasure_trove",
+      "path": "Sources/SGMK Full/Treasure trove [327].md",
+      "pageid": 327,
+      "touched": "2012-08-17T10:50:05Z",
+      "length": 434,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Umrdunk2021 and chil",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Umrdunk2021_and_chil",
+      "path": "Sources/SGMK Full/Umrdunk2021 and chil [1911].md",
+      "pageid": 1911,
+      "touched": "2021-12-17T12:56:00Z",
+      "length": 37,
+      "categories": [],
+      "links": [
+        "SGMK X-mas Umtrunk 2021"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Umtrunk",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Umtrunk",
+      "path": "Sources/SGMK Full/Umtrunk [1189].md",
+      "pageid": 1189,
+      "touched": "2015-10-25T02:01:25Z",
+      "length": 38,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Vive la Resistance aka NanoSmano Sajica",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vive_la_Resistance_aka_NanoSmano_Sajica",
+      "path": "Sources/SGMK Full/Vive la Resistance aka NanoSmano Sajica [130].md",
+      "pageid": 130,
+      "touched": "2015-08-07T08:37:28Z",
+      "length": 2867,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Volx Micro Mechanic Macintosh Monitor",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Volx_Micro_Mechanic_Macintosh_Monitor",
+      "path": "Sources/SGMK Full/Volx Micro Mechanic Macintosh Monitor [1357].md",
+      "pageid": 1357,
+      "touched": "2017-07-30T17:50:54Z",
+      "length": 555,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Vorstand 27.9",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vorstand_27.9",
+      "path": "Sources/SGMK Full/Vorstand 27.9 [1770].md",
+      "pageid": 1770,
+      "touched": "2020-09-28T12:52:30Z",
+      "length": 3564,
+      "categories": [],
+      "links": [
+        "Sep 2020 Meeting notes"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Vorstellung Programm 2017",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vorstellung_Programm_2017",
+      "path": "Sources/SGMK Full/Vorstellung Programm 2017 [1394].md",
+      "pageid": 1394,
+      "touched": "2017-06-27T19:44:33Z",
+      "length": 44,
+      "categories": [],
+      "links": [
+        "Vorstellung Programm 2017/2018"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Vorstellung Programm 2017/2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vorstellung_Programm_2017/2018",
+      "path": "Sources/SGMK Full/Vorstellung Programm 2017 - 2018 [1388].md",
+      "pageid": 1388,
+      "touched": "2017-06-27T19:44:33Z",
+      "length": 248,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Vorstellung Programm 2018",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vorstellung_Programm_2018",
+      "path": "Sources/SGMK Full/Vorstellung Programm 2018 [1428].md",
+      "pageid": 1428,
+      "touched": "2018-03-17T18:57:38Z",
+      "length": 989,
+      "categories": [],
+      "links": [
+        "KitSprint ANORG 2018"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Vorstellung Programm 2019",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Vorstellung_Programm_2019",
+      "path": "Sources/SGMK Full/Vorstellung Programm 2019 [1514].md",
+      "pageid": 1514,
+      "touched": "2019-03-16T16:56:10Z",
+      "length": 748,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "VVV",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/VVV",
+      "path": "Sources/SGMK Full/VVV [2576].md",
+      "pageid": 2576,
+      "touched": "2025-12-03T11:29:47Z",
+      "length": 46,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Wahl der neuen Vorstandmitglieder",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Wahl_der_neuen_Vorstandmitglieder",
+      "path": "Sources/SGMK Full/Wahl der neuen Vorstandmitglieder [1390].md",
+      "pageid": 1390,
+      "touched": "2021-04-19T18:02:55Z",
+      "length": 175,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Wahl der Vorstandmitglieder",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Wahl_der_Vorstandmitglieder",
+      "path": "Sources/SGMK Full/Wahl der Vorstandmitglieder [1427].md",
+      "pageid": 1427,
+      "touched": "2019-03-16T18:26:44Z",
+      "length": 237,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "WatchOut",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/WatchOut",
+      "path": "Sources/SGMK Full/WatchOut [357].md",
+      "pageid": 357,
+      "touched": "2017-02-03T19:12:47Z",
+      "length": 2504,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "WatchOut! - DIY-Synthesizer",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/WatchOut!_-_DIY-Synthesizer",
+      "path": "Sources/SGMK Full/WatchOut! - DIY-Synthesizer [356].md",
+      "pageid": 356,
+      "touched": "2013-06-28T03:45:43Z",
+      "length": 1810,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Water Project",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Water_Project",
+      "path": "Sources/SGMK Full/Water Project [1467].md",
+      "pageid": 1467,
+      "touched": "2025-05-06T16:23:23Z",
+      "length": 4274,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Widget:Iframe",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Widget:Iframe",
+      "path": "Sources/SGMK Full/Widget - Iframe [2028].md",
+      "pageid": 2028,
+      "touched": "2023-04-05T14:41:47Z",
+      "length": 876,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Widget:Vimeo",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Widget:Vimeo",
+      "path": "Sources/SGMK Full/Widget - Vimeo [48].md",
+      "pageid": 48,
+      "touched": "2011-03-17T19:44:09Z",
+      "length": 862,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Widget:vimeo",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Widget:vimeo",
+      "path": "Sources/SGMK Full/Widget - vimeo [47].md",
+      "pageid": 47,
+      "touched": "2011-03-17T19:40:25Z",
+      "length": 1497,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Winter 2026 Meeting notes",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Winter_2026_Meeting_notes",
+      "path": "Sources/SGMK Full/Winter 2026 Meeting notes [2606].md",
+      "pageid": 2606,
+      "touched": "2026-02-16T23:22:08Z",
+      "length": 2182,
+      "categories": [],
+      "links": [
+        "Sep 2025 notes"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Workshopology",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Workshopology",
+      "path": "Sources/SGMK Full/Workshopology [1076].md",
+      "pageid": 1076,
+      "touched": "2016-05-23T15:45:58Z",
+      "length": 6826,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Workshops",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Workshops",
+      "path": "Sources/SGMK Full/Workshops [106].md",
+      "pageid": 106,
+      "touched": "2026-05-01T07:36:23Z",
+      "length": 20649,
+      "categories": [
+        "Workshops"
+      ],
+      "links": [
+        "AI@SGMK",
+        "Audio over OSC Workshop",
+        "Cirkulino - Borut Savski",
+        "DIY LED-NEON Signs",
+        "DroneSlider by FLipFloater",
+        "E-bow (Ralf)",
+        "Electron Festival 2011",
+        "FlashDisc",
+        "Fête de la cité 2011",
+        "GrooveZeugs",
+        "HEK - 8bit MixTape Workshop",
+        "Hands On AVR",
+        "HeK 2012 - Sensing Place",
+        "I",
+        "II",
+        "KaosGlam",
+        "Kubulu Arduino Workshop",
+        "Make some noise",
+        "Mignon Gamekit Workshop",
+        "PachubeHackathon2011",
+        "Pimp Up Your Volca",
+        "Puredata (Pd) Workshop with Servando",
+        "Ralf's Piezo-Amp",
+        "SHIFT Festival 2011",
+        "SIDuino i2c",
+        "Starvation Synth by Ralf Schreiber",
+        "Three",
+        "Thymio-Show 2014",
+        "X-Spirituaahl Sound Hacks",
+        "Xmas Umtrunk 2024"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Wurmophon",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Wurmophon",
+      "path": "Sources/SGMK Full/Wurmophon [2375].md",
+      "pageid": 2375,
+      "touched": "2025-05-08T12:57:07Z",
+      "length": 79,
+      "categories": [],
+      "links": [
+        "Ralf's Piezo-Amp"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "X-Spirituaahl Sound Hacks",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/X-Spirituaahl_Sound_Hacks",
+      "path": "Sources/SGMK Full/X-Spirituaahl Sound Hacks [250].md",
+      "pageid": 250,
+      "touched": "2021-09-29T13:12:22Z",
+      "length": 1112,
+      "categories": [],
+      "links": [],
+      "chars": 91
+    },
+    {
+      "title": "Xmas Umtrunk 2024",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Xmas_Umtrunk_2024",
+      "path": "Sources/SGMK Full/Xmas Umtrunk 2024 [2321].md",
+      "pageid": 2321,
+      "touched": "2024-12-02T13:40:17Z",
+      "length": 9255,
+      "categories": [],
+      "links": [
+        "Starvation Synth by Ralf Schreiber"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "Xmas Umtrunk 2025",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/Xmas_Umtrunk_2025",
+      "path": "Sources/SGMK Full/Xmas Umtrunk 2025 [2563].md",
+      "pageid": 2563,
+      "touched": "2025-12-04T09:21:04Z",
+      "length": 3208,
+      "categories": [],
+      "links": [
+        "Brushograph"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "太陽能神喻隨身聽",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/%E5%A4%AA%E9%99%BD%E8%83%BD%E7%A5%9E%E5%96%BB%E9%9A%A8%E8%BA%AB%E8%81%BD",
+      "path": "Sources/SGMK Full/太陽能神喻隨身聽 [2516].md",
+      "pageid": 2516,
+      "touched": "2025-10-17T06:27:45Z",
+      "length": 38,
+      "categories": [],
+      "links": [
+        "太陽能神諭隨身聽"
+      ],
+      "chars": 91
+    },
+    {
+      "title": "太陽能神諭隨身聽",
+      "url": "https://wiki.sgmk-ssam.ch/wiki/%E5%A4%AA%E9%99%BD%E8%83%BD%E7%A5%9E%E8%AB%AD%E9%9A%A8%E8%BA%AB%E8%81%BD",
+      "path": "Sources/SGMK Full/太陽能神諭隨身聽 [2515].md",
+      "pageid": 2515,
+      "touched": "2025-10-17T06:27:43Z",
+      "length": 21307,
+      "categories": [],
+      "links": [
+        "EIP-712",
+        "區塊鏈神諭"
+      ],
+      "chars": 91
+    }
+  ]
+}

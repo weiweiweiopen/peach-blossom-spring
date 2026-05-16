@@ -1,0 +1,132 @@
+# Sound and musical devices
+
+Layer: [[Sources/PBS Semantic Layers/Tools|Tools]]
+
+## Source balance
+
+- hackteria: 58
+- htgwyw: 60
+- sgmk: 2
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/Fluffy MIDI [9948]|Fluffy MIDI]] `htgwyw` score:4
+- [[Sources/SGMK Full/Workshops [106]|Workshops]] `sgmk` score:4
+- [[Sources/How To Get What You Want Full/Absurd Musical Interfaces [7748]|Absurd Musical Interfaces]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Chip-Man-Band [5044]|Chip-Man-Band]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Making Soft Noise [8601]|Making Soft Noise]] `htgwyw` score:3
+- [[Sources/Hackteria Full/CocoMake7 [4490]|CocoMake7]] `hackteria` score:2
+- [[Sources/Hackteria Full/DIY-MedTech Synths&Soundzz - dusjagr [12363]|DIY-MedTech Synths&Soundzz - dusjagr]] `hackteria` score:2
+- [[Sources/Hackteria Full/MedTechDIY20 Another Team [8444]|MedTechDIY20 Another Team]] `hackteria` score:2
+- [[Sources/Hackteria Full/MedTechDIY20 DIY-MedTech Synths&Soundzz - dusjagr [8713]|MedTechDIY20 DIY-MedTech Synths&Soundzz - dusjagr]] `hackteria` score:2
+- [[Sources/Hackteria Full/MedTechDIY20 Team 2020 Mentorzz [8445]|MedTechDIY20 Team 2020 Mentorzz]] `hackteria` score:2
+- [[Sources/How To Get What You Want Full/Bela + Blanket [7575]|Bela + Blanket]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/E-Textile Open Lab at CNMAT [3517]|E-Textile Open Lab at CNMAT]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Human Hacked Orchestra [3513]|Human Hacked Orchestra]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Linlow Performance in Berlin [6831]|Linlow Performance in Berlin]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Musical Pillow [3540]|Musical Pillow]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/My Segments Display [5712]|My Segments Display]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ohmBroach [6910]|ohmBroach]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/RabbitControl on Bela [9732]|RabbitControl on Bela]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Technical Intimacy [5301]|Technical Intimacy]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Volume Detection [3923]|Volume Detection]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Wearable Sound Toy Orchestra [2869]|Wearable Sound Toy Orchestra]] `htgwyw` score:2
+- [[Sources/SGMK Full/Projects [107]|Projects]] `sgmk` score:2
+- [[Sources/Hackteria Full/A RAVE and starvation synth based generative sonic device powered by dye sensitized solar cell [14986]|A RAVE and starvation synth based generative sonic device powered by dye sensitized solar cell]] `hackteria` score:1
+- [[Sources/Hackteria Full/Abao KUBU residency [15879]|Abao KUBU residency]] `hackteria` score:1
+- [[Sources/Hackteria Full/Abao Nano Doctor Blade Hacker Residency [14639]|Abao Nano Doctor Blade Hacker Residency]] `hackteria` score:1
+- [[Sources/Hackteria Full/Accordian as Data, Qualitative Thanks to Kaspar Konig https - soundcloud.com - andi-wall - 08560438 [13138]|Accordian as Data, Qualitative Thanks to Kaspar Konig https://soundcloud.com/andi-wallwhore/hook1-accordian-kaspar-konig]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers [1334]|ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers [508]|ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers [1277]|ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/BiodegradableSound [13443]|BiodegradableSound]] `hackteria` score:1
+- [[Sources/Hackteria Full/Connecting starvation synth circuit with RAVE [15950]|Connecting starvation synth circuit with RAVE]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Laser tweezer, cell trap, oligo synthesis [1940]|DIY Laser tweezer, cell trap, oligo synthesis]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY-MedTech Sharing Playground [8305]|DIY-MedTech Sharing Playground]] `hackteria` score:1
+- [[Sources/Hackteria Full/DSSC photophone with AI sound effects for laser projection [15110]|DSSC photophone with AI sound effects for laser projection]] `hackteria` score:1
+- [[Sources/Hackteria Full/Exploracion submarina [3528]|Exploracion submarina]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gaudi [5386]|Gaudi]] `hackteria` score:1
+- [[Sources/Hackteria Full/GBMN [14251]|GBMN]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gentle But Make Noise ‘Drinking Woodo's Sky’ (Yogyakarta version) [14235]|Gentle But Make Noise ‘Drinking Woodo's Sky’ (Yogyakarta version)]] `hackteria` score:1
+- [[Sources/Hackteria Full/Group 1 - MAKE - Claudio [4689]|Group 1 - MAKE - Claudio]] `hackteria` score:1
+- [[Sources/Hackteria Full/Guava seeds synthesized silver nanowires [14630]|Guava seeds synthesized silver nanowires]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Network Zines Library - Sound and Electronics [16110]|Hackteria Network Zines Library/Sound and Electronics]] `hackteria` score:1
+- [[Sources/Hackteria Full/Heartbeat Controlled Acoustic Levitation Synthesizer [6870]|Heartbeat Controlled Acoustic Levitation Synthesizer]] `hackteria` score:1
+- [[Sources/Hackteria Full/Homo Photosyntheticus [12938]|Homo Photosyntheticus]] `hackteria` score:1
+- [[Sources/Hackteria Full/IGEM 2010 [1410]|IGEM 2010]] `hackteria` score:1
+- [[Sources/Hackteria Full/In other news it is payday which means new music Haha 73 [1244]|In other news it is payday which means new music Haha 73]] `hackteria` score:1
+- [[Sources/Hackteria Full/Instrumentales artísticos para la exploración submarina, Gijon [3527]|Instrumentales artísticos para la exploración submarina, Gijon]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime [5278]|J'aime]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime 4093 Nandsynth [5326]|J'aime 4093 Nandsynth]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime Lemonster [5315]|J'aime Lemonster]] `hackteria` score:1
+- [[Sources/Hackteria Full/Micronoises - microqueering [14606]|Micronoises - microqueering]] `hackteria` score:1
+- [[Sources/Hackteria Full/Mukund's Brief Overview of Synthetic Biology [102]|Mukund's Brief Overview of Synthetic Biology]] `hackteria` score:1
+- [[Sources/Hackteria Full/Mukund's Brief Overview on Synthetic Biology Basics [148]|Mukund's Brief Overview on Synthetic Biology Basics]] `hackteria` score:1
+- [[Sources/Hackteria Full/NanoHackLab Projects [4865]|NanoHackLab Projects]] `hackteria` score:1
+- [[Sources/Hackteria Full/Old Main Page [1]|Old Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/Open Science Friction and Noise Disturbance [6395]|Open Science Friction and Noise Disturbance]] `hackteria` score:1
+- [[Sources/Hackteria Full/'''Open Science Friction''' and '''Noise Disturbance''' [6394]|Open Science Friction''' and '''Noise Disturbance]] `hackteria` score:1
+- [[Sources/Hackteria Full/Openlab gynecologyDIT [5283]|Openlab gynecologyDIT]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pelvic or Transvaginal Ultrasound [3195]|Pelvic or Transvaginal Ultrasound]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pornoisenicolaou stain [5462]|Pornoisenicolaou stain]] `hackteria` score:1
+- [[Sources/Hackteria Full/SolarpunkSynth [15801]|SolarpunkSynth]] `hackteria` score:1
+- [[Sources/Hackteria Full/SynthBioWorkshop2010 [513]|SynthBioWorkshop2010]] `hackteria` score:1
+- [[Sources/Hackteria Full/Syntheses of - Beyond Black Boxes - [4335]|Syntheses of \"Beyond Black Boxes\]] `hackteria` score:1
+- [[Sources/Hackteria Full/Synthetic Biology [451]|Synthetic Biology]] `hackteria` score:1
+- [[Sources/Hackteria Full/Synthetic Biology for Artists and Designers [5363]|Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/Synthetic Biology for Artists and Designers - A primer [237]|Synthetic Biology for Artists and Designers: A primer]] `hackteria` score:1
+- [[Sources/Hackteria Full/Synthetic Biology in India [677]|Synthetic Biology in India.]] `hackteria` score:1
+- [[Sources/Hackteria Full/Testing MIDICocoMake7 [5587]|Testing MIDICocoMake7]] `hackteria` score:1
+- [[Sources/Hackteria Full/The promise of Synthetic Biology [646]|The promise of Synthetic Biology]] `hackteria` score:1
+- [[Sources/Hackteria Full/The synthesis of low temperature sintering TiO2 paste [14910]|The synthesis of low temperature sintering TiO2 paste]] `hackteria` score:1
+- [[Sources/Hackteria Full/Week One [435]|Week One]] `hackteria` score:1
+- [[Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045]|Wiki Digital Archeology Research: Hackteria]] `hackteria` score:1
+- [[Sources/Hackteria Full/Workshop [86]|Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/Workshop - Biodegradable Sound Vol. 1 [13446]|Workshop - Biodegradable Sound Vol. 1]] `hackteria` score:1
+- [[Sources/Hackteria Full/Workshop - Biodegradable Sound Vol. 1 [13445]|Workshop: Biodegradable Sound Vol. 1]] `hackteria` score:1
+- [[Sources/Hackteria Full/Wtf I am good electronic music producer like deadmau5 and pendulum 38 [1166]|Wtf I am good electronic music producer like deadmau5 and pendulum 38]] `hackteria` score:1
+- [[Sources/How To Get What You Want Full/Amplified Pillow Speaker [3857]|Amplified Pillow Speaker]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/ATtiny Drawdio Bracelet [6577]|ATtiny Drawdio Bracelet]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/ATtiny - Sound [4382]|ATtiny: Sound]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Cheap Electronic Toys [488]|Cheap Electronic Toys]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Communicating Bodies [9133]|Communicating Bodies]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Crafting Sensory Surfaces [7758]|Crafting Sensory Surfaces]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Crocheting Electronics [7550]|Crocheting Electronics]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Dress Shirt [4920]|DressCode Dress Shirt]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Examples [4588]|DressCode Examples]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Workshop Berlin [4669]|DressCode Workshop Berlin]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/DressCode Workshop Shambala [4156]|DressCode Workshop Shambala]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/E-Textile Sensor Wall [5983]|E-Textile Sensor Wall]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Electronics as Material III [6464]|Electronics as Material III]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Fabric LED Strip [4632]|Fabric LED Strip]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/fabric meets electronics [2266]|fabric meets electronics]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Fabric Speakers [2936]|Fabric Speakers]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Frequency Finger Gloves [5523]|Frequency Finger Gloves]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/glovephone [5619]|glovephone]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Granny Square MIDI [2836]|Granny Square MIDI]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Grias Di Hut [5390]|Grias Di Hut]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Jenny’s Playlist Costume [5309]|Jenny’s Playlist Costume]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Knit Ball Sensors [4459]|Knit Ball Sensors]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Knit Breadboard Circuit [5032]|Knit Breadboard Circuit]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Knitting, hacking, hanging, sound [5530]|Knitting, hacking, hanging, sound]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268]|LilyPad Arduino Programming]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Lilypad XBee Shield [561]|Lilypad XBee Shield]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Magnetic Pincushion Sensor [7107]|Magnetic Pincushion Sensor]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Merino Wool conductive yarn from Bart and Francis [7722]|Merino Wool conductive yarn from Bart and Francis]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Nature’s Wearables [6592]|Nature’s Wearables]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Neoprene [457]|Neoprene]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Piano T-Shirt [1312]|Piano T-Shirt]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Pin Stroke Gauntlet [6161]|Pin Stroke Gauntlet]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Playing with electronic textiles [9812]|Playing with electronic textiles]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Rabbit Control Client on Bela [9714]|Rabbit Control Client on Bela]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Resistive Rubbers [879]|Resistive Rubbers]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Snap Breakouts [7042]|Snap Breakouts]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Sockpuppets [5539]|Sockpuppets]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Soft Interactive Technology at Weissensee [7684]|Soft Interactive Technology at Weissensee]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Sound Amplifying Circuits [3794]|Sound Amplifying Circuits]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Sounding Textiles [5466]|Sounding Textiles]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Spaghettimonster [9137]|Spaghettimonster]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Stitching Electronics - Woolly Noise [9540]|Stitching Electronics | Woolly Noise]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Tester Overview [7610]|Tester Overview]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/Textile Sensor Demo Station [6378]|Textile Sensor Demo Station]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/The Sound of Nature [5454]|The Sound of Nature]] `htgwyw` score:1

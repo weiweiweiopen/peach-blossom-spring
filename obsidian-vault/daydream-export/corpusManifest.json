@@ -1,0 +1,140 @@
+{
+  "counts": {
+    "bySource": {
+      "hackteria": 1410,
+      "htgwyw": 613,
+      "sgmk": 334
+    },
+    "categories": 48,
+    "graphEdges": 24696,
+    "graphNodes": 2883,
+    "sourceCards": 2357,
+    "sourceCategoryGraphNodes": 75,
+    "sourceCategoryNotes": {
+      "hackteria": 31,
+      "htgwyw": 17,
+      "sgmk": 11
+    },
+    "sourceThemeNotes": {
+      "sgmk": 13
+    },
+    "tags": 62
+  },
+  "deterministic": true,
+  "entityLayers": {
+    "colors": {
+      "people": "#FF8FBD",
+      "places": "#91A7FF",
+      "times": "#F3CC41"
+    },
+    "counts": {
+      "people": 16,
+      "places": 73,
+      "times": 225
+    },
+    "model": "people | places | time",
+    "notesPath": "Sources/PBS Entity Layers/README.md",
+    "sourceCoverage": {
+      "hackteria": {
+        "people": 85,
+        "places": 173,
+        "times": 1410
+      },
+      "htgwyw": {
+        "people": 51,
+        "places": 39,
+        "times": 613
+      },
+      "sgmk": {
+        "people": 2,
+        "places": 27,
+        "times": 334
+      }
+    }
+  },
+  "exportPath": "/Users/shihweichieh/Documents/Projects/peach-blossom-spring-latest/obsidian-vault/daydream-export",
+  "files": {
+    "categoryGraph": "categoryGraph.json",
+    "corpusManifest": "corpusManifest.json",
+    "notes": "EXPORT_NOTES.md",
+    "sourceCards": "sourceCards.json"
+  },
+  "generatedAt": "2026-05-16T10:13:00+08:00",
+  "pbsCodeModified": false,
+  "personasModified": false,
+  "privatePlanningIncluded": false,
+  "publicSourceOnly": true,
+  "rules": [
+    "Only public source material from Obsidian vault was exported.",
+    "No secrets/private planning included intentionally.",
+    "Original markdown vault and wikilinks were preserved; export is separate JSON/MD copy.",
+    "No PBS code or data/personas.json modified.",
+    "Rerun output is deterministic given same vault contents and script version."
+  ],
+  "schemaVersion": "pbs-daydream-corpus-export/v1",
+  "semanticLayers": {
+    "counts": {
+      "concepts": 1427,
+      "events": 165,
+      "tools": 765
+    },
+    "layerColors": {
+      "concepts": "#F9E9C2",
+      "events": "#FFB64F",
+      "tools": "#BAC3D9"
+    },
+    "model": "tools | concepts | events",
+    "notesPath": "Sources/PBS Semantic Layers/README.md",
+    "sourceColors": {
+      "hackteria": "#FCF46B",
+      "htgwyw": "#69C3AA",
+      "sgmk": "#FFD4FF"
+    },
+    "sourceLayerMatrix": {
+      "hackteria": {
+        "concepts": 1143,
+        "events": 89,
+        "tools": 178
+      },
+      "htgwyw": {
+        "concepts": 68,
+        "events": 15,
+        "tools": 530
+      },
+      "sgmk": {
+        "concepts": 216,
+        "events": 61,
+        "tools": 57
+      }
+    }
+  },
+  "sourceCategories": {
+    "hackteria": {
+      "count": 31,
+      "path": "Sources/Source Categories/Hackteria"
+    },
+    "htgwyw": {
+      "count": 17,
+      "path": "Sources/Source Categories/HTGWYW"
+    },
+    "note": "Source-native categories only. PBS thematic clusters moved to Sources/PBS Semantic Layers/Source Themes/.",
+    "notesPath": "Sources/Source Categories/README.md",
+    "sgmk": {
+      "count": 11,
+      "path": "Sources/Source Categories/SGMK"
+    }
+  },
+  "sourceScopes": {
+    "hackteria": "Hackteria Wiki public main namespace text notes plus selected public seed pages already in vault.",
+    "htgwyw": "How To Get What You Want / KOBAKANT public WordPress archive posts imported from www.kobakant.at/DIY REST API.",
+    "sgmk": "SGMK-SSAM-WIKI public MediaWiki main namespace imported from wiki.sgmk-ssam.ch."
+  },
+  "sourceThemes": {
+    "notesPath": "Sources/PBS Semantic Layers/Source Themes/README.md",
+    "sgmk": {
+      "count": 13,
+      "path": "Sources/PBS Semantic Layers/Source Themes/SGMK"
+    }
+  },
+  "vaultPath": "/Users/shihweichieh/Documents/Projects/peach-blossom-spring-latest/obsidian-vault"
+}

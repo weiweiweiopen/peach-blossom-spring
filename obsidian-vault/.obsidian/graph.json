@@ -1,0 +1,86 @@
+{
+  "collapse-filter": false,
+  "search": "(#pbs/source/hackteria OR #pbs/source/htgwyw OR #pbs/source/sgmk OR path:\"Sources/Source Categories\" OR path:\"Sources/PBS Semantic Layers\" OR path:\"Sources/PBS Entity Layers\") -path:\"Sources/Hackteria Full Index\" -path:\"Sources/How To Get What You Want Full Index\" -path:\"Sources/SGMK Full Index\" -path:\"daydream-export\" -path:\"Sources/Hackteria/\" -path:\"Sources/How To Get What You Want/\"",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": false,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "#pbs/source/hackteria",
+      "color": {
+        "a": 1,
+        "rgb": 16577643
+      }
+    },
+    {
+      "query": "#pbs/source/htgwyw",
+      "color": {
+        "a": 1,
+        "rgb": 6931370
+      }
+    },
+    {
+      "query": "#pbs/source/sgmk",
+      "color": {
+        "a": 1,
+        "rgb": 16766207
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Semantic Layers/Tools\" OR file:\"Tools\"",
+      "color": {
+        "a": 1,
+        "rgb": 12239833
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Semantic Layers/Concepts\" OR file:\"Concepts\"",
+      "color": {
+        "a": 1,
+        "rgb": 16378306
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Semantic Layers/Events\" OR file:\"Events\"",
+      "color": {
+        "a": 1,
+        "rgb": 16758351
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Entity Layers/People\" OR file:\"People\"",
+      "color": {
+        "a": 1,
+        "rgb": 16748477
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Entity Layers/Places\" OR file:\"Places\"",
+      "color": {
+        "a": 1,
+        "rgb": 9545727
+      }
+    },
+    {
+      "query": "path:\"Sources/PBS Entity Layers/Time\" OR file:\"Time\"",
+      "color": {
+        "a": 1,
+        "rgb": 15977537
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": -2.7,
+  "nodeSizeMultiplier": 2.18207465277778,
+  "lineSizeMultiplier": 0.390086805555556,
+  "collapse-forces": false,
+  "centerStrength": 0.0693142361111111,
+  "repelStrength": 7.61284722222222,
+  "linkStrength": 0.42,
+  "linkDistance": 110,
+  "scale": 0.0960148354588765,
+  "close": false
+}

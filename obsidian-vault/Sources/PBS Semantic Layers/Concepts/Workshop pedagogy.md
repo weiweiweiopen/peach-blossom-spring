@@ -1,0 +1,132 @@
+# Workshop pedagogy
+
+Layer: [[Sources/PBS Semantic Layers/Concepts|Concepts]]
+
+## Source balance
+
+- hackteria: 73
+- htgwyw: 46
+- sgmk: 1
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/Playing with electronic textiles [9812]|Playing with electronic textiles]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/KOBA Winter School of Wickedfabrics [7492]|KOBA Winter School of Wickedfabrics]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268]|LilyPad Arduino Programming]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Soft & Tiny Pillow Speaker Workshop [3959]|Soft & Tiny Pillow Speaker Workshop]] `htgwyw` score:3
+- [[Sources/Hackteria Full/Akshaya Zachariah [2215]|Akshaya Zachariah]] `hackteria` score:2
+- [[Sources/Hackteria Full/Hackteria Workshops in ZKM 2016 [5334]|Hackteria Workshops in ZKM 2016]] `hackteria` score:2
+- [[Sources/Hackteria Full/HackteriaLab 2010 - Dock18 - Zürich [693]|HackteriaLab 2010 - Dock18/Zürich]] `hackteria` score:2
+- [[Sources/Hackteria Full/HackteriaLab 2014 - Yogyakarta [2476]|HackteriaLab 2014 - Yogyakarta]] `hackteria` score:2
+- [[Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045]|Wiki Digital Archeology Research: Hackteria]] `hackteria` score:2
+- [[Sources/How To Get What You Want Full/Adventuring with Materials [7584]|Adventuring with Materials]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Arduino meets Wearables Workshop [4141]|Arduino meets Wearables Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Bike+Light Workshop [4174]|Bike+Light Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Chip-Man-Band [5044]|Chip-Man-Band]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Crafting Sensory Surfaces [7758]|Crafting Sensory Surfaces]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Designing for the loop Workshop [3709]|Designing for the loop Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/DressCode Workshop Shambala [4156]|DressCode Workshop Shambala]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electric Embroidery Monday [3208]|Electric Embroidery Monday]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electric Embroidery Tuesday [3338]|Electric Embroidery Tuesday]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Embroidered Speaker Workshop [3652]|Embroidered Speaker Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Embroidery gone Electronic [3444]|Embroidery gone Electronic]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/eTextile Summer Camp 2016 [6056]|eTextile Summer Camp 2016]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/fabric meets electronics [2266]|fabric meets electronics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Game controller hack [1587]|Game controller hack]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting a textile sensor from scratch [2322]|Handcrafting a textile sensor from scratch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Mice [2752]|Handcrafting Textile Mice]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors from Scratch [2181]|Handcrafting Textile Sensors from Scratch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors in Vienna [3011]|Handcrafting Textile Sensors in Vienna]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Human Hacked Orchestra [3513]|Human Hacked Orchestra]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/I AM Learning [8637]|I AM Learning]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Interactive Solar T-Shirt [1591]|Interactive Solar T-Shirt]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knitting, hacking, hanging, sound [5530]|Knitting, hacking, hanging, sound]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/KOBA School of WickedFabrics [7213]|KOBA School of WickedFabrics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI [2376]|MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Making Textile Sensors from Scratch at TEI [2327]|Making Textile Sensors from Scratch at TEI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/MATERIALS & CRAFTMANSHIP [1962]|MATERIALS & CRAFTMANSHIP]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 01 [7258]|School of Wicked Fabrics: FOUNDATION /01]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 03 [7280]|School of Wicked Fabrics: FOUNDATION /03]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Soft & Tiny Arduino Workshop [3655]|Soft & Tiny Arduino Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Soft Interactive Technology Course at KHB [7229]|Soft Interactive Technology Course at KHB]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Solar T-shirt Workshop [2816]|Solar T-shirt Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Technical Intimacy [5301]|Technical Intimacy]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Technology + Textiles [3268]|Technology + Textiles]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Textile Sensor Demos for Summer School [6924]|Textile Sensor Demos for Summer School]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Textile Sensoren und Aktuatoren in Handarbeit [9424]|Textile Sensoren und Aktuatoren in Handarbeit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Textile Summer School in Kyoto Japan [8160]|Textile Summer School in Kyoto Japan]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Tinkering with Textiles & Electronics [4085]|Tinkering with Textiles & Electronics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Tool time [1954]|Tool time]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Toy Piano T-shirt workshop [2902]|Toy Piano T-shirt workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Wearable Sound Experiment II [2179]|Wearable Sound Experiment II]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Wearable Sound Toy Orchestra [2869]|Wearable Sound Toy Orchestra]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Wearable Studio Workshops at ARS [5763]|Wearable Studio Workshops at ARS]] `htgwyw` score:2
+- [[Sources/SGMK Full/KIBLIX 2011 [126]|KIBLIX 2011]] `sgmk` score:2
+- [[Sources/Hackteria Full/Abao Nano Doctor Blade Hacker Residency [14639]|Abao Nano Doctor Blade Hacker Residency]] `hackteria` score:1
+- [[Sources/Hackteria Full/An Idiot's Electrodibles Workshop [12674]|An Idiot's Electrodibles Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers [508]|ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2011-Nanotechnology for Artists and Designers [1406]|ArtScienceBangalore 2011-Nanotechnology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers [1277]|ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bio-Hacking meets Citizen Science [5331]|Bio-Hacking meets Citizen Science]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioart Wet-Workshop - Hybrid DNA Isolation [16012]|Bioart Wet-Workshop: Hybrid DNA Isolation]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019 [7897]|BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bonbontronix - Introduction DIY electronics workshops [13712]|Bonbontronix - Introduction DIY electronics workshops]] `hackteria` score:1
+- [[Sources/Hackteria Full/Chandni Venkataraman [3943]|Chandni Venkataraman]] `hackteria` score:1
+- [[Sources/Hackteria Full/Character Design Workshop [1718]|Character Design Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/CoLabs Chiang Mai [15995]|CoLabs Chiang Mai]] `hackteria` score:1
+- [[Sources/Hackteria Full/Converging Life and Tech at the Nanoscale - BiofiliA HighSchool, Finland [2616]|Converging Life and Tech at the Nanoscale - BiofiliA HighSchool, Finland]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 21 & 22 - 21st & 22nd March, 2013 - Learning to use an Arduino [2433]|Day 21 & 22 - 21st & 22nd March, 2013 - Learning to use an Arduino]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS [2296]|Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 8-Paper Circuit Workshop with Ayisha [2315]|Day 8-Paper Circuit Workshop with Ayisha]] `hackteria` score:1
+- [[Sources/Hackteria Full/DesignWorkshop2010 [564]|DesignWorkshop2010]] `hackteria` score:1
+- [[Sources/Hackteria Full/DesignWorkshop2011 [1606]|DesignWorkshop2011]] `hackteria` score:1
+- [[Sources/Hackteria Full/Drbrian [14214]|Drbrian]] `hackteria` score:1
+- [[Sources/Hackteria Full/DSSC & Laser Dye workshop at IAA [14990]|DSSC & Laser Dye workshop at IAA]] `hackteria` score:1
+- [[Sources/Hackteria Full/Environmental Monitoring of the Rivers in Yogya [2715]|Environmental Monitoring of the Rivers in Yogya]] `hackteria` score:1
+- [[Sources/Hackteria Full/EPES Workshop [4331]|EPES Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/Extreme Places and Extended Senses [3921]|Extreme Places and Extended Senses]] `hackteria` score:1
+- [[Sources/Hackteria Full/GOSH Workshop at UGM, 2018 [7102]|GOSH Workshop at UGM, 2018]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Lab Participants [694]|Hackteria Lab Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Workshops Zurich [1017]|Hackteria Workshops Zurich]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 - Romainmotier [1104]|HackteriaLab 2011 - Romainmotier]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2011 Participants [1371]|HackteriaLab 2011 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Bangalore [2016]|HackteriaLab 2013 - Bangalore]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 - Welcome kit for participants [2252]|HackteriaLab 2013 - Welcome kit for participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2013 Participants [2079]|HackteriaLab 2013 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2014 - Info-kit for participants [2685]|HackteriaLab 2014 - Info-kit for participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2014 Participants [2684]|HackteriaLab 2014 Participants]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLab14 - Day to Day Documentation [3059]|HLab14 - Day to Day Documentation]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLab14 Dissemination-Phase - June - Dec [2825]|HLab14 Dissemination-Phase: June - Dec]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLab14-Workshopology [5364]|HLab14-Workshopology]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLabX Jogja Meeting [7903]|HLabX Jogja Meeting]] `hackteria` score:1
+- [[Sources/Hackteria Full/HLabX Programme [7713]|HLabX Programme]] `hackteria` score:1
+- [[Sources/Hackteria Full/Idiot-in-Residence [12676]|Idiot-in-Residence]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime [5278]|J'aime]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime 4093 Nandsynth [5326]|J'aime 4093 Nandsynth]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime Workshopology [5362]|J'aime Workshopology]] `hackteria` score:1
+- [[Sources/Hackteria Full/Jurus Sulam Listrik workshop 2022 [13646]|Jurus Sulam Listrik workshop 2022]] `hackteria` score:1
+- [[Sources/Hackteria Full/LabHacking - From DIY lab tools to field-works, UCSB [5453]|LabHacking - From DIY lab tools to field-works, UCSB]] `hackteria` score:1
+- [[Sources/Hackteria Full/Learning Arduino [2467]|Learning Arduino]] `hackteria` score:1
+- [[Sources/Hackteria Full/Learning to use the Arduino [2547]|Learning to use the Arduino]] `hackteria` score:1
+- [[Sources/Hackteria Full/Main Page [6159]|Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/Materials for ZKM workshops [5605]|Materials for ZKM workshops]] `hackteria` score:1
+- [[Sources/Hackteria Full/Microrobotics Workshop [4359]|Microrobotics Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/Mémoires from Germline Hacks and Body Mods [12612]|Mémoires from Germline Hacks and Body Mods]] `hackteria` score:1
+- [[Sources/Hackteria Full/Nano Design Workshop [1631]|Nano Design Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/NanoHacking-UNILI [3919]|NanoHacking-UNILI]] `hackteria` score:1
+- [[Sources/Hackteria Full/NanoHacking - Converging Life and Tech at the Nanoscale - BiofiliA HighSchool, Finland [2613]|NanoHacking: Converging Life and Tech at the Nanoscale - BiofiliA HighSchool, Finland]] `hackteria` score:1
+- [[Sources/Hackteria Full/Old Main Page [1]|Old Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/OSL - Soil Microscopy Workshop [14470]|OSL - Soil Microscopy Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/Paper Circuit Workshop with Ayisha [2540]|Paper Circuit Workshop with Ayisha]] `hackteria` score:1
+- [[Sources/Hackteria Full/PCR your DNA Workshop [5643]|PCR your DNA Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pechblenda [3048]|Pechblenda]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pura Pura Residency [13724]|Pura Pura Residency]] `hackteria` score:1
+- [[Sources/Hackteria Full/ROŠA - Regional Open Science Hardware & Art, Indonesia [13519]|ROŠA - Regional Open Science Hardware & Art, Indonesia]] `hackteria` score:1
+- [[Sources/Hackteria Full/Shloka [3942]|Shloka]] `hackteria` score:1
+- [[Sources/Hackteria Full/Single Nucleotide Polymorphism workshop, Ljubljana [2457]|Single Nucleotide Polymorphism workshop, Ljubljana]] `hackteria` score:1
+- [[Sources/Hackteria Full/SMW23 [14471]|SMW23]] `hackteria` score:1
+- [[Sources/Hackteria Full/SynthBioWorkshop2010 [513]|SynthBioWorkshop2010]] `hackteria` score:1
+- [[Sources/Hackteria Full/Synthetic Biology for Artists and Designers [5363]|Synthetic Biology for Artists and Designers]] `hackteria` score:1
+- [[Sources/Hackteria Full/The Art of BioHacking - HEAD [5312]|The Art of BioHacking - HEAD]] `hackteria` score:1
+- [[Sources/Hackteria Full/The Art of BioHacking or How to make Cheese and Wine - BiofiliA HighSchool, Finland [2615]|The Art of BioHacking or How to make Cheese and Wine - BiofiliA HighSchool, Finland]] `hackteria` score:1
+- [[Sources/Hackteria Full/UGM Group C [7952]|UGM Group C]] `hackteria` score:1

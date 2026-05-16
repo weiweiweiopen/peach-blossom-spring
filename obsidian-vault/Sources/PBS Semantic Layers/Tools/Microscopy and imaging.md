@@ -1,0 +1,101 @@
+# Microscopy and imaging
+
+Layer: [[Sources/PBS Semantic Layers/Tools|Tools]]
+
+## Source balance
+
+- hackteria: 86
+- htgwyw: 2
+- sgmk: 1
+
+## Linked source cards
+
+- [[Sources/Hackteria Full/BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki [1012]|BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki]] `hackteria` score:2
+- [[Sources/Hackteria Full/DIY Microscope [5353]|DIY Microscope]] `hackteria` score:2
+- [[Sources/Hackteria Full/DIY microscope [5352]|DIY microscope]] `hackteria` score:2
+- [[Sources/Hackteria Full/Espectrum microscope for micro-macro especulation [4978]|Espectrum microscope for micro-macro especulation]] `hackteria` score:2
+- [[Sources/Hackteria Full/Hackteria Workshops Zurich [1017]|Hackteria Workshops Zurich]] `hackteria` score:2
+- [[Sources/Hackteria Full/Imaging [165]|Imaging]] `hackteria` score:2
+- [[Sources/Hackteria Full/OSL - Soil Microscopy Workshop [14470]|OSL - Soil Microscopy Workshop]] `hackteria` score:2
+- [[Sources/Hackteria Full/Some basics of microscopy - [98]|Some basics of microscopy:]] `hackteria` score:2
+- [[Sources/Hackteria Full/Atomic Force microscope [150]|Atomic Force microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bio Lab Infrastructure [1979]|Bio Lab Infrastructure]] `hackteria` score:1
+- [[Sources/Hackteria Full/BIO-reSEARCH [3148]|BIO-reSEARCH]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioAutonomy [4546]|BioAutonomy]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronics for artists @ CEMA [467]|Bioelectronics for artists @ CEMA]] `hackteria` score:1
+- [[Sources/Hackteria Full/Bioelectronix for artists @ piksel09 [470]|Bioelectronix for artists @ piksel09]] `hackteria` score:1
+- [[Sources/Hackteria Full/BioHacking vs. BioPunk, I'MM Media Lab, Zagreb [1984]|BioHacking vs. BioPunk, I'MM Media Lab, Zagreb]] `hackteria` score:1
+- [[Sources/Hackteria Full/Build your microscope [5604]|Build your microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Chaitrali Bhide [2157]|Chaitrali Bhide]] `hackteria` score:1
+- [[Sources/Hackteria Full/Confocal microscope [149]|Confocal microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 1 - 11th January, 2013 - DIY Microscope [2164]|Day 1 - 11th January, 2013 - DIY Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/DAY 1 - Create A Microscope using a WebCam [2441]|DAY 1 : Create A Microscope using a WebCam]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 1 DIY Microscope [2204]|Day 1 DIY Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 1 Making Microscopes [2492]|Day 1 Making Microscopes]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 1 - Microscope [2184]|Day 1: Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Day 1 - Microscopy [2198]|Day 1: Microscopy]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY - microscope [2203]|DIY : microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY microscopes & BioHacks, Machineproject, Los Angeles [1871]|DIY microscopes & BioHacks, Machineproject, Los Angeles]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy [5344]|DIY Microscopy]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY microscopy [232]|DIY microscopy]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY microscopy @ CEMA [469]|DIY microscopy @ CEMA]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Bulgarian) [5622]|DIY Microscopy Instruction (Bulgarian)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Chinese) [5509]|DIY Microscopy Instruction (Chinese)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (French) [5606]|DIY Microscopy Instruction (French)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Italian) [5569]|DIY Microscopy Instruction (Italian)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Japanese) [5607]|DIY Microscopy Instruction (Japanese)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Portuguese) [5554]|DIY Microscopy Instruction (Portuguese)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Serbian) [5864]|DIY Microscopy Instruction (Serbian)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (Spanish) [5630]|DIY Microscopy Instruction (Spanish)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (whadever language) [5631]|DIY Microscopy Instruction (whadever language)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microscopy Instruction (български) [5621]|DIY Microscopy Instruction (български)]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Microsope [5568]|DIY Microsope]] `hackteria` score:1
+- [[Sources/Hackteria Full/DIY Mikroskop Anleitung (Deutsch) [5507]|DIY Mikroskop Anleitung (Deutsch)]] `hackteria` score:1
+- [[Sources/Hackteria Full/Electron Microscope - [106]|Electron Microscope:]] `hackteria` score:1
+- [[Sources/Hackteria Full/Extreme Places and Extended Senses [3921]|Extreme Places and Extended Senses]] `hackteria` score:1
+- [[Sources/Hackteria Full/Fluorescence Microscope [13172]|Fluorescence Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gaudi [5386]|Gaudi]] `hackteria` score:1
+- [[Sources/Hackteria Full/Generic Lab Equipment [4177]|Generic Lab Equipment]] `hackteria` score:1
+- [[Sources/Hackteria Full/Gita Upmale [2202]|Gita Upmale]] `hackteria` score:1
+- [[Sources/Hackteria Full/GlowScope [13218]|GlowScope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria & lab hacking @ NK, Berlin [10]|Hackteria & lab hacking @ NK, Berlin]] `hackteria` score:1
+- [[Sources/Hackteria Full/Hackteria Workshops in ZKM 2016 [5334]|Hackteria Workshops in ZKM 2016]] `hackteria` score:1
+- [[Sources/Hackteria Full/HackteriaLab 2010 - Dock18 - Zürich [693]|HackteriaLab 2010 - Dock18/Zürich]] `hackteria` score:1
+- [[Sources/Hackteria Full/IHS - Annual Report 2014 [3899]|IHS - Annual Report 2014]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime [5278]|J'aime]] `hackteria` score:1
+- [[Sources/Hackteria Full/J'aime DIY Microscopy [5316]|J'aime DIY Microscopy]] `hackteria` score:1
+- [[Sources/Hackteria Full/Laser-cut microscopy stages [1266]|Laser-cut microscopy stages]] `hackteria` score:1
+- [[Sources/Hackteria Full/LatamTrip24 [15594]|LatamTrip24]] `hackteria` score:1
+- [[Sources/Hackteria Full/Main Page [6159]|Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/Make a diy-biolab [3067]|Make a diy-biolab]] `hackteria` score:1
+- [[Sources/Hackteria Full/Making Microscopes [2538]|Making Microscopes]] `hackteria` score:1
+- [[Sources/Hackteria Full/Microscope [2230]|Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Microscopy Station [4714]|Microscopy Station]] `hackteria` score:1
+- [[Sources/Hackteria Full/Mobile Phone Field Microscope [1194]|Mobile Phone Field Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/MobileLABS tipoLOgy [4658]|MobileLABS tipoLOgy]] `hackteria` score:1
+- [[Sources/Hackteria Full/Old Main Page [1]|Old Main Page]] `hackteria` score:1
+- [[Sources/Hackteria Full/Open Science Friction and Noise Disturbance [6395]|Open Science Friction and Noise Disturbance]] `hackteria` score:1
+- [[Sources/Hackteria Full/OpenKirlian [7871]|OpenKirlian]] `hackteria` score:1
+- [[Sources/Hackteria Full/Openlab gynecologyDIT [5283]|Openlab gynecologyDIT]] `hackteria` score:1
+- [[Sources/Hackteria Full/Pd microscope [500]|Pd microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/PiksteriaLab 2014 - Bergen [3692]|PiksteriaLab 2014 - Bergen]] `hackteria` score:1
+- [[Sources/Hackteria Full/Radha Parulekar [2183]|Radha Parulekar]] `hackteria` score:1
+- [[Sources/Hackteria Full/Seeds of Contend - Bioassay in your own dirt [14241]|Seeds of Contend / Bioassay in your own dirt]] `hackteria` score:1
+- [[Sources/Hackteria Full/Shahrukh Faquih [2159]|Shahrukh Faquih]] `hackteria` score:1
+- [[Sources/Hackteria Full/SMW23 [14471]|SMW23]] `hackteria` score:1
+- [[Sources/Hackteria Full/Super-natural imaging [7404]|Super-natural imaging]] `hackteria` score:1
+- [[Sources/Hackteria Full/The Art of BioHacking - HEAD [5312]|The Art of BioHacking - HEAD]] `hackteria` score:1
+- [[Sources/Hackteria Full/Transmission Electron Microscope [112]|Transmission Electron Microscope]] `hackteria` score:1
+- [[Sources/Hackteria Full/Tushar Satyanath [2156]|Tushar Satyanath]] `hackteria` score:1
+- [[Sources/Hackteria Full/Urine analisis - MICROSCOPY [4815]|Urine analisis/MICROSCOPY]] `hackteria` score:1
+- [[Sources/Hackteria Full/UROS [12939]|UROS]] `hackteria` score:1
+- [[Sources/Hackteria Full/Week One [435]|Week One]] `hackteria` score:1
+- [[Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045]|Wiki Digital Archeology Research: Hackteria]] `hackteria` score:1
+- [[Sources/Hackteria Full/Wiki Gardening [5351]|Wiki Gardening]] `hackteria` score:1
+- [[Sources/Hackteria Full/Workshop [86]|Workshop]] `hackteria` score:1
+- [[Sources/Hackteria Full/WORKSHOP - DIY microscopy, 10 & 11 April, 14h – 18h [703]|WORKSHOP: DIY microscopy, 10 & 11 April, 14h – 18h]] `hackteria` score:1
+- [[Sources/Hackteria Full/Workshopology [2853]|Workshopology]] `hackteria` score:1
+- [[Sources/Hackteria Full/Xenopia [15795]|Xenopia]] `hackteria` score:1
+- [[Sources/How To Get What You Want Full/Crafting Robots [7745]|Crafting Robots]] `htgwyw` score:1
+- [[Sources/How To Get What You Want Full/digital USB microscope [2370]|digital USB microscope]] `htgwyw` score:1
+- [[Sources/SGMK Full/Thermal IR-Camera [988]|Thermal IR-Camera]] `sgmk` score:1

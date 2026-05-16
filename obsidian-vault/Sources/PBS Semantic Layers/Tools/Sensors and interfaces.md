@@ -1,0 +1,130 @@
+# Sensors and interfaces
+
+Layer: [[Sources/PBS Semantic Layers/Tools|Tools]]
+
+## Source balance
+
+- htgwyw: 120
+
+## Linked source cards
+
+- [[Sources/How To Get What You Want Full/Bela + Blanket [7575]|Bela + Blanket]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Capacitive Fabric Slider - Wheels [6607]|Capacitive Fabric Slider/Wheels]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Fluffy MIDI [9948]|Fluffy MIDI]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/Knit Ball Sensors [4459]|Knit Ball Sensors]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/RabbitControl on Bela [9732]|RabbitControl on Bela]] `htgwyw` score:4
+- [[Sources/How To Get What You Want Full/ATtiny Snap Diamond [6703]|ATtiny Snap Diamond]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Bend Sensor Glove [9331]|Bend Sensor Glove]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Crafting Sensory Surfaces [7758]|Crafting Sensory Surfaces]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Crocheting Electronics [7550]|Crocheting Electronics]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/dangle data gloves [9432]|dangle data gloves]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Dataglove Flex Sensor Rig [7113]|Dataglove Flex Sensor Rig]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/DIY Arduino Data Gloves [4639]|DIY Arduino Data Gloves]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/DJ Hoodie [2597]|DJ Hoodie]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/DON’T TOUCH, MOVE [8354]|DON’T TOUCH, MOVE]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Eeontex Projects [4619]|Eeontex Projects]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Fabric JoyPad [1438]|Fabric JoyPad]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Handedness [9441]|Handedness]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/JoySlippers [567]|JoySlippers]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/knitted stretchy cable [2245]|knitted stretchy cable]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Light Touch Pressure Sensor [5210]|Light Touch Pressure Sensor]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Making Textile Sensors from Scratch at TEI [2327]|Making Textile Sensors from Scratch at TEI]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/MATERIALS & CRAFTMANSHIP [1962]|MATERIALS & CRAFTMANSHIP]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Matrix - Kapton + Copper [7443]|Matrix: Kapton + Copper]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Matrix - Neoprene [213]|Matrix: Neoprene]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Modular Placement Prototyping Technique [7197]|Modular Placement Prototyping Technique]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Musical Pillow [3540]|Musical Pillow]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Sensing with Textiles [6063]|Sensing with Textiles]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Sensitive Fingertips [531]|Sensitive Fingertips]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Sensor Sleeve [2542]|Sensor Sleeve]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Sewing Fabric Sensors [1585]|Sewing Fabric Sensors]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/soft interactive technologies [8321]|soft interactive technologies]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Soft Interactive Technology I [7394]|Soft Interactive Technology I]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Teensy as HID Device [2497]|Teensy as HID Device]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Textile Sensor Demo Station [6378]|Textile Sensor Demo Station]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Touch Sensitive Glove [2806]|Touch Sensitive Glove]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Touch the Tone [9064]|Touch the Tone]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/Xbee Direct (Multiple Xbee – Xbee- comp) [270]|Xbee Direct (Multiple Xbee – Xbee- comp)]] `htgwyw` score:3
+- [[Sources/How To Get What You Want Full/3D Printed Sensors [4681]|3D Printed Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Action Figure Motion-Capture [4732]|Action Figure Motion-Capture]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Arduino meets Wearables Workshop [4141]|Arduino meets Wearables Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Arduino Overview [1155]|Arduino Overview]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny - Capacitive Sensing [4384]|ATtiny: Capacitive Sensing]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/ATtiny - Soft Serial [4363]|ATtiny: Soft Serial]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Bend, sew, touch, feel, read [1583]|Bend, sew, touch, feel, read]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Chic bend and Sleek stretch [6350]|Chic bend and Sleek stretch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Chip-Man-Band [5044]|Chip-Man-Band]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Circular Knit Stretch Sensors [2108]|Circular Knit Stretch Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Communicating Bodies [9133]|Communicating Bodies]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/connecting bubbles [8370]|connecting bubbles]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Constructed Stretch Sensors [1781]|Constructed Stretch Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Critical Critters [7873]|Critical Critters]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Crochet - Knit Pressure Sensors [1993]|Crochet/Knit Pressure Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Crochet - Knit Squeeze Sensors [3175]|Crochet/Knit Squeeze Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Danish Krown Slide-Switch [5053]|Danish Krown Slide-Switch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Datagloves Overview [7114]|Datagloves Overview]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/E-Textile Datagloves Overview [6730]|E-Textile Datagloves Overview]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/E-Textile Sensor Wall [5983]|E-Textile Sensor Wall]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Electronics as Material I [5057]|Electronics as Material I]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Embroidered LilyBLE Module [4882]|Embroidered LilyBLE Module]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Example Circuits and Code [6315]|Example Circuits and Code]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/extreme knobbly knee sensor [8762]|extreme knobbly knee sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fabric Stretch Sensors [210]|Fabric Stretch Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fabricademy - Soft Circuits and Textiles Sensors [6745]|Fabricademy: Soft Circuits and Textiles Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Fleckerlteppich Pressure Sensor [5519]|Fleckerlteppich Pressure Sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/FT1 – Material Mechanisms for Utopian Uniforms [6147]|FT1 – Material Mechanisms for Utopian Uniforms]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/FT1 - Tailoring with Electronic Textiles I [6994]|FT1: Tailoring with Electronic Textiles I]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Games Workshop II [2430]|Games Workshop II]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Granny Square MIDI [2836]|Granny Square MIDI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting a textile sensor from scratch [2322]|Handcrafting a textile sensor from scratch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors from Scratch [2181]|Handcrafting Textile Sensors from Scratch]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Handcrafting Textile Sensors in Vienna [3011]|Handcrafting Textile Sensors in Vienna]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Hybrid Jewels [6539]|Hybrid Jewels]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/I AM Learning [8637]|I AM Learning]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Interactive KnitBook [4855]|Interactive KnitBook]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/interested sensor #1 [8770]|interested sensor #1]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/interested sensor #2 [8781]|interested sensor #2]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knit Stretch Sensors [1762]|Knit Stretch Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knit Stroke Sensors [4317]|Knit Stroke Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knit Touchpad [218]|Knit Touchpad]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Knit Wrist Sensors [4461]|Knit Wrist Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/LilyPad Arduino Programming [4268]|LilyPad Arduino Programming]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Make your own multi-touchpad [7643]|Make your own multi-touchpad]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Making Soft Noise [8601]|Making Soft Noise]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI [2376]|MAKING TEXTILE SENSORS FROM SCRATCH at LIWOLI]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Meet the Materials [8012]|Meet the Materials]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Meet the Materials Workshop [5007]|Meet the Materials Workshop]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Metal Beads [490]|Metal Beads]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Needle Felting [1895]|Needle Felting]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Neoprene [457]|Neoprene]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Openwear Finger Bend Sensor [4247]|Openwear Finger Bend Sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Playing with electronic textiles [9812]|Playing with electronic textiles]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Pompom Tilt Sensor [2409]|Pompom Tilt Sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/pressure matrix code + circuit [7943]|pressure matrix code + circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Pull-up Resistors [838]|Pull-up Resistors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Pulp in Motion [6368]|Pulp in Motion]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Puppeteer Costume [539]|Puppeteer Costume]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Rabbit Control Client on Bela [9714]|Rabbit Control Client on Bela]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Resistance Visualization Tool [5054]|Resistance Visualization Tool]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Resistive and Piezoresistive Fabrics [913]|Resistive and Piezoresistive Fabrics]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Resistive Rubbers [879]|Resistive Rubbers]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Resistive Sensors Overview [5689]|Resistive Sensors Overview]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Salt and Vinegar Etching [2575]|Salt and Vinegar Etching]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/School of Wicked Fabrics - FOUNDATION - 02 [7260]|School of Wicked Fabrics: FOUNDATION /02]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Sewing an electronic circuit [2647]|Sewing an electronic circuit]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Sheath Bend Sensor [5615]|Sheath Bend Sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Simple Fabric Pressure Sensors [232]|Simple Fabric Pressure Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Skin Sensor [9086]|Skin Sensor]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Smart Rituals [6204]|Smart Rituals]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Sockpuppets [5539]|Sockpuppets]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Soft Sensors for Soft Bodies [5414]|Soft Sensors for Soft Bodies]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Soft Sensors for Soft Bodies II [5415]|Soft Sensors for Soft Bodies II]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/soft walk socks [8757]|soft walk socks]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Sole Sensing [8305]|Sole Sensing]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Sonic Insoles for Magic Shoes [6927]|Sonic Insoles for Magic Shoes]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Spaghettimonster [9137]|Spaghettimonster]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Speculating about Piezoresistance [7832]|Speculating about Piezoresistance]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Spikey Stroke Sensors [6237]|Spikey Stroke Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Stickytape Sensors [429]|Stickytape Sensors]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Stitching Electronics - Woolly Noise [9540]|Stitching Electronics | Woolly Noise]] `htgwyw` score:2
+- [[Sources/How To Get What You Want Full/Technical Intimacy [5301]|Technical Intimacy]] `htgwyw` score:2

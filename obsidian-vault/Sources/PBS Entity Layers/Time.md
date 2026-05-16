@@ -1,0 +1,128 @@
+# Time
+
+Entity layer: Time.
+
+Unique entities: 225
+
+## Strong entities
+
+- [[Sources/PBS Entity Layers/Time/2026-05-16|2026-05-16]] — 2357 cards
+- [[Sources/PBS Entity Layers/Time/2026|2026]] — 2355 cards
+- [[Sources/PBS Entity Layers/Time/2013|2013]] — 304 cards
+- [[Sources/PBS Entity Layers/Time/2011|2011]] — 244 cards
+- [[Sources/PBS Entity Layers/Time/2009|2009]] — 219 cards
+- [[Sources/PBS Entity Layers/Time/2015|2015]] — 191 cards
+- [[Sources/PBS Entity Layers/Time/2021|2021]] — 185 cards
+- [[Sources/PBS Entity Layers/Time/2019|2019]] — 175 cards
+- [[Sources/PBS Entity Layers/Time/2017|2017]] — 174 cards
+- [[Sources/PBS Entity Layers/Time/2014|2014]] — 160 cards
+- [[Sources/PBS Entity Layers/Time/2010|2010]] — 155 cards
+- [[Sources/PBS Entity Layers/Time/2020|2020]] — 154 cards
+- [[Sources/PBS Entity Layers/Time/2016|2016]] — 135 cards
+- [[Sources/PBS Entity Layers/Time/2023|2023]] — 128 cards
+- [[Sources/PBS Entity Layers/Time/2022|2022]] — 127 cards
+- [[Sources/PBS Entity Layers/Time/2018|2018]] — 113 cards
+- [[Sources/PBS Entity Layers/Time/2012|2012]] — 100 cards
+- [[Sources/PBS Entity Layers/Time/2024|2024]] — 70 cards
+- [[Sources/PBS Entity Layers/Time/2025|2025]] — 54 cards
+- [[Sources/PBS Entity Layers/Time/2008|2008]] — 16 cards
+- [[Sources/PBS Entity Layers/Time/2000|2000]] — 12 cards
+- [[Sources/PBS Entity Layers/Time/2006|2006]] — 9 cards
+- [[Sources/PBS Entity Layers/Time/1979|1979]] — 8 cards
+- [[Sources/PBS Entity Layers/Time/2007|2007]] — 8 cards
+- [[Sources/PBS Entity Layers/Time/1943|1943]] — 7 cards
+- [[Sources/PBS Entity Layers/Time/1946|1946]] — 7 cards
+- [[Sources/PBS Entity Layers/Time/2003|2003]] — 7 cards
+- [[Sources/PBS Entity Layers/Time/1983|1983]] — 6 cards
+- [[Sources/PBS Entity Layers/Time/2039|2039]] — 6 cards
+- [[Sources/PBS Entity Layers/Time/9 April 2010|9 April 2010]] — 6 cards
+- [[Sources/PBS Entity Layers/Time/1940|1940]] — 5 cards
+- [[Sources/PBS Entity Layers/Time/1984|1984]] — 5 cards
+- [[Sources/PBS Entity Layers/Time/1986|1986]] — 5 cards
+- [[Sources/PBS Entity Layers/Time/2002|2002]] — 5 cards
+- [[Sources/PBS Entity Layers/Time/2033|2033]] — 5 cards
+- [[Sources/PBS Entity Layers/Time/1989|1989]] — 4 cards
+- [[Sources/PBS Entity Layers/Time/1996|1996]] — 4 cards
+- [[Sources/PBS Entity Layers/Time/2079|2079]] — 4 cards
+- [[Sources/PBS Entity Layers/Time/1909|1909]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/1937|1937]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/1993|1993]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/2005|2005]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/2038|2038]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/2071|2071]] — 3 cards
+- [[Sources/PBS Entity Layers/Time/1922|1922]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1923|1923]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1925|1925]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1927|1927]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1934|1934]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1935|1935]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1947|1947]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1951|1951]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1962|1962]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1978|1978]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2004|2004]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2028|2028]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2037|2037]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2042|2042]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2045|2045]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2047|2047]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2055|2055]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2083|2083]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2086|2086]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2087|2087]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/2097|2097]] — 2 cards
+- [[Sources/PBS Entity Layers/Time/1 February 2009|1 February 2009]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/11 December 2019|11 December 2019]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/12 June 2008|12 June 2008]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/13 April 2013|13 April 2013]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/13 March 2015|13 March 2015]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/14 December 2009|14 December 2009]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/16 April 2020|16 April 2020]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/16 June 2013|16 June 2013]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/17 May 2009|17 May 2009]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/18 November 2012|18 November 2012]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1903|1903]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1904|1904]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1905|1905]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1907|1907]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1908|1908]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1911|1911]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1914|1914]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1918|1918]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1920|1920]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1926|1926]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1930|1930]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1932|1932]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1938|1938]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1939|1939]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1944|1944]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1945|1945]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1948|1948]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1950|1950]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1954|1954]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1957|1957]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1958|1958]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1963|1963]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1965|1965]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1968|1968]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1970|1970]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1972|1972]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1973|1973]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1974|1974]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1975|1975]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1980|1980]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1987|1987]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1988|1988]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1995|1995]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/1998|1998]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2 March 2014|2 March 2014]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/20 November 2015|20 November 2015]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2006 - 04 - 21|2006/04/21]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2007 - 10 - 11|2007/10/11]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2008 - 02 - 12|2008/02/12]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2008 - 04 - 01|2008/04/01]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2008 - 12 - 16|2008/12/16]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2009 - 01 - 13|2009/01/13]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2009 - 04 - 12|2009/04/12]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2009 - 08 - 12|2009/08/12]] — 1 cards
+- [[Sources/PBS Entity Layers/Time/2009 - 08 - 19|2009/08/19]] — 1 cards
