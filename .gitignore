@@ -7,3 +7,6 @@ node_modules/
 webview-ui/.env
 webview-ui/.env.local
 webview-ui/.env.*.local
+multiplayer-worker/.wrangler/
+webview-ui/test/output/
+obsidian-vault/*.canvas

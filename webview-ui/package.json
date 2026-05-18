@@ -12,7 +12,10 @@
     "preview": "vite preview",
     "pretest": "npm run check:secrets",
     "test": "node --import tsx/esm --test test/*.test.ts",
-    "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs"
+    "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs",
+    "check:public-artifact": "node scripts/check-public-artifact.mjs",
+    "daydream:enrich-corpus": "node scripts/enrich-daydream-corpus.mjs",
+    "daydream:enrich-corpus:fetch": "node scripts/enrich-daydream-corpus.mjs --fetch --max-fetch=80"
   },
   "dependencies": {
     "react": "^19.2.0",
