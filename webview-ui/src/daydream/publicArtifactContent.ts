@@ -33,7 +33,7 @@ export interface DaydreamPublicArtifactContent {
   approvedForPublicLayout: boolean;
 }
 
-const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content)\b|工作流|偵錯|來源卡|原始摘錄|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁/i;
+const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
 
 export function buildPublicArtifactContent(params: {
   seed: string;
@@ -187,7 +187,7 @@ function nameConcept(signals: PublicSignals): { title: string; subtitle: string 
   const sourceHint = signals.sourceTitles.slice(0, 2).join("、") || "社群筆記";
   return {
     title,
-    subtitle: `從 ${sourceHint} 出發，把玩家的問題轉成一條可閱讀、可測試、也可被修正的公共筆記。`,
+    subtitle: `從 ${sourceHint} 出發，把這個問題轉成一條可閱讀、可測試、也可被修正的公共短文。`,
   };
 }
 
@@ -204,7 +204,7 @@ function buildProposition(signals: PublicSignals): string {
   const terms = meaningfulTerms(signals).slice(0, 3);
   const axis = terms.length > 0 ? terms.join("、") : "材料、場域與關係";
   const systems = signals.systems.slice(0, 2).join("、") || "社群筆記";
-  return `這篇 Daydream 的中心不是把 ${axis} 做成清單，而是從 ${systems} 的片段中讀出一個方法：先看每個來源實際處理了什麼，再讓推測從那些具體觀察旁邊長出來。`;
+  return `這篇短文的中心不是把 ${axis} 做成清單，而是從 ${systems} 的片段中讀出一個方法：先看每個材料實際處理了什麼，再讓推測從那些具體觀察旁邊長出來。`;
 }
 
 function buildSections(signals: PublicSignals): DaydreamPublicArtifactSection[] {
@@ -213,7 +213,7 @@ function buildSections(signals: PublicSignals): DaydreamPublicArtifactSection[] 
   const terms = meaningfulTerms(signals);
   const sectionInputs = [0, 1, 2, 3].map((index) => ({
     sourceTitle: titles[index % titles.length],
-    observation: snippets[index % Math.max(1, snippets.length)] ?? "來源提供的片段仍然偏薄，因此這裡只能保留為謹慎的工作假設。",
+    observation: snippets[index % Math.max(1, snippets.length)] ?? "材料提供的片段仍然偏薄，因此這裡只能保留為謹慎的工作假設。",
     term: terms[index % Math.max(1, terms.length)] ?? "方法",
   }));
 
@@ -224,7 +224,7 @@ function buildSections(signals: PublicSignals): DaydreamPublicArtifactSection[] 
       id: `public-section-${index + 1}`,
       title,
       body,
-      pullQuote: index === 0 ? `先讓 ${item.term} 從來源的具體動作裡出現，而不是從風格想像裡出現。` : undefined,
+      pullQuote: index === 0 ? `先讓 ${item.term} 從具體動作裡出現，而不是從風格想像裡出現。` : undefined,
     };
   });
 }
@@ -237,7 +237,7 @@ function buildProtocol(signals: PublicSignals): DaydreamPublicArtifactProtocolIt
   return [
     {
       title: "先取一個可觀察動作",
-      body: `不要先替 ${primary} 下結論；先從來源裡取出一個人、材料、工具或場域真正做過的動作，讓文章從那個動作開始。`,
+      body: `不要先替 ${primary} 下結論；先取出一個人、材料、工具或場域真正做過的動作，讓文章從那個動作開始。`,
     },
     {
       title: "把題材轉成方法",
@@ -245,11 +245,11 @@ function buildProtocol(signals: PublicSignals): DaydreamPublicArtifactProtocolIt
     },
     {
       title: "保留弱訊號",
-      body: `來源偏薄或互相矛盾時，不要補成完整作品。把不確定寫成限制，讓 ${tertiary} 的下一次測試可以知道哪裡還需要補讀。`,
+      body: `材料偏薄或互相矛盾時，不要補成完整作品。把不確定寫成限制，讓 ${tertiary} 的下一次測試可以知道哪裡還需要補讀。`,
     },
     {
       title: "回到可分享形式",
-      body: "最後輸出應該是一份可被他人接手的小誌、score、protocol 或 wiki note，而不是把搜尋痕跡公開給讀者。",
+      body: "最後的形式應該是一份可被他人接手的小誌、練習譜、操作手冊或短文，而不是把整理痕跡公開給讀者。",
     },
   ];
 }
@@ -259,9 +259,9 @@ function buildQuietCaveat(
   selectedTopic: ResearchTopicCandidate | undefined,
   report: DaydreamReport,
 ): string | undefined {
-  if (signals.hasBio) return "如果後續牽涉活體、生物材料、基因改造或濕實驗，這份 Daydream 只能停在閱讀、倫理討論與非活體 prototype；任何實驗都需要正式安全審查。";
+  if (signals.hasBio) return "如果後續牽涉活體、生物材料、基因改造或濕實驗，這份短文只能停在閱讀、倫理討論與非活體試作；任何實驗都需要正式安全審查。";
   if ((selectedTopic?.maturityScore ?? 100) < 45 || report.depthMetrics.warnings.length > 0) {
-    return "這是一個還在形成中的題目；它適合先作為小誌或工作坊 score 被測試，而不是被宣稱為完成研究。";
+    return "這是一個還在形成中的題目；它適合先作為小誌或工作坊練習被測試，而不是被宣稱為完成研究。";
   }
   return undefined;
 }
@@ -313,12 +313,12 @@ function sectionBodyFor(
     return `${item.sourceTitle} 先提供一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查。`;
   }
   if (index === 1) {
-    return `${item.observation} 這裡的轉向不是把來源當作案例裝飾，而是看它如何改變玩家原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被實作測試的路。`;
+    return `${item.observation} 這裡的轉向不是把材料當作案例裝飾，而是看它如何改變原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被實作測試的路。`;
   }
   if (index === 2) {
     return `${item.sourceTitle} 讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一種版面、工作坊、互動規則或公共筆記方法，而不是被直接宣稱為完成作品。`;
   }
-  return `${item.observation} 最後的輸出應該保留這種未完成狀態：把已知的材料、可試的動作、仍然薄弱的來源和下一個問題寫清楚。這樣 Daydream 才像一份能被接手的公共 artifact，而不是一次性的摘要。`;
+  return `${item.observation} 最後的形式應該保留這種未完成狀態：把已知的材料、可試的動作、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
 }
 
 function sourceWorldSentence(signals: PublicSignals): string {

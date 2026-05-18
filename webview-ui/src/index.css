@@ -5527,3 +5527,56 @@
     word-break: normal;
   }
 }
+
+/* Preserve Daydream layout identity on phones: do not flatten the zine into a plain text column. */
+@media (max-width: 700px), (pointer: coarse) {
+  .final-document-html-shell {
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .daydream-html {
+    width: 960px;
+    max-width: none;
+    min-height: 1280px !important;
+    padding: 34px !important;
+  }
+
+  .daydream-html--pbs-reset {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr) !important;
+  }
+
+  .daydream-html--soft-commons {
+    display: grid !important;
+    grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr) minmax(260px, 0.7fr) !important;
+  }
+
+  .daydream-html--aino-grid {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+
+  .dd-reset-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr) !important;
+  }
+
+  .dd-reset-sections,
+  .dd-soft-body {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .dd-reset-protocol,
+  .dd-aino-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .dd-aino-footer {
+    grid-template-columns: 0.65fr 1.35fr !important;
+  }
+
+  .daydream-html h1 { font-size: clamp(78px, 9vw, 132px) !important; }
+  .daydream-html h2 { font-size: clamp(30px, 3vw, 46px) !important; }
+  .daydream-html p { font-size: clamp(18px, 1.7vw, 25px) !important; }
+}
