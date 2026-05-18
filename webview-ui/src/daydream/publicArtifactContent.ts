@@ -157,7 +157,7 @@ function extractPublicSignals(
     terms,
     systems: selectedTopic?.knowledgeSystems?.length ? selectedTopic.knowledgeSystems : inferSystems(evidenceCards),
     sourceTitles: dedupeStrings(evidenceCards.map((card) => card.title)).slice(0, 8),
-    sourceSnippets: evidenceCards.map((card) => cleanSnippet(card.excerpt)).filter(Boolean).slice(0, 8),
+    sourceSnippets: evidenceCards.map((card) => cleanSnippet(card.excerpt, card.title)).filter(Boolean).slice(0, 8),
     hasSound: /sound|audio|聲音|聲響/.test(text),
     hasWearable: /wearable|wearables|穿戴/.test(text),
     hasTextile: /textile|textiles|fabric|cloth|布料|紡織|織物|e-textile/.test(text),
@@ -323,13 +323,23 @@ function sourceWorldSentence(signals: PublicSignals): string {
   return `幾組${summary}被放在同一張桌上，露出一個比單一作品更大的問題。`;
 }
 
-function cleanSnippet(input: string): string {
-  return input
+function cleanSnippet(input: string, sourceTitle = ""): string {
+  const withoutExactTitle = sourceTitle
+    ? input.replace(new RegExp(escapeRegExp(sourceTitle), "gi"), "")
+    : input;
+  return withoutExactTitle
     .replace(/\bSource:\s*https?:\/\/\S+/gi, "")
     .replace(/\(No plaintext extract returned[^)]*\)/gi, "")
     .replace(/Imported:\s*\d{4}[^.。]*/gi, "")
+    .replace(/\bArtScienceBangalore\s*(?:19|20)\d{2}\b/gi, "")
+    .replace(/\bSynthetic Biology for Artists and Designers\s*(?:19|20)?\d{0,2}\b/gi, "synthetic biology workshop materials")
+    .replace(/\bHackteria relationship layer\b/gi, "community practice diagram")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function escapeRegExp(input: string): string {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function isPublicTerm(term: string): boolean {
