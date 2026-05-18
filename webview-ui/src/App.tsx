@@ -1265,7 +1265,7 @@ function App() {
         }
         return next;
       });
-    }, 1800);
+    }, 450);
     return () => window.clearInterval(interval);
   }, [appMode, layoutReady, officeState, playerProfile, simSnapshot]);
 
@@ -2750,13 +2750,21 @@ function App() {
                 <div className="pet-detail-section final-document-panel">
                   <p className="type-label pet-detail-kicker">{selectedPetFinalDocument.modeLabel ?? "Daydream"}</p>
                   <h3 className="type-subheading">{selectedPetFinalDocument.title}</h3>
-                  <div className="final-document-body">
-                    {selectedPetFinalDocument.body.split("\n\n").map((paragraph) => (
-                      <p key={paragraph} className="type-body">
-                        {renderFinalDocumentText(selectedPetFinalDocument, paragraph)}
-                      </p>
-                    ))}
-                  </div>
+                  {selectedPetFinalDocument.bodyHtml ? (
+                    <div
+                      className="final-document-html-shell"
+                      data-daydream-layout={selectedPetFinalDocument.htmlVariant ?? "unknown"}
+                      dangerouslySetInnerHTML={{ __html: selectedPetFinalDocument.bodyHtml }}
+                    />
+                  ) : (
+                    <div className="final-document-body">
+                      {selectedPetFinalDocument.body.split("\n\n").map((paragraph) => (
+                        <p key={paragraph} className="type-body">
+                          {renderFinalDocumentText(selectedPetFinalDocument, paragraph)}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                   {finalDocumentReviewLog.length > 0 && (
                     <details className="final-document-log">
                       <summary>Conversation log preview ({finalDocumentReviewLog.length})</summary>

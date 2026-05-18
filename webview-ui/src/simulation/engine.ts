@@ -1,5 +1,6 @@
 import { daydreamCorpus } from "../daydream/corpus.js";
 import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
+import { pickDaydreamHtmlLayoutVariant, renderDaydreamPublicArtifactHtml } from "../daydream/publicArtifactHtml.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
 import {
   defaultScores,
@@ -270,8 +271,8 @@ export function createInitialSnapshot(
   };
 }
 
-const EXCHANGE_TICK_MIN = 14;
-const EXCHANGE_TICK_SPAN = 16;
+const EXCHANGE_TICK_MIN = 3;
+const EXCHANGE_TICK_SPAN = 4;
 
 const referencePool = [
   { label: "Hackteria", url: "https://hackteria.org", anchorText: "Hackteria" },
@@ -320,8 +321,8 @@ function ensureA2AState(pet: Thronglet, tick: number): A2AState {
     nextExchangeTick: tick + EXCHANGE_TICK_MIN + (seed % EXCHANGE_TICK_SPAN),
     exchangeCount: 0,
     turnCount: 0,
-    requiredExchanges: 2 + (seed % 2),
-    requiredTurns: 48 + (seed % 31),
+    requiredExchanges: 1,
+    requiredTurns: 18 + (seed % 12),
   };
 }
 
@@ -619,6 +620,8 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     anchorText: referenceAnchor(ref, index, anchorSignals),
   }));
   const daydream = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
+  const htmlVariant = pickDaydreamHtmlLayoutVariant();
+  const bodyHtml = renderDaydreamPublicArtifactHtml(daydream, htmlVariant);
   const publicBody = [
     daydream.opening,
     daydream.proposition,
@@ -643,6 +646,8 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     mode,
     modeLabel: "Daydream",
     body: publicBody,
+    bodyHtml,
+    htmlVariant,
     references: publicReferences.length > 0 ? publicReferences : references,
     reviewLog: [],
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
