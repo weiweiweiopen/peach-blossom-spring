@@ -271,8 +271,8 @@ export function createInitialSnapshot(
   };
 }
 
-const EXCHANGE_TICK_MIN = 3;
-const EXCHANGE_TICK_SPAN = 4;
+const EXCHANGE_TICK_MIN = 14;
+const EXCHANGE_TICK_SPAN = 16;
 
 const referencePool = [
   { label: "Hackteria", url: "https://hackteria.org", anchorText: "Hackteria" },
@@ -321,8 +321,8 @@ function ensureA2AState(pet: Thronglet, tick: number): A2AState {
     nextExchangeTick: tick + EXCHANGE_TICK_MIN + (seed % EXCHANGE_TICK_SPAN),
     exchangeCount: 0,
     turnCount: 0,
-    requiredExchanges: 1,
-    requiredTurns: 18 + (seed % 12),
+    requiredExchanges: 2 + (seed % 2),
+    requiredTurns: 48 + (seed % 31),
   };
 }
 

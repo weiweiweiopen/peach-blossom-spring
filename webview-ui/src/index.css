@@ -5471,3 +5471,59 @@
   .dd-aino-protocol { columns: 1; }
   .dd-soft-note:nth-child(odd), .dd-soft-note:nth-child(even) { transform: none; }
 }
+
+/* Hotfix: Daydream HTML artifacts must scroll and preserve the full generated essay on mobile. */
+.final-document-window.rpg-message-frame {
+  overflow: auto !important;
+}
+
+.final-document-window .final-document-panel {
+  min-height: auto !important;
+}
+
+.final-document-html-shell {
+  height: auto !important;
+  min-height: calc(100dvh - 110px) !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.daydream-html {
+  height: auto !important;
+  min-height: calc(100dvh - 110px) !important;
+  overflow: visible !important;
+}
+
+.daydream-html--pbs-reset,
+.daydream-html--soft-commons,
+.daydream-html--aino-grid {
+  align-content: start;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .final-document-window.rpg-message-frame {
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .final-document-html-shell,
+  .daydream-html {
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  .daydream-html--pbs-reset,
+  .daydream-html--soft-commons,
+  .daydream-html--aino-grid {
+    display: block !important;
+  }
+
+  .daydream-html :where(header, section, main, aside, footer, div) {
+    max-width: 100%;
+  }
+
+  .daydream-html h1 {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+}
