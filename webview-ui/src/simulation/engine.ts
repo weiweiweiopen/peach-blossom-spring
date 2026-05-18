@@ -1,3 +1,5 @@
+import { daydreamCorpus } from "../daydream/corpus.js";
+import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
 import {
   defaultScores,
@@ -13,14 +15,12 @@ import {
   deterministicThought,
   shouldTriggerThought,
 } from "./thoughtTriggers.js";
-import { buildNomadicResearchReport } from './nomadicResearch.js';
 import type {
   A2AExchange,
   A2ANutrientSource,
   A2AState,
   DispatchedQuestion,
   FinalDocument,
-  FinalDocumentLogEntry,
   FinalDocumentMode,
   PetKnowledgeJson,
   PetPersonaJson,
@@ -282,15 +282,6 @@ const referencePool = [
   { label: "Non-Governmental Matters", url: "https://www.nonmatter.tw", anchorText: "NGM" },
 ];
 
-const finalModeLabels: Record<FinalDocumentMode, string> = {
-  story: "Day Dream 詩",
-  poem: "Day Dream 詩",
-  nomadic_research: "Nomadic Research",
-  manufacturing_technical_file: "製造／Camp 計劃",
-  travel_plan: "旅行 uMap 動線",
-  philosophical_debate: "Day Dream 詩",
-};
-
 function normalizeDocumentMode(mode: string | undefined): FinalDocumentMode {
   if (mode === "nomadic_research" || mode?.includes("nomadic") || mode?.includes("field") || mode?.includes("fablab") || mode?.includes("hackerspace")) return "nomadic_research";
   if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "nomadic_research";
@@ -352,14 +343,6 @@ function domainOf(url: string): string {
   }
 }
 
-function evidenceLabel(text: string): string {
-  return text
-    .replace(/https?:\/\/\S+/gi, 'source')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 120);
-}
-
 function anchorToken(text: string): string {
   return text
     .replace(/https?:\/\/\S+/gi, '')
@@ -379,72 +362,6 @@ function referenceAnchor(ref: { label: string; url: string; anchorText?: string 
 
 function compactAnchor(text: string): string {
   return text.replace(/\s+/g, ' ').trim().slice(0, 18) || 'source';
-}
-
-function modeActions(mode: FinalDocumentMode, args: { question: string; attributes: string[]; tags: string[]; anchors: string[]; targets: string[] }): string[] {
-  const attributePair = args.attributes.slice(0, 2).join('／') || args.tags.slice(0, 2).join('／') || '關係／資源';
-  const tagOne = args.tags[0] ?? args.attributes[0] ?? '問題';
-  const tagTwo = args.tags[1] ?? args.attributes[1] ?? '回應';
-  const anchorOne = args.anchors[0] ?? tagOne;
-  const anchorTwo = args.anchors[1] ?? tagTwo;
-  const targetText = args.targets.length ? args.targets.join('、') : '兩個不同場域的人';
-  const plans: Record<FinalDocumentMode, string[]> = {
-    story: [
-      `詩節 1：把「${args.question}」拆成一個借來的結構。${attributePair} 不回答問題，只改變它承重的方式。`,
-      `詩節 2：曾有人用 [[${anchorOne}]] 或 [[${anchorTwo}]] 做過別的用途；把那個用途挪到你的文字與物件之間，讓材料替你思考。`,
-      `詩節 3：不要把聯想收成結論。讓 ${targetText} 留下一個尚未解釋的洞，讓玩家帶走。`,
-    ],
-    poem: [
-      `詩節 1：不要把詩寫成漂亮答案。先讓 ${tagOne} 與 ${tagTwo} 互相誤用，像工具被帶到錯的房間。`,
-      `詩節 2：[[${anchorOne}]] 曾經支撐另一種工作；現在把那個結構借給玩家的文字、物件與慾望。`,
-      `詩節 3：保留問題裡的荒謬感，讓跨領域挪用變成啟發，而不是教程。`,
-    ],
-    nomadic_research: [
-      `田野 1：先把「${args.question}」拆成國家／地區、研究題目、可拜訪節點與活躍證據，不把 Google Maps 存在當成活著。`,
-      `田野 2：用 [[${anchorOne}]] 與 [[${anchorTwo}]] 當 wiki / corpus 入口，整理 hackerspace、fablab、art lab、university lab、meetup 或 artist-run venue。`,
-      `田野 3：輸出 field note、interview plan、local tech culture map 與 uMap GeoJSON；每個節點標出 intro 是否需要、費用／語言／設備未知處。`,
-    ],
-    manufacturing_technical_file: [
-      `計劃 1：把問題拆成目標、材料、場地、人力、時間與失敗條件。第一輪只測 ${attributePair} 是否真的能被操作。`,
-      `計劃 2：用 [[${anchorOne}]] 做第一個材料或方法入口，整理成可製造的步驟；若是組織 camp，轉成招募、分工、共食、紀錄與收尾。`,
-      `計劃 3：請 ${targetText} 測一次。若他們無法重做、反駁或接手，文件還不是具有深度的製造／camp 方案。`,
-    ],
-    travel_plan: [
-      `路線 1：不要先排景點。先把 ${targetText} 變成訪問節點，標出每站要問的問題、可交換的技術與可能拒絕。`,
-      `路線 2：把 [[${anchorOne}]] 當第一個 uMap 節點，再沿著 [[${anchorTwo}]] 找 hacker space、曾發生過的活動、工作坊或社群場域。`,
-      `路線 3：輸出清單：節點名稱、城市／場域、為何停留、要拜訪誰、可帶去的物件、下一站連線。刪掉只增加名單但不改變原問題的停靠點。`,
-    ],
-    philosophical_debate: [
-      `詩節 1：先拆開 ${attributePair}，不要讓它們被同一個成功答案吞掉。`,
-      `詩節 2：讓 ${targetText} 的反駁變成聲部；如果聲音太像，就讓 [[${anchorOne}]] 切開它。`,
-      `詩節 3：用 [[${anchorTwo}]] 檢查承諾：哪些會帶來收入、信任、依賴或新的負擔。`,
-    ],
-  };
-  return plans[mode];
-}
-
-function bestResponseDirection(pet: Thronglet, exchanges: A2AExchange[]): string {
-  const question = pet.question.text;
-  const intent = pet.personaJson?.intentMode ?? 'why';
-  const exchangeTargets = unique(exchanges.map((exchange) => exchange.targetLabel)).slice(0, 3);
-  const hypotheses = pet.knowledgeJson?.hypotheses ?? [];
-  const insights = (pet.knowledgeJson?.collectedInsights ?? [])
-    .filter((item) => !/^https?:/i.test(item))
-    .map(evidenceLabel)
-    .slice(0, 2);
-  const socialProof = exchangeTargets.length
-    ? `先把問題交給 ${exchangeTargets.join('、')} 等不同場域測試，而不是只向一個來源求證`
-    : '先尋找至少兩個不同場域的人來測試這個問題';
-  const evidence = insights.length
-    ? `目前可用的回應材料是「${insights.join('」與「')}」`
-    : '目前材料仍不足，所以最誠實的回應是一個可執行的下一步，而不是結論';
-  const hypothesis = hypotheses[0]
-    ? `暫時假設：${hypotheses[0]}`
-    : `暫時假設：這個問題真正要問的不是「${question}」的捷徑，而是哪些關係、能力與資源能承受它`;
-  const practicalTurn = intent === 'how_to_do' || intent === 'survive' || intent === 'manufacturing_technical_file' || intent === 'nomadic_research'
-    ? '把回應收斂成一個七天內能試做、能失敗、能被別人檢查的小原型'
-    : '把回應保持成一個可以邀請他人加入、也可以被反駁的敘事或論證';
-  return `${hypothesis}。最好的回應不是把來源名稱當答案，而是：${socialProof}；${evidence}；接著${practicalTurn}。`;
 }
 
 function chooseExchangeTarget(
@@ -693,91 +610,41 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     ).values(),
   ).slice(0, 6);
   const mode = chooseFinalDocumentMode(pet, petExchanges);
-  const modeLabel = finalModeLabels[mode];
-  const maturation = pet.problemMaturation ?? deriveProblemMaturationProfile(pet, petExchanges, tick);
-  const attributeList = maturation.mentaleseAttributes.length ? maturation.mentaleseAttributes : pet.personaJson?.mentaleseBias ?? ["慾望", "資源", "矛盾"];
-  const materialTags = maturation.materialSignals.length ? maturation.materialSignals : pet.knowledgeJson?.tags ?? splitTags(pet.question.text);
-  const anchorSignals = unique([...materialTags, ...attributeList, ...refs.map((ref) => anchorToken(ref.label))]).filter((item) => !/^(夢境|修補|工具)$/i.test(item));
+  const anchorSignals = unique([
+    ...splitTags(pet.question.text),
+    ...refs.map((ref) => anchorToken(ref.label)),
+  ]).filter((item) => !/^(夢境|修補|工具)$/i.test(item));
   const references = (refs.length > 0 ? refs : referencePool.slice(0, 3)).map((ref, index) => ({
     ...ref,
     anchorText: referenceAnchor(ref, index, anchorSignals),
   }));
-  const responseDirection = bestResponseDirection(pet, petExchanges);
-  const tags = materialTags.slice(0, 5).join("、") || "尚未命名的材料";
-  const log: FinalDocumentLogEntry[] = petExchanges.flatMap((exchange) =>
-    exchange.turns.map((turn) => ({
-      tick: exchange.tick,
-      speaker: turn.speakerId === pet.id ? pet.displayName : exchange.targetLabel,
-      target: turn.targetId === pet.id ? pet.displayName : exchange.targetLabel,
-      text: turn.text,
-      source: "a2a" as const,
-    })),
-  );
-  const anchor = (index: number) => `[[${references[index % references.length].anchorText}]]`;
-  const evidenceTargets = unique(petExchanges.map((exchange) => exchange.targetLabel)).join("、") || "NPC";
-  const sourceAnchors = nutrients.length ? nutrients.slice(0, 3).map((_, index) => anchor(index)).join("、") : `${anchor(0)}、${anchor(1)}`;
-  const [directionOne, directionTwo, directionThree] = modeActions(mode, {
-    question: pet.question.text,
-    attributes: attributeList,
-    tags: materialTags,
-    anchors: references.map((reference) => reference.anchorText),
-    targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
-  });
-  const compactClosing = `暫定回應：${responseDirection}`;
-  const nomadicReport = buildNomadicResearchReport({
-    question: pet.question.text,
-    targets: unique(petExchanges.map((exchange) => exchange.targetLabel)),
-    references,
-    nutrients,
-    sourceAnchors,
-  });
-  const manufacturingFrame = `【製造／Camp 計劃】這不是答案摘要，而是一份可被重做的方案。原始問題：「${pet.question.text}」。輸入：${tags}。協作者／測試者：${evidenceTargets}。參考入口：${sourceAnchors}。`;
-  const travelFrame = `【旅行 uMap 動線】這份清單把旅行路線、hacker space、曾發生過的活動與社群節點放在同一張想像地圖上。原始問題：「${pet.question.text}」。起點材料：${tags}。可訪問對象：${evidenceTargets}。`;
-  const poemFrame = `【Day Dream 詩】這首詩使用玩家提供的文字與物件，借用不同領域的結構做挪用。原始問題：「${pet.question.text}」。可借來的材料／聲部：${tags}。回聲來自：${sourceAnchors}。`;
-  const bodyByMode: Record<FinalDocumentMode, string> = {
-    story: [
-      poemFrame,
-      directionOne,
-      directionTwo,
-      directionThree,
-    ].join("\n\n"),
-    poem: [
-      poemFrame,
-      directionOne,
-      directionTwo,
-      directionThree,
-    ].join("\n\n"),
-    nomadic_research: nomadicReport.body,
-    manufacturing_technical_file: [
-      manufacturingFrame,
-      directionOne,
-      directionTwo,
-      directionThree,
-      compactClosing,
-    ].join("\n\n"),
-    travel_plan: [
-      travelFrame,
-      directionOne,
-      directionTwo,
-      directionThree,
-    ].join("\n\n"),
-    philosophical_debate: [
-      poemFrame,
-      directionOne,
-      directionTwo,
-      directionThree,
-    ].join("\n\n"),
-  };
+  const daydream = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
+  const publicBody = [
+    daydream.opening,
+    daydream.proposition,
+    ...daydream.sections.map((section) => `${section.title}\n${section.body}`),
+    ...daydream.protocol.map((item) => `${item.title}\n${item.body}`),
+    daydream.quietCaveat ?? "",
+  ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
+  const publicReferences = daydream.privateTrace.sourceTrail
+    .filter((source) => source.url)
+    .slice(0, 6)
+    .map((source, index) => ({
+      label: source.title,
+      url: source.url ?? "#",
+      anchorText: referenceAnchor({ label: source.title, url: source.url ?? "#" }, index, [source.title]),
+    }));
+
   return {
     id: `${pet.id}-final-${tick}`,
     petId: pet.id,
     tick,
-    title: `${modeLabel}：${pet.question.text.slice(0, 28)}`,
+    title: daydream.title,
     mode,
-    modeLabel,
-    body: bodyByMode[mode],
-    references,
-    reviewLog: log.slice(0, 6),
+    modeLabel: "Daydream",
+    body: publicBody,
+    references: publicReferences.length > 0 ? publicReferences : references,
+    reviewLog: [],
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
   };
 }

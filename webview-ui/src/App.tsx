@@ -2748,7 +2748,7 @@ function App() {
               )}
               {selectedPetFinalDocument && (
                 <div className="pet-detail-section final-document-panel">
-                  <p className="type-label pet-detail-kicker">Final document / {selectedPetFinalDocument.modeLabel ?? selectedPetFinalDocument.mode}</p>
+                  <p className="type-label pet-detail-kicker">{selectedPetFinalDocument.modeLabel ?? "Daydream"}</p>
                   <h3 className="type-subheading">{selectedPetFinalDocument.title}</h3>
                   <div className="final-document-body">
                     {selectedPetFinalDocument.body.split("\n\n").map((paragraph) => (
@@ -2757,17 +2757,19 @@ function App() {
                       </p>
                     ))}
                   </div>
-                  <details className="final-document-log">
-                    <summary>Conversation log preview ({finalDocumentReviewLog.length})</summary>
-                    {finalDocumentReviewLog.map((entry, index) => (
-                      <article key={`${entry.source}-${entry.tick}-${index}`}>
-                        <p className="final-document-log-meta">
-                          tick {entry.tick} · {entry.speaker}{"target" in entry && entry.target ? ` → ${entry.target}` : ""} · {entry.source}
-                        </p>
-                        <p>{entry.text}</p>
-                      </article>
-                    ))}
-                  </details>
+                  {finalDocumentReviewLog.length > 0 && (
+                    <details className="final-document-log">
+                      <summary>Conversation log preview ({finalDocumentReviewLog.length})</summary>
+                      {finalDocumentReviewLog.map((entry, index) => (
+                        <article key={`${entry.source}-${entry.tick}-${index}`}>
+                          <p className="final-document-log-meta">
+                            tick {entry.tick} · {entry.speaker}{"target" in entry && entry.target ? ` → ${entry.target}` : ""} · {entry.source}
+                          </p>
+                          <p>{entry.text}</p>
+                        </article>
+                      ))}
+                    </details>
+                  )}
                 </div>
               )}
             </section>
