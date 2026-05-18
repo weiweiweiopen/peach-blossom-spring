@@ -46,12 +46,12 @@ export interface DaydreamOutputPlan {
 
 export function runDaydreamWorkflow(seed: string, corpus: DaydreamCorpus): DaydreamWorkflowResult {
   const report = generateDaydreamReport(seed, corpus);
-  const evidenceCards = dedupeCards([
+  const evidenceCards = dedupeBySourceFamily(dedupeCards([
     ...report.matchedCards,
     ...report.linkedCards.map((trail) => trail.card),
     ...report.expandedCards,
     ...report.deepReadCards,
-  ]).slice(0, 32);
+  ]), 32);
   const semanticContext = buildSemanticVectorContext(corpus, evidenceCards);
   const researchTopics = generateResearchTopicCandidates(report, semanticContext);
   const selectedTopic = isReadyForTopicSelection(report) ? selectTopic(researchTopics) : undefined;
@@ -164,4 +164,35 @@ function dedupeCards(cards: SourceCard[]): SourceCard[] {
     result.push(card);
   }
   return result;
+}
+
+function dedupeBySourceFamily(cards: SourceCard[], max: number): SourceCard[] {
+  const seen = new Set<string>();
+  const result: SourceCard[] = [];
+  for (const card of cards) {
+    const key = sourceFamilyKey(card);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(card);
+    if (result.length >= max) break;
+  }
+  return result;
+}
+
+function sourceFamilyKey(card: SourceCard): string {
+  const titleKey = normalizeSourceFamilyText(card.title || card.path || card.url || card.id);
+  const sourceKey = normalizeSourceFamilyText(card.source ?? "").split(" ").slice(0, 3).join(" ");
+  return `${sourceKey}:${titleKey}`.trim();
+}
+
+function normalizeSourceFamilyText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\b(19|20)\d{2}\b/g, "")
+    .replace(/synthetic biology for artists and designers/g, "synthetic biology artists designers")
+    .replace(/artsciencebangalore/g, "artscience bangalore")
+    .replace(/hackteria relationship layer/g, "hackteria")
+    .replace(/\b(part|session|day|year|edition)\s*\d+\b/g, "")
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, " ")
+    .trim();
 }

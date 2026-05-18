@@ -34,7 +34,7 @@ export function DaydreamPanel({ onClose }: DaydreamPanelProps) {
         <div>
           <p className="daydream-kicker">Daydream MVP</p>
           <h2>Seed-to-Future Association Engine</h2>
-          <p>這個東西的未來可以變成什麼？ Sample corpus only; full vault export is not loaded.</p>
+          <p>這個東西的未來可以變成什麼？ 使用公開的 Daydream corpus 生成一份可讀、可測試、可修正的小誌草圖。</p>
         </div>
         <button type="button" onClick={onClose} aria-label="Close Daydream panel">
           Close

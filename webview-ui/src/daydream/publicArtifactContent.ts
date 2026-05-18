@@ -41,8 +41,9 @@ export function buildPublicArtifactContent(params: {
   selectedTopic?: ResearchTopicCandidate;
   evidenceCards: SourceCard[];
 }): DaydreamPublicArtifactContent {
-  const { seed, report, selectedTopic, evidenceCards } = params;
-  const sourceTrail = dedupeCitations([
+  const { seed, report, selectedTopic } = params;
+  const evidenceCards = dedupeBySourceFamily(params.evidenceCards, 12);
+  const sourceTrail = dedupeCitationsByFamily([
     ...(selectedTopic?.evidenceTrail ?? []),
     ...evidenceCards.map(citationFor),
   ]).slice(0, 10);
@@ -179,15 +180,15 @@ function extractPublicSignals(
 
 function nameConcept(signals: PublicSignals): { title: string; subtitle: string } {
   const terms = meaningfulTerms(signals).slice(0, 4);
-  const primary = titleCaseTerm(terms[0] ?? signals.sourceTitles[0] ?? "共同問題");
+  const primary = titleCaseTerm(terms[0] ?? "共同問題");
   const secondary = titleCaseTerm(terms[1] ?? terms[0] ?? "方法");
   const title = terms.length >= 2
     ? `${primary} / ${secondary}`
     : `${primary} 的未完成方法`;
-  const sourceHint = signals.sourceTitles.slice(0, 2).join("、") || "社群筆記";
+  const sourceHint = sourceFamilySummary(signals);
   return {
     title,
-    subtitle: `從 ${sourceHint} 出發，把這個問題轉成一條可閱讀、可測試、也可被修正的公共短文。`,
+    subtitle: `從${sourceHint}出發，把這個問題轉成一條可閱讀、可測試、也可被修正的公共短文。`,
   };
 }
 
@@ -195,9 +196,9 @@ function buildOpening(signals: PublicSignals): string {
   const observations = concreteSourceSentences(signals).slice(0, 3);
   const sourceWorld = sourceWorldSentence(signals);
   if (observations.length === 0) {
-    return `${sourceWorld} 這些材料沒有提供單一答案；它們比較像一組尚未對齊的手勢，讓玩家的問題可以先被拆開、重新排列，再變成下一步可做的形式。`;
+    return `${sourceWorld} 這些材料沒有提供單一答案；它們比較像一組尚未對齊的手勢，讓問題可以先被拆開、重新排列，再變成下一步可做的形式。`;
   }
-  return `${sourceWorld} ${observations.join(" ")} 這些具體線索讓玩家的問題不再只是願望，而變成一個可以被材料、場所與社群方法共同測試的方向。`;
+  return `${sourceWorld} ${observations.join(" ")} 這些具體線索讓問題不再只是願望，而變成一個可以被材料、場所與社群方法共同測試的方向。`;
 }
 
 function buildProposition(signals: PublicSignals): string {
@@ -208,17 +209,15 @@ function buildProposition(signals: PublicSignals): string {
 }
 
 function buildSections(signals: PublicSignals): DaydreamPublicArtifactSection[] {
-  const titles = signals.sourceTitles.length ? signals.sourceTitles : ["社群筆記", "未命名材料", "共同方法", "下一次測試"];
   const snippets = concreteSourceSentences(signals);
   const terms = meaningfulTerms(signals);
   const sectionInputs = [0, 1, 2, 3].map((index) => ({
-    sourceTitle: titles[index % titles.length],
     observation: snippets[index % Math.max(1, snippets.length)] ?? "材料提供的片段仍然偏薄，因此這裡只能保留為謹慎的工作假設。",
     term: terms[index % Math.max(1, terms.length)] ?? "方法",
   }));
 
   return sectionInputs.map((item, index) => {
-    const title = sectionTitleFor(index, item.term, item.sourceTitle);
+    const title = sectionTitleFor(index, item.term);
     const body = sectionBodyFor(index, item, signals);
     return {
       id: `public-section-${index + 1}`,
@@ -269,7 +268,6 @@ function buildQuietCaveat(
 function meaningfulTerms(signals: PublicSignals): string[] {
   return dedupeStrings([
     ...signals.terms,
-    ...signals.sourceTitles.flatMap((title) => title.split(/\s+|／|\/|:|：|,|，/u)),
   ])
     .map((term) => term.replace(/[_-]+/g, " ").trim())
     .filter((term) => isPublicTerm(term) && term.length >= 2 && !/^\d+$/.test(term))
@@ -294,38 +292,35 @@ function titleCaseTerm(term: string): string {
   return cleaned.slice(0, 18);
 }
 
-function sectionTitleFor(index: number, term: string, sourceTitle: string): string {
+function sectionTitleFor(index: number, term: string): string {
   const shortTerm = titleCaseTerm(term);
-  const shortSource = sourceTitle.replace(/\s+/g, " ").trim().slice(0, 24);
   if (index === 0) return `${shortTerm} 先以具體材料出現`;
-  if (index === 1) return `${shortSource} 提供的轉向`;
+  if (index === 1) return "讓材料自己改變問題";
   if (index === 2) return `${shortTerm} 從題材變成方法`;
   return "把下一步寫成可被接手的形式";
 }
 
 function sectionBodyFor(
   index: number,
-  item: { sourceTitle: string; observation: string; term: string },
+  item: { observation: string; term: string },
   signals: PublicSignals,
 ): string {
   const nextTerm = meaningfulTerms(signals)[index + 1] ?? item.term;
   if (index === 0) {
-    return `${item.sourceTitle} 先提供一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查。`;
+    return `先抓住一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查。`;
   }
   if (index === 1) {
     return `${item.observation} 這裡的轉向不是把材料當作案例裝飾，而是看它如何改變原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被實作測試的路。`;
   }
   if (index === 2) {
-    return `${item.sourceTitle} 讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一種版面、工作坊、互動規則或公共筆記方法，而不是被直接宣稱為完成作品。`;
+    return `這些材料讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一種版面、工作坊、互動規則或公共筆記方法，而不是被直接宣稱為完成作品。`;
   }
   return `${item.observation} 最後的形式應該保留這種未完成狀態：把已知的材料、可試的動作、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
 }
 
 function sourceWorldSentence(signals: PublicSignals): string {
-  const titles = signals.sourceTitles.filter((title) => !/no plaintext extract/i.test(title)).slice(0, 4);
-  if (titles.length === 0) return "社群筆記裡的幾個片段被放在同一張桌上。";
-  if (titles.length === 1) return `從 ${titles[0]} 開始，社群筆記露出一個比單一作品更大的問題。`;
-  return `從 ${titles.slice(0, -1).join("、")} 到 ${titles.at(-1)}，社群筆記露出一個比單一作品更大的問題。`;
+  const summary = sourceFamilySummary(signals);
+  return `幾組${summary}被放在同一張桌上，露出一個比單一作品更大的問題。`;
 }
 
 function cleanSnippet(input: string): string {
@@ -347,19 +342,62 @@ function inferSystems(cards: SourceCard[]): string[] {
   return dedupeStrings(cards.map((card) => card.source ?? "社群筆記")).slice(0, 4);
 }
 
+function sourceFamilySummary(signals: PublicSignals): string {
+  const text = `${signals.seed} ${signals.terms.join(" ")} ${signals.sourceTitles.join(" ")}`.toLowerCase();
+  const families: string[] = [];
+  if (/bio|biology|gene|synthetic|生物|基因/.test(text)) families.push("生物與設計材料");
+  if (/sound|audio|music|聲音|音樂/.test(text)) families.push("聲音與介面材料");
+  if (/textile|fabric|wearable|sensor|布料|穿戴|感測/.test(text)) families.push("柔性電路與身體材料");
+  if (/workshop|camp|community|field|工作坊|社群|田野/.test(text)) families.push("工作坊與社群材料");
+  if (families.length === 0) families.push("社群材料");
+  return families.slice(0, 3).join("、");
+}
+
 function citationFor(card: SourceCard): Pick<SourceCard, "id" | "title" | "url" | "source"> {
   return { id: card.id, title: card.title, url: card.url, source: card.source };
 }
 
-function dedupeCitations<T extends { id: string }>(items: T[]): T[] {
+function dedupeCitationsByFamily<T extends { id: string; title: string; url?: string; source?: string }>(items: T[]): T[] {
   const seen = new Set<string>();
   const result: T[] = [];
   for (const item of items) {
-    if (seen.has(item.id)) continue;
-    seen.add(item.id);
+    const key = sourceFamilyKey(item);
+    if (seen.has(key)) continue;
+    seen.add(key);
     result.push(item);
   }
   return result;
+}
+
+function dedupeBySourceFamily(cards: SourceCard[], max: number): SourceCard[] {
+  const seen = new Set<string>();
+  const result: SourceCard[] = [];
+  for (const card of cards) {
+    const key = sourceFamilyKey(card);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(card);
+    if (result.length >= max) break;
+  }
+  return result;
+}
+
+function sourceFamilyKey(item: { title: string; url?: string; source?: string; path?: string; id?: string }): string {
+  const titleKey = normalizeSourceFamilyText(item.title || item.path || item.url || item.id || "");
+  const sourceKey = normalizeSourceFamilyText(item.source ?? "").split(" ").slice(0, 3).join(" ");
+  return `${sourceKey}:${titleKey}`.trim();
+}
+
+function normalizeSourceFamilyText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\b(19|20)\d{2}\b/g, "")
+    .replace(/synthetic biology for artists and designers/g, "synthetic biology artists designers")
+    .replace(/artsciencebangalore/g, "artscience bangalore")
+    .replace(/hackteria relationship layer/g, "hackteria")
+    .replace(/\b(part|session|day|year|edition)\s*\d+\b/g, "")
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, " ")
+    .trim();
 }
 
 function dedupeStrings(items: string[]): string[] {

@@ -127,6 +127,22 @@ const STOP_WORDS = new Set([
   "這個",
 ]);
 
+const GENERIC_TERMS = new Set([
+  "art",
+  "project",
+  "workshop",
+  "bio",
+  "audio",
+  "music",
+  "design",
+  "community",
+  "research",
+  "essay",
+  "image",
+  "visual",
+  "biology",
+]);
+
 const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/感測器|傳感器|感應器/u, ["sensor", "sensors", "electronics"]],
   [/濕實驗室|實驗室|生物實驗/u, ["wetlab", "lab", "bio"]],
@@ -244,14 +260,19 @@ function scoreCard(card: SourceCard, keywords: string[]): number {
   let score = 0;
 
   for (const keyword of keywords) {
-    if (keywordSet.has(keyword)) score += 8;
-    if (tagSet.has(keyword)) score += 7;
-    if (title.includes(keyword)) score += 6;
-    if (categories.includes(keyword)) score += 4;
-    if (excerpt.includes(keyword)) score += 2;
+    const weight = keywordWeight(keyword);
+    if (keywordSet.has(keyword)) score += 8 * weight;
+    if (tagSet.has(keyword)) score += 7 * weight;
+    if (title.includes(keyword)) score += 6 * weight;
+    if (categories.includes(keyword)) score += 4 * weight;
+    if (excerpt.includes(keyword)) score += 2 * weight;
   }
 
   return score;
+}
+
+function keywordWeight(keyword: string): number {
+  return GENERIC_TERMS.has(keyword.toLowerCase()) ? 0.35 : 1;
 }
 
 function expandViaGraph(seedCards: SourceCard[], corpus: DaydreamCorpus): SourceCard[] {
