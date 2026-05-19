@@ -34,6 +34,23 @@ function migrateAssociationPublicDocuments(snapshot: SimSnapshot): SimSnapshot {
 
 function isCleanAssociationDocument(document: FinalDocument): boolean {
   if (document.modeLabel === 'Daydream') return false;
-  const publicText = [document.title, document.modeLabel, document.body, document.bodyHtml ?? ''].join('\n');
+  const htmlText = stripHtmlToVisibleText(document.bodyHtml ?? '');
+  const publicText = [document.title, document.modeLabel, document.body, htmlText].join('\n');
   return !STALE_PUBLIC_DOCUMENT.test(publicText);
+}
+
+function stripHtmlToVisibleText(html: string): string {
+  return html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<!--([\s\S]*?)-->/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
 }

@@ -435,8 +435,39 @@ test('final documents treat supplied URLs as sources, not answers', () => {
   assert.ok(['nomadic_research', 'manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
   assert.ok(!document.body.includes('最強的線索'));
   assert.ok(!document.body.includes('shihweichieh、com'));
-  assert.ok(document.body.includes('原始問題'));
   assert.ok(document.body.includes('Association') || document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
+});
+
+test('association final generation falls back safely instead of crashing on guarded language', () => {
+  const pet = createThronglet('workflow sourceCards privateTrace sourceTrail relationPaths 怎麼變成公共小誌？', 'Tester', 0, 10010, undefined, '問題電子雞', {
+    intentMode: 'why',
+    personalArchive: 'public writing workshop',
+    skills: 'zine writing',
+  });
+  const forcedPet = {
+    ...pet,
+    state: { ...pet.state, resonanceWithPrompt: 80 },
+    a2aState: { nextExchangeTick: 1, exchangeCount: 0, turnCount: 0, requiredExchanges: 1, requiredTurns: 18 },
+  };
+  let snapshot = createInitialSnapshot([forcedPet], [
+    { id: 'npc-editor', characterId: 1, name: 'Editor Host', personaId: 'editor', text: 'public writing zine workshop care' },
+  ]);
+  snapshot = { ...snapshot, scores: { ...snapshot.scores, wisdom: 30, community: 2 } };
+
+  const next = tickSimulation(snapshot, {}, {
+    'npc-editor': {
+      personaId: 'editor',
+      name: 'Editor Host',
+      role: 'public editor',
+      intro: 'helps turn questions into public notes',
+      links: [],
+    },
+  });
+
+  const document = next.finalDocuments[0];
+  assert.equal(document.modeLabel, 'Association');
+  assert.ok(document.body.includes('Association'));
+  assert.ok(!/privateTrace|sourceTrail|relationPaths|sourceCards|workflow/i.test(document.body));
 });
 
 test('compact final appears in demo window with concise body and log', () => {

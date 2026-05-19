@@ -651,28 +651,63 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     };
   }
 
-  const association = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
-  const htmlVariant = pickDaydreamHtmlLayoutVariant();
-  const bodyHtml = renderDaydreamPublicArtifactHtml(association, htmlVariant);
-  const publicBody = [
+  try {
+    const association = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
+    const htmlVariant = pickDaydreamHtmlLayoutVariant();
+    const bodyHtml = renderDaydreamPublicArtifactHtml(association, htmlVariant);
+    const publicBody = [
+      "Association",
+      association.opening,
+      association.proposition,
+      ...association.sections.map((section) => `${section.title}\n${section.body}`),
+      ...association.protocol.map((item) => `${item.title}\n${item.body}`),
+      association.quietCaveat ?? "",
+    ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
+    return {
+      id: `${pet.id}-final-${tick}`,
+      petId: pet.id,
+      tick,
+      title: association.title,
+      mode,
+      modeLabel: finalDocumentModeLabel(mode),
+      body: publicBody,
+      bodyHtml,
+      htmlVariant,
+      references,
+      reviewLog: [],
+      sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
+    };
+  } catch (error) {
+    console.warn("Association document generation fell back to safe text.", error);
+    return buildSafeAssociationFallbackDocument(pet, tick, mode, references, petExchanges);
+  }
+}
+
+function buildSafeAssociationFallbackDocument(
+  pet: Thronglet,
+  tick: number,
+  mode: FinalDocumentMode,
+  references: Array<{ label: string; url: string; anchorText: string }>,
+  petExchanges: A2AExchange[],
+): FinalDocument {
+  const title = "Association Note";
+  const body = [
     "Association",
-    `原始問題：${pet.question.text}`,
-    association.opening,
-    association.proposition,
-    ...association.sections.map((section) => `${section.title}\n${section.body}`),
-    ...association.protocol.map((item) => `${item.title}\n${item.body}`),
-    association.quietCaveat ?? "",
-  ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
+    "這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。",
+    "請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。",
+    "如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。",
+  ].join("\n\n");
+  const bodyHtml = `<article class="daydream-html daydream-html--safe-association" aria-label="Association Note"><header><p class="dd-kicker">Association</p><h1>${title}</h1></header><section><p>這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。</p><p>請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。</p><p>如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。</p></section></article>`;
   return {
     id: `${pet.id}-final-${tick}`,
     petId: pet.id,
     tick,
-    title: association.title,
+    title,
     mode,
     modeLabel: finalDocumentModeLabel(mode),
-    body: publicBody,
+    body,
     bodyHtml,
-    htmlVariant,
+    htmlVariant: "safe-association",
     references,
     reviewLog: [],
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
