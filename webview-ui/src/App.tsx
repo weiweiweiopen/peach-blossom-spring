@@ -194,7 +194,7 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
 
 function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }> }) {
   return (
-    <div className="world-split-embed">
+    <div className={`world-split-embed ${link.kind === "finalDocument" ? "world-split-final-document" : ""}`}>
       {link.description && (
         <p className="world-split-embed-description">{link.description}</p>
       )}
@@ -205,6 +205,7 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
         className="world-split-iframe"
         loading="eager"
         referrerPolicy="no-referrer-when-downgrade"
+        sandbox={link.kind === "finalDocument" ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
       />
     </div>
   );
@@ -289,10 +290,26 @@ function createStandaloneFinalDocumentUrl(finalDocument: FinalDocument): string 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${escapeStandaloneHtml(finalDocument.title)}</title>
 <style>
-html, body { margin: 0; min-height: 100%; background: #fffdf3; }
-body { overflow: auto; }
-a { color: inherit; text-decoration-thickness: 0.12em; }
 ${collectStandaloneDocumentStyles()}
+html, body {
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow: auto !important;
+  position: static !important;
+  background: #fffdf3 !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+body { touch-action: pan-x pan-y !important; }
+a { color: inherit; text-decoration-thickness: 0.12em; }
+.daydream-html {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
 </style>
 </head>
 <body>
@@ -1911,7 +1928,6 @@ function App() {
       kind: "finalDocument",
       title: finalDocument.title,
       url,
-      description: "Standalone HTML artifact rendered outside the game CSS frame.",
     });
     setSplitPanelAnchor(null);
     setIsSplitExpanded(true);
