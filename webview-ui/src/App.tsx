@@ -154,6 +154,7 @@ type SplitPanel =
   | { kind: "wukirBandcamp" }
   | { kind: "communityLinks" }
   | { kind: "externalLink"; title: string; url: string; description?: string }
+  | { kind: "finalDocument"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" };
 
@@ -175,6 +176,7 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "wukirBandcamp") return "Institutionalized Ritual";
   if (panel.kind === "communityLinks") return t(language, "archive.newsTitle");
   if (panel.kind === "externalLink") return panel.title;
+  if (panel.kind === "finalDocument") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
   return t(language, "archive.mapTitle");
 }
@@ -186,10 +188,11 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
   }
+  if (panel.kind === "finalDocument") return "Final Document";
   return t(language, "archive.tree");
 }
 
-function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" }> }) {
+function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }> }) {
   return (
     <div className="world-split-embed">
       {link.description && (
@@ -232,23 +235,71 @@ function WukirBandcampEmbed() {
   );
 }
 
-function renderFinalDocumentText(document: FinalDocument, paragraph: string) {
+function escapeStandaloneHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function finalDocumentTextToHtml(finalDocument: FinalDocument): string {
   const referencesByAnchor = new Map(
-    document.references.map((reference) => [reference.anchorText || reference.label, reference]),
+    finalDocument.references.map((reference) => [reference.anchorText || reference.label, reference]),
   );
-  const parts = paragraph.split(/(\[\[[^\]]+\]\])/g).filter(Boolean);
-  return parts.map((part, index) => {
-    const match = /^\[\[([^\]]+)\]\]$/.exec(part);
-    if (!match) return part;
-    const anchor = match[1];
-    const reference = referencesByAnchor.get(anchor);
-    if (!reference) return anchor;
-    return (
-      <a key={`${anchor}-${index}`} href={reference.url} target="_blank" rel="noreferrer">
-        {anchor}
-      </a>
-    );
-  });
+  return finalDocument.body
+    .split("\n\n")
+    .map((paragraph) => {
+      const html = escapeStandaloneHtml(paragraph).replace(/\[\[([^\]]+)\]\]/g, (_match, anchor: string) => {
+        const reference = referencesByAnchor.get(anchor);
+        if (!reference) return escapeStandaloneHtml(anchor);
+        return `<a href="${escapeStandaloneHtml(reference.url)}" target="_blank" rel="noreferrer">${escapeStandaloneHtml(anchor)}</a>`;
+      });
+      return `<p>${html}</p>`;
+    })
+    .join("\n");
+}
+
+function collectStandaloneDocumentStyles(): string {
+  if (typeof window === "undefined") return "";
+  const cssTexts: string[] = [];
+  for (const sheet of Array.from(window.document.styleSheets)) {
+    try {
+      cssTexts.push(
+        Array.from(sheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join("\n"),
+      );
+    } catch {
+      // Ignore cross-origin stylesheets; Vite/Tailwind app CSS is same-origin in this app.
+    }
+  }
+  return cssTexts.join("\n");
+}
+
+function createStandaloneFinalDocumentUrl(finalDocument: FinalDocument): string {
+  const fragment = finalDocument.bodyHtml?.trim()
+    ? finalDocument.bodyHtml
+    : `<article class="daydream-html daydream-html--pbs-reset"><header class="dd-reset-hero"><p class="dd-kicker">Daydream</p><h1>${escapeStandaloneHtml(finalDocument.title)}</h1></header><section class="dd-reset-opening">${finalDocumentTextToHtml(finalDocument)}</section></article>`;
+  const page = `<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${escapeStandaloneHtml(finalDocument.title)}</title>
+<style>
+html, body { margin: 0; min-height: 100%; background: #fffdf3; }
+body { overflow: auto; }
+a { color: inherit; text-decoration-thickness: 0.12em; }
+${collectStandaloneDocumentStyles()}
+</style>
+</head>
+<body>
+${fragment}
+</body>
+</html>`;
+  return URL.createObjectURL(new Blob([page], { type: "text/html;charset=utf-8" }));
 }
 
 function petResponsesKey(petId: string): string {
@@ -549,6 +600,7 @@ function App() {
   } | null>(null);
   const petRunawayDoneRef = useRef<string | null>(null);
   const seenFinalDocumentIdsRef = useRef<Set<string>>(new Set());
+  const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
 
   const activeDispatchPets = useMemo(
     () => dispatchedPets.filter((pet) => pet.status === "active"),
@@ -592,6 +644,13 @@ function App() {
     }),
     [dispatchedPets],
   );
+
+  useEffect(() => {
+    return () => {
+      for (const url of finalDocumentObjectUrlsRef.current) URL.revokeObjectURL(url);
+      finalDocumentObjectUrlsRef.current.clear();
+    };
+  }, []);
 
   // Sync alwaysShowOverlay from persisted settings
   useEffect(() => {
@@ -668,6 +727,13 @@ function App() {
         simSnapshot?.thronglets.find((item) => item.characterId === agentId) ??
         null;
       if (pet && appMode === "interactive") {
+        const finalDocument = simSnapshot?.finalDocuments.find((document) => document.petId === pet.id) ?? null;
+        if (finalDocument) {
+          setSelectedPet(null);
+          setSelectedDispatchPet(null);
+          openFinalDocumentSplit(finalDocument);
+          return;
+        }
         setSelectedPet(pet);
         setSelectedDispatchPet(null);
         return;
@@ -1800,12 +1866,11 @@ function App() {
     for (const document of simSnapshot.finalDocuments) seen.add(document.id);
     if (!newest) return;
     const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
-    if (!pet) return;
-    removeCompletedLocalDispatchPet(pet.question.text);
-    setSelectedPet(pet);
+    if (pet) removeCompletedLocalDispatchPet(pet.question.text);
+    setSelectedPet(null);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
-    setIsSelectedPetPanelExpanded(true);
+    openFinalDocumentSplit(newest);
   }, [removeCompletedLocalDispatchPet, simSnapshot]);
 
   useEffect(() => {
@@ -1839,17 +1904,18 @@ function App() {
   const selectedPetFinalDocument = selectedPet
     ? (simSnapshot?.finalDocuments.find((document) => document.petId === selectedPet.id) ?? null)
     : null;
-  const finalDocumentReviewLog = selectedPetFinalDocument
-    ? [
-        ...(selectedPetFinalDocument.reviewLog ?? []).slice(0, 6),
-        ...petBoardResponses.slice(0, 2).map((response) => ({
-          tick: simSnapshot?.tick ?? selectedPetFinalDocument.tick,
-          speaker: response.author ?? "player",
-          text: response.text,
-          source: "player" as const,
-        })),
-      ]
-    : [];
+  function openFinalDocumentSplit(finalDocument: FinalDocument): void {
+    const url = createStandaloneFinalDocumentUrl(finalDocument);
+    finalDocumentObjectUrlsRef.current.add(url);
+    setSplitPanel({
+      kind: "finalDocument",
+      title: finalDocument.title,
+      url,
+      description: "Standalone HTML artifact rendered outside the game CSS frame.",
+    });
+    setSplitPanelAnchor(null);
+    setIsSplitExpanded(true);
+  }
 
   function closeSelectedPetPanel(): void {
     if (selectedPetFinalDocument && selectedPet) {
@@ -2415,8 +2481,8 @@ function App() {
                         className="w-full text-left border-2 border-black bg-white px-3 py-3 mt-3 text-sm"
                         type="button"
                         onClick={() => {
-                          const pet = simSnapshot.thronglets.find((item) => item.id === document.petId);
-                          if (pet) setSelectedPet(pet);
+                          setSelectedPet(null);
+                          openFinalDocumentSplit(document);
                         }}
                       >
                         最終文件已生成: {document.title}
@@ -2638,7 +2704,7 @@ function App() {
             </section>
           )}
 
-          {selectedPet && (
+          {selectedPet && !selectedPetFinalDocument && (
             <section
               className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
                 isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""
@@ -2746,40 +2812,6 @@ function App() {
                   )}
                 </div>
               )}
-              {selectedPetFinalDocument && (
-                <div className="pet-detail-section final-document-panel">
-                  <p className="type-label pet-detail-kicker">{selectedPetFinalDocument.modeLabel ?? "Daydream"}</p>
-                  <h3 className="type-subheading">{selectedPetFinalDocument.title}</h3>
-                  {selectedPetFinalDocument.bodyHtml ? (
-                    <div
-                      className="final-document-html-shell"
-                      data-daydream-layout={selectedPetFinalDocument.htmlVariant ?? "unknown"}
-                      dangerouslySetInnerHTML={{ __html: selectedPetFinalDocument.bodyHtml }}
-                    />
-                  ) : (
-                    <div className="final-document-body">
-                      {selectedPetFinalDocument.body.split("\n\n").map((paragraph) => (
-                        <p key={paragraph} className="type-body">
-                          {renderFinalDocumentText(selectedPetFinalDocument, paragraph)}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                  {finalDocumentReviewLog.length > 0 && (
-                    <details className="final-document-log">
-                      <summary>Conversation log preview ({finalDocumentReviewLog.length})</summary>
-                      {finalDocumentReviewLog.map((entry, index) => (
-                        <article key={`${entry.source}-${entry.tick}-${index}`}>
-                          <p className="final-document-log-meta">
-                            tick {entry.tick} · {entry.speaker}{"target" in entry && entry.target ? ` → ${entry.target}` : ""} · {entry.source}
-                          </p>
-                          <p>{entry.text}</p>
-                        </article>
-                      ))}
-                    </details>
-                  )}
-                </div>
-              )}
             </section>
           )}
 
@@ -2876,7 +2908,7 @@ function App() {
                   </button>
                 ))}
               </div>
-            ) : splitPanel.kind === "externalLink" ? (
+            ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
               <ExternalLinkEmbed link={splitPanel} />
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
