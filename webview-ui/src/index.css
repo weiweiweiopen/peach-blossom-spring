@@ -5328,7 +5328,7 @@
   }
 }
 
-/* Daydream generated HTML artifact layouts. Keep scoped to final document modal. */
+/* Association generated HTML artifact layouts. Keep scoped to final document modal. */
 .final-document-window.rpg-message-frame {
   inset: max(8px, var(--safe-top)) max(8px, var(--safe-right)) max(8px, var(--safe-bottom)) max(8px, var(--safe-left)) !important;
   padding: clamp(12px, 1.6vw, 28px) !important;
@@ -5472,7 +5472,7 @@
   .dd-soft-note:nth-child(odd), .dd-soft-note:nth-child(even) { transform: none; }
 }
 
-/* Hotfix: Daydream HTML artifacts must scroll and preserve the full generated essay on mobile. */
+/* Hotfix: Association HTML artifacts must scroll and preserve the full generated essay on mobile. */
 .final-document-window.rpg-message-frame {
   overflow: auto !important;
 }
@@ -5528,7 +5528,7 @@
   }
 }
 
-/* Preserve Daydream layout identity on phones: do not flatten the zine into a plain text column. */
+/* Preserve Association layout identity on phones: do not flatten the zine into a plain text column. */
 @media (max-width: 700px), (pointer: coarse) {
   .final-document-html-shell {
     overflow: auto !important;

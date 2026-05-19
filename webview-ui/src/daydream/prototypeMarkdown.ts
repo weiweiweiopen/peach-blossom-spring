@@ -156,9 +156,9 @@ function renderEmergentLlmPrompt(
     : "沒有找到足夠來源。請輸出較短、謹慎的 public note，不要硬湊案例或宣稱完成。";
   const semanticBlocks = renderSemanticPromptBlocks(semanticContext);
 
-  return `# Daydream Universal Editorial Writing Prompt
+  return `# Association Universal Editorial Writing Prompt
 
-你是 Daydream editorial writer。
+你是 Association editorial writer。
 
 你的任務是根據使用者原始需求與 Obsidian export 中找到的來源，寫一篇可公開閱讀的 zine essay / speculative research note。
 
@@ -273,7 +273,7 @@ ${renderResearchTopicsPrompt(researchTopics)}
 ## 語氣
 像 public zine essay / speculative research note。但正文中不要出現「public-facing」「zine draft」「speculative note」這類生成狀態詞。
 語氣可以有畫面感、有概念密度、有一點詩性、有明確觀察、有方法上的啟發、允許適度推測。
-語氣不要像學術論文、工程報告、資料庫摘要、prompt 執行說明、搜尋系統介紹，或替 Daydream 解釋自己怎麼工作。
+語氣不要像學術論文、工程報告、資料庫摘要、prompt 執行說明、搜尋系統介紹，或替 Association 解釋自己怎麼工作。
 
 ## 可見文字保護規則
 讀者可見文本中，不得出現任何生成狀態、版型狀態、工程狀態或實作備註。
@@ -289,7 +289,7 @@ ${renderResearchTopicsPrompt(researchTopics)}
 ## 後台語言限制
 以下詞彙不得以後台、檢索、生成流程或資料結構的意思出現在正文中：workflow、traversal、graph expansion、linkedExpansions、sourceCards、secondary seed、depth score、玩家 seed、命中、第一層、第二層、from / to、relation、reasoningHint、sourceNotes、來源路徑、source paths、generated question、research score、搜尋結果、檢索過程、社群筆記如何找到、這些來源在正文裡如何使用。
 
-注意：禁止的是這些詞作為後台流程語言。如果某個詞是本次主題或來源內容的必要概念，可以自然使用。例如農業可以使用 seed 作為「種子」，開源文化可以使用 source / open source，但不得用它們描述 Daydream 的資料流程或生成過程。
+注意：禁止的是這些詞作為後台流程語言。如果某個詞是本次主題或來源內容的必要概念，可以自然使用。例如農業可以使用 seed 作為「種子」，開源文化可以使用 source / open source，但不得用它們描述 Association 的資料流程或生成過程。
 
 ## 輸出格式
 只輸出文章本身。
@@ -354,7 +354,7 @@ function renderMarkdown(
 
   return `# ${projectTitle}
 
-Prototype 狀態：這是由 mouse1 corpus export 產生的本機 Daydream MVP 草稿。此檔案是一篇測試用 wiki 專案頁提案，不代表專案已經存在。
+Prototype 狀態：這是由 mouse1 corpus export 產生的本機 Association MVP 草稿。此檔案是一篇測試用 wiki 專案頁提案，不代表專案已經存在。
 
 ## 專案摘要
 ${blueprint.concept}
@@ -399,7 +399,7 @@ ${semanticSection}
 ## Research Topic Generator／跨知識題目候選
 ${renderResearchTopicsMarkdown(researchTopics)}
 
-## Daydream 四步任務
+## Association 四步任務
 1. Corpus creation：讀 Obsidian export，建立 source cards / graph edges / manifest。
 2. Recursive + second-layer reading：沿 linked pages、附件、footnote、reference 能解析到的文字再收集一次。
 3. Connected-paper-like discovery：找出相似、互補、張力、轉譯、缺橋與風險關係。
@@ -433,7 +433,7 @@ ${documentationList}
 4. 感知層擴展：用 categoryGraph edges 找出與初始命中頁共享 tags/categories 的相鄰卡片。
 5. Connected Papers 語義向量：計算每張 source card 的 categories、tags、semanticTopics、methods、materials、objects，找出 related articles、missing bridges 與 future directions。
 6. Research Topic Generator：把 relation clusters 轉成題目候選，包含 research question、knowledge systems、evidence trail、novelty gap、risk caveat、first reading route。
-7. Daydream output：選定一個成熟題目後，才生成 zine / wiki page / workshop score / exhibition protocol。
+7. Association output：選定一個成熟題目後，才生成 zine / wiki page / workshop score / exhibition protocol。
 8. 人工驗證：發布前由人檢查 cited source cards 是否真的支持該方向。
 
 ## 驗證問題
@@ -629,7 +629,7 @@ function buildProjectBlueprint(
       "把測試發布為 wiki-page draft，附上來源卡引用，以及擴大前必須驗證的項目。",
     ],
     executionSteps: [
-      "把 seed 丟進 Daydream prototype，保存生成的 Markdown 頁面。",
+      "把 seed 丟進 Association prototype，保存生成的 Markdown 頁面。",
       "檢查前 3 個 matched source cards，移除只是在標題層面巧合的 citation。",
       "用安全、可取得的工具準備一個小型材料站；清楚記錄所有替代材料。",
       "邀請 2-6 位參與者執行一次 project score，每一步控制在 10 分鐘內。",

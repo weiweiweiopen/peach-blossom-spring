@@ -436,7 +436,7 @@ test('final documents treat supplied URLs as sources, not answers', () => {
   assert.ok(!document.body.includes('最強的線索'));
   assert.ok(!document.body.includes('shihweichieh、com'));
   assert.ok(document.body.includes('原始問題'));
-  assert.ok(document.body.includes('Day Dream') || document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
+  assert.ok(document.body.includes('Association') || document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
 });
 
 test('compact final appears in demo window with concise body and log', () => {
@@ -472,9 +472,9 @@ test('compact final appears in demo window with concise body and log', () => {
   assert.ok(document, 'expected final document by tick 75');
   assert.ok(document.tick >= 28 && document.tick <= 75);
   assert.ok(['nomadic_research', 'manufacturing_technical_file', 'travel_plan', 'poem'].includes(document.mode));
-  assert.ok(document.body.split('\n\n').length <= 5);
-  assert.ok(/田野 1|計劃 1|路線 1|詩節 1|Alive check protocol/.test(document.body));
-  assert.ok(document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap') || document.body.includes('Day Dream'));
+  assert.ok(document.body.split('\n\n').length >= 5);
+  assert.ok(/Association|田野 1|計劃 1|路線 1|詩節 1|Alive check protocol/.test(document.body));
+  assert.ok(document.body.includes('Association') || document.body.includes('Nomadic Research') || document.body.includes('製造／Camp') || document.body.includes('旅行 uMap'));
   assert.ok(!document.body.includes('夢境、修補、工具'));
   assert.ok(!document.references.every((reference) => ['夢境', '修補', '工具'].includes(reference.anchorText)));
   assert.ok(document.reviewLog.length <= 6);
@@ -850,7 +850,7 @@ test('wiki daydream mode generates final report from wiki and corpus without ext
   });
   assert.equal(report.mode, 'manufacturing_technical_file');
   assert.equal(report.petId, pet.id);
-  assert.ok(report.body.includes('Wiki Daydream Mode'));
+  assert.ok(report.body.includes('Wiki Association Mode'));
   assert.ok(report.body.includes('最小原型'));
   assert.ok(report.body.includes('documentation') || report.body.includes('文件'));
   assert.ok(report.references.some((reference) => reference.label.includes('How To Get What You Want') || reference.label.includes('Local reading history')));

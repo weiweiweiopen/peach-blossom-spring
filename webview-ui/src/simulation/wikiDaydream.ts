@@ -51,12 +51,12 @@ function daydreamMode(question: string): FinalDocumentMode {
 }
 
 const modeLabels: Record<FinalDocumentMode, string> = {
-  story: 'Wiki Daydream Report',
-  poem: 'Wiki Daydream Poem',
+  story: 'Wiki Association Report',
+  poem: 'Wiki Association Poem',
   nomadic_research: 'Wiki Nomadic Research',
-  manufacturing_technical_file: 'Wiki Daydream Technical File',
-  travel_plan: 'Wiki Daydream Travel Plan',
-  philosophical_debate: 'Wiki Daydream Debate',
+  manufacturing_technical_file: 'Wiki Association Technical File',
+  travel_plan: 'Wiki Association Travel Plan',
+  philosophical_debate: 'Wiki Association Debate',
 };
 
 function readingHistoryCandidates(readingHistory: WikiDaydreamSource[] = []): Array<Omit<ChatEvidence, 'score'>> {
@@ -111,7 +111,7 @@ function bodyFromEvidence(question: string, evidence: ChatEvidence[], mode: Fina
     philosophical_debate: '先區分收入、名聲、社群信任與創作自由；不要把可見度誤認成可持續生活。',
   };
   return [
-    `【Wiki Daydream Mode】原始問題：「${compact(question, 120)}」。這份報告只使用閱讀史、訪談、wiki、網站資料與 seed corpus 進行夢境式整理，不呼叫外部 API。`,
+    `【Wiki Association Mode】原始問題：「${compact(question, 120)}」。這份報告只使用閱讀史、訪談、wiki、網站資料與 seed corpus 進行夢境式整理，不呼叫外部 API。`,
     `核心線索：${conceptLine}。`,
     sourceFrame,
     `暫定報告：${modeAction[mode]}`,
@@ -121,7 +121,7 @@ function bodyFromEvidence(question: string, evidence: ChatEvidence[], mode: Fina
 
 export function generateWikiDaydreamReport(args: WikiDaydreamReportArgs): FinalDocument {
   const tick = args.tick ?? 0;
-  const question = args.question || args.pet?.question.text || 'Untitled daydream';
+  const question = args.question || args.pet?.question.text || 'Untitled association';
   const candidates: Array<Omit<ChatEvidence, 'score'>> = [
     ...readingHistoryCandidates(args.readingHistory),
     ...(args.knowledgeBases ?? []).flatMap((knowledge) => buildKnowledgeBaseEvidenceCandidates(knowledge)),

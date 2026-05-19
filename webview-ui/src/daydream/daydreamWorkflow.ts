@@ -69,7 +69,7 @@ export function runDaydreamWorkflow(seed: string, corpus: DaydreamCorpus): Daydr
 }
 
 function isReadyForTopicSelection(report: DaydreamReport): boolean {
-  // Daydream is an inspirational, source-grounded research-artifact generator,
+  // Association is an inspirational, source-grounded publication generator,
   // not a peer-reviewed paper pipeline. Allow emergence/noise when retrieval is
   // strong enough, but keep the harder gate for truly polished publication.
   return report.depthMetrics.depthScore >= 40 &&
@@ -104,7 +104,7 @@ function buildOutputPlan(
     return {
       format: "reading-route",
       title: "低證據白日夢：先補深讀路線",
-      thesis: "目前 evidence 不足，Daydream 應停在閱讀路線與待查問題，不應生成完成小誌。",
+      thesis: "目前 evidence 不足，Association 應停在閱讀路線與待查問題，不應生成完成小誌。",
       sections: [
         {
           title: "需要補讀的來源",

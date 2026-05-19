@@ -148,7 +148,7 @@ const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/濕實驗室|實驗室|生物實驗/u, ["wetlab", "lab", "bio"]],
   [/社群|社區|共同體/u, ["community", "workshop"]],
   [/水質|水/u, ["water", "environment"]],
-  [/電子音樂|聲音|聽見|聲響|音樂/u, ["sound", "audio", "music", "electronic"]],
+  [/電子音樂|聲音|聽見|聲響|音樂/u, ["sound", "sound", "sound", "audio", "music", "electronic"]],
   [/理論|論述|研究/u, ["theory", "research", "essay"]],
   [/視覺|影像|圖像/u, ["visual", "image", "art"]],
   [/裝置|裝置藝術/u, ["installation", "device"]],

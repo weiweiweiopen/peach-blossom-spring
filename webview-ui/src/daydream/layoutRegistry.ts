@@ -42,7 +42,7 @@ export const DAYDREAM_LAYOUT_PRESETS: DaydreamLayoutPreset[] = [
   {
     id: 'pbs_reset_title_kinetic',
     name: 'PBS Reset Title Kinetic',
-    intent: 'PBS-palette title-led public Daydream artifact; readable body, kinetic title only.',
+    intent: 'PBS-palette title-led public Association document; readable body, kinetic title only.',
     minColumns: 1,
     maxColumns: 4,
     minRows: 4,
@@ -54,7 +54,7 @@ export const DAYDREAM_LAYOUT_PRESETS: DaydreamLayoutPreset[] = [
   {
     id: 'soft_sound_commons',
     name: 'Soft Sound Commons',
-    intent: 'Soft-sound / commons zine direction for public Daydream outputs.',
+    intent: 'Soft-sound / commons zine direction for public Association outputs.',
     minColumns: 1,
     maxColumns: 4,
     minRows: 4,
@@ -103,6 +103,6 @@ export const DAYDREAM_LAYOUT_PRESETS: DaydreamLayoutPreset[] = [
 
 export function getDaydreamLayoutPreset(id: DaydreamLayoutId): DaydreamLayoutPreset {
   const preset = DAYDREAM_LAYOUT_PRESETS.find((layout) => layout.id === id);
-  if (!preset) throw new Error(`Unknown Daydream layout preset: ${id}`);
+  if (!preset) throw new Error(`Unknown Association layout preset: ${id}`);
   return preset;
 }

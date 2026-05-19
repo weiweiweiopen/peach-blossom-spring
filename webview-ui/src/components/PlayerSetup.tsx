@@ -62,7 +62,7 @@ const fixedPetRoles = [
 const intentOptions: Array<{ value: PlayerIntentMode; zh: string; en: string }> = [
   { value: "nomadic_research", zh: "遊牧研究", en: "Nomadic Research" },
   { value: "travel_plan", zh: "旅行 uMap 動線", en: "Travel uMap route" },
-  { value: "poem", zh: "Daydream 小誌", en: "Daydream zine" },
+  { value: "poem", zh: "Association 小誌", en: "Association zine" },
 ];
 
 function normalizeIntentMode(mode: PlayerIntentMode | undefined): PlayerIntentMode {

@@ -29,20 +29,20 @@ export function DaydreamPanel({ onClose }: DaydreamPanelProps) {
   }
 
   return (
-    <section className="daydream-panel" aria-label="Daydream Seed-to-Future MVP">
+    <section className="daydream-panel" aria-label="Association panel">
       <div className="daydream-panel-header">
         <div>
-          <p className="daydream-kicker">Daydream MVP</p>
+          <p className="daydream-kicker">Association</p>
           <h2>Seed-to-Future Association Engine</h2>
-          <p>這個東西的未來可以變成什麼？ 使用公開的 Daydream corpus 生成一份可讀、可測試、可修正的小誌草圖。</p>
+          <p>這個東西的未來可以變成什麼？ 使用公開的 association corpus 生成一份可讀、可測試、可修正的小誌草圖。</p>
         </div>
-        <button type="button" onClick={onClose} aria-label="Close Daydream panel">
+        <button type="button" onClick={onClose} aria-label="Close Association panel">
           Close
         </button>
       </div>
 
       <form className="daydream-seed-form" onSubmit={handleSubmit}>
-        <label htmlFor="daydream-seed">Seed poem, song, artwork text, curatorial note, or research note</label>
+        <label htmlFor="daydream-seed">Association input: poem, song, artwork text, curatorial note, or research note</label>
         <textarea
           id="daydream-seed"
           value={seed}

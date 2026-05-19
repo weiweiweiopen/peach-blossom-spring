@@ -2,6 +2,7 @@ import { daydreamCorpus } from "../daydream/corpus.js";
 import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
 import { pickDaydreamHtmlLayoutVariant, renderDaydreamPublicArtifactHtml } from "../daydream/publicArtifactHtml.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
+import { buildNomadicResearchReport } from "./nomadicResearch.js";
 import {
   defaultScores,
   deriveNpcState,
@@ -288,6 +289,15 @@ function normalizeDocumentMode(mode: string | undefined): FinalDocumentMode {
   if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "nomadic_research";
   if (mode === "travel_plan" || mode?.includes("travel") || mode?.includes("route") || mode?.includes("map") || mode?.includes("social")) return "travel_plan";
   return "poem";
+}
+
+function finalDocumentModeLabel(mode: FinalDocumentMode): string {
+  if (mode === "nomadic_research") return "Nomadic Research";
+  if (mode === "travel_plan") return "Travel Plan";
+  if (mode === "manufacturing_technical_file") return "Manufacturing Technical File";
+  if (mode === "philosophical_debate") return "Philosophical Debate";
+  if (mode === "story") return "Story";
+  return "Association";
 }
 
 function chooseFinalDocumentMode(pet: Thronglet, exchanges: A2AExchange[]): FinalDocumentMode {
@@ -619,36 +629,51 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     ...ref,
     anchorText: referenceAnchor(ref, index, anchorSignals),
   }));
-  const daydream = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
-  const htmlVariant = pickDaydreamHtmlLayoutVariant();
-  const bodyHtml = renderDaydreamPublicArtifactHtml(daydream, htmlVariant);
-  const publicBody = [
-    daydream.opening,
-    daydream.proposition,
-    ...daydream.sections.map((section) => `${section.title}\n${section.body}`),
-    ...daydream.protocol.map((item) => `${item.title}\n${item.body}`),
-    daydream.quietCaveat ?? "",
-  ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
-  const publicReferences = daydream.privateTrace.sourceTrail
-    .filter((source) => source.url)
-    .slice(0, 6)
-    .map((source, index) => ({
-      label: source.title,
-      url: source.url ?? "#",
-      anchorText: referenceAnchor({ label: source.title, url: source.url ?? "#" }, index, [source.title]),
-    }));
+  if (mode === "nomadic_research") {
+    const nomadic = buildNomadicResearchReport({
+      question: pet.question.text,
+      sourceAnchors: petExchanges.map((exchange) => exchange.summary).join("\n"),
+      nutrients,
+      references,
+      targets: splitTags(pet.question.text),
+    });
+    return {
+      id: `${pet.id}-final-${tick}`,
+      petId: pet.id,
+      tick,
+      title: "Nomadic Research Field Plan",
+      mode,
+      modeLabel: finalDocumentModeLabel(mode),
+      body: nomadic.body,
+      references,
+      reviewLog: [],
+      sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
+    };
+  }
 
+  const association = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
+  const htmlVariant = pickDaydreamHtmlLayoutVariant();
+  const bodyHtml = renderDaydreamPublicArtifactHtml(association, htmlVariant);
+  const publicBody = [
+    "Association",
+    `原始問題：${pet.question.text}`,
+    association.opening,
+    association.proposition,
+    ...association.sections.map((section) => `${section.title}\n${section.body}`),
+    ...association.protocol.map((item) => `${item.title}\n${item.body}`),
+    association.quietCaveat ?? "",
+  ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
   return {
     id: `${pet.id}-final-${tick}`,
     petId: pet.id,
     tick,
-    title: daydream.title,
+    title: association.title,
     mode,
-    modeLabel: "Daydream",
+    modeLabel: finalDocumentModeLabel(mode),
     body: publicBody,
     bodyHtml,
     htmlVariant,
-    references: publicReferences.length > 0 ? publicReferences : references,
+    references,
     reviewLog: [],
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
   };

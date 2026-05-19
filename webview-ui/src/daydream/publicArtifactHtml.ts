@@ -1,3 +1,4 @@
+import { assertCleanPublicArtifact } from "./artifactGuard.js";
 import type { DaydreamPublicArtifactContent } from "./publicArtifactContent.js";
 
 export type DaydreamHtmlLayoutVariant = "pbs-reset-title" | "soft-commons-zine" | "aino-motion-grid";
@@ -18,13 +19,14 @@ export function renderDaydreamPublicArtifactHtml(
 ): string {
   const sections = artifact.sections.slice(0, 4);
   const protocol = artifact.protocol.slice(0, 4);
-  const terms = artifact.privateTrace.terms.slice(0, 8);
+  const terms = sections.map((section) => section.title).slice(0, 4);
+  let html: string;
 
   if (variant === "pbs-reset-title") {
-    return `
+    html = `
 <article class="daydream-html daydream-html--pbs-reset" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-reset-hero">
-    <p class="dd-kicker">Daydream</p>
+    <p class="dd-kicker">Association</p>
     <h1>${escapeHtml(artifact.title)}</h1>
     <p class="dd-subtitle">${escapeHtml(artifact.subtitle)}</p>
   </header>
@@ -46,14 +48,12 @@ export function renderDaydreamPublicArtifactHtml(
     ${artifact.quietCaveat ? `<small>${escapeHtml(artifact.quietCaveat)}</small>` : ""}
   </footer>
 </article>`;
-  }
-
-  if (variant === "soft-commons-zine") {
-    return `
+  } else if (variant === "soft-commons-zine") {
+    html = `
 <article class="daydream-html daydream-html--soft-commons" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-soft-head">
     <div>
-      <p class="dd-kicker">Daydream</p>
+      <p class="dd-kicker">Association</p>
       <h1>${escapeHtml(artifact.title)}</h1>
     </div>
     <p>${escapeHtml(artifact.subtitle)}</p>
@@ -79,12 +79,11 @@ export function renderDaydreamPublicArtifactHtml(
   </aside>
   ${artifact.quietCaveat ? `<p class="dd-soft-caveat">${escapeHtml(artifact.quietCaveat)}</p>` : ""}
 </article>`;
-  }
-
-  return `
+  } else {
+    html = `
 <article class="daydream-html daydream-html--aino-grid" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-aino-title">
-    <p class="dd-kicker">Daydream</p>
+    <p class="dd-kicker">Association</p>
     <h1>${escapeHtml(artifact.title)}</h1>
     <p>${escapeHtml(artifact.subtitle)}</p>
   </header>
@@ -106,6 +105,10 @@ export function renderDaydreamPublicArtifactHtml(
     ${artifact.quietCaveat ? `<small>${escapeHtml(artifact.quietCaveat)}</small>` : ""}
   </footer>
 </article>`;
+  }
+
+  assertCleanPublicArtifact(html);
+  return html;
 }
 
 function escapeHtml(value: string): string {

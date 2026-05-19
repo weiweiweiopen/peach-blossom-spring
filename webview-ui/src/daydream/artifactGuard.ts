@@ -10,7 +10,7 @@ export interface ArtifactGuardResult {
 }
 
 /**
- * Public Daydream/zine artifacts must speak only in the work's own voice.
+ * Public Association/zine artifacts must speak only in the work's own voice.
  * Workflow labels, implementation notes, debug/provenance labels, tool names,
  * source-card labels, and delivery mechanics belong in private metadata or a
  * separate debug artifact — never in the public surface.

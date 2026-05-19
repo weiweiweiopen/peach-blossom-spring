@@ -188,7 +188,7 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
   }
-  if (panel.kind === "finalDocument") return "Final Document";
+  if (panel.kind === "finalDocument") return "Association";
   return t(language, "archive.tree");
 }
 
@@ -282,7 +282,7 @@ function collectStandaloneDocumentStyles(): string {
 function createStandaloneFinalDocumentUrl(finalDocument: FinalDocument): string {
   const fragment = finalDocument.bodyHtml?.trim()
     ? finalDocument.bodyHtml
-    : `<article class="daydream-html daydream-html--pbs-reset"><header class="dd-reset-hero"><p class="dd-kicker">Daydream</p><h1>${escapeStandaloneHtml(finalDocument.title)}</h1></header><section class="dd-reset-opening">${finalDocumentTextToHtml(finalDocument)}</section></article>`;
+    : `<article class="daydream-html daydream-html--pbs-reset"><header class="dd-reset-hero"><p class="dd-kicker">Association</p><h1>${escapeStandaloneHtml(finalDocument.title)}</h1></header><section class="dd-reset-opening">${finalDocumentTextToHtml(finalDocument)}</section></article>`;
   const page = `<!doctype html>
 <html lang="zh-Hant">
 <head>

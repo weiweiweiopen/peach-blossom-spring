@@ -14,8 +14,7 @@ export interface DaydreamPublicArtifactProtocolItem {
 }
 
 export interface DaydreamPublicArtifactContent {
-  schemaVersion: "daydream-public-artifact-v1";
-  seed: string;
+  schemaVersion: "association-public-document-v1";
   title: string;
   subtitle: string;
   opening: string;
@@ -23,17 +22,10 @@ export interface DaydreamPublicArtifactContent {
   sections: DaydreamPublicArtifactSection[];
   protocol: DaydreamPublicArtifactProtocolItem[];
   quietCaveat?: string;
-  privateTrace: {
-    sourceTrail: Array<Pick<SourceCard, "id" | "title" | "url" | "source">>;
-    terms: string[];
-    relationPattern?: ResearchTopicCandidate["relationPattern"];
-    maturityScore?: number;
-    relationPaths: Array<{ from: string; to: string; relation: string }>;
-  };
   approvedForPublicLayout: boolean;
 }
 
-const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
+const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score|source\s*trail|relation\s*paths?|maturity\s*score|privateTrace|Daydream)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
 
 export function buildPublicArtifactContent(params: {
   seed: string;
@@ -43,15 +35,10 @@ export function buildPublicArtifactContent(params: {
 }): DaydreamPublicArtifactContent {
   const { seed, report, selectedTopic } = params;
   const evidenceCards = dedupeBySourceFamily(params.evidenceCards, 12);
-  const sourceTrail = dedupeCitationsByFamily([
-    ...(selectedTopic?.evidenceTrail ?? []),
-    ...evidenceCards.map(citationFor),
-  ]).slice(0, 10);
   const signals = extractPublicSignals(seed, report, selectedTopic, evidenceCards);
   const concept = nameConcept(signals);
   const artifact: DaydreamPublicArtifactContent = {
-    schemaVersion: "daydream-public-artifact-v1",
-    seed,
+    schemaVersion: "association-public-document-v1",
     title: concept.title,
     subtitle: concept.subtitle,
     opening: buildOpening(signals),
@@ -59,13 +46,6 @@ export function buildPublicArtifactContent(params: {
     sections: buildSections(signals),
     protocol: buildProtocol(signals),
     quietCaveat: buildQuietCaveat(signals, selectedTopic, report),
-    privateTrace: {
-      sourceTrail,
-      terms: signals.terms,
-      relationPattern: selectedTopic?.relationPattern,
-      maturityScore: selectedTopic?.maturityScore,
-      relationPaths: signals.relationPaths,
-    },
     approvedForPublicLayout: false,
   };
 
@@ -75,7 +55,7 @@ export function buildPublicArtifactContent(params: {
 }
 
 function isPublicationDepthReady(report: DaydreamReport): boolean {
-  // Public Daydream output is allowed to be speculative and emergent. The gate
+  // Public Association output is allowed to be speculative and emergent. The gate
   // blocks empty/thin retrieval, not every absence of academic-grade traversal.
   // A separate warning/caveat can carry uncertainty into the artifact voice.
   const thinRatio = report.depthMetrics.directMatches + report.depthMetrics.deepReadExpansions > 0
@@ -101,17 +81,17 @@ export function validatePublicArtifactContent(artifact: DaydreamPublicArtifactCo
   ].join("\n");
 
   if (PROCESS_LANGUAGE.test(visible)) {
-    throw new Error("Daydream public artifact still contains workflow/process/source/debug language.");
+    throw new Error("Association public document still contains workflow/process/source/debug language.");
   }
   if (artifact.sections.length < 4) {
-    throw new Error("Daydream public artifact needs at least four public-facing sections.");
+    throw new Error("Association public document needs at least four public-facing sections.");
   }
   if (artifact.protocol.length < 3) {
-    throw new Error("Daydream public artifact needs at least three public-facing protocol items.");
+    throw new Error("Association public document needs at least three public-facing protocol items.");
   }
   const shortSection = artifact.sections.find((section) => section.body.trim().length < 90);
   if (shortSection) {
-    throw new Error(`Daydream public section is too thin: ${shortSection.id}`);
+    throw new Error(`Association public section is too thin: ${shortSection.id}`);
   }
 }
 
@@ -129,7 +109,6 @@ interface PublicSignals {
   hasBio: boolean;
   hasGene: boolean;
   hasLocalPlace: boolean;
-  relationPaths: Array<{ from: string; to: string; relation: string }>;
   relationPattern?: ResearchTopicCandidate["relationPattern"];
 }
 
@@ -166,14 +145,6 @@ function extractPublicSignals(
     hasBio: /bio|biology|bioart|wetlab|gene|genetic|bacteria|hackteria|生物|基因|濕實驗/.test(text),
     hasGene: /gene|genetic|synthetic|基因|合成生物|改造/.test(text),
     hasLocalPlace: /local|place|city|mapping|field|地方|田野|城市/.test(text),
-    relationPaths: report.linkedCards
-      .filter((trail) => trail.via.length >= 2)
-      .map((trail) => ({
-        from: trail.via[0]?.title ?? "",
-        to: trail.card.title,
-        relation: trail.relation,
-      }))
-      .slice(0, 16),
     relationPattern: selectedTopic?.relationPattern,
   };
 }
@@ -307,7 +278,7 @@ function sectionBodyFor(
 ): string {
   const nextTerm = meaningfulTerms(signals)[index + 1] ?? item.term;
   if (index === 0) {
-    return `先抓住一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查。`;
+    return `先抓住一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查；後續文字只需要沿著這個可觀察動作慢慢展開。`;
   }
   if (index === 1) {
     return `${item.observation} 這裡的轉向不是把材料當作案例裝飾，而是看它如何改變原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被實作測試的路。`;
@@ -361,22 +332,6 @@ function sourceFamilySummary(signals: PublicSignals): string {
   if (/workshop|camp|community|field|工作坊|社群|田野/.test(text)) families.push("工作坊與社群材料");
   if (families.length === 0) families.push("社群材料");
   return families.slice(0, 3).join("、");
-}
-
-function citationFor(card: SourceCard): Pick<SourceCard, "id" | "title" | "url" | "source"> {
-  return { id: card.id, title: card.title, url: card.url, source: card.source };
-}
-
-function dedupeCitationsByFamily<T extends { id: string; title: string; url?: string; source?: string }>(items: T[]): T[] {
-  const seen = new Set<string>();
-  const result: T[] = [];
-  for (const item of items) {
-    const key = sourceFamilyKey(item);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    result.push(item);
-  }
-  return result;
 }
 
 function dedupeBySourceFamily(cards: SourceCard[], max: number): SourceCard[] {
