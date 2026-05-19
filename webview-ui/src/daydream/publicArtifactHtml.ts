@@ -26,7 +26,6 @@ export function renderDaydreamPublicArtifactHtml(
     html = `
 <article class="daydream-html daydream-html--pbs-reset" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-reset-hero">
-    <p class="dd-kicker">Association</p>
     <h1>${escapeHtml(artifact.title)}</h1>
     <p class="dd-subtitle">${escapeHtml(artifact.subtitle)}</p>
   </header>
@@ -53,7 +52,6 @@ export function renderDaydreamPublicArtifactHtml(
 <article class="daydream-html daydream-html--soft-commons" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-soft-head">
     <div>
-      <p class="dd-kicker">Association</p>
       <h1>${escapeHtml(artifact.title)}</h1>
     </div>
     <p>${escapeHtml(artifact.subtitle)}</p>
@@ -83,7 +81,6 @@ export function renderDaydreamPublicArtifactHtml(
     html = `
 <article class="daydream-html daydream-html--aino-grid" aria-label="${escapeAttr(artifact.title)}">
   <header class="dd-aino-title">
-    <p class="dd-kicker">Association</p>
     <h1>${escapeHtml(artifact.title)}</h1>
     <p>${escapeHtml(artifact.subtitle)}</p>
   </header>

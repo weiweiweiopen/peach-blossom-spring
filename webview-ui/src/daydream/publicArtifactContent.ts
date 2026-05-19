@@ -25,7 +25,7 @@ export interface DaydreamPublicArtifactContent {
   approvedForPublicLayout: boolean;
 }
 
-const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score|source\s*trail|relation\s*paths?|maturity\s*score|privateTrace|Daydream)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
+const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score|source\s*trail|relation\s*paths?|maturity\s*score|privateTrace|Daydream|Association)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
 
 export function buildPublicArtifactContent(params: {
   seed: string;

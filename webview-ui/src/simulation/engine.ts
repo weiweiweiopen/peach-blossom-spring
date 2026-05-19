@@ -297,7 +297,7 @@ function finalDocumentModeLabel(mode: FinalDocumentMode): string {
   if (mode === "manufacturing_technical_file") return "Manufacturing Technical File";
   if (mode === "philosophical_debate") return "Philosophical Debate";
   if (mode === "story") return "Story";
-  return "Association";
+  return "Final Document";
 }
 
 function chooseFinalDocumentMode(pet: Thronglet, exchanges: A2AExchange[]): FinalDocumentMode {
@@ -656,7 +656,6 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
     const htmlVariant = pickDaydreamHtmlLayoutVariant();
     const bodyHtml = renderDaydreamPublicArtifactHtml(association, htmlVariant);
     const publicBody = [
-      "Association",
       association.opening,
       association.proposition,
       ...association.sections.map((section) => `${section.title}\n${section.body}`),
@@ -678,7 +677,7 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
       sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
     };
   } catch (error) {
-    console.warn("Association document generation fell back to safe text.", error);
+    console.warn("Final document generation fell back to safe text.", error);
     return buildSafeAssociationFallbackDocument(pet, tick, mode, references, petExchanges);
   }
 }
@@ -690,14 +689,13 @@ function buildSafeAssociationFallbackDocument(
   references: Array<{ label: string; url: string; anchorText: string }>,
   petExchanges: A2AExchange[],
 ): FinalDocument {
-  const title = "Association Note";
+  const title = "公共短文";
   const body = [
-    "Association",
     "這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。",
     "請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。",
     "如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。",
   ].join("\n\n");
-  const bodyHtml = `<article class="daydream-html daydream-html--safe-association" aria-label="Association Note"><header><p class="dd-kicker">Association</p><h1>${title}</h1></header><section><p>這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。</p><p>請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。</p><p>如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。</p></section></article>`;
+  const bodyHtml = `<article class="daydream-html daydream-html--safe-note" aria-label="公共短文"><header><h1>${title}</h1></header><section><p>這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。</p><p>請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。</p><p>如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。</p></section></article>`;
   return {
     id: `${pet.id}-final-${tick}`,
     petId: pet.id,
@@ -707,7 +705,7 @@ function buildSafeAssociationFallbackDocument(
     modeLabel: finalDocumentModeLabel(mode),
     body,
     bodyHtml,
-    htmlVariant: "safe-association",
+    htmlVariant: "safe-note",
     references,
     reviewLog: [],
     sourceExchangeIds: petExchanges.map((exchange) => exchange.id),

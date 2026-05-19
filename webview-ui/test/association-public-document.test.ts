@@ -20,15 +20,14 @@ test('association public document exposes no private trace fields', () => {
   assert.equal(serialized.includes('maturityScore'), false);
 });
 
-test('association rendered final HTML has no backend pollution or Daydream label', () => {
+test('association rendered final HTML has no backend pollution or system label', () => {
   const artifact = runDaydreamWorkflow('bioart electronic music wearable textile sensors', daydreamCorpus).step4.publicArtifact;
 
   for (const variant of variants) {
     const html = renderDaydreamPublicArtifactHtml(artifact, variant);
     assertCleanPublicArtifact(html);
     const visibleText = extractPublicArtifactText(html);
-    assert.equal(/Daydream/i.test(visibleText), false);
+    assert.equal(/Daydream|Association/i.test(visibleText), false);
     assert.equal(/privateTrace|sourceTrail|relationPaths|maturityScore/i.test(visibleText), false);
-    assert.match(visibleText, /Association/);
   }
 });
