@@ -19,7 +19,7 @@ interface PlayerProfile {
   petSeed?: string;
 }
 
-type StartMode = "interactive" | "dispatch_observer" | "document_generation";
+type StartMode = "interactive" | "dispatch_observer";
 type PlayerIntentMode = "nomadic_research" | "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why" | "philosophical_debate";
 type CorePetRole = "philosopher" | "engineer" | "artist" | "scientist" | "cook" | "drinker" | "traveler" | "tailor";
 

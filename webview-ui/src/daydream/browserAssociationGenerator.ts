@@ -249,7 +249,7 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
     });
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error("DeepSeek proxy timed out; using local zine fallback.");
+      throw new Error("DeepSeek proxy timed out; please try again.");
     }
     throw error;
   } finally {
@@ -444,20 +444,19 @@ export async function generateBrowserAssociationZine(seed: string, petRole?: str
     artifact = await withBrowserTimeout(
       callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language),
       EDITORIAL_WRITER_TIMEOUT_MS,
-      "Association writer timed out; using local template 1 fallback.",
+      "Association writer timed out; please try again.",
     );
   } catch (error) {
-    console.warn("Association editorial writer unavailable; rendering grounded fallback in template 01.", error);
-    artifact = workflow.step4.publicArtifact;
+    console.error("Association editorial writer unavailable; not rendering stale local fallback.", error);
+    throw error;
   }
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
   let fragment: string;
   try {
     fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
   } catch (error) {
-    console.warn("Association artifact was rejected; rendering grounded fallback in template 01.", error);
-    artifact = workflow.step4.publicArtifact;
-    fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+    console.error("Association artifact was rejected; not rendering stale local fallback.", error);
+    throw error;
   }
   if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
     throw new Error("Only the first PBS HTML zine template is allowed.");

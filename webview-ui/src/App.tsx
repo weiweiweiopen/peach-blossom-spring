@@ -140,7 +140,7 @@ const WUKIR_BANDCAMP_ALBUM_URL =
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 
 type PlayMode = "camp" | "expedition";
-type AppMode = "interactive" | "dispatch_observer" | "document_generation";
+type AppMode = "interactive" | "dispatch_observer";
 
 interface PetBoardResponse {
   id: string;
@@ -616,12 +616,6 @@ function App() {
   );
   const [hasStarted, setHasStarted] = useState(false);
   const [isPostBootLoading, setIsPostBootLoading] = useState(false);
-  const [documentGeneration, setDocumentGeneration] = useState<{
-    status: "idle" | "loading" | "ready" | "error";
-    title?: string;
-    url?: string;
-    error?: string;
-  }>({ status: "idle" });
   const postBootLoadingTimerRef = useRef<number | null>(null);
   const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
     () => readSavedPlayerDefaults(),
@@ -1672,43 +1666,6 @@ function App() {
 
   const handlePlayerStart = useCallback(
     (profile: PlayerProfile, mode: StartMode) => {
-      if (mode === "document_generation") {
-        try {
-          localStorage.setItem("peach_player_profile", JSON.stringify(profile));
-        } catch (error) {
-          console.warn("Document profile storage failed", error);
-        }
-        setPlayerDefaults(profile);
-        setPlayerProfile(profile);
-        setAppMode("document_generation");
-        setSplitPanel(null);
-        setDocumentGeneration({ status: "loading" });
-        void (async () => {
-          try {
-            const result = await generateBrowserAssociationZine(profile.question || profile.mission, profile.avatarTitle, selectedLanguage);
-            const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
-            finalDocumentObjectUrlsRef.current.add(url);
-            setDocumentGeneration({ status: "idle" });
-            setAppMode("interactive");
-            setSplitPanel({
-              kind: "finalDocument",
-              title: result.title,
-              url,
-              description: undefined,
-            });
-            setSplitPanelAnchor(null);
-            setIsSplitExpanded(true);
-          } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            console.error("Browser document generation failed", error);
-            setDocumentGeneration({ status: "error", error: message });
-            setWorldNotice(`Document generation failed: ${message.split("\n")[0]}`);
-            setPlayerProfile(null);
-            setAppMode("interactive");
-          }
-        })();
-        return;
-      }
       const pet = createThronglet(
         profile.question || profile.mission,
         profile.name,
@@ -2054,38 +2011,6 @@ function App() {
     return <RetroBootScreen onStart={handleBootStart} />;
   }
 
-  if (documentGeneration.status === "loading") {
-    return (
-      <div className="boot-loading-screen" role="status" aria-live="polite">
-        <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
-          <p className="boot-loading-title">Peach Blossom Spring</p>
-          <p className="boot-loading-copy">Generating paper...</p>
-          <span className="boot-loading-dots" aria-hidden="true" />
-        </div>
-      </div>
-    );
-  }
-
-  if (documentGeneration.status === "ready" && documentGeneration.url) {
-    return (
-      <div className="document-generation-fullscreen">
-        <header className="document-generation-fullscreen-bar">
-          <strong>{documentGeneration.title ?? "Generated Paper"}</strong>
-          <button
-            type="button"
-            onClick={() => {
-              setDocumentGeneration({ status: "idle" });
-              setPlayerProfile(null);
-              setAppMode("interactive");
-            }}
-          >
-            ×
-          </button>
-        </header>
-        <iframe title={documentGeneration.title ?? "Generated Paper"} src={documentGeneration.url} />
-      </div>
-    );
-  }
 
   if (!layoutReady || isPostBootLoading) {
     return (
