@@ -5602,3 +5602,208 @@
 .world-split-panel.is-expanded .world-split-final-document .world-split-iframe {
   min-height: 0 !important;
 }
+
+/* Minimal creator page requested 2026-05-19. */
+.player-setup-overlay--minimal {
+  background:
+    radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--palette-yellow) 62%, transparent) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 78%, color-mix(in srgb, var(--palette-pink) 70%, transparent) 0 12%, transparent 13%),
+    var(--palette-cream);
+}
+.player-setup-shell--minimal {
+  max-width: min(980px, 92vw);
+}
+.player-setup-merged-panel--minimal {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(280px, 1fr);
+  gap: clamp(20px, 4vw, 52px);
+  align-items: center;
+  padding: clamp(20px, 5vw, 56px);
+}
+.question-hatch-device--minimal {
+  width: 100%;
+}
+.player-setup-controls--minimal {
+  display: grid;
+  gap: 16px;
+}
+.pet-role-grid--core {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.pet-role-emoji {
+  position: absolute;
+  inset: 4px auto auto 6px;
+  font-size: 14px;
+  z-index: 2;
+}
+.player-setup-mode-row--emoji {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+.player-setup-mode-orb {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  padding: 0;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 18px 18px 18px 5px;
+  box-shadow: 4px 4px 0 #000;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+.player-setup-mode-orb:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #000;
+}
+.player-setup-mode-orb:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+.player-setup-mode-orb span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+  line-height: 1;
+}
+.player-setup-mode-orb--paper {
+  background:
+    radial-gradient(circle at 33% 26%, rgba(255,255,255,.85) 0 15%, transparent 16%),
+    color-mix(in srgb, var(--palette-yellow) 72%, #fff 28%);
+}
+.player-setup-mode-orb--social {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,.8) 0 15%, transparent 16%),
+    color-mix(in srgb, var(--palette-blue) 68%, #fff 32%);
+}
+.document-generation-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--palette-cream);
+}
+.document-generation-fullscreen-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  color: #000;
+  background: color-mix(in srgb, var(--palette-pink) 58%, var(--palette-cream) 42%);
+  border-bottom: 3px solid #000;
+  box-shadow: 0 3px 0 #000;
+}
+.document-generation-fullscreen-bar button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 32px;
+  line-height: 1;
+}
+.document-generation-fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.world-about-content {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.75;
+}
+.world-about-content p {
+  margin-bottom: 1.1em;
+}
+@media (max-width: 760px) {
+  .player-setup-merged-panel--minimal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 2026-05-20 Wise Mouse: remove the ugly pink long-oval control from the game. */
+.question-status-panel::after,
+.question-response-panel::after,
+.question-hatch-device::after {
+  content: none !important;
+  display: none !important;
+}
+
+.player-setup-mode-row--single {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.player-setup-action--why {
+  width: auto !important;
+  min-width: 180px;
+  background: var(--palette-yellow) !important;
+  border-radius: 0 !important;
+}
+
+.player-setup-clear {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #000;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0 var(--palette-silver);
+  cursor: pointer;
+}
+
+.pet-role-label {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  margin-bottom: 4px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-transform: lowercase;
+}
+
+.pet-role-option {
+  grid-template-rows: auto 1fr;
+}
+
+.player-setup-mode-orb,
+.player-setup-mode-row--emoji,
+.pet-role-emoji {
+  display: none !important;
+}
+
+.pbs-frame-button,
+.rpg-dialogue-chip,
+.rpg-dialogue-submit,
+.rpg-dialogue-question-toggle,
+.rpg-dialogue-wiki-button,
+.world-wiki-content button,
+.video-encounter-actions button,
+.pbs-video-permission button,
+.pbs-chat-form button,
+.pbs-encounter-close {
+  background-color: var(--palette-yellow) !important;
+  border-radius: 0 !important;
+}

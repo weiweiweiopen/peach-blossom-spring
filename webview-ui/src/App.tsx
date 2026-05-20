@@ -13,6 +13,7 @@ import {
 import extraPersonaData from "../../data/extra-personas.json";
 import personaData from "../../data/personas.json";
 import { DebugView } from "./components/DebugView.js";
+import { generateBrowserAssociationZine } from "./daydream/browserAssociationGenerator.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
 import {
@@ -139,7 +140,7 @@ const WUKIR_BANDCAMP_ALBUM_URL =
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 
 type PlayMode = "camp" | "expedition";
-type AppMode = "interactive" | "dispatch_observer";
+type AppMode = "interactive" | "dispatch_observer" | "document_generation";
 
 interface PetBoardResponse {
   id: string;
@@ -156,7 +157,8 @@ type SplitPanel =
   | { kind: "externalLink"; title: string; url: string; description?: string }
   | { kind: "finalDocument"; title: string; url: string; description?: string }
   | { kind: "archivePdf" }
-  | { kind: "archiveMap" };
+  | { kind: "archiveMap" }
+  | { kind: "about" };
 
 type EncounterPanel = {
   partner: MultiplayerPresence;
@@ -178,7 +180,8 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "externalLink") return panel.title;
   if (panel.kind === "finalDocument") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
-  return t(language, "archive.mapTitle");
+  if (panel.kind === "archiveMap") return t(language, "archive.mapTitle");
+  return "About";
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
@@ -188,7 +191,8 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
   }
-  if (panel.kind === "finalDocument") return "Final Document";
+  if (panel.kind === "finalDocument") return "World Wiki · Daydream Page";
+  if (panel.kind === "about") return "About";
   return t(language, "archive.tree");
 }
 
@@ -198,15 +202,19 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
       {link.description && (
         <p className="world-split-embed-description">{link.description}</p>
       )}
-      <iframe
-        key={link.url}
-        title={link.title}
-        src={link.url}
-        className="world-split-iframe"
-        loading="eager"
-        referrerPolicy="no-referrer-when-downgrade"
-        sandbox={link.kind === "finalDocument" ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
-      />
+      {link.url ? (
+        <iframe
+          key={link.url}
+          title={link.title}
+          src={link.url}
+          className="world-split-iframe"
+          loading="eager"
+          referrerPolicy="no-referrer-when-downgrade"
+          sandbox={link.kind === "finalDocument" ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
+        />
+      ) : (
+        <div className="world-split-loading">Generating zine...</div>
+      )}
     </div>
   );
 }
@@ -438,6 +446,49 @@ function findShortNpcStep(
   candidates.sort((a, b) => a.score - b.score);
   return candidates[0] ?? null;
 }
+function configuredWorkerChatApiUrl(): string {
+  return document
+    .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
+    ?.getAttribute("content")
+    ?.trim() || "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
+}
+
+function seedLooksIntentional(seed: string): boolean {
+  const trimmed = seed.trim();
+  if (trimmed.length >= 16) return true;
+  return /社群|永續|可持續|藝術|科技|教育|community|sustain|art|technology|education|utopia|prototype|research/i.test(trimmed);
+}
+
+async function createCloudPetPersona(profile: PlayerProfile): Promise<string | null> {
+  const url = configuredWorkerChatApiUrl();
+  if (!url) return null;
+  const seed = profile.question || profile.mission || "";
+  const role = profile.avatarTitle ?? "question pet";
+  const intentional = seedLooksIntentional(seed);
+  const system = [
+    "你是桃花源遊戲的電子雞人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
+    "人格必須好奇、會主動向 NPC 詢問社群技術、可持續性、藝術是什麼、科技藝術是什麼、教育是什麼。",
+    "如果玩家 seed 意圖明確，強化該意圖；如果 seed 像無意義詞或隨機物件，不要過度詮釋，只保留一般好奇心。",
+  ].join("\n");
+  const user = `玩家名字：${profile.name}\n寵物類型：${role}\nseed：${seed}\nseed 是否明確：${intentional ? "是" : "否"}\n請輸出 3 句以內的電子雞 persona。`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      mode: "chat",
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      temperature: 0.82,
+      max_tokens: 260,
+    }),
+  });
+  if (!response.ok) throw new Error(`pet persona proxy failed ${response.status}`);
+  const data = await response.json() as { content?: string; choices?: Array<{ message?: { content?: string } }> };
+  return (data.content ?? data.choices?.[0]?.message?.content ?? "").trim() || null;
+}
+
 function remoteCharacterId(playerId: string): number {
   let hash = 0;
   for (let index = 0; index < playerId.length; index++) {
@@ -549,6 +600,12 @@ function App() {
   );
   const [hasStarted, setHasStarted] = useState(false);
   const [isPostBootLoading, setIsPostBootLoading] = useState(false);
+  const [documentGeneration, setDocumentGeneration] = useState<{
+    status: "idle" | "loading" | "ready" | "error";
+    title?: string;
+    url?: string;
+    error?: string;
+  }>({ status: "idle" });
   const postBootLoadingTimerRef = useRef<number | null>(null);
   const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
     () => readSavedPlayerDefaults(),
@@ -879,7 +936,7 @@ function App() {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return null;
     let nearest: { id: number; dist: number } | null = null;
-    for (const id of agents) {
+    for (const id of personas.map((_persona, index) => index + 1)) {
       const npc = officeState.characters.get(id);
       if (!npc) continue;
       const dist =
@@ -890,7 +947,7 @@ function App() {
       }
     }
     return nearest?.id ?? null;
-  }, [agents, officeState]);
+  }, [officeState]);
 
   const getPlayerDistanceFromCharacter = useCallback(
     (characterId: number): number => {
@@ -1129,14 +1186,18 @@ function App() {
   }, [layoutReady, playerProfile]);
 
   useEffect(() => {
-    if (!layoutReady || agents.length === 0) return;
+    if (!layoutReady || appMode !== "interactive") return;
     const personaById = new Map(
       personas.map((persona, index) => [persona.id, index + 1]),
     );
     const occupied = new Set<string>();
     for (const placement of nextTinyRoomNpcPlacements) {
       const agentId = personaById.get(placement.personaId);
-      if (!agentId || !agents.includes(agentId)) continue;
+      if (!agentId) continue;
+      if (!officeState.characters.has(agentId)) {
+        const persona = personas[agentId - 1];
+        officeState.addAgent(agentId, (agentId - 1) % 6, (25 + agentId * 23) % 120, undefined, true, persona?.name ?? `NPC ${agentId}`);
+      }
       const ch = officeState.characters.get(agentId);
       if (!ch) continue;
       const resolvedPlacement = findNearestApproachableTile(
@@ -1156,7 +1217,7 @@ function App() {
       ch.seatId = null;
       ch.hueShift = (25 + agentId * 23) % 120;
     }
-  }, [agents, layoutReady, officeState]);
+  }, [appMode, layoutReady, officeState]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -1166,8 +1227,9 @@ function App() {
       for (const ch of officeState.characters.values()) {
         if (ch.path.length === 0) occupied.add(`${ch.tileCol},${ch.tileRow}`);
       }
-      const shuffled = agents
-        .filter((id) => id !== PLAYER_ID && personas[id - 1])
+      const shuffled = personas
+        .map((_persona, index) => index + 1)
+        .filter((id) => officeState.characters.has(id))
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
       for (const id of shuffled) {
@@ -1189,7 +1251,7 @@ function App() {
       }
     }, 4200);
     return () => window.clearInterval(interval);
-  }, [agents, appMode, layoutReady, officeState, playerProfile]);
+  }, [appMode, layoutReady, officeState, playerProfile]);
 
   useEffect(() => {
     if (
@@ -1428,15 +1490,29 @@ function App() {
     const exchange = simSnapshot.a2aExchanges[0];
     if (!exchange || latestA2ANoticeIdRef.current === exchange.id) return;
     latestA2ANoticeIdRef.current = exchange.id;
+
+    const pet = simSnapshot.thronglets.find((item) => item.id === exchange.petId);
+    const target = simSnapshot.entities.find((item) => item.id === exchange.targetId);
+    const petCharacter = pet ? officeState.characters.get(pet.characterId) : null;
+    const npcCharacter = target ? officeState.characters.get(target.characterId) : null;
+    if (petCharacter && npcCharacter) {
+      const occupied = new Set(Array.from(officeState.characters.values()).map((ch) => `${ch.tileCol},${ch.tileRow}`));
+      occupied.delete(`${petCharacter.tileCol},${petCharacter.tileRow}`);
+      const approachTile = findNearestApproachableTile(officeState, npcCharacter.tileCol + 1, npcCharacter.tileRow, occupied);
+      void officeState.walkToTile(petCharacter.id, approachTile.col, approachTile.row);
+      officeState.faceCharacterToward(petCharacter.id, npcCharacter.tileCol, npcCharacter.tileRow);
+      officeState.faceCharacterToward(npcCharacter.id, petCharacter.tileCol, petCharacter.tileRow);
+    }
+
     if (worldNoticeTimerRef.current !== null) {
       window.clearTimeout(worldNoticeTimerRef.current);
     }
-    setWorldNotice(`A2A: ${exchange.summary}`);
+    setWorldNotice(exchange.summary);
     worldNoticeTimerRef.current = window.setTimeout(() => {
       setWorldNotice(null);
       worldNoticeTimerRef.current = null;
-    }, 3600);
-  }, [appMode, simSnapshot]);
+    }, 5200);
+  }, [appMode, officeState, simSnapshot]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -1568,6 +1644,7 @@ function App() {
 
   const handleMobileMapTap = useCallback(
     (col: number, row: number) => {
+      officeState.cameraFollowId = PLAYER_ID;
       const moved = officeState.walkToTile(PLAYER_ID, col, row);
       if (moved) {
         setPlayerMoveTick((tick) => tick + 1);
@@ -1578,6 +1655,43 @@ function App() {
 
   const handlePlayerStart = useCallback(
     (profile: PlayerProfile, mode: StartMode) => {
+      if (mode === "document_generation") {
+        try {
+          localStorage.setItem("peach_player_profile", JSON.stringify(profile));
+        } catch (error) {
+          console.warn("Document profile storage failed", error);
+        }
+        setPlayerDefaults(profile);
+        setPlayerProfile(profile);
+        setAppMode("document_generation");
+        setSplitPanel(null);
+        setDocumentGeneration({ status: "loading" });
+        void (async () => {
+          try {
+            const result = await generateBrowserAssociationZine(profile.question || profile.mission, profile.avatarTitle);
+            const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
+            finalDocumentObjectUrlsRef.current.add(url);
+            setDocumentGeneration({ status: "idle" });
+            setAppMode("interactive");
+            setSplitPanel({
+              kind: "finalDocument",
+              title: result.title,
+              url,
+              description: "桃花源維基頁面。",
+            });
+            setSplitPanelAnchor(null);
+            setIsSplitExpanded(true);
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.error("Browser document generation failed", error);
+            setDocumentGeneration({ status: "error", error: message });
+            setWorldNotice(`Document generation failed: ${message.split("\n")[0]}`);
+            setPlayerProfile(null);
+            setAppMode("interactive");
+          }
+        })();
+        return;
+      }
       const pet = createThronglet(
         profile.question || profile.mission,
         profile.name,
@@ -1600,6 +1714,29 @@ function App() {
         text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`,
       }));
       setSimSnapshot(createInitialSnapshot([pet], npcContexts));
+      void createCloudPetPersona(profile)
+        .then((personaText) => {
+          if (!personaText) return;
+          setSimSnapshot((current) => current
+            ? {
+                ...current,
+                thronglets: current.thronglets.map((item) => item.id === pet.id
+                  ? {
+                      ...item,
+                      personaJson: item.personaJson
+                        ? {
+                            ...item.personaJson,
+                            voice: personaText,
+                            growthLog: [personaText, ...(item.personaJson.growthLog ?? [])].slice(0, 24),
+                          }
+                        : item.personaJson,
+                    }
+                  : item),
+              }
+            : current,
+          );
+        })
+        .catch((error) => console.warn("Question pet persona creation failed", error));
       setPlayerDefaults(profile);
       setPlayerProfile(profile);
       setAppMode(mode);
@@ -1898,6 +2035,39 @@ function App() {
 
   if (!hasStarted) {
     return <RetroBootScreen onStart={handleBootStart} />;
+  }
+
+  if (documentGeneration.status === "loading") {
+    return (
+      <div className="boot-loading-screen" role="status" aria-live="polite">
+        <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
+          <p className="boot-loading-title">Peach Blossom Spring</p>
+          <p className="boot-loading-copy">Generating paper...</p>
+          <span className="boot-loading-dots" aria-hidden="true" />
+        </div>
+      </div>
+    );
+  }
+
+  if (documentGeneration.status === "ready" && documentGeneration.url) {
+    return (
+      <div className="document-generation-fullscreen">
+        <header className="document-generation-fullscreen-bar">
+          <strong>{documentGeneration.title ?? "Generated Paper"}</strong>
+          <button
+            type="button"
+            onClick={() => {
+              setDocumentGeneration({ status: "idle" });
+              setPlayerProfile(null);
+              setAppMode("interactive");
+            }}
+          >
+            ×
+          </button>
+        </header>
+        <iframe title={documentGeneration.title ?? "Generated Paper"} src={documentGeneration.url} />
+      </div>
+    );
   }
 
   if (!layoutReady || isPostBootLoading) {
@@ -2317,6 +2487,18 @@ function App() {
                   >
                     3. {t(selectedLanguage, "archive.mapButton")}
                   </button>
+                  <button
+                    className="pbs-frame-button"
+                    type="button"
+                    onClick={() => {
+                      setSplitPanel({ kind: "about" });
+                      setSplitPanelAnchor(null);
+                      setIsSplitExpanded(false);
+                      setArchiveMenuOpen(false);
+                    }}
+                  >
+                    4. about
+                  </button>
                 </div>
               </section>
             )}
@@ -2344,14 +2526,49 @@ function App() {
                   onClose={() => setActiveDialogueId(null)}
                   onOpenWiki={() => {
                     setSplitPanel({
-                      kind: "dialogue.openWiki",
-                      persona: activeDialoguePersona,
+                      kind: "finalDocument",
+                      title: "Local Association Zine",
+                      url: "",
+                      description: "Generating local association zine...",
                     });
                     setSplitPanelAnchor({
                       kind: "npc",
                       id: activeDialogueCharacter.id,
                     });
-                    setIsSplitExpanded(false);
+                    setIsSplitExpanded(true);
+                    void (async () => {
+                      try {
+                        const seed = [
+                          playerProfile.question || playerProfile.mission,
+                          activeDialoguePersona.name,
+                          activeDialoguePersona.role,
+                          activeDialoguePersona.intro,
+                        ].filter(Boolean).join("\n\n");
+                        const result = await generateBrowserAssociationZine(seed, playerProfile.avatarTitle);
+                        const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
+                        finalDocumentObjectUrlsRef.current.add(url);
+                        setSplitPanel({
+                          kind: "finalDocument",
+                          title: result.title,
+                          url,
+                          description: `Local Association Zine · ${activeDialoguePersona.name}`,
+                        });
+                        setSplitPanelAnchor({
+                          kind: "npc",
+                          id: activeDialogueCharacter.id,
+                        });
+                        setIsSplitExpanded(true);
+                      } catch (error) {
+                        const message = error instanceof Error ? error.message : String(error);
+                        console.error("NPC wiki zine generation failed", error);
+                        setWorldNotice(`Wiki zine failed: ${message.split("\n")[0]}`);
+                        setSplitPanel({
+                          kind: "dialogue.openWiki",
+                          persona: activeDialoguePersona,
+                        });
+                        setIsSplitExpanded(false);
+                      }
+                    })();
                   }}
                   onOpenMusic={
                     activeDialoguePersona.id === "wukir-suryadi"
@@ -2395,7 +2612,7 @@ function App() {
             appMode === "interactive" &&
             !isSplitOpen && (
               <section
-                className={`question-status-panel rpg-message-frame absolute left-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] px-7 py-6 ${
+                className={`question-status-panel rpg-message-frame absolute right-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] px-7 py-6 ${
                   isQuestionSimMinimized
                     ? "question-status-panel-minimized"
                     : "max-h-[46vh] overflow-auto"
@@ -2487,9 +2704,12 @@ function App() {
                       </p>
                     ))}
                     {simSnapshot.a2aExchanges[0] && (
-                      <p className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
-                        A2A: {simSnapshot.a2aExchanges[0].summary}
-                      </p>
+                      <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
+                        <strong>🐣💬 {simSnapshot.a2aExchanges[0].targetLabel}</strong>
+                        {simSnapshot.a2aExchanges[0].turns.slice(0, 4).map((turn) => (
+                          <p key={turn.id} className="mt-2">{turn.text}</p>
+                        ))}
+                      </div>
                     )}
                     {simSnapshot.finalDocuments.map((document) => (
                       <button
@@ -2512,11 +2732,14 @@ function App() {
                         {thought}
                       </p>
                     ))}
-                    {simSnapshot.events.slice(0, 4).map((event) => (
-                      <p key={event.id} className="text-sm opacity-80 mt-2">
-                        {event.type}: {event.text}
-                      </p>
-                    ))}
+                    {simSnapshot.events
+                      .filter((event) => event.type !== "thronglet_interaction")
+                      .slice(0, 3)
+                      .map((event) => (
+                        <p key={event.id} className="text-sm opacity-80 mt-2">
+                          {event.text}
+                        </p>
+                      ))}
                   </>
                 )}
               </section>
@@ -2926,6 +3149,13 @@ function App() {
               </div>
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
               <ExternalLinkEmbed link={splitPanel} />
+            ) : splitPanel.kind === "about" ? (
+              <div className="world-wiki-content world-about-content">
+                <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>
+                <p>這個遊戲的本體是一個研究訪談稿 <em>Non-Governmental Matters</em>。該研究採訪了 14 位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。</p>
+                <p>玩家以 Why? 進入遊戲，詢問 NGM 受訪者 NPC 關於他自己的訪談內容、對社群可持續性的看法；NPC 交談視窗中的 wiki 按鈕會以玩家問題與該 NPC 的材料生成一份可以列印出來的小誌。</p>
+                <p>每位 NPC 的人格是經訪談逐字稿調校過後的 DeepSeek LLM。</p>
+              </div>
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
                 title="NGM PDF embedded ebook"

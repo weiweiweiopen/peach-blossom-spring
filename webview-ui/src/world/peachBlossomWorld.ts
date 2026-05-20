@@ -68,8 +68,8 @@ const templeColor: ColorValue = { ...paletteYellow, b: 2, c: 24 };
 const thaiTempleColor: ColorValue = { ...paletteYellow, b: 16, c: 20 };
 const cafeColor: ColorValue = { ...paletteCream, b: 10, c: 18 };
 
-export const NEXT_ROOM_GRID_SIZE = 15;
-export const NEXT_ROOM_MAP_SIZE = 20;
+export const NEXT_ROOM_GRID_SIZE = 25;
+export const NEXT_ROOM_MAP_SIZE = 50;
 export const NEXT_ROOM_MAP_PADDING = Math.floor((NEXT_ROOM_MAP_SIZE - NEXT_ROOM_GRID_SIZE) / 2);
 
 function fillRect(
@@ -398,11 +398,22 @@ export const tamagotchiNpcPlacements: NpcPlacement[] = [
 ];
 
 export const nextTinyRoomNpcPlacements: NpcPlacement[] = [
-  { personaId: 'marc-dusseiller', col: 3, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'mika-satomi', col: 6, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'anastassia-pistofidou', col: 10, row: 4, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'christian-dils', col: 4, row: 8, zoneId: 'tiny-room', idleBehavior: 'stand' },
-  { personaId: 'abao', col: 10, row: 8, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'andreas-siagian', col: 15, row: 16, zoneId: 'tiny-room', idleBehavior: 'wander' },
+  { personaId: 'anastassia-pistofidou', col: 21, row: 15, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'giulia-tomasello', col: 27, row: 16, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'christian-dils', col: 32, row: 17, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'jonathan-minchin', col: 16, row: 23, zoneId: 'tiny-room', idleBehavior: 'wander' },
+  { personaId: 'marc-dusseiller', col: 21, row: 22, zoneId: 'tiny-room', idleBehavior: 'wander' },
+  { personaId: 'mika-satomi', col: 27, row: 22, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'rully-shabara', col: 33, row: 23, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'wukir-suryadi', col: 15, row: 30, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'ryu-oyama', col: 21, row: 31, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'stephanie-pan', col: 27, row: 30, zoneId: 'tiny-room', idleBehavior: 'wander' },
+  { personaId: 'stelio-manousakis', col: 33, row: 31, zoneId: 'tiny-room', idleBehavior: 'perform' },
+  { personaId: 'svenja-keune', col: 18, row: 35, zoneId: 'tiny-room', idleBehavior: 'sit' },
+  { personaId: 'ted-hung', col: 24, row: 35, zoneId: 'tiny-room', idleBehavior: 'stand' },
+  { personaId: 'tincuta-heinzel', col: 30, row: 35, zoneId: 'tiny-room', idleBehavior: 'wander' },
+  { personaId: 'abao', col: 35, row: 35, zoneId: 'tiny-room', idleBehavior: 'stand' },
 ];
 
 export function createTamagotchiPeachForestLayout(): OfficeLayout {

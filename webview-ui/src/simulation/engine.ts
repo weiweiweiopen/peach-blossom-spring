@@ -272,8 +272,8 @@ export function createInitialSnapshot(
   };
 }
 
-const EXCHANGE_TICK_MIN = 14;
-const EXCHANGE_TICK_SPAN = 16;
+const EXCHANGE_TICK_MIN = 23;
+const EXCHANGE_TICK_SPAN = 11;
 
 const referencePool = [
   { label: "Hackteria", url: "https://hackteria.org", anchorText: "Hackteria" },
@@ -472,11 +472,14 @@ function makeA2AExchange(
 ): A2AExchange {
   const target = chooseExchangeTarget(snapshot, pet, tick, knowledgeContexts);
   const seed = hashText(`${pet.id}:${target.id}:${tick}`);
-  const turnCount = 18 + (seed % 33);
+  const turnCount = 4 + (seed % 3);
   const maturation = pet.problemMaturation ?? deriveProblemMaturationProfile(pet, snapshot.a2aExchanges ?? [], tick);
   const mentalese = maturation.mentaleseAttributes.length
     ? maturation.mentaleseAttributes
     : pet.personaJson?.mentaleseBias ?? ["desire", "resource", "contradiction"];
+  const personaVoice = pet.personaJson?.voice && pet.personaJson.voice.length > 40
+    ? `${pet.personaJson.voice.slice(0, 56)}：`
+    : "";
   const modes = pet.knowledgeJson?.preferredDocumentModes ?? ["story", "technical document"];
   const tags = maturation.materialSignals.length ? maturation.materialSignals : pet.knowledgeJson?.tags ?? splitTags(pet.question.text);
   const nutrientSources = nutrientSourcesForTarget(target, knowledgeContexts);
@@ -495,8 +498,8 @@ function makeA2AExchange(
       speakerId: speakerIsPet ? pet.id : target.id,
       targetId: speakerIsPet ? target.id : pet.id,
       text: speakerIsPet
-        ? `${pet.displayName} follows its maturation brief (${maturation.stage}): ${maturation.a2aDirectives[index % maturation.a2aDirectives.length]}. It asks ${target.displayName} for evidence about ${attribute} / ${tag} from ${ref.label}, without accepting direct keyword overlap as an answer.`
-        : `${target.displayName} extracts "${sourceText}" and reframes it toward ${mode}: ${maturation.rejectedShortcuts[index % maturation.rejectedShortcuts.length]}.`,
+        ? `${pet.displayName}: ${index === 0 ? 'maturation brief — ' : ''}${personaVoice}我想從「${tag}」開始問你。${maturation.a2aDirectives[index % maturation.a2aDirectives.length]} 時，你會先看社群裡哪一種關係？`
+        : `${target.displayName}: 我會先把它放回生活和組織的節奏裡看。${sourceText ? `${compactAnchor(sourceText).slice(0, 28)} 不是答案本身，` : ''}重點是它怎麼改變 ${attribute}，以及誰願意一起維持它。`,
       evaluation: {
         usefulReferences: [ref.url],
         mentaleseAttributes: [attribute, tag, source?.title ?? ref.label],
@@ -514,7 +517,7 @@ function makeA2AExchange(
     targetLabel: target.displayName,
     turns,
     nutrientSources,
-    summary: `${pet.displayName} and ${target.displayName} completed ${turnCount} A2A turns from a ${maturation.stage} maturation brief, using ${nutrientSources.length} wiki/community sources about ${mentalese.slice(0, 2).join(" / ")}.`,
+    summary: `${pet.displayName} 正在和 ${target.displayName} 聊 ${mentalese.slice(0, 2).join(" / ")}：${turns.slice(0, 2).map((turn) => turn.text).join(" ")}`,
   };
 }
 
@@ -536,7 +539,7 @@ function growPetFilesFromExchange(pet: Thronglet, exchange: A2AExchange, tick: n
   ]).slice(0, 16);
   const personaGrowth = unique([
     ...(previousPersona?.growthLog ?? []),
-    `tick ${tick}: learned to ask ${exchange.targetLabel} for evidence before answering.`,
+    `tick ${tick}: learned to face ${exchange.targetLabel} and ask a small social-technology question before answering.`,
   ]).slice(0, 24);
   const tensionProfile = unique([
     ...(previousPersona?.tensionProfile ?? []),

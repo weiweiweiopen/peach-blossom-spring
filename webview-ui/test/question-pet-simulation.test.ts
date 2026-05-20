@@ -827,13 +827,14 @@ test('thought trigger works', () => {
   assert.equal(shouldTriggerThought(state, { id: 'e', type: 'thronglet_interaction', createdAt: 0, tick: 1, actorId: 'pet', delta: {}, significance: 50 }), true);
 });
 
-test('next tiny room config is 15x15 in a 20x20 map with top and bottom entrances and clear outer path', () => {
+test('next tiny room config is 25x25 in a 50x50 map with top and bottom entrances and clear outer path', () => {
   const layout = createNextTinyRoomLayout();
-  assert.equal(NEXT_ROOM_GRID_SIZE, 15);
-  assert.equal(NEXT_ROOM_MAP_SIZE, 20);
+  assert.equal(NEXT_ROOM_GRID_SIZE, 25);
+  assert.equal(NEXT_ROOM_MAP_SIZE, 50);
   assert.equal(layout.cols, NEXT_ROOM_MAP_SIZE);
   assert.equal(layout.rows, NEXT_ROOM_MAP_SIZE);
-  assert.ok(layout.furniture.some((item) => item.type === 'PC_FRONT_ON_1' && item.col === 9 && item.row === 9));
+  const center = NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2);
+  assert.ok(layout.furniture.some((item) => item.type === 'PC_FRONT_ON_1' && item.col === center && item.row === center));
   const entranceCol = NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2) - 1;
   const topEntranceRow = NEXT_ROOM_MAP_PADDING;
   const bottomEntranceRow = NEXT_ROOM_MAP_PADDING + NEXT_ROOM_GRID_SIZE - 1;

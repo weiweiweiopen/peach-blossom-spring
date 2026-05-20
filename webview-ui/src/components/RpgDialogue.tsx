@@ -538,11 +538,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               >
                 <span className="text-accent-bright">{message.speaker}: </span>
                 {message.text}
-                {message.evidence?.length ? (
-                  <span className="rpg-dialogue-evidence block mt-3 text-base text-text-muted">
-                    Evidence: {message.evidence.map((item) => item.label).join(' · ')}
-                  </span>
-                ) : null}
               </p>
             ))}
             {isLoading && (
