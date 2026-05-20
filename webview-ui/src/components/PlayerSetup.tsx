@@ -56,8 +56,6 @@ export function PlayerSetup({
   language,
   onStart,
   defaultProfile,
-  onClearArchive,
-  archiveSummary,
 }: PlayerSetupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const startRequestedRef = useRef(false);
@@ -169,19 +167,16 @@ export function PlayerSetup({
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="seed"
             />
-            <div className="player-setup-mode-row player-setup-mode-row--single" aria-label="Mode">
-              <button
-                type="submit"
-                className="player-setup-action player-setup-action--why"
-                aria-label="Enter with why mode"
-              >
-                why!
-              </button>
-              {archiveSummary.total > 0 && (
-                <button className="player-setup-clear" type="button" onClick={onClearArchive} aria-label="Clear pets">×</button>
-              )}
-            </div>
           </section>
+        </div>
+        <div className="player-setup-bottom-action" aria-label="Mode">
+          <button
+            type="submit"
+            className="player-setup-action player-setup-action--why"
+            aria-label="Enter with why mode"
+          >
+            why!
+          </button>
         </div>
       </form>
     </div>

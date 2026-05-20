@@ -5742,32 +5742,17 @@
   display: none !important;
 }
 
-.player-setup-mode-row--single {
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+.player-setup-bottom-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .player-setup-action--why {
-  width: auto !important;
+  width: min(360px, 100%) !important;
   min-width: 180px;
   background: var(--palette-yellow) !important;
   border-radius: 0 !important;
-}
-
-.player-setup-clear {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  color: #000;
-  background: #fff !important;
-  border: 3px solid #000 !important;
-  border-radius: 0 !important;
-  box-shadow: 3px 3px 0 var(--palette-silver);
-  cursor: pointer;
 }
 
 .pet-role-label {
