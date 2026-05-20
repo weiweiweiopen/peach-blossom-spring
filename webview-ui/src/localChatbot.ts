@@ -37,6 +37,13 @@ export interface ChatEvidence {
   score: number;
 }
 
+
+const associationKnowledgeText = '聯想功能會把玩家的問題、目前交談的 NPC 訪談記憶、wiki links 與種子資料先整理成 seed workflow；接著把每個頁面或片段當成 node，依照文字相似度與主題關係形成 node vector of page relations。生成小誌時，系統沿著這些關係做 traversal，挑出最能互相照亮的節點，組成 association page，而不是把資料庫搜尋結果直接堆在一起。';
+
+function isAssociationQuestion(message: string): boolean {
+  return /聯想功能|association|wiki|維基|小誌|traversal|node vector|seed workflow/i.test(message);
+}
+
 export interface LocalChatReply {
   reply: string;
   evidence: ChatEvidence[];
@@ -288,6 +295,9 @@ export function buildLocalGroundedAnswerDraft(args: {
   evidence: ChatEvidence[];
 }): string {
   const { message, knowledge, evidence } = args;
+  if (isAssociationQuestion(message)) {
+    return `${knowledge.name}: ${associationKnowledgeText}`;
+  }
   if (evidence.length === 0) {
     return `${knowledge.name}: 離線模式目前沒有找到足夠的 transcript 或 source 片段來回答「${naturalUserMessage(message)}」。`;
   }
@@ -347,6 +357,12 @@ export function retrieveNpcEvidence(args: {
       text: compact(value),
       source: 'persona' as const,
     })),
+    {
+      id: `${knowledge.id}-association-memory`,
+      label: 'association memory / wiki traversal',
+      text: associationKnowledgeText,
+      source: 'persona' as const,
+    },
     ...seedCorpusCandidates(knowledge),
     ...buildTranscriptEvidenceChunks(`${knowledge.transcript_zh}\n${knowledge.transcript_en}`, knowledge.id, knowledge.name),
     ...wikiCandidates(knowledge),

@@ -185,20 +185,47 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
-  if (panel.kind === "dialogue.openWiki") return "World Wiki";
+  if (panel.kind === "dialogue.openWiki") return "WORLD WIKI";
   if (panel.kind === "wukirBandcamp") return "Wukir Suryadi · Bandcamp";
   if (panel.kind === "communityLinks") return t(language, "archive.communityPortals");
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
   }
-  if (panel.kind === "finalDocument") return "World Wiki · Daydream Page";
+  if (panel.kind === "finalDocument") return "WORLD WIKI: association page";
   if (panel.kind === "about") return "About";
   return t(language, "archive.tree");
 }
 
-function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }> }) {
+function AssociationTraversalPanel() {
   return (
-    <div className={`world-split-embed ${link.kind === "finalDocument" ? "world-split-final-document" : ""}`}>
+    <section className="world-association-traversal" aria-label="How traversal works">
+      <h3>How traversal works:</h3>
+      <p>node vector of page relations</p>
+      <ol>
+        <li>seed workflow: player question + NPC memory become the first seed.</li>
+        <li>The wiki walks through related nodes, keeping page relations as a small vector map.</li>
+        <li>The strongest associations are folded into a printable association page.</li>
+      </ol>
+    </section>
+  );
+}
+
+function AssociationLoadingPage() {
+  return (
+    <div className="world-association-loading boot-loading-screen" role="status" aria-live="polite">
+      <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
+        <p className="boot-loading-title">Peach Blossom Spring</p>
+        <p className="boot-loading-copy">association memory is working in our wiki…</p>
+        <span className="boot-loading-dots" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
+
+function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }> }) {
+  const isFinalDocument = link.kind === "finalDocument";
+  return (
+    <div className={`world-split-embed ${isFinalDocument ? "world-split-final-document" : ""}`}>
       {link.description && (
         <p className="world-split-embed-description">{link.description}</p>
       )}
@@ -210,11 +237,14 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
           className="world-split-iframe"
           loading="eager"
           referrerPolicy="no-referrer-when-downgrade"
-          sandbox={link.kind === "finalDocument" ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
+          sandbox={isFinalDocument ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
         />
+      ) : isFinalDocument ? (
+        <AssociationLoadingPage />
       ) : (
         <div className="world-split-loading">Generating zine...</div>
       )}
+      {isFinalDocument && <AssociationTraversalPanel />}
     </div>
   );
 }
@@ -2527,9 +2557,9 @@ function App() {
                   onOpenWiki={() => {
                     setSplitPanel({
                       kind: "finalDocument",
-                      title: "Local Association Zine",
+                      title: "association memory is working in our wiki…",
                       url: "",
-                      description: "Generating local association zine...",
+                      description: "association memory is working in our wiki…",
                     });
                     setSplitPanelAnchor({
                       kind: "npc",
@@ -2549,9 +2579,9 @@ function App() {
                         finalDocumentObjectUrlsRef.current.add(url);
                         setSplitPanel({
                           kind: "finalDocument",
-                          title: result.title,
+                          title: "association memory is working in our wiki…",
                           url,
-                          description: `Local Association Zine · ${activeDialoguePersona.name}`,
+                          description: `association memory is working in our wiki… · ${activeDialoguePersona.name}`,
                         });
                         setSplitPanelAnchor({
                           kind: "npc",

@@ -552,19 +552,30 @@ export function createNextTinyRoomLayout(): OfficeLayout {
   const bottomEntranceRow = padding + roomSize - 1;
 
   fillRect(tiles, tileColors, cols, room, TileType.FLOOR_1, officeFloorColor());
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: room.w, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row + room.h - 1, w: room.w, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: 1, h: room.h }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: room.col + room.w - 1, row: room.row, w: 1, h: room.h }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: entranceCol, row: topEntranceRow, w: 2, h: 1 }, TileType.FLOOR_1, officeFloorColor());
-  fillRect(tiles, tileColors, cols, { col: entranceCol, row: bottomEntranceRow, w: 2, h: 1 }, TileType.FLOOR_1, officeFloorColor());
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: room.w, h: 2 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row + room.h - 2, w: room.w, h: 2 }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: 2, h: room.h }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: room.col + room.w - 2, row: room.row, w: 2, h: room.h }, TileType.FLOOR_5, petalGroundColor);
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: topEntranceRow, w: 2, h: 2 }, TileType.FLOOR_1, officeFloorColor());
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: bottomEntranceRow - 1, w: 2, h: 2 }, TileType.FLOOR_1, officeFloorColor());
+
+  const peachForest: Array<[number, number, string]> = [
+    [14, 12, 'LARGE_PLANT'], [18, 12, 'PLANT_2'], [24, 12, 'PLANT'], [29, 13, 'PLANT_2'], [33, 12, 'LARGE_PLANT'],
+    [12, 16, 'PLANT'], [36, 16, 'PLANT_2'], [13, 21, 'PLANT_2'], [37, 21, 'PLANT'],
+    [12, 27, 'LARGE_PLANT'], [38, 27, 'LARGE_PLANT'], [15, 34, 'PLANT_2'], [20, 36, 'PLANT'],
+    [27, 37, 'PLANT_2'], [34, 35, 'PLANT'], [36, 32, 'PLANT_2'], [16, 31, 'PLANT'],
+    [8, 9, 'PLANT_2'], [42, 10, 'PLANT'], [7, 38, 'LARGE_PLANT'], [43, 40, 'PLANT_2'],
+  ];
+  for (const [col, row, type] of peachForest) {
+    addFurniture(furniture, type, col, row, peachBloomColor);
+  }
   addFurniture(furniture, 'PC_FRONT_ON_1', padding + Math.floor(roomSize / 2), padding + Math.floor(roomSize / 2), { h: 220, s: 60, b: 5, c: 25 });
 
   return {
     version: 1,
     cols,
     rows,
-    layoutRevision: 14,
+    layoutRevision: 15,
     tiles,
     tileColors,
     furniture,

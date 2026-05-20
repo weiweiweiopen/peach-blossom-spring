@@ -124,17 +124,17 @@ function naturalSnippet(text: string, language: LanguageCode, fallback: string):
 }
 
 function makeFixedQuestions(language: LanguageCode, personaId: string): string[] {
+  void personaId;
+  const associationQuestion = '聯想功能是怎麼運作的？';
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': ['你是誰？', '這裡是哪裡？', '你可以給我一些意見嗎？'],
-    en: ['Who are you?', 'Where am I?', 'Can you give me some advice?'],
-    id: ['Siapa kamu?', 'Di mana saya?', 'Bisakah kamu memberi saya saran?'],
-    de: ['Wer bist du?', 'Wo bin ich?', 'Kannst du mir einen Rat geben?'],
-    ja: ['あなたは誰？', 'ここはどこ？', '何か助言をもらえる？'],
-    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', 'ช่วยให้คำแนะนำฉันได้ไหม?'],
+    'zh-TW': ['你是誰？', '這裡是哪裡？', associationQuestion],
+    en: ['Who are you?', 'Where am I?', associationQuestion],
+    id: ['Siapa kamu?', 'Di mana saya?', associationQuestion],
+    de: ['Wer bist du?', 'Wo bin ich?', associationQuestion],
+    ja: ['あなたは誰？', 'ここはどこ？', associationQuestion],
+    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', associationQuestion],
   };
-  const fixed = [...questions[language]];
-  if (personaId === 'wukir-suryadi') fixed[2] = '你在找什麼歌嗎？';
-  return fixed;
+  return [...questions[language]];
 }
 
 function WukirMusicButton({ onOpenMusic }: { onOpenMusic?: () => void }) {
@@ -514,9 +514,11 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                 <button
                   className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button bg-bg text-text border border-border px-5 py-3 text-base"
                   type="button"
+                  aria-label={t(language, 'dialogue.openWiki')}
+                  title={t(language, 'dialogue.openWiki')}
                   onClick={onOpenWiki}
                 >
-                  📚 {t(language, 'dialogue.openWiki')}
+                  📚
                 </button>
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
               </div>

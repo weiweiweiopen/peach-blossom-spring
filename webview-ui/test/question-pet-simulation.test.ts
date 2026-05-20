@@ -827,7 +827,7 @@ test('thought trigger works', () => {
   assert.equal(shouldTriggerThought(state, { id: 'e', type: 'thronglet_interaction', createdAt: 0, tick: 1, actorId: 'pet', delta: {}, significance: 50 }), true);
 });
 
-test('next tiny room config is 25x25 in a 50x50 map with top and bottom entrances and clear outer path', () => {
+test('next tiny room config is 25x25 in a 50x50 peach forest map with top and bottom entrances and clear outer path', () => {
   const layout = createNextTinyRoomLayout();
   assert.equal(NEXT_ROOM_GRID_SIZE, 25);
   assert.equal(NEXT_ROOM_MAP_SIZE, 50);
@@ -850,8 +850,9 @@ test('next tiny room config is 25x25 in a 50x50 map with top and bottom entrance
       assert.ok(!layout.furniture.some((item) => item.col === col && item.row === row));
     }
   }
-  const treeCount = layout.furniture.filter((item) => item.type === 'PLANT' || item.type === 'PLANT_2').length;
-  assert.equal(treeCount, 0);
+  const peachTrees = layout.furniture.filter((item) => item.type === 'PLANT' || item.type === 'PLANT_2' || item.type === 'LARGE_PLANT');
+  assert.ok(peachTrees.length >= 12);
+  assert.ok(peachTrees.every((item) => item.color?.h === 300));
 });
 
 test('wiki daydream mode generates final report from wiki and corpus without external APIs', () => {

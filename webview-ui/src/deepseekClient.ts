@@ -15,6 +15,9 @@ import type { LanguageCode } from './i18n.js';
 import type { ChatEvidence } from './localChatbot.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
+
+const associationKnowledgeText = '聯想功能會把玩家的問題、目前交談的 NPC 訪談記憶、wiki links 與種子資料先整理成 seed workflow；接著把每個頁面或片段當成 node，依照文字相似度與主題關係形成 node vector of page relations。生成小誌時，系統沿著這些關係做 traversal，挑出最能互相照亮的節點，組成 association page，而不是把資料庫搜尋結果直接堆在一起。';
+
 export interface KnowledgeBase {
   id: string;
   name: string;
@@ -265,7 +268,7 @@ function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, trans
     transcript_en,
     transcript_zh,
     wikiLinks: getWikiLinksForInterviewee(persona.id).links,
-    responses: persona.responses,
+    responses: { ...persona.responses, association: associationKnowledgeText },
   };
 }
 

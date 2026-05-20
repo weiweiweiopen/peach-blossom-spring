@@ -5792,3 +5792,51 @@
   background-color: var(--palette-yellow) !important;
   border-radius: 0 !important;
 }
+
+.world-association-loading.boot-loading-screen {
+  min-height: 360px;
+  height: 100%;
+  background:
+    radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--palette-blue) 58%, transparent) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 78%, color-mix(in srgb, var(--palette-yellow) 66%, transparent) 0 12%, transparent 13%),
+    var(--palette-cream);
+}
+
+.world-association-loading .boot-loading-card {
+  background: color-mix(in srgb, var(--palette-yellow) 58%, var(--palette-pink) 42%);
+  box-shadow: 8px 8px 0 var(--palette-pink);
+}
+
+.world-association-loading .boot-loading-dots {
+  background: var(--palette-blue);
+  box-shadow:
+    22px 0 0 var(--palette-pink),
+    44px 0 0 var(--palette-yellow);
+}
+
+.world-association-traversal {
+  flex: 0 0 auto;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 2px solid #000;
+  background: color-mix(in srgb, var(--palette-cream) 82%, white 18%);
+  color: var(--palette-ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.world-association-traversal h3,
+.world-association-traversal p,
+.world-association-traversal ol {
+  margin: 0;
+}
+
+.world-association-traversal h3 {
+  font-size: 15px;
+  text-transform: none;
+}
+
+.world-association-traversal ol {
+  margin-top: 6px;
+  padding-left: 1.35em;
+}
