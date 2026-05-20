@@ -196,26 +196,20 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return t(language, "archive.tree");
 }
 
-function AssociationTraversalPanel() {
-  return (
-    <section className="world-association-traversal" aria-label="How traversal works">
-      <h3>How traversal works:</h3>
-      <p>node vector of page relations</p>
-      <ol>
-        <li>seed workflow: player question + NPC memory become the first seed.</li>
-        <li>The wiki walks through related nodes, keeping page relations as a small vector map.</li>
-        <li>The strongest associations are folded into a printable association page.</li>
-      </ol>
-    </section>
-  );
-}
-
 function AssociationLoadingPage() {
   return (
     <div className="world-association-loading boot-loading-screen" role="status" aria-live="polite">
       <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
         <p className="boot-loading-title">Peach Blossom Spring</p>
         <p className="boot-loading-copy">association memory is working in our wiki…</p>
+        <div className="world-association-traversal" aria-label="How traversal works">
+          <h3>聯想怎麼走：</h3>
+          <ol>
+            <li>先拿你的問題和這位 NPC 的記憶當起點。</li>
+            <li>wiki 會找意思相近、彼此有關的頁面。</li>
+            <li>再把最有關的材料整理成一份可以列印的小誌。</li>
+          </ol>
+        </div>
         <span className="boot-loading-dots" aria-hidden="true" />
       </div>
     </div>
@@ -244,7 +238,6 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
       ) : (
         <div className="world-split-loading">Generating zine...</div>
       )}
-      {isFinalDocument && <AssociationTraversalPanel />}
     </div>
   );
 }
@@ -2592,10 +2585,7 @@ function App() {
                         const message = error instanceof Error ? error.message : String(error);
                         console.error("NPC wiki zine generation failed", error);
                         setWorldNotice(`Wiki zine failed: ${message.split("\n")[0]}`);
-                        setSplitPanel({
-                          kind: "dialogue.openWiki",
-                          persona: activeDialoguePersona,
-                        });
+                        setSplitPanel(null);
                         setIsSplitExpanded(false);
                       }
                     })();
@@ -3121,39 +3111,12 @@ function App() {
           </div>
           <div className="world-split-content">
             {splitPanel.kind === "dialogue.openWiki" ? (
-              (() => {
-                const wiki = getWikiLinksForInterviewee(splitPanel.persona.id);
-                return (
-                  <div className="world-wiki-content">
-                    <p className="world-wiki-role">{splitPanel.persona.role}</p>
-                    <p className="world-wiki-intro">
-                      {splitPanel.persona.intro}
-                    </p>
-                    {wiki.links.length === 0 ? (
-                      <p>{t(selectedLanguage, "archive.noWikiLinks")}</p>
-                    ) : (
-                      wiki.links.map((link) => (
-                        <button
-                          key={`${link.title}-${link.url}`}
-                          type="button"
-                          onClick={() => {
-                            setSplitPanel({
-                              kind: "externalLink",
-                              title: link.title,
-                              url: link.url,
-                              description: link.description,
-                            });
-                            setIsSplitExpanded(false);
-                          }}
-                        >
-                          <strong>{link.title}</strong>
-                          <span>{link.description}</span>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                );
-              })()
+              <div className="world-wiki-content">
+                <p className="world-wiki-role">{splitPanel.persona.role}</p>
+                <p className="world-wiki-intro">
+                  {splitPanel.persona.intro}
+                </p>
+              </div>
             ) : splitPanel.kind === "wukirBandcamp" ? (
               <WukirBandcampEmbed />
             ) : splitPanel.kind === "communityLinks" ? (

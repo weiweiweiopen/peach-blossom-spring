@@ -5821,8 +5821,8 @@
   border: 2px solid #000;
   background: color-mix(in srgb, var(--palette-cream) 82%, white 18%);
   color: var(--palette-ink);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 17px;
+  line-height: 1.55;
 }
 
 .world-association-traversal h3,
@@ -5832,11 +5832,12 @@
 }
 
 .world-association-traversal h3 {
-  font-size: 15px;
+  font-size: 19px;
   text-transform: none;
 }
 
 .world-association-traversal ol {
-  margin-top: 6px;
+  margin-top: 8px;
+  margin-bottom: 16px;
   padding-left: 1.35em;
 }
