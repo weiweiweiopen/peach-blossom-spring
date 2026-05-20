@@ -10,6 +10,8 @@ import editorialSystemPrompt from "../../prompts/association-editorial-system.md
 import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
+const DEEPSEEK_REQUEST_TIMEOUT_MS = 9000;
+const EDITORIAL_WRITER_TIMEOUT_MS = 14000;
 const PUBLIC_FORBIDDEN = /\b(Daydream|Association|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|relation\s*paths?|generated|backend|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|檢索|後台|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 
@@ -213,17 +215,28 @@ function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
 }
 
 function configuredProxyUrl(): string {
+  if (typeof document === "undefined") return DEFAULT_DEEPSEEK_PROXY_URL;
   return document
     .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
     ?.getAttribute("content")
     ?.trim() || DEFAULT_DEEPSEEK_PROXY_URL;
 }
 
+function requestOrigin(): string {
+  if (typeof window === "undefined") return "http://localhost:5173";
+  return window.location.origin || "http://localhost:5173";
+}
+
 async function requestDeepSeekJson(system: string, user: string, maxTokens = 900, temperature = 0.9): Promise<any> {
-  const response = await fetch(configuredProxyUrl(), {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Origin: window.location.origin || "http://localhost:5173" },
-    body: JSON.stringify({
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(() => controller.abort(), DEEPSEEK_REQUEST_TIMEOUT_MS);
+  let response: Response;
+  try {
+    response = await fetch(configuredProxyUrl(), {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/json", Origin: requestOrigin() },
+      body: JSON.stringify({
       mode: "chat",
       messages: [
         { role: "system", content: `${system}\n只輸出可被 JSON.parse 解析的 minified JSON。不要 code fence，不要註解。` },
@@ -231,9 +244,17 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
       ],
       temperature,
       max_tokens: maxTokens,
-      response_format: { type: "json_object" },
-    }),
-  });
+        response_format: { type: "json_object" },
+      }),
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("DeepSeek proxy timed out; using local zine fallback.");
+    }
+    throw error;
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+  }
   const responseText = await response.text();
   if (!response.ok) throw new Error(`DeepSeek proxy failed ${response.status}: ${responseText.slice(0, 800)}`);
   const data = JSON.parse(responseText || "{}");
@@ -402,15 +423,31 @@ function createBrowserWorkflow(seed: string): Workflow {
   }
 }
 
+async function withBrowserTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  let timeoutId: number | undefined;
+  const timeout = new Promise<never>((_resolve, reject) => {
+    timeoutId = globalThis.setTimeout(() => reject(new Error(message)), ms);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId !== undefined) globalThis.clearTimeout(timeoutId);
+  }
+}
+
 export async function generateBrowserAssociationZine(seed: string, petRole?: string, language: AssociationZineLanguage = "zh-TW"): Promise<BrowserAssociationResult> {
   const workflow = createBrowserWorkflow(seed);
   const variant: DaydreamHtmlLayoutVariant = "pbs-reset-title";
   const variationIndex = Date.now();
   let artifact: DaydreamPublicArtifactContent;
   try {
-    artifact = await callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language);
+    artifact = await withBrowserTimeout(
+      callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language),
+      EDITORIAL_WRITER_TIMEOUT_MS,
+      "Association writer timed out; using local template 1 fallback.",
+    );
   } catch (error) {
-    console.warn("Association editorial writer failed; rendering grounded fallback in template 01.", error);
+    console.warn("Association editorial writer unavailable; rendering grounded fallback in template 01.", error);
     artifact = workflow.step4.publicArtifact;
   }
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
