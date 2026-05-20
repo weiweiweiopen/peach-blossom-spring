@@ -59,7 +59,11 @@ const id: typeof zhTW = {
     fixedPetMenu: "Menu peliharaan tetap",
     creatorKicker: "QUESTION PET CREATOR",
     creatorTitle: "Question Pet",
-    creatorLead: "Pilih peliharaan berperan, tulis nama dan seed-mu, lalu tekan why! untuk masuk ke Peach Blossom Spring.",
+    creatorLead: "Pilih pekerjaan peliharaan, tulis nama dan pertanyaanmu, lalu buat agen wiki tamagotchi-mu.",
+    petOccupationLabel: "Pekerjaan peliharaan",
+    petOccupationAria: "Pilih pekerjaan peliharaan",
+    creatorSubmit: "Buat agen wiki tamagotchi-ku!",
+    creatorSubmitAria: "Buat agen wiki tamagotchi-ku",
   },
   dialogue: {
     title: "Dialog",

@@ -57,7 +57,11 @@ const zhTW = {
     fixedPetMenu: "固定電子雞選單",
     creatorKicker: "QUESTION PET CREATOR",
     creatorTitle: "Question Pet",
-    creatorLead: "選擇一隻角色寵物，寫下你的名字與 seed，然後按 why! 進入 Peach Blossom Spring。",
+    creatorLead: "選擇寵物職業，寫下你的名字與問題，然後生成你的維基電子雞代理。",
+    petOccupationLabel: "寵物職業",
+    petOccupationAria: "選擇寵物職業",
+    creatorSubmit: "生成我的維基電子雞代理（wiki tamagotchi agent)！",
+    creatorSubmitAria: "生成我的維基電子雞代理",
   },
   dialogue: {
     title: "對話",

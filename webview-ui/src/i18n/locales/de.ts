@@ -59,7 +59,11 @@ const de: typeof zhTW = {
     fixedPetMenu: "Festes Pet-Menü",
     creatorKicker: "QUESTION PET CREATOR",
     creatorTitle: "Question Pet",
-    creatorLead: "Wähle ein Rollen-Pet, schreibe deinen Namen und Seed und drücke dann why!, um Peach Blossom Spring zu betreten.",
+    creatorLead: "Wähle einen Pet-Beruf, schreibe deinen Namen und deine Frage und erzeuge deinen Wiki-Tamagotchi-Agenten.",
+    petOccupationLabel: "Pet-Beruf",
+    petOccupationAria: "Pet-Beruf auswählen",
+    creatorSubmit: "Meinen Wiki-Tamagotchi-Agenten erzeugen!",
+    creatorSubmitAria: "Meinen Wiki-Tamagotchi-Agenten erzeugen",
   },
   dialogue: {
     title: "Dialog",

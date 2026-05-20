@@ -1684,7 +1684,7 @@ function App() {
         setDocumentGeneration({ status: "loading" });
         void (async () => {
           try {
-            const result = await generateBrowserAssociationZine(profile.question || profile.mission, profile.avatarTitle);
+            const result = await generateBrowserAssociationZine(profile.question || profile.mission, profile.avatarTitle, selectedLanguage);
             const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
             finalDocumentObjectUrlsRef.current.add(url);
             setDocumentGeneration({ status: "idle" });
@@ -1693,7 +1693,7 @@ function App() {
               kind: "finalDocument",
               title: result.title,
               url,
-              description: "桃花源維基頁面。",
+              description: undefined,
             });
             setSplitPanelAnchor(null);
             setIsSplitExpanded(true);
@@ -2560,7 +2560,7 @@ function App() {
                           activeDialoguePersona.role,
                           activeDialoguePersona.intro,
                         ].filter(Boolean).join("\n\n");
-                        const result = await generateBrowserAssociationZine(seed, playerProfile.avatarTitle);
+                        const result = await generateBrowserAssociationZine(seed, playerProfile.avatarTitle, selectedLanguage);
                         const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
                         finalDocumentObjectUrlsRef.current.add(url);
                         setSplitPanel({

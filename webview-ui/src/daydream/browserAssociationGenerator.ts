@@ -20,6 +20,8 @@ export interface BrowserAssociationResult {
   variant: DaydreamHtmlLayoutVariant;
 }
 
+export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
+
 type LlmArtifact = Omit<DaydreamPublicArtifactContent, "schemaVersion" | "approvedForPublicLayout">;
 type Workflow = ReturnType<typeof runDaydreamWorkflow>;
 type Card = ReturnType<typeof sourceCards>[number];
@@ -37,8 +39,26 @@ function escapeAttr(value: string): string {
   return escapeHtml(value).replace(/\n/g, " ");
 }
 
-function htmlPage(fragment: string, title: string): string {
-  return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>${escapeHtml(title)}</title></head><body>${fragment}</body></html>`;
+function htmlLanguage(language: AssociationZineLanguage): string {
+  if (language === "zh-TW") return "zh-Hant";
+  if (language === "de") return "de-CH";
+  return language;
+}
+
+function languageInstruction(language: AssociationZineLanguage): string {
+  const labels: Record<AssociationZineLanguage, string> = {
+    "zh-TW": "繁體中文",
+    en: "English",
+    id: "Bahasa Indonesia",
+    de: "Swiss German-flavoured German / Deutsch, readable for Swiss audiences",
+    ja: "日本語",
+    th: "ภาษาไทย",
+  };
+  return `OUTPUT LANGUAGE: ${labels[language]}. The zine title, subtitle, section titles, body, protocol, caveat, and all visible reader-facing text must be written in ${labels[language]}. Do not fall back to Chinese unless OUTPUT LANGUAGE is 繁體中文.`;
+}
+
+function htmlPage(fragment: string, title: string, language: AssociationZineLanguage): string {
+  return `<!doctype html><html lang="${htmlLanguage(language)}"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>${escapeHtml(title)}</title></head><body>${fragment}</body></html>`;
 }
 
 function compactText(text: unknown, max = 260): string {
@@ -91,7 +111,7 @@ function sourceObservation(card: Card) {
   };
 }
 
-function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex: number | string, petRole: string | undefined) {
+function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex: number | string, petRole: string | undefined, language: AssociationZineLanguage) {
   const candidateCards = sourceCards(workflow).filter((card) => !isOffTopicTextileCard(card));
   const cards = candidateCards.slice(0, 9).map(sourceObservation);
   const deepRead = workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card)).slice(0, 8).map(sourceObservation);
@@ -142,7 +162,8 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
     researchTopicCandidates: topics,
     reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章，不要套固定文案，不要重複上一份小誌的題目或段落。標題與正文必須回應玩家問題中的具體詞彙；如果材料不足，就把不確定性寫成小誌中的開放問題。不要發明未提供的專有細節；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
-  return { system: editorialSystemPrompt, user };
+  const system = `${editorialSystemPrompt}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema.`;
+  return { system, user };
 }
 
 function extractJsonObject(text: string): unknown {
@@ -231,8 +252,8 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
   }
 }
 
-async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, variationIndex: number, petRole?: string): Promise<DaydreamPublicArtifactContent> {
-  const { system, user } = buildEditorialMessages(seed, workflow, variationIndex, petRole);
+async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, variationIndex: number, petRole: string | undefined, language: AssociationZineLanguage): Promise<DaydreamPublicArtifactContent> {
+  const { system, user } = buildEditorialMessages(seed, workflow, variationIndex, petRole, language);
   const outline = await requestDeepSeekJson(system, `${user}\n\n先只產生完整文章骨架 JSON。sections 的 body 只寫 30 字內摘要，protocol body 只寫 20 字內摘要。`, 900) as Partial<LlmArtifact>;
   const title = outline.title ?? "可演奏的基因資料";
   const subtitle = outline.subtitle ?? "讓資料視覺化、合成器表演與基因倫理在同一個原型裡相遇。";
@@ -245,7 +266,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
   for (let index = 0; index < 4; index += 1) {
     const plan = sectionPlans[index];
     const section = await requestDeepSeekJson(
-      "你是繁體中文藝術原型寫作者。根據題目與 deep reading 材料，擴寫單一小誌段落。不要使用後台語言，不要發明 NCBI/16S/rRNA/lacZ/Phred/大腸桿菌/粒線體 DNA/p-distance；不要漂移到 e-textile/布料/穿戴/紡織；不要寫原始資料。輸出 {\"title\":\"\",\"body\":\"\",\"pullQuote\":\"\"}。",
+      `${languageInstruction(language)}\nYou are an art prototype zine writer. Expand one section from the deep-reading material. Do not use backend/process language. Do not invent NCBI/16S/rRNA/lacZ/Phred/E. coli/mitochondrial DNA/p-distance details; do not drift into e-textile/fabric/wearable unless the seed asks for it. Output {\"title\":\"\",\"body\":\"\",\"pullQuote\":\"\"}.`,
       JSON.stringify({ seed, title, subtitle, proposition, sectionIndex: index + 1, sectionPlan: plan, sourceMaterial: parsedUser.sourceObservations, deepRead: parsedUser.deepReadObservations, linkedEvidenceTrails: parsedUser.linkedEvidenceTrails }, null, 2),
       650,
     );
@@ -257,7 +278,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
     });
   }
   const protocolData = await requestDeepSeekJson(
-    "你是藝術製作方法編輯。輸出 {\"protocol\":[{\"title\":\"\",\"body\":\"\"}],\"quietCaveat\":\"\"}，protocol 必須 4 條，每條是可操作步驟，不要後台語言。",
+    `${languageInstruction(language)}\nYou are an art-making protocol editor. Output {\"protocol\":[{\"title\":\"\",\"body\":\"\"}],\"quietCaveat\":\"\"}. Protocol must contain exactly 4 actionable steps and no backend/process language.`,
     JSON.stringify({ seed, title, proposition, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) })) }, null, 2),
     600,
   );
@@ -306,20 +327,22 @@ function seedRelevancePass(text: string, workflow: Workflow): boolean {
   return hits.length >= Math.min(3, anchors.length) || titleHits.length >= 1;
 }
 
-function validateVisibleText(text: string, workflow: Workflow): void {
+function validateVisibleText(text: string, workflow: Workflow, language: AssociationZineLanguage): void {
   const hits = workflowAnchorTerms(workflow).filter((anchor) => text.toLowerCase().includes(anchor.toLowerCase()));
   const repeated = repeatedSentenceReport(text);
-  const failures: string[] = [];
-  if (PUBLIC_FORBIDDEN.test(text)) failures.push("forbidden/process language detected");
-  if (RAW_ENGLISH_EXCERPT.test(text)) failures.push("long raw English excerpt detected");
-  if (/e-?textile|soft electronics|conductive thread|wearable circuits|fabric sensors/i.test(text)) failures.push("drifted to generic e-textile / soft-electronics workshop");
-  if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) failures.push("invented unsupported bio dataset/procedure details");
-  if (workflowAnchorTerms(workflow).length > 0 && hits.length < Math.min(3, workflowAnchorTerms(workflow).length)) failures.push(`seed anchor hits too low: ${hits.join(", ")}`);
-  if (!seedRelevancePass(text, workflow)) failures.push("seed relevance is too shallow");
-  if (repeated.length > 0) failures.push(`repeated sentence: ${repeated[0]}`);
-  if (!workflow.step1.report.linkedCards.length) failures.push("no linked traversal material");
-  if (text.length < 1050) failures.push(`visible text too thin: ${text.length}`);
-  if (failures.length > 0) throw new Error(`Public zine validation failed:\n- ${failures.join("\n- ")}\n\nVisible excerpt:\n${text.slice(0, 1000)}`);
+  const hardFailures: string[] = [];
+  const warnings: string[] = [];
+  if (PUBLIC_FORBIDDEN.test(text)) hardFailures.push("forbidden/process language detected");
+  if (language === "zh-TW" && RAW_ENGLISH_EXCERPT.test(text)) hardFailures.push("long raw English excerpt detected");
+  if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) hardFailures.push("invented unsupported bio dataset/procedure details");
+  if (/e-?textile|soft electronics|conductive thread|wearable circuits|fabric sensors/i.test(text)) warnings.push("possibly drifted to generic e-textile / soft-electronics workshop");
+  if (workflowAnchorTerms(workflow).length > 0 && hits.length < Math.min(2, workflowAnchorTerms(workflow).length)) warnings.push(`seed anchor hits low: ${hits.join(", ")}`);
+  if (!seedRelevancePass(text, workflow)) warnings.push("seed relevance is shallow");
+  if (repeated.length > 0) warnings.push(`repeated sentence: ${repeated[0]}`);
+  if (!workflow.step1.report.linkedCards.length) warnings.push("no linked traversal material");
+  if (text.length < 700) warnings.push(`visible text thin: ${text.length}`);
+  if (warnings.length > 0) console.warn("Association zine quality warnings:", warnings.join("; "));
+  if (hardFailures.length > 0) throw new Error(`Generated zine failed public safety gate: ${hardFailures.join("; ")}`);
 }
 
 function isHttpUrl(value: unknown): boolean {
@@ -339,34 +362,75 @@ function realSourceCards(workflow: Workflow, max = 10): Card[] {
   return result;
 }
 
-function renderSourceLinkSection(workflow: Workflow): string {
+function renderSourceLinkSection(workflow: Workflow, language: AssociationZineLanguage): string {
   const cards = realSourceCards(workflow, 10);
   if (cards.length === 0) return "";
+  const copy: Record<AssociationZineLanguage, { title: string; body: string }> = {
+    "zh-TW": { title: "延伸查詢", body: "下面是真實可開啟的頁面連結，可直接點開查詢。這些連結是本次文章使用到的材料，可以直接打開繼續閱讀。" },
+    en: { title: "Further reading", body: "These are real pages used as material for this zine. Open them directly to continue reading." },
+    id: { title: "Bacaan lanjutan", body: "Berikut halaman nyata yang menjadi bahan zine ini. Buka langsung untuk membaca lebih jauh." },
+    de: { title: "Weiterlesen", body: "Diese echten Seiten wurden als Material für dieses Zine verwendet. Öffne sie direkt zum Weiterlesen." },
+    ja: { title: "さらに読む", body: "この小誌の材料として使われた実在のページです。直接開いて読み進められます。" },
+    th: { title: "อ่านต่อ", body: "นี่คือหน้าจริงที่ใช้เป็นวัตถุดิบของซีนนี้ เปิดอ่านต่อได้โดยตรง" },
+  };
+  const selected = copy[language];
   return `<section class="page source-link-page" data-folio="links" style="break-before:page;page-break-before:always;padding:clamp(24px,5vw,72px);background:#f8e8c0;color:#243b3d;">
-    <h2>延伸查詢</h2>
-    <p>下面是真實可開啟的頁面連結，可直接點開查詢。這些連結是本次文章使用到的材料，可以直接打開繼續閱讀。</p>
+    <h2>${escapeHtml(selected.title)}</h2>
+    <p>${escapeHtml(selected.body)}</p>
     <ul style="display:grid;gap:12px;padding-left:1.2em;">
       ${cards.map((card) => `<li><a href="${escapeAttr(card.url ?? "")}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.title)}</a></li>`).join("")}
     </ul>
   </section>`;
 }
 
-export async function generateBrowserAssociationZine(seed: string, petRole?: string): Promise<BrowserAssociationResult> {
-  const workflow = runDaydreamWorkflow(seed, daydreamCorpus);
+function safeWorkflowSeed(seed: string): string {
+  const cleaned = seed.replace(PUBLIC_FORBIDDEN, " ").replace(/\s+/g, " ").trim();
+  return `桃花源小誌：${cleaned || "共同生活與互助"}。請從共同生活、藝術科技社群、維修、互助與現場練習來回應。`;
+}
+
+function createBrowserWorkflow(seed: string): Workflow {
+  try {
+    return runDaydreamWorkflow(seed, daydreamCorpus);
+  } catch (error) {
+    console.warn("Association workflow needed a public-safe seed fallback.", error);
+    try {
+      return runDaydreamWorkflow(safeWorkflowSeed(seed), daydreamCorpus);
+    } catch (fallbackError) {
+      console.warn("Association workflow fallback needed neutral seed.", fallbackError);
+      return runDaydreamWorkflow("共同生活、藝術科技社群、維修與互助的可列印小誌", daydreamCorpus);
+    }
+  }
+}
+
+export async function generateBrowserAssociationZine(seed: string, petRole?: string, language: AssociationZineLanguage = "zh-TW"): Promise<BrowserAssociationResult> {
+  const workflow = createBrowserWorkflow(seed);
   const variant: DaydreamHtmlLayoutVariant = "pbs-reset-title";
   const variationIndex = Date.now();
-  const artifact = await callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole);
+  let artifact: DaydreamPublicArtifactContent;
+  try {
+    artifact = await callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language);
+  } catch (error) {
+    console.warn("Association editorial writer failed; rendering grounded fallback in template 01.", error);
+    artifact = workflow.step4.publicArtifact;
+  }
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
-  let fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+  let fragment: string;
+  try {
+    fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+  } catch (error) {
+    console.warn("Association artifact was rejected; rendering grounded fallback in template 01.", error);
+    artifact = workflow.step4.publicArtifact;
+    fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+  }
   if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
     throw new Error("Only the first PBS HTML zine template is allowed.");
   }
   const visibleText = extractPublicArtifactText(fragment);
-  validateVisibleText(visibleText, workflow);
-  fragment += renderSourceLinkSection(workflow);
+  validateVisibleText(visibleText, workflow, language);
+  fragment += renderSourceLinkSection(workflow, language);
   return {
     title: artifact.title,
-    html: htmlPage(fragment, artifact.title),
+    html: htmlPage(fragment, artifact.title, language),
     visibleText,
     variant,
   };

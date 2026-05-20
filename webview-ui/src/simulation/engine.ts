@@ -1,6 +1,7 @@
 import { daydreamCorpus } from "../daydream/corpus.js";
 import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
-import { pickDaydreamHtmlLayoutVariant, renderDaydreamPublicArtifactHtml } from "../daydream/publicArtifactHtml.js";
+import { renderOfficialTemplateArtifactHtml } from "../daydream/officialTemplateRenderer.js";
+import { officialPbsResetTemplate } from "../daydream/templates/officialPbsResetTemplate.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
 import { buildNomadicResearchReport } from "./nomadicResearch.js";
 import {
@@ -656,8 +657,11 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
 
   try {
     const association = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
-    const htmlVariant = pickDaydreamHtmlLayoutVariant();
-    const bodyHtml = renderDaydreamPublicArtifactHtml(association, htmlVariant);
+    const htmlVariant = "pbs-reset-title";
+    const bodyHtml = renderOfficialTemplateArtifactHtml(association, htmlVariant, {
+      filename: "01-pbs-reset-title-kinetic.html",
+      html: officialPbsResetTemplate,
+    });
     const publicBody = [
       association.opening,
       association.proposition,

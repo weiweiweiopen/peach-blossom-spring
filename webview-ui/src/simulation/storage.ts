@@ -1,13 +1,13 @@
 import type { FinalDocument, SimSnapshot } from './types.js';
 
 const key = 'peach_question_pet_simulation';
-const associationStorageVersionKey = 'peach_question_pet_association_public_v1';
+const associationStorageVersionKey = 'peach_question_pet_association_public_v2';
 
 const STALE_PUBLIC_DOCUMENT = /\b(Daydream|Association|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|relation\s*paths?)\b|來源卡|檢索|後台|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|草稿/i;
 
 export function saveSimulation(snapshot: SimSnapshot): void {
   localStorage.setItem(key, JSON.stringify(snapshot));
-  localStorage.setItem(associationStorageVersionKey, '1');
+  localStorage.setItem(associationStorageVersionKey, '2');
 }
 
 export function loadSimulation(): SimSnapshot | null {
@@ -22,10 +22,10 @@ function migrateAssociationPublicDocuments(snapshot: SimSnapshot): SimSnapshot {
   const finalDocuments = Array.isArray(snapshot.finalDocuments) ? snapshot.finalDocuments : [];
   const cleanedFinalDocuments = finalDocuments.filter(isCleanAssociationDocument);
 
-  if (version !== '1' || cleanedFinalDocuments.length !== finalDocuments.length) {
+  if (version !== '2' || cleanedFinalDocuments.length !== finalDocuments.length) {
     const migrated: SimSnapshot = { ...snapshot, finalDocuments: cleanedFinalDocuments };
     localStorage.setItem(key, JSON.stringify(migrated));
-    localStorage.setItem(associationStorageVersionKey, '1');
+    localStorage.setItem(associationStorageVersionKey, '2');
     return migrated;
   }
 
