@@ -169,11 +169,16 @@ export function PlayerSetup({
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="seed"
             />
-            <div className="player-setup-mode-row player-setup-mode-row--emoji" aria-label="Mode">
-              <button type="button" className="player-setup-mode-orb player-setup-mode-orb--paper" onClick={() => handleStart("document_generation")} aria-label="Generate document"><span aria-hidden="true">📄</span></button>
-              <button type="button" className="player-setup-mode-orb player-setup-mode-orb--social" onClick={() => handleStart("interactive")} aria-label="Social mode"><span aria-hidden="true">💬</span></button>
+            <div className="player-setup-mode-row player-setup-mode-row--single" aria-label="Mode">
+              <button
+                type="submit"
+                className="player-setup-action player-setup-action--why"
+                aria-label="Enter with why mode"
+              >
+                why!
+              </button>
               {archiveSummary.total > 0 && (
-                <button className="player-setup-action" type="button" onClick={onClearArchive} aria-label="Clear pets">×</button>
+                <button className="player-setup-clear" type="button" onClick={onClearArchive} aria-label="Clear pets">×</button>
               )}
             </div>
           </section>
