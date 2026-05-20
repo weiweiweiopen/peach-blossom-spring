@@ -545,6 +545,10 @@ test('nomadic research mode generates local visit plan and uMap data', () => {
   assert.ok(document, 'expected nomadic research document by tick 75');
   assert.equal(document.mode, 'nomadic_research');
   assert.equal(document.modeLabel, 'Nomadic Research');
+  assert.equal(document.htmlVariant, 'pbs-reset-title');
+  assert.ok(document.bodyHtml?.includes('data-official-template="01-pbs-reset-title-kinetic.html"'));
+  assert.ok(!document.bodyHtml?.includes('Nomadic Research Field Plan'));
+  assert.ok(!document.bodyHtml?.includes('daydream-html--pbs-reset'));
   assert.ok(document.body.includes('Alive check protocol'));
   assert.ok(document.body.includes('Mapped nodes'));
   assert.ok(document.body.includes('Needs verification'));

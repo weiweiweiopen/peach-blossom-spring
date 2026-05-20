@@ -641,14 +641,41 @@ function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: num
       references,
       targets: splitTags(pet.question.text),
     });
+    const nomadicArtifact = {
+      schemaVersion: "association-public-document-v1" as const,
+      title: "現場路線小誌",
+      subtitle: "把問題變成可拜訪、可詢問、可回來改寫的桃花源路線。",
+      opening: `這份小誌從「${pet.question.text.slice(0, 80)}」出發，先保留問題的方向，再把它整理成可以走出去確認的現場筆記。`,
+      proposition: "不要把答案一次寫死；先找到人、地點、材料與下一個可被驗證的動作。",
+      sections: [
+        { id: "route", title: "先找仍然活著的現場", body: "從近期活動、開放時段、公開聯絡方式與社群痕跡開始，確認哪些地方還能被拜訪，哪些只能暫時作為背景閱讀。", pullQuote: "路線先求可抵達，再求完整。" },
+        { id: "questions", title: "帶著問題而不是結論拜訪", body: "把大問題拆成三個可以問人的句子：誰正在做、需要什麼、下一次可以如何一起測試。", pullQuote: "提問是一種禮貌的導航。" },
+        { id: "notes", title: "把材料留在桌面上", body: "記下名稱、連結、時間與不確定處，讓之後的人能重新檢查，而不是只留下漂亮但不可追蹤的結論。", pullQuote: "不確定的地方也要被保存。" },
+        { id: "return", title: "回到共同生活的尺度", body: "最後把路線縮回一個可做的邀請：一次拜訪、一次讀書、一次飯桌討論或一次小型修補。", pullQuote: "小誌是一張可以再出發的地圖。" },
+      ],
+      protocol: [
+        { title: "確認", body: "先確認一個仍可聯絡或可拜訪的地點。" },
+        { title: "詢問", body: "準備三個短問題，讓對方能拒絕、補充或帶你去下一處。" },
+        { title: "記錄", body: "把時間、網址、人物與不確定處一起寫下。" },
+        { title: "回來", body: "把現場筆記改成下一次可共同完成的小行動。" },
+      ],
+      quietCaveat: "若材料不足，就先保留空白；空白比假裝完整更適合共同工作。",
+      approvedForPublicLayout: true as const,
+    };
+    const bodyHtml = renderOfficialTemplateArtifactHtml(nomadicArtifact, "pbs-reset-title", {
+      filename: "01-pbs-reset-title-kinetic.html",
+      html: officialPbsResetTemplate,
+    });
     return {
       id: `${pet.id}-final-${tick}`,
       petId: pet.id,
       tick,
-      title: "Nomadic Research Field Plan",
+      title: nomadicArtifact.title,
       mode,
       modeLabel: finalDocumentModeLabel(mode),
       body: nomadic.body,
+      bodyHtml,
+      htmlVariant: "pbs-reset-title",
       references,
       reviewLog: [],
       sourceExchangeIds: petExchanges.map((exchange) => exchange.id),

@@ -690,6 +690,7 @@ function App() {
   } | null>(null);
   const petRunawayDoneRef = useRef<string | null>(null);
   const seenFinalDocumentIdsRef = useRef<Set<string>>(new Set());
+  const wikiGenerationInFlightRef = useRef(false);
   const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
 
   const activeDispatchPets = useMemo(
@@ -2034,7 +2035,7 @@ function App() {
     const seen = seenFinalDocumentIdsRef.current;
     const newest = simSnapshot.finalDocuments.find((document) => !seen.has(document.id));
     for (const document of simSnapshot.finalDocuments) seen.add(document.id);
-    if (!newest) return;
+    if (!newest || wikiGenerationInFlightRef.current) return;
     const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
     if (pet) removeCompletedLocalDispatchPet(pet.question.text);
     setSelectedPet(null);
@@ -2552,6 +2553,7 @@ function App() {
                       id: activeDialogueCharacter.id,
                     });
                     setIsSplitExpanded(true);
+                    wikiGenerationInFlightRef.current = true;
                     void (async () => {
                       try {
                         const seed = [
@@ -2580,6 +2582,8 @@ function App() {
                         setWorldNotice(`Wiki zine failed: ${message.split("\n")[0]}`);
                         setSplitPanel(null);
                         setIsSplitExpanded(false);
+                      } finally {
+                        wikiGenerationInFlightRef.current = false;
                       }
                     })();
                   }}
