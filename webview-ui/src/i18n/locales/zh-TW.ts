@@ -55,6 +55,9 @@ const zhTW = {
     petControls: "電子雞控制",
     choosePet: "選擇電子雞",
     fixedPetMenu: "固定電子雞選單",
+    creatorKicker: "QUESTION PET CREATOR",
+    creatorTitle: "Question Pet",
+    creatorLead: "選擇一隻角色寵物，寫下你的名字與 seed，然後按 why! 進入 Peach Blossom Spring。",
   },
   dialogue: {
     title: "對話",

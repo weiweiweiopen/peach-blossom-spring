@@ -5842,3 +5842,183 @@
   margin-bottom: 16px;
   padding-left: 1.35em;
 }
+
+/* 2026-05-20 creator: match official HTML template 01 sheet language. */
+.player-setup-overlay--minimal {
+  align-items: flex-start !important;
+  padding: clamp(14px, 3vw, 36px) !important;
+  background:
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--palette-yellow) 52%, transparent) 0 10%, transparent 11%),
+    radial-gradient(circle at 86% 76%, color-mix(in srgb, var(--palette-pink) 62%, transparent) 0 13%, transparent 14%),
+    var(--palette-cream) !important;
+}
+
+.player-setup-shell--minimal {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 14px;
+  width: min(1120px, 100%) !important;
+  max-width: min(1120px, 100%) !important;
+  color: var(--palette-ink) !important;
+}
+
+.player-setup-template-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-setup-template-no,
+.player-setup-template-label {
+  border: 4px solid var(--palette-ink);
+  box-shadow: 6px 6px 0 var(--palette-blue);
+  color: var(--palette-ink);
+}
+
+.player-setup-template-no {
+  padding: 8px 12px;
+  background: var(--palette-yellow);
+  font-size: clamp(34px, 6vw, 76px);
+  line-height: .8;
+}
+
+.player-setup-template-label {
+  padding: 8px 12px;
+  background: var(--palette-pink);
+  font-size: clamp(13px, 2vw, 22px);
+  letter-spacing: .06em;
+}
+
+.player-setup-template-sheet {
+  display: grid;
+  gap: clamp(16px, 3vw, 32px);
+  padding: clamp(16px, 3.6vw, 44px);
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--palette-pink) 0 18%, var(--palette-yellow) 18% 28%, var(--palette-blue) 28% 100%);
+  border: 5px solid var(--palette-ink);
+  box-shadow: 9px 9px 0 var(--palette-silver);
+}
+
+.player-setup-template-titleblock {
+  padding: clamp(14px, 3vw, 34px);
+  color: var(--palette-ink);
+  background: #fffaf0;
+  border: 4px solid var(--palette-ink);
+  box-shadow: 6px 6px 0 var(--palette-silver);
+}
+
+.player-setup-template-titleblock h1 {
+  margin: 0;
+  color: var(--palette-ink);
+  font-size: clamp(42px, 7vw, 92px);
+  line-height: 1.02;
+  letter-spacing: -.025em;
+}
+
+.player-setup-template-titleblock p {
+  max-width: 62em;
+  margin: 18px 0 0;
+  color: var(--palette-ink);
+  font-size: clamp(15px, 2vw, 22px);
+  line-height: 1.45;
+}
+
+.player-setup-merged-panel--minimal.rpg-message-frame {
+  grid-template-columns: minmax(260px, .65fr) minmax(0, 1.05fr) !important;
+  gap: clamp(14px, 2.5vw, 28px) !important;
+  width: 100% !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.player-setup-merged-panel--minimal .question-hatch-device,
+.player-setup-merged-panel--minimal .player-setup-controls {
+  background: #fffaf0 !important;
+  border: 4px solid var(--palette-ink) !important;
+  box-shadow: 5px 5px 0 color-mix(in srgb, var(--palette-ink) 24%, var(--palette-silver)) !important;
+}
+
+.player-setup-merged-panel--minimal .player-setup-controls {
+  padding: clamp(14px, 2.4vw, 24px) !important;
+}
+
+.player-setup-merged-panel--minimal .player-setup-field {
+  color: var(--palette-ink) !important;
+  background: #fff !important;
+  border-color: var(--palette-ink) !important;
+  box-shadow: 4px 4px 0 var(--palette-silver) !important;
+}
+
+.player-setup-merged-panel--minimal .question-hatch-device {
+  padding: clamp(14px, 2.4vw, 24px) !important;
+}
+
+.player-setup-merged-panel--minimal .pet-role-grid {
+  gap: 10px;
+  max-height: none;
+  padding: 10px;
+  background: #fff !important;
+  border: 3px solid var(--palette-ink) !important;
+}
+
+.player-setup-merged-panel--minimal .pet-role-option {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  place-items: center;
+  min-height: 92px;
+  padding: 7px 4px 5px;
+  background: #fff !important;
+  border: 3px solid var(--palette-ink) !important;
+  box-shadow: 3px 3px 0 var(--palette-silver) !important;
+}
+
+.player-setup-merged-panel--minimal .pet-role-option.is-selected {
+  background: var(--palette-yellow) !important;
+  box-shadow: 4px 4px 0 var(--palette-ink) !important;
+}
+
+.player-setup-merged-panel--minimal .pet-role-label {
+  display: block !important;
+  margin: 0 0 5px;
+  color: var(--palette-ink);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+  text-transform: none;
+}
+
+.question-hatch-screen,
+.question-pet-preview,
+.pet-role-option .question-pet-preview,
+.question-hatch-screen .question-pet-preview {
+  background: #fff !important;
+}
+
+.player-setup-merged-panel--minimal .question-hatch-screen {
+  border-color: var(--palette-ink) !important;
+  box-shadow: 6px 6px 0 var(--palette-silver) !important;
+}
+
+.player-setup-bottom-action {
+  margin-top: 2px;
+}
+
+@media (max-width: 760px) {
+  .player-setup-template-sheet {
+    padding: 12px;
+    border-width: 4px;
+    box-shadow: 7px 7px 0 var(--palette-silver);
+  }
+  .player-setup-merged-panel--minimal.rpg-message-frame {
+    grid-template-columns: 1fr !important;
+  }
+  .player-setup-template-titleblock,
+  .player-setup-merged-panel--minimal .question-hatch-device,
+  .player-setup-merged-panel--minimal .player-setup-controls {
+    border-width: 3px !important;
+    box-shadow: 4px 4px 0 var(--palette-silver) !important;
+  }
+}

@@ -57,6 +57,9 @@ const de: typeof zhTW = {
     petControls: "Pet-Steuerung",
     choosePet: "Pet auswählen",
     fixedPetMenu: "Festes Pet-Menü",
+    creatorKicker: "QUESTION PET CREATOR",
+    creatorTitle: "Question Pet",
+    creatorLead: "Wähle ein Rollen-Pet, schreibe deinen Namen und Seed und drücke dann why!, um Peach Blossom Spring zu betreten.",
   },
   dialogue: {
     title: "Dialog",

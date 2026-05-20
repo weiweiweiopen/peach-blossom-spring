@@ -114,7 +114,16 @@ export function PlayerSetup({
           handleStart("interactive");
         }}
       >
-        <div className="player-setup-merged-panel rpg-message-frame player-setup-merged-panel--minimal">
+        <header className="player-setup-template-top" aria-label="Question pet creator">
+          <span className="player-setup-template-no">01</span>
+          <span className="player-setup-template-label">{t(language, "setup.creatorKicker")}</span>
+        </header>
+        <main className="player-setup-template-sheet">
+          <div className="player-setup-template-titleblock">
+            <h1>{t(language, "setup.creatorTitle")}</h1>
+            <p>{t(language, "setup.creatorLead")}</p>
+          </div>
+          <div className="player-setup-merged-panel rpg-message-frame player-setup-merged-panel--minimal">
           <aside className="question-hatch-device is-hatching question-hatch-device--minimal" aria-live="polite">
             <div className="question-hatch-selector">
               <div className="pet-role-grid pet-role-grid--core" role="radiogroup" aria-label="Choose pet">
@@ -132,6 +141,7 @@ export function PlayerSetup({
                       title={language === "zh-TW" ? role.zh : role.en}
                       onClick={() => setSelectedPetRole(role.role)}
                     >
+                      <span className="pet-role-label">{language === "zh-TW" ? role.zh : role.en}</span>
                       <span className="pet-role-emoji" aria-hidden="true">{role.emoji}</span>
                       <QuestionPetPreview question={role.role} appearance={optionAppearance} size={2} />
                     </button>
@@ -168,7 +178,8 @@ export function PlayerSetup({
               placeholder="seed"
             />
           </section>
-        </div>
+          </div>
+        </main>
         <div className="player-setup-bottom-action" aria-label="Mode">
           <button
             type="submit"

@@ -57,6 +57,9 @@ const id: typeof zhTW = {
     petControls: "Kontrol peliharaan",
     choosePet: "Pilih peliharaan",
     fixedPetMenu: "Menu peliharaan tetap",
+    creatorKicker: "QUESTION PET CREATOR",
+    creatorTitle: "Question Pet",
+    creatorLead: "Pilih peliharaan berperan, tulis nama dan seed-mu, lalu tekan why! untuk masuk ke Peach Blossom Spring.",
   },
   dialogue: {
     title: "Dialog",
