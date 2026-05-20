@@ -15,6 +15,7 @@ export const homePetRoles: HomePetRole[] = [
   { label: 'dancer', shape: 'bird', accessory: 'tail' },
   { label: 'workshopologist', shape: 'tall', accessory: 'sprout' },
   { label: 'drinker', shape: 'drop', accessory: 'cap' },
+  { label: 'traveler', shape: 'bird', accessory: 'cap' },
   { label: 'socialist', shape: 'round', accessory: 'tail' },
   { label: 'professor', shape: 'tall', accessory: 'halo' },
   { label: 'fire maker', shape: 'drop', accessory: 'horns' },

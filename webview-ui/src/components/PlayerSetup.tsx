@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type CSSProperties } from "react";
 
 import { type LanguageCode, t } from "../i18n.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
@@ -21,7 +21,7 @@ interface PlayerProfile {
 
 type StartMode = "interactive" | "dispatch_observer" | "document_generation";
 type PlayerIntentMode = "nomadic_research" | "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why" | "philosophical_debate";
-type CorePetRole = "philosopher" | "engineer" | "artist" | "scientist";
+type CorePetRole = "philosopher" | "engineer" | "artist" | "scientist" | "cook" | "drinker" | "traveler" | "tailor";
 
 interface ArchiveSummary {
   total: number;
@@ -40,11 +40,15 @@ interface PlayerSetupProps {
   onClearArchive: () => void;
 }
 
-const corePetRoles: Array<{ role: CorePetRole; emoji: string; zh: string; en: string; intentMode: PlayerIntentMode; skill: string }> = [
-  { role: "philosopher", emoji: "◌", zh: "哲學家", en: "Philosopher", intentMode: "philosophical_debate", skill: "theory translation, hybrid theory, practical philosophy" },
-  { role: "engineer", emoji: "▣", zh: "工程師", en: "Engineer", intentMode: "manufacturing_technical_file", skill: "prototype tutorial, BOM, materials, fabrication steps" },
-  { role: "artist", emoji: "✶", zh: "藝術家", en: "Artist", intentMode: "poem", skill: "art plan, media dramaturgy, S+T+A+R+T+S style technology art" },
-  { role: "scientist", emoji: "◇", zh: "科學家", en: "Scientist", intentMode: "nomadic_research", skill: "fictional paper, material research, matter study, biology paper structure" },
+const corePetRoles: Array<{ role: CorePetRole; zh: string; en: string; intentMode: PlayerIntentMode; skill: string }> = [
+  { role: "philosopher", zh: "哲學家", en: "Philosopher", intentMode: "philosophical_debate", skill: "theory translation, hybrid theory, practical philosophy" },
+  { role: "engineer", zh: "工程師", en: "Engineer", intentMode: "manufacturing_technical_file", skill: "prototype tutorial, BOM, materials, fabrication steps" },
+  { role: "artist", zh: "藝術家", en: "Artist", intentMode: "poem", skill: "art plan, media dramaturgy, S+T+A+R+T+S style technology art" },
+  { role: "scientist", zh: "科學家", en: "Scientist", intentMode: "nomadic_research", skill: "fictional paper, material research, matter study, biology paper structure" },
+  { role: "cook", zh: "廚師", en: "Chef", intentMode: "how_to_do", skill: "kitchen plan, recipe logic, hosting, collective meals" },
+  { role: "drinker", zh: "酒鬼", en: "Drinker", intentMode: "why", skill: "bar talk, social fermentation, jokes, late-night honesty" },
+  { role: "traveler", zh: "旅行家", en: "Traveler", intentMode: "travel_plan", skill: "routes, field visits, maps, encounters, travel notes" },
+  { role: "tailor", zh: "裁縫阿姨", en: "Tailor auntie", intentMode: "manufacturing_technical_file", skill: "repair, sewing, pattern thinking, textile care" },
 ];
 
 function normalizeCorePetRole(seed: string | undefined): CorePetRole {
@@ -114,48 +118,9 @@ export function PlayerSetup({
           handleStart("interactive");
         }}
       >
-        <header className="player-setup-template-top" aria-label="Question pet creator">
-          <span className="player-setup-template-no">01</span>
-          <span className="player-setup-template-label">{t(language, "setup.creatorKicker")}</span>
-        </header>
-        <main className="player-setup-template-sheet">
-          <div className="player-setup-template-titleblock">
-            <h1>{t(language, "setup.creatorTitle")}</h1>
-            <p>{t(language, "setup.creatorLead")}</p>
-          </div>
-          <div className="player-setup-merged-panel rpg-message-frame player-setup-merged-panel--minimal">
-          <aside className="question-hatch-device is-hatching question-hatch-device--minimal" aria-live="polite">
-            <div className="question-hatch-selector">
-              <div className="pet-role-grid pet-role-grid--core" role="radiogroup" aria-label="Choose pet">
-                {corePetRoles.map((role) => {
-                  const optionAppearance = generateQuestionPet(role.role, `fixed-pet:${role.role}`);
-                  const selected = selectedPetRole === role.role;
-                  return (
-                    <button
-                      key={role.role}
-                      type="button"
-                      className={`pet-role-option${selected ? " is-selected" : ""}`}
-                      role="radio"
-                      aria-checked={selected}
-                      aria-label={language === "zh-TW" ? role.zh : role.en}
-                      title={language === "zh-TW" ? role.zh : role.en}
-                      onClick={() => setSelectedPetRole(role.role)}
-                    >
-                      <span className="pet-role-label">{language === "zh-TW" ? role.zh : role.en}</span>
-                      <span className="pet-role-emoji" aria-hidden="true">{role.emoji}</span>
-                      <QuestionPetPreview question={role.role} appearance={optionAppearance} size={2} />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="question-hatch-screen">
-              <QuestionPetPreview question={selectedRole.role} appearance={appearance} fill />
-            </div>
-          </aside>
-
-          <section className="player-setup-controls player-setup-controls--minimal" aria-label="Start">
+        <main className="player-setup-one-panel" aria-label="Question pet creator">
+          <label className="player-setup-one-field" htmlFor="question-pet-name">
+            <span className="player-setup-one-label">{t(language, "setup.nameLabel")}</span>
             <input
               id="question-pet-name"
               name="name"
@@ -167,6 +132,10 @@ export function PlayerSetup({
               placeholder="name"
               autoFocus
             />
+          </label>
+
+          <label className="player-setup-one-field" htmlFor="question-pet-question">
+            <span className="player-setup-one-label">{t(language, "setup.questionLabel")}</span>
             <textarea
               id="question-pet-question"
               name="question"
@@ -177,9 +146,36 @@ export function PlayerSetup({
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="seed"
             />
-          </section>
-          </div>
+          </label>
+
+          <fieldset className="player-setup-one-field player-setup-pet-field">
+            <legend className="player-setup-one-label">寵物職業</legend>
+            <div className="pet-role-runner-field" role="radiogroup" aria-label="Choose pet occupation">
+              {corePetRoles.map((role, index) => {
+                const optionAppearance = generateQuestionPet(role.role, `fixed-pet:${role.role}`);
+                const selected = selectedPetRole === role.role;
+                const label = language === "zh-TW" ? role.zh : role.en;
+                return (
+                  <button
+                    key={role.role}
+                    type="button"
+                    className={`pet-runner-option${selected ? " is-selected" : ""}`}
+                    style={{ "--pet-runner-delay": `${(-index * 0.37).toFixed(2)}s` } as CSSProperties}
+                    role="radio"
+                    aria-checked={selected}
+                    aria-label={label}
+                    title={label}
+                    onClick={() => setSelectedPetRole(role.role)}
+                  >
+                    <span className="pet-runner-bubble">{label}</span>
+                    <QuestionPetPreview question={role.role} appearance={optionAppearance} size={2} />
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
         </main>
+
         <div className="player-setup-bottom-action" aria-label="Mode">
           <button
             type="submit"

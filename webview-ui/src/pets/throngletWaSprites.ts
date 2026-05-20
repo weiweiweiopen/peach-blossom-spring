@@ -20,6 +20,7 @@ const bodyTypeToRole: Record<string, string> = {
   petDancer: 'dancer',
   petWorkshopologist: 'workshopologist',
   petDrinker: 'drinker',
+  petTraveler: 'traveler',
   petSocialist: 'socialist',
   petProfessor: 'professor',
   petFireMaker: 'fire maker',

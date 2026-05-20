@@ -6036,3 +6036,170 @@
 .player-setup-merged-panel--minimal .question-hatch-screen {
   background: #fff !important;
 }
+
+/* 2026-05-20 creator simplification: one frame, three fields, no large preview. */
+.player-setup-overlay--minimal {
+  align-items: center !important;
+  background: var(--palette-cream) !important;
+}
+
+.player-setup-shell--minimal {
+  width: min(920px, calc(100vw - 28px)) !important;
+  max-width: min(920px, calc(100vw - 28px)) !important;
+  display: grid;
+  gap: 16px;
+}
+
+.player-setup-one-panel {
+  display: grid;
+  gap: 18px;
+  padding: clamp(18px, 3vw, 30px);
+  color: #000;
+  background: #fffaf0;
+  border: 5px solid #000;
+  box-shadow: 10px 10px 0 var(--palette-silver);
+}
+
+.player-setup-one-field {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.player-setup-one-label {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #000;
+  background: var(--palette-yellow);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 var(--palette-blue);
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.player-setup-one-panel .player-setup-field {
+  margin: 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  box-shadow: 4px 4px 0 var(--palette-silver) !important;
+}
+
+.player-setup-one-panel .player-setup-textarea-large {
+  min-height: 118px;
+}
+
+.player-setup-pet-field {
+  min-width: 0;
+}
+
+.pet-role-runner-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  min-height: 260px;
+  padding: 18px 12px 12px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 24%, color-mix(in srgb, var(--palette-pink) 70%, transparent) 0 8%, transparent 9%),
+    radial-gradient(circle at 88% 72%, color-mix(in srgb, var(--palette-yellow) 70%, transparent) 0 10%, transparent 11%),
+    #fff;
+  border: 4px solid #000;
+  box-shadow: 4px 4px 0 var(--palette-silver);
+}
+
+.pet-runner-option {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 112px;
+  padding: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  animation: pet-runner-wander 3.6s ease-in-out infinite;
+  animation-delay: var(--pet-runner-delay, 0s);
+}
+
+.pet-runner-option:nth-child(2n) {
+  animation-name: pet-runner-wander-alt;
+}
+
+.pet-runner-option:hover {
+  filter: drop-shadow(2px 2px 0 var(--palette-blue));
+}
+
+.pet-runner-bubble {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  max-width: 100%;
+  padding: 5px 8px;
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 var(--palette-silver);
+  font-size: clamp(12px, 1.5vw, 16px);
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pet-runner-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 9px;
+  height: 9px;
+  background: inherit;
+  border-right: 3px solid #000;
+  border-bottom: 3px solid #000;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.pet-runner-option.is-selected .pet-runner-bubble {
+  background: var(--palette-pink);
+  box-shadow: 3px 3px 0 #000;
+}
+
+.pet-runner-option .question-pet-preview,
+.pet-runner-option .question-pet-preview span {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+@keyframes pet-runner-wander {
+  0%, 100% { transform: translate(0, 4px); }
+  25% { transform: translate(7px, -2px); }
+  50% { transform: translate(-4px, 3px); }
+  75% { transform: translate(5px, 7px); }
+}
+
+@keyframes pet-runner-wander-alt {
+  0%, 100% { transform: translate(2px, -2px); }
+  25% { transform: translate(-6px, 5px); }
+  50% { transform: translate(4px, -4px); }
+  75% { transform: translate(-3px, 6px); }
+}
+
+@media (max-width: 760px) {
+  .player-setup-one-panel {
+    padding: 14px;
+    border-width: 4px;
+    box-shadow: 7px 7px 0 var(--palette-silver);
+  }
+  .pet-role-runner-field {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 430px;
+  }
+}
