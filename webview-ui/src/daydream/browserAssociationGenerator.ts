@@ -12,7 +12,6 @@ import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 const PUBLIC_FORBIDDEN = /\b(Daydream|Association|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|relation\s*paths?|generated|backend|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|檢索|後台|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
-const REQUIRED_ANCHORS = ["基因", "遺傳", "基因改造", "資料視覺化", "合成器", "表演", "藝術計劃"];
 
 export interface BrowserAssociationResult {
   title: string;
@@ -124,10 +123,12 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
     variationIndex,
     petRole,
     roleInstruction,
+    seedKeywords: workflow.step1.report.keywords.slice(0, 12),
+    deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 12),
     desiredAngles: [
-      "把一組基因/遺傳資料做成可演奏的視覺-聲音譜，而不是案例清單",
-      "設計一件可 prototype 的藝術品：資料欄位如何映射到合成器參數與現場行為",
-      "讓觀眾能分辨科學資料、藝術轉譯與基因改造倫理邊界",
+      "從玩家提供的問題出發，不要套用固定的基因、聲音或科技藝術範例。",
+      "優先使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的材料。",
+      "把不同頁面之間的關係寫成一個具體、可製作、可印刷的小誌主題。",
     ],
     sourceObservations: cards,
     deepReadObservations: deepRead,
@@ -139,7 +140,7 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
     researchTopicCandidates: topics,
-    reminder: "請真的重寫文章，不要套固定文案。標題不可是 Sound / Audio。不要只做假議題或假標題；請提出一個可製作的作品 prototype：資料欄位、視覺化規則、合成器 mapping、表演流程、觀眾如何驗證、倫理限制。不可發明 NCBI/16S/rRNA/lacZ/Phred/大腸桿菌/粒線體 DNA/p-distance 等未提供細節。正文要自然命中基因、遺傳、基因改造、資料視覺化、合成器、表演、藝術計劃至少四項，並且要能看出它們之間的因果/方法關係。",
+    reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章，不要套固定文案，不要重複上一份小誌的題目或段落。標題與正文必須回應玩家問題中的具體詞彙；如果材料不足，就把不確定性寫成小誌中的開放問題。不要發明未提供的專有細節；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   return { system: editorialSystemPrompt, user };
 }
@@ -287,32 +288,34 @@ function repeatedSentenceReport(text: string): string[] {
   return repeated;
 }
 
-function seedRelevancePass(text: string): boolean {
-  const compacted = text.replace(/\s+/g, "");
-  const groups = [
-    /基因|遺傳|基因改造/,
-    /資料視覺化|圖表|圖譜|序列|變異位置|資料欄位/,
-    /合成器|聲音|頻率|振幅|聽覺|演奏/,
-    /表演|現場|觀眾|判讀|互動/,
-    /藝術計劃|藝術品|作品|製造方法|原型|prototype/i,
-    /倫理|授權|不確定性|科學資料|藝術轉譯/,
-  ];
-  const groupHits = groups.filter((pattern) => pattern.test(compacted)).length;
-  const hasMethodBridge = /基因[\s\S]{0,220}(合成器|聲音|演奏|資料視覺化)|(?:合成器|聲音|演奏|資料視覺化)[\s\S]{0,220}基因/.test(compacted);
-  const hasPublicMethod = /(?:藝術計劃|藝術品|作品|製造方法|原型)[\s\S]{0,220}(觀眾|表演|倫理|授權|判讀)|(?:觀眾|表演|倫理|授權|判讀)[\s\S]{0,220}(?:藝術計劃|藝術品|作品|製造方法|原型)/.test(compacted);
-  return groupHits >= 5 && hasMethodBridge && hasPublicMethod;
+function workflowAnchorTerms(workflow: Workflow): string[] {
+  const terms = [
+    ...workflow.step1.report.keywords,
+    ...workflow.step1.report.deepReadKeywords,
+    ...sourceCards(workflow).flatMap((card) => [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])]),
+  ].map((term) => term.trim()).filter((term) => term.length >= 2 && term.length <= 24);
+  return Array.from(new Set(terms)).slice(0, 16);
+}
+
+function seedRelevancePass(text: string, workflow: Workflow): boolean {
+  const compacted = text.replace(/\s+/g, "").toLowerCase();
+  const anchors = workflowAnchorTerms(workflow);
+  const hits = anchors.filter((anchor) => compacted.includes(anchor.replace(/\s+/g, "").toLowerCase()));
+  const sourceTitles = sourceCards(workflow).map((card) => card.title).filter(Boolean).slice(0, 8);
+  const titleHits = sourceTitles.filter((title) => compacted.includes(title.replace(/\s+/g, "").toLowerCase().slice(0, 12)));
+  return hits.length >= Math.min(3, anchors.length) || titleHits.length >= 1;
 }
 
 function validateVisibleText(text: string, workflow: Workflow): void {
-  const hits = REQUIRED_ANCHORS.filter((anchor) => text.includes(anchor));
+  const hits = workflowAnchorTerms(workflow).filter((anchor) => text.toLowerCase().includes(anchor.toLowerCase()));
   const repeated = repeatedSentenceReport(text);
   const failures: string[] = [];
   if (PUBLIC_FORBIDDEN.test(text)) failures.push("forbidden/process language detected");
   if (RAW_ENGLISH_EXCERPT.test(text)) failures.push("long raw English excerpt detected");
   if (/e-?textile|soft electronics|conductive thread|wearable circuits|fabric sensors/i.test(text)) failures.push("drifted to generic e-textile / soft-electronics workshop");
   if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) failures.push("invented unsupported bio dataset/procedure details");
-  if (hits.length < 4) failures.push(`anchor hits too low: ${hits.join(", ")}`);
-  if (!seedRelevancePass(text)) failures.push("seed relevance is too shallow");
+  if (workflowAnchorTerms(workflow).length > 0 && hits.length < Math.min(3, workflowAnchorTerms(workflow).length)) failures.push(`seed anchor hits too low: ${hits.join(", ")}`);
+  if (!seedRelevancePass(text, workflow)) failures.push("seed relevance is too shallow");
   if (repeated.length > 0) failures.push(`repeated sentence: ${repeated[0]}`);
   if (!workflow.step1.report.linkedCards.length) failures.push("no linked traversal material");
   if (text.length < 1050) failures.push(`visible text too thin: ${text.length}`);
@@ -341,7 +344,7 @@ function renderSourceLinkSection(workflow: Workflow): string {
   if (cards.length === 0) return "";
   return `<section class="page source-link-page" data-folio="links" style="break-before:page;page-break-before:always;padding:clamp(24px,5vw,72px);background:#f8e8c0;color:#243b3d;">
     <h2>延伸查詢</h2>
-    <p>下面是真實可開啟的頁面連結，可直接點開查詢。這些連結是本次文章使用到的材料，不是生成流程說明。</p>
+    <p>下面是真實可開啟的頁面連結，可直接點開查詢。這些連結是本次文章使用到的材料，可以直接打開繼續閱讀。</p>
     <ul style="display:grid;gap:12px;padding-left:1.2em;">
       ${cards.map((card) => `<li><a href="${escapeAttr(card.url ?? "")}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.title)}</a></li>`).join("")}
     </ul>
@@ -355,6 +358,9 @@ export async function generateBrowserAssociationZine(seed: string, petRole?: str
   const artifact = await callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole);
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
   let fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+  if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
+    throw new Error("Only the first PBS HTML zine template is allowed.");
+  }
   const visibleText = extractPublicArtifactText(fragment);
   validateVisibleText(visibleText, workflow);
   fragment += renderSourceLinkSection(workflow);

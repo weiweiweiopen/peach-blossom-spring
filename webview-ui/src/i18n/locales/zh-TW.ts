@@ -71,6 +71,9 @@ const zhTW = {
     fallbackMission: "我正在想的這個任務",
     fallbackSkills: "我的技能",
     requestFailed: "DeepSeek 代理請求失敗。",
+    associationQuestion: "聯想功能是怎麼工作的？",
+    associationLoadingTitle: "社群維基正在聯想中…",
+    associationLoadingCopy: "你提供的問題和這位 NPC 的記憶將成為 LLM 在社群維基裡聯想搜尋彼此相關連的頁面，作為生成一份可列印的小誌材料的方法。",
   },
   archive: {
     tree: "檔案大樹",

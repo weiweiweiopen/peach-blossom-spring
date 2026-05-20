@@ -125,7 +125,7 @@ function naturalSnippet(text: string, language: LanguageCode, fallback: string):
 
 function makeFixedQuestions(language: LanguageCode, personaId: string): string[] {
   void personaId;
-  const associationQuestion = '聯想功能是怎麼工作的？';
+  const associationQuestion = t(language, 'dialogue.associationQuestion');
   const questions: Record<LanguageCode, string[]> = {
     'zh-TW': ['你是誰？', '這裡是哪裡？', associationQuestion],
     en: ['Who are you?', 'Where am I?', associationQuestion],

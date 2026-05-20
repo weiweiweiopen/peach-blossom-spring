@@ -850,8 +850,21 @@ test('next tiny room config is 25x25 in a 50x50 peach forest map with top and bo
       assert.ok(!layout.furniture.some((item) => item.col === col && item.row === row));
     }
   }
+  const roomStart = NEXT_ROOM_MAP_PADDING;
+  const roomEnd = NEXT_ROOM_MAP_PADDING + NEXT_ROOM_GRID_SIZE - 1;
+  const innerGreenIdx = (roomStart + 3) * layout.cols + (roomStart + 3);
+  assert.equal(layout.tiles[innerGreenIdx], TileType.FLOOR_4);
+  assert.equal(layout.tileColors?.[innerGreenIdx]?.h, 128);
+  const topLeftFrame = roomStart * layout.cols + roomStart;
+  const topNextFrame = roomStart * layout.cols + roomStart + 1;
+  assert.equal(layout.tiles[topLeftFrame], TileType.FLOOR_1);
+  assert.notDeepEqual(layout.tileColors?.[topLeftFrame], layout.tileColors?.[topNextFrame]);
+  assert.ok([42, -42].includes(layout.tileColors?.[topLeftFrame]?.b ?? 0));
+  assert.ok([42, -42].includes(layout.tileColors?.[topNextFrame]?.b ?? 0));
+  assert.equal(layout.tileColors?.[0]?.h, 300);
+  assert.equal(layout.tileColors?.[roomEnd * layout.cols + roomEnd]?.h === 128, false);
   const peachTrees = layout.furniture.filter((item) => item.type === 'PLANT' || item.type === 'PLANT_2' || item.type === 'LARGE_PLANT');
-  assert.ok(peachTrees.length >= 12);
+  assert.ok(peachTrees.length >= 60);
   assert.ok(peachTrees.every((item) => item.color?.h === 300));
 });
 

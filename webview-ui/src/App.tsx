@@ -196,27 +196,20 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return t(language, "archive.tree");
 }
 
-function AssociationLoadingPage() {
+function AssociationLoadingPage({ language }: { language: LanguageCode }) {
   return (
     <div className="world-association-loading boot-loading-screen" role="status" aria-live="polite">
       <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
         <p className="boot-loading-title">Peach Blossom Spring</p>
-        <p className="boot-loading-copy">association memory is working in our wiki…</p>
-        <div className="world-association-traversal" aria-label="How traversal works">
-          <h3>聯想怎麼走：</h3>
-          <ol>
-            <li>先拿你的問題和這位 NPC 的記憶當起點。</li>
-            <li>wiki 會找意思相近、彼此有關的頁面。</li>
-            <li>再把最有關的材料整理成一份可以列印的小誌。</li>
-          </ol>
-        </div>
+        <p className="boot-loading-copy">{t(language, "dialogue.associationLoadingTitle")}</p>
+        <p className="world-association-traversal">{t(language, "dialogue.associationLoadingCopy")}</p>
         <span className="boot-loading-dots" aria-hidden="true" />
       </div>
     </div>
   );
 }
 
-function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }> }) {
+function ExternalLinkEmbed({ link, language }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode }) {
   const isFinalDocument = link.kind === "finalDocument";
   return (
     <div className={`world-split-embed ${isFinalDocument ? "world-split-final-document" : ""}`}>
@@ -234,7 +227,7 @@ function ExternalLinkEmbed({ link }: { link: Extract<SplitPanel, { kind: "extern
           sandbox={isFinalDocument ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
         />
       ) : isFinalDocument ? (
-        <AssociationLoadingPage />
+        <AssociationLoadingPage language={language} />
       ) : (
         <div className="world-split-loading">Generating zine...</div>
       )}
@@ -2550,9 +2543,9 @@ function App() {
                   onOpenWiki={() => {
                     setSplitPanel({
                       kind: "finalDocument",
-                      title: "association memory is working in our wiki…",
+                      title: t(selectedLanguage, "dialogue.associationLoadingTitle"),
                       url: "",
-                      description: "association memory is working in our wiki…",
+                      description: undefined,
                     });
                     setSplitPanelAnchor({
                       kind: "npc",
@@ -2572,9 +2565,9 @@ function App() {
                         finalDocumentObjectUrlsRef.current.add(url);
                         setSplitPanel({
                           kind: "finalDocument",
-                          title: "association memory is working in our wiki…",
+                          title: result.title,
                           url,
-                          description: `association memory is working in our wiki… · ${activeDialoguePersona.name}`,
+                          description: undefined,
                         });
                         setSplitPanelAnchor({
                           kind: "npc",
@@ -3141,7 +3134,7 @@ function App() {
                 ))}
               </div>
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
-              <ExternalLinkEmbed link={splitPanel} />
+              <ExternalLinkEmbed link={splitPanel} language={selectedLanguage} />
             ) : splitPanel.kind === "about" ? (
               <div className="world-wiki-content world-about-content">
                 <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>

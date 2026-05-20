@@ -73,6 +73,9 @@ const id: typeof zhTW = {
     fallbackMission: "misi yang sedang saya kerjakan",
     fallbackSkills: "keterampilan saya",
     requestFailed: "Permintaan proxy DeepSeek gagal.",
+    associationQuestion: "Bagaimana fitur asosiasi bekerja?",
+    associationLoadingTitle: "Wiki komunitas sedang mengasosiasikan…",
+    associationLoadingCopy: "Pertanyaanmu dan ingatan NPC ini menjadi cara bagi LLM untuk mencari halaman-halaman yang saling terkait di wiki komunitas, lalu memakainya sebagai bahan untuk zine yang dapat dicetak.",
   },
   archive: {
     tree: "Pohon arsip",

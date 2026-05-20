@@ -63,6 +63,9 @@ const campColor: ColorValue = { ...paletteYellow, b: 8, c: 20 };
 const treeColor: ColorValue = { ...paletteBlue, b: -4, c: 18 };
 const peachBloomColor: ColorValue = palettePink;
 const petalGroundColor: ColorValue = { ...palettePink, b: 30, c: 4 };
+const forestGrassColor: ColorValue = { h: 128, s: 55, b: 8, c: 18 };
+const checkerBlackColor: ColorValue = { h: 0, s: -100, b: -42, c: 0 };
+const checkerWhiteColor: ColorValue = { h: 0, s: -100, b: 42, c: -10 };
 const lcdMintColor: ColorValue = { ...paletteSilver, b: 22, c: 8 };
 const templeColor: ColorValue = { ...paletteYellow, b: 2, c: 24 };
 const thaiTempleColor: ColorValue = { ...paletteYellow, b: 16, c: 20 };
@@ -551,13 +554,18 @@ export function createNextTinyRoomLayout(): OfficeLayout {
   const topEntranceRow = padding;
   const bottomEntranceRow = padding + roomSize - 1;
 
-  fillRect(tiles, tileColors, cols, room, TileType.FLOOR_1, officeFloorColor());
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: room.w, h: 2 }, TileType.FLOOR_5, petalGroundColor);
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row + room.h - 2, w: room.w, h: 2 }, TileType.FLOOR_5, petalGroundColor);
-  fillRect(tiles, tileColors, cols, { col: room.col, row: room.row, w: 2, h: room.h }, TileType.FLOOR_5, petalGroundColor);
-  fillRect(tiles, tileColors, cols, { col: room.col + room.w - 2, row: room.row, w: 2, h: room.h }, TileType.FLOOR_5, petalGroundColor);
-  fillRect(tiles, tileColors, cols, { col: entranceCol, row: topEntranceRow, w: 2, h: 2 }, TileType.FLOOR_1, officeFloorColor());
-  fillRect(tiles, tileColors, cols, { col: entranceCol, row: bottomEntranceRow - 1, w: 2, h: 2 }, TileType.FLOOR_1, officeFloorColor());
+  fillRect(tiles, tileColors, cols, room, TileType.FLOOR_4, forestGrassColor);
+  for (let row = room.row; row < room.row + room.h; row += 1) {
+    for (let col = room.col; col < room.col + room.w; col += 1) {
+      const inFrame = col < room.col + 2 || col >= room.col + room.w - 2 || row < room.row + 2 || row >= room.row + room.h - 2;
+      if (!inFrame) continue;
+      const idx = row * cols + col;
+      tiles[idx] = TileType.FLOOR_1;
+      tileColors[idx] = (col + row) % 2 === 0 ? checkerWhiteColor : checkerBlackColor;
+    }
+  }
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: topEntranceRow, w: 2, h: 2 }, TileType.FLOOR_4, forestGrassColor);
+  fillRect(tiles, tileColors, cols, { col: entranceCol, row: bottomEntranceRow - 1, w: 2, h: 2 }, TileType.FLOOR_4, forestGrassColor);
 
   const peachForest: Array<[number, number, string]> = [
     [14, 12, 'LARGE_PLANT'], [18, 12, 'PLANT_2'], [24, 12, 'PLANT'], [29, 13, 'PLANT_2'], [33, 12, 'LARGE_PLANT'],
@@ -565,6 +573,15 @@ export function createNextTinyRoomLayout(): OfficeLayout {
     [12, 27, 'LARGE_PLANT'], [38, 27, 'LARGE_PLANT'], [15, 34, 'PLANT_2'], [20, 36, 'PLANT'],
     [27, 37, 'PLANT_2'], [34, 35, 'PLANT'], [36, 32, 'PLANT_2'], [16, 31, 'PLANT'],
     [8, 9, 'PLANT_2'], [42, 10, 'PLANT'], [7, 38, 'LARGE_PLANT'], [43, 40, 'PLANT_2'],
+    [10, 11, 'PLANT'], [12, 12, 'PLANT_2'], [16, 14, 'PLANT'], [21, 13, 'LARGE_PLANT'], [26, 15, 'PLANT'],
+    [31, 16, 'PLANT_2'], [35, 14, 'PLANT'], [39, 12, 'LARGE_PLANT'], [41, 16, 'PLANT_2'], [9, 18, 'PLANT'],
+    [17, 19, 'PLANT_2'], [21, 20, 'PLANT'], [30, 20, 'LARGE_PLANT'], [34, 19, 'PLANT'], [40, 21, 'PLANT_2'],
+    [8, 24, 'LARGE_PLANT'], [15, 24, 'PLANT'], [19, 26, 'PLANT_2'], [31, 25, 'PLANT'], [35, 26, 'PLANT_2'],
+    [42, 25, 'PLANT'], [10, 30, 'PLANT_2'], [13, 33, 'PLANT'], [18, 32, 'LARGE_PLANT'], [23, 33, 'PLANT'],
+    [29, 31, 'PLANT_2'], [32, 34, 'LARGE_PLANT'], [39, 33, 'PLANT'], [42, 35, 'PLANT_2'], [9, 41, 'PLANT'],
+    [13, 40, 'LARGE_PLANT'], [18, 42, 'PLANT_2'], [23, 40, 'PLANT'], [28, 41, 'PLANT_2'], [33, 42, 'PLANT'],
+    [38, 40, 'LARGE_PLANT'], [41, 38, 'PLANT'], [21, 17, 'PLANT'], [28, 18, 'PLANT_2'], [24, 35, 'PLANT'],
+    [11, 36, 'PLANT_2'], [36, 38, 'PLANT'], [39, 28, 'LARGE_PLANT'], [7, 20, 'PLANT'], [43, 30, 'PLANT_2'],
   ];
   for (const [col, row, type] of peachForest) {
     addFurniture(furniture, type, col, row, peachBloomColor);
@@ -575,13 +592,10 @@ export function createNextTinyRoomLayout(): OfficeLayout {
     version: 1,
     cols,
     rows,
-    layoutRevision: 15,
+    layoutRevision: 16,
     tiles,
     tileColors,
     furniture,
   };
 }
 
-function officeFloorColor(): ColorValue {
-  return { ...paletteSilver, b: 15, c: 12 };
-}

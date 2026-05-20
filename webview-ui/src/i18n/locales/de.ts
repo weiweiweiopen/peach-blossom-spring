@@ -73,6 +73,9 @@ const de: typeof zhTW = {
     fallbackMission: "die Mission, an der ich arbeite",
     fallbackSkills: "meine Fähigkeiten",
     requestFailed: "DeepSeek-Proxy-Anfrage fehlgeschlagen.",
+    associationQuestion: "Wie funktioniert die Assoziationsfunktion?",
+    associationLoadingTitle: "Das Community-Wiki verknüpft gerade…",
+    associationLoadingCopy: "Deine Frage und die Erinnerung dieses NPC werden für das LLM zu einem Weg, im Community-Wiki nach zusammenhängenden Seiten zu suchen und daraus Material für ein druckbares Zine zu machen.",
   },
   archive: {
     tree: "Archivbaum",
