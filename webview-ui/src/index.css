@@ -6022,3 +6022,17 @@
     box-shadow: 4px 4px 0 var(--palette-silver) !important;
   }
 }
+
+/* 2026-05-20 creator correction: pet sprites must not carry a white tile.
+   The selected role card can turn yellow; the pet itself stays transparent. */
+.player-setup-merged-panel--minimal .pet-role-option .question-pet-preview,
+.player-setup-merged-panel--minimal .pet-role-option .question-pet-preview span,
+.player-setup-merged-panel--minimal .question-hatch-screen .question-pet-preview,
+.player-setup-merged-panel--minimal .question-hatch-screen .question-pet-preview span,
+.player-setup-merged-panel--minimal .question-pet-preview {
+  background: transparent !important;
+}
+
+.player-setup-merged-panel--minimal .question-hatch-screen {
+  background: #fff !important;
+}
