@@ -180,9 +180,9 @@ export function PlayerSetup({
           <button
             type="submit"
             className="player-setup-action player-setup-action--why"
-            aria-label="Enter with why mode"
+            aria-label="生成我的維基電子雞代理"
           >
-            why!
+            生成我的維基電子雞代理（wiki tamagotchi agent)！
           </button>
         </div>
       </form>

@@ -6026,9 +6026,7 @@
 /* 2026-05-20 creator correction: pet sprites must not carry a white tile.
    The selected role card can turn yellow; the pet itself stays transparent. */
 .player-setup-merged-panel--minimal .pet-role-option .question-pet-preview,
-.player-setup-merged-panel--minimal .pet-role-option .question-pet-preview span,
 .player-setup-merged-panel--minimal .question-hatch-screen .question-pet-preview,
-.player-setup-merged-panel--minimal .question-hatch-screen .question-pet-preview span,
 .player-setup-merged-panel--minimal .question-pet-preview {
   background: transparent !important;
 }
@@ -6171,8 +6169,7 @@
   box-shadow: 3px 3px 0 #000;
 }
 
-.pet-runner-option .question-pet-preview,
-.pet-runner-option .question-pet-preview span {
+.pet-runner-option .question-pet-preview {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -6201,5 +6198,75 @@
   .pet-role-runner-field {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     min-height: 430px;
+  }
+}
+
+/* 2026-05-20 creator hotfix: keep form on-screen, restore pet pixels, enlarge CTA. */
+.player-setup-overlay--minimal {
+  align-items: flex-start !important;
+  min-height: 100dvh;
+  overflow-y: auto !important;
+  padding-top: max(12px, env(safe-area-inset-top)) !important;
+  padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
+}
+
+.player-setup-shell--minimal {
+  margin: 0 auto !important;
+}
+
+.player-setup-one-panel {
+  max-height: none !important;
+  gap: 12px !important;
+  padding: clamp(12px, 2.2vw, 22px) !important;
+}
+
+.player-setup-one-panel .player-setup-field {
+  padding: 10px 12px !important;
+  font-size: clamp(18px, 2vw, 24px) !important;
+}
+
+.player-setup-one-panel .player-setup-textarea-large {
+  min-height: 88px !important;
+}
+
+.pet-role-runner-field {
+  min-height: 228px !important;
+  padding: 12px 10px 10px !important;
+}
+
+/* Do not override individual sprite pixels; only the preview container is transparent. */
+.pet-runner-option .question-pet-preview {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+
+.player-setup-action--why {
+  width: min(720px, 100%) !important;
+  min-height: 64px !important;
+  padding: 14px 18px !important;
+  color: #000 !important;
+  font-family: Arial, "Noto Sans TC", "PingFang TC", sans-serif !important;
+  font-size: clamp(20px, 3vw, 34px) !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+}
+
+@media (max-width: 760px) {
+  .player-setup-shell--minimal {
+    width: min(100%, calc(100vw - 18px)) !important;
+    max-width: min(100%, calc(100vw - 18px)) !important;
+  }
+  .pet-role-runner-field {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 360px !important;
+  }
+  .pet-runner-option {
+    min-height: 78px !important;
+  }
+  .pet-runner-bubble {
+    font-size: 12px !important;
   }
 }
