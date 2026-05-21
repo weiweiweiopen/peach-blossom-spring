@@ -6,6 +6,7 @@ import { type LanguageCode, t } from '../i18n.js';
 import { calibratePersonaReply, type ChatEvidence, localNpcChat, retrieveNpcEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
+import { searchWikiPages, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -33,6 +34,7 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
+  wikiResults?: WikiSearchResult[];
 }
 
 interface RpgDialogueProps {
@@ -43,6 +45,7 @@ interface RpgDialogueProps {
   language: LanguageCode;
   onClose: () => void;
   onOpenWiki?: () => void;
+  onOpenWikiResult?: (link: WikiSearchResult) => void;
   onOpenMusic?: () => void;
   onSimEvent?: (prompt: string, topic: string) => void;
 }
@@ -368,7 +371,12 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
   return messages[language];
 }
 
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onOpenMusic, onSimEvent }: RpgDialogueProps) {
+function wikiSearchIntro(language: LanguageCode, count: number): string {
+  if (language === 'zh-TW') return count > 0 ? `我先幫你從本地 wiki 找到 ${count} 個比較貼近的頁面；下面可以直接打開。` : '我先查了本地 wiki，但這句話沒有找到夠準的頁面。可以換更具體的材料、作品或方法詞。';
+  return count > 0 ? `I found ${count} close local wiki pages. You can open them below.` : 'I checked the local wiki, but this query did not return a precise page yet. Try a more specific material, work, or method term.';
+}
+
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onOpenWikiResult, onOpenMusic, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -465,6 +473,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         retrievalContext: topic,
         knowledge: chatKnowledge,
       });
+      const wikiResults = searchWikiPages(trimmed, persona.id, 6);
       let reply: string;
       try {
         reply = await askDeepSeekPersonaWithEvidence({
@@ -478,8 +487,11 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       } catch {
         reply = localNpcChat({ message: trimmed, retrievalContext: topic, knowledge: chatKnowledge }).reply;
       }
-      const answer = { reply, evidence };
-      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.reply, evidence: answer.evidence }]);
+      const groundedReply = wikiResults.length > 0
+        ? `${wikiSearchIntro(language, wikiResults.length)} ${reply}`
+        : reply;
+      const answer = { reply: groundedReply, evidence, wikiResults };
+      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.reply, evidence: answer.evidence, wikiResults: answer.wikiResults }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : t(language, 'dialogue.requestFailed'));
     } finally {
@@ -534,13 +546,27 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
           <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
             {messages.map((message, index) => (
-              <p
-                key={`${message.speaker}-${index.toString()}`}
-                className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0"
-              >
-                <span className="text-accent-bright">{message.speaker}: </span>
-                {message.text}
-              </p>
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
+                <p className="m-0">
+                  <span className="text-accent-bright">{message.speaker}: </span>
+                  {message.text}
+                </p>
+                {message.wikiResults && message.wikiResults.length > 0 && (
+                  <div className="rpg-dialogue-wiki-results">
+                    {message.wikiResults.map((link) => (
+                      <button
+                        key={link.url}
+                        type="button"
+                        className="rpg-dialogue-wiki-result pbs-game-button"
+                        onClick={() => onOpenWikiResult?.(link)}
+                      >
+                        <strong>{link.title}</strong>
+                        <span>{link.sourceFamily}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
             {isLoading && (
               <p className="rpg-dialogue-thinking text-base text-text-muted">

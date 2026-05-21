@@ -2664,6 +2664,19 @@ function App() {
                       anchorId: activeDialogueCharacter.id,
                     });
                   }}
+                  onOpenWikiResult={(link) => {
+                    setSplitPanel({
+                      kind: "externalLink",
+                      title: link.title,
+                      url: link.url,
+                      description: link.description,
+                    });
+                    setSplitPanelAnchor({
+                      kind: "npc",
+                      id: activeDialogueCharacter.id,
+                    });
+                    setIsSplitExpanded(false);
+                  }}
                   onOpenMusic={
                     activeDialoguePersona.id === "wukir-suryadi"
                       ? () => {

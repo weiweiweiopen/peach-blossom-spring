@@ -6027,6 +6027,7 @@
 }
 
 .rpg-dialogue-panel .rpg-dialogue-chip,
+.rpg-dialogue-panel .rpg-dialogue-wiki-result,
 .rpg-dialogue-panel .rpg-dialogue-wiki-button,
 .rpg-dialogue-panel .rpg-dialogue-submit,
 .rpg-dialogue-panel .rpg-dialogue-question-toggle,
@@ -6042,6 +6043,26 @@
   box-shadow: 3px 3px 0 #000 !important;
   color: #000 !important;
   line-height: 1.1 !important;
+}
+
+.rpg-dialogue-wiki-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.rpg-dialogue-wiki-result {
+  display: grid !important;
+  justify-items: start;
+  gap: 4px;
+  text-align: left;
+}
+
+.rpg-dialogue-wiki-result strong,
+.rpg-dialogue-wiki-result span {
+  font-size: 14px;
+  line-height: 1.15;
 }
 
 /* 2026-05-20 creator: match official HTML template 01 sheet language. */

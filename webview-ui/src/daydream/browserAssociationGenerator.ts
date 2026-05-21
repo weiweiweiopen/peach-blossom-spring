@@ -157,6 +157,7 @@ function sourceObservation(card: Card) {
   const kind = classifyCard(card);
   return {
     title: card.title,
+    url: card.url ?? "",
     sourceFamily: sourceFamily(card),
     kind,
     publicRole: publicSourcePhrase(card),
@@ -221,8 +222,8 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
     desiredAngles: [
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
       "先做積極簡潔的材料判讀：支持什麼、挑戰什麼、需要修正什麼。",
-      "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的詞彙和材料。",
-      "把不同頁面之間的關係寫成一個有未來潛力的方向：物件、方法、研究、作品、工作坊、概念工具或社會理論。",
+      "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
+      "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀路線；不要硬寫成宏大宣言。",
     ],
     sourceObservations: cards,
     deepReadObservations: deepRead,
@@ -234,8 +235,8 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
     researchTopicCandidates: topics,
-    instruction: `Treat the player's selected profession (${petRole ?? "artist"}) as a real editorial lens. Use professionSearchHints to choose angle and vocabulary when those hints connect to gathered pages. Based only on the gathered material packet, infer a possible future direction and correct the lens when the material points elsewhere. Do not introduce domain vocabulary not present in the seed, profession hints, or gathered pages.`,
-    reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先積極簡討材料支持與材料反駁之處；不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。只能使用 SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 已排除，不要引用。標題與正文必須回應玩家問題中的具體詞彙。除非 seed 明確詢問某個人，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 seed 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: `Treat the player's selected profession (${petRole ?? "artist"}) as a light editorial lens, not a mandate. Use professionSearchHints only when they connect to gathered pages. Prefer precise page-based usefulness over speculative future rhetoric. Do not introduce domain vocabulary not present in the seed, profession hints, or gathered pages.`,
+    reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先說材料支持什麼、不支持什麼；不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。只能使用 SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 已排除，不要引用。標題與正文必須回應玩家問題中的具體詞彙。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 seed 明確詢問某個人，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 seed 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${editorialSystemPrompt}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the seed or gathered page text.`;
   return { system, user };
@@ -400,7 +401,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
   onProgress?.("生成 seed 與職業線索");
   const outline = await requestDeepSeekJson(
     system,
-    `${user}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 各 90-150 字。不要寫任何人名。`,
+      `${user}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 各 90-150 字。必須直接回應 seed，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
     800,
   ) as any;
   const title = String(outline.title ?? "材料生成的未來方向");
@@ -412,7 +413,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(["第一次搜尋頁面完成，開始料理第一章", "第二次搜尋頁面完成，開始翻炒第二章", "發現附件與材料線索，開始深讀第三章", "開始思考，收束第四章"][index]);
     const section = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。只根據材料包與章節計畫寫，不要寫系統/流程語，不要寫任何人名。`,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。只根據材料包與章節計畫寫。必須至少使用一個實際頁名、作品名、物件或方法；若材料不足就寫成清楚的閱讀/測試建議，不要幻想新事實。不要寫系統/流程語，不要寫任何人名。`,
       JSON.stringify({ seed, title, subtitle, proposition, sectionIndex: index + 1, sourceObservations: parsedUser.sourceObservations, deepReadObservations: parsedUser.deepReadObservations, linkedEvidenceTrails: parsedUser.linkedEvidenceTrails }, null, 2),
       800,
     );
@@ -427,7 +428,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(["開始生成你的小誌行動譜", "校準下一步", "加入可測試方法", "裝訂最後一頁"][index]);
     const item = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 個行動步驟 JSON，不要陣列：{"title":"","body":""}。body 60-90 字。不要寫系統/流程語，不要寫任何人名。`,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 個行動步驟 JSON，不要陣列：{"title":"","body":""}。body 60-90 字。步驟要指向可做的閱讀、比較、測試或點開頁面後能確認的事；不要寫系統/流程語，不要寫任何人名。`,
       JSON.stringify({ seed, title, proposition, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
       800,
     ) as any;
@@ -523,10 +524,17 @@ function renderTraceList(items: any[], renderItem: (item: any) => string): strin
   return `<ul>${items.map(renderItem).join("")}</ul>`;
 }
 
+function renderPageTitleLink(page: any): string {
+  const title = escapeHtml(page.title ?? page.to ?? "Untitled");
+  const url = String(page.url ?? "").trim();
+  if (!url) return `<strong>${title}</strong>`;
+  return `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer" style="color:#111;text-decoration:underline;text-decoration-thickness:2px;"><strong>${title}</strong></a>`;
+}
+
 function renderVisibleTraceSection(trace: Record<string, any>, language: AssociationZineLanguage): string {
   const title = language === "zh-TW" ? "閱讀路徑 / 生成路徑" : "Reading Path / Generation Trace";
   const pipeline = ["seed", "seed words", "first pages", "linked pages", "second words", "deep-read pages", "material packet", "future direction", "DeepSeek article" ];
-  const pageItem = (page: any) => `<li><strong>${escapeHtml(page.title ?? page.to ?? "Untitled")}</strong> <span>(${escapeHtml(page.sourceFamily ?? page.relation ?? "related")})</span><br/><small>${escapeHtml(page.path ?? page.url ?? page.reason ?? "")}</small>${page.matchedKeywords?.length ? `<br/><small>matched: ${escapeHtml(page.matchedKeywords.join(", "))}</small>` : ""}${page.whyUsed ? `<br/><small>why: ${escapeHtml(page.whyUsed)}</small>` : ""}</li>`;
+  const pageItem = (page: any) => `<li>${renderPageTitleLink(page)} <span>(${escapeHtml(page.sourceFamily ?? page.relation ?? "related")})</span><br/><small>${escapeHtml(page.url ?? page.path ?? page.reason ?? "")}</small>${page.matchedKeywords?.length ? `<br/><small>matched: ${escapeHtml(page.matchedKeywords.join(", "))}</small>` : ""}${page.whyUsed ? `<br/><small>why: ${escapeHtml(page.whyUsed)}</small>` : ""}</li>`;
   const mermaid = `graph TD\n${pipeline.map((step, index) => index < pipeline.length - 1 ? `  p${index}["${step}"] --> p${index + 1}["${pipeline[index + 1]}"]` : "").filter(Boolean).join("\n")}`;
   return `<section class="page pbs-readable-trace" data-folio="trace" style="break-before:page;page-break-before:always;padding:clamp(24px,5vw,72px);background:#f8e8c0;color:#243b3d;">
     <h2>${escapeHtml(title)}</h2>
