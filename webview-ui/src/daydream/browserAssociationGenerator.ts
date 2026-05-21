@@ -12,8 +12,8 @@ import editorialSystemPrompt from "../../prompts/association-editorial-system.md
 import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
-const DEEPSEEK_REQUEST_TIMEOUT_MS = 20000;
-const EDITORIAL_WRITER_TIMEOUT_MS = 90000;
+const DEEPSEEK_REQUEST_TIMEOUT_MS = 60000;
+const EDITORIAL_WRITER_TIMEOUT_MS = 150000;
 const PUBLIC_FORBIDDEN = /\b(Daydream|Association|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|generated|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 
@@ -26,9 +26,10 @@ export interface BrowserAssociationResult {
   traceKey?: string;
 }
 
+export type AssociationProgressCallback = (message: string) => void;
+
 export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
 
-type LlmArtifact = Omit<DaydreamPublicArtifactContent, "schemaVersion" | "approvedForPublicLayout">;
 type Workflow = ReturnType<typeof runDaydreamWorkflow>;
 type Card = ReturnType<typeof sourceCards>[number];
 type AllowedSourceFamily = "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
@@ -36,7 +37,7 @@ type AllowedSourceFamily = "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
 let activeDeepSeekTraceCalls: Array<{ status: string; httpStatus: number | null; durationMs: number; errorClass: string | null }> = [];
-const FUTURE_MODES = ["art-making method", "theory", "scientific research method", "social theory"] as const;
+const FUTURE_MODES = ["art-making method", "theory", "scientific research method", "community theory"] as const;
 
 function escapeHtml(value: string): string {
   return value
@@ -146,6 +147,12 @@ function isOffTopicTextileCard(card: Card): boolean {
   return false;
 }
 
+function materialHint(text: unknown, max = 160): string {
+  return compactText(text, max)
+    .replace(/\bAndreas\s+Siagian\b/gi, "Lifepatch")
+    .replace(/\bHackteria\b/gi, "excluded unavailable wiki");
+}
+
 function sourceObservation(card: Card) {
   const kind = classifyCard(card);
   return {
@@ -153,21 +160,33 @@ function sourceObservation(card: Card) {
     sourceFamily: sourceFamily(card),
     kind,
     publicRole: publicSourcePhrase(card),
-    concreteHint: compactText(card.excerpt, 120),
+    concreteHint: materialHint(card.excerpt, 140),
     topics: [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].slice(0, 8).join(", "),
     caution: "Use as a concrete observation only; do not paste raw excerpt or describe retrieval/source mechanics.",
   };
 }
 
+function professionSearchHints(petRole: string | undefined): string {
+  const role = String(petRole ?? "").toLowerCase();
+  if (/drink|酒|bar|trinker|飲み|drunk|pemabuk/.test(role)) return "party, joy, carnival, celebration, alcohol sensor, fermentation, drinking ritual, playful detector, late-night gathering";
+  if (/cook|chef|廚|kitchen|料理|koki/.test(role)) return "kitchen, recipe, fermentation, hosting, food workshop, shared meal, cooking tool";
+  if (/engineer|工程|fabrication|tool/.test(role)) return "prototype, circuit, sensor, calibration, hardware, fabrication, repair";
+  if (/scientist|科學|research|lab/.test(role)) return "experiment, observation, lab method, field test, measurement, protocol";
+  if (/philosopher|哲學|theory/.test(role)) return "theory, commons, ethics, relation, method, concept";
+  if (/tailor|裁縫|sew|textile/.test(role)) return "sewing, textile, pattern, repair, wearable, fabric";
+  if (/travel|旅行|route/.test(role)) return "route, field visit, map, encounter, local site";
+  return "art, method, workshop, commons, tool, repair";
+}
+
 function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex: number | string, petRole: string | undefined, language: AssociationZineLanguage) {
   const candidateCards = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card));
-  const cards = candidateCards.slice(0, 9).map(sourceObservation);
-  const deepRead = workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card)).slice(0, 8).map(sourceObservation);
-  const linkedTrails = workflow.step1.report.linkedCards.slice(0, 10).map((trail) => ({
+  const cards = candidateCards.slice(0, 7).map(sourceObservation);
+  const deepRead = workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card)).slice(0, 6).map(sourceObservation);
+  const linkedTrails = workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).slice(0, 7).map((trail) => ({
     from: trail.via?.map((card) => card.title).join(" → ") || "",
     to: trail.card.title,
     relation: trail.relation,
-    observation: compactText(trail.card.excerpt, 160),
+    observation: materialHint(trail.card.excerpt, 160),
   }));
   const selectedModes = chooseModes(seed, variationIndex);
   const topics = workflow.step3.researchTopics.slice(0, 3).map((topic) => ({
@@ -196,10 +215,12 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
     playerProfession: petRole ?? "artist",
     roleInstruction,
     selectedModes,
+    professionSearchHints: professionSearchHints(petRole),
     seedKeywords: workflow.step1.report.keywords.slice(0, 12),
     deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 12),
     desiredAngles: [
-      "從玩家提供的問題出發，不要套用固定題材或預設領域。",
+      "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
+      "先做積極簡潔的材料判讀：支持什麼、挑戰什麼、需要修正什麼。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的詞彙和材料。",
       "把不同頁面之間的關係寫成一個有未來潛力的方向：物件、方法、研究、作品、工作坊、概念工具或社會理論。",
     ],
@@ -213,8 +234,8 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
     researchTopicCandidates: topics,
-    instruction: `You are roleplaying as the player's selected profession: ${petRole ?? "artist"}. Based only on the gathered material packet, infer a possible future direction. Choose from these three modes: ${selectedModes.join(", ")}. Do not introduce domain vocabulary not present in the seed or gathered pages.`,
-    reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章，不要套固定文案，不要重複上一份小誌的題目或段落。只能使用 SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 已排除，不要引用。標題與正文必須回應玩家問題中的具體詞彙。不要引入 seed 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: `Treat the player's selected profession (${petRole ?? "artist"}) as a real editorial lens. Use professionSearchHints to choose angle and vocabulary when those hints connect to gathered pages. Based only on the gathered material packet, infer a possible future direction and correct the lens when the material points elsewhere. Do not introduce domain vocabulary not present in the seed, profession hints, or gathered pages.`,
+    reminder: "請真的依照 seedKeywords、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先積極簡討材料支持與材料反駁之處；不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。只能使用 SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 已排除，不要引用。標題與正文必須回應玩家問題中的具體詞彙。除非 seed 明確詢問某個人，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 seed 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${editorialSystemPrompt}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the seed or gathered page text.`;
   return { system, user };
@@ -222,10 +243,18 @@ function buildEditorialMessages(seed: string, workflow: Workflow, variationIndex
 
 function extractJsonObject(text: string): unknown {
   const trimmed = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
-  try { return JSON.parse(trimmed); } catch {}
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (typeof parsed === "string") return extractJsonObject(parsed);
+    return parsed;
+  } catch {}
   const start = trimmed.indexOf("{");
   const end = trimmed.lastIndexOf("}");
-  if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));
+  if (start >= 0 && end > start) {
+    const parsed = JSON.parse(trimmed.slice(start, end + 1));
+    if (typeof parsed === "string") return extractJsonObject(parsed);
+    return parsed;
+  }
   throw new Error(`LLM did not return parseable JSON: ${trimmed.slice(0, 500)}`);
 }
 
@@ -258,6 +287,7 @@ function cleanLLMText(value: unknown): string {
     .replace(/關係場域/g, "關係")
     .replace(/關係場/g, "關係")
     .replace(/e-?textile/gi, "聲音介面")
+    .replace(/\bAndreas\s+Siagian\b/gi, "Lifepatch 的在地協作脈絡")
     .replace(/固定框架詞/g, "材料詞")
     .trim();
 }
@@ -303,6 +333,20 @@ function requestOrigin(): string {
   return windowRef?.location?.origin || "http://localhost:5173";
 }
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error ?? "unknown_error");
+}
+
+function errorClass(error: unknown, fallback = "unknown_error"): string {
+  const message = errorMessage(error);
+  if (/DeepSeek proxy failed\s+(\d+)/i.test(message)) return `http_error_${message.match(/DeepSeek proxy failed\s+(\d+)/i)?.[1] ?? "unknown"}`;
+  if (/http_error\s+(\d+)/i.test(message)) return `http_error_${message.match(/http_error\s+(\d+)/i)?.[1] ?? "unknown"}`;
+  if (/JSON parse failed|parseable JSON|JSON\.parse/i.test(message)) return "json_parse_failed";
+  if (/public safety gate|public artifact|forbidden|unsupported|validation/i.test(message)) return "public_validation_error";
+  if (error instanceof Error && error.name) return error.name;
+  return fallback;
+}
+
 async function requestDeepSeekJson(system: string, user: string, maxTokens = 900, temperature = 0.9): Promise<any> {
   const startedAt = Date.now();
   const controller = new AbortController();
@@ -327,7 +371,9 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
   } catch (error) {
     activeDeepSeekTraceCalls.push({ status: "failed", httpStatus: null, durationMs: Date.now() - startedAt, errorClass: error instanceof Error ? error.name : "unknown_error" });
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error("DeepSeek proxy timed out; please try again.");
+      const timeoutError = new Error("AbortError: DeepSeek proxy timed out; please try again.");
+      timeoutError.name = "AbortError";
+      throw timeoutError;
     }
     throw error;
   } finally {
@@ -335,7 +381,7 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
   }
   const responseText = await response.text();
   activeDeepSeekTraceCalls.push({ status: response.ok ? "pass" : "failed", httpStatus: response.status, durationMs: Date.now() - startedAt, errorClass: response.ok ? null : "http_error" });
-  if (!response.ok) throw new Error(`DeepSeek proxy failed ${response.status}: ${responseText.slice(0, 800)}`);
+  if (!response.ok) throw new Error(`http_error ${response.status}: DeepSeek proxy failed: ${responseText.slice(0, 800)}`);
   let content = responseText;
   try {
     const data = JSON.parse(responseText || "{}");
@@ -345,51 +391,48 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
   try {
     return extractJsonObject(content);
   } catch (error) {
-    if (maxTokens < 400) throw error;
-    return requestDeepSeekJson(
-      "你是 JSON 修復器。只把使用者提供的破損 JSON 改成可 JSON.parse 的 minified JSON；不要新增說明。",
-      content.slice(0, 6000),
-      500,
-      0.1,
-    );
+    throw new Error(`JSON parse failed: ${errorMessage(error)}`);
   }
 }
 
-async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, variationIndex: number, petRole: string | undefined, language: AssociationZineLanguage): Promise<DaydreamPublicArtifactContent> {
+async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, variationIndex: number, petRole: string | undefined, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback): Promise<DaydreamPublicArtifactContent> {
   const { system, user } = buildEditorialMessages(seed, workflow, variationIndex, petRole, language);
-  const outline = await requestDeepSeekJson(system, `${user}\n\n先只產生完整文章骨架 JSON。sections 的 body 只寫 30 字內摘要，protocol body 只寫 20 字內摘要。`, 900) as Partial<LlmArtifact>;
-  const title = outline.title ?? "材料生成的未來方向";
-  const subtitle = outline.subtitle ?? "每次由當下 seed 與當次閱讀材料重新推導。";
-  const opening = outline.opening ?? "";
-  const proposition = outline.proposition ?? "";
-  const sectionPlans: any[] = (Array.isArray(outline.sections) ? outline.sections : []).slice(0, 4);
-  while (sectionPlans.length < 4) sectionPlans.push({ title: `段落 ${sectionPlans.length + 1}`, body: "" });
+  onProgress?.("生成 seed 與職業線索");
+  const outline = await requestDeepSeekJson(
+    system,
+    `${user}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 各 90-150 字。不要寫任何人名。`,
+    800,
+  ) as any;
+  const title = String(outline.title ?? "材料生成的未來方向");
+  const subtitle = String(outline.subtitle ?? "從本次問題與本次閱讀材料重新推導。");
+  const opening = String(outline.opening ?? "");
+  const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
   const sections = [];
   for (let index = 0; index < 4; index += 1) {
-    const plan = sectionPlans[index];
+    onProgress?.(["第一次搜尋頁面完成，開始料理第一章", "第二次搜尋頁面完成，開始翻炒第二章", "發現附件與材料線索，開始深讀第三章", "開始思考，收束第四章"][index]);
     const section = await requestDeepSeekJson(
-      `${languageInstruction(language)}\nExpand one substantive section from the gathered material packet. Do not use system/process language. Do not introduce domain vocabulary that is absent from the seed and gathered pages. Output {\"title\":\"\",\"body\":\"\",\"pullQuote\":\"\"}.`,
-      JSON.stringify({ seed, title, subtitle, proposition, sectionIndex: index + 1, sectionPlan: plan, materialPacket: parsedUser.sourceObservations, deepRead: parsedUser.deepReadObservations, linkedPages: parsedUser.linkedEvidenceTrails }, null, 2),
-      650,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。只根據材料包與章節計畫寫，不要寫系統/流程語，不要寫任何人名。`,
+      JSON.stringify({ seed, title, subtitle, proposition, sectionIndex: index + 1, sourceObservations: parsedUser.sourceObservations, deepReadObservations: parsedUser.deepReadObservations, linkedEvidenceTrails: parsedUser.linkedEvidenceTrails }, null, 2),
+      800,
     );
     sections.push({
-      id: String(section.id ?? plan.id ?? `llm-section-${index + 1}`),
-      title: String(section.title ?? plan.title ?? `段落 ${index + 1}`),
-      body: String(section.body ?? plan.body ?? ""),
+      id: String(section.id ?? `llm-section-${index + 1}`),
+      title: String(section.title ?? `篇章 ${index + 1}`),
+      body: String(section.body ?? ""),
       ...(section.pullQuote ? { pullQuote: String(section.pullQuote) } : {}),
     });
   }
-  const protocolData = await requestDeepSeekJson(
-    `${languageInstruction(language)}\nOutput {\"protocol\":[{\"title\":\"\",\"body\":\"\"}],\"quietCaveat\":\"\"}. Protocol must contain exactly 4 actionable steps and no system/process language. Use only vocabulary grounded in the seed and gathered pages.`,
-    JSON.stringify({ seed, title, proposition, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) })) }, null, 2),
-    600,
-  );
-  const protocol = (Array.isArray(protocolData.protocol) ? protocolData.protocol : []).slice(0, 4).map((item: any, index: number) => ({
-    title: String(item.title ?? `步驟 ${index + 1}`),
-    body: String(item.body ?? ""),
-  }));
-  while (protocol.length < 4) protocol.push({ title: `步驟 ${protocol.length + 1}`, body: "把材料、問題與參與者回饋重新校正。" });
+  const protocol = [];
+  for (let index = 0; index < 4; index += 1) {
+    onProgress?.(["開始生成你的小誌行動譜", "校準下一步", "加入可測試方法", "裝訂最後一頁"][index]);
+    const item = await requestDeepSeekJson(
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 個行動步驟 JSON，不要陣列：{"title":"","body":""}。body 60-90 字。不要寫系統/流程語，不要寫任何人名。`,
+      JSON.stringify({ seed, title, proposition, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
+      800,
+    ) as any;
+    protocol.push({ title: String(item.title ?? `步驟 ${index + 1}`), body: String(item.body ?? "") });
+  }
   return normalizeLLMArtifact({
     title,
     subtitle,
@@ -397,7 +440,7 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
     proposition,
     sections,
     protocol,
-    quietCaveat: protocolData.quietCaveat ?? outline.quietCaveat ?? "這份方向仍需要更多材料、實地回饋與共同校正。",
+    quietCaveat: outline.quietCaveat ?? "這份方向仍需要更多材料、實地回饋與共同校正。",
   });
 }
 
@@ -442,7 +485,7 @@ function validateVisibleText(text: string, workflow: Workflow, language: Associa
   if (!seedRelevancePass(text, workflow)) warnings.push("seed relevance is shallow");
   if (repeated.length > 0) warnings.push(`repeated sentence: ${repeated[0]}`);
   if (!workflow.step1.report.linkedCards.length) warnings.push("no linked traversal material");
-  if (text.length < 700) warnings.push(`visible text thin: ${text.length}`);
+  if (text.length < 1400) warnings.push(`visible text thin: ${text.length}`);
   if (warnings.length > 0) console.warn("Association zine quality warnings:", warnings.join("; "));
   if (hardFailures.length > 0) throw new Error(`Generated zine failed public safety gate: ${hardFailures.join("; ")}`);
 }
@@ -497,7 +540,7 @@ function renderVisibleTraceSection(trace: Record<string, any>, language: Associa
     <details><summary>Second matched pages</summary>${renderTraceList(trace.linkedPages ?? [], pageItem)}</details>
     <details><summary>Words after second reading</summary><p>${escapeHtml((trace.wordsAfterSecondReading ?? trace.newKeywords ?? []).join(", "))}</p></details>
     <details open><summary>Deep-read pages</summary>${renderTraceList(trace.deepReadPages ?? [], pageItem)}</details>
-    <details><summary>All visited pages</summary>${renderTraceList([...(trace.matchedPages ?? []), ...(trace.deepReadPages ?? [])], pageItem)}</details>
+    <details><summary>All visited pages</summary>${renderTraceList([...(trace.matchedPages ?? []), ...(trace.linkedPages ?? []), ...(trace.deepReadPages ?? [])], pageItem)}</details>
     <h3>Traversal pipeline diagram</h3><pre class="mermaid">${escapeHtml(mermaid)}</pre>
     <h3>Corpus diagram</h3><pre>${escapeHtml(JSON.stringify(trace.corpusDiagramSummary ?? {}, null, 2))}</pre>
   </section>`;
@@ -513,13 +556,14 @@ function buildClickTrace(params: {
   visibleText?: string;
   html?: string;
   errorClass?: string;
+  errorMessage?: string;
   publicValidation?: { officialTemplate1: boolean; publicSafetyPassed: boolean; forbiddenTermsFound: string[] };
 }) {
-  const { requestId, seed, language, workflow, petRole, artifact, visibleText, html, errorClass, publicValidation } = params;
+  const { requestId, seed, language, workflow, petRole, artifact, visibleText, html, errorClass, errorMessage, publicValidation } = params;
   const keywords = workflow.step1.report.keywords.slice(0, 32);
-  const matchedCards = workflow.step1.report.matchedCards.filter(isAllowedZineCard).slice(0, 12);
-  const deepReadCards = workflow.step1.report.deepReadCards.filter(isAllowedZineCard).slice(0, 10);
-  const linkedCards = workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).slice(0, 14);
+  const matchedCards = workflow.step1.report.matchedCards.filter(isAllowedZineCard).slice(0, 8);
+  const deepReadCards = workflow.step1.report.deepReadCards.filter(isAllowedZineCard).slice(0, 5);
+  const linkedCards = workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).slice(0, 7);
   const diagramNodes = 1 + keywords.slice(0, 12).length + matchedCards.slice(0, 8).length;
   const diagramEdges = keywords.slice(0, 12).length + matchedCards.slice(0, 8).reduce((sum, card) => sum + Math.min(3, cardForTrace(card, keywords).matchedKeywords.length), 0) + linkedCards.length;
   const forbiddenTermsFound = ["backend", "traversal", "source graph", "prompt", "system language", "Hackteria"]
@@ -535,7 +579,7 @@ function buildClickTrace(params: {
     selectedMode: chooseModes(seed, requestId)[0],
     seedKeywords: keywords,
     matchedPages: matchedCards.map((card, index) => cardForTrace(card, keywords, index)),
-    linkedPages: linkedCards.map((trail) => ({ from: trail.via?.map((card) => card.title).join(" -> ") || seed, to: trail.card.title, relation: trail.relation, reason: `local allowed-corpus relation at depth ${trail.depth}` })),
+    linkedPages: linkedCards.map((trail) => ({ ...cardForTrace(trail.card, keywords), from: trail.via?.map((card) => card.title).join(" -> ") || seed, to: trail.card.title, relation: trail.relation, reason: `local allowed-corpus relation at depth ${trail.depth}` })),
     newKeywords: workflow.step1.report.deepReadKeywords.filter((keyword) => !keywords.includes(keyword)).slice(0, 24),
     wordsAfterFirstReading: workflow.step1.report.deepReadKeywords.slice(0, 12),
     wordsAfterSecondReading: workflow.step1.report.deepReadKeywords.filter((keyword) => !keywords.includes(keyword)).slice(0, 18),
@@ -553,24 +597,23 @@ function buildClickTrace(params: {
     generatedArticle: artifact ? { title: artifact.title, sectionTitles: artifact.sections.map((section) => section.title), approximateCharacterCount: articleCharacterCount(artifact), notLocalFallback: true } : null,
     publicValidation: publicValidation ?? { officialTemplate1: Boolean(html?.includes('data-official-template="01-pbs-reset-title-kinetic.html"')), publicSafetyPassed: forbiddenTermsFound.length === 0 && !errorClass, forbiddenTermsFound },
     errorClass: errorClass ?? null,
+    errorMessage: errorMessage ?? null,
     artifactPath: "localStorage:pbs:last-zine-click-trace",
     createdAt: new Date().toISOString(),
   };
 }
 
-function safeWorkflowSeed(seed: string): string {
-  const cleaned = seed.replace(PUBLIC_FORBIDDEN, " ").replace(/\s+/g, " ").trim();
-  return `桃花源小誌：${cleaned || "共同生活與互助"}。請從共同生活、藝術科技社群、維修、互助與現場練習來回應。`;
-}
-
-function createBrowserWorkflow(seed: string): Workflow {
+function createBrowserWorkflow(seed: string, petRole?: string): Workflow {
   const corpus = allowedUiCorpus();
+  const expandedSeed = `${seed}\n\nAllowed local wiki search hints: ${professionSearchHints(petRole)}, soft circuit, textile sensor, fabric speaker, wearable sound, DIY repair, workshop, open hardware, commons, community tool, SGMK, Fabricademy, KOBAKANT.`;
   try {
-    return runDaydreamWorkflow(seed, corpus);
+    const workflow = runDaydreamWorkflow(seed, corpus);
+    if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
+    return runDaydreamWorkflow(expandedSeed, corpus);
   } catch (error) {
     console.warn("Association workflow needed a public-safe seed fallback.", error);
     try {
-      return runDaydreamWorkflow(safeWorkflowSeed(seed), corpus);
+      return runDaydreamWorkflow(expandedSeed, corpus);
     } catch (fallbackError) {
       console.warn("Association workflow fallback needed neutral seed.", fallbackError);
       return runDaydreamWorkflow("共同生活、藝術科技社群、維修與互助的可列印小誌", corpus);
@@ -590,22 +633,26 @@ async function withBrowserTimeout<T>(promise: Promise<T>, ms: number, message: s
   }
 }
 
-export async function generateBrowserAssociationZine(seed: string, petRole?: string, language: AssociationZineLanguage = "zh-TW"): Promise<BrowserAssociationResult> {
+export async function generateBrowserAssociationZine(seed: string, petRole?: string, language: AssociationZineLanguage = "zh-TW", onProgress?: AssociationProgressCallback): Promise<BrowserAssociationResult> {
   const requestId = `pbs-zine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   activeDeepSeekTraceCalls = [];
-  const workflow = createBrowserWorkflow(seed);
+  const workflow = createBrowserWorkflow(seed, petRole);
+  onProgress?.(`生成 keywords：${workflow.step1.report.keywords.slice(0, 6).join("、") || "補充職業線索"}`);
+  onProgress?.(`第一次搜尋頁面：已收集 ${workflow.step1.report.matchedCards.filter(isAllowedZineCard).length} 頁`);
+  onProgress?.(`第二次搜尋頁面：已收集 ${workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length} 頁`);
+  onProgress?.(`深度閱讀：已收集 ${workflow.step1.report.deepReadCards.filter(isAllowedZineCard).length} 頁`);
   const variant: DaydreamHtmlLayoutVariant = "pbs-reset-title";
   const variationIndex = Date.now();
   let artifact: DaydreamPublicArtifactContent;
   try {
     artifact = await withBrowserTimeout(
-      callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language),
+      callDeepSeekEditorialWriter(seed, workflow, variationIndex, petRole, language, onProgress),
       EDITORIAL_WRITER_TIMEOUT_MS,
       "Association writer timed out; please try again.",
     );
   } catch (error) {
     console.error("Association editorial writer unavailable; not rendering stale local fallback.", error);
-    persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, errorClass: error instanceof Error ? error.name : "unknown_error" }));
+    persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, errorClass: errorClass(error), errorMessage: errorMessage(error) }));
     throw error;
   }
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
@@ -613,32 +660,22 @@ export async function generateBrowserAssociationZine(seed: string, petRole?: str
   try {
     fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
   } catch (error) {
-    console.warn("Association artifact was rejected; retrying live writer once without stale fallback.");
-    artifact = await withBrowserTimeout(
-      callDeepSeekEditorialWriter(seed, workflow, variationIndex + 1, petRole, language),
-      EDITORIAL_WRITER_TIMEOUT_MS,
-      "Association writer timed out; please try again.",
-    );
-    try {
-      fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
-    } catch (retryError) {
-      console.error("Association artifact was rejected after retry; not rendering stale local fallback.", retryError);
-      persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, artifact, errorClass: retryError instanceof Error ? retryError.name : "artifact_guard_rejected" }));
-      throw retryError;
-    }
+    console.error("Association artifact was rejected; not rendering stale local fallback.", error);
+    persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, artifact, errorClass: errorClass(error, "artifact_guard_rejected"), errorMessage: errorMessage(error) }));
+    throw error;
   }
   if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
     throw new Error("Only the first PBS HTML zine template is allowed.");
   }
-  const articleFragment = fragment;
-  const articleHtml = htmlPage(articleFragment, artifact.title, language);
+  let articleFragment = fragment;
+  let articleHtml = htmlPage(articleFragment, artifact.title, language);
   let visibleText = "";
   try {
     assertCleanPublicArtifact(articleHtml);
     visibleText = extractPublicArtifactText(articleHtml);
     validateVisibleText(visibleText, workflow, language);
   } catch (error) {
-    persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, artifact, html: articleHtml, errorClass: error instanceof Error ? error.name : "public_validation_error" }));
+    persistClickTrace(buildClickTrace({ requestId, seed, language, workflow, petRole, artifact, html: articleHtml, errorClass: "public_validation_error", errorMessage: errorMessage(error) }));
     throw error;
   }
   const forbiddenTermsFound = ["backend", "traversal", "source graph", "prompt", "system language", "Hackteria"]

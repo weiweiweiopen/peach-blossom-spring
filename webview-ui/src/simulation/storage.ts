@@ -42,10 +42,14 @@ export function appendPetDialogueHistory(entry: Omit<PetDialogueHistoryEntry, 'i
   return next;
 }
 
-export function buildSeedWithPetDialogueHistory(seed: string, maxEntries = 6): string {
+function compactSeedLine(text: string, max = 180): string {
+  return text.replace(/\s+/g, ' ').trim().slice(0, max);
+}
+
+export function buildSeedWithPetDialogueHistory(seed: string, maxEntries = 4): string {
   const history = readPetDialogueHistory().slice(-maxEntries);
   if (history.length === 0) return seed;
-  const summary = history.map((entry) => `Q: ${entry.question}\nPlayer: ${entry.message}\nPet: ${entry.reply ?? ''}`.trim()).join('\n---\n');
+  const summary = history.map((entry) => `Q: ${compactSeedLine(entry.question)}\nPlayer: ${compactSeedLine(entry.message)}\nPet: ${compactSeedLine(entry.reply ?? '')}`.trim()).join('\n---\n');
   return `${seed}\n\nRecent local pet/question history summary:\n${summary}`;
 }
 

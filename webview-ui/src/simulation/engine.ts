@@ -273,11 +273,10 @@ export function createInitialSnapshot(
   };
 }
 
-const EXCHANGE_TICK_MIN = 23;
-const EXCHANGE_TICK_SPAN = 11;
+const EXCHANGE_TICK_MIN = 667;
+const EXCHANGE_TICK_SPAN = 120;
 
 const referencePool = [
-  { label: "Hackteria", url: "https://hackteria.org", anchorText: "Hackteria" },
   { label: "Lifepatch", url: "https://lifepatch.org", anchorText: "Lifepatch" },
   { label: "Fabricademy", url: "https://fabricademy.org", anchorText: "Fabricademy" },
   { label: "Fablab Taipei", url: "https://www.fablabtaipei.tw", anchorText: "Fablab Taipei" },
@@ -456,7 +455,7 @@ function nutrientSourcesForTarget(
 ): A2ANutrientSource[] {
   const knowledge = knowledgeContexts[target.id] ?? (target.personaId ? knowledgeContexts[target.personaId] : undefined);
   const links = knowledge?.links ?? [];
-  return links.slice(0, 8).map((link) => ({
+  return links.filter((link) => !/hackteria/i.test(`${link.title} ${link.url} ${link.description}`)).slice(0, 6).map((link) => ({
     title: link.title,
     url: link.url,
     description: link.description,
@@ -473,14 +472,11 @@ function makeA2AExchange(
 ): A2AExchange {
   const target = chooseExchangeTarget(snapshot, pet, tick, knowledgeContexts);
   const seed = hashText(`${pet.id}:${target.id}:${tick}`);
-  const turnCount = 4 + (seed % 3);
+  const turnCount = 2;
   const maturation = pet.problemMaturation ?? deriveProblemMaturationProfile(pet, snapshot.a2aExchanges ?? [], tick);
   const mentalese = maturation.mentaleseAttributes.length
     ? maturation.mentaleseAttributes
     : pet.personaJson?.mentaleseBias ?? ["desire", "resource", "contradiction"];
-  const personaVoice = pet.personaJson?.voice && pet.personaJson.voice.length > 40
-    ? `${pet.personaJson.voice.slice(0, 56)}：`
-    : "";
   const modes = pet.knowledgeJson?.preferredDocumentModes ?? ["story", "technical document"];
   const tags = maturation.materialSignals.length ? maturation.materialSignals : pet.knowledgeJson?.tags ?? splitTags(pet.question.text);
   const nutrientSources = nutrientSourcesForTarget(target, knowledgeContexts);
@@ -494,13 +490,13 @@ function makeA2AExchange(
     const mode = modes[(seed + index) % modes.length];
     const speakerIsPet = index % 2 === 0;
     const sourceText = source?.extractedText ?? `${ref.label} reference trace`;
+    const petText = `${pet.displayName}: 我想先問一個很小的問題：${compactAnchor(tag)} 在日常裡會被誰照顧？如果要把它做成可分享的東西，我會先找一個可修補的版本。`;
+    const npcText = `${target.displayName}: 我會從現場關係看，不先給答案。${sourceText ? `${compactAnchor(sourceText)} 提醒我：` : ''}材料、責任和維護要一起設計，才不會只剩漂亮的概念。`;
     return {
       id: `${pet.id}-a2a-${tick}-${index}`,
       speakerId: speakerIsPet ? pet.id : target.id,
       targetId: speakerIsPet ? target.id : pet.id,
-      text: speakerIsPet
-        ? `${pet.displayName}: ${index === 0 ? 'maturation brief — ' : ''}${personaVoice}我想從「${tag}」開始問你。${maturation.a2aDirectives[index % maturation.a2aDirectives.length]} 時，你會先看社群裡哪一種關係？`
-        : `${target.displayName}: 我會先把它放回生活和組織的節奏裡看。${sourceText ? `${compactAnchor(sourceText).slice(0, 28)} 不是答案本身，` : ''}重點是它怎麼改變 ${attribute}，以及誰願意一起維持它。`,
+      text: speakerIsPet ? petText.slice(0, 200) : npcText.slice(0, 200),
       evaluation: {
         usefulReferences: [ref.url],
         mentaleseAttributes: [attribute, tag, source?.title ?? ref.label],
@@ -518,7 +514,7 @@ function makeA2AExchange(
     targetLabel: target.displayName,
     turns,
     nutrientSources,
-    summary: `${pet.displayName} 正在和 ${target.displayName} 聊 ${mentalese.slice(0, 2).join(" / ")}：${turns.slice(0, 2).map((turn) => turn.text).join(" ")}`,
+      summary: `${pet.displayName} 和 ${target.displayName} 討論如何把問題縮小成可照顧、可修補、可共同測試的下一步。${turns.slice(0, 2).map((turn) => turn.text).join(" ")}`.slice(0, 420),
   };
 }
 
@@ -540,7 +536,7 @@ function growPetFilesFromExchange(pet: Thronglet, exchange: A2AExchange, tick: n
   ]).slice(0, 16);
   const personaGrowth = unique([
     ...(previousPersona?.growthLog ?? []),
-    `tick ${tick}: learned to face ${exchange.targetLabel} and ask a small social-technology question before answering.`,
+    `tick ${tick}: learned from ${exchange.targetLabel} to ask one grounded care-and-maintenance question before answering.`,
   ]).slice(0, 24);
   const tensionProfile = unique([
     ...(previousPersona?.tensionProfile ?? []),

@@ -76,7 +76,6 @@ import {
 import { scorePromptResonance } from "./simulation/resonance.js";
 import {
   appendPetDialogueHistory,
-  buildSeedWithPetDialogueHistory,
   readPetDialogueHistory,
   type PetDialogueHistoryEntry,
 } from "./simulation/storage.js";
@@ -169,6 +168,7 @@ type SplitPanel =
       language?: LanguageCode;
       seed?: string;
       petRole?: string;
+      isGenerating?: boolean;
       error?: string;
     }
   | { kind: "archivePdf" }
@@ -211,13 +211,13 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return t(language, "archive.tree");
 }
 
-function AssociationLoadingPage({ language }: { language: LanguageCode }) {
+function AssociationLoadingPage({ language, progress }: { language: LanguageCode; progress?: string }) {
+  void language;
   return (
     <div className="world-association-loading boot-loading-screen" role="status" aria-live="polite">
       <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
         <p className="boot-loading-title">Peach Blossom Spring</p>
-        <p className="boot-loading-copy">{t(language, "dialogue.associationLoadingTitle")}</p>
-        <p className="world-association-traversal">{t(language, "dialogue.associationLoadingCopy")}</p>
+        <p key={progress ?? "loading"} className="boot-loading-copy association-stage-pop">{progress ?? "Loading..."}</p>
         <span className="boot-loading-dots" aria-hidden="true" />
       </div>
     </div>
@@ -236,12 +236,72 @@ function associationErrorCopy(language: LanguageCode): { title: string; retry: s
   return copy[language];
 }
 
+function safeDebugText(value: unknown, max = 500): string {
+  return String(value ?? "")
+    .replace(/sk-[A-Za-z0-9_-]+/g, "sk-***")
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer ***")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+function classifyAssociationError(message: string): string {
+  if (/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i.test(message)) {
+    const match = message.match(/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i);
+    return `http_error ${match?.[1] ?? match?.[2] ?? "unknown"}`;
+  }
+  if (/AbortError|timed out|timeout/i.test(message)) return "AbortError / timeout";
+  if (/JSON parse failed|parseable JSON|JSON\.parse/i.test(message)) return "JSON parse failed";
+  if (/public safety gate|public artifact|forbidden|unsupported|validation/i.test(message)) return "public_validation_error";
+  return "unknown_error";
+}
+
+function readZineTraceDebug(): { errorClass: string; errorMessage: string; calls: string; forbidden: string; pages: string } | null {
+  try {
+    const trace = JSON.parse(localStorage.getItem("pbs:last-zine-click-trace") || "null") as any;
+    if (!trace) return null;
+    const calls = Array.isArray(trace.deepSeek?.calls) ? trace.deepSeek.calls : [];
+    const callSummary = calls.map((call: any, index: number) => {
+      const status = call.status ?? "unknown";
+      const http = call.httpStatus ?? "n/a";
+      const duration = call.durationMs ?? "n/a";
+      const klass = call.errorClass ?? "none";
+      return `#${index + 1} ${status} HTTP ${http} ${duration}ms ${klass}`;
+    }).join("; ") || "no DeepSeek calls recorded";
+    const forbidden = trace.publicValidation?.forbiddenTermsFound?.join(", ") || "none";
+    const pages = `matched ${trace.matchedPages?.length ?? 0}, linked ${trace.linkedPages?.length ?? 0}, deep-read ${trace.deepReadPages?.length ?? 0}`;
+    return {
+      errorClass: safeDebugText(trace.errorClass ?? classifyAssociationError(trace.errorMessage ?? ""), 140),
+      errorMessage: safeDebugText(trace.errorMessage ?? "", 500),
+      calls: safeDebugText(callSummary, 500),
+      forbidden: safeDebugText(forbidden, 240),
+      pages: safeDebugText(pages, 120),
+    };
+  } catch {
+    return null;
+  }
+}
+
 function AssociationErrorPage({ message, language, onRetry }: { message: string; language: LanguageCode; onRetry?: () => void }) {
   const copy = associationErrorCopy(language);
+  const traceDebug = readZineTraceDebug();
+  const errorType = classifyAssociationError(message || traceDebug?.errorMessage || traceDebug?.errorClass || "");
   return (
     <div className="world-association-error" role="alert">
       <strong>{copy.title}</strong>
-      <p>{message}</p>
+      <p>{safeDebugText(message, 500)}</p>
+      <div className="world-association-error-debug">
+        <p><strong>Error type:</strong> {errorType}</p>
+        {traceDebug && (
+          <>
+            <p><strong>Trace errorClass:</strong> {traceDebug.errorClass}</p>
+            {traceDebug.errorMessage && <p><strong>Trace message:</strong> {traceDebug.errorMessage}</p>}
+            <p><strong>DeepSeek calls:</strong> {traceDebug.calls}</p>
+            <p><strong>Forbidden terms:</strong> {traceDebug.forbidden}</p>
+            <p><strong>Pages:</strong> {traceDebug.pages}</p>
+          </>
+        )}
+      </div>
       {onRetry && (
         <button className="pbs-game-button" type="button" onClick={onRetry}>{copy.retry}</button>
       )}
@@ -249,14 +309,22 @@ function AssociationErrorPage({ message, language, onRetry }: { message: string;
   );
 }
 
-function ExternalLinkEmbed({ link, language, onRetry }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode; onRetry?: () => void }) {
+function waitForNextPaint(): Promise<void> {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  });
+}
+
+function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode; onRetry?: () => void; progress?: string }) {
   const isFinalDocument = link.kind === "finalDocument";
   return (
     <div className={`world-split-embed ${isFinalDocument ? "world-split-final-document" : ""}`}>
       {link.description && (
         <p className="world-split-embed-description">{link.description}</p>
       )}
-      {isFinalDocument && link.error ? (
+      {isFinalDocument && link.isGenerating ? (
+        <AssociationLoadingPage language={language} progress={progress} />
+      ) : isFinalDocument && link.error ? (
         <AssociationErrorPage message={link.error} language={language} onRetry={onRetry} />
       ) : link.url ? (
         <iframe
@@ -696,9 +764,10 @@ function App() {
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [playMode, setPlayMode] = useState<PlayMode>("camp");
   const [appMode, setAppMode] = useState<AppMode>("interactive");
-  const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() =>
-    petStore.listPets(),
-  );
+  const [dispatchedPets, setDispatchedPets] = useState<PetDispatch[]>(() => {
+    petStore.clearLocalDemo();
+    return [];
+  });
   const [selectedDispatchPet, setSelectedDispatchPet] =
     useState<PetDispatch | null>(null);
   const [selectedNpcInfo, setSelectedNpcInfo] = useState<Persona | null>(null);
@@ -717,6 +786,7 @@ function App() {
   >([]);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
+  const [associationProgress, setAssociationProgress] = useState("Loading...");
   const [splitPanelAnchor, setSplitPanelAnchor] = useState<
     { kind: "npc"; id: number } | null
   >(null);
@@ -728,6 +798,7 @@ function App() {
   const petRunawayDoneRef = useRef<string | null>(null);
   const seenFinalDocumentIdsRef = useRef<Set<string>>(new Set());
   const wikiGenerationInFlightRef = useRef(false);
+  const wikiGenerationRequestRef = useRef<string | null>(null);
   const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
 
   const activeDispatchPets = useMemo(
@@ -2006,7 +2077,9 @@ function App() {
     language: LanguageCode;
     anchorId?: number;
   }): Promise<void> {
-    const loadingTitle = t(request.language, "dialogue.associationLoadingTitle");
+    const requestKey = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const loadingTitle = "Loading...";
+    setAssociationProgress("生成 seed");
     setSplitPanel({
       kind: "finalDocument",
       title: loadingTitle,
@@ -2014,12 +2087,19 @@ function App() {
       language: request.language,
       seed: request.seed,
       petRole: request.petRole,
+      isGenerating: true,
     });
     setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
     setIsSplitExpanded(true);
     wikiGenerationInFlightRef.current = true;
+    wikiGenerationRequestRef.current = requestKey;
     try {
-      const result = await generateBrowserAssociationZine(request.seed, request.petRole, request.language);
+      await waitForNextPaint();
+      if (wikiGenerationRequestRef.current !== requestKey) return;
+      const result = await generateBrowserAssociationZine(request.seed, request.petRole, request.language, (message) => {
+        setAssociationProgress(message);
+      });
+      if (wikiGenerationRequestRef.current !== requestKey) return;
       const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
       finalDocumentObjectUrlsRef.current.add(url);
       setSplitPanel({
@@ -2033,9 +2113,10 @@ function App() {
       setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
       setIsSplitExpanded(true);
     } catch (error) {
+      if (wikiGenerationRequestRef.current !== requestKey) return;
       console.error("NPC wiki zine generation failed", error);
-      const message = associationErrorCopy(request.language).title;
-      setWorldNotice(message);
+      const message = error instanceof Error ? error.message : String(error ?? associationErrorCopy(request.language).title);
+      setWorldNotice(associationErrorCopy(request.language).title);
       setSplitPanel({
         kind: "finalDocument",
         title: loadingTitle,
@@ -2048,7 +2129,10 @@ function App() {
       setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
       setIsSplitExpanded(true);
     } finally {
-      wikiGenerationInFlightRef.current = false;
+      if (wikiGenerationRequestRef.current === requestKey) {
+        wikiGenerationInFlightRef.current = false;
+        wikiGenerationRequestRef.current = null;
+      }
     }
   }
 
@@ -2088,13 +2172,14 @@ function App() {
     const newest = simSnapshot.finalDocuments.find((document) => !seen.has(document.id));
     for (const document of simSnapshot.finalDocuments) seen.add(document.id);
     if (!newest || wikiGenerationInFlightRef.current) return;
+    if (splitPanel?.kind === "finalDocument" && splitPanel.seed) return;
     const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
     if (pet) removeCompletedLocalDispatchPet(pet.question.text);
     setSelectedPet(null);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
     openFinalDocumentSplit(newest);
-  }, [removeCompletedLocalDispatchPet, simSnapshot]);
+  }, [removeCompletedLocalDispatchPet, simSnapshot, splitPanel]);
 
   useEffect(() => {
     if (!selectedDispatchPet) return;
@@ -2571,14 +2656,9 @@ function App() {
                   onClose={() => setActiveDialogueId(null)}
                   onOpenWiki={() => {
                     const requestLanguage = selectedLanguage;
-                    const seed = [
-                      playerProfile.question || playerProfile.mission,
-                      activeDialoguePersona.name,
-                      activeDialoguePersona.role,
-                      activeDialoguePersona.intro,
-                    ].filter(Boolean).join("\n\n");
+                    const seed = playerProfile.question || playerProfile.mission;
                     void openAssociationZineSplit({
-                      seed: buildSeedWithPetDialogueHistory(seed),
+                      seed,
                       petRole: playerProfile.avatarTitle,
                       language: requestLanguage,
                       anchorId: activeDialogueCharacter.id,
@@ -3101,7 +3181,7 @@ function App() {
 
       {splitPanel && (
         <aside
-          className={`world-split-panel rpg-message-frame ${isSplitExpanded ? "is-expanded" : ""}`}
+          className={`world-split-panel rpg-message-frame ${isSplitExpanded ? "is-expanded" : ""} ${splitPanel.kind === "finalDocument" ? "world-split-panel--zine" : ""}`}
           data-no-mobile-drag="true"
         >
           {(() => {
@@ -3165,7 +3245,7 @@ function App() {
                 ))}
               </div>
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
-              <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} />
+              <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} progress={associationProgress} />
             ) : splitPanel.kind === "about" ? (
               <div className="world-wiki-content world-about-content">
                 <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>

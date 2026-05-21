@@ -39,7 +39,7 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
   <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">篇章</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(section.title)}</h1>${section.pullQuote ? `<p class="lead">${escapeHtml(section.pullQuote)}</p>` : ""}</div>
-    <div class="bodyGrid"><article class="body"><p>${escapeHtml(section.body)}</p></article></div>
+    <div class="bodyGrid bodyGrid--full"><article class="body"><p>${escapeHtml(section.body)}</p></article></div>
   </main>
 </section>`).join("\n");
   return `<style>${extractStyle(template.html)}</style><section class="page p1" data-official-template="${template.filename}">
@@ -50,7 +50,7 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
   </main>
 </section>${sectionPages}<section class="page p4" data-official-template="${template.filename}">
   <header class="top"><span class="no">06</span><span class="label">尾聲</span></header>
-  <main class="sheet"><div class="bodyGrid"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
+  <main class="sheet"><div class="bodyGrid bodyGrid--full"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
 </section>`;
 }
 

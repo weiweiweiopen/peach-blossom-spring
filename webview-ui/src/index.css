@@ -1686,6 +1686,25 @@
   text-align: left;
 }
 
+.rpg-dialogue-panel .pbs-game-button,
+.rpg-dialogue-panel .pbs-frame-button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 8px 12px !important;
+  border-radius: 0 !important;
+  background: var(--palette-cream) !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  color: #000 !important;
+}
+
+.rpg-dialogue-panel .pbs-game-button:hover,
+.rpg-dialogue-panel .pbs-game-button:focus-visible,
+.rpg-dialogue-panel .pbs-frame-button:hover,
+.rpg-dialogue-panel .pbs-frame-button:focus-visible {
+  background: var(--palette-yellow) !important;
+}
+
 .world-split-active {
   width: 50% !important;
   height: 100% !important;
@@ -1729,6 +1748,26 @@
   margin: 0;
   font-size: 17px;
   line-height: 1.45;
+}
+
+.world-association-error-debug {
+  display: grid;
+  gap: 6px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 10px;
+  background: #fffaf0;
+  border: 2px solid #000;
+  font-size: 13px;
+}
+
+.world-association-error-debug p {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.world-association-error-debug strong {
+  font-size: inherit;
 }
 
 .world-association-error button:not(.pbs-game-button) {
@@ -5942,6 +5981,67 @@
 /* Phase A: Association loading/error/ready split panel must sit above dialogue and pet HUD layers. */
 .world-split-panel {
   z-index: calc(var(--z-layer-dialogue-front) + 20) !important;
+}
+
+.association-stage-pop {
+  font-family: var(--font-pixel) !important;
+  animation: association-stage-pop 620ms steps(4, end) both;
+}
+
+@keyframes association-stage-pop {
+  0% { transform: translateY(8px) scale(0.86); opacity: 0; }
+  45% { transform: translateY(-5px) scale(1.12); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@media (min-width: 901px) {
+  .world-split-panel--zine {
+    top: clamp(76px, 10vh, 120px) !important;
+    right: clamp(18px, 3vw, 42px) !important;
+    bottom: clamp(24px, 4vh, 54px) !important;
+    left: auto !important;
+    width: min(760px, 48vw) !important;
+    max-width: min(760px, 48vw) !important;
+    height: auto !important;
+    background: var(--palette-cream) !important;
+    border: 5px solid #000 !important;
+    box-shadow: 10px 10px 0 #000, 16px 16px 0 var(--palette-blue) !important;
+    outline: 4px solid var(--palette-yellow);
+    outline-offset: -12px;
+  }
+
+  .world-split-panel--zine.is-expanded {
+    top: clamp(76px, 10vh, 120px) !important;
+    right: clamp(18px, 3vw, 42px) !important;
+    bottom: clamp(24px, 4vh, 54px) !important;
+    left: auto !important;
+    width: min(760px, 48vw) !important;
+    max-width: min(760px, 48vw) !important;
+    height: auto !important;
+    background: var(--palette-cream) !important;
+    border: 5px solid #000 !important;
+    box-shadow: 10px 10px 0 #000, 16px 16px 0 var(--palette-blue) !important;
+    outline: 4px solid var(--palette-yellow);
+    outline-offset: -12px;
+  }
+}
+
+.rpg-dialogue-panel .rpg-dialogue-chip,
+.rpg-dialogue-panel .rpg-dialogue-wiki-button,
+.rpg-dialogue-panel .rpg-dialogue-submit,
+.rpg-dialogue-panel .rpg-dialogue-question-toggle,
+.rpg-dialogue-panel .rpg-dialogue-x,
+.rpg-dialogue-panel .pbs-game-button,
+.rpg-dialogue-panel .pbs-frame-button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 8px 12px !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  color: #000 !important;
+  line-height: 1.1 !important;
 }
 
 /* 2026-05-20 creator: match official HTML template 01 sheet language. */

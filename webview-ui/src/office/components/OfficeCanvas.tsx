@@ -763,11 +763,9 @@ export function OfficeCanvas({
         officeState.cameraFollowId = null;
       }
 
-      if (mobileTapToMove) {
-        const tile = screenToTile(e.clientX, e.clientY);
-        if (tile) {
-          onMobileMapTap?.(tile.col, tile.row);
-        }
+      const tile = screenToTile(e.clientX, e.clientY);
+      if (tile) {
+        onMobileMapTap?.(tile.col, tile.row);
       }
     },
     [
@@ -777,7 +775,6 @@ export function OfficeCanvas({
       screenToWorld,
       screenToTile,
       isEditMode,
-      mobileTapToMove,
     ],
   );
 

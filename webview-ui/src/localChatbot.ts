@@ -428,13 +428,13 @@ export function localPetChat(args: {
   };
   if (evidence.length === 0) {
     return {
-      reply: `${pet.displayName}: 啾。我的肚子裡還沒有足夠材料。下一步：請餵我一個具體場景、一個可用工具、或一個你已經失敗過的版本；我再把它帶去問 NPC。`,
+      reply: `${pet.displayName}: 啾。我還缺材料。下一步小實驗：給我一個場景、一個工具，或一個失敗版本；我會帶去問下一位 NPC。`,
       evidence,
       memoryEvent,
     };
   }
   return {
-    reply: `${pet.displayName}: 啾，我把材料叼回來了，但先不把來源名稱當答案。下一步行動：把「${pet.question.text}」縮成一個 24 小時內能做的小交換；測試方式是找一個人回應它，如果對方只說「很酷」卻沒有行動，我就把問題拆得更小。`,
+    reply: `${pet.displayName}: 啾，我先不把材料名稱當答案。下一步小實驗：把問題縮成 24 小時內可做的小交換；若對方只說很酷，我就再拆小。`,
     evidence,
     memoryEvent,
   };

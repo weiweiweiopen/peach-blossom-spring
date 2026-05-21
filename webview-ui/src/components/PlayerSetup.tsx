@@ -46,7 +46,7 @@ const corePetRoles: Array<{ role: CorePetRole; labels: Record<LanguageCode, stri
   { role: "artist", labels: { "zh-TW": "藝術家", en: "Artist", de: "Künstler:in", id: "Seniman", ja: "アーティスト", th: "ศิลปิน" }, intentMode: "poem", skill: "art plan, media dramaturgy, S+T+A+R+T+S style technology art" },
   { role: "scientist", labels: { "zh-TW": "科學家", en: "Scientist", de: "Wissenschaftler:in", id: "Ilmuwan", ja: "科学者", th: "นักวิทยาศาสตร์" }, intentMode: "why", skill: "fictional paper, material research, matter study, biology paper structure" },
   { role: "cook", labels: { "zh-TW": "廚師", en: "Chef", de: "Koch/Köchin", id: "Koki", ja: "料理人", th: "เชฟ" }, intentMode: "how_to_do", skill: "kitchen plan, recipe logic, hosting, collective meals" },
-  { role: "drinker", labels: { "zh-TW": "酒鬼", en: "Drinker", de: "Trinker:in", id: "Pemabuk", ja: "飲み助", th: "นักดื่ม" }, intentMode: "why", skill: "bar talk, social fermentation, jokes, late-night honesty" },
+  { role: "drinker", labels: { "zh-TW": "酒鬼", en: "Drinker", de: "Trinker:in", id: "Pemabuk", ja: "飲み助", th: "นักดื่ม" }, intentMode: "why", skill: "bar talk, fermentation, late-night honesty, gentle humor" },
   { role: "traveler", labels: { "zh-TW": "旅行家", en: "Traveler", de: "Reisende:r", id: "Pengelana", ja: "旅人", th: "นักเดินทาง" }, intentMode: "travel_plan", skill: "routes, field visits, maps, encounters, travel notes" },
   { role: "tailor", labels: { "zh-TW": "裁縫阿姨", en: "Tailor auntie", de: "Schneider-Tante", id: "Bibi penjahit", ja: "仕立て屋のおばさん", th: "ป้าช่างตัดเสื้อ" }, intentMode: "manufacturing_technical_file", skill: "repair, sewing, pattern thinking, textile care" },
 ];
