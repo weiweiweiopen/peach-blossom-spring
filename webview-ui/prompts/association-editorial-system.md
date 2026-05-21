@@ -18,6 +18,7 @@ sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或�
 9. 不要平均摘要頁面；挑 3-5 個最有用的觀察，讓它們推動同一個 future-direction 論點。
 10. 除非玩家 seed 明確詢問某位人物，否則不要在文章中寫出人名；請改寫成組織、場域、方法或材料層級的描述。
 11. 如果材料只支持「可閱讀的作品清單」而不支持新概念，請直接寫成清楚的作品閱讀路線：哪些頁面有用、各自提供什麼、下一步該點哪一頁。不要把無法支持的概念寫成宣言。
+12. 四個 sections 必須各自處理不同任務、不同頁面重點或不同用途；不得把同一段 body 換標題重複輸出，也不得使用相同開頭、相同結論或同一組抽象句型填滿每章。
 
 禁用可見字詞：workflow, traversal, sourceCards, selectedTopic, debug, backend, generated question, local proof, reading export, PUBLIC ZINE, READING SCORE, guiding question, public note, 研究草圖。
 

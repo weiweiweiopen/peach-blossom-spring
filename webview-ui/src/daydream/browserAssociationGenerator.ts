@@ -293,13 +293,72 @@ function cleanLLMText(value: unknown): string {
     .trim();
 }
 
+function comparableText(value: unknown): string {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[\s\p{P}\p{S}]+/gu, "")
+    .trim();
+}
+
+function textSimilarity(a: unknown, b: unknown): number {
+  const left = comparableText(a);
+  const right = comparableText(b);
+  if (!left || !right) return 0;
+  const shorter = left.length < right.length ? left : right;
+  const longer = left.length < right.length ? right : left;
+  if (longer.includes(shorter.slice(0, Math.min(shorter.length, 80)))) return shorter.length / longer.length;
+  const grams = new Set<string>();
+  for (let index = 0; index <= shorter.length - 12; index += 6) grams.add(shorter.slice(index, index + 12));
+  if (!grams.size) return left === right ? 1 : 0;
+  let hits = 0;
+  for (const gram of grams) {
+    if (longer.includes(gram)) hits += 1;
+  }
+  return hits / grams.size;
+}
+
+function isTooSimilarToExisting(body: string, existingBodies: string[]): boolean {
+  return existingBodies.some((existing) => textSimilarity(body, existing) >= 0.58);
+}
+
+function repeatedSectionReport(sections: Array<{ title?: string; body?: string }>): string | null {
+  for (let index = 0; index < sections.length; index += 1) {
+    for (let other = index + 1; other < sections.length; other += 1) {
+      if (textSimilarity(sections[index]?.body ?? "", sections[other]?.body ?? "") >= 0.58) {
+        return `${sections[index]?.title ?? `section ${index + 1}`} / ${sections[other]?.title ?? `section ${other + 1}`}`;
+      }
+    }
+  }
+  return null;
+}
+
+function sectionMaterialFocus(parsedUser: any, index: number): Record<string, unknown> {
+  const observations = [
+    ...(Array.isArray(parsedUser.sourceObservations) ? parsedUser.sourceObservations : []),
+    ...(Array.isArray(parsedUser.deepReadObservations) ? parsedUser.deepReadObservations : []),
+  ];
+  const linked = Array.isArray(parsedUser.linkedEvidenceTrails) ? parsedUser.linkedEvidenceTrails : [];
+  const observationCount = Math.max(1, observations.length);
+  const linkedCount = Math.max(1, linked.length);
+  return {
+    primaryPages: [observations[index % observationCount], observations[(index + 2) % observationCount]].filter(Boolean),
+    relationTrail: linked[index % linkedCount] ?? null,
+    sectionJob: [
+      "先判斷玩家問題與材料真正相合、相衝突的地方",
+      "整理可點開的頁面/作品/方法清單，說明各自用途",
+      "把材料轉成一個可測試的小方法或現場練習",
+      "收束成下一步閱讀、比較或實作路線，保留不確定性",
+    ][index],
+  };
+}
+
 function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
   const sections = Array.isArray(data.sections) ? data.sections.slice(0, 4) : [];
   const protocol = Array.isArray(data.protocol) ? data.protocol.slice(0, 4) : [];
   if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 4 || protocol.length < 4) {
     throw new Error("LLM JSON missing required title/subtitle/opening/proposition/sections/protocol fields.");
   }
-  return {
+  const artifact: DaydreamPublicArtifactContent = {
     schemaVersion: "association-public-document-v1",
     title: cleanLLMText(data.title),
     subtitle: cleanLLMText(data.subtitle),
@@ -318,6 +377,9 @@ function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
     quietCaveat: cleanLLMText(data.quietCaveat ?? ""),
     approvedForPublicLayout: true,
   };
+  const repeatedSections = repeatedSectionReport(artifact.sections);
+  if (repeatedSections) throw new Error(`LLM JSON repeated section body: ${repeatedSections}`);
+  return artifact;
 }
 
 function configuredProxyUrl(): string {
@@ -409,20 +471,41 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
   const opening = String(outline.opening ?? "");
   const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
-  const sections = [];
+  const sections: DaydreamPublicArtifactContent["sections"] = [];
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(["第一次搜尋頁面完成，開始料理第一章", "第二次搜尋頁面完成，開始翻炒第二章", "發現附件與材料線索，開始深讀第三章", "開始思考，收束第四章"][index]);
-    const section = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。只根據材料包與章節計畫寫。必須至少使用一個實際頁名、作品名、物件或方法；若材料不足就寫成清楚的閱讀/測試建議，不要幻想新事實。不要寫系統/流程語，不要寫任何人名。`,
-      JSON.stringify({ seed, title, subtitle, proposition, sectionIndex: index + 1, sourceObservations: parsedUser.sourceObservations, deepReadObservations: parsedUser.deepReadObservations, linkedEvidenceTrails: parsedUser.linkedEvidenceTrails }, null, 2),
+    const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
+    const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、物件或方法；若材料不足就寫成清楚的閱讀/測試建議，不要幻想新事實。不要寫系統/流程語，不要寫任何人名。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+      JSON.stringify({
+        seed,
+        title,
+        subtitle,
+        proposition,
+        sectionIndex: index + 1,
+        sectionFocus: sectionMaterialFocus(parsedUser, index),
+        previousSections,
+        avoidRepeating: previousSections.map((previousSection) => previousSection.title),
+        sourceObservations: parsedUser.sourceObservations,
+        deepReadObservations: parsedUser.deepReadObservations,
+        linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
+      }, null, 2),
       800,
     );
-    sections.push({
+    let section = await requestSection(false);
+    if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {
+      section = await requestSection(true);
+    }
+    const nextSection = {
       id: String(section.id ?? `llm-section-${index + 1}`),
       title: String(section.title ?? `篇章 ${index + 1}`),
       body: String(section.body ?? ""),
       ...(section.pullQuote ? { pullQuote: String(section.pullQuote) } : {}),
-    });
+    };
+    if (isTooSimilarToExisting(nextSection.body, sections.map(({ body }) => body))) {
+      throw new Error(`LLM repeated section body after rewrite: ${nextSection.title}`);
+    }
+    sections.push(nextSection);
   }
   const protocol = [];
   for (let index = 0; index < 4; index += 1) {
