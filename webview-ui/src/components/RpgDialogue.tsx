@@ -141,7 +141,7 @@ function WukirMusicButton({ onOpenMusic }: { onOpenMusic?: () => void }) {
   if (!onOpenMusic) return null;
   return (
     <button
-      className="rpg-dialogue-wukir-music-button rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+      className="rpg-dialogue-wukir-music-button rpg-dialogue-chip pbs-game-button"
       type="button"
       onClick={onOpenMusic}
     >
@@ -512,13 +512,13 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
                 <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">{t(language, 'home.wanderAndTalk')}</p>
                 <button
-                  className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button bg-bg text-text border border-border px-5 py-3 text-base"
+                  className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button pbs-game-button"
                   type="button"
                   aria-label={t(language, 'dialogue.openWiki')}
                   title={t(language, 'dialogue.openWiki')}
                   onClick={onOpenWiki}
                 >
-                  📚
+                  📚 Wiki
                 </button>
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
               </div>
@@ -526,7 +526,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">{persona.role}</p>
             </div>
           </div>
-          <button className="rpg-dialogue-x text-2xl text-text-muted hover:text-text" type="button" onClick={onClose}>
+          <button className="rpg-dialogue-x pbs-game-button" type="button" onClick={onClose}>
             ×
           </button>
         </div>
@@ -557,7 +557,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                 {fixedQuestions.map((item) => (
                   <button
                     key={item}
-                    className="rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
+                    className="rpg-dialogue-chip pbs-game-button"
                     type="button"
                     onClick={() => handleSuggestedPrompt(item)}
                   >
@@ -569,7 +569,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                 {suggestedQuestions.map((item) => (
                   <button
                     key={item}
-                    className="rpg-dialogue-chip bg-bg text-text border border-border px-5 py-3 text-base"
+                    className="rpg-dialogue-chip pbs-game-button"
                     type="button"
                     onClick={() => handleSuggestedPrompt(item)}
                   >
@@ -589,7 +589,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             placeholder={t(language, 'dialogue.inputPlaceholder', { name: persona.name })}
           />
           <button
-            className="rpg-dialogue-question-toggle rpg-dialogue-chip bg-accent/80 text-white border border-accent px-5 py-3 text-base"
+            className="rpg-dialogue-question-toggle rpg-dialogue-chip pbs-game-button"
             type="button"
             aria-expanded={areSuggestionsOpen}
             onClick={() => setAreSuggestionsOpen((prev) => !prev)}
@@ -597,7 +597,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
           </button>
           <button
-            className="rpg-dialogue-submit bg-accent text-white border-2 border-accent px-10 py-5 text-xl disabled:opacity-50"
+            className="rpg-dialogue-submit pbs-game-button disabled:opacity-50"
             type="submit"
             disabled={isLoading}
           >

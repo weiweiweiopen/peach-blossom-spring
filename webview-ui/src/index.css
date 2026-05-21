@@ -1651,6 +1651,41 @@
   outline: 2px solid #000;
 }
 
+.pbs-game-button {
+  min-width: 44px;
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #000 !important;
+  background: color-mix(in srgb, #fff 88%, transparent) !important;
+  border: 3px solid #000 !important;
+  border-radius: 14px 14px 14px 4px !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.1;
+  text-align: center;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.pbs-game-button:hover,
+.pbs-game-button:focus-visible {
+  background: var(--palette-yellow) !important;
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.pbs-game-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000 !important;
+}
+
+.pbs-game-button--block {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
 .world-split-active {
   width: 50% !important;
   height: 100% !important;
@@ -1664,7 +1699,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 86;
+  z-index: 120;
   display: flex;
   flex-direction: column;
   width: 50vw;
@@ -1672,6 +1707,39 @@
   background: color-mix(in srgb, #fff 94%, transparent);
   border-left: 4px solid #000;
   box-shadow: -4px 0 0 color-mix(in srgb, #000 18%, transparent);
+}
+
+.world-association-error {
+  display: grid;
+  gap: 12px;
+  margin: auto;
+  max-width: 560px;
+  padding: clamp(18px, 4vw, 34px);
+  background: var(--palette-cream);
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 var(--palette-pink);
+  color: #000;
+}
+
+.world-association-error strong {
+  font-size: clamp(22px, 3vw, 34px);
+}
+
+.world-association-error p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.world-association-error button:not(.pbs-game-button) {
+  justify-self: start;
+  min-height: 44px;
+  padding: 8px 16px;
+  background: var(--palette-yellow);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  color: #000;
+  font: inherit;
 }
 .world-split-toolbar {
   display: flex;
@@ -1697,7 +1765,7 @@
   display: flex;
   gap: 8px;
 }
-.world-split-actions button,
+.world-split-actions button:not(.pbs-game-button),
 .archive-tree-close {
   min-width: 42px;
   min-height: 42px;
@@ -5773,6 +5841,34 @@
   grid-template-rows: auto 1fr;
 }
 
+/* Unified in-game button skin: mirrors the global language selector. */
+.pbs-game-button,
+.rpg-dialogue-panel .pbs-game-button,
+.world-split-actions .pbs-game-button,
+.world-association-error .pbs-game-button {
+  min-width: 44px !important;
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  color: #000 !important;
+  background: color-mix(in srgb, #fff 88%, transparent) !important;
+  border: 3px solid #000 !important;
+  border-radius: 14px 14px 14px 4px !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  font: inherit !important;
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+
+.pbs-game-button:hover,
+.pbs-game-button:focus-visible {
+  background: var(--palette-yellow) !important;
+  outline: 2px solid #000 !important;
+  outline-offset: 2px !important;
+}
+
 .player-setup-mode-orb,
 .player-setup-mode-row--emoji,
 .pet-role-emoji {
@@ -5841,6 +5937,11 @@
   margin-top: 8px;
   margin-bottom: 16px;
   padding-left: 1.35em;
+}
+
+/* Phase A: Association loading/error/ready split panel must sit above dialogue and pet HUD layers. */
+.world-split-panel {
+  z-index: calc(var(--z-layer-dialogue-front) + 20) !important;
 }
 
 /* 2026-05-20 creator: match official HTML template 01 sheet language. */

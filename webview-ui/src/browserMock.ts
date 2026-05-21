@@ -248,8 +248,11 @@ export async function initBrowserMock(): Promise<void> {
         decodeFurnitureFromPng(base, catalog),
       ]);
 
-  const layout = assetIndex.defaultLayout
-    ? await fetch(`${base}assets/${assetIndex.defaultLayout}`).then((r) => r.json())
+  const params = new URLSearchParams(window.location.search);
+  const modernPbsPreview = params.has('modern-pbs-scene') || params.has('modern-peach-blossom-spring');
+  const layoutPath = modernPbsPreview ? 'default-layout-modern-taoyuan.json' : assetIndex.defaultLayout;
+  const layout = layoutPath
+    ? await fetch(`${base}assets/${layoutPath}`).then((r) => r.json())
     : null;
 
   mockPayload = {

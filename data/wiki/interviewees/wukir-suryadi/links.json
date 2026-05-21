@@ -1,0 +1,24 @@
+{
+  "id": "wukir-suryadi",
+  "sourcePolicy": "local-curated-links-only-no-crawling",
+  "links": [
+    {
+      "label": "Institutionalized Ritual",
+      "url": "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual",
+      "kind": "external-preview",
+      "evidence": "webview-ui/src/App.tsx WUKIR_BANDCAMP_ALBUM_URL"
+    },
+    {
+      "label": "Local English transcript placeholder",
+      "url": "docs/transcripts_en/wukir-suryadi.md",
+      "kind": "local-transcript",
+      "evidence": "Transcript pending; do not infer missing facts."
+    },
+    {
+      "label": "Local Traditional Chinese transcript placeholder",
+      "url": "docs/transcripts_zh/wukir-suryadi.md",
+      "kind": "local-transcript",
+      "evidence": "Transcript pending; do not infer missing facts."
+    }
+  ]
+}

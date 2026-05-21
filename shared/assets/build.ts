@@ -114,17 +114,12 @@ export function buildAssetIndex(assetsDir: string) {
   }
 
   let defaultLayout: string | null = null;
-  let bestRev = 0;
   if (fs.existsSync(assetsDir)) {
-    for (const f of fs.readdirSync(assetsDir)) {
-      const m = /^default-layout-(\d+)\.json$/.exec(f);
-      if (m) {
-        const rev = parseInt(m[1], 10);
-        if (rev > bestRev) {
-          bestRev = rev;
-          defaultLayout = f;
-        }
-      }
+    // Keep the shipped formal default explicit. Preview/review layouts such as
+    // default-layout-30.json must not become default just because their number
+    // is higher.
+    if (fs.existsSync(path.join(assetsDir, 'default-layout-1.json'))) {
+      defaultLayout = 'default-layout-1.json';
     }
     if (!defaultLayout && fs.existsSync(path.join(assetsDir, 'default-layout.json'))) {
       defaultLayout = 'default-layout.json';

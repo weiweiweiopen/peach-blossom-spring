@@ -101,13 +101,8 @@ interface PublicSignals {
   systems: string[];
   sourceTitles: string[];
   sourceSnippets: string[];
-  hasSound: boolean;
-  hasWearable: boolean;
-  hasTextile: boolean;
   hasSensor: boolean;
   hasWorkshop: boolean;
-  hasBio: boolean;
-  hasGene: boolean;
   hasLocalPlace: boolean;
   relationPattern?: ResearchTopicCandidate["relationPattern"];
 }
@@ -137,13 +132,8 @@ function extractPublicSignals(
     systems: selectedTopic?.knowledgeSystems?.length ? selectedTopic.knowledgeSystems : inferSystems(evidenceCards),
     sourceTitles: dedupeStrings(evidenceCards.map((card) => card.title)).slice(0, 8),
     sourceSnippets: evidenceCards.map((card) => cleanSnippet(card.excerpt, card.title)).filter(Boolean).slice(0, 8),
-    hasSound: /sound|audio|聲音|聲響/.test(text),
-    hasWearable: /wearable|wearables|穿戴/.test(text),
-    hasTextile: /textile|textiles|fabric|cloth|布料|紡織|織物|e-textile/.test(text),
     hasSensor: /sensor|sensors|感測|傳感/.test(text),
     hasWorkshop: /workshop|workshops|工作坊|教學/.test(text),
-    hasBio: /bio|biology|bioart|wetlab|gene|genetic|bacteria|hackteria|生物|基因|濕實驗/.test(text),
-    hasGene: /gene|genetic|synthetic|基因|合成生物|改造/.test(text),
     hasLocalPlace: /local|place|city|mapping|field|地方|田野|城市/.test(text),
     relationPattern: selectedTopic?.relationPattern,
   };
@@ -155,7 +145,7 @@ function nameConcept(signals: PublicSignals): { title: string; subtitle: string 
   const secondary = titleCaseTerm(terms[1] ?? terms[0] ?? "方法");
   const title = terms.length >= 2
     ? `${primary} / ${secondary}`
-    : `${primary} 的未完成方法`;
+    : `${primary} 的未來方向`;
   const sourceHint = sourceFamilySummary(signals);
   return {
     title,
@@ -225,11 +215,10 @@ function buildProtocol(signals: PublicSignals): DaydreamPublicArtifactProtocolIt
 }
 
 function buildQuietCaveat(
-  signals: PublicSignals,
+  _signals: PublicSignals,
   selectedTopic: ResearchTopicCandidate | undefined,
   report: DaydreamReport,
 ): string | undefined {
-  if (signals.hasBio) return "如果後續牽涉活體、生物材料、基因改造或濕實驗，這份短文只能停在閱讀、倫理討論與非活體試作；任何實驗都需要正式安全審查。";
   if ((selectedTopic?.maturityScore ?? 100) < 45 || report.depthMetrics.warnings.length > 0) {
     return "這是一個還在形成中的題目；它適合先作為小誌或工作坊練習被測試，而不是被宣稱為完成研究。";
   }
@@ -286,7 +275,7 @@ function sectionBodyFor(
   if (index === 2) {
     return `這些材料讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一種版面、工作坊、互動規則或公共筆記方法，而不是被直接宣稱為完成作品。`;
   }
-  return `${item.observation} 最後的形式應該保留這種未完成狀態：把已知的材料、可試的動作、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
+  return `${item.observation} 最後的形式應該保留可被接手的開口：把已知的材料、可試的動作、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
 }
 
 function sourceWorldSentence(signals: PublicSignals): string {
@@ -303,7 +292,7 @@ function cleanSnippet(input: string, sourceTitle = ""): string {
     .replace(/\(No plaintext extract returned[^)]*\)/gi, "")
     .replace(/Imported:\s*\d{4}[^.。]*/gi, "")
     .replace(/\bArtScienceBangalore\s*(?:19|20)\d{2}\b/gi, "")
-    .replace(/\bSynthetic Biology for Artists and Designers\s*(?:19|20)?\d{0,2}\b/gi, "synthetic biology workshop materials")
+    .replace(/\bSynthetic Biology for Artists and Designers\s*(?:19|20)?\d{0,2}\b/gi, "workshop materials")
     .replace(/\bHackteria relationship layer\b/gi, "community practice diagram")
     .replace(/\s+/g, " ")
     .trim();
@@ -326,9 +315,8 @@ function inferSystems(cards: SourceCard[]): string[] {
 function sourceFamilySummary(signals: PublicSignals): string {
   const text = `${signals.seed} ${signals.terms.join(" ")} ${signals.sourceTitles.join(" ")}`.toLowerCase();
   const families: string[] = [];
-  if (/bio|biology|gene|synthetic|生物|基因/.test(text)) families.push("生物與設計材料");
   if (/sound|audio|music|聲音|音樂/.test(text)) families.push("聲音與介面材料");
-  if (/textile|fabric|wearable|sensor|布料|穿戴|感測/.test(text)) families.push("柔性電路與身體材料");
+  if (/sensor|感測/.test(text)) families.push("感測與介面材料");
   if (/workshop|camp|community|field|工作坊|社群|田野/.test(text)) families.push("工作坊與社群材料");
   if (families.length === 0) families.push("社群材料");
   return families.slice(0, 3).join("、");
@@ -357,7 +345,7 @@ function normalizeSourceFamilyText(text: string): string {
   return text
     .toLowerCase()
     .replace(/\b(19|20)\d{2}\b/g, "")
-    .replace(/synthetic biology for artists and designers/g, "synthetic biology artists designers")
+    .replace(/artists and designers/g, "workshop materials")
     .replace(/artsciencebangalore/g, "artscience bangalore")
     .replace(/hackteria relationship layer/g, "hackteria")
     .replace(/\b(part|session|day|year|edition)\s*\d+\b/g, "")

@@ -1,0 +1,32 @@
+{
+  "productName": "現代桃花源 / Modern PBS / Modern Peach Blossom Spring",
+  "compatibilityName": "modern-taoyuan",
+  "previewParams": [
+    "modern-pbs-scene",
+    "modern-peach-blossom-spring"
+  ],
+  "requiredZones": [
+    "wood cabin / field research",
+    "computer classroom",
+    "bio-art lab",
+    "archive reading nook",
+    "workshop / tool room",
+    "sewing / textile room",
+    "stage / performance plaza",
+    "rehearsal / sound room",
+    "central commons / spawn garden",
+    "river / dock / forest frame"
+  ],
+  "assetPolicy": "existing pixel-office/local nature/home assets first; no external art pack; no network crawling",
+  "spawn": {
+    "col": 32,
+    "row": 32,
+    "zone": "central commons / spawn garden"
+  },
+  "performance": {
+    "furnitureInstances": 125,
+    "natureProps": 42,
+    "distinctFurnitureTypes": 13,
+    "unreachableEntrances": []
+  }
+}

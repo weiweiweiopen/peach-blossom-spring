@@ -189,7 +189,7 @@ function normalizeSourceFamilyText(text: string): string {
   return text
     .toLowerCase()
     .replace(/\b(19|20)\d{2}\b/g, "")
-    .replace(/synthetic biology for artists and designers/g, "synthetic biology artists designers")
+    .replace(/synthetic biology for artists and designers/g, "workshop materials")
     .replace(/artsciencebangalore/g, "artscience bangalore")
     .replace(/hackteria relationship layer/g, "hackteria")
     .replace(/\b(part|session|day|year|edition)\s*\d+\b/g, "")

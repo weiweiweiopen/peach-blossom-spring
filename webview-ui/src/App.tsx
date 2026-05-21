@@ -74,6 +74,12 @@ import {
   tickSimulation,
 } from "./simulation/engine.js";
 import { scorePromptResonance } from "./simulation/resonance.js";
+import {
+  appendPetDialogueHistory,
+  buildSeedWithPetDialogueHistory,
+  readPetDialogueHistory,
+  type PetDialogueHistoryEntry,
+} from "./simulation/storage.js";
 import type { FinalDocument, SimSnapshot, Thronglet } from "./simulation/types.js";
 import { vscode } from "./vscodeApi.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
@@ -155,7 +161,16 @@ type SplitPanel =
   | { kind: "wukirBandcamp" }
   | { kind: "communityLinks" }
   | { kind: "externalLink"; title: string; url: string; description?: string }
-  | { kind: "finalDocument"; title: string; url: string; description?: string }
+  | {
+      kind: "finalDocument";
+      title: string;
+      url: string;
+      description?: string;
+      language?: LanguageCode;
+      seed?: string;
+      petRole?: string;
+      error?: string;
+    }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" }
   | { kind: "about" };
@@ -209,14 +224,41 @@ function AssociationLoadingPage({ language }: { language: LanguageCode }) {
   );
 }
 
-function ExternalLinkEmbed({ link, language }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode }) {
+function associationErrorCopy(language: LanguageCode): { title: string; retry: string } {
+  const copy: Record<LanguageCode, { title: string; retry: string }> = {
+    "zh-TW": { title: "小誌生成失敗。", retry: "重試" },
+    en: { title: "Wiki zine failed.", retry: "Retry" },
+    id: { title: "Zine wiki gagal.", retry: "Coba lagi" },
+    de: { title: "Wiki-Zine fehlgeschlagen.", retry: "Erneut versuchen" },
+    ja: { title: "Wiki小誌の生成に失敗しました。", retry: "再試行" },
+    th: { title: "สร้างซีนวิกิไม่สำเร็จ", retry: "ลองอีกครั้ง" },
+  };
+  return copy[language];
+}
+
+function AssociationErrorPage({ message, language, onRetry }: { message: string; language: LanguageCode; onRetry?: () => void }) {
+  const copy = associationErrorCopy(language);
+  return (
+    <div className="world-association-error" role="alert">
+      <strong>{copy.title}</strong>
+      <p>{message}</p>
+      {onRetry && (
+        <button className="pbs-game-button" type="button" onClick={onRetry}>{copy.retry}</button>
+      )}
+    </div>
+  );
+}
+
+function ExternalLinkEmbed({ link, language, onRetry }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode; onRetry?: () => void }) {
   const isFinalDocument = link.kind === "finalDocument";
   return (
     <div className={`world-split-embed ${isFinalDocument ? "world-split-final-document" : ""}`}>
       {link.description && (
         <p className="world-split-embed-description">{link.description}</p>
       )}
-      {link.url ? (
+      {isFinalDocument && link.error ? (
+        <AssociationErrorPage message={link.error} language={language} onRetry={onRetry} />
+      ) : link.url ? (
         <iframe
           key={link.url}
           title={link.title}
@@ -669,6 +711,7 @@ function App() {
   const [petResponse, setPetResponse] = useState("");
   const [petChatDraft, setPetChatDraft] = useState("");
   const [petChatReply, setPetChatReply] = useState<LocalChatReply | null>(null);
+  const [petDialogueHistory, setPetDialogueHistory] = useState<PetDialogueHistoryEntry[]>(() => readPetDialogueHistory());
   const [petBoardResponses, setPetBoardResponses] = useState<
     PetBoardResponse[]
   >([]);
@@ -1957,6 +2000,58 @@ function App() {
     setIsSplitExpanded(false);
   }, []);
 
+  async function openAssociationZineSplit(request: {
+    seed: string;
+    petRole?: string;
+    language: LanguageCode;
+    anchorId?: number;
+  }): Promise<void> {
+    const loadingTitle = t(request.language, "dialogue.associationLoadingTitle");
+    setSplitPanel({
+      kind: "finalDocument",
+      title: loadingTitle,
+      url: "",
+      language: request.language,
+      seed: request.seed,
+      petRole: request.petRole,
+    });
+    setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
+    setIsSplitExpanded(true);
+    wikiGenerationInFlightRef.current = true;
+    try {
+      const result = await generateBrowserAssociationZine(request.seed, request.petRole, request.language);
+      const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
+      finalDocumentObjectUrlsRef.current.add(url);
+      setSplitPanel({
+        kind: "finalDocument",
+        title: result.title,
+        url,
+        language: request.language,
+        seed: request.seed,
+        petRole: request.petRole,
+      });
+      setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
+      setIsSplitExpanded(true);
+    } catch (error) {
+      console.error("NPC wiki zine generation failed", error);
+      const message = associationErrorCopy(request.language).title;
+      setWorldNotice(message);
+      setSplitPanel({
+        kind: "finalDocument",
+        title: loadingTitle,
+        url: "",
+        language: request.language,
+        seed: request.seed,
+        petRole: request.petRole,
+        error: message,
+      });
+      setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
+      setIsSplitExpanded(true);
+    } finally {
+      wikiGenerationInFlightRef.current = false;
+    }
+  }
+
   const handleBootStart = useCallback(() => {
     setHasStarted(true);
     setIsPostBootLoading(true);
@@ -2080,6 +2175,13 @@ function App() {
     });
     setPetChatDraft("");
     setPetChatReply(reply);
+    setPetDialogueHistory(appendPetDialogueHistory({
+      petId: selectedPet.id,
+      questionId: selectedPet.question.id,
+      question: selectedPet.question.text,
+      message,
+      reply: reply.reply,
+    }));
     if (!reply.memoryEvent) return;
     setSimSnapshot((current) => {
       if (!current) return current;
@@ -2331,9 +2433,7 @@ function App() {
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
-                tag.isQuestionPet || tag.id === abaoAgentId
-                  ? "pointer-events-auto cursor-pointer"
-                  : "pointer-events-none"
+                "pointer-events-auto cursor-pointer"
               }`}
               style={{
                 left: tag.left,
@@ -2341,12 +2441,15 @@ function App() {
                 "--npc-tag-scale": tag.zoomScale,
               } as CSSProperties}
               onClick={
-                tag.isQuestionPet || tag.id === abaoAgentId
-                  ? (event) => {
-                      event.stopPropagation();
-                      handleClick(tag.id);
-                    }
-                  : undefined
+                (event) => {
+                  event.stopPropagation();
+                  if (tag.isQuestionPet || tag.id === abaoAgentId) {
+                    handleClick(tag.id);
+                    return;
+                  }
+                  officeState.selectedAgentId = tag.id;
+                  setActiveDialogueId(tag.id);
+                }
               }
             >
               {tag.name}
@@ -2467,50 +2570,19 @@ function App() {
                   language={selectedLanguage}
                   onClose={() => setActiveDialogueId(null)}
                   onOpenWiki={() => {
-                    setSplitPanel({
-                      kind: "finalDocument",
-                      title: t(selectedLanguage, "dialogue.associationLoadingTitle"),
-                      url: "",
-                      description: undefined,
+                    const requestLanguage = selectedLanguage;
+                    const seed = [
+                      playerProfile.question || playerProfile.mission,
+                      activeDialoguePersona.name,
+                      activeDialoguePersona.role,
+                      activeDialoguePersona.intro,
+                    ].filter(Boolean).join("\n\n");
+                    void openAssociationZineSplit({
+                      seed: buildSeedWithPetDialogueHistory(seed),
+                      petRole: playerProfile.avatarTitle,
+                      language: requestLanguage,
+                      anchorId: activeDialogueCharacter.id,
                     });
-                    setSplitPanelAnchor({
-                      kind: "npc",
-                      id: activeDialogueCharacter.id,
-                    });
-                    setIsSplitExpanded(true);
-                    wikiGenerationInFlightRef.current = true;
-                    void (async () => {
-                      try {
-                        const seed = [
-                          playerProfile.question || playerProfile.mission,
-                          activeDialoguePersona.name,
-                          activeDialoguePersona.role,
-                          activeDialoguePersona.intro,
-                        ].filter(Boolean).join("\n\n");
-                        const result = await generateBrowserAssociationZine(seed, playerProfile.avatarTitle, selectedLanguage);
-                        const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
-                        finalDocumentObjectUrlsRef.current.add(url);
-                        setSplitPanel({
-                          kind: "finalDocument",
-                          title: result.title,
-                          url,
-                          description: undefined,
-                        });
-                        setSplitPanelAnchor({
-                          kind: "npc",
-                          id: activeDialogueCharacter.id,
-                        });
-                        setIsSplitExpanded(true);
-                      } catch (error) {
-                        const message = error instanceof Error ? error.message : String(error);
-                        console.error("NPC wiki zine generation failed", error);
-                        setWorldNotice(`Wiki zine failed: ${message.split("\n")[0]}`);
-                        setSplitPanel(null);
-                        setIsSplitExpanded(false);
-                      } finally {
-                        wikiGenerationInFlightRef.current = false;
-                      }
-                    })();
                   }}
                   onOpenMusic={
                     activeDialoguePersona.id === "wukir-suryadi"
@@ -2653,17 +2725,25 @@ function App() {
                         ))}
                       </div>
                     )}
+                    {petDialogueHistory.length > 0 && (
+                      <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
+                        <strong>🐣 recent question history</strong>
+                        {petDialogueHistory.slice(-3).reverse().map((entry) => (
+                          <p key={entry.id} className="mt-2">{entry.question}: {entry.message}</p>
+                        ))}
+                      </div>
+                    )}
                     {simSnapshot.finalDocuments.map((document) => (
                       <button
                         key={document.id}
-                        className="w-full text-left border-2 border-black bg-white px-3 py-3 mt-3 text-sm"
+                        className="pbs-game-button pbs-game-button--block mt-3"
                         type="button"
                         onClick={() => {
                           setSelectedPet(null);
                           openFinalDocumentSplit(document);
                         }}
                       >
-                        最終文件已生成: {document.title}
+                        📄 {document.title}
                       </button>
                     ))}
                     {simSnapshot.thoughts.map((thought, index) => (
@@ -2967,6 +3047,17 @@ function App() {
                     </article>
                   </div>
                 )}
+                {petDialogueHistory.filter((entry) => entry.petId === selectedPet.id).length > 0 && (
+                  <div className="pet-response-list mt-3">
+                    {petDialogueHistory.filter((entry) => entry.petId === selectedPet.id).slice(-4).reverse().map((entry) => (
+                      <article className="pet-response-item" key={entry.id}>
+                        <p className="type-caption">{new Date(entry.createdAt).toLocaleString()}</p>
+                        <p className="type-body">{entry.message}</p>
+                        {entry.reply && <p className="type-caption mt-2">{entry.reply}</p>}
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
               {!selectedPetFinalDocument && (
                 <div className="pet-detail-section pet-response-compose-section">
@@ -3013,20 +3104,31 @@ function App() {
           className={`world-split-panel rpg-message-frame ${isSplitExpanded ? "is-expanded" : ""}`}
           data-no-mobile-drag="true"
         >
+          {(() => {
+            const splitPanelLanguage = splitPanel.kind === "finalDocument" && splitPanel.language ? splitPanel.language : selectedLanguage;
+            const retryAssociationZine = splitPanel.kind === "finalDocument" && splitPanel.seed
+              ? () => void openAssociationZineSplit({
+                  seed: splitPanel.seed ?? "",
+                  petRole: splitPanel.petRole,
+                  language: splitPanelLanguage,
+                  anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,
+                })
+              : undefined;
+            return <>
           <div className="world-split-toolbar">
             <div>
-              <p>{splitPanelKicker(splitPanel, selectedLanguage)}</p>
-              <h2>{splitPanelTitle(splitPanel, selectedLanguage)}</h2>
+              <p>{splitPanelKicker(splitPanel, splitPanelLanguage)}</p>
+              <h2>{splitPanelTitle(splitPanel, splitPanelLanguage)}</h2>
             </div>
             <div className="world-split-actions">
               <button
-                className="world-split-expand"
+                className="world-split-expand pbs-game-button"
                 type="button"
                 onClick={() => setIsSplitExpanded((expanded) => !expanded)}
               >
                 {isSplitExpanded ? "↙" : "⤢"}
               </button>
-              <button className="world-split-close" type="button" onClick={closeSplitPanel}>
+              <button className="world-split-close pbs-game-button" type="button" onClick={closeSplitPanel}>
                 ✕
               </button>
             </div>
@@ -3063,7 +3165,7 @@ function App() {
                 ))}
               </div>
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
-              <ExternalLinkEmbed link={splitPanel} language={selectedLanguage} />
+              <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} />
             ) : splitPanel.kind === "about" ? (
               <div className="world-wiki-content world-about-content">
                 <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>
@@ -3088,6 +3190,8 @@ function App() {
               />
             )}
           </div>
+            </>;
+          })()}
         </aside>
       )}
 

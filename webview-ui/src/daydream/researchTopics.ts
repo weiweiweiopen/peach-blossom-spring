@@ -133,10 +133,10 @@ function topicFromEvidencePool(report: DaydreamReport, evidence: SourceCard[]): 
 
 function inferRelationPattern(cards: SourceCard[], terms: string[], isBridge: boolean): ResearchRelationPattern {
   const haystack = [...terms, ...cards.flatMap(cardTerms)].join(" ").toLowerCase();
-  if (/risk|safety|pathogen|bio|bacteria|gene|genetic|synthetic|wetlab/.test(haystack) && /wearable|textile|fabric|sensor|interface|body/.test(haystack)) return "translation";
+  if (/risk|safety|control|consent/.test(haystack) && /sensor|interface|body|community/.test(haystack)) return "translation";
   if (/ethic|safety|risk|pathogen|control|surveillance|consent/.test(haystack)) return "tension";
   if (isBridge) return "missing_bridge";
-  if (/tool|method|workshop|prototype|documentation/.test(haystack)) return "complement";
+  if (/tool|method|workshop|documentation/.test(haystack)) return "complement";
   return "similarity";
 }
 
@@ -156,14 +156,14 @@ function buildResearchQuestion(pattern: ResearchRelationPattern, terms: string, 
   if (pattern === "translation") return `如果 ${systemLabel} 使用相似的 ${terms}，這些方法在跨領域轉譯時改變了什麼：材料、身體、責任，還是社群協定？`;
   if (pattern === "tension") return `${systemLabel} 中的 ${terms} 如何同時產生照護與控制，並要求什麼樣的倫理／安全邊界？`;
   if (pattern === "missing_bridge") return `為什麼 ${systemLabel} 已共享 ${terms}，但 vault 圖中尚未形成明確連結？這個缺口能否成為新研究題？`;
-  if (pattern === "complement") return `${systemLabel} 的 ${terms} 能否組裝成一個可測試、可文件化、可回饋社群的研究 protocol？`;
+  if (pattern === "complement") return `${systemLabel} 的 ${terms} 能否組裝成一個可測試、可文件化、可回饋社群的研究方法？`;
   return `${systemLabel} 中反覆出現的 ${terms} 是否只是表面相似，還是暗示一個未被命名的共同問題？`;
 }
 
 function riskCaveatFor(pattern: ResearchRelationPattern, cards: SourceCard[], report: DaydreamReport): string {
   const haystack = cards.flatMap(cardTerms).join(" ").toLowerCase();
   const caveats: string[] = [];
-  if (/bio|bacteria|gene|genetic|synthetic|wetlab|pathogen/.test(haystack)) caveats.push("若牽涉生物、濕實驗、基因或病原隱喻，輸出必須停在閱讀、倫理、非活體 prototype 與正式安全審查之前。");
+  if (/risk|safety|pathogen|control|consent/.test(haystack)) caveats.push("若材料牽涉風險、控制或同意議題，輸出必須保留倫理邊界與人工核對。");
   if (pattern === "similarity") caveats.push("目前可能只是詞彙相似；需要更多 recursive reading 才能宣稱為研究題。 ");
   if (report.depthMetrics.warnings.length > 0) caveats.push(report.depthMetrics.warnings.join(" "));
   return caveats.join(" ") || "目前沒有重大安全警告，但仍需人工核對來源是否真的支持題目。";
@@ -187,7 +187,7 @@ function knowledgeSystemsFor(cards: SourceCard[]): string[] {
 }
 
 function sourceLabel(source: string | undefined): string {
-  if (source === "htgwyw") return "KOBAKANT / e-textiles";
+  if (source === "htgwyw") return "HOW TO GET WHAT YOU WANT / KOBAKANT";
   if (source === "hackteria") return "Hackteria / bioart-DIYbio";
   if (source === "sgmk") return "SGMK / maker culture";
   return source ? source : "unknown source";

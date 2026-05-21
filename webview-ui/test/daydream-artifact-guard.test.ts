@@ -16,6 +16,14 @@ test('public artifact guard rejects backend workflow labels in visible text', ()
   assert.ok(result.violations.length >= 2);
 });
 
+test('public artifact guard rejects source graph and localized process language', () => {
+  const result = inspectPublicArtifact('<main><p>source graph 後台 系統語言 プロンプト</p></main>');
+
+  assert.equal(result.ok, false);
+  assert.ok(result.violations.some((violation) => /source\\s\*graph|source/.test(violation.pattern)));
+  assert.ok(result.violations.length >= 3);
+});
+
 test('public artifact guard ignores hidden comments but checks visible svg text', () => {
   const hiddenOnly = inspectPublicArtifact('<!-- workflow sourceCards debug --><main><svg><text>Living Alphabet</text></svg></main>');
   assert.equal(hiddenOnly.ok, true);

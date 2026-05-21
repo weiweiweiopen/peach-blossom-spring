@@ -1,0 +1,5 @@
+{"id":"personas","path":"data/personas.json","type":"local-json","description":"Canonical local NPC persona records and transcript paths."}
+{"id":"agent-profiles","path":"data/agent-profiles.json","type":"local-json","description":"Local agent profile constraints and transferable methods."}
+{"id":"wukir-transcript-en","path":"docs/transcripts_en/wukir-suryadi.md","type":"local-transcript","description":"Wukir English transcript placeholder; factual transcript claims pending."}
+{"id":"wukir-transcript-zh","path":"docs/transcripts_zh/wukir-suryadi.md","type":"local-transcript","description":"Wukir Traditional Chinese transcript placeholder; factual transcript claims pending."}
+{"id":"wukir-links","path":"data/wiki/interviewees/wukir-suryadi/links.json","type":"local-curated-links","description":"Curated local link metadata; no network crawling."}
