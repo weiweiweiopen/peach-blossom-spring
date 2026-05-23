@@ -57,6 +57,8 @@ export interface ThrongletCreationContext {
   personalArchive?: string;
 }
 
+const ENABLE_AUTOMATIC_FINAL_DOCUMENTS = typeof (globalThis as { document?: unknown }).document === "undefined";
+
 function splitTags(text: string): string[] {
   const withoutUrls = text.replace(/https?:\/\/\S+/gi, ' ');
   return Array.from(
@@ -856,21 +858,23 @@ export function tickSimulation(
   for (const event of events) scores = scoreEvent(scores, event);
   const a2aExchanges = [...newExchanges, ...(snapshot.a2aExchanges ?? [])].slice(0, 24);
   const finalDocuments = [...(snapshot.finalDocuments ?? [])];
-  for (const pet of thronglets) {
-    if (shouldCreateFinalDocument(pet, scores, finalDocuments)) {
-      const document = createFinalDocument(pet, a2aExchanges, tick);
-      finalDocuments.unshift(document);
-      events.push(
-        makeEvent(
-          "state_threshold",
-          tick,
-          pet.id,
-          { resonanceWithPrompt: 2, groupBond: 2 },
-          95,
-          `Final document generated: ${document.title}`,
-        ),
-      );
-      scores = scoreEvent(scores, events[events.length - 1]);
+  if (ENABLE_AUTOMATIC_FINAL_DOCUMENTS) {
+    for (const pet of thronglets) {
+      if (shouldCreateFinalDocument(pet, scores, finalDocuments)) {
+        const document = createFinalDocument(pet, a2aExchanges, tick);
+        finalDocuments.unshift(document);
+        events.push(
+          makeEvent(
+            "state_threshold",
+            tick,
+            pet.id,
+            { resonanceWithPrompt: 2, groupBond: 2 },
+            95,
+            `Final document generated: ${document.title}`,
+          ),
+        );
+        scores = scoreEvent(scores, events[events.length - 1]);
+      }
     }
   }
   const thoughts = [...snapshot.thoughts];

@@ -32,17 +32,32 @@ function kineticTitle(title: string): string {
   }).join("");
 }
 
+function zineLayoutGovernanceCss(): string {
+  return `
+.page { min-height:auto; padding:clamp(22px,4vw,56px); }
+.sheet { max-width:1040px; margin:0 auto; }
+.bodyGrid, .bodyGrid--full { display:block; }
+.body, .refs { max-width:78ch; margin:0 auto; padding:clamp(14px,2vw,24px); border:3px solid #111; background:rgba(255,255,255,.74); box-shadow:4px 4px 0 rgba(0,0,0,.22); }
+.body p { max-width:72ch; }
+.refs { margin-top:18px; }
+.titleBlock { max-width:980px; margin:0 auto clamp(16px,3vw,28px); }
+.pbs-readable-trace, .zine-feedback-page { min-height:auto !important; }
+.pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { max-width:980px; margin:0 auto; padding:clamp(16px,3vw,28px); border:4px solid #111; background:#fffaf0; box-shadow:6px 6px 0 #69c3aa; }
+@media (max-width:700px) { .page { padding:18px; } .body, .refs { max-width:none; padding:14px; } .body p { max-width:none; } }
+`;
+}
+
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource): string {
   const sections = artifact.sections.slice(0, 4);
   const refs = artifact.protocol.slice(0, 6);
   const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}">
-  <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">篇章</span></header>
+  <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(section.title)}</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(section.title)}</h1>${section.pullQuote ? `<p class="lead">${escapeHtml(section.pullQuote)}</p>` : ""}</div>
     <div class="bodyGrid bodyGrid--full"><article class="body"><p>${escapeHtml(section.body)}</p></article></div>
   </main>
 </section>`).join("\n");
-  return `<style>${extractStyle(template.html)}</style><section class="page p1" data-official-template="${template.filename}">
+  return `<style>${extractStyle(template.html)}${zineLayoutGovernanceCss()}</style><section class="page p1" data-official-template="${template.filename}">
   <header class="top"><span class="no">01</span><span class="label">聲音圖譜</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(artifact.title)}</h1><p class="lead">${escapeHtml(artifact.subtitle)}</p></div>

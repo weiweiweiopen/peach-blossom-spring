@@ -119,10 +119,10 @@ export function DebugView({
               e.stopPropagation();
               vscode.postMessage({ type: 'closeAgent', id });
             }}
-            className={`opacity-70 ${isSelected ? 'text-white' : ''}`}
+            className={`pbs-frame-action opacity-70 ${isSelected ? 'text-white' : ''}`}
             title="Close agent"
           >
-            ✕
+            X
           </Button>
         </span>
         {(tools.length > 0 || status === 'waiting') && (

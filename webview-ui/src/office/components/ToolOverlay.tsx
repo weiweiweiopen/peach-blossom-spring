@@ -215,9 +215,9 @@ export function ToolOverlay({
                     onCloseAgent(id);
                   }}
                   title="Close agent"
-                  className="ml-2 shrink-0 leading-none"
+                  className="pbs-frame-action ml-2 shrink-0 leading-none"
                 >
-                  ×
+                  X
                 </Button>
               )}
             </div>

@@ -205,6 +205,11 @@ export default defineConfig(({ mode }) => {
       outDir: '../dist/webview',
       emptyOutDir: true,
     },
+    server: {
+      fs: {
+        allow: [__dirname, path.resolve(__dirname, '..'), path.resolve(__dirname, '../shared')],
+      },
+    },
     base: './',
   };
 });

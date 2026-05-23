@@ -226,6 +226,12 @@ function lookup(messages: LocaleMessages, key: TranslationKey): string | undefin
   return typeof current === "string" ? current : undefined;
 }
 
+function governedCopyOverride(_language: LanguageCode, key: TranslationKey): string | undefined {
+  if (key === "home.subtitle") return "Dipatching a LLM wiki tamagotchi";
+  if (key === "archive.tree" || key === "archive.title") return "🍑";
+  return undefined;
+}
+
 function interpolate(template: string, values: TranslationValues = {}): string {
   return template.replace(/\{(\w+)\}/g, (match, name: string) => {
     const value = values[name];
@@ -239,6 +245,8 @@ export function t(
   values?: TranslationValues,
 ): string {
   const resolvedKey = resolveKey(key);
+  const override = governedCopyOverride(language, resolvedKey);
+  if (override !== undefined) return interpolate(override, values);
   const value = lookup(locales[language], resolvedKey);
   if (value === undefined) {
     warn(`[i18n] Missing translation for ${language}:${resolvedKey}`);

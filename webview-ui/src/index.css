@@ -109,6 +109,18 @@
   --font-caption: clamp(10px, 2.3vw, 12px);
   --font-micro: clamp(8px, 2vw, 10px);
 
+  --pbs-emoji-control-size: 32px;
+  --pbs-emoji-glyph-scale: 1;
+  --pbs-script-ui-scale: 1;
+  --pbs-script-home-title-scale: 1;
+  --pbs-script-line-scale: 1;
+  --pbs-script-ui-font-size: 1em;
+  --pbs-script-ui-line-height: 1.2;
+  --pbs-script-home-title-font: var(--font-display);
+  --pbs-script-home-title-line: var(--line-display);
+  --pbs-window-control-size: 34px;
+  --pbs-window-control-glyph-size: 18px;
+
   --line-display: 0.92;
   --line-title: 0.98;
   --line-heading: 1.08;
@@ -117,6 +129,42 @@
   --line-label: 1.2;
   --line-caption: 1.25;
   --line-micro: 1.15;
+}
+
+html[lang="zh-TW"],
+html[data-language="zh-TW"],
+[data-language="zh-TW"] {
+  --pbs-script-ui-scale: 0.96;
+  --pbs-script-home-title-scale: 0.94;
+  --pbs-script-line-scale: 1.04;
+  --pbs-script-ui-font-size: 0.96em;
+  --pbs-script-ui-line-height: 1.25;
+  --pbs-script-home-title-font: clamp(38px, 8.3vw, 72px);
+  --pbs-script-home-title-line: 1.02;
+}
+
+html[lang="ja"],
+html[data-language="ja"],
+[data-language="ja"] {
+  --pbs-script-ui-scale: 0.94;
+  --pbs-script-home-title-scale: 0.94;
+  --pbs-script-line-scale: 1.06;
+  --pbs-script-ui-font-size: 0.94em;
+  --pbs-script-ui-line-height: 1.27;
+  --pbs-script-home-title-font: clamp(38px, 8.3vw, 72px);
+  --pbs-script-home-title-line: 1.04;
+}
+
+html[lang="th"],
+html[data-language="th"],
+[data-language="th"] {
+  --pbs-script-ui-scale: 0.9;
+  --pbs-script-home-title-scale: 0.9;
+  --pbs-script-line-scale: 1.14;
+  --pbs-script-ui-font-size: 0.9em;
+  --pbs-script-ui-line-height: 1.36;
+  --pbs-script-home-title-font: clamp(36px, 8vw, 68px);
+  --pbs-script-home-title-line: 1.16;
 }
 
 .type-display {
@@ -206,6 +254,19 @@
   body,
   #root {
     @apply m-0 w-full h-full overflow-hidden font-pixel text-base text-text;
+  }
+
+  :lang(ja) {
+    font-size-adjust: 0.56;
+  }
+
+  :lang(th) {
+    font-size-adjust: 0.54;
+    line-height: 1.5;
+  }
+
+  :lang(zh-TW) {
+    font-size-adjust: 0.55;
   }
 
   * {
@@ -1949,18 +2010,25 @@
 }
 .archive-tree-options {
   display: grid;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 0;
+  margin-top: 8px;
 }
 .archive-tree-options button {
-  min-height: 44px;
-  padding: 12px;
+  min-height: 58px;
+  padding: 12px 16px;
   color: #000;
-  background: var(--palette-yellow);
-  border: 3px solid #000;
-  box-shadow: 2px 2px 0 #000;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   text-align: left;
-  font-size: 18px;
+  font-size: clamp(24px, 1.8vw, 34px);
+  line-height: 1.2;
+}
+
+.archive-tree-options button:hover,
+.archive-tree-options button:focus-visible {
+  background: var(--palette-yellow) !important;
+  outline: 2px solid #000;
 }
 
 .archive-tree-menu.F2 {
@@ -4359,18 +4427,31 @@
 }
 
 /* L2 language menu scale. */
-.floating-ui-layer .global-language-menu {
+.floating-ui-layer .global-language-menu,
+.floating-ui-layer .global-archive-menu {
   position: relative !important;
 }
 
-.global-language-options {
+.global-language-options,
+.archive-tree-menu.global-menu-options {
   position: absolute !important;
-  top: calc(100% + 10px) !important;
+  top: calc(100% + var(--pbs-dropdown-offset)) !important;
   right: 0 !important;
   left: auto !important;
-  min-width: 240px !important;
+  min-width: var(--pbs-menu-width) !important;
   padding: 12px !important;
   z-index: calc(var(--z-floating-global) + 1) !important;
+  color: #000 !important;
+  background: color-mix(in srgb, #fff 90%, transparent) !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
+
+.archive-tree-menu.global-menu-options {
+  position: fixed !important;
+  top: calc(var(--safe-top) + var(--floating-gap) + var(--control-size) + var(--pbs-dropdown-offset)) !important;
+  width: var(--pbs-menu-width) !important;
+  max-width: calc(100vw - var(--safe-left) - var(--safe-right) - 16px) !important;
 }
 
 .global-language-options button {
@@ -6491,4 +6572,290 @@
   .pet-runner-bubble {
     font-size: 12px !important;
   }
+}
+
+/* UI governance rollback: keep menu/button primitives from inheriting oversized L2 text rules. */
+.global-archive-peach,
+.global-language-globe,
+.pbs-emoji-control,
+.rpg-dialogue-wiki-button .pbs-emoji-control {
+  display: inline-grid !important;
+  place-items: center !important;
+  inline-size: var(--pbs-emoji-control-size) !important;
+  block-size: var(--pbs-emoji-control-size) !important;
+  width: var(--pbs-emoji-control-size) !important;
+  height: var(--pbs-emoji-control-size) !important;
+  overflow: visible !important;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif !important;
+  font-size: 26px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  transform: none !important;
+  transform-origin: center !important;
+  contain: layout !important;
+}
+
+.global-archive-peach.pbs-emoji-control,
+.global-language-globe.pbs-emoji-control {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.global-archive-trigger,
+.global-language-trigger,
+.rpg-dialogue-wiki-button.pbs-game-button--bubble {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: var(--control-size) !important;
+  width: var(--control-size) !important;
+  min-height: var(--control-size) !important;
+  height: var(--control-size) !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.rpg-dialogue-wiki-button.pbs-game-button--bubble {
+  min-width: 52px !important;
+  width: 52px !important;
+  min-height: 52px !important;
+  height: 52px !important;
+}
+
+.floating-ui-layer .global-language-menu,
+.floating-ui-layer .global-archive-menu,
+.retro-home-menu-layer .global-language-menu,
+.retro-home-menu-layer .global-archive-menu {
+  position: relative !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  min-height: var(--control-size) !important;
+}
+
+.global-language-options,
+.archive-tree-menu.global-menu-options,
+.retro-home-archive-options.global-menu-options {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: auto !important;
+  min-width: min(220px, calc(100vw - 24px)) !important;
+  width: max-content !important;
+  max-width: calc(100vw - 24px) !important;
+  padding: 8px !important;
+  z-index: calc(var(--z-floating-global) + 1) !important;
+  color: #000 !important;
+  background: color-mix(in srgb, #fff 90%, transparent) !important;
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
+
+.archive-tree-menu.global-menu-options {
+  position: fixed !important;
+  top: calc(var(--safe-top) + var(--floating-gap) + var(--control-size) + 8px) !important;
+  right: calc(var(--safe-right) + var(--floating-gap)) !important;
+}
+
+.retro-home-archive-options.global-menu-options {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  width: min(380px, calc(100vw - 24px)) !important;
+  padding: 18px !important;
+}
+
+.global-language-options button,
+.archive-tree-menu.global-menu-options button,
+.retro-home-archive-options.global-menu-options button {
+  min-height: 44px !important;
+  padding: 8px 10px !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+  line-height: 1.15 !important;
+}
+
+.global-language-options button span[lang="ja"],
+.retro-title-card[data-language="ja"] {
+  font-size-adjust: 0.52;
+}
+
+/* Script scale: English is baseline; dense CJK/Japanese/Thai glyphs compact visually. */
+.retro-title-card[data-language] h1 {
+  font-size: var(--pbs-script-home-title-font) !important;
+  line-height: var(--pbs-script-home-title-line) !important;
+}
+
+.retro-title-card[data-language] p,
+.global-language-options button,
+.archive-tree-menu.global-menu-options button,
+.retro-home-archive-options.global-menu-options button,
+.npc-name-tag,
+.abao-speech-bubble,
+.pet-runner-bubble,
+.question-response-panel:not(.final-document-window) .pet-detail-header h2.type-heading,
+.question-response-panel:not(.final-document-window) .pet-detail-header .type-label,
+.question-response-panel:not(.final-document-window) .pet-detail-header .type-caption,
+.question-response-panel:not(.final-document-window) .pet-detail-section .type-body,
+.question-response-panel:not(.final-document-window) .pet-detail-section .type-body-large,
+.question-response-panel:not(.final-document-window) .pet-detail-section p,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-kicker,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-role,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-submit,
+.player-setup-overlay[data-language] .player-setup-one-panel,
+.player-setup-overlay[data-language] .player-setup-action--why {
+  line-height: var(--pbs-script-ui-line-height) !important;
+}
+
+html[lang="zh-TW"] .global-language-options button,
+html[lang="zh-TW"] .archive-tree-menu.global-menu-options button,
+html[lang="zh-TW"] .retro-home-archive-options.global-menu-options button,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
+  font-size: clamp(20px, 1.55vw, 28px) !important;
+}
+
+html[lang="ja"] .global-language-options button,
+html[lang="ja"] .archive-tree-menu.global-menu-options button,
+html[lang="ja"] .retro-home-archive-options.global-menu-options button,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-submit {
+  font-size: clamp(19px, 1.45vw, 26px) !important;
+  font-size-adjust: 0.52;
+}
+
+html[lang="th"] .global-language-options button,
+html[lang="th"] .archive-tree-menu.global-menu-options button,
+html[lang="th"] .retro-home-archive-options.global-menu-options button,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-submit {
+  font-size: clamp(19px, 1.4vw, 26px) !important;
+  line-height: 1.42 !important;
+  font-size-adjust: 0.5;
+}
+
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-thinking {
+  font-size: clamp(18px, 1.35vw, 22px) !important;
+  line-height: 1.42 !important;
+}
+
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-thinking {
+  font-size: clamp(16px, 1.25vw, 20px) !important;
+  line-height: 1.52 !important;
+}
+
+html[lang="zh-TW"] .question-response-panel:not(.final-document-window) .pet-detail-section p,
+html[lang="ja"] .question-response-panel:not(.final-document-window) .pet-detail-section p {
+  font-size: clamp(18px, 1.45vw, 24px) !important;
+  line-height: 1.45 !important;
+}
+
+html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail-section p {
+  font-size: clamp(16px, 1.3vw, 22px) !important;
+  line-height: 1.58 !important;
+}
+
+.player-setup-overlay[data-language="zh-TW"] .player-setup-action--why,
+.player-setup-overlay[data-language="ja"] .player-setup-action--why {
+  font-size: clamp(20px, 3vw, 34px) !important;
+}
+
+.player-setup-overlay[data-language="th"] .player-setup-action--why {
+  font-size: clamp(20px, 2.8vw, 32px) !important;
+  line-height: 1.3 !important;
+}
+
+.pbs-frame-action,
+.question-response-window-actions .pbs-frame-action,
+.rpg-dialogue-x.pbs-frame-action {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: var(--pbs-window-control-size) !important;
+  height: var(--pbs-window-control-size) !important;
+  min-width: var(--pbs-window-control-size) !important;
+  min-height: var(--pbs-window-control-size) !important;
+  padding: 0 !important;
+  font-size: var(--pbs-window-control-glyph-size) !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+.rpg-dialogue-wiki-button {
+  font-size: var(--pbs-emoji-control-size) !important;
+  line-height: 1 !important;
+}
+
+/* Spec-kit repair: typography normalization must not shrink button hit areas. */
+.pbs-game-button,
+.rpg-dialogue-panel .pbs-game-button,
+.world-split-actions .pbs-game-button,
+.world-association-error .pbs-game-button {
+  min-width: var(--control-size) !important;
+  min-height: var(--control-size) !important;
+  padding: 10px 14px !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+}
+
+.rpg-dialogue-submit.pbs-game-button,
+.rpg-dialogue-chip.pbs-game-button {
+  width: auto !important;
+  min-width: 56px !important;
+  height: auto !important;
+  min-height: 46px !important;
+  padding: 10px 14px !important;
+}
+
+.global-archive-trigger,
+.global-language-trigger {
+  width: var(--control-size) !important;
+  height: var(--control-size) !important;
+  min-width: var(--control-size) !important;
+  min-height: var(--control-size) !important;
+  padding: 0 !important;
+  align-self: flex-start !important;
+}
+
+.floating-ui-layer,
+.retro-home-menu-layer {
+  align-items: flex-start !important;
+}
+
+.archive-tree-menu.global-menu-options .archive-tree-options button,
+.retro-home-archive-options.global-menu-options .archive-tree-options button {
+  min-height: 58px !important;
+  padding: 12px 16px !important;
+  background: var(--pbs-frame-button-bg) !important;
+  border: 3px solid var(--pbs-frame-border, #000) !important;
+  box-shadow: var(--pbs-frame-button-shadow) !important;
+  font-size: clamp(24px, 1.8vw, 34px) !important;
+  line-height: 1.2 !important;
+}
+
+.retro-home-archive-options.global-menu-options {
+  width: min(380px, calc(100vw - 24px)) !important;
+  min-width: min(380px, calc(100vw - 24px)) !important;
+}
+
+.rpg-dialogue-wiki-button.pbs-game-button--bubble {
+  width: 52px !important;
+  min-width: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  padding: 0 !important;
 }

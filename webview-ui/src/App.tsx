@@ -173,7 +173,7 @@ type SplitPanel =
     }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" }
-  | { kind: "about" };
+  | { kind: "schema" };
 
 type EncounterPanel = {
   partner: MultiplayerPresence;
@@ -196,7 +196,7 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "finalDocument") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
   if (panel.kind === "archiveMap") return t(language, "archive.mapTitle");
-  return "About";
+  return "schema";
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
@@ -207,8 +207,8 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
     return t(language, "archive.embeddedLink");
   }
   if (panel.kind === "finalDocument") return "WORLD WIKI: association page";
-  if (panel.kind === "about") return "About";
-  return t(language, "archive.tree");
+  if (panel.kind === "schema") return "🍑";
+  return "🍑";
 }
 
 function AssociationLoadingPage({ language, progress }: { language: LanguageCode; progress?: string }) {
@@ -804,26 +804,6 @@ function App() {
   const activeDispatchPets = useMemo(
     () => dispatchedPets.filter((pet) => pet.status === "active"),
     [dispatchedPets],
-  );
-
-  const removeCompletedLocalDispatchPet = useCallback(
-    (finishedQuestion: string): void => {
-      if (!playerProfile) return;
-      const ownerId = petStore.getOwnerId();
-      const currentQuestion = (playerProfile.question || playerProfile.mission || "").trim();
-      const currentSeed = playerProfile.petSeed ?? "";
-      const normalizedFinishedQuestion = finishedQuestion.trim();
-      const nextPets = petStore.listPets().filter((pet) => {
-        if (pet.ownerId !== ownerId) return true;
-        if (currentSeed && pet.seed === currentSeed) return false;
-        if (currentQuestion && pet.question.trim() === currentQuestion) return false;
-        if (normalizedFinishedQuestion && pet.question.trim() === normalizedFinishedQuestion) return false;
-        return true;
-      });
-      petStore.updatePets(nextPets);
-      setDispatchedPets(nextPets);
-    },
-    [playerProfile],
   );
 
   const archiveSummary = useMemo(
@@ -2168,18 +2148,8 @@ function App() {
 
   useEffect(() => {
     if (!simSnapshot) return;
-    const seen = seenFinalDocumentIdsRef.current;
-    const newest = simSnapshot.finalDocuments.find((document) => !seen.has(document.id));
-    for (const document of simSnapshot.finalDocuments) seen.add(document.id);
-    if (!newest || wikiGenerationInFlightRef.current) return;
-    if (splitPanel?.kind === "finalDocument" && splitPanel.seed) return;
-    const pet = simSnapshot.thronglets.find((item) => item.id === newest.petId);
-    if (pet) removeCompletedLocalDispatchPet(pet.question.text);
-    setSelectedPet(null);
-    setSelectedDispatchPet(null);
-    setSelectedNpcInfo(null);
-    openFinalDocumentSplit(newest);
-  }, [removeCompletedLocalDispatchPet, simSnapshot, splitPanel]);
+    for (const document of simSnapshot.finalDocuments) seenFinalDocumentIdsRef.current.add(document.id);
+  }, [simSnapshot]);
 
   useEffect(() => {
     if (!selectedDispatchPet) return;
@@ -2188,7 +2158,7 @@ function App() {
   }, [activeDispatchPets, selectedDispatchPet]);
 
   if (!hasStarted) {
-    return <RetroBootScreen onStart={handleBootStart} />;
+    return <RetroBootScreen onStart={handleBootStart} language={selectedLanguage} onLanguageChange={handleLanguageChange} />;
   }
 
 
@@ -2320,17 +2290,19 @@ function App() {
       )}
 
       <div className="floating-ui-layer" data-no-mobile-drag="true">
-        <button
-          className="global-archive-trigger"
-          type="button"
-          aria-label={t(selectedLanguage, "archive.title")}
-          aria-expanded={archiveMenuOpen}
-          onClick={() => setArchiveMenuOpen((open) => !open)}
-        >
-          <span className="global-archive-peach" aria-hidden="true">
-            🍑
-          </span>
-        </button>
+        <div className="global-archive-menu">
+          <button
+            className="global-archive-trigger"
+            type="button"
+            aria-label={t(selectedLanguage, "archive.title")}
+            aria-expanded={archiveMenuOpen}
+            onClick={() => setArchiveMenuOpen((open) => !open)}
+          >
+            <span className="global-archive-peach pbs-emoji-control" aria-hidden="true">
+              🍑
+            </span>
+          </button>
+        </div>
         <div className="global-language-menu">
           <button
             className="global-language-trigger"
@@ -2339,7 +2311,7 @@ function App() {
             aria-expanded={languageMenuOpen}
             onClick={() => setLanguageMenuOpen((open) => !open)}
           >
-            <span className="global-language-globe" aria-hidden="true">
+            <span className="global-language-globe pbs-emoji-control" aria-hidden="true">
               🌏
             </span>
           </button>
@@ -2353,7 +2325,7 @@ function App() {
                   role="menuitem"
                   onClick={() => handleLanguageChange(entry.code)}
                 >
-                  {entry.nativeName}
+                  <span lang={entry.code}>{entry.nativeName}</span>
                 </button>
               ))}
             </div>
@@ -2364,12 +2336,12 @@ function App() {
       <div className="hud-ui-layer" data-no-mobile-drag="true">
         {playerProfile && appMode === "dispatch_observer" && (
           <button
-            className="observer-close"
+            className="observer-close pbs-frame-action"
             type="button"
             onClick={handleCloseWorld}
             aria-label={t(selectedLanguage, "common.close")}
           >
-            ×
+            X
           </button>
         )}
 
@@ -2565,22 +2537,25 @@ function App() {
             !splitPanel &&
             (
               <section
-                className="archive-tree-menu pbs-frame F1 pbs-frame-f1 pixel-panel"
+                className="archive-tree-menu global-menu-options pbs-frame F1 pbs-frame-f1 pixel-panel"
                 data-no-mobile-drag="true"
               >
-                <button
-                  className="archive-tree-close pbs-frame-action"
-                  type="button"
-                  onClick={() => setArchiveMenuOpen(false)}
-                  aria-label={t(selectedLanguage, "common.close")}
-                >
-                  ×
-                </button>
                 <p className="archive-tree-kicker pbs-frame-kicker">
-                  {t(selectedLanguage, "archive.tree")}
+                  🍑
                 </p>
-                <h1 className="pbs-frame-title">{t(selectedLanguage, "archive.title")}</h1>
                 <div className="archive-tree-options">
+                  <button
+                    className="pbs-frame-button"
+                    type="button"
+                    onClick={() => {
+                      setSplitPanel({ kind: "schema" });
+                      setSplitPanelAnchor(null);
+                      setIsSplitExpanded(false);
+                      setArchiveMenuOpen(false);
+                    }}
+                  >
+                    1. schema
+                  </button>
                   <button
                     className="pbs-frame-button"
                     type="button"
@@ -2591,7 +2566,7 @@ function App() {
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    1. {t(selectedLanguage, "archive.newsTitle")}
+                    2. {t(selectedLanguage, "archive.newsTitle")}
                   </button>
                   <button
                     className="pbs-frame-button"
@@ -2603,7 +2578,7 @@ function App() {
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    2. {t(selectedLanguage, "archive.ebookButton")}
+                    3. {t(selectedLanguage, "archive.ebookButton")}
                   </button>
                   <button
                     className="pbs-frame-button"
@@ -2615,19 +2590,7 @@ function App() {
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    3. {t(selectedLanguage, "archive.mapButton")}
-                  </button>
-                  <button
-                    className="pbs-frame-button"
-                    type="button"
-                    onClick={() => {
-                      setSplitPanel({ kind: "about" });
-                      setSplitPanelAnchor(null);
-                      setIsSplitExpanded(false);
-                      setArchiveMenuOpen(false);
-                    }}
-                  >
-                    4. about
+                    4. {t(selectedLanguage, "archive.mapButton")}
                   </button>
                 </div>
               </section>
@@ -2873,7 +2836,7 @@ function App() {
                   setSelectedNpcInfo(null);
                 }}
               >
-                ×
+                X
               </button>
               {selectedDispatchPet
                 ? (() => {
@@ -3037,11 +3000,11 @@ function App() {
           {mobileRulesOpen && (
             <section className="mobile-rules-drawer" data-no-mobile-drag="true">
               <button
-                className="float-right text-xl"
+                className="float-right text-xl pbs-frame-action"
                 type="button"
                 onClick={() => setMobileRulesOpen(false)}
               >
-                ×
+                X
               </button>
               <h2 className="text-lg mb-3">
                 {t(selectedLanguage, "pet.dispatchArchive")}
@@ -3082,7 +3045,7 @@ function App() {
                   onClick={closeSelectedPetPanel}
                   aria-label={t(selectedLanguage, "common.close")}
                 >
-                  ×
+                  X
                 </button>
               </div>
               <div className="pet-detail-header">
@@ -3215,14 +3178,14 @@ function App() {
             </div>
             <div className="world-split-actions">
               <button
-                className="world-split-expand pbs-game-button"
+                className="world-split-expand pbs-frame-action"
                 type="button"
                 onClick={() => setIsSplitExpanded((expanded) => !expanded)}
               >
                 {isSplitExpanded ? "↙" : "⤢"}
               </button>
-              <button className="world-split-close pbs-game-button" type="button" onClick={closeSplitPanel}>
-                ✕
+              <button className="world-split-close pbs-frame-action" type="button" onClick={closeSplitPanel}>
+                X
               </button>
             </div>
           </div>
@@ -3259,7 +3222,7 @@ function App() {
               </div>
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
               <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} progress={associationProgress} />
-            ) : splitPanel.kind === "about" ? (
+            ) : splitPanel.kind === "schema" ? (
               <div className="world-wiki-content world-about-content">
                 <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>
                 <p>這個遊戲的本體是一個研究訪談稿 <em>Non-Governmental Matters</em>。該研究採訪了 14 位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。</p>
@@ -3395,14 +3358,14 @@ function App() {
             </div>
             <button
               type="button"
-              className="pbs-encounter-close"
+              className="pbs-encounter-close pbs-frame-action"
               aria-label="Close encounter panel"
               onClick={() => {
                 setDismissedVideoEncounterId(encounterPanel.partner.playerId);
                 setEncounterPanel(null);
               }}
             >
-              ×
+              X
             </button>
           </div>
           <div className="pbs-chat-panel">

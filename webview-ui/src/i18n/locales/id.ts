@@ -18,7 +18,7 @@ const id: typeof zhTW = {
   },
   home: {
     ngmLabel: "Non-Governmental Matters",
-    title: "Peach Blossom Spring: Mengirim Simulator Kehidupan yang Dapat Berpikir",
+    title: "Mata Air Bunga Persik",
     subtitle: "Dimensi fabel interaktif untuk Non-Governmental Matters",
     description: "Ini adalah dimensi fabel interaktif tempat banyak teman aneh hidup bersama, melakukan eksperimen dan musik yang aneh, memasak, dan berbagi kehidupan sehari-hari. Kamu tidak sengaja masuk ke dunia ini dan mencoba menjelajah serta mengumpulkan cara membangun utopia sambil berusaha mengingat jalan kembali ke sini...\n\nTubuh permainan ini adalah transkrip wawancara penelitian \"Non-Governmental Matters\", sebuah studi yang mewawancarai 14 penyelenggara dan seniman teknologi-seni independen tentang pandangan mereka mengenai keberlanjutan komunitas. Pandangan para narasumber ini diubah menjadi NPC yang bisa diajak bercakap-cakap dengan bahasa alami di dalam game; model bahasa besar di belakangnya saat ini adalah Deepseek flash yang telah disetel dengan transkrip wawancara. Kamu juga dapat menciptakan seekor question pet dari satu pertanyaan. Hewan elektronik ini akan tumbuh seiring interaksinya dengan dunia game, lalu pada akhirnya menerima solusi dan tanggapan yang diproses oleh kecerdasan kolektif komunitas. Di pusat game terdapat teks penelitian, berita terbaru komunitas, dan peta komunitas. Silakan berkeliling sesukamu!",
     createProtagonist: "Buat protagonis",

@@ -358,15 +358,17 @@ function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
   if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 4 || protocol.length < 4) {
     throw new Error("LLM JSON missing required title/subtitle/opening/proposition/sections/protocol fields.");
   }
+  const missingSection = sections.find((section: any) => !String(section?.id ?? "").trim() || !String(section?.title ?? "").trim() || !String(section?.body ?? "").trim());
+  if (missingSection) throw new Error("LLM JSON missing required section id/title/body fields.");
   const artifact: DaydreamPublicArtifactContent = {
     schemaVersion: "association-public-document-v1",
     title: cleanLLMText(data.title),
     subtitle: cleanLLMText(data.subtitle),
     opening: cleanLLMText(data.opening),
     proposition: cleanLLMText(data.proposition),
-    sections: sections.map((section: any, index: number) => ({
-      id: String(section.id ?? `llm-section-${index + 1}`),
-      title: cleanLLMText(section.title ?? `段落 ${index + 1}`),
+    sections: sections.map((section: any) => ({
+      id: String(section.id),
+      title: cleanLLMText(section.title),
       body: cleanLLMText(section.body ?? ""),
       ...(section.pullQuote ? { pullQuote: cleanLLMText(section.pullQuote) } : {}),
     })),
@@ -498,10 +500,13 @@ async function callDeepSeekEditorialWriter(seed: string, workflow: Workflow, var
     }
     const nextSection = {
       id: String(section.id ?? `llm-section-${index + 1}`),
-      title: String(section.title ?? `篇章 ${index + 1}`),
+      title: String(section.title ?? "").trim(),
       body: String(section.body ?? ""),
       ...(section.pullQuote ? { pullQuote: String(section.pullQuote) } : {}),
     };
+    if (!nextSection.id.trim() || !nextSection.title || !nextSection.body.trim()) {
+      throw new Error(`LLM section ${index + 1} missing id/title/body.`);
+    }
     if (isTooSimilarToExisting(nextSection.body, sections.map(({ body }) => body))) {
       throw new Error(`LLM repeated section body after rewrite: ${nextSection.title}`);
     }
@@ -619,7 +624,7 @@ function renderVisibleTraceSection(trace: Record<string, any>, language: Associa
   const pipeline = ["seed", "seed words", "first pages", "linked pages", "second words", "deep-read pages", "material packet", "future direction", "DeepSeek article" ];
   const pageItem = (page: any) => `<li>${renderPageTitleLink(page)} <span>(${escapeHtml(page.sourceFamily ?? page.relation ?? "related")})</span><br/><small>${escapeHtml(page.url ?? page.path ?? page.reason ?? "")}</small>${page.matchedKeywords?.length ? `<br/><small>matched: ${escapeHtml(page.matchedKeywords.join(", "))}</small>` : ""}${page.whyUsed ? `<br/><small>why: ${escapeHtml(page.whyUsed)}</small>` : ""}</li>`;
   const mermaid = `graph TD\n${pipeline.map((step, index) => index < pipeline.length - 1 ? `  p${index}["${step}"] --> p${index + 1}["${pipeline[index + 1]}"]` : "").filter(Boolean).join("\n")}`;
-  return `<section class="page pbs-readable-trace" data-folio="trace" style="break-before:page;page-break-before:always;padding:clamp(24px,5vw,72px);background:#f8e8c0;color:#243b3d;">
+  return `<section class="page pbs-readable-trace" data-folio="trace" style="break-before:page;page-break-before:always;padding:clamp(24px,5vw,72px);background:#f8e8c0;color:#243b3d;"><div class="zine-system-frame">
     <h2>${escapeHtml(title)}</h2>
     <p><strong>Original seed:</strong> ${escapeHtml(trace.seed ?? "")}</p>
     <p><strong>Player profession:</strong> ${escapeHtml(trace.playerProfession ?? "")}</p>
@@ -634,7 +639,7 @@ function renderVisibleTraceSection(trace: Record<string, any>, language: Associa
     <details><summary>All visited pages</summary>${renderTraceList([...(trace.matchedPages ?? []), ...(trace.linkedPages ?? []), ...(trace.deepReadPages ?? [])], pageItem)}</details>
     <h3>Traversal pipeline diagram</h3><pre class="mermaid">${escapeHtml(mermaid)}</pre>
     <h3>Corpus diagram</h3><pre>${escapeHtml(JSON.stringify(trace.corpusDiagramSummary ?? {}, null, 2))}</pre>
-  </section>`;
+  </div></section>`;
 }
 
 function buildClickTrace(params: {

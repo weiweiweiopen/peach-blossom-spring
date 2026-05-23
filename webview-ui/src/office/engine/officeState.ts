@@ -68,6 +68,20 @@ export class OfficeState {
     return { x: col * TILE_SIZE + TILE_SIZE / 2, y: row * TILE_SIZE + TILE_SIZE / 2 };
   }
 
+  private nearestWalkableTileTo(col: number, row: number): { col: number; row: number } | null {
+    let closest: { col: number; row: number } | null = null;
+    let closestDistance = Infinity;
+    for (const tile of this.walkableTiles) {
+      if (this.blockedTiles.has(`${tile.col},${tile.row}`)) continue;
+      const distance = (tile.col - col) ** 2 + (tile.row - row) ** 2;
+      if (distance < closestDistance) {
+        closest = tile;
+        closestDistance = distance;
+      }
+    }
+    return closest;
+  }
+
   constructor(layout?: OfficeLayout) {
     this.layout = layout || createDefaultLayout();
     this.tileMap = layoutToTileMap(this.layout);
@@ -338,7 +352,7 @@ export class OfficeState {
 
   addPlayer(id: number, palette: number, name: string): void {
     if (this.characters.has(id)) return;
-    const spawn = this.walkableTiles.find((tile) => !this.blockedTiles.has(`${tile.col},${tile.row}`)) ?? {
+    const spawn = this.nearestWalkableTileTo((this.layout.cols - 1) / 2, (this.layout.rows - 1) / 2) ?? {
       col: 1,
       row: 1,
     };

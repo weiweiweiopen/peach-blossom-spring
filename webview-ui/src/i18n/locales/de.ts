@@ -18,7 +18,7 @@ const de: typeof zhTW = {
   },
   home: {
     ngmLabel: "Non-Governmental Matters",
-    title: "Peach Blossom Spring: Einen denkenden Lebenssimulator entsenden",
+    title: "Pfirsichblütenquelle",
     subtitle: "Eine interaktive Fabeldimension für Non-Governmental Matters",
     description: "Dies ist eine interaktive Fabeldimension, in der viele seltsame Freund:innen zusammenleben, seltsame Experimente und Musik machen, kochen und Alltag teilen. Du bist zufällig in diese Welt geraten und versuchst, Wege zum Bau einer Utopie zu erkunden und zu sammeln, während du dir auch den Weg zurück hierher merken möchtest...\n\nDer Körper dieses Spiels ist das Forschungsinterview-Transkript \"Non-Governmental Matters\", eine Studie, für die 14 unabhängige Technologie-Kunst-Organisator:innen und Künstler:innen zu ihren Perspektiven auf nachhaltige Community-Arbeit befragt wurden. Die Ansichten dieser Befragten wurden in NPCs verwandelt, mit denen du im Spiel in natürlicher Sprache sprechen kannst; das große Sprachmodell dahinter ist derzeit Deepseek flash, feinabgestimmt mit den Interviewtranskripten. Du kannst außerdem aus einer einzigen Frage ein Question Pet erschaffen. Dieses elektronische Haustier wächst durch die Interaktionen mit der Spielwelt und erhält am Ende eine Lösung und Antwort, die durch die kollektive Intelligenz der Community verarbeitet wurde. In der Mitte des Spiels befinden sich der Forschungstext, die neuesten Community-Nachrichten und die Community-Karte. Schau dich gern überall um!",
     createProtagonist: "Protagonist:in erstellen",

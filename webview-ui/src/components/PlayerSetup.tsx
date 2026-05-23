@@ -109,7 +109,7 @@ export function PlayerSetup({
   }
 
   return (
-    <div className="player-setup-overlay tamagotchi-bg player-setup-overlay--minimal">
+    <div className="player-setup-overlay tamagotchi-bg player-setup-overlay--minimal" data-language={language}>
       <form
         ref={formRef}
         className="player-setup-shell player-setup-shell--minimal"

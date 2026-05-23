@@ -524,13 +524,13 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
                 <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">{t(language, 'home.wanderAndTalk')}</p>
                 <button
-                  className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button pbs-game-button"
+                  className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button pbs-game-button pbs-game-button--bubble"
                   type="button"
                   aria-label={t(language, 'dialogue.openWiki')}
                   title={t(language, 'dialogue.openWiki')}
                   onClick={onOpenWiki}
                 >
-                  📚 Wiki
+                  <span className="pbs-emoji-control" aria-hidden="true">📚</span>
                 </button>
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
               </div>
@@ -538,8 +538,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">{persona.role}</p>
             </div>
           </div>
-          <button className="rpg-dialogue-x pbs-game-button" type="button" onClick={onClose}>
-            ×
+          <button className="rpg-dialogue-x pbs-frame-action" type="button" onClick={onClose}>
+            X
           </button>
         </div>
 
@@ -623,7 +623,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
           </button>
           <button
-            className="rpg-dialogue-submit pbs-game-button disabled:opacity-50"
+            className="rpg-dialogue-submit pbs-game-button pbs-game-button--bubble disabled:opacity-50"
             type="submit"
             disabled={isLoading}
           >
