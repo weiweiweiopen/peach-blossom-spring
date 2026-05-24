@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      @font-face { font-family: FSPixel; src: url('./fonts/FSPixelSansUnicode-Regular.ttf'); }
+      .pixel { font-family: FSPixel, monospace; fill: #000; }
+    </style>
+  </defs>
+  <rect width="600" height="630" fill="#6bc2aa"/>
+  <rect x="600" width="600" height="630" fill="#f9e9c2"/>
+  <rect x="34" y="38" width="1132" height="548" fill="#6bc2aa" stroke="#000" stroke-width="6"/>
+  <rect x="42" y="46" width="1132" height="548" fill="#bfd0e6" opacity="0.75"/>
+  <rect x="40" y="42" width="1120" height="174" fill="#f5c8f4"/>
+  <rect x="40" y="216" width="1120" height="86" fill="#fff85d"/>
+  <rect x="40" y="302" width="1120" height="284" fill="#6bc2aa"/>
+  <rect x="68" y="118" width="1064" height="414" fill="#fff1cb" stroke="#000" stroke-width="6"/>
+  <rect x="80" y="130" width="1040" height="390" fill="#f9e9c2" stroke="#bfd0e6" stroke-width="10"/>
+  <rect x="262" y="130" width="678" height="114" fill="#fff85d" opacity="0.86"/>
+  <text class="pixel" x="64" y="98" font-size="28">PBS-2026</text>
+  <text class="pixel" x="865" y="98" font-size="28">HACKER CAMP PORN</text>
+  <text class="pixel" x="386" y="275" font-size="30">NON-GOVERNMENTAL MATTERS</text>
+  <text class="pixel" x="484" y="352" font-size="64">桃花源</text>
+  <text class="pixel" x="316" y="405" font-size="38">Dispatching an LLM wiki tamagotchi</text>
+  <rect x="438" y="457" width="324" height="92" fill="#fff85d" stroke="#fff85d" stroke-width="12"/>
+  <rect x="444" y="463" width="312" height="80" fill="none" stroke="#000" stroke-width="6"/>
+  <text class="pixel" x="466" y="520" font-size="42">PRESS START</text>
+  <rect x="262" y="540" width="678" height="50" fill="#6bc2aa"/>
+  <g shape-rendering="crispEdges">
+    <g transform="translate(67 548) scale(3)">
+      <rect x="6" y="4" width="8" height="12" fill="#fff85d" stroke="#000" stroke-width="2"/><rect x="9" y="16" width="2" height="2" fill="#f5c8f4"/><rect x="4" y="8" width="2" height="8" fill="#000"/>
+    </g>
+    <g transform="translate(174 548) scale(3)">
+      <rect x="4" y="4" width="10" height="12" fill="#7dd7bf" stroke="#000" stroke-width="2"/><rect x="7" y="1" width="5" height="3" fill="#f5c8f4"/><rect x="9" y="16" width="2" height="2" fill="#f5c8f4"/>
+    </g>
+    <g transform="translate(328 548) scale(3)">
+      <rect x="4" y="4" width="13" height="12" fill="#f5c8f4" stroke="#000" stroke-width="2"/><rect x="7" y="1" width="8" height="3" fill="#f9e9c2"/><rect x="10" y="16" width="2" height="2" fill="#fff85d"/>
+    </g>
+    <g transform="translate(474 548) scale(3)">
+      <rect x="5" y="4" width="12" height="12" fill="#f9e9c2" stroke="#000" stroke-width="2"/><rect x="8" y="1" width="8" height="3" fill="#bfd0e6"/><rect x="10" y="16" width="2" height="2" fill="#7dd7bf"/>
+    </g>
+    <g transform="translate(620 548) scale(3)">
+      <rect x="4" y="4" width="12" height="12" fill="#bfd0e6" stroke="#000" stroke-width="2"/><rect x="15" y="9" width="2" height="4" fill="#fff85d"/><rect x="10" y="16" width="2" height="2" fill="#fff85d"/>
+    </g>
+    <g transform="translate(758 548) scale(3)">
+      <rect x="5" y="4" width="10" height="12" fill="#fff85d" stroke="#000" stroke-width="2"/><rect x="8" y="1" width="2" height="4" fill="#315b63"/><rect x="12" y="1" width="2" height="4" fill="#315b63"/>
+    </g>
+    <g transform="translate(898 548) scale(3)">
+      <rect x="4" y="4" width="12" height="12" fill="#7dd7bf" stroke="#000" stroke-width="2"/><rect x="8" y="1" width="8" height="3" fill="#f5c8f4"/><rect x="10" y="16" width="2" height="2" fill="#f5c8f4"/>
+    </g>
+  </g>
+  <text class="pixel" x="64" y="612" font-size="28">WISE HOUSE CULTURE</text>
+  <text class="pixel" x="828" y="612" font-size="28">WORLD CONSOLE MODE</text>
+</svg>
