@@ -166,6 +166,7 @@ type SplitPanel =
       url: string;
       description?: string;
       language?: LanguageCode;
+      query?: string;
       seed?: string;
       petRole?: string;
       isGenerating?: boolean;
@@ -579,8 +580,8 @@ function configuredWorkerChatApiUrl(): string {
     ?.trim() || "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 }
 
-function seedLooksIntentional(seed: string): boolean {
-  const trimmed = seed.trim();
+function queryLooksIntentional(query: string): boolean {
+  const trimmed = query.trim();
   if (trimmed.length >= 16) return true;
   return /社群|永續|可持續|藝術|科技|教育|community|sustain|art|technology|education|utopia|prototype|research/i.test(trimmed);
 }
@@ -588,15 +589,15 @@ function seedLooksIntentional(seed: string): boolean {
 async function createCloudPetPersona(profile: PlayerProfile): Promise<string | null> {
   const url = configuredWorkerChatApiUrl();
   if (!url) return null;
-  const seed = profile.question || profile.mission || "";
+  const query = profile.question || profile.mission || "";
   const role = profile.avatarTitle ?? "question pet";
-  const intentional = seedLooksIntentional(seed);
+  const intentional = queryLooksIntentional(query);
   const system = [
     "你是桃花源遊戲的電子雞人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
     "人格必須好奇、會主動向 NPC 詢問社群技術、可持續性、藝術是什麼、科技藝術是什麼、教育是什麼。",
-    "如果玩家 seed 意圖明確，強化該意圖；如果 seed 像無意義詞或隨機物件，不要過度詮釋，只保留一般好奇心。",
+    "如果玩家問題意圖明確，強化該意圖；如果問題像無意義詞或隨機物件，不要過度詮釋，只保留一般好奇心。",
   ].join("\n");
-  const user = `玩家名字：${profile.name}\n寵物類型：${role}\nseed：${seed}\nseed 是否明確：${intentional ? "是" : "否"}\n請輸出 3 句以內的電子雞 persona。`;
+  const user = `玩家名字：${profile.name}\n寵物類型：${role}\n問題：${query}\n問題是否明確：${intentional ? "是" : "否"}\n請輸出 3 句以內的電子雞 persona。`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -2052,20 +2053,23 @@ function App() {
   }, []);
 
   async function openAssociationZineSplit(request: {
-    seed: string;
+    query: string;
+    seed?: string;
     petRole?: string;
     language: LanguageCode;
     anchorId?: number;
   }): Promise<void> {
     const requestKey = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const loadingTitle = "Loading...";
-    setAssociationProgress("生成 seed");
+    const query = request.query || request.seed || "";
+    setAssociationProgress("解析 wiki query");
     setSplitPanel({
       kind: "finalDocument",
       title: loadingTitle,
       url: "",
       language: request.language,
-      seed: request.seed,
+      query,
+      seed: request.seed ?? query,
       petRole: request.petRole,
       isGenerating: true,
     });
@@ -2076,7 +2080,7 @@ function App() {
     try {
       await waitForNextPaint();
       if (wikiGenerationRequestRef.current !== requestKey) return;
-      const result = await generateBrowserAssociationZine(request.seed, request.petRole, request.language, (message) => {
+      const result = await generateBrowserAssociationZine(query, request.petRole, request.language, (message) => {
         setAssociationProgress(message);
       });
       if (wikiGenerationRequestRef.current !== requestKey) return;
@@ -2087,7 +2091,8 @@ function App() {
         title: result.title,
         url,
         language: request.language,
-        seed: request.seed,
+        query,
+        seed: request.seed ?? query,
         petRole: request.petRole,
       });
       setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
@@ -2102,7 +2107,8 @@ function App() {
         title: loadingTitle,
         url: "",
         language: request.language,
-        seed: request.seed,
+        query,
+        seed: request.seed ?? query,
         petRole: request.petRole,
         error: message,
       });
@@ -2618,9 +2624,9 @@ function App() {
                   onClose={() => setActiveDialogueId(null)}
                   onOpenWiki={() => {
                     const requestLanguage = selectedLanguage;
-                    const seed = playerProfile.question || playerProfile.mission;
+                    const query = playerProfile.question || playerProfile.mission;
                     void openAssociationZineSplit({
-                      seed,
+                      query,
                       petRole: playerProfile.avatarTitle,
                       language: requestLanguage,
                       anchorId: activeDialogueCharacter.id,
@@ -3161,9 +3167,10 @@ function App() {
         >
           {(() => {
             const splitPanelLanguage = splitPanel.kind === "finalDocument" && splitPanel.language ? splitPanel.language : selectedLanguage;
-            const retryAssociationZine = splitPanel.kind === "finalDocument" && splitPanel.seed
+            const retryAssociationZine = splitPanel.kind === "finalDocument" && (splitPanel.query || splitPanel.seed)
               ? () => void openAssociationZineSplit({
-                  seed: splitPanel.seed ?? "",
+                  query: splitPanel.query ?? splitPanel.seed ?? "",
+                  seed: splitPanel.seed,
                   petRole: splitPanel.petRole,
                   language: splitPanelLanguage,
                   anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,

@@ -75,8 +75,8 @@ export function PlayerSetup({
   function profileForMode(): PlayerProfile | null {
     const formElement = formRef.current;
     const profileName = name.trim();
-    const seedText = question.trim();
-    if (!profileName || !seedText) {
+    const queryText = question.trim();
+    if (!profileName || !queryText) {
       formElement?.reportValidity();
       return null;
     }
@@ -85,12 +85,12 @@ export function PlayerSetup({
       palette: appearance.seed % 6,
       avatarTitle: selectedRole.role,
       currentRole: t(language, "setup.keeper"),
-      mission: seedText,
-      question: seedText,
-      constraints: seedText,
+      mission: queryText,
+      question: queryText,
+      constraints: queryText,
       skills: selectedRole.skill,
       intentMode: selectedRole.intentMode,
-      personalArchive: seedText,
+      personalArchive: queryText,
       petSeed: `fixed-pet:${selectedRole.role}`,
     };
   }
