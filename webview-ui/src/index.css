@@ -3458,29 +3458,35 @@ html[data-language="th"],
   }
 }
 
-/* PBS Computer zine output uses the same floating window scale as the dialogue panel. */
+/* PBS Computer zine output keeps the original half-and-half split: dialogue left, zine right. */
 .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel.world-split-panel--zine {
-  inset: 50% max(18px, 4vw) auto auto !important;
-  transform: translateY(-50%);
-  width: min(1040px, 84vw) !important;
-  height: 72dvh !important;
-  max-width: min(1040px, calc(100vw - 36px)) !important;
-  max-height: calc(100dvh - 56px) !important;
+  top: max(18px, var(--safe-top)) !important;
+  right: 18px !important;
+  bottom: max(18px, var(--safe-bottom)) !important;
+  left: calc(50vw + 18px) !important;
+  transform: none !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
   border: 4px solid #000 !important;
   box-shadow: 8px 8px 0 var(--palette-blue) !important;
-  z-index: calc(var(--z-layer-hud) + 90) !important;
+  z-index: var(--z-layer-dialogue) !important;
+  pointer-events: auto !important;
 }
 
 .world-split-panel.world-split-panel--zine {
-  z-index: calc(var(--z-layer-hud) + 90) !important;
+  z-index: var(--z-layer-dialogue) !important;
+  pointer-events: auto !important;
 }
 
 .world-split-panel.world-split-panel--zine .world-split-content {
-  padding: 10px;
+  padding: 14px;
 }
 
 .world-split-panel.world-split-panel--zine .world-split-iframe {
   min-height: 0 !important;
+  pointer-events: auto !important;
 }
 
 .world-split-active .floating-ui-layer {
@@ -6088,7 +6094,7 @@ html[data-language="th"],
   padding-left: 1.35em;
 }
 
-/* Phase A: Association loading/error/ready split panel must sit above dialogue and pet HUD layers. */
+/* Phase A: Association loading/error/ready split panel must sit above pet HUD layers. */
 .world-split-panel {
   z-index: calc(var(--z-layer-dialogue-front) + 20) !important;
 }
@@ -6106,37 +6112,37 @@ html[data-language="th"],
 
 @media (min-width: 901px) {
   .world-split-panel--zine {
-    top: 50% !important;
-    right: max(18px, 4vw) !important;
-    bottom: auto !important;
-    left: auto !important;
-    transform: translateY(-50%);
-    width: min(1040px, 84vw) !important;
-    max-width: min(1040px, calc(100vw - 36px)) !important;
-    height: 72dvh !important;
-    max-height: calc(100dvh - 56px) !important;
+    top: max(18px, var(--safe-top)) !important;
+    right: 18px !important;
+    bottom: max(18px, var(--safe-bottom)) !important;
+    left: calc(50vw + 18px) !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
     background: var(--palette-cream) !important;
     border: 4px solid #000 !important;
     box-shadow: 8px 8px 0 var(--palette-blue) !important;
     outline: 0;
-    z-index: calc(var(--z-layer-hud) + 90) !important;
+    z-index: var(--z-layer-dialogue) !important;
   }
 
   .world-split-panel--zine.is-expanded {
-    top: 50% !important;
-    right: max(18px, 4vw) !important;
-    bottom: auto !important;
-    left: auto !important;
-    transform: translateY(-50%);
-    width: min(1040px, 84vw) !important;
-    max-width: min(1040px, calc(100vw - 36px)) !important;
-    height: 72dvh !important;
-    max-height: calc(100dvh - 56px) !important;
+    top: max(18px, var(--safe-top)) !important;
+    right: 18px !important;
+    bottom: max(18px, var(--safe-bottom)) !important;
+    left: calc(50vw + 18px) !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
     background: var(--palette-cream) !important;
     border: 4px solid #000 !important;
     box-shadow: 8px 8px 0 var(--palette-blue) !important;
     outline: 0;
-    z-index: calc(var(--z-layer-hud) + 90) !important;
+    z-index: var(--z-layer-dialogue) !important;
   }
 }
 

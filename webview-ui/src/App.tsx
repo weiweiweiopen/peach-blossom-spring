@@ -583,7 +583,7 @@ function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extrac
           className="world-split-iframe"
           loading="eager"
           referrerPolicy="no-referrer-when-downgrade"
-          sandbox={isFinalDocument ? "allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox" : undefined}
+          sandbox={isFinalDocument ? "allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox" : undefined}
         />
       ) : isFinalDocument ? (
         <AssociationLoadingPage language={language} />
@@ -3330,13 +3330,15 @@ function App() {
               <h2>{splitPanelTitle(splitPanel, splitPanelLanguage)}</h2>
             </div>
             <div className="world-split-actions">
-              <button
-                className="world-split-expand pbs-frame-action"
-                type="button"
-                onClick={() => setIsSplitExpanded((expanded) => !expanded)}
-              >
-                {isSplitExpanded ? "↙" : "⤢"}
-              </button>
+              {splitPanel.kind !== "finalDocument" && (
+                <button
+                  className="world-split-expand pbs-frame-action"
+                  type="button"
+                  onClick={() => setIsSplitExpanded((expanded) => !expanded)}
+                >
+                  {isSplitExpanded ? "↙" : "⤢"}
+                </button>
+              )}
               <button className="world-split-close pbs-frame-action" type="button" onClick={closeSplitPanel}>
                 X
               </button>

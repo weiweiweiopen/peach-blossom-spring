@@ -31,6 +31,19 @@ export function renderAssociationFeedbackSection(language: AssociationFeedbackLa
   const key = "pbs:zine-page-feedback";
   const language = ${JSON.stringify(language)};
   const template = ${JSON.stringify(templateFilename)};
+  const pressButton = (button, pressed) => {
+    button.style.transform = pressed ? "translate(3px, 3px)" : "";
+    button.style.boxShadow = pressed ? "1px 1px 0 #000" : "4px 4px 0 #000";
+  };
+  document.querySelectorAll(".pbs-zine-button").forEach((button) => {
+    button.addEventListener("pointerdown", () => pressButton(button, true));
+    button.addEventListener("pointerup", () => pressButton(button, false));
+    button.addEventListener("pointerleave", () => pressButton(button, false));
+    button.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "Enter") pressButton(button, true);
+    });
+    button.addEventListener("keyup", () => pressButton(button, false));
+  });
   document.querySelectorAll("[data-pbs-zine-feedback]").forEach((button) => {
     button.addEventListener("click", () => {
       const entry = {
@@ -41,11 +54,16 @@ export function renderAssociationFeedbackSection(language: AssociationFeedbackLa
         template,
         timestamp: Date.now()
       };
-      let history = [];
-      try { history = JSON.parse(localStorage.getItem(key) || "[]"); } catch {}
-      history.push(entry);
-      localStorage.setItem(key, JSON.stringify(history.slice(-100)));
+      try {
+        let history = [];
+        try { history = JSON.parse(localStorage.getItem(key) || "[]"); } catch {}
+        history.push(entry);
+        localStorage.setItem(key, JSON.stringify(history.slice(-100)));
+      } catch (error) {
+        console.warn("PBS zine feedback storage unavailable", error);
+      }
       button.setAttribute("aria-pressed", "true");
+      pressButton(button, true);
     });
   });
   const bytes = (text) => new TextEncoder().encode(text);
@@ -148,7 +166,15 @@ export function renderAssociationFeedbackSection(language: AssociationFeedbackLa
   };
   document.querySelectorAll("[data-pbs-zine-pdf]").forEach((button) => {
     button.addEventListener("click", async () => {
+      button.setAttribute("aria-busy", "true");
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      if (isSafari) {
+        button.removeAttribute("aria-busy");
+        window.print();
+        return;
+      }
       try { await downloadPdf(); } catch (error) { console.warn("PBS PDF download failed, falling back to print", error); window.print(); }
+      finally { button.removeAttribute("aria-busy"); }
     });
   });
 })();

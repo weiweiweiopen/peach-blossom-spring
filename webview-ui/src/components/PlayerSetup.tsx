@@ -21,7 +21,7 @@ interface PlayerProfile {
 
 type StartMode = "interactive" | "dispatch_observer";
 type PlayerIntentMode = "nomadic_research" | "manufacturing_technical_file" | "travel_plan" | "poem" | "find_people" | "survive" | "how_to_do" | "why" | "philosophical_debate";
-type CorePetRole = "philosopher" | "engineer" | "artist" | "scientist" | "cook" | "drinker" | "traveler" | "tailor";
+type CorePetRole = "architect" | "artist" | "bubble maker" | "cook" | "dancer" | "drinker" | "engineer" | "fire maker" | "herbalist" | "musician" | "professor" | "scientist" | "shaman" | "socialist" | "tailor" | "workshopologist";
 
 interface ArchiveSummary {
   total: number;
@@ -41,18 +41,30 @@ interface PlayerSetupProps {
 }
 
 const corePetRoles: Array<{ role: CorePetRole; labels: Record<LanguageCode, string>; intentMode: PlayerIntentMode; skill: string }> = [
-  { role: "philosopher", labels: { "zh-TW": "哲學家", en: "Philosopher", de: "Philosoph:in", id: "Filsuf", ja: "哲学者", th: "นักปรัชญา" }, intentMode: "philosophical_debate", skill: "theory translation, hybrid theory, practical philosophy" },
-  { role: "engineer", labels: { "zh-TW": "工程師", en: "Engineer", de: "Ingenieur:in", id: "Insinyur", ja: "エンジニア", th: "วิศวกร" }, intentMode: "manufacturing_technical_file", skill: "prototype tutorial, BOM, materials, fabrication steps" },
+  { role: "architect", labels: { "zh-TW": "建築師", en: "Architect", de: "Architekt:in", id: "Arsitek", ja: "建築家", th: "สถาปนิก" }, intentMode: "why", skill: "spatial thinking, shelter, public rooms, village diagrams" },
   { role: "artist", labels: { "zh-TW": "藝術家", en: "Artist", de: "Künstler:in", id: "Seniman", ja: "アーティスト", th: "ศิลปิน" }, intentMode: "poem", skill: "art plan, media dramaturgy, S+T+A+R+T+S style technology art" },
-  { role: "scientist", labels: { "zh-TW": "科學家", en: "Scientist", de: "Wissenschaftler:in", id: "Ilmuwan", ja: "科学者", th: "นักวิทยาศาสตร์" }, intentMode: "why", skill: "fictional paper, material research, matter study, biology paper structure" },
+  { role: "bubble maker", labels: { "zh-TW": "泡泡師", en: "Bubble maker", de: "Blasenmacher:in", id: "Pembuat gelembung", ja: "泡つくり", th: "คนทำฟอง" }, intentMode: "poem", skill: "play, fragile atmospheres, small publics, light experiments" },
   { role: "cook", labels: { "zh-TW": "廚師", en: "Chef", de: "Koch/Köchin", id: "Koki", ja: "料理人", th: "เชฟ" }, intentMode: "how_to_do", skill: "kitchen plan, recipe logic, hosting, collective meals" },
+  { role: "dancer", labels: { "zh-TW": "舞者", en: "Dancer", de: "Tänzer:in", id: "Penari", ja: "踊り手", th: "นักเต้น" }, intentMode: "poem", skill: "movement scores, embodied research, rhythm, rehearsal" },
   { role: "drinker", labels: { "zh-TW": "酒鬼", en: "Drinker", de: "Trinker:in", id: "Pemabuk", ja: "飲み助", th: "นักดื่ม" }, intentMode: "why", skill: "bar talk, fermentation, late-night honesty, gentle humor" },
-  { role: "traveler", labels: { "zh-TW": "旅行家", en: "Traveler", de: "Reisende:r", id: "Pengelana", ja: "旅人", th: "นักเดินทาง" }, intentMode: "travel_plan", skill: "routes, field visits, maps, encounters, travel notes" },
+  { role: "engineer", labels: { "zh-TW": "工程師", en: "Engineer", de: "Ingenieur:in", id: "Insinyur", ja: "エンジニア", th: "วิศวกร" }, intentMode: "manufacturing_technical_file", skill: "prototype tutorial, BOM, materials, fabrication steps" },
+  { role: "fire maker", labels: { "zh-TW": "生火師", en: "Fire maker", de: "Feuermacher:in", id: "Pembuat api", ja: "火起こし", th: "คนก่อไฟ" }, intentMode: "survive", skill: "camp maintenance, warmth, risk, practical survival" },
+  { role: "herbalist", labels: { "zh-TW": "草藥師", en: "Herbalist", de: "Kräuterkundige:r", id: "Peramu herbal", ja: "薬草師", th: "หมอยา" }, intentMode: "how_to_do", skill: "plants, care, remedies, field observation" },
+  { role: "musician", labels: { "zh-TW": "音樂家", en: "Musician", de: "Musiker:in", id: "Musisi", ja: "音楽家", th: "นักดนตรี" }, intentMode: "poem", skill: "listening, rhythm, performance, collective sound" },
+  { role: "professor", labels: { "zh-TW": "教授", en: "Professor", de: "Professor:in", id: "Profesor", ja: "教授", th: "ศาสตราจารย์" }, intentMode: "philosophical_debate", skill: "theory translation, hybrid theory, practical philosophy" },
+  { role: "scientist", labels: { "zh-TW": "科學家", en: "Scientist", de: "Wissenschaftler:in", id: "Ilmuwan", ja: "科学者", th: "นักวิทยาศาสตร์" }, intentMode: "why", skill: "fictional paper, material research, matter study, biology paper structure" },
+  { role: "shaman", labels: { "zh-TW": "薩滿", en: "Shaman", de: "Schamane:in", id: "Dukun", ja: "シャーマン", th: "หมอผี" }, intentMode: "philosophical_debate", skill: "ritual, intuition, spirits, nonhuman negotiation" },
+  { role: "socialist", labels: { "zh-TW": "社會主義者", en: "Socialist", de: "Sozialist:in", id: "Sosialis", ja: "社会主義者", th: "นักสังคมนิยม" }, intentMode: "why", skill: "commons, mutual aid, labor, collective infrastructure" },
   { role: "tailor", labels: { "zh-TW": "裁縫阿姨", en: "Tailor auntie", de: "Schneider-Tante", id: "Bibi penjahit", ja: "仕立て屋のおばさん", th: "ป้าช่างตัดเสื้อ" }, intentMode: "manufacturing_technical_file", skill: "repair, sewing, pattern thinking, textile care" },
+  { role: "workshopologist", labels: { "zh-TW": "工作坊學家", en: "Workshopologist", de: "Workshopolog:in", id: "Workshopolog", ja: "ワークショップ学者", th: "นักเวิร์กช็อป" }, intentMode: "how_to_do", skill: "facilitation, workshop formats, collective learning, protocols" },
 ];
 
 function normalizeCorePetRole(seed: string | undefined): CorePetRole {
   const value = seed?.startsWith("fixed-pet:") ? seed.slice("fixed-pet:".length) : seed;
+  if (value === "philosopher") return "professor";
+  if (value === "traveler") return "dancer";
+  if (value === "bubble-maker") return "bubble maker";
+  if (value === "fire-maker") return "fire maker";
   return corePetRoles.some((item) => item.role === value) ? value as CorePetRole : "artist";
 }
 
