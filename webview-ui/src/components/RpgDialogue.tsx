@@ -609,9 +609,14 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
 
         <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4">
           <input
+            type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
+            spellCheck={false}
             placeholder={t(language, 'dialogue.inputPlaceholder', { name: persona.name })}
           />
           <button

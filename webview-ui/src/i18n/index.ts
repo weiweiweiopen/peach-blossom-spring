@@ -190,13 +190,35 @@ export function normalizeLocale(value: string | null | undefined): LanguageCode 
   return value && isLanguageCode(value) ? value : DEFAULT_LOCALE;
 }
 
+function languageFromBrowser(value: string | null | undefined): LanguageCode | null {
+  if (!value) return null;
+  const normalized = value.replace("_", "-");
+  if (isLanguageCode(normalized)) return normalized;
+  const base = normalized.split("-")[0];
+  if (base === "zh") return "zh-TW";
+  return isLanguageCode(base) ? base : null;
+}
+
+function detectMobileBrowserLanguage(): LanguageCode {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return DEFAULT_LOCALE;
+  const isMobile = window.matchMedia?.("(max-width: 680px), (pointer: coarse)").matches ?? false;
+  if (!isMobile) return DEFAULT_LOCALE;
+  const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
+  for (const browserLanguage of browserLanguages) {
+    const detected = languageFromBrowser(browserLanguage);
+    if (detected) return detected;
+  }
+  return DEFAULT_LOCALE;
+}
+
 export function getLanguageMeta(locale: LanguageCode) {
   return supportedLanguages.find((entry) => entry.code === locale) ?? supportedLanguages[0];
 }
 
 export function readStoredLanguage(): LanguageCode {
   if (typeof localStorage === "undefined") return DEFAULT_LOCALE;
-  return normalizeLocale(localStorage.getItem(LANGUAGE_STORAGE_KEY));
+  const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  return stored ? normalizeLocale(stored) : detectMobileBrowserLanguage();
 }
 
 export function writeStoredLanguage(language: LanguageCode): void {

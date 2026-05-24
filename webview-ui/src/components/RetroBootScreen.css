@@ -205,6 +205,10 @@
 }
 
 @media (max-width: 680px) {
+  .retro-home-menu-layer {
+    display: none !important;
+  }
+
   .retro-boot-stage {
     width: 100%;
     min-height: calc(100dvh - 28px);

@@ -2505,7 +2505,6 @@ function App() {
                     return;
                   }
                   officeState.selectedAgentId = tag.id;
-                  setActiveDialogueId(tag.id);
                 }
               }
             >

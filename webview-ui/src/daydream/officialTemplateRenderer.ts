@@ -34,16 +34,16 @@ function kineticTitle(title: string): string {
 
 function zineLayoutGovernanceCss(): string {
   return `
-.page { min-height:auto; padding:clamp(22px,4vw,56px); }
-.sheet { max-width:1040px; margin:0 auto; }
+.page { width:100%; max-width:100%; min-height:auto; padding:clamp(22px,4vw,56px); overflow-x:hidden; }
+.sheet { width:100%; max-width:1040px; margin:0 auto; }
 .bodyGrid, .bodyGrid--full { display:block; }
-.body, .refs { max-width:78ch; margin:0 auto; padding:clamp(14px,2vw,24px); border:3px solid #111; background:rgba(255,255,255,.74); box-shadow:4px 4px 0 rgba(0,0,0,.22); }
-.body p { max-width:72ch; }
+.titleBlock { max-width:980px; margin:0 auto clamp(16px,3vw,28px); padding:0; border:0; background:transparent; box-shadow:none; }
+.body, .refs { width:100%; max-width:88ch; margin:0 auto; padding:clamp(14px,2vw,24px); border:3px solid #111; background:rgba(255,255,255,.82); box-shadow:none; overflow-wrap:anywhere; }
+.body p { max-width:none; }
 .refs { margin-top:18px; }
-.titleBlock { max-width:980px; margin:0 auto clamp(16px,3vw,28px); }
-.pbs-readable-trace, .zine-feedback-page { min-height:auto !important; }
-.pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { max-width:980px; margin:0 auto; padding:clamp(16px,3vw,28px); border:4px solid #111; background:#fffaf0; box-shadow:6px 6px 0 #69c3aa; }
-@media (max-width:700px) { .page { padding:18px; } .body, .refs { max-width:none; padding:14px; } .body p { max-width:none; } }
+.pbs-readable-trace, .zine-feedback-page { width:100%; max-width:100%; min-height:auto !important; }
+.pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { width:100%; max-width:980px; margin:0 auto; padding:clamp(16px,3vw,28px); border:4px solid #111; background:#fffaf0; box-shadow:none; overflow-wrap:anywhere; }
+@media (max-width:700px) { .page { padding:18px; } .sheet, .body, .refs, .pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { max-width:none; } .body, .refs { padding:14px; } .body p { max-width:none; } }
 `;
 }
 
