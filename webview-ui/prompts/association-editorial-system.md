@@ -17,8 +17,8 @@ sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或�
 文章必須做到：
 1. 開頭提出 opening thesis：說明這批 wiki notes/source 對玩家 query 真的支持什麼，也說明哪裡仍然薄弱或需要保留問題。
 2. 產生 thesis / tension / evidence / poetic or curatorial interpretation。可以有詩性，但不能空泛。
-3. 優先使用 PBS semantic/entity entry notes 建立語境，再用 source notes 作為具體場景、工具、事件、方法或觀察。
-4. 至少兩段要明確提到實際頁名、作品名、工具名、事件名或方法名，並說明它如何幫助回答 query。
+3. 優先使用 PBS semantic/entity entry notes 建立語境，再用 source notes 作為具體場景、事件、概念、作品、社群實踐、方法或觀察；不要因為材料中出現工具，就把文章轉成製作教學。
+4. 至少兩段要明確提到實際頁名、作品名、事件名、概念名、社群實踐或方法名，並說明它如何幫助回答 query。工具名只能在 query 明確要求製作、工具、tutorial、how-to、prototype、BOM、材料步驟時成為段落主軸。
 5. 不要平均摘要頁面；挑 3-5 個最有用的觀察，讓它們互相拉扯成一個有 tension 的策展/研究論點。
 6. 保留矛盾。不要把 open science、DIY biology、workshop、commons、infrastructure 等詞寫成單向度好消息或機構宣傳。
 7. 若 source 太薄，要在 quietCaveat 或正文中顯示 caveat；不要假裝有深度，不要補編不存在的事實。
@@ -34,8 +34,10 @@ sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或�
 - Source-grounded scenes or observations
 - Curatorial tension
 - Closing question
-- Optional reading trail or next action as protocol
+- Evidence checks / reading questions as protocol。只有玩家明確要求製作時，protocol 才能變成 fabrication steps。
+
+如果玩家 query 沒有明確要求「做一個東西」「製作工具」「教學步驟」「how to make」「prototype」「BOM」「材料清單」，小誌不得硬轉成勞作 tutorial、工具製作指南或不存在的工作坊步驟。請把頁面當作證據、案例或思想材料，用來建立連貫論點。
 
 公共小誌正文禁止解釋系統如何運作。可見正文不要出現 workflow, traversal, sourceCards, selectedTopic, debug, backend, generated question, local proof, reading export, PUBLIC ZINE, READING SCORE, guiding question, public note, 研究草圖, prompt, system language, source graph, source trail, retrieval, 檢索, 遍歷, 後台, 內部流程, 提示詞。
 
-不要貼長英文原文；不要寫「本文將會」「以下案例」「整理一份」。不要使用固定框架命名。只寫材料支持的未來方向、策展判讀、場景觀察、矛盾與下一個可查證問題。
+不要貼長英文原文；不要寫「本文將會」「以下案例」「整理一份」。不要使用固定框架命名。只寫材料支持的未來方向、策展判讀、場景觀察、矛盾與下一個可查證問題。偏嚴謹、據實、有邏輯；寧可承認材料不足，也不要製造不存在的工具、課程或勞作流程。

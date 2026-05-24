@@ -24,7 +24,7 @@ import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 60000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 150000;
-const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 
 export interface BrowserAssociationResult {
@@ -109,9 +109,9 @@ function chooseModes(query: string, variationIndex: number | string): string[] {
 function sourceFamily(card: Partial<SourceCard>): AllowedSourceFamily | "Hackteria" | "Other" {
   const source = String(card.source ?? "").toLowerCase();
   const text = `${card.title ?? ""} ${card.path ?? ""} ${card.url ?? ""}`.toLowerCase();
+  if (source === "sgmk" || text.includes("sgmk")) return "SGMK";
   if (source.includes("pbs llm wiki") || text.includes("pbs semantic layers") || text.includes("pbs entity layers") || text.includes("wiki/index")) return "Other";
   if (source === "hackteria" || text.includes("hackteria")) return "Hackteria";
-  if (source === "sgmk" || text.includes("sgmk")) return "SGMK";
   if (text.includes("fabricademy")) return "Fabricademy";
   if (source === "htgwyw" || text.includes("kobakant") || text.includes("how to get what you want")) return "HOW TO GET WHAT YOU WANT / KOBAKANT";
   return "Other";
@@ -230,6 +230,10 @@ function professionSearchHints(petRole: string | undefined): string {
   return "art, method, workshop, commons, tool, repair";
 }
 
+function wantsMakingTutorial(query: string): boolean {
+  return /\b(how\s+to\s+make|how\s+to\s+build|make|build|fabricate|prototype|tutorial|toolkit|bom|materials?\s+list|step-by-step)\b|做一個|製作|如何做|怎麼做|打造|原型|教學|工具包|材料清單|步驟/i.test(query);
+}
+
 function buildEditorialMessages(query: string, workflow: Workflow, variationIndex: number | string, petRole: string | undefined, language: AssociationZineLanguage) {
   const candidateCards = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card));
   const cards = candidateCards.slice(0, 7).map(sourceObservation);
@@ -250,14 +254,14 @@ function buildEditorialMessages(query: string, workflow: Workflow, variationInde
   }));
   const semantic = workflow.step2.semanticContext;
   const roleInstruction = petRole === "philosopher"
-    ? "偏向：提出理論或哲學推測，並把材料轉成可討論的未來方向。"
+      ? "偏向：提出理論或哲學推測，並把材料轉成可討論、可查證的未來問題。"
     : petRole === "engineer"
-      ? "偏向：提出可測試的方法、工具或系統方向，但只使用材料包出現的詞彙。"
+      ? "偏向：提出可查證的系統、材料或方法判讀；只有 query 明確要求製作時才寫工具或實作步驟。"
       : petRole === "scientist"
         ? "偏向：提出研究方法、觀察設計或未來研究問題，但不引入材料包沒有的領域詞。"
         : petRole === "organizer"
           ? "偏向：整理人物、地點、時間表、照護條款與可執行的本地社群協作小誌。"
-          : "偏向：提出一個由材料支持的未來作品、方法、工作坊或概念工具。";
+          : "偏向：提出由材料支持的策展判讀、研究問題或未來方向；不要預設成工具、工作坊或製作指南。";
   const user = JSON.stringify({
     query,
     legacySeed: query,
@@ -267,6 +271,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, variationInde
     petRole,
     playerProfession: petRole ?? "artist",
     roleInstruction,
+    wantsMakingTutorial: wantsMakingTutorial(query),
     selectedModes,
     professionSearchHints: professionSearchHints(petRole),
     searchTerms: workflow.step1.report.keywords.slice(0, 12),
@@ -275,7 +280,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, variationInde
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
       "先做積極簡潔的材料判讀：支持什麼、挑戰什麼、需要修正什麼。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
-      "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀路線；不要硬寫成宏大宣言。",
+      "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀判讀；不要硬寫成宏大宣言。",
+      "除非 wantsMakingTutorial=true，不要把文章寫成工具製作、教學步驟、BOM 或工作坊流程。",
     ],
     sourceObservations: cards,
     deepReadObservations: deepRead,
@@ -398,8 +404,8 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
     sectionJob: [
       "先判斷玩家問題與材料真正相合、相衝突的地方",
       "整理可點開的頁面/作品/方法清單，說明各自用途",
-      "把材料轉成一個可測試的小方法或現場練習",
-      "收束成下一步閱讀、比較或實作路線，保留不確定性",
+      "把材料轉成一個可檢驗的論點、比較或反例",
+      "收束成下一步閱讀、比較或查證問題，保留不確定性",
     ][index],
   };
 }
@@ -530,7 +536,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, va
     onProgress?.(["第一次搜尋頁面完成，開始料理第一章", "第二次搜尋頁面完成，開始翻炒第二章", "發現附件與材料線索，開始深讀第三章", "開始思考，收束第四章"][index]);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、物件或方法；若材料不足就寫成清楚的閱讀/測試建議，不要幻想新事實。不要寫系統/流程語，不要寫任何人名。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 180-260 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。不要寫系統/流程語，不要寫任何人名。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -538,6 +544,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, va
         proposition,
         sectionIndex: index + 1,
         sectionFocus: sectionMaterialFocus(parsedUser, index),
+        wantsMakingTutorial: parsedUser.wantsMakingTutorial,
         previousSections,
         avoidRepeating: previousSections.map((previousSection) => previousSection.title),
         sourceObservations: parsedUser.sourceObservations,
@@ -566,10 +573,10 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, va
   }
   const protocol = [];
   for (let index = 0; index < 4; index += 1) {
-    onProgress?.(["開始生成你的小誌行動譜", "校準下一步", "加入可測試方法", "裝訂最後一頁"][index]);
+    onProgress?.(["開始生成你的小誌閱讀譜", "校準下一步", "加入查證問題", "裝訂最後一頁"][index]);
     const item = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 個行動步驟 JSON，不要陣列：{"title":"","body":""}。body 60-90 字。步驟要指向可做的閱讀、比較、測試或點開頁面後能確認的事；不要寫系統/流程語，不要寫任何人名。`,
-      JSON.stringify({ query, title, proposition, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 60-90 字。預設寫成證據檢查、閱讀問題、比較問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。`,
+      JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
       800,
     ) as any;
     protocol.push({ title: String(item.title ?? `步驟 ${index + 1}`), body: String(item.body ?? "") });
@@ -789,7 +796,12 @@ function interpretQueryIntent(query: string): string {
 
 function createBrowserWorkflow(query: string, petRole?: string): Workflow {
   const corpus = allowedUiCorpus();
-  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: semantic layers, entity layers, concepts, tools, events, public wiki index. Local search hints: ${professionSearchHints(petRole)}, soft circuit, textile sensor, fabric speaker, wearable sound, DIY repair, workshop, open hardware, commons, community tool, SGMK, Fabricademy, KOBAKANT.`;
+  const roleHints = professionSearchHints(petRole);
+  const textileHints = /textile|fabric|wearable|sewing|tailor|織品|紡織|布|穿戴|裁縫/i.test(`${query} ${roleHints}`)
+    ? ", textile, fabric, wearable, soft circuit"
+    : "";
+  const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(`${query} ${roleHints}`) ? ", sensor" : "";
+  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: semantic layers, entity layers, concepts, tools, events, public wiki index. Balanced local search hints: SGMK, maker culture, open science commons, camps and festivals, community tools, sound devices, repair, DIY documentation, workshop, Fabricademy, KOBAKANT${textileHints}${sensorHints}. Treat profession hints as optional context only: ${roleHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;

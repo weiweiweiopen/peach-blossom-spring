@@ -1,9 +1,4 @@
-import { daydreamCorpus } from "../daydream/corpus.js";
-import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
-import { renderOfficialTemplateArtifactHtml } from "../daydream/officialTemplateRenderer.js";
-import { officialPbsResetTemplate } from "../daydream/templates/officialPbsResetTemplate.js";
 import { generateQuestionPet } from "../pets/generateQuestionPet.js";
-import { buildNomadicResearchReport } from "./nomadicResearch.js";
 import {
   defaultScores,
   deriveNpcState,
@@ -23,8 +18,6 @@ import type {
   A2ANutrientSource,
   A2AState,
   DispatchedQuestion,
-  FinalDocument,
-  FinalDocumentMode,
   PetKnowledgeJson,
   PetPersonaJson,
   ProblemMaturationProfile,
@@ -56,8 +49,6 @@ export interface ThrongletCreationContext {
   skills?: string;
   personalArchive?: string;
 }
-
-const ENABLE_AUTOMATIC_FINAL_DOCUMENTS = typeof (globalThis as { document?: unknown }).document === "undefined";
 
 function splitTags(text: string): string[] {
   const withoutUrls = text.replace(/https?:\/\/\S+/gi, ' ');
@@ -286,33 +277,6 @@ const referencePool = [
   { label: "Non-Governmental Matters", url: "https://www.nonmatter.tw", anchorText: "NGM" },
 ];
 
-function normalizeDocumentMode(mode: string | undefined): FinalDocumentMode {
-  if (mode === "nomadic_research" || mode?.includes("nomadic") || mode?.includes("field") || mode?.includes("fablab") || mode?.includes("hackerspace")) return "nomadic_research";
-  if (mode === "manufacturing_technical_file" || mode?.includes("manufacturing") || mode?.includes("equipment") || mode?.includes("camp") || mode?.includes("material")) return "nomadic_research";
-  if (mode === "travel_plan" || mode?.includes("travel") || mode?.includes("route") || mode?.includes("map") || mode?.includes("social")) return "travel_plan";
-  return "poem";
-}
-
-function finalDocumentModeLabel(mode: FinalDocumentMode): string {
-  if (mode === "nomadic_research") return "Nomadic Research";
-  if (mode === "travel_plan") return "Travel Plan";
-  if (mode === "manufacturing_technical_file") return "Manufacturing Technical File";
-  if (mode === "philosophical_debate") return "Philosophical Debate";
-  if (mode === "story") return "Story";
-  return "Final Document";
-}
-
-function chooseFinalDocumentMode(pet: Thronglet, exchanges: A2AExchange[]): FinalDocumentMode {
-  const preferred = pet.knowledgeJson?.preferredDocumentModes.map(normalizeDocumentMode) ?? [];
-  const tendencies = exchanges
-    .filter((exchange) => exchange.petId === pet.id)
-    .flatMap((exchange) => exchange.turns.map((turn) => normalizeDocumentMode(turn.evaluation.documentModeTendency)));
-  const counts = new Map<FinalDocumentMode, number>();
-  for (const mode of [...preferred, ...tendencies]) counts.set(mode, (counts.get(mode) ?? 0) + 1);
-  const fallback = preferred[0] ?? "poem";
-  return Array.from(counts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? fallback;
-}
-
 function clampStat(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
@@ -356,23 +320,6 @@ function domainOf(url: string): string {
   }
 }
 
-function anchorToken(text: string): string {
-  return text
-    .replace(/https?:\/\/\S+/gi, '')
-    .replace(/[^\p{L}\p{N}\s_-]+/gu, ' ')
-    .split(/\s+/)
-    .map((word) => word.trim())
-    .filter((word) => word.length >= 2 && !/^(source|wiki|com|www|https?|the|and|for|with)$/i.test(word))
-    .sort((a, b) => b.length - a.length)[0]
-    ?.slice(0, 18) || 'source';
-}
-
-function referenceAnchor(ref: { label: string; url: string; anchorText?: string }, index: number, signals: string[]): string {
-  const signal = signals[index % Math.max(1, signals.length)];
-  if (signal && !/^(夢境|修補|工具)$/i.test(signal)) return compactAnchor(signal);
-  return compactAnchor(ref.anchorText ?? anchorToken(ref.label) ?? domainOf(ref.url) ?? `source-${index + 1}`);
-}
-
 function compactAnchor(text: string): string {
   return text.replace(/\s+/g, ' ').trim().slice(0, 18) || 'source';
 }
@@ -406,45 +353,6 @@ function chooseExchangeTarget(
     })
     .sort((a, b) => b.score - a.score);
   return ranked[0]?.entity ?? candidates[hashText(`${pet.id}:${tick}`) % Math.max(1, candidates.length)] ?? snapshot.entities[0];
-}
-
-function selectDiversePetExchanges(exchanges: A2AExchange[], petId: string): A2AExchange[] {
-  const petExchanges = exchanges.filter((exchange) => exchange.petId === petId);
-  const selected: A2AExchange[] = [];
-  const seenTargets = new Set<string>();
-  for (const exchange of petExchanges) {
-    if (seenTargets.has(exchange.targetId)) continue;
-    selected.push(exchange);
-    seenTargets.add(exchange.targetId);
-    if (selected.length >= 3) break;
-  }
-  for (const exchange of petExchanges) {
-    if (selected.length >= 3) break;
-    if (!selected.some((item) => item.id === exchange.id)) selected.push(exchange);
-  }
-  return selected;
-}
-
-function uniqueNutrientsByDomain(sources: A2ANutrientSource[]): A2ANutrientSource[] {
-  const selected: A2ANutrientSource[] = [];
-  const seenUrls = new Set<string>();
-  const seenDomains = new Set<string>();
-  for (const source of sources) {
-    const domain = domainOf(source.url) || source.url;
-    if (seenUrls.has(source.url) || seenDomains.has(domain)) continue;
-    selected.push(source);
-    seenUrls.add(source.url);
-    seenDomains.add(domain);
-    if (selected.length >= 4) break;
-  }
-  for (const source of sources) {
-    if (selected.length >= 4) break;
-    if (!seenUrls.has(source.url)) {
-      selected.push(source);
-      seenUrls.add(source.url);
-    }
-  }
-  return selected;
 }
 
 function imageUrlForWikiSource(link: NpcKnowledgeLink): string | undefined {
@@ -600,150 +508,6 @@ function applyExchangeToPet(pet: Thronglet, exchange: A2AExchange, tick: number)
   return growPetFilesFromExchange(nextPet, exchange, tick);
 }
 
-function shouldCreateFinalDocument(pet: Thronglet, scores: SimScores, existing: FinalDocument[]): boolean {
-  if (existing.some((document) => document.petId === pet.id)) return false;
-  const a2a = pet.a2aState;
-  if (!a2a) return false;
-  const enoughA2A = a2a.exchangeCount >= a2a.requiredExchanges || (a2a.exchangeCount >= 2 && a2a.turnCount >= a2a.requiredTurns);
-  const metSignals = [pet.state.resonanceWithPrompt >= 42, scores.wisdom >= 5, scores.community >= 0.12].filter(Boolean).length;
-  return enoughA2A && metSignals >= 2;
-}
-
-function createFinalDocument(pet: Thronglet, exchanges: A2AExchange[], tick: number): FinalDocument {
-  const petExchanges = selectDiversePetExchanges(exchanges, pet.id);
-  const nutrients = uniqueNutrientsByDomain(petExchanges.flatMap((exchange) => exchange.nutrientSources ?? []));
-  const refs: Array<{ label: string; url: string; anchorText?: string }> = Array.from(
-    new Map(
-      [
-        ...nutrients.map((source) => ({ label: source.title, url: source.url })),
-        ...petExchanges
-          .flatMap((exchange) => exchange.turns.flatMap((turn) => turn.evaluation.usefulReferences))
-          .map((url) => referencePool.find((ref) => ref.url === url) ?? { label: url, url }),
-      ].map((ref) => [ref.url, ref]),
-    ).values(),
-  ).slice(0, 6);
-  const mode = chooseFinalDocumentMode(pet, petExchanges);
-  const anchorSignals = unique([
-    ...splitTags(pet.question.text),
-    ...refs.map((ref) => anchorToken(ref.label)),
-  ]).filter((item) => !/^(夢境|修補|工具)$/i.test(item));
-  const references = (refs.length > 0 ? refs : referencePool.slice(0, 3)).map((ref, index) => ({
-    ...ref,
-    anchorText: referenceAnchor(ref, index, anchorSignals),
-  }));
-  if (mode === "nomadic_research") {
-    const nomadic = buildNomadicResearchReport({
-      question: pet.question.text,
-      sourceAnchors: petExchanges.map((exchange) => exchange.summary).join("\n"),
-      nutrients,
-      references,
-      targets: splitTags(pet.question.text),
-    });
-    const nomadicArtifact = {
-      schemaVersion: "association-public-document-v1" as const,
-      title: "現場路線小誌",
-      subtitle: "把問題變成可拜訪、可詢問、可回來改寫的桃花源路線。",
-      opening: `這份小誌從「${pet.question.text.slice(0, 80)}」出發，先保留問題的方向，再把它整理成可以走出去確認的現場筆記。`,
-      proposition: "不要把答案一次寫死；先找到人、地點、材料與下一個可被驗證的動作。",
-      sections: [
-        { id: "route", title: "先找仍然活著的現場", body: "從近期活動、開放時段、公開聯絡方式與社群痕跡開始，確認哪些地方還能被拜訪，哪些只能暫時作為背景閱讀。", pullQuote: "路線先求可抵達，再求完整。" },
-        { id: "questions", title: "帶著問題而不是結論拜訪", body: "把大問題拆成三個可以問人的句子：誰正在做、需要什麼、下一次可以如何一起測試。", pullQuote: "提問是一種禮貌的導航。" },
-        { id: "notes", title: "把材料留在桌面上", body: "記下名稱、連結、時間與不確定處，讓之後的人能重新檢查，而不是只留下漂亮但不可追蹤的結論。", pullQuote: "不確定的地方也要被保存。" },
-        { id: "return", title: "回到共同生活的尺度", body: "最後把路線縮回一個可做的邀請：一次拜訪、一次讀書、一次飯桌討論或一次小型修補。", pullQuote: "小誌是一張可以再出發的地圖。" },
-      ],
-      protocol: [
-        { title: "確認", body: "先確認一個仍可聯絡或可拜訪的地點。" },
-        { title: "詢問", body: "準備三個短問題，讓對方能拒絕、補充或帶你去下一處。" },
-        { title: "記錄", body: "把時間、網址、人物與不確定處一起寫下。" },
-        { title: "回來", body: "把現場筆記改成下一次可共同完成的小行動。" },
-      ],
-      quietCaveat: "若材料不足，就先保留空白；空白比假裝完整更適合共同工作。",
-      approvedForPublicLayout: true as const,
-    };
-    const bodyHtml = renderOfficialTemplateArtifactHtml(nomadicArtifact, "pbs-reset-title", {
-      filename: "01-pbs-reset-title-kinetic.html",
-      html: officialPbsResetTemplate,
-    });
-    return {
-      id: `${pet.id}-final-${tick}`,
-      petId: pet.id,
-      tick,
-      title: nomadicArtifact.title,
-      mode,
-      modeLabel: finalDocumentModeLabel(mode),
-      body: nomadic.body,
-      bodyHtml,
-      htmlVariant: "pbs-reset-title",
-      references,
-      reviewLog: [],
-      sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
-    };
-  }
-
-  try {
-    const association = runDaydreamWorkflow(pet.question.text, daydreamCorpus).step4.publicArtifact;
-    const htmlVariant = "pbs-reset-title";
-    const bodyHtml = renderOfficialTemplateArtifactHtml(association, htmlVariant, {
-      filename: "01-pbs-reset-title-kinetic.html",
-      html: officialPbsResetTemplate,
-    });
-    const publicBody = [
-      association.opening,
-      association.proposition,
-      ...association.sections.map((section) => `${section.title}\n${section.body}`),
-      ...association.protocol.map((item) => `${item.title}\n${item.body}`),
-      association.quietCaveat ?? "",
-    ].filter((paragraph) => paragraph.trim().length > 0).join("\n\n");
-    return {
-      id: `${pet.id}-final-${tick}`,
-      petId: pet.id,
-      tick,
-      title: association.title,
-      mode,
-      modeLabel: finalDocumentModeLabel(mode),
-      body: publicBody,
-      bodyHtml,
-      htmlVariant,
-      references,
-      reviewLog: [],
-      sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
-    };
-  } catch (error) {
-    console.warn("Final document generation fell back to safe text.", error);
-    return buildSafeAssociationFallbackDocument(pet, tick, mode, references, petExchanges);
-  }
-}
-
-function buildSafeAssociationFallbackDocument(
-  pet: Thronglet,
-  tick: number,
-  mode: FinalDocumentMode,
-  references: Array<{ label: string; url: string; anchorText: string }>,
-  petExchanges: A2AExchange[],
-): FinalDocument {
-  const title = "公共短文";
-  const body = [
-    "這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。",
-    "請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。",
-    "如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。",
-  ].join("\n\n");
-  const bodyHtml = `<article class="daydream-html daydream-html--safe-note" aria-label="公共短文"><header><h1>${title}</h1></header><section><p>這份短文暫時保留成安全版本：先整理已經出現的材料、人物對話與可接手的下一步，而不公開任何整理痕跡。</p><p>請把它視為一張工作桌：先選一個可觀察的動作，再把它轉成可分享的小誌、練習譜或操作說明。</p><p>如果材料還不足，下一步不是補成完整結論，而是回到現場、找人讀、做一次小測試，讓問題慢慢變清楚。</p></section></article>`;
-  return {
-    id: `${pet.id}-final-${tick}`,
-    petId: pet.id,
-    tick,
-    title,
-    mode,
-    modeLabel: finalDocumentModeLabel(mode),
-    body,
-    bodyHtml,
-    htmlVariant: "safe-note",
-    references,
-    reviewLog: [],
-    sourceExchangeIds: petExchanges.map((exchange) => exchange.id),
-  };
-}
-
 function formThrongs(snapshot: SimSnapshot): {
   throngs: SimThrong[];
   events: SimEvent[];
@@ -857,26 +621,6 @@ export function tickSimulation(
   let scores: SimScores = { ...snapshot.scores };
   for (const event of events) scores = scoreEvent(scores, event);
   const a2aExchanges = [...newExchanges, ...(snapshot.a2aExchanges ?? [])].slice(0, 24);
-  const finalDocuments = [...(snapshot.finalDocuments ?? [])];
-  if (ENABLE_AUTOMATIC_FINAL_DOCUMENTS) {
-    for (const pet of thronglets) {
-      if (shouldCreateFinalDocument(pet, scores, finalDocuments)) {
-        const document = createFinalDocument(pet, a2aExchanges, tick);
-        finalDocuments.unshift(document);
-        events.push(
-          makeEvent(
-            "state_threshold",
-            tick,
-            pet.id,
-            { resonanceWithPrompt: 2, groupBond: 2 },
-            95,
-            `Final document generated: ${document.title}`,
-          ),
-        );
-        scores = scoreEvent(scores, events[events.length - 1]);
-      }
-    }
-  }
   const thoughts = [...snapshot.thoughts];
   for (const pet of thronglets) {
     const event =
@@ -895,7 +639,7 @@ export function tickSimulation(
     throngs: throngResult.throngs,
     thoughts: Array.from(new Set(thoughts)).slice(0, 8),
     a2aExchanges,
-    finalDocuments: finalDocuments.slice(0, 8),
+    finalDocuments: [],
   };
 }
 
@@ -931,17 +675,7 @@ export function applyPlayerThrongletResponse(
   return {
     ...snapshot,
     thronglets,
-    finalDocuments: (snapshot.finalDocuments ?? []).map((document) =>
-      document.petId === petId
-        ? {
-            ...document,
-            reviewLog: [
-              { tick, speaker: "player", target: petId, text: response, source: "player" as const },
-              ...(document.reviewLog ?? []),
-            ].slice(0, 180),
-          }
-        : document,
-    ),
+    finalDocuments: [],
     events: [event, ...snapshot.events].slice(0, 30),
     scores: scoreEvent(snapshot.scores, event),
     thoughts: [

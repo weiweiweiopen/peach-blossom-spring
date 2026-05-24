@@ -199,10 +199,8 @@ function languageFromBrowser(value: string | null | undefined): LanguageCode | n
   return isLanguageCode(base) ? base : null;
 }
 
-function detectMobileBrowserLanguage(): LanguageCode {
+function detectBrowserLanguage(): LanguageCode {
   if (typeof window === "undefined" || typeof navigator === "undefined") return DEFAULT_LOCALE;
-  const isMobile = window.matchMedia?.("(max-width: 680px), (pointer: coarse)").matches ?? false;
-  if (!isMobile) return DEFAULT_LOCALE;
   const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
   for (const browserLanguage of browserLanguages) {
     const detected = languageFromBrowser(browserLanguage);
@@ -218,7 +216,7 @@ export function getLanguageMeta(locale: LanguageCode) {
 export function readStoredLanguage(): LanguageCode {
   if (typeof localStorage === "undefined") return DEFAULT_LOCALE;
   const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  return stored ? normalizeLocale(stored) : detectMobileBrowserLanguage();
+  return stored ? normalizeLocale(stored) : detectBrowserLanguage();
 }
 
 export function writeStoredLanguage(language: LanguageCode): void {

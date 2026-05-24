@@ -64,7 +64,6 @@ export function PlayerSetup({
   const formRef = useRef<HTMLFormElement | null>(null);
   const startRequestedRef = useRef(false);
   const [name, setName] = useState(defaultProfile?.name ?? "");
-  const [question, setQuestion] = useState(defaultProfile?.question ?? defaultProfile?.mission ?? "");
   const [selectedPetRole, setSelectedPetRole] = useState<CorePetRole>(() => normalizeCorePetRole(defaultProfile?.petSeed));
   const selectedRole = corePetRoles.find((item) => item.role === selectedPetRole) ?? corePetRoles[2];
   const appearance = useMemo(
@@ -75,8 +74,7 @@ export function PlayerSetup({
   function profileForMode(): PlayerProfile | null {
     const formElement = formRef.current;
     const profileName = name.trim();
-    const queryText = question.trim();
-    if (!profileName || !queryText) {
+    if (!profileName) {
       formElement?.reportValidity();
       return null;
     }
@@ -85,12 +83,12 @@ export function PlayerSetup({
       palette: appearance.seed % 6,
       avatarTitle: selectedRole.role,
       currentRole: t(language, "setup.keeper"),
-      mission: queryText,
-      question: queryText,
-      constraints: queryText,
+      mission: "Tamagotchi agent",
+      question: "",
+      constraints: "",
       skills: selectedRole.skill,
       intentMode: selectedRole.intentMode,
-      personalArchive: queryText,
+      personalArchive: "",
       petSeed: `fixed-pet:${selectedRole.role}`,
     };
   }
@@ -131,20 +129,6 @@ export function PlayerSetup({
               onChange={(event) => setName(event.target.value)}
               placeholder={t(language, "setup.namePlaceholder")}
               autoFocus
-            />
-          </label>
-
-          <label className="player-setup-one-field" htmlFor="question-pet-question">
-            <span className="player-setup-one-label">{t(language, "setup.questionLabel")}</span>
-            <textarea
-              id="question-pet-question"
-              name="question"
-              required
-              className="player-setup-field player-setup-textarea-large"
-              maxLength={1200}
-              value={question}
-              onChange={(event) => setQuestion(event.target.value)}
-              placeholder={t(language, "setup.questionPlaceholder")}
             />
           </label>
 

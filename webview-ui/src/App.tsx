@@ -13,6 +13,7 @@ import {
 import extraPersonaData from "../../data/extra-personas.json";
 import personaData from "../../data/personas.json";
 import { DebugView } from "./components/DebugView.js";
+import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { generateBrowserAssociationZine } from "./daydream/browserAssociationGenerator.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
@@ -55,7 +56,8 @@ import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
 import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { isWalkable } from "./office/layout/tileMap.js";
-import { EditTool, TILE_SIZE } from "./office/types.js";
+import { getCharacterSprites } from "./office/sprites/index.js";
+import { Direction, EditTool, type SpriteData, TILE_SIZE } from "./office/types.js";
 import {
   appearanceToSpriteData,
   generateQuestionPet,
@@ -79,8 +81,9 @@ import {
   readPetDialogueHistory,
   type PetDialogueHistoryEntry,
 } from "./simulation/storage.js";
-import type { FinalDocument, SimSnapshot, Thronglet } from "./simulation/types.js";
+import type { SimSnapshot, Thronglet } from "./simulation/types.js";
 import { vscode } from "./vscodeApi.js";
+import { searchWikiPages, type WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   createNextTinyRoomLayout,
@@ -149,6 +152,21 @@ const COMMUNITY_MAP_URL =
 const WUKIR_BANDCAMP_ALBUM_URL =
   "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual";
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
+const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
+const COMMUNITY_QUERY_PROMPTS = [
+  "非營利組織如何維持長期運作？",
+  "為什麼黑客營常出現合成器？",
+  "社群裡有哪些替代教育實驗？",
+  "開源社群如何處理照護勞動？",
+  "藝術科技社群怎麼面對經費壓力？",
+  "DIY 工作坊如何變成公共知識？",
+  "社群廚房和技術實驗有什麼關係？",
+  "獨立研究者如何互相支持？",
+  "黑客空間如何保存失敗經驗？",
+  "聲音作品如何連到社群組織？",
+  "開放科學如何避免變成宣傳？",
+  "營隊如何建立臨時共同體？",
+];
 
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
@@ -316,21 +334,90 @@ function AssociationErrorPage({ message, language, onRetry }: { message: string;
   );
 }
 
+function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div
+        className="bg-bg/80 border border-border p-2"
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
+          gridAutoRows: "3px",
+        }}
+        aria-label={label}
+      >
+        {sprite.flatMap((row, rowIndex) =>
+          row.map((color, colIndex) => (
+            <span
+              key={`${rowIndex.toString()}-${colIndex.toString()}`}
+              style={{ backgroundColor: color || "transparent" }}
+            />
+          )),
+        )}
+      </div>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+    </div>
+  );
+}
+
+function PlayerDialogueAvatar({ palette, label }: { palette: number; label: string }) {
+  const [frame, setFrame] = useState(0);
+  const sprite = useMemo(() => getCharacterSprites(palette, 0).walk[Direction.DOWN][frame % 4], [frame, palette]);
+  useEffect(() => {
+    const id = window.setInterval(() => setFrame((current) => current + 1), 120);
+    return () => window.clearInterval(id);
+  }, []);
+  return <DialoguePixelAvatar sprite={sprite} label={label} />;
+}
+
+function computerSprite(frame: number): SpriteData {
+  const palette = ["#fffaf0", "#fcf46b", "#7dd7bf", "#e8b7ff", "#4fcbd1", "#111"];
+  return Array.from({ length: 32 }, (_row, y) =>
+    Array.from({ length: 16 }, (_col, x) => {
+      const signal = Math.imul(x + 17, 37) ^ Math.imul(y + 11, 53) ^ Math.imul(frame + 3, 97);
+      const wave = (x * 3 + y * 5 + frame * 7) % palette.length;
+      return palette[Math.abs(signal + wave) % palette.length];
+    }),
+  );
+}
+
+function ComputerDialogueAvatar() {
+  const [frame, setFrame] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => setFrame((current) => current + 1), 90);
+    return () => window.clearInterval(id);
+  }, []);
+  return <DialoguePixelAvatar sprite={computerSprite(frame)} label="PBS Computer" />;
+}
+
 function CentralComputerDialogue({
   language,
+  playerName,
+  playerPalette,
   onClose,
   onOpenAssociationZine,
 }: {
   language: LanguageCode;
+  playerName: string;
+  playerPalette: number;
   onClose: () => void;
-  onOpenAssociationZine: () => void;
+  onOpenAssociationZine: (query?: string) => void;
 }) {
-  const [messages, setMessages] = useState<Array<{ speaker: string; text: string }>>(() => [
+  type ComputerMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
+  const [draft, setDraft] = useState("");
+  const [isThinking, setIsThinking] = useState(false);
+  const [error, setError] = useState("");
+  const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
+  const suggestedQuestions = useMemo(() => {
+    const shuffled = [...COMMUNITY_QUERY_PROMPTS].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 2);
+  }, []);
+  const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
       speaker: "PBS Computer",
       text: language === "zh-TW"
-        ? "這裡是 PBS LLM wiki docking station。NPC 會回憶 NGM 訪談；小誌與聯想功能只從這台電腦啟動。"
-        : "This is the PBS LLM wiki docking station. NPCs recall NGM interviews; zines and Association only start from this computer.",
+        ? "你看起來在找些什麼。不喜歡旁邊那些嬉皮的話，可以來找我泡茶。這裡是 PBS LLM wiki docking station：NPC 回憶 NGM 訪談；我負責和桃花源的共享記憶快速對話，也能把你正在問的事裝訂成小誌。"
+        : "You look like you are searching for something. If the hippie talk nearby is not your thing, come have tea with me. This is the PBS LLM wiki docking station: NPCs recall NGM interviews; I talk with Peach Blossom Spring's shared memory and can bind your current question into a zine.",
     },
   ]);
 
@@ -345,45 +432,127 @@ function CentralComputerDialogue({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const replies = {
-    llmWiki: language === "zh-TW"
-      ? "LLM wiki 是給語言模型閱讀的 Obsidian wiki 結構。它把 public reading、association / semantic layers、entity layers 和 raw evidence 分層，讓模型先讀整理層與語意橋，再沿著 wikilinks 回到來源證據。"
-      : "An LLM wiki is an Obsidian wiki structured for language models. It separates public reading, association/semantic layers, entity layers, and raw evidence so the model reads curated bridges first, then follows wikilinks back to evidence.",
-    association: language === "zh-TW"
-      ? "聯想功能會把玩家問題當成 wiki query：先讀 PBS semantic / entity layers，找相關 notes，追第一層 wikilinks，再用來源支撐生成小誌。它不是 NPC 回答功能；NPC 只回到 NGM transcript 記憶。"
-      : "Association treats the player question as a wiki query: it reads PBS semantic/entity layers, finds related notes, follows first-layer wikilinks, and generates a zine from source-grounded material. It is separate from NPC dialogue; NPCs only recall NGM transcript memory.",
-  };
+  function sharedMemoryContextFor(results: WikiSearchResult[]): string {
+    return results
+      .map((item, index) => `${index + 1}. ${item.title} [${item.sourceFamily}] ${item.description ?? ""} ${item.url ?? ""}`.trim())
+      .join("\n");
+  }
 
-  function ask(label: string, text: string) {
-    setMessages((current) => [...current, { speaker: "You", text: label }, { speaker: "PBS Computer", text }]);
+  async function askComputer(prompt: string): Promise<void> {
+    const trimmed = prompt.trim();
+    if (!trimmed || isThinking) return;
+    setDraft("");
+    setError("");
+    setIsThinking(true);
+    setMessages((current) => [...current, { speaker: "You", text: trimmed }]);
+    try {
+      const wikiResults = searchWikiPages(trimmed, undefined, 6);
+      const reply = await askDeepSeekPbsComputer({
+        question: trimmed,
+        preferredLanguage: language,
+        sharedMemoryContext: sharedMemoryContextFor(wikiResults),
+      });
+      setMessages((current) => [...current, { speaker: "PBS Computer", text: reply, links: wikiResults }]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "PBS Computer failed to answer.");
+      setMessages((current) => [...current, {
+        speaker: "PBS Computer",
+        text: language === "zh-TW"
+          ? "我的共享記憶聲帶暫時沒有接上。這不是回答，只是錯誤燈號；等線路恢復後，我會重新讀桃花源的共享記憶。"
+          : "My DeepSeek voice circuit is temporarily offline. This is not an answer, only an error lamp; when the line returns, I will answer again as PBS Computer.",
+      }]);
+    } finally {
+      setIsThinking(false);
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void askComputer(draft);
+  }
+
+  function handleOpenZine(): void {
+    const query = draft.trim();
+    if (!query || isThinking) {
+      setError(language === "zh-TW" ? "請先輸入一個想探索的桃花源社群問題。" : "Enter a Peach Blossom Spring community question first.");
+      return;
+    }
+    onOpenAssociationZine(query);
   }
 
   return (
     <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
       <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
-          <div>
-            <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">LLM WIKI DOCK</p>
-            <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2">PBS Computer</h2>
-            <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">Association / 聯想 docking terminal</p>
+          <div className="rpg-dialogue-title flex items-start gap-6">
+            <div className="rpg-dialogue-avatars flex gap-4">
+              <PlayerDialogueAvatar palette={playerPalette} label={playerName} />
+              <ComputerDialogueAvatar />
+            </div>
+            <div>
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">LLM WIKI DOCK</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2">PBS Computer</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">Association / 聯想 docking terminal</p>
+            </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" type="button" onClick={onClose}>X</button>
         </div>
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
           <div className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
             {messages.map((message, index) => (
-              <p key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
-                <span className="text-accent-bright">{message.speaker}: </span>
-                {message.text}
-              </p>
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
+                <p className="m-0">
+                  <span className="text-accent-bright">{message.speaker}: </span>
+                  {message.text}
+                </p>
+                {message.links && message.links.length > 0 && (
+                  <ol className="pbs-computer-source-list mt-3 mb-0 pl-7 text-base leading-snug">
+                    {message.links.map((link, linkIndex) => (
+                      <li key={link.url} className="mb-2">
+                        <a href={link.url} target="_blank" rel="noreferrer" className="underline decoration-2 underline-offset-4">
+                          [{linkIndex + 1}] {link.title}
+                        </a>
+                        <span className="text-text-muted"> {link.sourceFamily}</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
             ))}
+            {isThinking && <p className="rpg-dialogue-thinking text-base text-text-muted">PBS Computer is thinking...</p>}
           </div>
         </div>
-        <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
-          <button className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => ask("什麼是 LLM wiki？", replies.llmWiki)}>1. 什麼是 LLM wiki？</button>
-          <button className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => ask("什麼是聯想功能？", replies.association)}>2. 什麼是聯想功能？</button>
-          <button className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble" type="button" onClick={onOpenAssociationZine}>3. 📚 小書維基 / 生成小誌</button>
-        </div>
+        {showSuggestedQuestions && (
+          <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
+            <p className="w-full m-0 text-base text-text-muted">問我一個關於你想探索桃花源社群哪一部分的問題：</p>
+            {suggestedQuestions.map((question) => (
+              <button key={question} className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
+            ))}
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4">
+          <input
+            type="text"
+            className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
+            spellCheck={false}
+            placeholder={language === "zh-TW" ? "問：你想探索桃花源社群的哪一部分？" : "Ask: which part of the Peach Blossom Spring community do you want to explore?"}
+          />
+          <button
+            className="rpg-dialogue-question-toggle rpg-dialogue-chip pbs-game-button"
+            type="button"
+            onClick={() => setShowSuggestedQuestions((open) => !open)}
+          >
+            問我一個問題 ▾
+          </button>
+          <button className="rpg-dialogue-submit pbs-game-button pbs-game-button--bubble disabled:opacity-50" type="submit" disabled={isThinking}>{isThinking ? "..." : t(language, "dialogue.talkButton")}</button>
+          <button className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble" type="button" disabled={isThinking || !draft.trim()} onClick={handleOpenZine} aria-label="維基小書" title="維基小書">📚</button>
+        </form>
+        {error && <p className="text-sm text-red-300 mt-3">{safeDebugText(error, 180)}</p>}
       </section>
     </div>
   );
@@ -414,7 +583,7 @@ function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extrac
           className="world-split-iframe"
           loading="eager"
           referrerPolicy="no-referrer-when-downgrade"
-          sandbox={isFinalDocument ? "allow-popups allow-popups-to-escape-sandbox" : undefined}
+          sandbox={isFinalDocument ? "allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox" : undefined}
         />
       ) : isFinalDocument ? (
         <AssociationLoadingPage language={language} />
@@ -448,89 +617,6 @@ function WukirBandcampEmbed() {
       </div>
     </div>
   );
-}
-
-function escapeStandaloneHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function finalDocumentTextToHtml(finalDocument: FinalDocument): string {
-  const referencesByAnchor = new Map(
-    finalDocument.references.map((reference) => [reference.anchorText || reference.label, reference]),
-  );
-  return finalDocument.body
-    .split("\n\n")
-    .map((paragraph) => {
-      const html = escapeStandaloneHtml(paragraph).replace(/\[\[([^\]]+)\]\]/g, (_match, anchor: string) => {
-        const reference = referencesByAnchor.get(anchor);
-        if (!reference) return escapeStandaloneHtml(anchor);
-        return `<a href="${escapeStandaloneHtml(reference.url)}" target="_blank" rel="noreferrer">${escapeStandaloneHtml(anchor)}</a>`;
-      });
-      return `<p>${html}</p>`;
-    })
-    .join("\n");
-}
-
-function collectStandaloneDocumentStyles(): string {
-  if (typeof window === "undefined") return "";
-  const cssTexts: string[] = [];
-  for (const sheet of Array.from(window.document.styleSheets)) {
-    try {
-      cssTexts.push(
-        Array.from(sheet.cssRules)
-          .map((rule) => rule.cssText)
-          .join("\n"),
-      );
-    } catch {
-      // Ignore cross-origin stylesheets; Vite/Tailwind app CSS is same-origin in this app.
-    }
-  }
-  return cssTexts.join("\n");
-}
-
-function createStandaloneFinalDocumentUrl(finalDocument: FinalDocument): string {
-  const fragment = finalDocument.bodyHtml?.trim()
-    ? finalDocument.bodyHtml
-    : `<article class="daydream-html daydream-html--pbs-reset"><header class="dd-reset-hero"><h1>${escapeStandaloneHtml(finalDocument.title)}</h1></header><section class="dd-reset-opening">${finalDocumentTextToHtml(finalDocument)}</section></article>`;
-  const page = `<!doctype html>
-<html lang="zh-Hant">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>${escapeStandaloneHtml(finalDocument.title)}</title>
-<style>
-${collectStandaloneDocumentStyles()}
-html, body {
-  margin: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  min-height: 100% !important;
-  max-height: none !important;
-  overflow: auto !important;
-  position: static !important;
-  background: #fffdf3 !important;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-}
-body { touch-action: pan-x pan-y !important; }
-a { color: inherit; text-decoration-thickness: 0.12em; }
-.daydream-html {
-  overflow: visible !important;
-  height: auto !important;
-  max-height: none !important;
-}
-</style>
-</head>
-<body>
-${fragment}
-</body>
-</html>`;
-  return URL.createObjectURL(new Blob([page], { type: "text/html;charset=utf-8" }));
 }
 
 function petResponsesKey(petId: string): string {
@@ -659,24 +745,16 @@ function configuredWorkerChatApiUrl(): string {
     ?.trim() || "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 }
 
-function queryLooksIntentional(query: string): boolean {
-  const trimmed = query.trim();
-  if (trimmed.length >= 16) return true;
-  return /社群|永續|可持續|藝術|科技|教育|community|sustain|art|technology|education|utopia|prototype|research/i.test(trimmed);
-}
-
 async function createCloudPetPersona(profile: PlayerProfile): Promise<string | null> {
   const url = configuredWorkerChatApiUrl();
   if (!url) return null;
-  const query = profile.question || profile.mission || "";
-  const role = profile.avatarTitle ?? "question pet";
-  const intentional = queryLooksIntentional(query);
+  const role = profile.avatarTitle ?? "Tamagotchi agent";
   const system = [
-    "你是桃花源遊戲的電子雞人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
-    "人格必須好奇、會主動向 NPC 詢問社群技術、可持續性、藝術是什麼、科技藝術是什麼、教育是什麼。",
-    "如果玩家問題意圖明確，強化該意圖；如果問題像無意義詞或隨機物件，不要過度詮釋，只保留一般好奇心。",
+    "你是桃花源遊戲的 Tamagotchi agent 人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
+    "人格必須像好奇、挑剔、會照看公共文字品質的小夥伴，但不要說出任何系統功能名稱。",
+    "不要把電子雞設定成玩家問題的解答器；PBS Computer 才是 LLM wiki query 入口。",
   ].join("\n");
-  const user = `玩家名字：${profile.name}\n寵物類型：${role}\n問題：${query}\n問題是否明確：${intentional ? "是" : "否"}\n請輸出 3 句以內的電子雞 persona。`;
+  const user = `玩家名字：${profile.name}\n寵物類型：${role}\n請輸出 3 句以內的 Tamagotchi agent persona。`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -877,7 +955,6 @@ function App() {
     nonce: number;
   } | null>(null);
   const petRunawayDoneRef = useRef<string | null>(null);
-  const seenFinalDocumentIdsRef = useRef<Set<string>>(new Set());
   const wikiGenerationInFlightRef = useRef(false);
   const wikiGenerationRequestRef = useRef<string | null>(null);
   const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
@@ -987,13 +1064,6 @@ function App() {
         simSnapshot?.thronglets.find((item) => item.characterId === agentId) ??
         null;
       if (pet && appMode === "interactive") {
-        const finalDocument = simSnapshot?.finalDocuments.find((document) => document.petId === pet.id) ?? null;
-        if (finalDocument) {
-          setSelectedPet(null);
-          setSelectedDispatchPet(null);
-          openFinalDocumentSplit(finalDocument);
-          return;
-        }
         setSelectedPet(pet);
         setSelectedDispatchPet(null);
         return;
@@ -1454,13 +1524,8 @@ function App() {
       !simSnapshot
     )
       return;
-    const completedPetIds = new Set(simSnapshot.finalDocuments.map((document) => document.petId));
     simSnapshot.thronglets.forEach((pet, index) => {
       const character = officeState.characters.get(pet.characterId);
-      if (completedPetIds.has(pet.id)) {
-        if (character?.isQuestionPet) officeState.characters.delete(pet.characterId);
-        return;
-      }
       const label = t(selectedLanguage, "pet.questionPet");
       const roleSlug = resolvePetRoleSlug(pet.appearance.bodyType, pet.appearance.seed);
       const animation = createThrongletWaDirectionalAnimations(chooseThrongletExpression(pet.state, pet.currentAction), roleSlug);
@@ -1502,13 +1567,11 @@ function App() {
       !simSnapshot
     )
       return;
-    const runawayKey = `${playerProfile.petSeed ?? playerProfile.question}-${simSnapshot.thronglets.map((pet) => pet.id).join("|")}`;
+    const runawayKey = `${playerProfile.petSeed ?? TAMAGOTCHI_AGENT_PROMPT}-${simSnapshot.thronglets.map((pet) => pet.id).join("|")}`;
     if (petRunawayDoneRef.current === runawayKey) return;
     petRunawayDoneRef.current = runawayKey;
     const timeout = window.setTimeout(() => {
-      const completedPetIds = new Set(simSnapshot.finalDocuments.map((document) => document.petId));
       simSnapshot.thronglets.forEach((pet, index) => {
-        if (completedPetIds.has(pet.id)) return;
         const ch = officeState.characters.get(pet.characterId);
         if (!ch) return;
         ch.moveSpeedMultiplier = 4.2;
@@ -1566,13 +1629,7 @@ function App() {
           }),
         );
         const next = tickSimulation(current, contexts, npcKnowledgeContexts);
-        const completedPetIds = new Set(next.finalDocuments.map((document) => document.petId));
         for (const pet of next.thronglets) {
-          if (completedPetIds.has(pet.id)) {
-            const ch = officeState.characters.get(pet.characterId);
-            if (ch?.isQuestionPet) officeState.characters.delete(pet.characterId);
-            continue;
-          }
           const ch = officeState.characters.get(pet.characterId);
           if (!ch || ch.path.length > 0) continue;
           const targets =
@@ -1869,7 +1926,7 @@ function App() {
   const handlePlayerStart = useCallback(
     (profile: PlayerProfile, mode: StartMode) => {
       const pet = createThronglet(
-        profile.question || profile.mission,
+        TAMAGOTCHI_AGENT_PROMPT,
         profile.name,
         PLAYER_ID,
         10000,
@@ -1879,7 +1936,7 @@ function App() {
           intentMode: profile.intentMode,
           petRole: profile.avatarTitle,
           skills: profile.skills,
-          personalArchive: profile.personalArchive ?? profile.constraints,
+          personalArchive: "",
         },
       );
       const npcContexts = personas.map((persona, index) => ({
@@ -1924,12 +1981,13 @@ function App() {
         const created = petStore.createDispatch({
           ownerName: profile.name,
           displayName: t(selectedLanguage, "pet.questionPet"),
-          question: profile.question || profile.mission,
+          question: TAMAGOTCHI_AGENT_PROMPT,
           skill: [
-            `intent:${profile.intentMode ?? "why"}`,
-            `petRole:${profile.avatarTitle ?? "question pet"}`,
+            "source care",
+            "public language care",
+            "overclaiming check",
+            `petRole:${profile.avatarTitle ?? "Tamagotchi agent"}`,
             profile.skills ?? "",
-            profile.personalArchive ?? profile.constraints ?? "",
           ].filter(Boolean).join("\n\n"),
           seed: profile.petSeed ?? `${Date.now()}`,
           isMobile: showMobileControls,
@@ -2280,11 +2338,6 @@ function App() {
   }, [selectedPet, simSnapshot]);
 
   useEffect(() => {
-    if (!simSnapshot) return;
-    for (const document of simSnapshot.finalDocuments) seenFinalDocumentIdsRef.current.add(document.id);
-  }, [simSnapshot]);
-
-  useEffect(() => {
     if (!selectedDispatchPet) return;
     const latestPet = activeDispatchPets.find((pet) => pet.id === selectedDispatchPet.id);
     if (latestPet && latestPet !== selectedDispatchPet) setSelectedDispatchPet(latestPet);
@@ -2313,38 +2366,7 @@ function App() {
     : [];
   const localMultiplayerPlayerId = multiplayerConfig ? getOrCreatePlayerId() : "";
   const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
-  const selectedPetFinalDocument = selectedPet
-    ? (simSnapshot?.finalDocuments.find((document) => document.petId === selectedPet.id) ?? null)
-    : null;
-  function openFinalDocumentSplit(finalDocument: FinalDocument): void {
-    const url = createStandaloneFinalDocumentUrl(finalDocument);
-    finalDocumentObjectUrlsRef.current.add(url);
-    setSplitPanel({
-      kind: "finalDocument",
-      title: finalDocument.title,
-      url,
-    });
-    setSplitPanelAnchor(null);
-    setIsSplitExpanded(true);
-  }
-
   function closeSelectedPetPanel(): void {
-    if (selectedPetFinalDocument && selectedPet) {
-      officeState.characters.delete(selectedPet.characterId);
-      setSimSnapshot((current) => {
-        if (!current) return current;
-        const nextThronglets = current.thronglets.filter((pet) => pet.id !== selectedPet.id);
-        const nextDocuments = current.finalDocuments.filter((document) => document.petId !== selectedPet.id);
-        if (nextThronglets.length === 0 && nextDocuments.length === 0) return null;
-        return {
-          ...current,
-          thronglets: nextThronglets,
-          finalDocuments: nextDocuments,
-          a2aExchanges: current.a2aExchanges.filter((exchange) => exchange.petId !== selectedPet.id),
-          throngs: current.throngs.filter((throng) => !throng.memberIds.includes(selectedPet.id)),
-        };
-      });
-    }
     setSelectedPet(null);
     setIsSelectedPetPanelExpanded(false);
     setPetChatDraft("");
@@ -2422,7 +2444,7 @@ function App() {
         </div>
       )}
 
-      <div className="floating-ui-layer" data-no-mobile-drag="true">
+      {playerProfile && <div className="floating-ui-layer" data-no-mobile-drag="true">
         <div className="global-archive-menu">
           <button
             className="global-archive-trigger"
@@ -2464,7 +2486,7 @@ function App() {
             </div>
           )}
         </div>
-      </div>
+      </div>}
 
       <div className="hud-ui-layer" data-no-mobile-drag="true">
         {playerProfile && appMode === "dispatch_observer" && (
@@ -2788,7 +2810,7 @@ function App() {
                   onSimEvent={(prompt) => {
                     const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(" ")}`;
                     const resonance = scorePromptResonance(
-                      playerProfile.question || playerProfile.mission,
+                      TAMAGOTCHI_AGENT_PROMPT,
                       personaText,
                     );
                     setSimSnapshot((current) =>
@@ -2809,12 +2831,15 @@ function App() {
           {appMode === "interactive" && isComputerDialogueOpen && playerProfile && (
             <CentralComputerDialogue
               language={selectedLanguage}
+              playerName={playerProfile.name}
+              playerPalette={playerProfile.palette}
               onClose={() => setIsComputerDialogueOpen(false)}
-              onOpenAssociationZine={() => {
-                setIsComputerDialogueOpen(false);
+              onOpenAssociationZine={(query) => {
+                const trimmed = query?.trim() ?? "";
+                if (!trimmed) return;
                 void openAssociationZineSplit({
-                  query: playerProfile.question || playerProfile.mission,
-                  petRole: playerProfile.avatarTitle,
+                  query: trimmed,
+                  petRole: undefined,
                   language: selectedLanguage,
                 });
               }}
@@ -2871,9 +2896,7 @@ function App() {
                 )}
                 {!isQuestionSimMinimized && (
                   <>
-                    {simSnapshot.thronglets
-                      .filter((pet) => !simSnapshot.finalDocuments.some((document) => document.petId === pet.id))
-                      .map((pet) => (
+                    {simSnapshot.thronglets.map((pet) => (
                         <button
                           key={pet.id}
                           className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
@@ -2893,7 +2916,7 @@ function App() {
                               currentAction={pet.currentAction}
                             />
                             <span className="text-base leading-snug">
-                              {pet.question.text}
+                              Tamagotchi agent
                             </span>
                           </div>
                           <p className="text-sm mt-3">
@@ -2937,19 +2960,6 @@ function App() {
                         ))}
                       </div>
                     )}
-                    {simSnapshot.finalDocuments.map((document) => (
-                      <button
-                        key={document.id}
-                        className="pbs-game-button pbs-game-button--block mt-3"
-                        type="button"
-                        onClick={() => {
-                          setSelectedPet(null);
-                          openFinalDocumentSplit(document);
-                        }}
-                      >
-                        📄 {document.title}
-                      </button>
-                    ))}
                     {simSnapshot.thoughts.map((thought, index) => (
                       <p
                         key={`${thought}-${index}`}
@@ -3169,24 +3179,22 @@ function App() {
             </section>
           )}
 
-          {selectedPet && !selectedPetFinalDocument && (
+          {selectedPet && (
             <section
               className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
                 isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""
-              } ${selectedPetFinalDocument ? "final-document-window" : ""}`}
+              }`}
               data-no-mobile-drag="true"
             >
               <div className="question-response-window-actions">
-                {!selectedPetFinalDocument && (
-                  <button
-                    className="question-response-expand pbs-frame-action"
-                    type="button"
-                    onClick={() => setIsSelectedPetPanelExpanded((expanded) => !expanded)}
-                    aria-label={isSelectedPetPanelExpanded ? "Minimize pet panel" : "Maximize pet panel"}
-                  >
-                    {isSelectedPetPanelExpanded ? "↙" : "⤢"}
-                  </button>
-                )}
+                <button
+                  className="question-response-expand pbs-frame-action"
+                  type="button"
+                  onClick={() => setIsSelectedPetPanelExpanded((expanded) => !expanded)}
+                  aria-label={isSelectedPetPanelExpanded ? "Minimize pet panel" : "Maximize pet panel"}
+                >
+                  {isSelectedPetPanelExpanded ? "↙" : "⤢"}
+                </button>
                 <button
                   className="question-response-close pbs-frame-action"
                   type="button"
@@ -3217,10 +3225,8 @@ function App() {
                 </div>
               </div>
               <div className="pet-detail-section">
-                <p className="type-label pet-detail-kicker">
-                  {t(selectedLanguage, "pet.originalQuestionPurpose")}
-                </p>
-                <p className="type-body-large">{selectedPet.question.text}</p>
+                  <p className="type-label pet-detail-kicker">Tamagotchi agent</p>
+                  <p className="type-body-large">牠會在桃花源裡閒晃、觀察 NPC 與社群材料，暫時不負責回答 PBS Computer 的問題。</p>
               </div>
               <div className="pet-detail-section">
                 <h3 className="type-subheading">Local pet RAG chat</h3>
@@ -3263,8 +3269,7 @@ function App() {
                   </div>
                 )}
               </div>
-              {!selectedPetFinalDocument && (
-                <div className="pet-detail-section pet-response-compose-section">
+              <div className="pet-detail-section pet-response-compose-section">
                   <h3 className="type-subheading">
                     {t(selectedLanguage, "pet.responses")}
                   </h3>
@@ -3286,8 +3291,7 @@ function App() {
                       ))}
                     </div>
                   )}
-                </div>
-              )}
+              </div>
             </section>
           )}
 

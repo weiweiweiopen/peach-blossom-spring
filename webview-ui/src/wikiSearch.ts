@@ -18,8 +18,8 @@ function compact(text: string, max = 220): string {
 function sourceFamily(card: Partial<SourceCard>): string {
   const source = String(card.source ?? '').toLowerCase();
   const text = `${card.title ?? ''} ${card.path ?? ''} ${card.url ?? ''}`.toLowerCase();
-  if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (source === 'sgmk' || text.includes('sgmk')) return 'SGMK';
+  if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (text.includes('fabricademy')) return 'Fabricademy';
   if (source === 'htgwyw' || text.includes('kobakant') || text.includes('how to get what you want')) return 'HOW TO GET WHAT YOU WANT / KOBAKANT';
   return card.source || 'Wiki';
@@ -39,11 +39,24 @@ function expandQuery(query: string): string {
   if (/穿戴|織品|布|wearable|textile|fabric|soft/i.test(query)) {
     expansions.push('wearable', 'textile', 'fabric', 'soft circuit', 'stretch sensor');
   }
+  if (/紅茶菌|康普茶|kombucha|ferment|fermentation|發酵|菌膜|茶菌/i.test(query)) {
+    expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
+  }
   return [query, ...expansions].join(' ');
 }
 
 function tokens(text: string): string[] {
-  return Array.from(new Set(expandQuery(text).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((token) => token.length >= 2)));
+  const normalized = expandQuery(text).toLowerCase();
+  const latinTokens = normalized.split(/[^\p{L}\p{N}]+/u).filter((token) => token.length >= 2 && !/[\u3400-\u9fff]/u.test(token));
+  const cjkRuns = normalized.match(/[\u3400-\u9fff]{2,}/gu) ?? [];
+  const cjkTokens = cjkRuns.flatMap((run) => {
+    const out = [run];
+    for (const size of [2, 3, 4]) {
+      for (let index = 0; index <= run.length - size; index += 1) out.push(run.slice(index, index + size));
+    }
+    return out;
+  });
+  return Array.from(new Set([...latinTokens, ...cjkTokens]));
 }
 
 function scoreText(queryTokens: string[], title: string, body: string): number {
