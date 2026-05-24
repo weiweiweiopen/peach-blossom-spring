@@ -53,7 +53,6 @@ export const PUBLIC_ARTIFACT_BANNED_PATTERNS: RegExp[] = [
   /\bcategoryGraph\b/i,
   /\bcorpusManifest\b/i,
   /\bDaydream\s+workflow\b/i,
-  /\bAssociation\b/i,
   /\bconnected[-\s]?paper/i,
   /\bsemantic\s+vector\b/i,
   /\bdepth\s+gate\b/i,

@@ -3,10 +3,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KnowledgeBase } from '../deepseekClient.js';
 import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { calibratePersonaReply, type ChatEvidence, localNpcChat, retrieveNpcEvidence } from '../localChatbot.js';
+import { buildTranscriptEvidenceChunks, calibratePersonaReply, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
-import { searchWikiPages, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -34,7 +33,6 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
-  wikiResults?: WikiSearchResult[];
 }
 
 interface RpgDialogueProps {
@@ -44,8 +42,6 @@ interface RpgDialogueProps {
   topicLabels: Record<string, string>;
   language: LanguageCode;
   onClose: () => void;
-  onOpenWiki?: () => void;
-  onOpenWikiResult?: (link: WikiSearchResult) => void;
   onOpenMusic?: () => void;
   onSimEvent?: (prompt: string, topic: string) => void;
 }
@@ -92,26 +88,48 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
-function naturalRoleLabel(persona: Persona, language: LanguageCode): string {
-  if (language === 'zh-TW') {
-    if (/sound|music|instrument/i.test(persona.role)) return '聲音與樂器實驗者';
-    if (/textile|fabric|wearable/i.test(persona.role)) return '材料與織品實作者';
-    if (/lab|fabrication|hardware|research/i.test(persona.role)) return '工作坊與研究實作者';
-    if (/story|solar|travel/i.test(persona.role)) return '說故事的人';
-    return '這個角色';
+const representedCommunityByPersonaId: Record<string, string> = {
+  'andreas-siagian': 'Lifepatch',
+  'anastassia-pistofidou': 'Fabricademy',
+  'giulia-tomasello': 'wearable technology / care protocols',
+  'christian-dils': 'Fraunhofer TexLab',
+  'jonathan-minchin': 'Green Fablab',
+  'marc-dusseiller': 'Hackteria',
+  'mika-satomi': 'KOBAKANT',
+  'rully-shabara': 'Senyawa',
+  'wukir-suryadi': 'experimental instrument practice',
+  'ryu-oyama': 'Oki Wonder Lab',
+  'stephanie-pan': 'Modern Body Festival',
+  'stelio-manousakis': 'Modern Body Festival',
+  'svenja-keune': 'I.N.S.E.C.T.',
+  'ted-hung': 'Fablab Taipei',
+  'tincuta-heinzel': 'critical textile and media questions',
+  abao: 'Non-Governmental Matters',
+};
+
+function transcriptOnlyFallback(message: string, evidence: ChatEvidence[], persona: Persona, language: LanguageCode): string {
+  const excerpt = evidence[0]?.text;
+  if (excerpt) {
+    if (language === 'zh-TW') return `我先回到訪談記憶來答。關於「${shorten(message, 36)}」，我會從這段線索開始：${shorten(excerpt, 260)}`;
+    return `I will answer from the interview memory first. For “${shorten(message, 54)}”, I would begin from this trace: ${shorten(excerpt, 260)}`;
   }
-  return shorten(persona.role, 48);
+  if (language === 'zh-TW') return `${persona.name} 的訪談記憶裡沒有直接回答這一句。我可以改從他的訪談主題慢慢回想：${shorten(persona.intro, 180)}`;
+  return `${persona.name}'s interview memory does not directly answer that. I can still recall from the persona's interview frame: ${shorten(persona.intro, 180)}`;
 }
 
-function makeFixedQuestions(language: LanguageCode, personaId: string): string[] {
-  void personaId;
+function representedCommunity(persona: Persona): string {
+  return representedCommunityByPersonaId[persona.id] ?? shorten(persona.role.split('/')[0] ?? persona.role, 48);
+}
+
+function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] {
+  const community = representedCommunity(persona);
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': ['你是誰？', '這是哪？', '什麼是 LLM wiki？', '什麼是聯想功能？'],
-    en: ['Who are you?', 'Where is this?', 'What is an LLM wiki?', 'What is Association?'],
-    id: ['Siapa kamu?', 'Ini di mana?', 'Apa itu LLM wiki?', 'Apa itu Association?'],
-    de: ['Wer bist du?', 'Wo ist das hier?', 'Was ist ein LLM-Wiki?', 'Was ist Association?'],
-    ja: ['あなたは誰？', 'ここはどこ？', 'LLM wiki とは？', 'Association とは？'],
-    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', 'LLM wiki คืออะไร?', 'Association คืออะไร?'],
+    'zh-TW': [`什麼是 ${community}？`, '這是哪？'],
+    en: [`What is ${community}?`, 'Where is this?'],
+    id: [`Apa itu ${community}?`, 'Ini di mana?'],
+    de: [`Was ist ${community}?`, 'Wo ist das hier?'],
+    ja: [`${community} とは？`, 'ここはどこ？'],
+    th: [`${community} คืออะไร?`, 'ที่นี่คือที่ไหน?'],
   };
   return [...questions[language]];
 }
@@ -266,40 +284,7 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
   return messages[language];
 }
 
-function wikiSearchIntro(language: LanguageCode, count: number): string {
-  if (language === 'zh-TW') return count > 0 ? `我先幫你從本地 wiki 找到 ${count} 個比較貼近的頁面；下面可以直接打開。` : '我先查了本地 wiki，但這句話沒有找到夠準的頁面。可以換更具體的材料、作品或方法詞。';
-  return count > 0 ? `I found ${count} close local wiki pages. You can open them below.` : 'I checked the local wiki, but this query did not return a precise page yet. Try a more specific material, work, or method term.';
-}
-
-function fixedQuestionReply(prompt: string, persona: Persona, language: LanguageCode): string | null {
-  const normalized = prompt.toLowerCase().replace(/\s+/g, ' ').trim();
-  const role = naturalRoleLabel(persona, language);
-  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
-
-  if (/^(你是誰？?|who are you\??|siapa kamu\??|wer bist du\??|あなたは誰？?|คุณคือใคร\??)$/i.test(normalized)) {
-    if (language === 'zh-TW') return `我是 ${persona.name}。在這裡，我被整理成一個可以對話的 ${role}：我不是完整本人，而是由訪談、wiki 線索與 PBS 的角色設定組成的入口。${intro}`;
-    return `I am ${persona.name}. Here I am a conversational ${role}: not the complete person, but an entry point composed from interviews, wiki traces, and the PBS character layer. ${intro}`;
-  }
-
-  if (/^(這是哪？?|這裡是哪裡？?|where is this\??|where am i\??|ini di mana\??|wo ist das hier\??|ここはどこ？?|ที่นี่คือที่ไหน\??)$/i.test(normalized)) {
-    if (language === 'zh-TW') return '這裡是 Peach Blossom Spring：一個把 NGM 訪談、PBS wiki、角色對話和生成小誌接在一起的互動場景。你可以和 NPC 談話，也可以把你的問題交給 LLM wiki，讓它沿著整理層、聯想層和來源層生成一份小誌。';
-    return 'This is Peach Blossom Spring: an interactive scene connecting NGM interviews, the PBS wiki, character dialogue, and generated zines. You can talk with NPCs or send a question into the LLM wiki so it can produce a zine from organized notes, associations, and sources.';
-  }
-
-  if (/llm\s*-?\s*wiki|什麼是\s*llm\s*wiki|llm wiki とは|apa itu llm wiki|was ist ein llm-wiki/i.test(normalized)) {
-    if (language === 'zh-TW') return 'LLM wiki 是給語言模型讀的 Obsidian wiki 結構。它不是只放原始資料，而是把 Public / Reading、Association / Semantic、Evidence / Raw Source 分層，讓模型先讀整理層與語意/實體橋，再追 wikilinks 到來源證據。它同時也可以用 lint 和維護規則檢查缺口，讓 wiki 在使用中自我演化、長出新的問題、索引和小誌材料。';
-    return 'An LLM wiki is an Obsidian wiki structured for language models. It separates public reading pages, association/semantic layers, and raw evidence, so the model reads curated entry points first and follows wikilinks into sources. Lint and maintainer rules can also expose gaps, helping the wiki evolve into new questions, indexes, and zine material.';
-  }
-
-  if (/聯想功能|association|什麼是聯想功能|apa itu association|was ist association|association とは/i.test(normalized)) {
-    if (language === 'zh-TW') return '聯想功能是 PBS 裡把「玩家問題」接到 LLM wiki 的生成工具。它會把問題當成查詢：先讀 semantic / entity layers，找相關 notes，追第一層 wikilinks，再用來源支撐生成小誌。之後也可以把生成結果與 lint 檢查回饋到 wiki，讓缺少的索引、概念頁和來源橋逐步被補起來。';
-    return 'Association is the PBS tool that docks a player question into the LLM wiki. It treats the question as a query, reads semantic/entity layers, follows wikilinks, and uses source evidence to generate a zine. The resulting traces and lint checks can feed back into the wiki so missing indexes, concepts, and source bridges can be improved.';
-  }
-
-  return null;
-}
-
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onOpenWikiResult, onOpenMusic, onSimEvent }: RpgDialogueProps) {
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenMusic, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -309,7 +294,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
-  const fixedQuestions = useMemo(() => makeFixedQuestions(language, persona.id), [language, persona.id]);
+  const fixedQuestions = useMemo(() => makeFixedQuestions(language, persona), [language, persona]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -380,20 +365,15 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     try {
       const topic = resolveTopic(trimmed);
       onSimEvent?.(trimmed, topic);
-      const fixedReply = fixedQuestionReply(trimmed, persona, language);
-      if (fixedReply) {
-        setMessages((prev) => [...prev, { speaker: persona.name, text: fixedReply }]);
-        return;
-      }
       const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
       if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
       const chatKnowledge = { ...dialogueKnowledge, responses: persona.responses };
-      const evidence = retrieveNpcEvidence({
-        message: trimmed,
-        retrievalContext: topic,
-        knowledge: chatKnowledge,
-      });
-      const wikiResults = searchWikiPages(trimmed, persona.id, 6);
+      const transcriptCandidates = buildTranscriptEvidenceChunks(
+        `${dialogueKnowledge.transcript_zh}\n${dialogueKnowledge.transcript_en}`,
+        dialogueKnowledge.id,
+        dialogueKnowledge.name,
+      );
+      const evidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
       let reply: string;
       try {
         reply = await askDeepSeekPersonaWithEvidence({
@@ -405,13 +385,10 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         });
         reply = calibratePersonaReply({ draft: reply, message: trimmed, knowledge: chatKnowledge, evidence });
       } catch {
-        reply = localNpcChat({ message: trimmed, retrievalContext: topic, knowledge: chatKnowledge }).reply;
+        reply = transcriptOnlyFallback(trimmed, evidence, persona, language);
       }
-      const groundedReply = wikiResults.length > 0
-        ? `${wikiSearchIntro(language, wikiResults.length)} ${reply}`
-        : reply;
-      const answer = { reply: groundedReply, evidence, wikiResults };
-      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.reply, evidence: answer.evidence, wikiResults: answer.wikiResults }]);
+      const answer = { reply, evidence };
+      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.reply, evidence: answer.evidence }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : t(language, 'dialogue.requestFailed'));
     } finally {
@@ -443,15 +420,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             <div>
               <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
                 <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">{t(language, 'home.wanderAndTalk')}</p>
-                <button
-                  className="rpg-dialogue-wiki-button rpg-dialogue-chip pbs-frame-button pbs-game-button pbs-game-button--bubble"
-                  type="button"
-                  aria-label={t(language, 'dialogue.openWiki')}
-                  title={t(language, 'dialogue.openWiki')}
-                  onClick={onOpenWiki}
-                >
-                  <span className="pbs-emoji-control" aria-hidden="true">📚</span>
-                </button>
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
               </div>
               <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none">{persona.name}</h2>
@@ -471,21 +439,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.wikiResults && message.wikiResults.length > 0 && (
-                  <div className="rpg-dialogue-wiki-results">
-                    {message.wikiResults.map((link) => (
-                      <button
-                        key={link.url}
-                        type="button"
-                        className="rpg-dialogue-wiki-result pbs-game-button"
-                        onClick={() => onOpenWikiResult?.(link)}
-                      >
-                        <strong>{link.title}</strong>
-                        <span>{link.sourceFamily}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
             {isLoading && (

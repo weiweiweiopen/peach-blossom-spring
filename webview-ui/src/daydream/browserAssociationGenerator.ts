@@ -24,7 +24,7 @@ import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 60000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 150000;
-const PUBLIC_FORBIDDEN = /\b(Daydream|Association|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|generated|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|閱讀路線|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 
 export interface BrowserAssociationResult {
@@ -614,12 +614,26 @@ function queryRelevancePass(text: string, workflow: Workflow): boolean {
   return hits.length >= Math.min(3, anchors.length) || titleHits.length >= 1;
 }
 
+function publicForbiddenMatches(text: string): string[] {
+  const matches: string[] = [];
+  const globalPattern = new RegExp(PUBLIC_FORBIDDEN.source, `${PUBLIC_FORBIDDEN.flags.replace('g', '')}g`);
+  for (const match of text.matchAll(globalPattern)) {
+    if (!match[0]) continue;
+    const start = Math.max(0, (match.index ?? 0) - 36);
+    const end = Math.min(text.length, (match.index ?? 0) + match[0].length + 36);
+    matches.push(`${match[0]}: …${text.slice(start, end)}…`);
+    if (matches.length >= 8) break;
+  }
+  return matches;
+}
+
 function validateVisibleText(text: string, workflow: Workflow, language: AssociationZineLanguage): void {
   const hits = workflowAnchorTerms(workflow).filter((anchor) => text.toLowerCase().includes(anchor.toLowerCase()));
   const repeated = repeatedSentenceReport(text);
+  const forbiddenMatches = publicForbiddenMatches(text);
   const hardFailures: string[] = [];
   const warnings: string[] = [];
-  if (PUBLIC_FORBIDDEN.test(text)) hardFailures.push("forbidden/process language detected");
+  if (forbiddenMatches.length > 0) hardFailures.push(`forbidden/process language detected: ${forbiddenMatches.join("; ")}`);
   if (language === "zh-TW" && RAW_ENGLISH_EXCERPT.test(text)) hardFailures.push("long raw English excerpt detected");
   if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) hardFailures.push("invented unsupported bio dataset/procedure details");
   if (workflowAnchorTerms(workflow).length > 0 && hits.length < Math.min(2, workflowAnchorTerms(workflow).length)) warnings.push(`query anchor hits low: ${hits.join(", ")}`);
@@ -720,8 +734,8 @@ function buildClickTrace(params: {
   const tagsMatched = Array.from(new Set([...matchedCards, ...deepReadCards, ...linkedCards.map((trail) => trail.card)].flatMap((card) => [...(card.tags ?? []), ...(card.categories ?? [])]))).slice(0, 24);
   const diagramNodes = 1 + keywords.slice(0, 12).length + matchedCards.slice(0, 8).length;
   const diagramEdges = keywords.slice(0, 12).length + matchedCards.slice(0, 8).reduce((sum, card) => sum + Math.min(3, cardForTrace(card, keywords).matchedKeywords.length), 0) + linkedCards.length;
-  const forbiddenTermsFound = ["backend", "traversal", "source graph", "prompt", "system language", "Hackteria"]
-    .filter((term) => (visibleText ?? "").toLowerCase().includes(term.toLowerCase()));
+  const textForValidation = visibleText ?? (html ? extractPublicArtifactText(html) : "");
+  const forbiddenTermsFound = publicForbiddenMatches(textForValidation);
   return {
     requestId,
     query,
@@ -849,8 +863,7 @@ export async function generateBrowserAssociationZine(query: string, petRole?: st
     persistClickTrace(buildClickTrace({ requestId, query, language, workflow, petRole, artifact, html: articleHtml, errorClass: "public_validation_error", errorMessage: errorMessage(error) }));
     throw error;
   }
-  const forbiddenTermsFound = ["backend", "traversal", "source graph", "prompt", "system language", "Hackteria"]
-    .filter((term) => visibleText.toLowerCase().includes(term.toLowerCase()));
+  const forbiddenTermsFound = publicForbiddenMatches(visibleText);
   const trace = buildClickTrace({
     requestId,
     query,

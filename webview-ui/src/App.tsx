@@ -84,6 +84,8 @@ import { vscode } from "./vscodeApi.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   createNextTinyRoomLayout,
+  NEXT_ROOM_GRID_SIZE,
+  NEXT_ROOM_MAP_PADDING,
   nextTinyRoomNpcPlacements,
 } from "./world/peachBlossomWorld.js";
 
@@ -112,6 +114,10 @@ const topicLabels: Record<string, string> = {
 
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
+const CENTRAL_COMPUTER_TILE = {
+  col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
+  row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
+};
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
 const COMMUNITY_NEWS_LINKS = [
@@ -306,6 +312,79 @@ function AssociationErrorPage({ message, language, onRetry }: { message: string;
       {onRetry && (
         <button className="pbs-game-button" type="button" onClick={onRetry}>{copy.retry}</button>
       )}
+    </div>
+  );
+}
+
+function CentralComputerDialogue({
+  language,
+  onClose,
+  onOpenAssociationZine,
+}: {
+  language: LanguageCode;
+  onClose: () => void;
+  onOpenAssociationZine: () => void;
+}) {
+  const [messages, setMessages] = useState<Array<{ speaker: string; text: string }>>(() => [
+    {
+      speaker: "PBS Computer",
+      text: language === "zh-TW"
+        ? "這裡是 PBS LLM wiki docking station。NPC 會回憶 NGM 訪談；小誌與聯想功能只從這台電腦啟動。"
+        : "This is the PBS LLM wiki docking station. NPCs recall NGM interviews; zines and Association only start from this computer.",
+    },
+  ]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  const replies = {
+    llmWiki: language === "zh-TW"
+      ? "LLM wiki 是給語言模型閱讀的 Obsidian wiki 結構。它把 public reading、association / semantic layers、entity layers 和 raw evidence 分層，讓模型先讀整理層與語意橋，再沿著 wikilinks 回到來源證據。"
+      : "An LLM wiki is an Obsidian wiki structured for language models. It separates public reading, association/semantic layers, entity layers, and raw evidence so the model reads curated bridges first, then follows wikilinks back to evidence.",
+    association: language === "zh-TW"
+      ? "聯想功能會把玩家問題當成 wiki query：先讀 PBS semantic / entity layers，找相關 notes，追第一層 wikilinks，再用來源支撐生成小誌。它不是 NPC 回答功能；NPC 只回到 NGM transcript 記憶。"
+      : "Association treats the player question as a wiki query: it reads PBS semantic/entity layers, finds related notes, follows first-layer wikilinks, and generates a zine from source-grounded material. It is separate from NPC dialogue; NPCs only recall NGM transcript memory.",
+  };
+
+  function ask(label: string, text: string) {
+    setMessages((current) => [...current, { speaker: "You", text: label }, { speaker: "PBS Computer", text }]);
+  }
+
+  return (
+    <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
+      <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
+        <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
+          <div>
+            <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">LLM WIKI DOCK</p>
+            <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2">PBS Computer</h2>
+            <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">Association / 聯想 docking terminal</p>
+          </div>
+          <button className="rpg-dialogue-x pbs-frame-action" type="button" onClick={onClose}>X</button>
+        </div>
+        <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
+          <div className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
+            {messages.map((message, index) => (
+              <p key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
+                <span className="text-accent-bright">{message.speaker}: </span>
+                {message.text}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
+          <button className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => ask("什麼是 LLM wiki？", replies.llmWiki)}>1. 什麼是 LLM wiki？</button>
+          <button className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => ask("什麼是聯想功能？", replies.association)}>2. 什麼是聯想功能？</button>
+          <button className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble" type="button" onClick={onOpenAssociationZine}>3. 📚 小書維基 / 生成小誌</button>
+        </div>
+      </section>
     </div>
   );
 }
@@ -754,6 +833,7 @@ function App() {
   const [chatMessages, setChatMessages] = useState<MultiplayerChatMessage[]>([]);
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
+  const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
@@ -1053,6 +1133,13 @@ function App() {
       }
     }
     return nearest?.id ?? null;
+  }, [officeState]);
+
+  const isPlayerNearCentralComputer = useCallback((): boolean => {
+    const player = officeState.characters.get(PLAYER_ID);
+    if (!player) return false;
+    const dist = Math.abs(player.tileCol - CENTRAL_COMPUTER_TILE.col) + Math.abs(player.tileRow - CENTRAL_COMPUTER_TILE.row);
+    return dist <= 2;
   }, [officeState]);
 
   const getPlayerDistanceFromCharacter = useCallback(
@@ -1556,6 +1643,10 @@ function App() {
         }
       }
 
+      if (computerDialogueOpenRef.current && !isPlayerNearCentralComputer()) {
+        setIsComputerDialogueOpen(false);
+      }
+
       setSplitPanel((current) => {
         if (!current || !splitPanelAnchor) return current;
         const awayFromNpc =
@@ -1574,6 +1665,7 @@ function App() {
   }, [
     appMode,
     getPlayerDistanceFromCharacter,
+    isPlayerNearCentralComputer,
     layoutReady,
     officeState,
     playerProfile,
@@ -1582,6 +1674,7 @@ function App() {
 
   const nearbyNpcIdRef = useRef<number | null>(null);
   const activeDialogueIdRef = useRef<number | null>(null);
+  const computerDialogueOpenRef = useRef(false);
   const latestA2ANoticeIdRef = useRef<string | null>(null);
   const worldNoticeTimerRef = useRef<number | null>(null);
   useEffect(() => {
@@ -1590,6 +1683,9 @@ function App() {
   useEffect(() => {
     activeDialogueIdRef.current = activeDialogueId;
   }, [activeDialogueId]);
+  useEffect(() => {
+    computerDialogueOpenRef.current = isComputerDialogueOpen;
+  }, [isComputerDialogueOpen]);
 
   useEffect(() => {
     if (!simSnapshot || appMode !== "interactive") return;
@@ -1689,11 +1785,22 @@ function App() {
 
       if (event.key === "Escape") {
         setActiveDialogueId(null);
+        setIsComputerDialogueOpen(false);
         return;
       }
       if (event.code === "Space") {
         if (
           activeDialogueIdRef.current === null &&
+          !computerDialogueOpenRef.current &&
+          isPlayerNearCentralComputer()
+        ) {
+          event.preventDefault();
+          setIsComputerDialogueOpen(true);
+          return;
+        }
+        if (
+          activeDialogueIdRef.current === null &&
+          !computerDialogueOpenRef.current &&
           nearbyNpcIdRef.current !== null
         ) {
           event.preventDefault();
@@ -1746,7 +1853,7 @@ function App() {
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onWindowBlur);
     };
-  }, [appMode, layoutReady, officeState, playerProfile]);
+  }, [appMode, isPlayerNearCentralComputer, layoutReady, officeState, playerProfile]);
 
   const handleMobileMapTap = useCallback(
     (col: number, row: number) => {
@@ -1962,6 +2069,8 @@ function App() {
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
 
+  const isNearCentralComputer = playerProfile && appMode === "interactive" ? isPlayerNearCentralComputer() : false;
+
   const promptPosition = (() => {
     if (!promptAnchor || !containerRef.current) return null;
     const npc = officeState.characters.get(promptAnchor.npcId);
@@ -1980,6 +2089,23 @@ function App() {
     return {
       left: (deviceOffsetX + npc.x * editor.zoom) / dpr,
       top: (deviceOffsetY + (npc.y - 24) * editor.zoom) / dpr,
+    };
+  })();
+
+  const computerPromptPosition = (() => {
+    if (!isNearCentralComputer || !containerRef.current) return null;
+    const rect = containerRef.current.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const layout = officeState.getLayout();
+    const mapW = layout.cols * TILE_SIZE * editor.zoom;
+    const mapH = layout.rows * TILE_SIZE * editor.zoom;
+    const canvasW = rect.width * dpr;
+    const canvasH = rect.height * dpr;
+    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    return {
+      left: (deviceOffsetX + (CENTRAL_COMPUTER_TILE.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
+      top: (deviceOffsetY + (CENTRAL_COMPUTER_TILE.row * TILE_SIZE - 18) * editor.zoom) / dpr,
     };
   })();
 
@@ -2041,6 +2167,7 @@ function App() {
     appMode === "interactive" &&
     !isSplitOpen &&
     !activeDialoguePersona &&
+    !isComputerDialogueOpen &&
     !selectedDispatchPet &&
     !selectedPet &&
     !selectedNpcInfo &&
@@ -2461,6 +2588,7 @@ function App() {
             nearbyPersona &&
             nearbyNpcId !== abaoAgentId &&
             !activeDialoguePersona &&
+            !isComputerDialogueOpen &&
             promptPosition && (
               <button
                 className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
@@ -2492,7 +2620,30 @@ function App() {
               </button>
             )}
 
-          {!isEncounterUiOpen && !activeDialoguePersona && !splitPanel && nameTags.map((tag) => (
+          {appMode === "interactive" &&
+            isNearCentralComputer &&
+            computerPromptPosition &&
+            !activeDialoguePersona &&
+            !isComputerDialogueOpen &&
+            !isEncounterUiOpen && (
+              <button
+                className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
+                style={{
+                  left: computerPromptPosition.left,
+                  top: computerPromptPosition.top,
+                  background: "rgba(24, 24, 40, 0.62)",
+                  backdropFilter: "blur(1px)",
+                }}
+                type="button"
+                onClick={() => setIsComputerDialogueOpen(true)}
+              >
+                <p className="text-lg leading-snug text-text">PBS Computer</p>
+                <p className="text-base text-text mt-1">LLM wiki / 聯想</p>
+                <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, "hud.pressToTalk")}</p>
+              </button>
+            )}
+
+          {!isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => (
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
@@ -2622,29 +2773,6 @@ function App() {
                   topicLabels={topicLabels}
                   language={selectedLanguage}
                   onClose={() => setActiveDialogueId(null)}
-                  onOpenWiki={() => {
-                    const requestLanguage = selectedLanguage;
-                    const query = playerProfile.question || playerProfile.mission;
-                    void openAssociationZineSplit({
-                      query,
-                      petRole: playerProfile.avatarTitle,
-                      language: requestLanguage,
-                      anchorId: activeDialogueCharacter.id,
-                    });
-                  }}
-                  onOpenWikiResult={(link) => {
-                    setSplitPanel({
-                      kind: "externalLink",
-                      title: link.title,
-                      url: link.url,
-                      description: link.description,
-                    });
-                    setSplitPanelAnchor({
-                      kind: "npc",
-                      id: activeDialogueCharacter.id,
-                    });
-                    setIsSplitExpanded(false);
-                  }}
                   onOpenMusic={
                     activeDialoguePersona.id === "wukir-suryadi"
                       ? () => {
@@ -2677,6 +2805,21 @@ function App() {
                 />
               </Suspense>
             )}
+
+          {appMode === "interactive" && isComputerDialogueOpen && playerProfile && (
+            <CentralComputerDialogue
+              language={selectedLanguage}
+              onClose={() => setIsComputerDialogueOpen(false)}
+              onOpenAssociationZine={() => {
+                setIsComputerDialogueOpen(false);
+                void openAssociationZineSplit({
+                  query: playerProfile.question || playerProfile.mission,
+                  petRole: playerProfile.avatarTitle,
+                  language: selectedLanguage,
+                });
+              }}
+            />
+          )}
 
           {worldNotice && (
             <div className="world-resonance-notice">{worldNotice}</div>
@@ -3232,7 +3375,7 @@ function App() {
               <div className="world-wiki-content world-about-content">
                 <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>
                 <p>這個遊戲的本體是一個研究訪談稿 <em>Non-Governmental Matters</em>。該研究採訪了 14 位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。</p>
-                <p>玩家以 Why? 進入遊戲，詢問 NGM 受訪者 NPC 關於他自己的訪談內容、對社群可持續性的看法；NPC 交談視窗中的 wiki 按鈕會以玩家問題與該 NPC 的材料生成一份可以列印出來的小誌。</p>
+                <p>玩家以 Why? 進入遊戲，詢問 NGM 受訪者 NPC 關於他自己的訪談內容、對社群可持續性的看法；NPC 現在是回憶入口，只回到 NGM transcript。中央電腦才會把玩家問題接到 LLM wiki，啟動聯想功能並生成一份可以列印出來的小誌。</p>
                 <p>每位 NPC 的人格是經訪談逐字稿調校過後的 DeepSeek LLM。</p>
               </div>
             ) : splitPanel.kind === "archivePdf" ? (
