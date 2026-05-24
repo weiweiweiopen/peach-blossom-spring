@@ -16,7 +16,7 @@ import type { ChatEvidence } from './localChatbot.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
 
-const associationKnowledgeText = '聯想功能會把玩家的問題、目前交談的 NPC 訪談記憶、wiki links 與 PBS LLM wiki 入口整理成查詢脈絡；接著把每個頁面或片段當成 node，依照文字相似度與主題關係形成 node vector of page relations。生成小誌時，系統沿著這些關係挑出最能互相照亮的節點，組成 association page，而不是把資料庫搜尋結果直接堆在一起。';
+const associationKnowledgeText = '聯想功能是 PBS 裡把玩家問題接到 LLM wiki 的生成小誌工具。它先讀 semantic/entity layers 與 wiki 入口，再追 wikilinks 到來源證據，產生有結構的小誌與可讀的 run trace。之後也可以把生成結果和 lint 檢查回饋給 wiki，讓缺少的索引、概念頁、來源橋與新問題逐步長出來。';
 
 export interface KnowledgeBase {
   id: string;

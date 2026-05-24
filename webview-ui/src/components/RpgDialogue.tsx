@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
-import { askDeepSeekPersonaWithEvidence, buildKnowledgeBase, loadKnowledgeBase } from '../deepseekClient.js';
+import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
 import { calibratePersonaReply, type ChatEvidence, localNpcChat, retrieveNpcEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
@@ -87,16 +87,6 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
   );
 }
 
-function cleanPromptSnippet(text: string, language: LanguageCode): string {
-  const oneLine = text
-    .replace(/^#+\s*/, '')
-    .replace(/^Q\d+[：:]\s*/, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const withoutLatin = language === 'zh-TW' ? oneLine.replace(/[A-Za-z][A-Za-z0-9._/-]*/g, '').replace(/\s+/g, ' ') : oneLine;
-  return withoutLatin.replace(/[「」"']/g, '').trim();
-}
-
 function shorten(text: string, max: number): string {
   const normalized = text.replace(/\s+/g, ' ').trim();
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
@@ -113,29 +103,15 @@ function naturalRoleLabel(persona: Persona, language: LanguageCode): string {
   return shorten(persona.role, 48);
 }
 
-function naturalSnippet(text: string, language: LanguageCode, fallback: string): string {
-  const cleaned = cleanPromptSnippet(text, language);
-  if (language === 'zh-TW') {
-    const withoutLatinTags = cleaned
-      .replace(/[A-Za-z][A-Za-z0-9/_-]*(?:\s+[A-Za-z][A-Za-z0-9/_-]*){1,}/g, '')
-      .replace(/[A-Za-z][A-Za-z0-9/_-]{3,}/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-    return shorten(withoutLatinTags || fallback, 24);
-  }
-  return shorten(cleaned || fallback, 52);
-}
-
 function makeFixedQuestions(language: LanguageCode, personaId: string): string[] {
   void personaId;
-  const associationQuestion = t(language, 'dialogue.associationQuestion');
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': ['你是誰？', '這裡是哪裡？', associationQuestion],
-    en: ['Who are you?', 'Where am I?', associationQuestion],
-    id: ['Siapa kamu?', 'Di mana saya?', associationQuestion],
-    de: ['Wer bist du?', 'Wo bin ich?', associationQuestion],
-    ja: ['あなたは誰？', 'ここはどこ？', associationQuestion],
-    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', associationQuestion],
+    'zh-TW': ['你是誰？', '這是哪？', '什麼是 LLM wiki？', '什麼是聯想功能？'],
+    en: ['Who are you?', 'Where is this?', 'What is an LLM wiki?', 'What is Association?'],
+    id: ['Siapa kamu?', 'Ini di mana?', 'Apa itu LLM wiki?', 'Apa itu Association?'],
+    de: ['Wer bist du?', 'Wo ist das hier?', 'Was ist ein LLM-Wiki?', 'Was ist Association?'],
+    ja: ['あなたは誰？', 'ここはどこ？', 'LLM wiki とは？', 'Association とは？'],
+    th: ['คุณคือใคร?', 'ที่นี่คือที่ไหน?', 'LLM wiki คืออะไร?', 'Association คืออะไร?'],
   };
   return [...questions[language]];
 }
@@ -153,87 +129,6 @@ function WukirMusicButton({ onOpenMusic }: { onOpenMusic?: () => void }) {
   );
 }
 
-
-function makeSuggestedQuestions(
-  transcript: string,
-  persona: Persona,
-  player: PlayerProfile,
-  language: LanguageCode,
-  seed: number,
-): string[] {
-  const sourceLines = transcript
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => /^##\s*Q\d+[：:]/.test(line));
-  const fallbackLines = transcript
-    .split(/[。！？.!?]\s*/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > (language === 'zh-TW' ? 18 : 40));
-  const candidates = sourceLines.length > 0 ? sourceLines : fallbackLines;
-  const mission = shorten(
-    player.mission?.trim() || t(language, 'dialogue.fallbackMission'),
-    language === 'zh-TW' ? 34 : 72,
-  );
-  const skills = shorten(player.skills?.trim() || t(language, 'dialogue.fallbackSkills'), language === 'zh-TW' ? 22 : 48);
-  const role = naturalRoleLabel(persona, language);
-  const snippets = candidates.map((item) => naturalSnippet(item, language, role)).filter(Boolean);
-  const offset = snippets.length > 0 ? (seed + persona.id.length) % snippets.length : 0;
-  const detail = snippets.length > 0
-    ? shorten(snippets[offset], language === 'zh-TW' ? 24 : 52)
-    : role;
-  const zhTemplates = [
-    `你說你是${role}？你對「${mission}」有什麼看法？`,
-    `如果我想用「${skills}」開始做這件事，你會建議我先避開什麼？`,
-    `你剛剛提到「${detail}」，這跟我的任務有什麼關係？`,
-    `以你的經驗，我這個想法最容易在哪裡卡住？`,
-    `如果我們才剛認識，你會先問我哪一個問題？`,
-  ];
-  const enTemplates = [
-    `You work with ${role}. What do you think about "${mission}"?`,
-    `If I start with ${skills}, what should I be careful about first?`,
-    `You mentioned "${detail}". How does that connect to my mission?`,
-    `From your experience, where might this idea get stuck?`,
-    `If we just met, what would you ask me first?`,
-  ];
-  const idTemplates = [
-    `Kamu bekerja dengan ${role}. Apa pendapatmu tentang "${mission}"?`,
-    `Jika saya mulai dengan ${skills}, apa yang harus saya waspadai terlebih dahulu?`,
-    `Kamu menyebut "${detail}". Bagaimana itu terhubung dengan misi saya?`,
-    `Menurut pengalamanmu, di mana ide ini mungkin tersendat?`,
-    `Jika kita baru bertemu, apa yang akan kamu tanyakan kepada saya lebih dulu?`,
-  ];
-  const deTemplates = [
-    `Du arbeitest mit ${role}. Was denkst du über "${mission}"?`,
-    `Wenn ich mit ${skills} beginne, worauf sollte ich zuerst achten?`,
-    `Du hast "${detail}" erwähnt. Wie hängt das mit meiner Mission zusammen?`,
-    `Wo könnte diese Idee deiner Erfahrung nach stecken bleiben?`,
-    `Wenn wir uns gerade erst kennengelernt hätten, was würdest du mich zuerst fragen?`,
-  ];
-  const jaTemplates = [
-    `あなたは${role}として活動しているのですね。「${mission}」についてどう思いますか？`,
-    `「${skills}」から始めるなら、最初に何を避けるべきですか？`,
-    `さきほどの「${detail}」は、私の任務とどうつながりますか？`,
-    `あなたの経験では、このアイデアはどこで詰まりやすいですか？`,
-    `初対面なら、まず私にどんな質問をしますか？`,
-  ];
-  const thTemplates = [
-    `คุณทำงานกับ${role} คุณคิดอย่างไรกับ “${mission}”?`,
-    `ถ้าฉันเริ่มจาก “${skills}” ควรระวังอะไรเป็นอย่างแรก?`,
-    `คุณพูดถึง “${detail}” สิ่งนี้เกี่ยวกับภารกิจของฉันอย่างไร?`,
-    `จากประสบการณ์ของคุณ ไอเดียนี้อาจติดขัดตรงไหน?`,
-    `ถ้าเราเพิ่งรู้จักกัน คุณจะถามฉันเรื่องอะไรก่อน?`,
-  ];
-  const templatesByLanguage: Record<LanguageCode, string[]> = {
-    'zh-TW': zhTemplates,
-    en: enTemplates,
-    id: idTemplates,
-    de: deTemplates,
-    ja: jaTemplates,
-    th: thTemplates,
-  };
-  const templates = templatesByLanguage[language];
-  return Array.from({ length: 3 }, (_, index) => templates[(seed + index) % templates.length]);
-}
 
 const localizedPersonaIntros: Record<string, Record<LanguageCode, string>> = {
   abao: {
@@ -376,23 +271,44 @@ function wikiSearchIntro(language: LanguageCode, count: number): string {
   return count > 0 ? `I found ${count} close local wiki pages. You can open them below.` : 'I checked the local wiki, but this query did not return a precise page yet. Try a more specific material, work, or method term.';
 }
 
+function fixedQuestionReply(prompt: string, persona: Persona, language: LanguageCode): string | null {
+  const normalized = prompt.toLowerCase().replace(/\s+/g, ' ').trim();
+  const role = naturalRoleLabel(persona, language);
+  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
+
+  if (/^(你是誰？?|who are you\??|siapa kamu\??|wer bist du\??|あなたは誰？?|คุณคือใคร\??)$/i.test(normalized)) {
+    if (language === 'zh-TW') return `我是 ${persona.name}。在這裡，我被整理成一個可以對話的 ${role}：我不是完整本人，而是由訪談、wiki 線索與 PBS 的角色設定組成的入口。${intro}`;
+    return `I am ${persona.name}. Here I am a conversational ${role}: not the complete person, but an entry point composed from interviews, wiki traces, and the PBS character layer. ${intro}`;
+  }
+
+  if (/^(這是哪？?|這裡是哪裡？?|where is this\??|where am i\??|ini di mana\??|wo ist das hier\??|ここはどこ？?|ที่นี่คือที่ไหน\??)$/i.test(normalized)) {
+    if (language === 'zh-TW') return '這裡是 Peach Blossom Spring：一個把 NGM 訪談、PBS wiki、角色對話和生成小誌接在一起的互動場景。你可以和 NPC 談話，也可以把你的問題交給 LLM wiki，讓它沿著整理層、聯想層和來源層生成一份小誌。';
+    return 'This is Peach Blossom Spring: an interactive scene connecting NGM interviews, the PBS wiki, character dialogue, and generated zines. You can talk with NPCs or send a question into the LLM wiki so it can produce a zine from organized notes, associations, and sources.';
+  }
+
+  if (/llm\s*-?\s*wiki|什麼是\s*llm\s*wiki|llm wiki とは|apa itu llm wiki|was ist ein llm-wiki/i.test(normalized)) {
+    if (language === 'zh-TW') return 'LLM wiki 是給語言模型讀的 Obsidian wiki 結構。它不是只放原始資料，而是把 Public / Reading、Association / Semantic、Evidence / Raw Source 分層，讓模型先讀整理層與語意/實體橋，再追 wikilinks 到來源證據。它同時也可以用 lint 和維護規則檢查缺口，讓 wiki 在使用中自我演化、長出新的問題、索引和小誌材料。';
+    return 'An LLM wiki is an Obsidian wiki structured for language models. It separates public reading pages, association/semantic layers, and raw evidence, so the model reads curated entry points first and follows wikilinks into sources. Lint and maintainer rules can also expose gaps, helping the wiki evolve into new questions, indexes, and zine material.';
+  }
+
+  if (/聯想功能|association|什麼是聯想功能|apa itu association|was ist association|association とは/i.test(normalized)) {
+    if (language === 'zh-TW') return '聯想功能是 PBS 裡把「玩家問題」接到 LLM wiki 的生成工具。它會把問題當成查詢：先讀 semantic / entity layers，找相關 notes，追第一層 wikilinks，再用來源支撐生成小誌。之後也可以把生成結果與 lint 檢查回饋到 wiki，讓缺少的索引、概念頁和來源橋逐步被補起來。';
+    return 'Association is the PBS tool that docks a player question into the LLM wiki. It treats the question as a query, reads semantic/entity layers, follows wikilinks, and uses source evidence to generate a zine. The resulting traces and lint checks can feed back into the wiki so missing indexes, concepts, and source bridges can be improved.';
+  }
+
+  return null;
+}
+
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenWiki, onOpenWikiResult, onOpenMusic, onSimEvent }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [areSuggestionsOpen, setAreSuggestionsOpen] = useState(false);
-  const [questionSeed, setQuestionSeed] = useState(() => Math.floor(Math.random() * 1000));
   const messageLogRef = useRef<HTMLDivElement>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
-  const emptyKnowledge = useMemo(() => buildKnowledgeBase(persona), [persona]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
-  const knowledge = loadedKnowledge ?? emptyKnowledge;
-  const suggestedQuestions = useMemo(() => {
-    const transcript = language === 'zh-TW' ? knowledge.transcript_zh || knowledge.transcript_en : knowledge.transcript_en || knowledge.transcript_zh;
-    return makeSuggestedQuestions(transcript, persona, player, language, questionSeed);
-  }, [knowledge.transcript_en, knowledge.transcript_zh, language, persona, player, questionSeed]);
   const fixedQuestions = useMemo(() => makeFixedQuestions(language, persona.id), [language, persona.id]);
 
   useEffect(() => {
@@ -416,7 +332,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     setQuestion('');
     setError('');
     setAreSuggestionsOpen(false);
-    setQuestionSeed(Math.floor(Math.random() * 1000));
   }, [language, persona]);
 
   useEffect(() => {
@@ -465,6 +380,11 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     try {
       const topic = resolveTopic(trimmed);
       onSimEvent?.(trimmed, topic);
+      const fixedReply = fixedQuestionReply(trimmed, persona, language);
+      if (fixedReply) {
+        setMessages((prev) => [...prev, { speaker: persona.name, text: fixedReply }]);
+        return;
+      }
       const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
       if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
       const chatKnowledge = { ...dialogueKnowledge, responses: persona.responses };
@@ -581,18 +501,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
               <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
                 {fixedQuestions.map((item) => (
-                  <button
-                    key={item}
-                    className="rpg-dialogue-chip pbs-game-button"
-                    type="button"
-                    onClick={() => handleSuggestedPrompt(item)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-              <div className="rpg-dialogue-suggestion-list flex flex-wrap gap-3">
-                {suggestedQuestions.map((item) => (
                   <button
                     key={item}
                     className="rpg-dialogue-chip pbs-game-button"
