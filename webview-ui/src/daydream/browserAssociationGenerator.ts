@@ -18,8 +18,6 @@ import semanticTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/T
 import semanticEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
 import entityReadme from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import wikiIndex from "../../../obsidian-vault/Wiki/index.md?raw";
 // @ts-ignore Vite raw official HTML template import.
 import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
@@ -55,7 +53,7 @@ const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "PBS Semantic Layers / Tools", path: "Sources/PBS Semantic Layers/Tools.md", text: semanticTools, role: "tool and method index" },
   { title: "PBS Semantic Layers / Events", path: "Sources/PBS Semantic Layers/Events.md", text: semanticEvents, role: "event and workshop index" },
   { title: "PBS Entity Layers / README", path: "Sources/PBS Entity Layers/README.md", text: entityReadme, role: "entity bridge overview" },
-  { title: "LLM Wiki / index", path: "Wiki/index.md", text: wikiIndex, role: "public wiki index" },
+  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages as orientation and semantic/entity/source layers as evidence bridges.", role: "public wiki index" },
 ];
 let activeDeepSeekTraceCalls: Array<{ status: string; httpStatus: number | null; durationMs: number; errorClass: string | null }> = [];
 const FUTURE_MODES = ["art-making method", "theory", "scientific research method", "community theory"] as const;
