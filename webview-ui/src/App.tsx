@@ -1668,7 +1668,7 @@ function App() {
     if (qaUi.panel === "zine") {
       setSplitPanel({
         kind: "finalDocument",
-        title: "QA zine loading",
+        title: "Sorgearbeit in offene Communities: Eine unsichtbare Infrastruktur / Community kitchens and technical experiments",
         url: "",
         language: selectedLanguage,
         query: profile.question,

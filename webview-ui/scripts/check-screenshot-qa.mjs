@@ -82,9 +82,22 @@ async function measurePage(page, language, panel) {
     for (const element of overflowTargets) {
       const style = window.getComputedStyle(element);
       const allowsXScroll = ["auto", "scroll"].includes(style.overflowX);
-      if (!allowsXScroll && element.scrollWidth > element.clientWidth + 2) {
+      const allowsEllipsis = style.textOverflow === "ellipsis" && style.overflowX === "hidden" && style.whiteSpace === "nowrap";
+      if (!allowsXScroll && !allowsEllipsis && element.scrollWidth > element.clientWidth + 2) {
         const label = element.getAttribute("data-ui-part") || element.className || element.tagName;
         failures.push(`${language}/${panel}: horizontal overflow in ${String(label).slice(0, 80)} (${element.scrollWidth}>${element.clientWidth})`);
+      }
+    }
+    for (const splitPanel of Array.from(document.querySelectorAll('.world-split-panel')).filter(visible)) {
+      const close = splitPanel.querySelector('.world-split-close');
+      if (!close || !visible(close)) {
+        failures.push(`${language}/${panel}: split panel close button not visible`);
+        continue;
+      }
+      const panelRect = splitPanel.getBoundingClientRect();
+      const closeRect = close.getBoundingClientRect();
+      if (closeRect.right > panelRect.right + 1 || closeRect.left < panelRect.left - 1 || closeRect.top < panelRect.top - 1) {
+        failures.push(`${language}/${panel}: split panel close button outside panel bounds`);
       }
     }
     for (const form of Array.from(document.querySelectorAll('.rpg-dialogue-form')).filter(visible)) {

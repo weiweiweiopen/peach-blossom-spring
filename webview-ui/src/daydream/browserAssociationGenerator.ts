@@ -233,6 +233,45 @@ function isAllowedZineCard(card: SourceCard): boolean {
   return ENABLED_SOURCE_FAMILIES.includes(family as AllowedSourceFamily);
 }
 
+function githubVaultUrl(path: string): string {
+  return `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/obsidian-vault/${encodeURI(path)}`;
+}
+
+function linkForCard(card: Partial<SourceCard>): string {
+  if (card.url) return card.url;
+  if (card.path) return githubVaultUrl(card.path);
+  return "";
+}
+
+function regexEscape(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function linkKnownPageNames(html: string, workflow: Workflow): string {
+  const candidates = [
+    ...entryNoteCards(),
+    ...workflow.step1.evidenceCards,
+    ...workflow.step1.report.matchedCards,
+    ...workflow.step1.report.expandedCards,
+    ...workflow.step1.report.deepReadCards,
+    ...workflow.step1.report.linkedCards.map((trail) => trail.card),
+  ];
+  const targets = new Map<string, string>();
+  for (const card of candidates) {
+    const title = String(card.title ?? "").trim();
+    const url = linkForCard(card);
+    if (title.length < 4 || !url) continue;
+    targets.set(title, url);
+  }
+  const sortedTargets = Array.from(targets.entries()).sort((a, b) => b[0].length - a[0].length).slice(0, 80);
+  const replaceInText = (text: string) => sortedTargets.reduce((current, [title, url]) => {
+    const escapedTitle = escapeHtml(title);
+    const pattern = new RegExp(`(?<![\\w/])${regexEscape(escapedTitle)}(?![\\w/])`, "gu");
+    return current.replace(pattern, `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer" style="color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;">${escapedTitle}</a>`);
+  }, text);
+  return html.split(/(<[^>]+>)/g).map((part) => part.startsWith("<") ? part : replaceInText(part)).join("");
+}
+
 function isWikiEntryCard(card: Partial<SourceCard>): boolean {
   return String(card.source ?? "").includes("PBS LLM Wiki") || WIKI_ENTRY_NOTES.some((note) => card.path === note.path);
 }
@@ -1104,7 +1143,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
     throw new Error("Only the first PBS HTML zine template is allowed.");
   }
-  let articleFragment = fragment;
+  let articleFragment = linkKnownPageNames(fragment, workflow);
   let articleHtml = htmlPage(articleFragment, artifact.title, language);
   let visibleText = "";
   try {

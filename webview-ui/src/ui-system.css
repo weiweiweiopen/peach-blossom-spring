@@ -235,7 +235,8 @@
 }
 
 .pbs-interaction-root .world-split-toolbar h2 {
-  max-width: calc(100% - 84px) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
   font-size: var(--ui-type-subtitle) !important;
   line-height: var(--ui-line-subtitle) !important;
   white-space: nowrap !important;

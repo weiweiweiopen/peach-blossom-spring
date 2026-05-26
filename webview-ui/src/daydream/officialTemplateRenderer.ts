@@ -37,6 +37,18 @@ function kineticTitle(title: string, language: TemplateLanguage = "zh-TW"): stri
   }).join("");
 }
 
+function templateCopy(language: TemplateLanguage) {
+  const copy: Record<TemplateLanguage, { map: string; sequence: string; closing: string; caveat: string }> = {
+    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
+    en: { map: "Sound map", sequence: "Reading order", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
+    id: { map: "Peta suara", sequence: "Urutan baca", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama." },
+    de: { map: "Klangkarte", sequence: "Leseordnung", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden." },
+    ja: { map: "音の地図", sequence: "読む順序", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。" },
+    th: { map: "แผนที่เสียง", sequence: "ลำดับการอ่าน", closing: "ปิดท้าย", caveat: "ให้ภาพ เสียง และจริยธรรมถูกได้ยินร่วมกัน" },
+  };
+  return copy[language];
+}
+
 const FRAME_PALETTES = [
   { sheet: "#fffaf0", title: "#fffdf6", body: "#fffdf6", shadow: "#bac3d9", label: "#ffd4ff" },
   { sheet: "#ffd4ff", title: "#fffaf0", body: "#fffdf6", shadow: "#69c3aa", label: "#fcf46b" },
@@ -75,6 +87,7 @@ function zineLayoutGovernanceCss(): string {
 }
 
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
+  const copy = templateCopy(language);
   const sections = artifact.sections.slice(0, 4);
   const refs = artifact.protocol.slice(0, 6);
   const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
@@ -85,13 +98,13 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
   </main>
 </section>`).join("\n");
   return `<style>${extractStyle(template.html)}${zineLayoutGovernanceCss()}</style><section class="page p1" data-official-template="${template.filename}" style="${frameStyle(0)}">
-  <header class="top"><span class="no">01</span><span class="label">聲音圖譜</span></header>
+  <header class="top"><span class="no">01</span><span class="label">${escapeHtml(copy.map)}</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(artifact.title, language)}</h1><p class="lead">${escapeHtml(artifact.subtitle)}</p></div>
-    <div class="bodyGrid"><article class="body"><p>${escapeHtml(artifact.opening)}</p><p>${escapeHtml(artifact.proposition)}</p></article><aside class="refs"><b>演奏順序</b><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
+    <div class="bodyGrid"><article class="body"><p>${escapeHtml(artifact.opening)}</p><p>${escapeHtml(artifact.proposition)}</p></article><aside class="refs"><b>${escapeHtml(copy.sequence)}</b><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
   </main>
 </section>${sectionPages}<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + 1)}">
-  <header class="top"><span class="no">06</span><span class="label">尾聲</span></header>
+  <header class="top"><span class="no">06</span><span class="label">${escapeHtml(copy.closing)}</span></header>
   <main class="sheet"><div class="bodyGrid bodyGrid--full"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
 </section>`;
 }
@@ -108,12 +121,13 @@ ${sections.map((section, index) => `<section class="page ${index % 2 ? "spread" 
 }
 
 function renderAinoMotion(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
+  const copy = templateCopy(language);
   const sections = artifact.sections.slice(0, 4);
   return `<style>${extractStyle(template.html)}</style>${sections.map((section, pageIndex) => `<section class="page p${Math.min(pageIndex + 1, 4)}" data-official-template="${template.filename}">
-  <header class="mast"><div class="mark">聲音圖譜</div><div class="pageNo">${String(pageIndex + 1).padStart(2, "0")}</div><div class="label">${String(pageIndex + 1).padStart(2, "0")}</div></header>
+  <header class="mast"><div class="mark">${escapeHtml(copy.map)}</div><div class="pageNo">${String(pageIndex + 1).padStart(2, "0")}</div><div class="label">${String(pageIndex + 1).padStart(2, "0")}</div></header>
   <main class="grid"><div class="titleCol"><h1>${kineticTitle(pageIndex === 0 ? artifact.title : section.title, language)}</h1><p class="dek">${escapeHtml(pageIndex === 0 ? artifact.subtitle : section.title)}</p><div class="motionRail" aria-hidden="true"><i></i></div></div>
   <article class="textCol"><p>${escapeHtml(pageIndex === 0 ? artifact.opening : section.body)}</p><p>${escapeHtml(pageIndex === 0 ? artifact.proposition : (section.pullQuote ?? artifact.proposition))}</p></article>
-  <aside class="indexCol">${pageIndex === 0 ? `<ol>${artifact.protocol.slice(0, 6).map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol>` : ""}</aside></main><div class="sheetMark" aria-hidden="true"></div>${pageIndex === sections.length - 1 ? `<footer>${escapeHtml(artifact.quietCaveat ?? "讓圖像、聲音與倫理一起被聽見。")}</footer>` : ""}
+  <aside class="indexCol">${pageIndex === 0 ? `<ol>${artifact.protocol.slice(0, 6).map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol>` : ""}</aside></main><div class="sheetMark" aria-hidden="true"></div>${pageIndex === sections.length - 1 ? `<footer>${escapeHtml(artifact.quietCaveat ?? copy.caveat)}</footer>` : ""}
 </section>`).join("\n")}`;
 }
 

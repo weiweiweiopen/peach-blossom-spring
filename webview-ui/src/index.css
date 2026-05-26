@@ -1981,20 +1981,36 @@ html[data-language="th"],
   border-bottom: 3px solid #000;
   background: color-mix(in srgb, var(--palette-cream) 88%, transparent);
 }
+.world-split-toolbar > div:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
 .world-split-toolbar p {
   margin: 0 0 4px;
   font-size: 13px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .world-split-toolbar h2 {
   margin: 0;
   font-size: clamp(20px, 2.2vw, 30px);
   line-height: 1.12;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .world-split-actions {
   display: flex;
   gap: 8px;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
 }
 .world-split-actions button:not(.pbs-game-button),
 .archive-tree-close {
@@ -7241,13 +7257,15 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 
 .pbs-interaction-root .world-split-panel--zine .world-split-toolbar h2,
 .pbs-interaction-root[data-language="ja"] .world-split-panel--zine .world-split-toolbar h2 {
-  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-family: var(--ui-font) !important;
   font-size: clamp(18px, 1.6vw, 26px) !important;
   font-weight: 800 !important;
   line-height: 1.18 !important;
-  max-width: calc(100% - 72px) !important;
-  word-break: keep-all !important;
-  overflow-wrap: anywhere !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .pbs-interaction-root .world-split-panel--zine .world-split-toolbar p {
