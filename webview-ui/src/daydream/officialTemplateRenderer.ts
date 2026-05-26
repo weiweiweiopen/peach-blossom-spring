@@ -32,17 +32,39 @@ function kineticTitle(title: string): string {
   }).join("");
 }
 
+const FRAME_PALETTES = [
+  { sheet: "#fffaf0", title: "#fffdf6", body: "#fffdf6", shadow: "#bac3d9", label: "#ffd4ff" },
+  { sheet: "#ffd4ff", title: "#fffaf0", body: "#fffdf6", shadow: "#69c3aa", label: "#fcf46b" },
+  { sheet: "#69c3aa", title: "#fffaf0", body: "#fffaf0", shadow: "#ffd4ff", label: "#bac3d9" },
+  { sheet: "#bac3d9", title: "#fffdf6", body: "#fffaf0", shadow: "#fcf46b", label: "#69c3aa" },
+];
+
+function frameStyle(index: number): string {
+  const palette = FRAME_PALETTES[(index + Math.floor(Math.random() * FRAME_PALETTES.length)) % FRAME_PALETTES.length];
+  return `--pbs-sheet-bg:${palette.sheet};--pbs-title-bg:${palette.title};--pbs-body-bg:${palette.body};--pbs-frame-shadow:${palette.shadow};--pbs-label-bg:${palette.label};`;
+}
+
 function zineLayoutGovernanceCss(): string {
   return `
-.page { width:100%; max-width:100%; min-height:auto; padding:clamp(22px,4vw,56px); overflow-x:hidden; }
-.sheet { width:100%; max-width:1040px; margin:0 auto; }
+.page { --pbs-sheet-bg:#fffaf0; --pbs-title-bg:#fffdf6; --pbs-body-bg:#fffdf6; --pbs-frame-shadow:#bac3d9; --pbs-label-bg:#ffd4ff; width:100%; max-width:100%; min-height:auto; padding:clamp(18px,3vw,38px); overflow-x:hidden; }
+.page:nth-of-type(2n) { --pbs-sheet-bg:#ffd4ff; --pbs-title-bg:#fffaf0; --pbs-body-bg:#fffdf6; --pbs-frame-shadow:#69c3aa; --pbs-label-bg:#fcf46b; }
+.page:nth-of-type(3n) { --pbs-sheet-bg:#69c3aa; --pbs-title-bg:#fffaf0; --pbs-body-bg:#fffaf0; --pbs-frame-shadow:#ffd4ff; --pbs-label-bg:#bac3d9; }
+.page:nth-of-type(4n) { --pbs-sheet-bg:#bac3d9; --pbs-title-bg:#fffdf6; --pbs-body-bg:#fffaf0; --pbs-frame-shadow:#fcf46b; --pbs-label-bg:#69c3aa; }
+.page .no, .page .label { background:var(--pbs-label-bg) !important; }
+.sheet { width:100%; max-width:1180px; margin:0 auto; background:var(--pbs-sheet-bg) !important; border:4px solid var(--ink,#315b63) !important; box-shadow:7px 7px 0 var(--pbs-frame-shadow) !important; padding:clamp(14px,2.4vw,30px) !important; }
 .bodyGrid, .bodyGrid--full { display:block; }
-.titleBlock { max-width:980px; margin:0 auto clamp(16px,3vw,28px); padding:0; border:0; background:transparent; box-shadow:none; }
-.body, .refs { width:100%; max-width:88ch; margin:0 auto; padding:clamp(14px,2vw,24px); border:3px solid #111; background:rgba(255,255,255,.82); box-shadow:none; overflow-wrap:anywhere; }
+.titleBlock { max-width:none; margin:0 auto clamp(14px,2vw,22px); padding:clamp(12px,2vw,22px); border:3px solid var(--ink,#315b63); background:var(--pbs-title-bg) !important; box-shadow:4px 4px 0 var(--pbs-frame-shadow); }
+.body, .refs { width:100%; max-width:none; margin:0 auto; padding:clamp(14px,2vw,22px); border:3px solid var(--ink,#315b63); background:var(--pbs-body-bg) !important; box-shadow:none; overflow-wrap:anywhere; }
 .body p { max-width:none; }
 .refs { margin-top:18px; }
+.page h1 { font-size:clamp(34px,4.6vw,62px) !important; line-height:1.12 !important; }
+.page .lead { font-size:clamp(20px,2.2vw,28px) !important; line-height:1.55 !important; }
+.page .body, .page .refs { font-size:clamp(20px,2.15vw,28px) !important; line-height:1.62 !important; }
+.page .body p, .page .refs li { font-size:inherit !important; line-height:inherit !important; }
 .pbs-readable-trace, .zine-feedback-page { width:100%; max-width:100%; min-height:auto !important; }
 .pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { width:100%; max-width:980px; margin:0 auto; padding:clamp(16px,3vw,28px); border:4px solid #111; background:#fffaf0; box-shadow:none; overflow-wrap:anywhere; }
+.pbs-zine-button { inline-size:64px !important; block-size:64px !important; min-width:64px !important; min-height:64px !important; max-width:64px !important; max-height:64px !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; font-size:28px !important; line-height:1 !important; flex:0 0 64px !important; font-family:Arial, Helvetica, sans-serif !important; overflow:hidden !important; }
+.pbs-zine-button span { display:inline-flex !important; align-items:center !important; justify-content:center !important; line-height:1 !important; }
 @media (max-width:700px) { .page { padding:18px; } .sheet, .body, .refs, .pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { max-width:none; } .body, .refs { padding:14px; } .body p { max-width:none; } }
 `;
 }
@@ -50,20 +72,20 @@ function zineLayoutGovernanceCss(): string {
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource): string {
   const sections = artifact.sections.slice(0, 4);
   const refs = artifact.protocol.slice(0, 6);
-  const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}">
+  const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
   <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(section.title)}</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(section.title)}</h1>${section.pullQuote ? `<p class="lead">${escapeHtml(section.pullQuote)}</p>` : ""}</div>
     <div class="bodyGrid bodyGrid--full"><article class="body"><p>${escapeHtml(section.body)}</p></article></div>
   </main>
 </section>`).join("\n");
-  return `<style>${extractStyle(template.html)}${zineLayoutGovernanceCss()}</style><section class="page p1" data-official-template="${template.filename}">
+  return `<style>${extractStyle(template.html)}${zineLayoutGovernanceCss()}</style><section class="page p1" data-official-template="${template.filename}" style="${frameStyle(0)}">
   <header class="top"><span class="no">01</span><span class="label">聲音圖譜</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(artifact.title)}</h1><p class="lead">${escapeHtml(artifact.subtitle)}</p></div>
     <div class="bodyGrid"><article class="body"><p>${escapeHtml(artifact.opening)}</p><p>${escapeHtml(artifact.proposition)}</p></article><aside class="refs"><b>演奏順序</b><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
   </main>
-</section>${sectionPages}<section class="page p4" data-official-template="${template.filename}">
+</section>${sectionPages}<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + 1)}">
   <header class="top"><span class="no">06</span><span class="label">尾聲</span></header>
   <main class="sheet"><div class="bodyGrid bodyGrid--full"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
 </section>`;

@@ -1,0 +1,215 @@
+/* Spec-kit 006 UI System Contract.
+   Loaded after legacy CSS so protected runtime UI uses one manageable contract. */
+
+.pbs-interaction-root {
+  --ui-font: "FS Pixel Sans", "CJK Pixel Match", system-ui, sans-serif;
+  --emoji-font: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+
+  --ui-type-title: 30px;
+  --ui-type-subtitle: 18px;
+  --ui-type-body: 18px;
+  --ui-type-caption: 14px;
+  --ui-type-field: 18px;
+  --ui-type-button: 16px;
+  --ui-type-micro: 12px;
+
+  --ui-line-title: 1.1;
+  --ui-line-subtitle: 1.25;
+  --ui-line-body: 1.42;
+  --ui-line-caption: 1.3;
+  --ui-line-field: 1.25;
+  --ui-line-button: 1.15;
+  --ui-line-micro: 1.2;
+
+  --ui-icon-button-size: 64px;
+  --ui-icon-button-glyph: 30px;
+  --ui-window-button-size: 34px;
+  --ui-window-button-glyph: 18px;
+  --ui-text-button-height: 44px;
+}
+
+.pbs-interaction-root[data-language="zh-TW"],
+.pbs-interaction-root[data-language="ja"] {
+  --ui-type-title: 28px;
+  --ui-type-subtitle: 17px;
+  --ui-type-body: 17px;
+  --ui-type-caption: 13px;
+  --ui-type-field: 17px;
+  --ui-type-button: 15px;
+  --ui-line-body: 1.48;
+  --ui-line-field: 1.35;
+}
+
+.pbs-interaction-root[data-language="th"] {
+  --ui-type-title: 27px;
+  --ui-type-subtitle: 16px;
+  --ui-type-body: 16px;
+  --ui-type-caption: 13px;
+  --ui-type-field: 16px;
+  --ui-type-button: 15px;
+  --ui-line-body: 1.55;
+  --ui-line-field: 1.42;
+}
+
+.pbs-interaction-root[data-language="de"],
+.pbs-interaction-root[data-language="id"] {
+  --ui-type-body: 17px;
+  --ui-type-field: 17px;
+  --ui-type-button: 15px;
+}
+
+.pbs-interaction-root :where(
+  .rpg-dialogue-panel,
+  .question-status-panel,
+  .question-response-panel,
+  .global-language-options,
+  .world-split-toolbar
+) {
+  font-family: var(--ui-font) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="title"]) {
+  font-size: var(--ui-type-title) !important;
+  line-height: var(--ui-line-title) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="subtitle"]) {
+  font-size: var(--ui-type-subtitle) !important;
+  line-height: var(--ui-line-subtitle) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="body"]) {
+  font-size: var(--ui-type-body) !important;
+  line-height: var(--ui-line-body) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="caption"]) {
+  font-size: var(--ui-type-caption) !important;
+  line-height: var(--ui-line-caption) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="field"]) {
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="button-label"]) {
+  font-size: var(--ui-type-button) !important;
+  line-height: var(--ui-line-button) !important;
+}
+
+.pbs-interaction-root :where([data-ui-part="micro"]) {
+  font-size: var(--ui-type-micro) !important;
+  line-height: var(--ui-line-micro) !important;
+}
+
+.pbs-interaction-root :where([data-ui-control="icon-button"]) {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: var(--ui-icon-button-size) !important;
+  min-width: var(--ui-icon-button-size) !important;
+  max-width: var(--ui-icon-button-size) !important;
+  height: var(--ui-icon-button-size) !important;
+  min-height: var(--ui-icon-button-size) !important;
+  max-height: var(--ui-icon-button-size) !important;
+  flex: 0 0 var(--ui-icon-button-size) !important;
+  padding: 0 !important;
+  font-family: var(--emoji-font) !important;
+  font-size: var(--ui-icon-button-glyph) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.pbs-interaction-root :where([data-ui-control="window-action"]) {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: var(--ui-window-button-size) !important;
+  min-width: var(--ui-window-button-size) !important;
+  height: var(--ui-window-button-size) !important;
+  min-height: var(--ui-window-button-size) !important;
+  padding: 0 !important;
+  font-size: var(--ui-window-button-glyph) !important;
+  line-height: 1 !important;
+}
+
+.pbs-interaction-root :where([data-ui-control="text-button"]) {
+  min-height: var(--ui-text-button-height) !important;
+  padding: 8px 12px !important;
+  font-size: var(--ui-type-button) !important;
+  line-height: var(--ui-line-button) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) var(--ui-icon-button-size) var(--ui-icon-button-size);
+  align-items: stretch !important;
+  gap: 8px !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-form[data-ui-footer="zine"] {
+  grid-template-columns: minmax(0, 1fr) var(--ui-icon-button-size) var(--ui-icon-button-size) var(--ui-icon-button-size);
+}
+
+.pbs-interaction-root .rpg-dialogue-input[data-ui-part="field"] {
+  min-height: var(--ui-icon-button-size) !important;
+  padding: 10px 12px !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-log {
+  font-size: var(--ui-type-body) !important;
+  line-height: var(--ui-line-body) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-message,
+.pbs-interaction-root .rpg-dialogue-message p,
+.pbs-interaction-root .rpg-dialogue-message span,
+.pbs-interaction-root .rpg-dialogue-thinking {
+  font-size: var(--ui-type-body) !important;
+  line-height: var(--ui-line-body) !important;
+}
+
+.pbs-interaction-root :where(.pbs-computer-source-panel, .pbs-computer-source-panel *) {
+  font-size: var(--ui-type-caption) !important;
+  line-height: var(--ui-line-caption) !important;
+}
+
+.pbs-interaction-root .global-language-options button {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 44px !important;
+  font-size: var(--ui-type-button) !important;
+  line-height: var(--ui-line-button) !important;
+}
+
+.pbs-interaction-root :where(.question-status-panel, .question-response-panel) {
+  font-size: var(--ui-type-caption) !important;
+  line-height: var(--ui-line-caption) !important;
+}
+
+.pbs-interaction-root :where(.question-status-panel h2, .question-response-panel h2, .question-response-panel h3) {
+  font-size: var(--ui-type-subtitle) !important;
+  line-height: var(--ui-line-subtitle) !important;
+}
+
+.pbs-interaction-root :where(.question-status-panel p, .question-status-panel span, .question-response-panel p, .question-response-panel span) {
+  font-size: var(--ui-type-caption) !important;
+  line-height: var(--ui-line-caption) !important;
+}
+
+.pbs-interaction-root :where(.question-response-panel textarea, .question-response-panel input) {
+  min-height: var(--ui-text-button-height) !important;
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
+}
+
+.pbs-interaction-root .world-split-toolbar h2 {
+  max-width: calc(100% - 84px) !important;
+  font-size: var(--ui-type-subtitle) !important;
+  line-height: var(--ui-line-subtitle) !important;
+}
+
+.pbs-interaction-root .world-split-toolbar p {
+  font-size: var(--ui-type-caption) !important;
+  line-height: var(--ui-line-caption) !important;
+}

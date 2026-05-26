@@ -134,37 +134,37 @@
 html[lang="zh-TW"],
 html[data-language="zh-TW"],
 [data-language="zh-TW"] {
-  --pbs-script-ui-scale: 0.96;
-  --pbs-script-home-title-scale: 0.94;
-  --pbs-script-line-scale: 1.04;
-  --pbs-script-ui-font-size: 0.96em;
-  --pbs-script-ui-line-height: 1.25;
-  --pbs-script-home-title-font: clamp(38px, 8.3vw, 72px);
-  --pbs-script-home-title-line: 1.02;
+  --pbs-script-ui-scale: 1;
+  --pbs-script-home-title-scale: 1;
+  --pbs-script-line-scale: 1;
+  --pbs-script-ui-font-size: 1em;
+  --pbs-script-ui-line-height: 1.2;
+  --pbs-script-home-title-font: var(--font-display);
+  --pbs-script-home-title-line: var(--line-display);
 }
 
 html[lang="ja"],
 html[data-language="ja"],
 [data-language="ja"] {
-  --pbs-script-ui-scale: 0.94;
-  --pbs-script-home-title-scale: 0.94;
-  --pbs-script-line-scale: 1.06;
-  --pbs-script-ui-font-size: 0.94em;
-  --pbs-script-ui-line-height: 1.27;
-  --pbs-script-home-title-font: clamp(38px, 8.3vw, 72px);
-  --pbs-script-home-title-line: 1.04;
+  --pbs-script-ui-scale: 1;
+  --pbs-script-home-title-scale: 1;
+  --pbs-script-line-scale: 1;
+  --pbs-script-ui-font-size: 1em;
+  --pbs-script-ui-line-height: 1.2;
+  --pbs-script-home-title-font: var(--font-display);
+  --pbs-script-home-title-line: var(--line-display);
 }
 
 html[lang="th"],
 html[data-language="th"],
 [data-language="th"] {
-  --pbs-script-ui-scale: 0.9;
-  --pbs-script-home-title-scale: 0.9;
-  --pbs-script-line-scale: 1.14;
-  --pbs-script-ui-font-size: 0.9em;
-  --pbs-script-ui-line-height: 1.36;
-  --pbs-script-home-title-font: clamp(36px, 8vw, 68px);
-  --pbs-script-home-title-line: 1.16;
+  --pbs-script-ui-scale: 1;
+  --pbs-script-home-title-scale: 1;
+  --pbs-script-line-scale: 1;
+  --pbs-script-ui-font-size: 1em;
+  --pbs-script-ui-line-height: 1.2;
+  --pbs-script-home-title-font: var(--font-display);
+  --pbs-script-home-title-line: var(--line-display);
 }
 
 .type-display {
@@ -299,7 +299,7 @@ html[data-language="th"],
 
 .boot-loading-title {
   margin: 0 0 12px;
-  font-size: clamp(30px, 7vw, 58px);
+  font-size: var(--pbs-script-home-title-font, clamp(30px, 7vw, 58px));
   line-height: 0.98;
 }
 
@@ -2724,6 +2724,42 @@ html[data-language="th"],
   transform-origin: center bottom;
 }
 
+.pbs-interaction-root,
+.pbs-interaction-root :is(.npc-name-tag, .mobile-talk-prompt, .abao-speech-bubble, .archive-tree-menu, .world-split-panel, .question-status-panel, .question-response-panel, .rpg-dialogue-panel) {
+  font-size-adjust: none !important;
+}
+
+.pbs-interaction-root[data-language="zh-TW"] :is(.mobile-talk-prompt p, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input),
+.pbs-interaction-root[data-language="ja"] :is(.mobile-talk-prompt p, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input),
+.pbs-interaction-root[data-language="th"] :is(.mobile-talk-prompt p, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input) {
+  font-size: var(--pbs-script-ui-font-size) !important;
+  line-height: var(--pbs-script-ui-line-height) !important;
+}
+
+.pbs-interaction-root[data-language="zh-TW"] :is(.boot-loading-title, .player-setup-title),
+.pbs-interaction-root[data-language="ja"] :is(.boot-loading-title, .player-setup-title),
+.pbs-interaction-root[data-language="th"] :is(.boot-loading-title, .player-setup-title) {
+  font-size: var(--pbs-script-home-title-font) !important;
+  line-height: var(--pbs-script-home-title-line) !important;
+}
+
+.rpg-dialogue-submit,
+.rpg-dialogue-question-toggle,
+.rpg-dialogue-panel .pbs-game-button--bubble {
+  inline-size: 48px !important;
+  min-inline-size: 48px !important;
+  padding-inline: 0 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+}
+
+.npc-name-tag {
+  font-size: 34px !important;
+  line-height: 1.1 !important;
+  font-size-adjust: none !important;
+}
+
 .question-status-header {
   align-items: flex-start;
 }
@@ -4529,6 +4565,39 @@ html[data-language="th"],
   line-height: 1.25 !important;
 }
 
+.mobile-talk-prompt p {
+  margin: 0 !important;
+  line-height: inherit !important;
+}
+
+.mobile-talk-prompt p + p {
+  margin-top: 8px !important;
+}
+
+.pbs-interaction-root[data-language="zh-TW"] .mobile-talk-prompt,
+.pbs-interaction-root[data-language="ja"] .mobile-talk-prompt,
+.pbs-interaction-root[data-language="th"] .mobile-talk-prompt {
+  max-width: min(330px, calc(100vw - 28px));
+  padding: 14px 18px !important;
+  font-size: clamp(18px, 1.65vw, 24px) !important;
+  line-height: 1.42 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .mobile-talk-prompt,
+.pbs-interaction-root[data-language="th"] .mobile-talk-prompt {
+  font-size: clamp(16px, 1.45vw, 21px) !important;
+  line-height: 1.48 !important;
+}
+
+.pbs-interaction-root[data-language="zh-TW"] .mobile-talk-prompt p,
+.pbs-interaction-root[data-language="ja"] .mobile-talk-prompt p,
+.pbs-interaction-root[data-language="th"] .mobile-talk-prompt p {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
 .question-status-panel.rpg-message-frame,
 .question-response-panel.rpg-message-frame {
   font-size: clamp(19px, 1.8vw, 26px) !important;
@@ -4615,6 +4684,35 @@ html[data-language="th"],
 .rpg-dialogue-wiki-button {
   font-size: var(--dialogue-control-size) !important;
   line-height: 1.25 !important;
+}
+
+.rpg-dialogue-panel[data-language="ja"] {
+  --dialogue-title-size: clamp(24px, 2.25vw, 32px);
+  --dialogue-body-size: clamp(17px, 1.55vw, 22px);
+  --dialogue-control-size: clamp(16px, 1.3vw, 18px);
+}
+
+.rpg-dialogue-panel[data-language="th"] {
+  --dialogue-title-size: clamp(23px, 2.15vw, 31px);
+  --dialogue-body-size: clamp(17px, 1.5vw, 21px);
+  --dialogue-control-size: clamp(16px, 1.28vw, 18px);
+}
+
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-name {
+  line-height: 1.18 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-more {
+  max-width: min(42vw, 360px);
+  font-size: var(--dialogue-control-size) !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
 }
 
 .rpg-dialogue-input {
@@ -6841,6 +6939,67 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   line-height: 1 !important;
 }
 
+/* Japanese UI uses a readable native UI face instead of the pixel display font.
+   Keep this last so earlier script-scale guards cannot re-enlarge controls. */
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel,
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine,
+.rpg-dialogue-panel[data-language="ja"] {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-name {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(22px, 1.8vw, 30px) !important;
+  font-weight: 800 !important;
+  line-height: 1.22 !important;
+  letter-spacing: 0.01em !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-chip,
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-more,
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-more,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-input {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(14px, 1.05vw, 18px) !important;
+  font-weight: 700 !important;
+  line-height: 1.34 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-chip {
+  max-width: min(30vw, 240px) !important;
+  min-height: 48px !important;
+  padding: 7px 10px !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .world-split-toolbar h2,
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .boot-loading-title {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(22px, 2.5vw, 36px) !important;
+  font-weight: 800 !important;
+  line-height: 1.18 !important;
+  letter-spacing: 0.01em !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .boot-loading-copy {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(16px, 1.7vw, 24px) !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
 /* Spec-kit repair: typography normalization must not shrink button hit areas. */
 .pbs-game-button,
 .rpg-dialogue-panel .pbs-game-button,
@@ -6898,4 +7057,236 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   height: 52px !important;
   min-height: 52px !important;
   padding: 0 !important;
+}
+
+/* Final guard: emoji controls are controls, not text. Match the zh-TW window size. */
+.rpg-dialogue-panel .rpg-dialogue-question-toggle.pbs-game-button,
+.rpg-dialogue-panel .rpg-dialogue-submit.pbs-game-button,
+.rpg-dialogue-panel .rpg-dialogue-chip.pbs-game-button--bubble {
+  width: 64px !important;
+  min-width: 64px !important;
+  max-width: 64px !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 64px !important;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.rpg-dialogue-panel .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+  width: auto !important;
+  max-width: min(34vw, 300px) !important;
+  min-height: 54px !important;
+  padding: 8px 12px !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel.rpg-message-frame {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(14px, 1vw, 17px) !important;
+  line-height: 1.36 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
+  font-size: clamp(18px, 1.55vw, 24px) !important;
+  line-height: 1.18 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-body-large) {
+  font-size: clamp(13px, 0.95vw, 16px) !important;
+  line-height: 1.4 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel .question-pet-preview + span {
+  font-size: clamp(14px, 1.05vw, 17px) !important;
+  line-height: 1.35 !important;
+}
+
+.pbs-interaction-root .world-split-panel--zine .world-split-toolbar h2,
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .world-split-toolbar h2 {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(18px, 1.6vw, 26px) !important;
+  font-weight: 800 !important;
+  line-height: 1.18 !important;
+  max-width: calc(100% - 72px) !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .world-split-panel--zine .world-split-toolbar p {
+  font-size: clamp(12px, 0.9vw, 16px) !important;
+  line-height: 1.15 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .boot-loading-title {
+  font-size: clamp(28px, 3vw, 44px) !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .world-split-panel--zine .boot-loading-copy {
+  font-size: clamp(18px, 2vw, 28px) !important;
+  line-height: 1.48 !important;
+}
+
+/* Emergency hard cap: Japanese PBS Computer body text was missed by chip/title
+   overrides and must never inherit the pixel display scale. */
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-log,
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-message,
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-message p,
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-thinking {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(18px, 1.25vw, 24px) !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-message .text-accent-bright,
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-message .text-accent-bright {
+  display: inline !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Spec-kit 2026-05-26: mobile dialogue type authority.
+   Use the input field as the ordinary-copy ceiling; emoji controls are excluded. */
+@media (max-width: 900px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] {
+    --mobile-dialogue-input-size: 20px;
+    --mobile-dialogue-copy-size: 20px;
+    --mobile-dialogue-meta-size: 16px;
+    --mobile-dialogue-chip-size: 18px;
+    --mobile-dialogue-title-size: 30px;
+    --mobile-dialogue-line: 1.42;
+    width: min(100vw - 20px, 460px) !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: calc(100dvh - 44px) !important;
+    padding: 14px !important;
+    overflow: auto !important;
+  }
+
+  .rpg-dialogue-panel[data-language="zh-TW"],
+  .rpg-dialogue-panel[data-language="ja"] {
+    --mobile-dialogue-input-size: 19px;
+    --mobile-dialogue-copy-size: 19px;
+    --mobile-dialogue-meta-size: 15px;
+    --mobile-dialogue-chip-size: 17px;
+    --mobile-dialogue-title-size: 28px;
+    --mobile-dialogue-line: 1.48;
+  }
+
+  .rpg-dialogue-panel[data-language="th"] {
+    --mobile-dialogue-input-size: 18px;
+    --mobile-dialogue-copy-size: 18px;
+    --mobile-dialogue-meta-size: 15px;
+    --mobile-dialogue-chip-size: 17px;
+    --mobile-dialogue-title-size: 28px;
+    --mobile-dialogue-line: 1.55;
+  }
+
+  .rpg-dialogue-panel[data-language="de"] {
+    --mobile-dialogue-input-size: 19px;
+    --mobile-dialogue-copy-size: 19px;
+    --mobile-dialogue-chip-size: 17px;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-header {
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-kicker,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-role,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-actions p,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel p,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel li,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel a,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel span,
+  .rpg-dialogue-panel[data-language] .pbs-computer-source-panel .text-\[0\.85em\],
+  .rpg-dialogue-panel[data-language] .text-red-300 {
+    font-size: var(--mobile-dialogue-meta-size) !important;
+    line-height: var(--mobile-dialogue-line) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-name {
+    font-size: var(--mobile-dialogue-title-size) !important;
+    line-height: 1.08 !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-log {
+    padding: 10px !important;
+    font-size: var(--mobile-dialogue-copy-size) !important;
+    line-height: var(--mobile-dialogue-line) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-message,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-message p,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-message span,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-thinking {
+    margin-bottom: 10px !important;
+    font-size: var(--mobile-dialogue-copy-size) !important;
+    line-height: var(--mobile-dialogue-line) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 64px 64px;
+    gap: 8px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-form:has(.rpg-dialogue-chip.pbs-game-button--bubble) {
+    grid-template-columns: minmax(0, 1fr) 64px 64px 64px;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-input {
+    min-width: 0 !important;
+    min-height: 64px !important;
+    padding: 10px 12px !important;
+    font-size: var(--mobile-dialogue-input-size) !important;
+    line-height: var(--mobile-dialogue-line) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+    max-width: min(78vw, 340px) !important;
+    min-height: 48px !important;
+    padding: 8px 10px !important;
+    font-size: var(--mobile-dialogue-chip-size) !important;
+    line-height: 1.24 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-question-toggle.pbs-game-button,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-submit.pbs-game-button,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-chip.pbs-game-button--bubble {
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    padding: 0 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    flex: 0 0 64px !important;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif !important;
+    font-size: 30px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
 }

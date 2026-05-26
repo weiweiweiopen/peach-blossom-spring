@@ -73,7 +73,6 @@ export const PUBLIC_ARTIFACT_BANNED_PATTERNS: RegExp[] = [
   /\bPOTENTIAL\s+TOPIC\b/i,
   /\bSource:\b/i,
   /\bExcerpt\b/i,
-  /\bContent\b/i,
   /\bDepth\s*score\b/i,
   /\bdeepReadCards\b/i,
   /\bresearchTopics\b/i,

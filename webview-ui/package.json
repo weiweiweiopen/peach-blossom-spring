@@ -14,6 +14,7 @@
     "test": "node --import tsx/esm --test test/*.test.ts",
     "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs",
     "check:public-artifact": "node scripts/check-public-artifact.mjs",
+    "check:visual-layout": "node scripts/check-visual-layout-guards.mjs",
     "daydream:enrich-corpus": "node scripts/enrich-daydream-corpus.mjs",
     "daydream:enrich-corpus:fetch": "node scripts/enrich-daydream-corpus.mjs --fetch --max-fetch=80"
   },

@@ -122,6 +122,18 @@ function representedCommunity(persona: Persona): string {
 }
 
 function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] {
+  if (persona.id === 'tincuta-heinzel') {
+    const attemptsQuestion = '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？';
+    const fallback: Record<LanguageCode, string> = {
+      'zh-TW': '這是哪？',
+      en: 'Where is this?',
+      id: 'Ini di mana?',
+      de: 'Wo ist das hier?',
+      ja: 'ここはどこ？',
+      th: 'ที่นี่คือที่ไหน?',
+    };
+    return [attemptsQuestion, fallback[language]];
+  }
   const community = representedCommunity(persona);
   const questions: Record<LanguageCode, string[]> = {
     'zh-TW': [`什麼是 ${community}？`, '這是哪？'],
@@ -134,15 +146,29 @@ function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] 
   return [...questions[language]];
 }
 
-function WukirMusicButton({ onOpenMusic }: { onOpenMusic?: () => void }) {
+function wukirMusicLabel(language: LanguageCode): string {
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': '🎧 聽 Wukir 的音樂',
+    en: "🎧 Listen to Wukir's music",
+    id: '🎧 Dengarkan musik Wukir',
+    de: '🎧 Wukirs Musik hören',
+    ja: '🎧 Wukir の音楽を聴く',
+    th: '🎧 ฟังเพลงของ Wukir',
+  };
+  return copy[language];
+}
+
+function WukirMusicButton({ language, onOpenMusic }: { language: LanguageCode; onOpenMusic?: () => void }) {
   if (!onOpenMusic) return null;
   return (
     <button
       className="rpg-dialogue-wukir-music-button rpg-dialogue-chip pbs-game-button"
+      data-ui-control="text-button"
+      data-ui-part="button-label"
       type="button"
       onClick={onOpenMusic}
     >
-      🎧 聽 Wukir 的音樂
+      {wukirMusicLabel(language)}
     </button>
   );
 }
@@ -419,22 +445,22 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
             </div>
             <div>
               <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
-                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">{t(language, 'home.wanderAndTalk')}</p>
-                {persona.id === 'wukir-suryadi' && <WukirMusicButton onOpenMusic={onOpenMusic} />}
+                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
+                {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
               </div>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none">{persona.name}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">{persona.role}</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{persona.name}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{persona.role}</p>
             </div>
           </div>
-          <button className="rpg-dialogue-x pbs-frame-action" type="button" onClick={onClose}>
+          <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>
             X
           </button>
         </div>
 
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
-          <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
+          <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
-              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
                 <p className="m-0">
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
@@ -442,7 +468,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
               </div>
             ))}
             {isLoading && (
-              <p className="rpg-dialogue-thinking text-base text-text-muted">
+              <p className="rpg-dialogue-thinking text-base text-text-muted" data-ui-part="body">
                 {persona.name} {t(language, 'dialogue.thinking')}
               </p>
             )}
@@ -457,6 +483,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                   <button
                     key={item}
                     className="rpg-dialogue-chip pbs-game-button"
+                    data-ui-control="text-button"
+                    data-ui-part="button-label"
                     type="button"
                     onClick={() => handleSuggestedPrompt(item)}
                   >
@@ -472,6 +500,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
+            data-ui-part="field"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             autoComplete="off"
@@ -482,22 +511,29 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           />
           <button
             className="rpg-dialogue-question-toggle rpg-dialogue-chip pbs-game-button"
+            data-ui-control="icon-button"
             type="button"
+            aria-label={t(language, 'dialogue.askQuestion')}
+            title={t(language, 'dialogue.askQuestion')}
             aria-expanded={areSuggestionsOpen}
             onClick={() => setAreSuggestionsOpen((prev) => !prev)}
           >
-            {t(language, 'dialogue.askQuestion')} {areSuggestionsOpen ? '▲' : '▼'}
+            🔍
           </button>
           <button
             className="rpg-dialogue-submit pbs-game-button pbs-game-button--bubble disabled:opacity-50"
+            data-ui-control="icon-button"
             type="submit"
             disabled={isLoading}
+            aria-busy={isLoading}
+            aria-label={t(language, 'dialogue.talkButton')}
+            title={t(language, 'dialogue.talkButton')}
           >
-            {isLoading ? '...' : t(language, 'dialogue.talkButton')}
+            💬
           </button>
         </form>
 
-        {error && <p className="text-lg text-red-300 mt-4">{error}</p>}
+        {error && <p className="text-lg text-red-300 mt-4" data-ui-part="caption">{error}</p>}
       </section>
     </div>
   );

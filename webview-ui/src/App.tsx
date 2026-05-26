@@ -153,20 +153,92 @@ const WUKIR_BANDCAMP_ALBUM_URL =
   "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual";
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
-const COMMUNITY_QUERY_PROMPTS = [
-  "非營利組織如何維持長期運作？",
-  "為什麼黑客營常出現合成器？",
-  "社群裡有哪些替代教育實驗？",
-  "開源社群如何處理照護勞動？",
-  "藝術科技社群怎麼面對經費壓力？",
-  "DIY 工作坊如何變成公共知識？",
-  "社群廚房和技術實驗有什麼關係？",
-  "獨立研究者如何互相支持？",
-  "黑客空間如何保存失敗經驗？",
-  "聲音作品如何連到社群組織？",
-  "開放科學如何避免變成宣傳？",
-  "營隊如何建立臨時共同體？",
-];
+const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
+  "zh-TW": [
+    "非營利組織如何維持長期運作？",
+    "為什麼黑客營常出現合成器？",
+    "社群裡有哪些替代教育實驗？",
+    "開源社群如何處理照護勞動？",
+    "藝術科技社群怎麼面對經費壓力？",
+    "DIY 工作坊如何變成公共知識？",
+    "社群廚房和技術實驗有什麼關係？",
+    "獨立研究者如何互相支持？",
+    "黑客空間如何保存失敗經驗？",
+    "聲音作品如何連到社群組織？",
+    "開放科學如何避免變成宣傳？",
+    "營隊如何建立臨時共同體？",
+  ],
+  en: [
+    "How do non-profit communities survive long term?",
+    "Why do synthesizers appear in hacker camps?",
+    "What alternative education experiments appear here?",
+    "How do open communities handle care work?",
+    "How do art-tech communities handle funding pressure?",
+    "How does a DIY workshop become public knowledge?",
+    "How are community kitchens related to technical experiments?",
+    "How do independent researchers support one another?",
+    "How do hackerspaces preserve failed experiments?",
+    "How can sound work connect to community organizing?",
+    "How can open science avoid becoming publicity?",
+    "How do camps create temporary commons?",
+  ],
+  id: [
+    "Bagaimana komunitas nirlaba bertahan dalam jangka panjang?",
+    "Mengapa synthesizer sering muncul di hacker camp?",
+    "Eksperimen pendidikan alternatif apa yang muncul di sini?",
+    "Bagaimana komunitas open source menangani kerja perawatan?",
+    "Bagaimana komunitas seni-teknologi menghadapi tekanan dana?",
+    "Bagaimana lokakarya DIY menjadi pengetahuan publik?",
+    "Apa hubungan dapur komunitas dan eksperimen teknis?",
+    "Bagaimana peneliti independen saling mendukung?",
+    "Bagaimana hackerspace menyimpan pengalaman gagal?",
+    "Bagaimana karya suara terhubung dengan pengorganisasian komunitas?",
+    "Bagaimana open science menghindari menjadi promosi?",
+    "Bagaimana camp membangun commons sementara?",
+  ],
+  de: [
+    "Wie bleiben Non-Profit-Communities langfristig tragfähig?",
+    "Warum tauchen Synthesizer so oft in Hacker-Camps auf?",
+    "Welche alternativen Bildungsversuche gibt es hier?",
+    "Wie gehen offene Communities mit Sorgearbeit um?",
+    "Wie reagieren Kunst-Technik-Communities auf Finanzierungsdruck?",
+    "Wie wird ein DIY-Workshop zu öffentlichem Wissen?",
+    "Was verbindet Community-Küchen mit technischen Experimenten?",
+    "Wie unterstützen sich unabhängige Forschende gegenseitig?",
+    "Wie bewahren Hackerspaces gescheiterte Experimente auf?",
+    "Wie verbinden sich Klangarbeiten mit Community-Organisation?",
+    "Wie vermeidet Open Science, reine Werbung zu werden?",
+    "Wie erzeugen Camps temporäre Commons?",
+  ],
+  ja: [
+    "非営利コミュニティはどう長く続くの？",
+    "なぜハッカーキャンプにシンセサイザーがよく出てくるの？",
+    "ここにはどんな代替教育の実験がある？",
+    "オープンなコミュニティはケア労働をどう扱う？",
+    "アートと技術のコミュニティは資金圧力にどう向き合う？",
+    "DIY ワークショップはどう公共知になる？",
+    "コミュニティキッチンと技術実験はどう関係する？",
+    "独立研究者はどう支え合う？",
+    "ハッカースペースは失敗経験をどう保存する？",
+    "音の作品はコミュニティ組織とどうつながる？",
+    "オープンサイエンスはどう宣伝化を避ける？",
+    "キャンプはどう一時的なコモンズを作る？",
+  ],
+  th: [
+    "ชุมชนไม่แสวงกำไรอยู่ต่อระยะยาวได้อย่างไร?",
+    "ทำไมซินธิไซเซอร์จึงพบได้บ่อยในแฮกเกอร์แคมป์?",
+    "มีการทดลองการศึกษาทางเลือกแบบใดที่นี่?",
+    "ชุมชนโอเพนซอร์สดูแลงาน care work อย่างไร?",
+    "ชุมชนศิลปะ-เทคโนโลยีรับมือแรงกดดันเรื่องทุนอย่างไร?",
+    "เวิร์กช็อป DIY กลายเป็นความรู้สาธารณะได้อย่างไร?",
+    "ครัวชุมชนเกี่ยวข้องกับการทดลองทางเทคนิคอย่างไร?",
+    "นักวิจัยอิสระสนับสนุนกันอย่างไร?",
+    "แฮกเกอร์สเปซเก็บประสบการณ์ล้มเหลวอย่างไร?",
+    "งานเสียงเชื่อมกับการจัดตั้งชุมชนอย่างไร?",
+    "open science จะไม่กลายเป็นประชาสัมพันธ์ได้อย่างไร?",
+    "แคมป์สร้าง commons ชั่วคราวได้อย่างไร?",
+  ],
+};
 
 type PlayMode = "camp" | "expedition";
 type AppMode = "interactive" | "dispatch_observer";
@@ -390,6 +462,107 @@ function ComputerDialogueAvatar() {
   return <DialoguePixelAvatar sprite={computerSprite(frame)} label="PBS Computer" />;
 }
 
+const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
+  "zh-TW": {
+    intro: "我是 PBS LLM wiki 搜尋端。問一個社群、方法、材料或組織問題，我會用桃花源共享記憶回答，並在下方列出可點開的真實頁面。",
+    fail: "LLM 回答暫時失敗；先列出本地 wiki 搜尋結果，你可以直接點開查閱。",
+    needQuestion: "請先輸入一個想探索的桃花源社群問題。",
+    sourceTitle: "Wiki 搜尋結果 / 真實連結",
+    noLinks: "這次沒有找到可直接連結的 wiki 頁。",
+    suggestions: "問我一個關於你想探索桃花源社群哪一部分的問題：",
+    placeholder: "問：你想探索桃花源社群的哪一部分？",
+    suggest: "建議一個問題",
+    zine: "維基小書",
+    thinking: "PBS Computer 正在思考...",
+  },
+  en: {
+    intro: "I am the PBS LLM wiki search dock. Ask about a community, method, material, or organization question; I answer from shared memory and list real pages below.",
+    fail: "The LLM answer failed for now; here are the local wiki search results you can open directly.",
+    needQuestion: "Enter a Peach Blossom Spring community question first.",
+    sourceTitle: "Wiki search results / real links",
+    noLinks: "No directly linkable wiki pages were found this time.",
+    suggestions: "Pick a question about the part of Peach Blossom Spring you want to explore:",
+    placeholder: "Ask: which part of the Peach Blossom Spring community do you want to explore?",
+    suggest: "Suggest a question",
+    zine: "Wiki zine",
+    thinking: "PBS Computer is thinking...",
+  },
+  id: {
+    intro: "Saya terminal pencarian wiki PBS LLM. Tanyakan komunitas, metode, material, atau organisasi; saya menjawab dari memori bersama dan menampilkan halaman nyata di bawah.",
+    fail: "Jawaban LLM sementara gagal; ini hasil pencarian wiki lokal yang bisa dibuka langsung.",
+    needQuestion: "Masukkan dulu pertanyaan komunitas Peach Blossom Spring.",
+    sourceTitle: "Hasil pencarian wiki / tautan nyata",
+    noLinks: "Tidak ada halaman wiki yang bisa ditautkan langsung kali ini.",
+    suggestions: "Pilih pertanyaan tentang bagian Peach Blossom Spring yang ingin kamu jelajahi:",
+    placeholder: "Tanya: bagian mana dari komunitas Peach Blossom Spring yang ingin kamu jelajahi?",
+    suggest: "Sarankan pertanyaan",
+    zine: "Zine wiki",
+    thinking: "PBS Computer sedang berpikir...",
+  },
+  de: {
+    intro: "Ich bin das PBS LLM Wiki-Suchdock. Frag nach Community, Methode, Material oder Organisation; ich antworte aus dem geteilten Gedächtnis und liste echte Seiten unten auf.",
+    fail: "Die LLM-Antwort ist gerade fehlgeschlagen; hier sind lokale Wiki-Suchergebnisse zum Öffnen.",
+    needQuestion: "Gib zuerst eine Frage zur Peach-Blossom-Spring-Community ein.",
+    sourceTitle: "Wiki-Suchergebnisse / echte Links",
+    noLinks: "Diesmal wurden keine direkt verlinkbaren Wiki-Seiten gefunden.",
+    suggestions: "Wähle eine Frage zu dem Teil von Peach Blossom Spring, den du erkunden willst:",
+    placeholder: "Frage: welchen Teil der Peach-Blossom-Spring-Community willst du erkunden?",
+    suggest: "Frage vorschlagen",
+    zine: "Wiki-Zine",
+    thinking: "PBS Computer denkt nach...",
+  },
+  ja: {
+    intro: "私は PBS LLM wiki の検索端末です。コミュニティ、方法、素材、組織について質問してください。共有記憶から答え、下に実在するページを並べます。",
+    fail: "LLM の回答に失敗しました。まず開けるローカル wiki 検索結果を表示します。",
+    needQuestion: "先に Peach Blossom Spring のコミュニティ質問を入力してください。",
+    sourceTitle: "Wiki 検索結果 / 実在リンク",
+    noLinks: "今回は直接開ける wiki ページが見つかりませんでした。",
+    suggestions: "Peach Blossom Spring のどの部分を探索するか質問を選んでください：",
+    placeholder: "質問：Peach Blossom Spring のどの部分を探索しますか？",
+    suggest: "質問を提案",
+    zine: "Wiki 小誌",
+    thinking: "PBS Computer が考えています...",
+  },
+  th: {
+    intro: "ฉันคือแท่นค้นหา PBS LLM wiki ถามเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
+    fail: "คำตอบจาก LLM ล้มเหลวชั่วคราว ต่อไปนี้คือผลค้นหา wiki ในเครื่องที่เปิดดูได้ทันที",
+    needQuestion: "กรุณาใส่คำถามเกี่ยวกับชุมชน Peach Blossom Spring ก่อน",
+    sourceTitle: "ผลค้นหา wiki / ลิงก์จริง",
+    noLinks: "ครั้งนี้ไม่พบหน้า wiki ที่เปิดลิงก์ได้โดยตรง",
+    suggestions: "เลือกคำถามเกี่ยวกับส่วนของ Peach Blossom Spring ที่อยากสำรวจ:",
+    placeholder: "ถาม: อยากสำรวจส่วนไหนของชุมชน Peach Blossom Spring?",
+    suggest: "เสนอคำถาม",
+    zine: "ซีน wiki",
+    thinking: "PBS Computer กำลังคิด...",
+  },
+};
+
+const PET_HUD_COPY: Record<LanguageCode, { agent: string; note: string; recent: string; action: Record<string, string>; score: Record<string, string> }> = {
+  "zh-TW": { agent: "Tamagotchi agent", note: "「PBS Tamagotchi agent」在桃花源裡閃了一下，像剛學會聽人的小生物。", recent: "最近問題紀錄", action: { wander: "閒晃", visitRiver: "去河邊", joinThrong: "加入群聚", reflect: "反思", hibernate: "休眠" }, score: { interaction: "互動", wisdom: "智慧", community: "社群", resource: "資源", skill: "技能", care: "照護" } },
+  en: { agent: "Tamagotchi agent", note: "The PBS Tamagotchi agent flickers through Peach Blossom Spring like a small creature learning to listen.", recent: "recent question history", action: { wander: "wander", visitRiver: "visit river", joinThrong: "join throng", reflect: "reflect", hibernate: "hibernate" }, score: { interaction: "interaction", wisdom: "wisdom", community: "community", resource: "resource", skill: "skill", care: "care" } },
+  id: { agent: "Agen Tamagotchi", note: "Agen Tamagotchi PBS berkelip di Peach Blossom Spring seperti makhluk kecil yang belajar mendengar.", recent: "riwayat pertanyaan terbaru", action: { wander: "berkeliling", visitRiver: "ke sungai", joinThrong: "bergabung", reflect: "merenung", hibernate: "hibernasi" }, score: { interaction: "interaksi", wisdom: "kebijaksanaan", community: "komunitas", resource: "sumber daya", skill: "keterampilan", care: "perawatan" } },
+  de: { agent: "Tamagotchi-Agent", note: "Der PBS Tamagotchi-Agent flackert durch Peach Blossom Spring wie ein kleines Wesen, das Zuhören lernt.", recent: "letzte Fragen", action: { wander: "wandern", visitRiver: "zum Fluss", joinThrong: "anschließen", reflect: "nachdenken", hibernate: "ruhen" }, score: { interaction: "Interaktion", wisdom: "Weisheit", community: "Community", resource: "Ressource", skill: "Fähigkeit", care: "Fürsorge" } },
+  ja: { agent: "たまごっちエージェント", note: "PBS たまごっちエージェントは、人の話を聞き始めた小さな生き物のように桃花源をちらりと横切ります。", recent: "最近の質問履歴", action: { wander: "散歩", visitRiver: "川へ行く", joinThrong: "群れに入る", reflect: "考える", hibernate: "休む" }, score: { interaction: "交流", wisdom: "知恵", community: "共同体", resource: "資源", skill: "技能", care: "ケア" } },
+  th: { agent: "ตัวแทน Tamagotchi", note: "ตัวแทน PBS Tamagotchi กะพริบผ่าน Peach Blossom Spring เหมือนสิ่งมีชีวิตเล็กๆ ที่กำลังเรียนรู้การฟัง", recent: "ประวัติคำถามล่าสุด", action: { wander: "เดินเล่น", visitRiver: "ไปแม่น้ำ", joinThrong: "เข้ากลุ่ม", reflect: "ไตร่ตรอง", hibernate: "พัก" }, score: { interaction: "ปฏิสัมพันธ์", wisdom: "ปัญญา", community: "ชุมชน", resource: "ทรัพยากร", skill: "ทักษะ", care: "การดูแล" } },
+};
+
+const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
+  "zh-TW": { title: "本地電子雞 RAG 對話", placeholder: "用牠的記憶、材料與 A2A 證據問這隻電子雞", ask: "詢問", noEvidence: "尚未取得證據。" },
+  en: { title: "Local pet RAG chat", placeholder: "Ask this pet using its memory, materials, and A2A evidence", ask: "Ask", noEvidence: "No evidence retrieved yet." },
+  id: { title: "Obrolan RAG pet lokal", placeholder: "Tanya pet ini memakai memori, material, dan bukti A2A", ask: "Tanya", noEvidence: "Belum ada bukti yang diambil." },
+  de: { title: "Lokaler Pet-RAG-Chat", placeholder: "Frag dieses Pet mit Gedächtnis, Material und A2A-Belegen", ask: "Fragen", noEvidence: "Noch keine Belege abgerufen." },
+  ja: { title: "ローカル電子ペット RAG 会話", placeholder: "記憶・素材・A2A 証拠を使ってこのペットに聞く", ask: "聞く", noEvidence: "まだ証拠は取得されていません。" },
+  th: { title: "แชต RAG สัตว์เลี้ยงในเครื่อง", placeholder: "ถามสัตว์เลี้ยงนี้ด้วยความจำ วัสดุ และหลักฐาน A2A", ask: "ถาม", noEvidence: "ยังไม่มีหลักฐานที่ดึงมา" },
+};
+
+function petActionLabel(language: LanguageCode, action: string): string {
+  return PET_HUD_COPY[language].action[action] ?? action;
+}
+
+function petScoreLabel(language: LanguageCode, key: string): string {
+  return PET_HUD_COPY[language].score[key] ?? key;
+}
+
 function CentralComputerDialogue({
   language,
   playerName,
@@ -408,16 +581,15 @@ function CentralComputerDialogue({
   const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState("");
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
+  const copy = PBS_COMPUTER_COPY[language];
   const suggestedQuestions = useMemo(() => {
-    const shuffled = [...COMMUNITY_QUERY_PROMPTS].sort(() => Math.random() - 0.5);
+    const shuffled = [...COMMUNITY_QUERY_PROMPTS[language]].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 2);
-  }, []);
+  }, [language]);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
       speaker: "PBS Computer",
-      text: language === "zh-TW"
-        ? "你看起來在找些什麼。不喜歡旁邊那些嬉皮的話，可以來找我泡茶。這裡是 PBS LLM wiki docking station：NPC 回憶 NGM 訪談；我負責和桃花源的共享記憶快速對話，也能把你正在問的事裝訂成小誌。"
-        : "You look like you are searching for something. If the hippie talk nearby is not your thing, come have tea with me. This is the PBS LLM wiki docking station: NPCs recall NGM interviews; I talk with Peach Blossom Spring's shared memory and can bind your current question into a zine.",
+      text: copy.intro,
     },
   ]);
 
@@ -441,12 +613,12 @@ function CentralComputerDialogue({
   async function askComputer(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isThinking) return;
+    const wikiResults = searchWikiPages(trimmed, undefined, 6);
     setDraft("");
     setError("");
     setIsThinking(true);
     setMessages((current) => [...current, { speaker: "You", text: trimmed }]);
     try {
-      const wikiResults = searchWikiPages(trimmed, undefined, 6);
       const reply = await askDeepSeekPbsComputer({
         question: trimmed,
         preferredLanguage: language,
@@ -457,9 +629,8 @@ function CentralComputerDialogue({
       setError(err instanceof Error ? err.message : "PBS Computer failed to answer.");
       setMessages((current) => [...current, {
         speaker: "PBS Computer",
-        text: language === "zh-TW"
-          ? "我的共享記憶聲帶暫時沒有接上。這不是回答，只是錯誤燈號；等線路恢復後，我會重新讀桃花源的共享記憶。"
-          : "My DeepSeek voice circuit is temporarily offline. This is not an answer, only an error lamp; when the line returns, I will answer again as PBS Computer.",
+        text: copy.fail,
+        links: wikiResults,
       }]);
     } finally {
       setIsThinking(false);
@@ -474,7 +645,7 @@ function CentralComputerDialogue({
   function handleOpenZine(): void {
     const query = draft.trim();
     if (!query || isThinking) {
-      setError(language === "zh-TW" ? "請先輸入一個想探索的桃花源社群問題。" : "Enter a Peach Blossom Spring community question first.");
+      setError(copy.needQuestion);
       return;
     }
     onOpenAssociationZine(query);
@@ -490,67 +661,76 @@ function CentralComputerDialogue({
               <ComputerDialogueAvatar />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0">LLM WIKI DOCK</p>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2">PBS Computer</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2">Association / 聯想 docking terminal</p>
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">LLM WIKI DOCK</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">PBS Computer</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">Association / 聯想 docking terminal</p>
             </div>
           </div>
-          <button className="rpg-dialogue-x pbs-frame-action" type="button" onClick={onClose}>X</button>
+          <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>X</button>
         </div>
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
-          <div className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl">
+          <div className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
-              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0">
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
                 <p className="m-0">
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.links && message.links.length > 0 && (
-                  <ol className="pbs-computer-source-list mt-3 mb-0 pl-7 text-base leading-snug">
+                {message.links && (
+                  <div className="pbs-computer-source-panel mt-3 border border-border bg-bg/60 px-4 py-3 text-base leading-snug" data-ui-part="caption">
+                    <p className="m-0 mb-2 text-text-muted">{copy.sourceTitle}</p>
+                    {message.links.length > 0 ? <ol className="pbs-computer-source-list m-0 pl-7">
                     {message.links.map((link, linkIndex) => (
                       <li key={link.url} className="mb-2">
                         <a href={link.url} target="_blank" rel="noreferrer" className="underline decoration-2 underline-offset-4">
                           [{linkIndex + 1}] {link.title}
                         </a>
                         <span className="text-text-muted"> {link.sourceFamily}</span>
+                        {link.description ? <p className="m-0 text-text-muted">{link.description}</p> : null}
+                        <p className="m-0 break-all text-[0.85em] text-text-muted">{link.url}</p>
                       </li>
                     ))}
-                  </ol>
+                    </ol> : <p className="m-0 text-text-muted">{copy.noLinks}</p>}
+                  </div>
                 )}
               </div>
             ))}
-            {isThinking && <p className="rpg-dialogue-thinking text-base text-text-muted">PBS Computer is thinking...</p>}
+            {isThinking && <p className="rpg-dialogue-thinking text-base text-text-muted" data-ui-part="body">{copy.thinking}</p>}
           </div>
         </div>
         {showSuggestedQuestions && (
           <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
-            <p className="w-full m-0 text-base text-text-muted">問我一個關於你想探索桃花源社群哪一部分的問題：</p>
+            <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}</p>
             {suggestedQuestions.map((question) => (
-              <button key={question} className="rpg-dialogue-chip pbs-game-button" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
+              <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
             ))}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4">
+        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
+            data-ui-part="field"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}
-            placeholder={language === "zh-TW" ? "問：你想探索桃花源社群的哪一部分？" : "Ask: which part of the Peach Blossom Spring community do you want to explore?"}
+            placeholder={copy.placeholder}
           />
           <button
             className="rpg-dialogue-question-toggle rpg-dialogue-chip pbs-game-button"
+            data-ui-control="icon-button"
             type="button"
             onClick={() => setShowSuggestedQuestions((open) => !open)}
+            aria-label={copy.suggest}
+            title={copy.suggest}
           >
-            問我一個問題 ▾
+            🔍
           </button>
-          <button className="rpg-dialogue-submit pbs-game-button pbs-game-button--bubble disabled:opacity-50" type="submit" disabled={isThinking}>{isThinking ? "..." : t(language, "dialogue.talkButton")}</button>
-          <button className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble" type="button" disabled={isThinking || !draft.trim()} onClick={handleOpenZine} aria-label="維基小書" title="維基小書">📚</button>
+          <button className="rpg-dialogue-submit pbs-game-button pbs-game-button--bubble disabled:opacity-50" data-ui-control="icon-button" type="submit" disabled={isThinking} aria-busy={isThinking} aria-label={t(language, "dialogue.talkButton")} title={t(language, "dialogue.talkButton")}>💬</button>
+          <button className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble" data-ui-control="icon-button" type="button" disabled={isThinking || !draft.trim()} onClick={handleOpenZine} aria-label={copy.zine} title={copy.zine}>📚</button>
         </form>
         {error && <p className="text-sm text-red-300 mt-3">{safeDebugText(error, 180)}</p>}
       </section>
@@ -564,8 +744,43 @@ function waitForNextPaint(): Promise<void> {
   });
 }
 
+function attachZineIframeControls(iframe: HTMLIFrameElement): void {
+  const doc = iframe.contentDocument;
+  if (!doc) return;
+  const pressButton = (button: HTMLElement, pressed: boolean) => {
+    button.style.transform = pressed ? "translate(3px, 3px)" : "";
+    button.style.boxShadow = pressed ? "1px 1px 0 #000" : "4px 4px 0 #000";
+  };
+  doc.querySelectorAll<HTMLElement>(".pbs-zine-button").forEach((button) => {
+    button.style.pointerEvents = "auto";
+    button.addEventListener("pointerdown", () => pressButton(button, true));
+    button.addEventListener("pointerup", () => pressButton(button, false));
+    button.addEventListener("pointerleave", () => pressButton(button, false));
+  });
+  doc.querySelectorAll<HTMLElement>("[data-pbs-zine-feedback]").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.setAttribute("aria-pressed", "true");
+      pressButton(button, true);
+    });
+  });
+  doc.querySelectorAll<HTMLButtonElement>("[data-pbs-zine-pdf]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const originalTitle = button.getAttribute("title") || "Print / Save PDF";
+      button.setAttribute("aria-busy", "true");
+      button.setAttribute("title", "Opening print dialog");
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      window.setTimeout(() => {
+        button.setAttribute("title", originalTitle);
+        button.removeAttribute("aria-busy");
+      }, 1200);
+    });
+  });
+}
+
 function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode; onRetry?: () => void; progress?: string }) {
   const isFinalDocument = link.kind === "finalDocument";
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   return (
     <div className={`world-split-embed ${isFinalDocument ? "world-split-final-document" : ""}`}>
       {link.description && (
@@ -580,10 +795,14 @@ function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extrac
           key={link.url}
           title={link.title}
           src={link.url}
+          ref={iframeRef}
           className="world-split-iframe"
           loading="eager"
           referrerPolicy="no-referrer-when-downgrade"
-          sandbox={isFinalDocument ? "allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox" : undefined}
+          sandbox={isFinalDocument ? "allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox allow-modals" : undefined}
+          onLoad={() => {
+            if (isFinalDocument && iframeRef.current) attachZineIframeControls(iframeRef.current);
+          }}
         />
       ) : isFinalDocument ? (
         <AssociationLoadingPage language={language} />
@@ -912,6 +1131,7 @@ function App() {
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
+  const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
@@ -1211,6 +1431,10 @@ function App() {
     const dist = Math.abs(player.tileCol - CENTRAL_COMPUTER_TILE.col) + Math.abs(player.tileRow - CENTRAL_COMPUTER_TILE.row);
     return dist <= 2;
   }, [officeState]);
+
+  const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
+    return Math.abs(col - CENTRAL_COMPUTER_TILE.col) + Math.abs(row - CENTRAL_COMPUTER_TILE.row) <= 2;
+  }, []);
 
   const getPlayerDistanceFromCharacter = useCallback(
     (characterId: number): number => {
@@ -1704,6 +1928,11 @@ function App() {
         setIsComputerDialogueOpen(false);
       }
 
+      if (pendingComputerOpen && !computerDialogueOpenRef.current && isPlayerNearCentralComputer()) {
+        setPendingComputerOpen(false);
+        setIsComputerDialogueOpen(true);
+      }
+
       setSplitPanel((current) => {
         if (!current || !splitPanelAnchor) return current;
         const awayFromNpc =
@@ -1725,6 +1954,7 @@ function App() {
     isPlayerNearCentralComputer,
     layoutReady,
     officeState,
+    pendingComputerOpen,
     playerProfile,
     splitPanelAnchor,
   ]);
@@ -1843,6 +2073,7 @@ function App() {
       if (event.key === "Escape") {
         setActiveDialogueId(null);
         setIsComputerDialogueOpen(false);
+        setPendingComputerOpen(false);
         return;
       }
       if (event.code === "Space") {
@@ -1914,13 +2145,37 @@ function App() {
 
   const handleMobileMapTap = useCallback(
     (col: number, row: number) => {
+      if (playerProfile && appMode === "interactive" && isCentralComputerTile(col, row)) {
+        officeState.cameraFollowId = PLAYER_ID;
+        if (isPlayerNearCentralComputer()) {
+          setPendingComputerOpen(false);
+          setIsComputerDialogueOpen(true);
+          return;
+        }
+        const occupied = new Set(
+          Array.from(officeState.characters.values())
+            .filter((ch) => ch.id !== PLAYER_ID)
+            .map((ch) => `${ch.tileCol},${ch.tileRow}`),
+        );
+        const approachTile = findNearestApproachableTile(
+          officeState,
+          CENTRAL_COMPUTER_TILE.col,
+          CENTRAL_COMPUTER_TILE.row + 1,
+          occupied,
+        );
+        const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
+        setPendingComputerOpen(true);
+        if (moved) setPlayerMoveTick((tick) => tick + 1);
+        return;
+      }
+      setPendingComputerOpen(false);
       officeState.cameraFollowId = PLAYER_ID;
       const moved = officeState.walkToTile(PLAYER_ID, col, row);
       if (moved) {
         setPlayerMoveTick((tick) => tick + 1);
       }
     },
-    [officeState],
+    [appMode, isCentralComputerTile, isPlayerNearCentralComputer, officeState, playerProfile],
   );
 
   const handlePlayerStart = useCallback(
@@ -2111,6 +2366,7 @@ function App() {
     setActiveDialogueId(null);
     setSplitPanel(null);
     setIsSplitExpanded(false);
+    setPendingComputerOpen(false);
     setSelectedPet(null);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
@@ -2265,7 +2521,7 @@ function App() {
     try {
       await waitForNextPaint();
       if (wikiGenerationRequestRef.current !== requestKey) return;
-      const result = await generateBrowserAssociationZine(query, request.petRole, request.language, (message) => {
+      const result = await generateBrowserAssociationZine(query, request.language, (message) => {
         setAssociationProgress(message);
       });
       if (wikiGenerationRequestRef.current !== requestKey) return;
@@ -2412,6 +2668,7 @@ function App() {
       className={`game-world-layer pbs-interaction-root w-full h-full relative overflow-hidden ${isSplitOpen ? "world-split-active" : ""} ${isSplitExpanded ? "world-split-expanded" : ""}`}
       data-modal-layer={activeDialoguePersona || splitPanel || isEncounterUiOpen ? "open" : "closed"}
       data-encounter-layer={isEncounterUiOpen ? "open" : "closed"}
+      data-language={selectedLanguage}
       style={{
         touchAction:
           showMobileControls && appMode === "interactive" && !isSplitOpen
@@ -2833,7 +3090,10 @@ function App() {
               language={selectedLanguage}
               playerName={playerProfile.name}
               playerPalette={playerProfile.palette}
-              onClose={() => setIsComputerDialogueOpen(false)}
+              onClose={() => {
+                setPendingComputerOpen(false);
+                setIsComputerDialogueOpen(false);
+              }}
               onOpenAssociationZine={(query) => {
                 const trimmed = query?.trim() ?? "";
                 if (!trimmed) return;
@@ -2889,7 +3149,7 @@ function App() {
                   <div className="question-status-compact grid grid-cols-2 gap-2 text-sm">
                     {Object.entries(simSnapshot.scores).map(([key, value]) => (
                       <p key={key}>
-                        {key}: {value.toFixed(1)}
+                        {petScoreLabel(selectedLanguage, key)}: {value.toFixed(1)}
                       </p>
                     ))}
                   </div>
@@ -2916,11 +3176,11 @@ function App() {
                               currentAction={pet.currentAction}
                             />
                             <span className="text-base leading-snug">
-                              Tamagotchi agent
+                              {PET_HUD_COPY[selectedLanguage].agent}
                             </span>
                           </div>
                           <p className="text-sm mt-3">
-                            {pet.currentAction} / {t(selectedLanguage, "pet.energy")}
+                            {petActionLabel(selectedLanguage, pet.currentAction)} / {t(selectedLanguage, "pet.energy")}
                             {" "}
                             {pet.state.energy.toFixed(0)} {" "}
                             {t(selectedLanguage, "pet.stress")}
@@ -2935,7 +3195,7 @@ function App() {
                     <div className="grid grid-cols-2 gap-2 text-sm mb-4">
                       {Object.entries(simSnapshot.scores).map(([key, value]) => (
                         <p key={key}>
-                          {key}: {value.toFixed(1)}
+                          {petScoreLabel(selectedLanguage, key)}: {value.toFixed(1)}
                         </p>
                       ))}
                     </div>
@@ -2954,7 +3214,7 @@ function App() {
                     )}
                     {petDialogueHistory.length > 0 && (
                       <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
-                        <strong>🐣 recent question history</strong>
+                        <strong>🐣 {PET_HUD_COPY[selectedLanguage].recent}</strong>
                         {petDialogueHistory.slice(-3).reverse().map((entry) => (
                           <p key={entry.id} className="mt-2">{entry.question}: {entry.message}</p>
                         ))}
@@ -3214,7 +3474,7 @@ function App() {
                 />
                 <div>
                   <p className="type-caption pet-detail-kicker">
-                    {selectedPet.currentAction}
+                    {petActionLabel(selectedLanguage, selectedPet.currentAction)}
                   </p>
                   <h2 className="type-heading">
                     {t(selectedLanguage, "pet.questionPet")}
@@ -3225,20 +3485,20 @@ function App() {
                 </div>
               </div>
               <div className="pet-detail-section">
-                  <p className="type-label pet-detail-kicker">Tamagotchi agent</p>
-                  <p className="type-body-large">牠會在桃花源裡閒晃、觀察 NPC 與社群材料，暫時不負責回答 PBS Computer 的問題。</p>
+                  <p className="type-label pet-detail-kicker">{PET_HUD_COPY[selectedLanguage].agent}</p>
+                  <p className="type-body-large">{PET_HUD_COPY[selectedLanguage].note}</p>
               </div>
               <div className="pet-detail-section">
-                <h3 className="type-subheading">Local pet RAG chat</h3>
+                <h3 className="type-subheading">{PET_LOCAL_CHAT_COPY[selectedLanguage].title}</h3>
                 <form className="rpg-dialogue-form flex gap-3" onSubmit={handlePetLocalChat}>
                   <input
                     className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-4 py-3 text-base text-text outline-none focus:border-accent-bright"
                     value={petChatDraft}
                     onChange={(event) => setPetChatDraft(event.target.value)}
-                    placeholder="Ask this pet using its memory, materials, and A2A evidence"
+                    placeholder={PET_LOCAL_CHAT_COPY[selectedLanguage].placeholder}
                   />
                   <button className="pbs-frame-button" type="submit">
-                    Ask
+                    {PET_LOCAL_CHAT_COPY[selectedLanguage].ask}
                   </button>
                 </form>
                 {petChatReply && (
@@ -3252,7 +3512,7 @@ function App() {
                           ))}
                         </ul>
                       ) : (
-                        <p className="type-caption mt-2">No evidence retrieved yet.</p>
+                        <p className="type-caption mt-2">{PET_LOCAL_CHAT_COPY[selectedLanguage].noEvidence}</p>
                       )}
                     </article>
                   </div>

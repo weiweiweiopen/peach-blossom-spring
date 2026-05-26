@@ -25,7 +25,7 @@ export interface DaydreamPublicArtifactContent {
   approvedForPublicLayout: boolean;
 }
 
-const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|Content|search|prototype|protocol|artifact|wiki note|score|source\s*trail|relation\s*paths?|maturity\s*score|privateTrace|Daydream|Association)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
+const PROCESS_LANGUAGE = /\b(workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|Source:|Excerpt|search|prototype|protocol|artifact|wiki note|score|source\s*trail|relation\s*paths?|maturity\s*score|privateTrace|Daydream|Association)\b|工作流|偵錯|來源卡|來源|原始摘錄|搜尋|檢索|命中|問題如何形成|閱讀路線|第二層深讀|關係場|輸出形式|閱讀依據|深度門檻|校正頁|後台|流程|生成|系統|草稿/i;
 
 export function buildPublicArtifactContent(params: {
   seed: string;
@@ -149,7 +149,7 @@ function nameConcept(signals: PublicSignals): { title: string; subtitle: string 
   const sourceHint = sourceFamilySummary(signals);
   return {
     title,
-    subtitle: `從${sourceHint}出發，把這個問題轉成一條可閱讀、可測試、也可被修正的公共短文。`,
+    subtitle: `從${sourceHint}出發，把這個問題轉成一條可閱讀、可查證、也可被修正的公共短文。`,
   };
 }
 
@@ -157,16 +157,16 @@ function buildOpening(signals: PublicSignals): string {
   const observations = concreteSourceSentences(signals).slice(0, 3);
   const sourceWorld = sourceWorldSentence(signals);
   if (observations.length === 0) {
-    return `${sourceWorld} 這些材料沒有提供單一答案；它們比較像一組尚未對齊的手勢，讓問題可以先被拆開、重新排列，再變成下一步可做的形式。`;
+    return `${sourceWorld} 這些材料沒有提供單一答案；它們比較像一組尚未對齊的手勢，讓問題可以先被拆開、重新排列，再變成下一步可查證的形式。`;
   }
-  return `${sourceWorld} ${observations.join(" ")} 這些具體線索讓問題不再只是願望，而變成一個可以被材料、場所與社群方法共同測試的方向。`;
+  return `${sourceWorld} ${observations.join(" ")} 這些具體線索讓問題不再只是願望，而變成一個可以被材料、場所與社群方法共同查證的方向。`;
 }
 
 function buildProposition(signals: PublicSignals): string {
   const terms = meaningfulTerms(signals).slice(0, 3);
   const axis = terms.length > 0 ? terms.join("、") : "材料、場域與關係";
   const systems = signals.systems.slice(0, 2).join("、") || "社群筆記";
-  return `這篇短文的中心不是把 ${axis} 做成清單，而是從 ${systems} 的片段中讀出一個方法：先看每個材料實際處理了什麼，再讓推測從那些具體觀察旁邊長出來。`;
+  return `這篇短文的中心不是把 ${axis} 做成清單，而是從 ${systems} 的片段中讀出一個可被查證的關係：先看每個材料實際處理了什麼，再讓推測從那些具體觀察旁邊長出來。`;
 }
 
 function buildSections(signals: PublicSignals): DaydreamPublicArtifactSection[] {
@@ -197,19 +197,19 @@ function buildProtocol(signals: PublicSignals): DaydreamPublicArtifactProtocolIt
   return [
     {
       title: "先取一個可觀察動作",
-      body: `不要先替 ${primary} 下結論；先取出一個人、材料、工具或場域真正做過的動作，讓文章從那個動作開始。`,
+      body: `不要先替 ${primary} 下結論；先取出一個人、材料、工具或場域真正做過的動作，讓文章從那個可查證細節開始。`,
     },
     {
-      title: "把題材轉成方法",
-      body: `如果 ${secondary} 只是題材，文章會變成清單；把它改寫成方法時，需要說清楚它如何改變觀看、製作、維修、組織或記錄的方式。`,
+      title: "找出真正改變問題的關係",
+      body: `如果 ${secondary} 只是題材，文章會變成清單；把它放回 query 時，需要說清楚它如何改變觀看、判讀、組織或記錄的方式。`,
     },
     {
       title: "保留弱訊號",
-      body: `材料偏薄或互相矛盾時，不要補成完整作品。把不確定寫成限制，讓 ${tertiary} 的下一次測試可以知道哪裡還需要補讀。`,
+      body: `材料偏薄或互相矛盾時，不要補成完整作品。把不確定寫成限制，讓 ${tertiary} 的下一次查證可以知道哪裡還需要補讀。`,
     },
     {
-      title: "回到可分享形式",
-      body: "最後的形式應該是一份可被他人接手的小誌、練習譜、操作手冊或短文，而不是把整理痕跡公開給讀者。",
+      title: "回到同一個問題",
+      body: "最後的形式應該是一份可被他人接手的判讀、查證問題或短文，而不是把整理痕跡公開給讀者。",
     },
   ];
 }
@@ -220,7 +220,7 @@ function buildQuietCaveat(
   report: DaydreamReport,
 ): string | undefined {
   if ((selectedTopic?.maturityScore ?? 100) < 45 || report.depthMetrics.warnings.length > 0) {
-    return "這是一個還在形成中的題目；它適合先作為小誌或工作坊練習被測試，而不是被宣稱為完成研究。";
+    return "這是一個還在形成中的題目；它適合先作為小誌或查證路線被保留，而不是被宣稱為完成研究。";
   }
   return undefined;
 }
@@ -256,7 +256,7 @@ function sectionTitleFor(index: number, term: string): string {
   const shortTerm = titleCaseTerm(term);
   if (index === 0) return `${shortTerm} 先以具體材料出現`;
   if (index === 1) return "讓材料自己改變問題";
-  if (index === 2) return `${shortTerm} 從題材變成方法`;
+  if (index === 2) return `${shortTerm} 從題材變成證據`;
   return "把下一步寫成可被接手的形式";
 }
 
@@ -267,15 +267,15 @@ function sectionBodyFor(
 ): string {
   const nextTerm = meaningfulTerms(signals)[index + 1] ?? item.term;
   if (index === 0) {
-    return `先抓住一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見、被操作，也可以被別人檢查；後續文字只需要沿著這個可觀察動作慢慢展開。`;
+    return `先抓住一個具體支點：${item.observation} 這個細節比抽象關鍵字更重要，因為它讓 ${item.term} 可以被看見，也可以被別人檢查；後續文字只需要沿著這個可觀察動作慢慢展開。`;
   }
   if (index === 1) {
-    return `${item.observation} 這裡的轉向不是把材料當作案例裝飾，而是看它如何改變原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被實作測試的路。`;
+    return `${item.observation} 這裡的轉向不是把材料當作案例裝飾，而是看它如何改變原本的問題。當 ${item.term} 和 ${nextTerm} 被放在一起，文章開始形成一條能被查證的路。`;
   }
   if (index === 2) {
-    return `這些材料讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一種版面、工作坊、互動規則或公共筆記方法，而不是被直接宣稱為完成作品。`;
+    return `這些材料讓 ${item.term} 不只是主題名稱。${item.observation} 因此，推測只能從這個觀察旁邊延伸：它可能成為一個可比較的關係、反例或公共筆記方法，而不是被直接宣稱為完成作品。`;
   }
-  return `${item.observation} 最後的形式應該保留可被接手的開口：把已知的材料、可試的動作、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
+  return `${item.observation} 最後的形式應該保留可被接手的開口：把已知的材料、可查證的關係、仍然薄弱的環節和下一個問題寫清楚。這樣它才像一份能被接手的公共文本，而不是一次性的摘要。`;
 }
 
 function sourceWorldSentence(signals: PublicSignals): string {
@@ -317,7 +317,7 @@ function sourceFamilySummary(signals: PublicSignals): string {
   const families: string[] = [];
   if (/sound|audio|music|聲音|音樂/.test(text)) families.push("聲音與介面材料");
   if (/sensor|感測/.test(text)) families.push("感測與介面材料");
-  if (/workshop|camp|community|field|工作坊|社群|田野/.test(text)) families.push("工作坊與社群材料");
+  if (/workshop|camp|community|field|工作坊|社群|田野/.test(text)) families.push("社群與田野材料");
   if (families.length === 0) families.push("社群材料");
   return families.slice(0, 3).join("、");
 }
