@@ -189,6 +189,9 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   html[lang="zh-Hant"] h1 { font-size: 22pt !important; line-height: 1.18 !important; }
   html[lang="zh-Hant"] .lead, html[lang="zh-Hant"] .body, html[lang="zh-Hant"] .refs { font-size: 11pt !important; line-height: 1.58 !important; }
   html[lang="zh-Hant"] .label { font-size: 10.5pt !important; line-height: 1.32 !important; }
+  html[lang="th"] body, html[lang="th"] h1, html[lang="th"] h2, html[lang="th"] h3, html[lang="th"] .top, html[lang="th"] .no, html[lang="th"] .label, html[lang="th"] .lead, html[lang="th"] .body, html[lang="th"] .refs { font-family:"Thonburi","Noto Sans Thai","Tahoma",system-ui,sans-serif !important; letter-spacing:0 !important; text-transform:none !important; text-rendering:auto !important; }
+  html[lang="th"] h1 { font-size: 20pt !important; line-height: 1.32 !important; }
+  html[lang="th"] .lead, html[lang="th"] .body, html[lang="th"] .refs { font-size: 10.5pt !important; line-height: 1.72 !important; }
   .body p, .refs p, .refs li { orphans: 2; widows: 2; }
   a { color: inherit !important; text-decoration: none !important; }
 }
@@ -850,31 +853,93 @@ function traceCard(title: string, body: string | string[]): string {
   </article>`;
 }
 
-function renderWorkflowTraceSection(trace: Record<string, unknown>, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
+function traceCopy(language: AssociationZineLanguage) {
+  const copy: Record<AssociationZineLanguage, {
+    title: string;
+    intro: string;
+    cards: string[];
+    query: string;
+    seed: string;
+    intent: string;
+    noSearch: string;
+    noFamilies: string;
+    writerFallback: string;
+    publicPassed: string;
+    depthScore: string;
+    warnings: string;
+    llm: string;
+    yes: string;
+    needsReview: string;
+    none: string;
+    notRecorded: string;
+    unknown: string;
+  }> = {
+    "zh-TW": {
+      title: "閱讀路徑",
+      intro: "這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留來源卡、種子、查詢詞、wiki 連結、深讀頁面、LLM 呼叫與驗證狀態，但不以工程 JSON 呈現。",
+      cards: ["問題 / 種子", "搜尋詞", "來源家族", "入口筆記", "命中頁面", "連結路徑", "深讀", "寫作者使用", "驗證"],
+      query: "Query", seed: "Seed", intent: "Intent", noSearch: "沒有記錄搜尋詞。", noFamilies: "沒有記錄來源家族篩選。", writerFallback: "寫作者比較問題、命中頁面、連結路徑與深讀筆記後，寫成一個有證據邊界的論點。", publicPassed: "公開文章通過", depthScore: "深度分數", warnings: "警告", llm: "LLM", yes: "是", needsReview: "需要複查", none: "未記錄", notRecorded: "未記錄", unknown: "未知",
+    },
+    en: {
+      title: "Retrieval Path",
+      intro: "This page compresses how the zine found material, formed an argument, and marked what still needs checking into readable path cards. It keeps source cards, seeds, search terms, wiki links, deep-read pages, LLM calls, and validation status without showing raw engineering JSON.",
+      cards: ["Question / seed", "Search words", "Source families", "Entry notes", "Matched pages", "Linked paths", "Deep reading", "Writer used", "Validation"],
+      query: "Query", seed: "Seed", intent: "Intent", noSearch: "No search terms recorded.", noFamilies: "No source-family filter recorded.", writerFallback: "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.", publicPassed: "Public article passed", depthScore: "Depth score", warnings: "Warnings", llm: "LLM", yes: "yes", needsReview: "needs review", none: "none recorded", notRecorded: "not recorded", unknown: "unknown",
+    },
+    id: {
+      title: "Jalur Pengambilan",
+      intro: "Halaman ini memadatkan cara zine menemukan bahan, membentuk argumen, dan menandai bagian yang masih perlu diperiksa ke dalam kartu jalur yang mudah dibaca. Ia menyimpan kartu sumber, benih, kata pencarian, tautan wiki, halaman bacaan mendalam, panggilan LLM, dan status validasi tanpa menampilkan JSON teknis mentah.",
+      cards: ["Pertanyaan / benih", "Kata pencarian", "Keluarga sumber", "Catatan masuk", "Halaman cocok", "Jalur tautan", "Bacaan mendalam", "Dipakai penulis", "Validasi"],
+      query: "Kueri", seed: "Benih", intent: "Maksud", noSearch: "Tidak ada kata pencarian yang tercatat.", noFamilies: "Tidak ada filter keluarga sumber yang tercatat.", writerFallback: "Penulis membandingkan pertanyaan dengan halaman cocok, jalur tautan, dan catatan bacaan mendalam, lalu menulis argumen berbatas bukti.", publicPassed: "Artikel publik lolos", depthScore: "Skor kedalaman", warnings: "Peringatan", llm: "LLM", yes: "ya", needsReview: "perlu ditinjau", none: "tidak tercatat", notRecorded: "tidak tercatat", unknown: "tidak diketahui",
+    },
+    de: {
+      title: "Abrufpfad",
+      intro: "Diese Seite verdichtet, wie das Zine Material gefunden, eine These gebildet und offene Prüfstellen markiert hat, zu lesbaren Pfadkarten. Sie bewahrt Quellenkarten, Seeds, Suchbegriffe, Wiki-Links, vertieft gelesene Seiten, LLM-Aufrufe und Validierungsstatus, ohne rohes technisches JSON zu zeigen.",
+      cards: ["Frage / Seed", "Suchwörter", "Quellenfamilien", "Einstiegsnotizen", "Gefundene Seiten", "Linkpfade", "Vertiefte Lektüre", "Vom Schreiben genutzt", "Validierung"],
+      query: "Suchfrage", seed: "Seed", intent: "Absicht", noSearch: "Keine Suchbegriffe aufgezeichnet.", noFamilies: "Kein Quellenfamilien-Filter aufgezeichnet.", writerFallback: "Das Schreiben verglich die Frage mit gefundenen Seiten, Linkpfaden und vertieften Notizen und formulierte daraus ein beleggebundenes Argument.", publicPassed: "Öffentlicher Artikel bestanden", depthScore: "Tiefenwert", warnings: "Warnungen", llm: "LLM", yes: "ja", needsReview: "prüfen", none: "keine aufgezeichnet", notRecorded: "nicht aufgezeichnet", unknown: "unbekannt",
+    },
+    ja: {
+      title: "検索経路",
+      intro: "このページは、小誌がどのように材料を見つけ、論点を組み立て、まだ確認が必要な箇所を示したかを、読める経路カードに圧縮したものです。ソースカード、種、検索語、wikiリンク、深読みページ、LLM呼び出し、検証状態を残しつつ、技術用の生JSONとしては表示しません。",
+      cards: ["問い / 種", "検索語", "ソース群", "入口ノート", "一致ページ", "リンク経路", "深読み", "執筆に使ったもの", "検証"],
+      query: "クエリ", seed: "種", intent: "意図", noSearch: "検索語は記録されていません。", noFamilies: "ソース群フィルターは記録されていません。", writerFallback: "執筆者は問い、一致ページ、リンク経路、深読みノートを比較し、証拠の範囲を示した論点を書きました。", publicPassed: "公開記事の確認", depthScore: "深度スコア", warnings: "警告", llm: "LLM", yes: "はい", needsReview: "要確認", none: "記録なし", notRecorded: "記録なし", unknown: "不明",
+    },
+    th: {
+      title: "เส้นทางการค้นคืน",
+      intro: "หน้านี้สรุปว่าซีนค้นหาวัสดุอย่างไร ก่อรูปข้อถกเถียงอย่างไร และส่วนใดยังต้องตรวจสอบต่อ ให้เป็นการ์ดเส้นทางที่อ่านได้ โดยเก็บการ์ดแหล่งข้อมูล เมล็ดคำถาม คำค้น ลิงก์วิกิ หน้าที่อ่านลึก การเรียก LLM และสถานะตรวจสอบไว้ โดยไม่แสดง JSON ทางเทคนิคดิบ",
+      cards: ["คำถาม / เมล็ด", "คำค้น", "ตระกูลแหล่งข้อมูล", "บันทึกทางเข้า", "หน้าที่พบ", "เส้นทางลิงก์", "การอ่านลึก", "สิ่งที่ผู้เขียนใช้", "การตรวจสอบ"],
+      query: "คำถาม", seed: "เมล็ด", intent: "เจตนา", noSearch: "ไม่มีคำค้นที่บันทึกไว้", noFamilies: "ไม่มีตัวกรองตระกูลแหล่งข้อมูลที่บันทึกไว้", writerFallback: "ผู้เขียนเปรียบเทียบคำถามกับหน้าที่พบ เส้นทางลิงก์ และบันทึกการอ่านลึก แล้วเขียนข้อถกเถียงที่มีขอบเขตตามหลักฐาน", publicPassed: "บทความสาธารณะผ่าน", depthScore: "คะแนนความลึก", warnings: "คำเตือน", llm: "LLM", yes: "ใช่", needsReview: "ต้องตรวจทาน", none: "ไม่มีบันทึก", notRecorded: "ไม่มีบันทึก", unknown: "ไม่ทราบ",
+    },
+  };
+  return copy[language];
+}
+
+function renderWorkflowTraceSection(trace: Record<string, unknown>, language: AssociationZineLanguage, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
+  const copy = traceCopy(language);
   const deepSeek = trace.deepSeek as Record<string, unknown> | undefined;
   const validation = trace.publicValidation as Record<string, unknown> | undefined;
   const depth = trace.depthMetrics as Record<string, unknown> | undefined;
   const cards = [
-    traceCard("Question / seed", [`Query: ${trace.query ?? ""}`, `Seed: ${trace.seed ?? trace.query ?? ""}`, `Intent: ${trace.interpretedIntent ?? ""}`]),
-    traceCard("Search words", traceList(trace.searchTermsUsed, 12).join(" · ") || "No search terms recorded."),
-    traceCard("Source families", traceList(trace.allowedSourceFamilies, 8).join(" · ") || "No source-family filter recorded."),
-    traceCard("Entry notes", traceList(trace.entryNotesRead, 5)),
-    traceCard("Matched pages", traceList(trace.matchedPages ?? trace.triggeredNotes, 6)),
-    traceCard("Linked paths", traceList(trace.followedWikilinks ?? trace.linkedPages, 5)),
-    traceCard("Deep reading", traceList(trace.deepReadPages ?? trace.sourceNotesUsed, 5)),
-    traceCard("Writer used", String(trace.compactPromptSummary ?? "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.")),
-    traceCard("Validation", [
-      `Public article passed: ${validation?.publicSafetyPassed === false ? "needs review" : "yes"}`,
-      `Depth score: ${depth?.depthScore ?? "not recorded"}`,
-      `Warnings: ${trace.thinSourceWarnings && Array.isArray(trace.thinSourceWarnings) && trace.thinSourceWarnings.length ? trace.thinSourceWarnings.join("; ") : "none recorded"}`,
-      `LLM: ${deepSeek?.provider ?? "not recorded"}; status ${deepSeek?.httpStatus ?? "unknown"}; ${deepSeek?.durationMs ?? "?"} ms`,
+    traceCard(copy.cards[0], [`${copy.query}: ${trace.query ?? ""}`, `${copy.seed}: ${trace.seed ?? trace.query ?? ""}`, `${copy.intent}: ${trace.interpretedIntent ?? ""}`]),
+    traceCard(copy.cards[1], traceList(trace.searchTermsUsed, 12).join(" · ") || copy.noSearch),
+    traceCard(copy.cards[2], traceList(trace.allowedSourceFamilies, 8).join(" · ") || copy.noFamilies),
+    traceCard(copy.cards[3], traceList(trace.entryNotesRead, 5)),
+    traceCard(copy.cards[4], traceList(trace.matchedPages ?? trace.triggeredNotes, 6)),
+    traceCard(copy.cards[5], traceList(trace.followedWikilinks ?? trace.linkedPages, 5)),
+    traceCard(copy.cards[6], traceList(trace.deepReadPages ?? trace.sourceNotesUsed, 5)),
+    traceCard(copy.cards[7], String(trace.compactPromptSummary ?? copy.writerFallback)),
+    traceCard(copy.cards[8], [
+      `${copy.publicPassed}: ${validation?.publicSafetyPassed === false ? copy.needsReview : copy.yes}`,
+      `${copy.depthScore}: ${depth?.depthScore ?? copy.notRecorded}`,
+      `${copy.warnings}: ${trace.thinSourceWarnings && Array.isArray(trace.thinSourceWarnings) && trace.thinSourceWarnings.length ? trace.thinSourceWarnings.join("; ") : copy.none}`,
+      `${copy.llm}: ${deepSeek?.provider ?? copy.notRecorded}; status ${deepSeek?.httpStatus ?? copy.unknown}; ${deepSeek?.durationMs ?? "?"} ms`,
     ]),
   ].join("");
   return `<section class="page pbs-readable-trace" data-official-template="${escapeHtml(templateFilename)}" data-folio="retrieval-trace" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#bac3d9;color:#111;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #315b63;overflow-wrap:anywhere;">
       <div class="titleBlock" style="border:3px solid #111;background:#fcf46b;padding:clamp(12px,2vw,20px);margin-bottom:14px;box-shadow:4px 4px 0 #111;">
-        <h1 style="margin:0;font-size:clamp(24px,3.2vw,38px);line-height:1.08;">閱讀路徑 / Retrieval Path</h1>
-        <p class="lead" style="margin:8px 0 0;font-size:clamp(14px,1.45vw,18px);line-height:1.38;">這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留 sourceCards、seeds、查詢詞、wikilinks、deep-read pages、LLM 呼叫與 validation，但不以工程 JSON 呈現。</p>
+        <h1 style="margin:0;font-size:clamp(24px,3.2vw,38px);line-height:1.08;">${escapeHtml(copy.title)}</h1>
+        <p class="lead" style="margin:8px 0 0;font-size:clamp(14px,1.45vw,18px);line-height:1.38;">${escapeHtml(copy.intro)}</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">${cards}</div>
     </main>
@@ -1030,7 +1095,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   const officialTemplate = { filename: "01-pbs-reset-title-kinetic.html", html: pbsResetTitleTemplate };
   let fragment: string;
   try {
-    fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate);
+    fragment = renderOfficialTemplateArtifactHtml(artifact, variant, officialTemplate, language);
   } catch (error) {
     console.error("Association artifact was rejected; not rendering stale local fallback.", error);
     persistClickTrace(buildClickTrace({ requestId, query, language, workflow, artifact, errorClass: errorClass(error, "artifact_guard_rejected"), errorMessage: errorMessage(error) }));
@@ -1066,7 +1131,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
     },
   });
   const readingMaterials = renderReadingMaterialsSection(workflow, language, officialTemplate.filename);
-  const workflowTrace = renderWorkflowTraceSection(trace, officialTemplate.filename);
+  const workflowTrace = renderWorkflowTraceSection(trace, language, officialTemplate.filename);
   const html = htmlPage(`${articleFragment}${readingMaterials}${workflowTrace}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
   persistClickTrace(trace);
   return {

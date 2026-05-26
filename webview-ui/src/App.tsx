@@ -519,7 +519,7 @@ function AssociationLoadingPage({ language, progress }: { language: LanguageCode
   return (
     <div className="world-association-loading boot-loading-screen" role="status" aria-live="polite">
       <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
-        <p className="boot-loading-title">Peach Blossom Spring</p>
+        <p className="boot-loading-title">Association</p>
         <p key={progress ?? "loading"} className="boot-loading-copy association-stage-pop">{progress ?? "Loading..."}</p>
         <span className="boot-loading-dots" aria-hidden="true" />
       </div>
@@ -2790,9 +2790,9 @@ function App() {
     anchorId?: number;
   }): Promise<void> {
     const requestKey = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-    const loadingTitle = "Loading...";
+    const loadingTitle = "Association";
     const query = request.query || request.seed || "";
-    setAssociationProgress("解析 wiki query");
+    setAssociationProgress("Association...");
     setSplitPanel({
       kind: "finalDocument",
       title: loadingTitle,
