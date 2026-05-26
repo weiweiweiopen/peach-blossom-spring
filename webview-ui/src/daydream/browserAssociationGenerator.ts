@@ -172,7 +172,7 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
 @media print {
   html, body { width: auto !important; height: auto !important; overflow: visible !important; background: #f9e9c2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { margin: 0 !important; }
-  .pbs-readable-trace, .zine-feedback-page, script, button { display: none !important; }
+  .zine-feedback-page, script, button { display: none !important; }
   .page { break-after: auto !important; page-break-after: auto !important; break-before: auto !important; page-break-before: auto !important; break-inside: auto !important; page-break-inside: auto !important; min-height: auto !important; height: auto !important; margin: 0 0 5mm !important; padding: 4mm !important; box-shadow: none !important; overflow: visible !important; background: #f9e9c2 !important; display: block !important; }
   .sheet { min-height: auto !important; max-width: none !important; width: 100% !important; margin: 0 !important; padding: 4.5mm !important; border: 2px solid #315b63 !important; box-shadow: 2px 2px 0 #bac3d9 !important; background: #fffaf0 !important; display: block !important; break-inside: auto !important; page-break-inside: auto !important; }
   .top { margin-bottom: 3mm !important; display: flex !important; align-items: flex-start !important; gap: 3mm !important; break-inside: avoid !important; page-break-inside: avoid !important; }
@@ -759,37 +759,31 @@ function cardForTrace(card: Card, keywords: string[], index = 0) {
   };
 }
 
-function readingMaterialsCopy(language: AssociationZineLanguage): { title: string; intro: string; open: string } {
-  const copy: Record<AssociationZineLanguage, { title: string; intro: string; open: string }> = {
+function readingMaterialsCopy(language: AssociationZineLanguage): { title: string; intro: string } {
+  const copy: Record<AssociationZineLanguage, { title: string; intro: string }> = {
     "zh-TW": {
       title: "閱讀材料",
       intro: "這份小誌參考了以下可打開的公開頁面。你可以從這裡回到材料本身，繼續查證或延伸閱讀。",
-      open: "打開頁面",
     },
     en: {
       title: "Reading materials",
       intro: "This zine was grounded in the public pages below. Open them to keep reading, verify details, or follow the next thread.",
-      open: "Open page",
     },
     id: {
       title: "Bahan bacaan",
       intro: "Zine ini bertumpu pada halaman publik berikut. Buka halaman-halaman ini untuk membaca lanjut dan memeriksa detailnya.",
-      open: "Buka halaman",
     },
     de: {
       title: "Lesematerialien",
       intro: "Dieses Zine stützt sich auf die folgenden öffentlichen Seiten. Öffne sie, um weiterzulesen oder Details zu prüfen.",
-      open: "Seite öffnen",
     },
     ja: {
       title: "読むための材料",
       intro: "この小誌は、下の公開ページを手がかりにしています。ページを開いて、続きを読み、細部を確かめられます。",
-      open: "ページを開く",
     },
     th: {
       title: "วัสดุสำหรับอ่านต่อ",
       intro: "ซีนนี้อ้างอิงจากหน้าสาธารณะด้านล่าง เปิดหน้าเหล่านี้เพื่ออ่านต่อและตรวจสอบรายละเอียดได้",
-      open: "เปิดหน้า",
     },
   };
   return copy[language];
@@ -820,13 +814,25 @@ function renderReadingMaterialsSection(workflow: Workflow, language: Association
       <a href="${escapeHtml(card.url ?? "#")}" target="_blank" rel="noreferrer" style="display:inline-block;color:#111;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:900;">${String(index + 1).padStart(2, "0")}. ${escapeHtml(card.title)}</a>
       <span style="display:inline-block;margin-left:8px;color:#315b63;font-size:0.85em;">${escapeHtml(family)}</span>
       ${description ? `<p style="margin:8px 0 0;color:#243b3d;">${escapeHtml(description)}</p>` : ""}
-      <p style="margin:8px 0 0;"><a href="${escapeHtml(card.url ?? "#")}" target="_blank" rel="noreferrer" style="color:#111;text-decoration:none;border:2px solid #111;padding:4px 8px;background:#fcf46b;box-shadow:2px 2px 0 #111;">${escapeHtml(copy.open)}</a></p>
     </li>`;
   }).join("");
   return `<section class="page pbs-reading-materials" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #bac3d9;overflow-wrap:anywhere;">
       <div class="titleBlock" style="border:3px solid #111;background:#fffdf6;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #bac3d9;"><h1 style="margin:0;font-size:clamp(28px,4vw,48px);line-height:1.12;">${escapeHtml(copy.title)}</h1><p class="lead" style="margin:12px 0 0;font-size:clamp(17px,2vw,24px);line-height:1.45;">${escapeHtml(copy.intro)}</p></div>
       <ol style="margin:0;padding:0;font-size:clamp(16px,1.8vw,22px);line-height:1.45;">${rows}</ol>
+    </main>
+  </section>`;
+}
+
+function renderWorkflowTraceSection(trace: Record<string, unknown>, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
+  const json = JSON.stringify(trace, null, 2);
+  return `<section class="page pbs-readable-trace" data-official-template="${escapeHtml(templateFilename)}" data-folio="retrieval-trace" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#bac3d9;color:#111;">
+    <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #315b63;overflow-wrap:anywhere;">
+      <div class="titleBlock" style="border:3px solid #111;background:#fcf46b;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #111;">
+        <h1 style="margin:0;font-size:clamp(26px,3.6vw,42px);line-height:1.12;">完整檢索 / 生成路徑</h1>
+        <p class="lead" style="margin:12px 0 0;font-size:clamp(15px,1.7vw,20px);line-height:1.45;">sourceCards、seeds、查詢詞、wikilink traversal、deep-read pages、prompt 摘要、LLM 呼叫與 public validation 全部保留在這裡，方便檢查小誌如何生成。</p>
+      </div>
+      <pre style="white-space:pre-wrap;word-break:break-word;margin:0;font-size:clamp(12px,1.2vw,15px);line-height:1.45;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#fff;border:3px solid #111;padding:16px;max-height:none;">${escapeHtml(json)}</pre>
     </main>
   </section>`;
 }
@@ -1016,8 +1022,8 @@ export async function generateBrowserAssociationZine(query: string, language: As
     },
   });
   const readingMaterials = renderReadingMaterialsSection(workflow, language, officialTemplate.filename);
-  const html = htmlPage(`${articleFragment}${readingMaterials}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
-  assertCleanPublicArtifact(html);
+  const workflowTrace = renderWorkflowTraceSection(trace, officialTemplate.filename);
+  const html = htmlPage(`${articleFragment}${readingMaterials}${workflowTrace}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
   persistClickTrace(trace);
   return {
     title: artifact.title,

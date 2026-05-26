@@ -330,6 +330,16 @@ Rules:
 
 Use Playwright or equivalent browser automation.
 
+Compact first slice:
+
+- Script: `npm --prefix webview-ui run check:screenshot-qa`
+- Bootstrap URL: `/?qa-ui=1&qa-lang=<language>&qa-panel=<panel>`
+- Screenshot output: `webview-ui/test-results/ui-screenshots/`
+- Viewport: desktop `1440x900` only for the first automated slice.
+- Panels: `computer`, `npc`, `pet`, `zine`, `language`.
+- This first slice does not perform perceptual pixel diff. It captures screenshots and measures rendered DOM geometry so failures are actionable.
+- Mobile portrait and pixel-diff thresholds are follow-up slices after this compact harness is stable.
+
 Fixtures:
 
 1. PBS Computer open, language menu closed.

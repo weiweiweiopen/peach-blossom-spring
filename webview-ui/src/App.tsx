@@ -115,6 +115,35 @@ const topicLabels: Record<string, string> = {
   sustainability: "Open community sustainability",
 };
 
+type QaPanel = "computer" | "npc" | "pet" | "zine" | "language" | "hud";
+
+function readQaUiParams(): { enabled: boolean; language: LanguageCode | null; panel: QaPanel } {
+  if (typeof window === "undefined") return { enabled: false, language: null, panel: "computer" };
+  const params = new URLSearchParams(window.location.search);
+  const enabled = params.get("qa-ui") === "1";
+  const languageParam = params.get("qa-lang") as LanguageCode | null;
+  const panelParam = params.get("qa-panel") as QaPanel | null;
+  const language = languageParam && supportedLanguages.some((item) => item.code === languageParam) ? languageParam : null;
+  const panel = panelParam && ["computer", "npc", "pet", "zine", "language", "hud"].includes(panelParam) ? panelParam : "computer";
+  return { enabled, language, panel };
+}
+
+function qaPlayerProfile(language: LanguageCode): PlayerProfile {
+  return {
+    name: language === "zh-TW" ? "小貓 PBS QA" : "PBS QA Cat",
+    palette: 1,
+    avatarTitle: "Tamagotchi agent",
+    currentRole: "Interface tester",
+    mission: "Compare multilingual UI scale without breaking buttons.",
+    constraints: "Keep emoji controls fixed.",
+    skills: "screenshots, layout, visual QA",
+    question: "Which part of Peach Blossom Spring should this interface test?",
+    intentMode: "why",
+    personalArchive: "Visual QA fixture",
+    petSeed: "qa-ui-pet",
+  };
+}
+
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
 const CENTRAL_COMPUTER_TILE = {
@@ -167,6 +196,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "聲音作品如何連到社群組織？",
     "開放科學如何避免變成宣傳？",
     "營隊如何建立臨時共同體？",
+    "最近 wiki 裡有哪些新的 news 或更新？",
   ],
   en: [
     "How do non-profit communities survive long term?",
@@ -181,6 +211,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "How can sound work connect to community organizing?",
     "How can open science avoid becoming publicity?",
     "How do camps create temporary commons?",
+    "What new news or updates appear in the wiki?",
   ],
   id: [
     "Bagaimana komunitas nirlaba bertahan dalam jangka panjang?",
@@ -195,6 +226,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Bagaimana karya suara terhubung dengan pengorganisasian komunitas?",
     "Bagaimana open science menghindari menjadi promosi?",
     "Bagaimana camp membangun commons sementara?",
+    "News atau pembaruan baru apa yang muncul di wiki?",
   ],
   de: [
     "Wie bleiben Non-Profit-Communities langfristig tragfähig?",
@@ -209,6 +241,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Wie verbinden sich Klangarbeiten mit Community-Organisation?",
     "Wie vermeidet Open Science, reine Werbung zu werden?",
     "Wie erzeugen Camps temporäre Commons?",
+    "Welche neuen News oder Updates erscheinen im Wiki?",
   ],
   ja: [
     "非営利コミュニティはどう長く続くの？",
@@ -223,6 +256,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "音の作品はコミュニティ組織とどうつながる？",
     "オープンサイエンスはどう宣伝化を避ける？",
     "キャンプはどう一時的なコモンズを作る？",
+    "wiki にはどんな新しい news や更新がある？",
   ],
   th: [
     "ชุมชนไม่แสวงกำไรอยู่ต่อระยะยาวได้อย่างไร?",
@@ -237,6 +271,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "งานเสียงเชื่อมกับการจัดตั้งชุมชนอย่างไร?",
     "open science จะไม่กลายเป็นประชาสัมพันธ์ได้อย่างไร?",
     "แคมป์สร้าง commons ชั่วคราวได้อย่างไร?",
+    "มี news หรืออัปเดตใหม่อะไรใน wiki?",
   ],
 };
 
@@ -293,7 +328,7 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "finalDocument") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
   if (panel.kind === "archiveMap") return t(language, "archive.mapTitle");
-  return "schema";
+  return "LLM Wiki control room";
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
@@ -306,6 +341,89 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "finalDocument") return "WORLD WIKI: association page";
   if (panel.kind === "schema") return "🍑";
   return "🍑";
+}
+
+function SchemaControlRoom({ language }: { language: LanguageCode }) {
+  void language;
+  return (
+    <div className="world-wiki-content world-about-content schema-control-room">
+      <section className="schema-intro-card">
+        <h3>Peach Blossom Spring / LLM Wiki</h3>
+        <p>
+          小型文化組織與獨立藝術網絡通常依賴少數關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作。它們的知識散落於訪談、wiki、Google Drive、補助文件、展覽紀錄、工作坊材料、社群媒體、Medium 文章與口述經驗之中；一旦人物離開、平台失效、合作斷裂或資金中止，脈絡就容易消失。
+        </p>
+        <p>
+          <em>Non-Governmental Matters</em> 已為電子織品網絡、Hackteria、跨國科技藝術營隊、獨立教育系統、資金模式與文化差異建立訪談和地圖。這個遊戲把第一層田野材料轉化為 AI 時代的知識保存問題：文化組織缺少的不只是資料庫，而是一種能讓自身知識被保存、分類、召回、比較、修正與再使用的認知系統。
+        </p>
+        <p>
+          玩家以 Why? 進入桃花源，向 NPC 詢問訪談記憶、向中央電腦提出 wiki 問題，並把檢索路徑生成為可閱讀、可列印、可追溯的小誌。名字借用「桃花源」作為失而復得的路徑隱喻：遊戲不是保存單一過去，而是讓散落材料在一次次提問、回憶、檢索與再生成中重新出現。
+        </p>
+      </section>
+
+      <section className="schema-intro-card schema-contribution-card">
+        <h3>預期貢獻</h3>
+        <ul>
+          <li>把 AI 理解為文化仿真機：不是保存某個單一過去，而是把大量過去的語言、圖像、風格、資料與勞動痕跡壓縮成可被呼叫的幽靈機器或迴圈。</li>
+          <li>提出 LLM Wiki 作為小型文化組織記憶基礎設施的設計方法。</li>
+          <li>把文化幽靈與媒介考古從理論問題轉化為 AI 知識保存的實作問題。</li>
+          <li>提出一套統合語義層、大型語言模型、維基的人機協作文化記憶治理框架。</li>
+        </ul>
+      </section>
+
+      <section className="schema-control-prototype">
+        <h3>In-game Retrieval Controls</h3>
+        <p>這裡是介面原型：玩家不需要重新部署 GitHub，就能在遊戲內調整會影響檢索和小誌生成的參數。</p>
+        <div className="schema-control-grid">
+          <label>
+            Query rewrite prompt
+            <textarea defaultValue="把玩家問題改寫成 PBS LLM Wiki 可檢索的研究問題；保留原始意圖，補上可查證的文化網絡、材料、方法與組織脈絡。" />
+          </label>
+          <label>
+            Editorial writer prompt
+            <textarea defaultValue="生成一篇像小誌的公共短文：先提出問題，再連接田野材料、方法、限制與下一步；保留完整檢索 trace 給讀者查核。" />
+          </label>
+          <label>
+            Schema focus
+            <textarea defaultValue="semantic layers, entity layers, source families, wikilink traversal, seeds, sourceCards, depth metrics, public validation" />
+          </label>
+          <label>
+            Source families
+            <select defaultValue="all">
+              <option value="all">Hackteria + SGMK + Fabricademy + KOBAKANT</option>
+              <option value="hackteria">Hackteria first</option>
+              <option value="textile">Electronic textiles first</option>
+              <option value="wiki">PBS Wiki entry notes first</option>
+            </select>
+          </label>
+          <label>
+            Retrieval depth
+            <input type="range" min="1" max="4" defaultValue="2" />
+          </label>
+          <label>
+            Evidence threshold
+            <input type="range" min="1" max="10" defaultValue="6" />
+          </label>
+          <label>
+            Language / tone
+            <select defaultValue="zine">
+              <option value="zine">public zine voice</option>
+              <option value="research">research memo</option>
+              <option value="workshop">workshop handout</option>
+            </select>
+          </label>
+          <label>
+            Output includes
+            <textarea defaultValue="article, reading links, full sourceCards, seeds, traversal path, prompt summary, validation report" />
+          </label>
+        </div>
+        <div className="schema-control-actions">
+          <button type="button">Preview retrieval packet</button>
+          <button type="button">Generate test zine</button>
+          <button type="button">Save local preset</button>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 function AssociationLoadingPage({ language, progress }: { language: LanguageCode; progress?: string }) {
@@ -1044,6 +1162,7 @@ function getOfficeState(): OfficeState {
 }
 
 function App() {
+  const qaUi = useMemo(() => readQaUiParams(), []);
   // Browser runtime (dev or static dist): start React immediately, then load
   // heavy mock assets in the background and dispatch after listeners exist.
   useEffect(() => {
@@ -1099,16 +1218,16 @@ function App() {
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [alwaysShowOverlay, setAlwaysShowOverlay] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() =>
-    readStoredLanguage(),
+    qaUi.language ?? readStoredLanguage(),
   );
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(qaUi.enabled);
   const [isPostBootLoading, setIsPostBootLoading] = useState(false);
   const postBootLoadingTimerRef = useRef<number | null>(null);
   const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
     () => readSavedPlayerDefaults(),
   );
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(
-    null,
+    () => qaUi.enabled ? qaPlayerProfile(qaUi.language ?? readStoredLanguage()) : null,
   );
   const [multiplayerConfig] = useState<MultiplayerConfig | null>(() =>
     readMultiplayerConfig(),
@@ -1175,6 +1294,7 @@ function App() {
     nonce: number;
   } | null>(null);
   const petRunawayDoneRef = useRef<string | null>(null);
+  const qaUiBootstrappedRef = useRef(false);
   const wikiGenerationInFlightRef = useRef(false);
   const wikiGenerationRequestRef = useRef<string | null>(null);
   const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
@@ -1389,6 +1509,65 @@ function App() {
     writeStoredLanguage(selectedLanguage);
     applyDocumentLocale(selectedLanguage);
   }, [selectedLanguage]);
+
+  useEffect(() => {
+    if (!qaUi.enabled || qaUiBootstrappedRef.current || !layoutReady) return;
+    qaUiBootstrappedRef.current = true;
+    const profile = qaPlayerProfile(selectedLanguage);
+    const pet = createThronglet(
+      TAMAGOTCHI_AGENT_PROMPT,
+      profile.name,
+      "qa-ui",
+      10000,
+      profile.petSeed,
+      PET_HUD_COPY[selectedLanguage].agent,
+      {
+        intentMode: profile.intentMode,
+        petRole: profile.avatarTitle,
+        skills: profile.skills,
+        personalArchive: profile.personalArchive,
+      },
+    );
+    const npcContexts = personas.map((persona, index) => ({
+      id: `npc-${persona.id}`,
+      characterId: index + 1,
+      name: persona.name,
+      personaId: persona.id,
+      text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`,
+    }));
+    const snapshot = createInitialSnapshot([pet], npcContexts);
+    setHasStarted(true);
+    setIsPostBootLoading(false);
+    setPlayerDefaults(profile);
+    setPlayerProfile(profile);
+    setAppMode("interactive");
+    setPlayMode("camp");
+    setSimSnapshot(snapshot);
+    setSelectedPet(null);
+    setSelectedDispatchPet(null);
+    setIsComputerDialogueOpen(false);
+    setActiveDialogueId(null);
+    setSplitPanel(null);
+    setLanguageMenuOpen(false);
+
+    if (qaUi.panel === "computer") setIsComputerDialogueOpen(true);
+    if (qaUi.panel === "npc") setActiveDialogueId(1);
+    if (qaUi.panel === "pet") setSelectedPet(pet);
+    if (qaUi.panel === "language") {
+      setIsComputerDialogueOpen(true);
+      setLanguageMenuOpen(true);
+    }
+    if (qaUi.panel === "zine") {
+      setSplitPanel({
+        kind: "finalDocument",
+        title: "QA zine loading",
+        url: "",
+        language: selectedLanguage,
+        query: profile.question,
+        isGenerating: true,
+      });
+    }
+  }, [layoutReady, qaUi.enabled, qaUi.panel, selectedLanguage]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(
@@ -1915,7 +2094,7 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
     const interval = window.setInterval(() => {
-      if (activeDialogueIdRef.current !== null) {
+      if (!qaUi.enabled && activeDialogueIdRef.current !== null) {
         const distance = getPlayerDistanceFromCharacter(
           activeDialogueIdRef.current,
         );
@@ -1924,7 +2103,7 @@ function App() {
         }
       }
 
-      if (computerDialogueOpenRef.current && !isPlayerNearCentralComputer()) {
+      if (!qaUi.enabled && computerDialogueOpenRef.current && !isPlayerNearCentralComputer()) {
         setIsComputerDialogueOpen(false);
       }
 
@@ -1936,6 +2115,7 @@ function App() {
       setSplitPanel((current) => {
         if (!current || !splitPanelAnchor) return current;
         const awayFromNpc =
+          !qaUi.enabled &&
           splitPanelAnchor.kind === "npc" &&
           getPlayerDistanceFromCharacter(splitPanelAnchor.id) >
             CONVERSATION_CLOSE_DISTANCE_TILES;
@@ -1956,6 +2136,7 @@ function App() {
     officeState,
     pendingComputerOpen,
     playerProfile,
+    qaUi.enabled,
     splitPanelAnchor,
   ]);
 
@@ -2995,25 +3176,13 @@ function App() {
                     className="pbs-frame-button"
                     type="button"
                     onClick={() => {
-                      setSplitPanel({ kind: "communityLinks" });
-                      setSplitPanelAnchor(null);
-                      setIsSplitExpanded(false);
-                      setArchiveMenuOpen(false);
-                    }}
-                  >
-                    2. {t(selectedLanguage, "archive.newsTitle")}
-                  </button>
-                  <button
-                    className="pbs-frame-button"
-                    type="button"
-                    onClick={() => {
                       setSplitPanel({ kind: "archivePdf" });
                       setSplitPanelAnchor(null);
                       setIsSplitExpanded(false);
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    3. {t(selectedLanguage, "archive.ebookButton")}
+                    2. {t(selectedLanguage, "archive.ebookButton")}
                   </button>
                   <button
                     className="pbs-frame-button"
@@ -3025,7 +3194,7 @@ function App() {
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    4. {t(selectedLanguage, "archive.mapButton")}
+                    3. {t(selectedLanguage, "archive.mapButton")}
                   </button>
                 </div>
               </section>
@@ -3638,12 +3807,7 @@ function App() {
             ) : splitPanel.kind === "externalLink" || splitPanel.kind === "finalDocument" ? (
               <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} progress={associationProgress} />
             ) : splitPanel.kind === "schema" ? (
-              <div className="world-wiki-content world-about-content">
-                <p>這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著。你無意間闖入這個世界，試圖探索並收集如何建造一個烏托邦的方法，也試著記住回到這裡的路。</p>
-                <p>這個遊戲的本體是一個研究訪談稿 <em>Non-Governmental Matters</em>。該研究採訪了 14 位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。</p>
-                <p>玩家以 Why? 進入遊戲，詢問 NGM 受訪者 NPC 關於他自己的訪談內容、對社群可持續性的看法；NPC 現在是回憶入口，只回到 NGM transcript。中央電腦才會把玩家問題接到 LLM wiki，啟動聯想功能並生成一份可以列印出來的小誌。</p>
-                <p>每位 NPC 的人格是經訪談逐字稿調校過後的 DeepSeek LLM。</p>
-              </div>
+              <SchemaControlRoom language={selectedLanguage} />
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
                 title="NGM PDF embedded ebook"

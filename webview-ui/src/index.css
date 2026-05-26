@@ -8,6 +8,98 @@
   src: url("/fonts/FSPixelSansUnicode-Regular.ttf") format("truetype");
 }
 
+.schema-control-room {
+  display: grid;
+  gap: 18px;
+}
+
+.schema-intro-card,
+.schema-control-prototype {
+  border: 3px solid #111;
+  background: #fffaf0;
+  box-shadow: 4px 4px 0 #111;
+  padding: clamp(16px, 2.4vw, 26px);
+}
+
+.schema-intro-card h3,
+.schema-control-prototype h3 {
+  margin: 0 0 12px;
+  color: #111;
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.08;
+}
+
+.schema-intro-card p,
+.schema-intro-card li,
+.schema-control-prototype p,
+.schema-control-prototype label {
+  color: #243b3d;
+  font-size: clamp(16px, 1.55vw, 22px);
+  line-height: 1.5;
+}
+
+.schema-intro-card ul {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.schema-intro-card li {
+  margin-bottom: 10px;
+}
+
+.schema-contribution-card {
+  background: #fcf46b;
+}
+
+.schema-control-prototype {
+  background: #bac3d9;
+}
+
+.schema-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.schema-control-grid label {
+  display: grid;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.schema-control-grid textarea,
+.schema-control-grid select,
+.schema-control-grid input[type="range"] {
+  width: 100%;
+  border: 3px solid #111;
+  background: #fffdf6;
+  color: #111;
+  padding: 10px 12px;
+  font: inherit;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.schema-control-grid textarea {
+  min-height: 118px;
+  resize: vertical;
+}
+
+.schema-control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.schema-control-actions button {
+  border: 3px solid #111;
+  background: #fcf46b;
+  color: #111;
+  padding: 10px 14px;
+  font-weight: 900;
+  box-shadow: 3px 3px 0 #111;
+}
+
 /*
  * CJK glyphs in the pixel font render visually larger than its Latin glyphs
  * (the Han/Hangul/Hiragana grids are denser than the 5×7 Latin grid).

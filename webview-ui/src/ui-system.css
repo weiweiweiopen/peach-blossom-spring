@@ -177,9 +177,14 @@
 .pbs-interaction-root .global-language-options button {
   display: flex !important;
   align-items: center !important;
+  width: 100% !important;
+  height: var(--ui-text-button-height) !important;
   min-height: 44px !important;
+  max-height: var(--ui-text-button-height) !important;
   font-size: var(--ui-type-button) !important;
   line-height: var(--ui-line-button) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
 }
 
 .pbs-interaction-root :where(.question-status-panel, .question-response-panel) {

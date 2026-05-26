@@ -45,8 +45,9 @@ const checks = [
   ["PBS Computer controls are contract-marked", /data-ui-control="icon-button"[\s\S]*aria-label=\{copy\.suggest\}[\s\S]*data-ui-control="icon-button"[\s\S]*>💬<\/button>[\s\S]*data-ui-control="icon-button"[\s\S]*>📚<\/button>/.test(app)],
   ["NPC controls are contract-marked", /data-ui-control="icon-button"[\s\S]*aria-label=\{t\(language, 'dialogue\.askQuestion'\)\}[\s\S]*data-ui-control="icon-button"[\s\S]*>\s*💬\s*<\/button>/.test(rpgDialogue)],
   ["Dialogue text parts are contract-marked", /data-ui-part="title"[\s\S]*data-ui-part="subtitle"[\s\S]*data-ui-part="body"[\s\S]*data-ui-part="field"/.test(app) && /data-ui-part="title"[\s\S]*data-ui-part="subtitle"[\s\S]*data-ui-part="body"[\s\S]*data-ui-part="field"/.test(rpgDialogue)],
-  ["Generated zine renders public reading materials", /en:\s*{[\s\S]*title:\s*"Reading materials"[\s\S]*function renderReadingMaterialsSection[\s\S]*class="page pbs-reading-materials"[\s\S]*articleFragment\}\$\{readingMaterials\}\$\{renderAssociationFeedbackSection/.test(generator)],
-  ["Reading materials avoid backend labels", !/title:\s*"(?:Sources|Debug|Workflow|Source cards|Trace)"|title:\s*"來源列表"|class="page pbs-readable-trace"/.test(generator)],
+  ["Generated zine renders public reading materials", /en:\s*{[\s\S]*title:\s*"Reading materials"[\s\S]*function renderReadingMaterialsSection[\s\S]*class="page pbs-reading-materials"[\s\S]*articleFragment\}\$\{readingMaterials\}\$\{workflowTrace\}\$\{renderAssociationFeedbackSection/.test(generator)],
+  ["Reading materials avoid duplicate open buttons", !/copy\.open|打開頁面|Open page|background:#fcf46b;box-shadow:2px 2px 0 #111/.test(generator)],
+  ["Generated zine renders full workflow trace", /function renderWorkflowTraceSection[\s\S]*JSON\.stringify\(trace, null, 2\)[\s\S]*完整檢索 \/ 生成路徑[\s\S]*sourceCards、seeds/.test(generator)],
   ["Reading material descriptions strip public guard labels", /function cleanReadingMaterialDescription[\s\S]*\(\?:Source\|Excerpt\|Content\)[\s\S]*return \/\\b\(\?:Source\|Excerpt\|Content\|No plaintext extract returned\|Imported\|internal links\\\/categories\)\\b\/i\.test\(cleaned\)[\s\S]*\? ""/.test(generator)],
 ];
 
