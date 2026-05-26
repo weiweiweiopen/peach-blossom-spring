@@ -745,6 +745,84 @@ function cardForTrace(card: Card, keywords: string[], index = 0) {
   };
 }
 
+function readingMaterialsCopy(language: AssociationZineLanguage): { title: string; intro: string; open: string } {
+  const copy: Record<AssociationZineLanguage, { title: string; intro: string; open: string }> = {
+    "zh-TW": {
+      title: "閱讀材料",
+      intro: "這份小誌參考了以下可打開的公開頁面。你可以從這裡回到材料本身，繼續查證或延伸閱讀。",
+      open: "打開頁面",
+    },
+    en: {
+      title: "Reading materials",
+      intro: "This zine was grounded in the public pages below. Open them to keep reading, verify details, or follow the next thread.",
+      open: "Open page",
+    },
+    id: {
+      title: "Bahan bacaan",
+      intro: "Zine ini bertumpu pada halaman publik berikut. Buka halaman-halaman ini untuk membaca lanjut dan memeriksa detailnya.",
+      open: "Buka halaman",
+    },
+    de: {
+      title: "Lesematerialien",
+      intro: "Dieses Zine stützt sich auf die folgenden öffentlichen Seiten. Öffne sie, um weiterzulesen oder Details zu prüfen.",
+      open: "Seite öffnen",
+    },
+    ja: {
+      title: "読むための材料",
+      intro: "この小誌は、下の公開ページを手がかりにしています。ページを開いて、続きを読み、細部を確かめられます。",
+      open: "ページを開く",
+    },
+    th: {
+      title: "วัสดุสำหรับอ่านต่อ",
+      intro: "ซีนนี้อ้างอิงจากหน้าสาธารณะด้านล่าง เปิดหน้าเหล่านี้เพื่ออ่านต่อและตรวจสอบรายละเอียดได้",
+      open: "เปิดหน้า",
+    },
+  };
+  return copy[language];
+}
+
+function publicReadingCards(workflow: Workflow): Card[] {
+  const candidates = [
+    ...workflow.step1.report.matchedCards,
+    ...workflow.step1.report.deepReadCards,
+    ...workflow.step1.report.linkedCards.map((trail) => trail.card),
+  ].filter(isAllowedZineCard);
+  const byUrl = new Map<string, Card>();
+  for (const card of candidates) {
+    if (!card.url || byUrl.has(card.url)) continue;
+    byUrl.set(card.url, card);
+  }
+  return Array.from(byUrl.values()).slice(0, 8);
+}
+
+function renderReadingMaterialsSection(workflow: Workflow, language: AssociationZineLanguage, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
+  const cards = publicReadingCards(workflow);
+  if (cards.length === 0) return "";
+  const copy = readingMaterialsCopy(language);
+  const rows = cards.map((card, index) => {
+    const family = sourceFamily(card);
+    const description = compactText(card.excerpt, 150)
+      .replace(/\bSource:\s*https?:\/\/\S+/gi, "")
+      .replace(/\bSource:\s*/gi, "")
+      .replace(/\(No plaintext extract returned[\s\S]*$/i, "")
+      .replace(/Hackteria relationship layer Imported[\s\S]*$/i, "")
+      .replace(/No internal links\/categories found[\s\S]*$/i, "")
+      .trim();
+    return `<li style="margin:0;padding:12px 0;border-top:2px solid #111;list-style:none;">
+      <a href="${escapeHtml(card.url ?? "#")}" target="_blank" rel="noreferrer" style="display:inline-block;color:#111;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:900;">${String(index + 1).padStart(2, "0")}. ${escapeHtml(card.title)}</a>
+      <span style="display:inline-block;margin-left:8px;color:#315b63;font-size:0.85em;">${escapeHtml(family)}</span>
+      ${description ? `<p style="margin:8px 0 0;color:#243b3d;">${escapeHtml(description)}</p>` : ""}
+      <p style="margin:8px 0 0;"><a href="${escapeHtml(card.url ?? "#")}" target="_blank" rel="noreferrer" style="color:#111;text-decoration:none;border:2px solid #111;padding:4px 8px;background:#fcf46b;box-shadow:2px 2px 0 #111;">${escapeHtml(copy.open)}</a></p>
+    </li>`;
+  }).join("");
+  return `<section class="page pbs-reading-materials" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
+    <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #bac3d9;overflow-wrap:anywhere;">
+      <div class="titleBlock" style="border:3px solid #111;background:#fffdf6;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #bac3d9;"><h1 style="margin:0;font-size:clamp(28px,4vw,48px);line-height:1.12;">${escapeHtml(copy.title)}</h1><p class="lead" style="margin:12px 0 0;font-size:clamp(17px,2vw,24px);line-height:1.45;">${escapeHtml(copy.intro)}</p></div>
+      <ol style="margin:0;padding:0;font-size:clamp(16px,1.8vw,22px);line-height:1.45;">${rows}</ol>
+    </main>
+  </section>`;
+}
+
 function articleCharacterCount(artifact: DaydreamPublicArtifactContent): number {
   return [artifact.title, artifact.subtitle, artifact.opening, artifact.proposition, ...artifact.sections.map((section) => section.body), ...artifact.protocol.map((item) => item.body), artifact.quietCaveat ?? ""].join("\n").length;
 }
@@ -929,7 +1007,9 @@ export async function generateBrowserAssociationZine(query: string, language: As
       forbiddenTermsFound,
     },
   });
-  const html = htmlPage(`${articleFragment}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
+  const readingMaterials = renderReadingMaterialsSection(workflow, language, officialTemplate.filename);
+  const html = htmlPage(`${articleFragment}${readingMaterials}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
+  assertCleanPublicArtifact(html);
   persistClickTrace(trace);
   return {
     title: artifact.title,
