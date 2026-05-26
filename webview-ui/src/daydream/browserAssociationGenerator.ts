@@ -199,6 +199,20 @@ function compactText(text: unknown, max = 260): string {
   return String(text ?? "").replace(/\s+/g, " ").trim().slice(0, max);
 }
 
+function cleanReadingMaterialDescription(text: unknown): string {
+  const cleaned = compactText(text, 240)
+    .replace(/\b(?:Source|Excerpt|Content)\s*:\s*/gi, "")
+    .replace(/\bSource:\s*https?:\/\/\S+/gi, "")
+    .replace(/\(No plaintext extract returned[\s\S]*$/i, "")
+    .replace(/Hackteria relationship layer Imported[\s\S]*$/i, "")
+    .replace(/No internal links\/categories found[\s\S]*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return /\b(?:Source|Excerpt|Content|No plaintext extract returned|Imported|internal links\/categories)\b/i.test(cleaned)
+    ? ""
+    : cleaned;
+}
+
 function sourceFamily(card: Partial<SourceCard>): AllowedSourceFamily | "Other" {
   const source = String(card.source ?? "").toLowerCase();
   const text = `${card.title ?? ""} ${card.path ?? ""} ${card.url ?? ""}`.toLowerCase();
@@ -801,13 +815,7 @@ function renderReadingMaterialsSection(workflow: Workflow, language: Association
   const copy = readingMaterialsCopy(language);
   const rows = cards.map((card, index) => {
     const family = sourceFamily(card);
-    const description = compactText(card.excerpt, 150)
-      .replace(/\bSource:\s*https?:\/\/\S+/gi, "")
-      .replace(/\bSource:\s*/gi, "")
-      .replace(/\(No plaintext extract returned[\s\S]*$/i, "")
-      .replace(/Hackteria relationship layer Imported[\s\S]*$/i, "")
-      .replace(/No internal links\/categories found[\s\S]*$/i, "")
-      .trim();
+    const description = cleanReadingMaterialDescription(card.excerpt);
     return `<li style="margin:0;padding:12px 0;border-top:2px solid #111;list-style:none;">
       <a href="${escapeHtml(card.url ?? "#")}" target="_blank" rel="noreferrer" style="display:inline-block;color:#111;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:900;">${String(index + 1).padStart(2, "0")}. ${escapeHtml(card.title)}</a>
       <span style="display:inline-block;margin-left:8px;color:#315b63;font-size:0.85em;">${escapeHtml(family)}</span>
