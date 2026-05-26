@@ -2,6 +2,8 @@
 
 Status: active repair
 
+Deployment note: this repair is expected to deploy through GitHub Pages on every push to `main`.
+
 ## Problem
 
 The previous fixes made the UI mechanically testable, but the rendered result is still not acceptable:
