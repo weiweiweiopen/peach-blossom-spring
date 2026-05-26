@@ -12,6 +12,7 @@ const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
+const editorialPrompt = readFileSync(join(root, "prompts", "association-editorial-system.md"), "utf8");
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -47,8 +48,14 @@ const checks = [
   ["Dialogue text parts are contract-marked", /data-ui-part="title"[\s\S]*data-ui-part="subtitle"[\s\S]*data-ui-part="body"[\s\S]*data-ui-part="field"/.test(app) && /data-ui-part="title"[\s\S]*data-ui-part="subtitle"[\s\S]*data-ui-part="body"[\s\S]*data-ui-part="field"/.test(rpgDialogue)],
   ["Generated zine renders public reading materials", /en:\s*{[\s\S]*title:\s*"Reading materials"[\s\S]*function renderReadingMaterialsSection[\s\S]*class="page pbs-reading-materials"[\s\S]*articleFragment\}\$\{readingMaterials\}\$\{workflowTrace\}\$\{renderAssociationFeedbackSection/.test(generator)],
   ["Reading materials avoid duplicate open buttons", !/copy\.open|打開頁面|Open page|background:#fcf46b;box-shadow:2px 2px 0 #111/.test(generator)],
-  ["Generated zine renders full workflow trace", /function renderWorkflowTraceSection[\s\S]*JSON\.stringify\(trace, null, 2\)[\s\S]*完整檢索 \/ 生成路徑[\s\S]*sourceCards、seeds/.test(generator)],
+  ["Generated zine trace is prose cards, not raw JSON", /function renderWorkflowTraceSection[\s\S]*traceCard\("Question \/ seed"[\s\S]*閱讀路徑 \/ Retrieval Path/.test(generator) && !/function renderWorkflowTraceSection[\s\S]*JSON\.stringify\(trace, null, 2\)[\s\S]*<pre/.test(generator)],
   ["Reading material descriptions strip public guard labels", /function cleanReadingMaterialDescription[\s\S]*\(\?:Source\|Excerpt\|Content\)[\s\S]*return \/\\b\(\?:Source\|Excerpt\|Content\|No plaintext extract returned\|Imported\|internal links\\\/categories\)\\b\/i\.test\(cleaned\)[\s\S]*\? ""/.test(generator)],
+  ["Schema control room is multilingual", /SCHEMA_CONTROL_COPY:\s*Record<LanguageCode[\s\S]*"zh-TW"[\s\S]*en:[\s\S]*id:[\s\S]*de:[\s\S]*ja:[\s\S]*th:/.test(app)],
+  ["Schema current flow avoids obsolete Why wording", !/玩家以 Why\?|current game flow[^`]*Why\?/i.test(app)],
+  ["UI system uses per-language font stacks", /data-language="zh-TW"[\s\S]*PingFang TC[\s\S]*data-language="ja"[\s\S]*Hiragino Sans[\s\S]*data-language="th"[\s\S]*Noto Sans Thai/.test(uiSystem)],
+  ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
+  ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
+  ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
 ];
 
 const failures = checks.filter(([, ok]) => !ok).map(([name]) => name);

@@ -357,6 +357,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     desiredAngles: [
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
       "全文只服務同一個中心問題：先判斷材料揭露了什麼未被注意的事實、關係或矛盾，再用它組成一條連貫論點。",
+      "把小誌寫成研討會短文：支持、反對、限制與未來研究方向都要清楚，不要填充漂亮句子。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
       "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀判讀；不要硬寫成宏大宣言。",
       "除非 wantsMakingTutorial=true，不要把文章寫成工具製作、教學步驟、BOM 或工作坊流程。",
@@ -371,7 +372,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Evidence may support, complicate, or limit the answer, but it must not redirect the article to a different topic. Write one coherent article around one useful, source-grounded insight.",
+    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. Write one coherent research-seminar zine around one useful, source-grounded insight and one future research direction.",
     reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先說材料支持什麼、不支持什麼，並指出一個不容易被注意到、但對玩家問題有用的新關係、矛盾或事實。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 可以作為一般證據來源使用，但仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${editorialSystemPrompt}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
@@ -491,10 +492,10 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
     primaryPages: [observations[index % observationCount], observations[(index + 2) % observationCount]].filter(Boolean),
     relationTrail: linked[index % linkedCount] ?? null,
     sectionJob: [
-      "先判斷玩家問題與材料真正相合、相衝突的地方",
-      "整理可點開的頁面/作品/方法清單，說明各自用途",
-      "把材料轉成一個可檢驗的論點、比較或反例",
-      "收束成下一步閱讀、比較或查證問題，保留不確定性",
+      "界定玩家問題：材料能回答什麼，哪裡仍模糊",
+      "提出最強支持證據：頁面/作品/方法如何推進論點",
+      "提出限制、反例或不相合之處：避免把材料硬湊成結論",
+      "提出未來研究方向：可比較、可查證、可延伸的下一個問題",
     ][index],
   };
 }
@@ -630,7 +631,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 260-380 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 260-380 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單或造句式結尾。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -669,7 +670,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.protocol[index] ?? progress.materialClues);
     const item = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 60-90 字。預設寫成證據檢查、閱讀問題、比較問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+      `${languageInstruction(language)}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 60-90 字。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
       JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
       800,
     ) as any;
@@ -824,15 +825,58 @@ function renderReadingMaterialsSection(workflow: Workflow, language: Association
   </section>`;
 }
 
+function traceList(value: unknown, max = 5): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, max).map((item) => {
+    if (typeof item === "string") return item;
+    const record = item as Record<string, unknown>;
+    const title = String(record.title ?? record.to ?? record.name ?? "untitled");
+    const family = record.sourceFamily ? ` (${record.sourceFamily})` : "";
+    const keywords = Array.isArray(record.matchedKeywords) && record.matchedKeywords.length
+      ? ` · ${record.matchedKeywords.slice(0, 4).join(", ")}`
+      : "";
+    const relation = record.relation ? ` · ${record.relation}` : "";
+    return `${title}${family}${relation}${keywords}`;
+  }).filter(Boolean);
+}
+
+function traceCard(title: string, body: string | string[]): string {
+  const content = Array.isArray(body)
+    ? `<ul style="margin:8px 0 0;padding-left:18px;">${body.map((item) => `<li style="margin:0 0 5px;">${escapeHtml(item)}</li>`).join("")}</ul>`
+    : `<p style="margin:8px 0 0;">${escapeHtml(body)}</p>`;
+  return `<article style="border:2px solid #111;background:#fffdf6;padding:10px 12px;box-shadow:3px 3px 0 #111;break-inside:avoid;page-break-inside:avoid;">
+    <h2 style="margin:0;font-size:clamp(15px,1.5vw,19px);line-height:1.15;text-transform:uppercase;letter-spacing:.04em;">${escapeHtml(title)}</h2>
+    <div style="font-size:clamp(13px,1.25vw,16px);line-height:1.38;color:#243b3d;">${content}</div>
+  </article>`;
+}
+
 function renderWorkflowTraceSection(trace: Record<string, unknown>, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
-  const json = JSON.stringify(trace, null, 2);
+  const deepSeek = trace.deepSeek as Record<string, unknown> | undefined;
+  const validation = trace.publicValidation as Record<string, unknown> | undefined;
+  const depth = trace.depthMetrics as Record<string, unknown> | undefined;
+  const cards = [
+    traceCard("Question / seed", [`Query: ${trace.query ?? ""}`, `Seed: ${trace.seed ?? trace.query ?? ""}`, `Intent: ${trace.interpretedIntent ?? ""}`]),
+    traceCard("Search words", traceList(trace.searchTermsUsed, 12).join(" · ") || "No search terms recorded."),
+    traceCard("Source families", traceList(trace.allowedSourceFamilies, 8).join(" · ") || "No source-family filter recorded."),
+    traceCard("Entry notes", traceList(trace.entryNotesRead, 5)),
+    traceCard("Matched pages", traceList(trace.matchedPages ?? trace.triggeredNotes, 6)),
+    traceCard("Linked paths", traceList(trace.followedWikilinks ?? trace.linkedPages, 5)),
+    traceCard("Deep reading", traceList(trace.deepReadPages ?? trace.sourceNotesUsed, 5)),
+    traceCard("Writer used", String(trace.compactPromptSummary ?? "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.")),
+    traceCard("Validation", [
+      `Public article passed: ${validation?.publicSafetyPassed === false ? "needs review" : "yes"}`,
+      `Depth score: ${depth?.depthScore ?? "not recorded"}`,
+      `Warnings: ${trace.thinSourceWarnings && Array.isArray(trace.thinSourceWarnings) && trace.thinSourceWarnings.length ? trace.thinSourceWarnings.join("; ") : "none recorded"}`,
+      `LLM: ${deepSeek?.provider ?? "not recorded"}; status ${deepSeek?.httpStatus ?? "unknown"}; ${deepSeek?.durationMs ?? "?"} ms`,
+    ]),
+  ].join("");
   return `<section class="page pbs-readable-trace" data-official-template="${escapeHtml(templateFilename)}" data-folio="retrieval-trace" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#bac3d9;color:#111;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #315b63;overflow-wrap:anywhere;">
-      <div class="titleBlock" style="border:3px solid #111;background:#fcf46b;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #111;">
-        <h1 style="margin:0;font-size:clamp(26px,3.6vw,42px);line-height:1.12;">完整檢索 / 生成路徑</h1>
-        <p class="lead" style="margin:12px 0 0;font-size:clamp(15px,1.7vw,20px);line-height:1.45;">sourceCards、seeds、查詢詞、wikilink traversal、deep-read pages、prompt 摘要、LLM 呼叫與 public validation 全部保留在這裡，方便檢查小誌如何生成。</p>
+      <div class="titleBlock" style="border:3px solid #111;background:#fcf46b;padding:clamp(12px,2vw,20px);margin-bottom:14px;box-shadow:4px 4px 0 #111;">
+        <h1 style="margin:0;font-size:clamp(24px,3.2vw,38px);line-height:1.08;">閱讀路徑 / Retrieval Path</h1>
+        <p class="lead" style="margin:8px 0 0;font-size:clamp(14px,1.45vw,18px);line-height:1.38;">這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留 sourceCards、seeds、查詢詞、wikilinks、deep-read pages、LLM 呼叫與 validation，但不以工程 JSON 呈現。</p>
       </div>
-      <pre style="white-space:pre-wrap;word-break:break-word;margin:0;font-size:clamp(12px,1.2vw,15px);line-height:1.45;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#fff;border:3px solid #111;padding:16px;max-height:none;">${escapeHtml(json)}</pre>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">${cards}</div>
     </main>
   </section>`;
 }

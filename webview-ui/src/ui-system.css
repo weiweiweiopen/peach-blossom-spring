@@ -2,7 +2,7 @@
    Loaded after legacy CSS so protected runtime UI uses one manageable contract. */
 
 .pbs-interaction-root {
-  --ui-font: "FS Pixel Sans", "CJK Pixel Match", system-ui, sans-serif;
+  --ui-font: "FS Pixel Sans", system-ui, sans-serif;
   --emoji-font: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
 
   --ui-type-title: 30px;
@@ -26,6 +26,23 @@
   --ui-window-button-size: 34px;
   --ui-window-button-glyph: 18px;
   --ui-text-button-height: 44px;
+}
+
+.pbs-interaction-root[data-language="zh-TW"] {
+  --ui-font: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+
+.pbs-interaction-root[data-language="ja"] {
+  --ui-font: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+}
+
+.pbs-interaction-root[data-language="th"] {
+  --ui-font: "Thonburi", "Noto Sans Thai", "Tahoma", system-ui, sans-serif;
+}
+
+.pbs-interaction-root[data-language="id"],
+.pbs-interaction-root[data-language="de"] {
+  --ui-font: "FS Pixel Sans", system-ui, sans-serif;
 }
 
 .pbs-interaction-root[data-language="zh-TW"],
@@ -63,7 +80,13 @@
   .question-status-panel,
   .question-response-panel,
   .global-language-options,
-  .world-split-toolbar
+  .world-split-toolbar,
+  .world-split-content,
+  .world-wiki-content,
+  .schema-control-room,
+  .schema-control-room *,
+  .question-lint-card,
+  .question-lint-card *
 ) {
   font-family: var(--ui-font) !important;
 }
@@ -152,8 +175,11 @@
 }
 
 .pbs-interaction-root .rpg-dialogue-input[data-ui-part="field"] {
+  height: var(--ui-icon-button-size) !important;
   min-height: var(--ui-icon-button-size) !important;
+  max-height: var(--ui-icon-button-size) !important;
   padding: 10px 12px !important;
+  overflow: hidden !important;
 }
 
 .pbs-interaction-root .rpg-dialogue-log {
@@ -212,6 +238,9 @@
   max-width: calc(100% - 84px) !important;
   font-size: var(--ui-type-subtitle) !important;
   line-height: var(--ui-line-subtitle) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .pbs-interaction-root .world-split-toolbar p {

@@ -10,7 +10,7 @@
 
 .schema-control-room {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .schema-intro-card,
@@ -18,14 +18,31 @@
   border: 3px solid #111;
   background: #fffaf0;
   box-shadow: 4px 4px 0 #111;
-  padding: clamp(16px, 2.4vw, 26px);
+  padding: clamp(14px, 2vw, 22px);
+}
+
+.schema-hero-card {
+  background:
+    linear-gradient(90deg, rgba(252,244,107,.55), transparent 46%),
+    #fffaf0;
+}
+
+.schema-kicker {
+  display: inline-block;
+  margin: 0 0 10px !important;
+  padding: 5px 8px;
+  border: 2px solid #111;
+  background: #bac3d9;
+  box-shadow: 2px 2px 0 #111;
+  font-weight: 900;
+  letter-spacing: .04em;
 }
 
 .schema-intro-card h3,
 .schema-control-prototype h3 {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   color: #111;
-  font-size: clamp(24px, 3vw, 38px);
+  font-size: clamp(20px, 2.4vw, 30px);
   line-height: 1.08;
 }
 
@@ -34,8 +51,8 @@
 .schema-control-prototype p,
 .schema-control-prototype label {
   color: #243b3d;
-  font-size: clamp(16px, 1.55vw, 22px);
-  line-height: 1.5;
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.52;
 }
 
 .schema-intro-card ul {
@@ -57,8 +74,8 @@
 
 .schema-control-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
 }
 
 .schema-control-grid label {
@@ -74,13 +91,13 @@
   border: 3px solid #111;
   background: #fffdf6;
   color: #111;
-  padding: 10px 12px;
+  padding: 8px 10px;
   font: inherit;
   box-shadow: 3px 3px 0 #111;
 }
 
 .schema-control-grid textarea {
-  min-height: 118px;
+  min-height: 86px;
   resize: vertical;
 }
 
@@ -98,6 +115,28 @@
   padding: 10px 14px;
   font-weight: 900;
   box-shadow: 3px 3px 0 #111;
+}
+
+.question-lint-card {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 2px solid #111;
+  background: #fffdf6;
+  box-shadow: 2px 2px 0 #111;
+}
+
+.question-lint-card strong,
+.question-lint-card p,
+.question-lint-card span {
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+}
+
+.question-lint-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
 }
 
 /*

@@ -328,7 +328,8 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "finalDocument") return panel.title;
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
   if (panel.kind === "archiveMap") return t(language, "archive.mapTitle");
-  return "LLM Wiki control room";
+  if (panel.kind === "schema") return SCHEMA_CONTROL_COPY[language].title;
+  return "LLM Wiki";
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
@@ -343,51 +344,140 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   return "🍑";
 }
 
+const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
+  title: string;
+  introTitle: string;
+  intro: string[];
+  contributionTitle: string;
+  contributions: string[];
+  controlsTitle: string;
+  controlsIntro: string;
+  labels: Record<string, string>;
+  defaults: Record<string, string>;
+  actions: string[];
+}> = {
+  "zh-TW": {
+    title: "LLM Wiki 控制室",
+    introTitle: "桃花源作為記憶基礎設施",
+    intro: [
+      "小型文化組織與獨立藝術網絡依賴關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作；知識散落在訪談、wiki、雲端文件、展覽紀錄、工作坊材料、社群媒體與口述經驗中，平台或合作一斷裂，脈絡就容易消失。",
+      "Non-Governmental Matters 已把電子織品、Hackteria、跨國科技藝術營隊、獨立教育、資金模式與文化差異整理成第一層田野材料。桃花源把這些材料轉成 AI 時代的知識保存問題：文化組織需要能保存、分類、召回、比較、修正與再使用知識的認知系統。",
+      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把跨 wiki/source layers 的檢索路徑生成為可閱讀、可列印、可追溯的小誌。Question Pet 會把玩家問題轉成 lint/maturity 訊號，提示問題如何長大。",
+    ],
+    contributionTitle: "預期貢獻",
+    contributions: [
+      "把 AI 理解為文化仿真機：不是保存單一過去，而是把語言、圖像、風格、資料與勞動痕跡壓縮成可被呼叫的幽靈機器或迴圈。",
+      "提出 LLM Wiki 作為小型文化組織記憶基礎設施的設計方法。",
+      "把文化幽靈與媒介考古轉化為 AI 知識保存的實作問題。",
+      "提出統合語義層、大型語言模型與 wiki 的人機協作文化記憶治理框架。",
+    ],
+    controlsTitle: "遊戲內檢索控制原型",
+    controlsIntro: "這些控制項示意玩家未來如何在遊戲內調整會影響檢索、小誌與 lint 的參數，不必重新部署網站。",
+    labels: { query: "問題改寫 prompt", writer: "研討型寫作 prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
+    defaults: { query: "把玩家問題改寫成可查證的 PBS LLM Wiki 研究問題；保留模糊性，但補上文化網絡、材料、方法與組織脈絡。", writer: "像研討會短文：釐清問題、提出證據、反例、限制與未來研究方向，不填模板。", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    actions: ["預覽檢索包", "生成測試小誌", "保存本機 preset"],
+  },
+  en: {
+    title: "LLM Wiki control room",
+    introTitle: "Peach Blossom Spring as memory infrastructure",
+    intro: [
+      "Small cultural organizations and independent art networks often run on key people, short grants, temporary workshops, informal communication, and personal memory. Their knowledge is scattered across interviews, wikis, cloud folders, grant files, exhibition records, workshop materials, social media, and oral accounts; when platforms, people, or funding disappear, context disappears with them.",
+      "Non-Governmental Matters already turns electronic textiles, Hackteria, transnational art-tech camps, independent education, funding models, and cultural difference into first-layer field material. Peach Blossom Spring reframes those materials as an AI-era knowledge-preservation problem: these organizations need a cognitive system for preserving, classifying, recalling, comparing, correcting, and reusing knowledge.",
+      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines that expose paths across wiki/source layers. Question Pet turns player questions into lint and maturity signals, showing how a question can grow.",
+    ],
+    contributionTitle: "Expected contributions",
+    contributions: ["AI as cultural emulator: a ghost machine or loop that compresses past language, images, styles, data, and traces of labor into something callable.", "LLM Wiki as memory infrastructure for small cultural organizations.", "Cultural ghosts and media archaeology become practical AI knowledge-preservation problems.", "Semantic layers, LLMs, and wiki become a human-machine governance framework for cultural memory."],
+    controlsTitle: "In-game retrieval control prototype",
+    controlsIntro: "These controls show how players could tune retrieval, zine writing, and lint behavior inside the game without redeploying the site.",
+    labels: { query: "Query rewrite prompt", writer: "Seminar writing prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
+    defaults: { query: "Rewrite the player question into an evidence-checkable PBS LLM Wiki research question; keep ambiguity but add cultural network, material, method, and organizational context.", writer: "Write like a seminar note: clarify the question, evidence, counter-evidence, limits, and future research direction; do not fill a template.", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    actions: ["Preview packet", "Generate test zine", "Save local preset"],
+  },
+  id: {
+    title: "Ruang kontrol LLM Wiki",
+    introTitle: "Peach Blossom Spring sebagai infrastruktur memori",
+    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine yang memperlihatkan jalur antar wiki/source layers. Question Pet mengubah pertanyaan menjadi sinyal lint dan kematangan."],
+    contributionTitle: "Kontribusi yang diharapkan",
+    contributions: ["AI sebagai emulator budaya: mesin hantu atau loop yang memadatkan bahasa, gambar, gaya, data, dan jejak kerja masa lalu.", "LLM Wiki sebagai infrastruktur memori untuk organisasi budaya kecil.", "Hantu budaya dan arkeologi media menjadi masalah praktik pelestarian pengetahuan AI.", "Lapisan semantik, LLM, dan wiki menjadi kerangka tata kelola memori budaya manusia-mesin."],
+    controlsTitle: "Prototipe kontrol retrieval dalam game",
+    controlsIntro: "Kontrol ini menunjukkan bagaimana pemain dapat mengatur retrieval, penulisan zine, dan lint tanpa deploy ulang.",
+    labels: { query: "Prompt tulis ulang query", writer: "Prompt tulisan seminar", schema: "Fokus schema", family: "Prioritas sumber", depth: "Kedalaman retrieval", evidence: "Ambang bukti", tone: "Bahasa / nada", output: "Output mencakup" },
+    defaults: { query: "Ubah pertanyaan pemain menjadi pertanyaan riset PBS LLM Wiki yang bisa diperiksa bukti.", writer: "Tulis seperti catatan seminar: pertanyaan, bukti, sanggahan, batas, dan arah riset masa depan.", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "artikel, tautan bacaan, trace prosa, sinyal lint, caveat" },
+    actions: ["Pratinjau paket", "Buat zine tes", "Simpan preset lokal"],
+  },
+  de: {
+    title: "LLM-Wiki Kontrollraum",
+    introTitle: "Peach Blossom Spring als Gedächtnis-Infrastruktur",
+    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines erzeugen, die Pfade zwischen Wiki- und Source-Layern offenlegen. Question Pet übersetzt Fragen in Lint- und Reifesignale."],
+    contributionTitle: "Erwartete Beiträge",
+    contributions: ["KI als kultureller Emulator: eine Geistermaschine oder Schleife, die vergangene Sprache, Bilder, Stile, Daten und Arbeitsspuren aufrufbar verdichtet.", "LLM Wiki als Gedächtnis-Infrastruktur für kleine Kulturorganisationen.", "Kulturelle Geister und Medienarchäologie werden praktische KI-Wissensbewahrungsfragen.", "Semantische Layer, LLMs und Wiki bilden ein Mensch-Maschine-Governance-Framework für kulturelles Gedächtnis."],
+    controlsTitle: "In-game Retrieval-Kontrollprototyp",
+    controlsIntro: "Diese Regler zeigen, wie Spieler Retrieval, Zine-Schreiben und Lint im Spiel anpassen könnten, ohne neu zu deployen.",
+    labels: { query: "Query-Rewrite-Prompt", writer: "Seminar-Schreibprompt", schema: "Schema-Fokus", family: "Quellenpriorität", depth: "Retrieval-Tiefe", evidence: "Evidenzschwelle", tone: "Sprache / Ton", output: "Output enthält" },
+    defaults: { query: "Forme die Spielerfrage in eine überprüfbare PBS LLM Wiki Forschungsfrage um.", writer: "Schreibe wie eine Seminarnotiz: Frage, Evidenz, Gegenbelege, Grenzen und Forschungsrichtung.", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "Artikel, Leselinks, Prosa-Trace, Lint-Signale, Caveats" },
+    actions: ["Paket prüfen", "Test-Zine", "Preset speichern"],
+  },
+  ja: {
+    title: "LLM Wiki コントロール室",
+    introTitle: "記憶基盤としての桃花源",
+    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、wiki/source layers を横断する経路を小誌にすること。Question Pet は問いを lint と成熟度のシグナルに変える。"],
+    contributionTitle: "期待される貢献",
+    contributions: ["AI を文化エミュレーター、過去の言語・画像・様式・データ・労働痕跡を呼び出せる幽霊機械またはループとして捉える。", "小さな文化組織の記憶基盤として LLM Wiki を提案する。", "文化の幽霊とメディア考古学を AI 知識保存の実践問題に変える。", "意味レイヤー、LLM、wiki による人間機械協働の文化記憶ガバナンスを示す。"],
+    controlsTitle: "ゲーム内検索コントロール試作",
+    controlsIntro: "再デプロイせず、ゲーム内で検索・小誌生成・lint を調整するための試作 UI。",
+    labels: { query: "問いの書き換え prompt", writer: "研究会風の執筆 prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
+    defaults: { query: "プレイヤーの問いを、証拠で確認できる PBS LLM Wiki の研究質問に書き換える。", writer: "研究会メモのように、問い、証拠、反証、限界、次の研究方向を書く。", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    actions: ["検索包をプレビュー", "テスト小誌", "preset 保存"],
+  },
+  th: {
+    title: "ห้องควบคุม LLM Wiki",
+    introTitle: "Peach Blossom Spring ในฐานะโครงสร้างความจำ",
+    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม wiki/source layers ส่วน Question Pet แปลงคำถามเป็นสัญญาณ lint และ maturity"],
+    contributionTitle: "ผลงานที่คาดหวัง",
+    contributions: ["AI เป็น emulator ทางวัฒนธรรม: เครื่องผีหรือ loop ที่บีบอัดภาษา ภาพ สไตล์ ข้อมูล และร่องรอยแรงงานในอดีตให้เรียกใช้ได้", "LLM Wiki เป็นโครงสร้างความจำสำหรับองค์กรวัฒนธรรมขนาดเล็ก", "ผีทางวัฒนธรรมและโบราณคดีสื่อกลายเป็นโจทย์ปฏิบัติของการเก็บรักษาความรู้ด้วย AI", "semantic layers, LLM และ wiki เป็นกรอบ governance ความทรงจำวัฒนธรรมแบบคน-เครื่อง"],
+    controlsTitle: "ต้นแบบควบคุม retrieval ในเกม",
+    controlsIntro: "คอนโทรลเหล่านี้แสดงวิธีปรับ retrieval, การเขียนซีน และ lint ในเกมโดยไม่ต้อง deploy ใหม่",
+    labels: { query: "Query rewrite prompt", writer: "Seminar writing prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
+    defaults: { query: "เขียนคำถามผู้เล่นใหม่ให้เป็นคำถามวิจัย PBS LLM Wiki ที่ตรวจสอบด้วยหลักฐานได้", writer: "เขียนเหมือนโน้ตสัมมนา: คำถาม หลักฐาน ข้อโต้แย้ง ข้อจำกัด และทิศทางวิจัยต่อไป", schema: "semantic layers, entity layers, sourceCards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    actions: ["Preview packet", "Generate test zine", "Save preset"],
+  },
+};
+
 function SchemaControlRoom({ language }: { language: LanguageCode }) {
-  void language;
+  const copy = SCHEMA_CONTROL_COPY[language];
   return (
     <div className="world-wiki-content world-about-content schema-control-room">
-      <section className="schema-intro-card">
-        <h3>Peach Blossom Spring / LLM Wiki</h3>
-        <p>
-          小型文化組織與獨立藝術網絡通常依賴少數關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作。它們的知識散落於訪談、wiki、Google Drive、補助文件、展覽紀錄、工作坊材料、社群媒體、Medium 文章與口述經驗之中；一旦人物離開、平台失效、合作斷裂或資金中止，脈絡就容易消失。
-        </p>
-        <p>
-          <em>Non-Governmental Matters</em> 已為電子織品網絡、Hackteria、跨國科技藝術營隊、獨立教育系統、資金模式與文化差異建立訪談和地圖。這個遊戲把第一層田野材料轉化為 AI 時代的知識保存問題：文化組織缺少的不只是資料庫，而是一種能讓自身知識被保存、分類、召回、比較、修正與再使用的認知系統。
-        </p>
-        <p>
-          玩家以 Why? 進入桃花源，向 NPC 詢問訪談記憶、向中央電腦提出 wiki 問題，並把檢索路徑生成為可閱讀、可列印、可追溯的小誌。名字借用「桃花源」作為失而復得的路徑隱喻：遊戲不是保存單一過去，而是讓散落材料在一次次提問、回憶、檢索與再生成中重新出現。
-        </p>
+      <section className="schema-intro-card schema-hero-card">
+        <p className="schema-kicker">{copy.title}</p>
+        <h3>{copy.introTitle}</h3>
+        {copy.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
 
       <section className="schema-intro-card schema-contribution-card">
-        <h3>預期貢獻</h3>
+        <h3>{copy.contributionTitle}</h3>
         <ul>
-          <li>把 AI 理解為文化仿真機：不是保存某個單一過去，而是把大量過去的語言、圖像、風格、資料與勞動痕跡壓縮成可被呼叫的幽靈機器或迴圈。</li>
-          <li>提出 LLM Wiki 作為小型文化組織記憶基礎設施的設計方法。</li>
-          <li>把文化幽靈與媒介考古從理論問題轉化為 AI 知識保存的實作問題。</li>
-          <li>提出一套統合語義層、大型語言模型、維基的人機協作文化記憶治理框架。</li>
+          {copy.contributions.map((item) => <li key={item}>{item}</li>)}
         </ul>
       </section>
 
       <section className="schema-control-prototype">
-        <h3>In-game Retrieval Controls</h3>
-        <p>這裡是介面原型：玩家不需要重新部署 GitHub，就能在遊戲內調整會影響檢索和小誌生成的參數。</p>
+        <h3>{copy.controlsTitle}</h3>
+        <p>{copy.controlsIntro}</p>
         <div className="schema-control-grid">
           <label>
-            Query rewrite prompt
-            <textarea defaultValue="把玩家問題改寫成 PBS LLM Wiki 可檢索的研究問題；保留原始意圖，補上可查證的文化網絡、材料、方法與組織脈絡。" />
+            {copy.labels.query}
+            <textarea defaultValue={copy.defaults.query} />
           </label>
           <label>
-            Editorial writer prompt
-            <textarea defaultValue="生成一篇像小誌的公共短文：先提出問題，再連接田野材料、方法、限制與下一步；保留完整檢索 trace 給讀者查核。" />
+            {copy.labels.writer}
+            <textarea defaultValue={copy.defaults.writer} />
           </label>
           <label>
-            Schema focus
-            <textarea defaultValue="semantic layers, entity layers, source families, wikilink traversal, seeds, sourceCards, depth metrics, public validation" />
+            {copy.labels.schema}
+            <textarea defaultValue={copy.defaults.schema} />
           </label>
           <label>
-            Source families
+            {copy.labels.family}
             <select defaultValue="all">
               <option value="all">Hackteria + SGMK + Fabricademy + KOBAKANT</option>
               <option value="hackteria">Hackteria first</option>
@@ -396,15 +486,15 @@ function SchemaControlRoom({ language }: { language: LanguageCode }) {
             </select>
           </label>
           <label>
-            Retrieval depth
+            {copy.labels.depth}
             <input type="range" min="1" max="4" defaultValue="2" />
           </label>
           <label>
-            Evidence threshold
+            {copy.labels.evidence}
             <input type="range" min="1" max="10" defaultValue="6" />
           </label>
           <label>
-            Language / tone
+            {copy.labels.tone}
             <select defaultValue="zine">
               <option value="zine">public zine voice</option>
               <option value="research">research memo</option>
@@ -412,14 +502,12 @@ function SchemaControlRoom({ language }: { language: LanguageCode }) {
             </select>
           </label>
           <label>
-            Output includes
-            <textarea defaultValue="article, reading links, full sourceCards, seeds, traversal path, prompt summary, validation report" />
+            {copy.labels.output}
+            <textarea defaultValue={copy.defaults.output} />
           </label>
         </div>
         <div className="schema-control-actions">
-          <button type="button">Preview retrieval packet</button>
-          <button type="button">Generate test zine</button>
-          <button type="button">Save local preset</button>
+          {copy.actions.map((action) => <button key={action} type="button">{action}</button>)}
         </div>
       </section>
     </div>
@@ -679,6 +767,26 @@ function petActionLabel(language: LanguageCode, action: string): string {
 
 function petScoreLabel(language: LanguageCode, key: string): string {
   return PET_HUD_COPY[language].score[key] ?? key;
+}
+
+function questionLintCopy(language: LanguageCode) {
+  const copy: Record<LanguageCode, { title: string; specificity: string; evidence: string; bridge: string; next: string; revise: string }> = {
+    "zh-TW": { title: "問題 lint / 成熟度", specificity: "具體度", evidence: "證據準備", bridge: "跨系統潛力", next: "下一步", revise: "把問題補上一個場域、材料或比較對象，電子雞會長得更穩。" },
+    en: { title: "Question lint / maturity", specificity: "specificity", evidence: "evidence readiness", bridge: "cross-system potential", next: "next", revise: "Add a place, material, or comparison target so the pet can grow a stronger question." },
+    id: { title: "Lint pertanyaan / maturitas", specificity: "spesifik", evidence: "kesiapan bukti", bridge: "potensi lintas sistem", next: "lanjut", revise: "Tambahkan tempat, material, atau pembanding agar pet menumbuhkan pertanyaan yang lebih kuat." },
+    de: { title: "Fragen-Lint / Reife", specificity: "Spezifik", evidence: "Evidenz bereit", bridge: "System-Bruecke", next: "weiter", revise: "Ergaenze Ort, Material oder Vergleich, damit das Pet eine staerkere Frage wachsen laesst." },
+    ja: { title: "問い lint / 成熟度", specificity: "具体性", evidence: "証拠準備", bridge: "横断可能性", next: "次", revise: "場所・素材・比較対象を足すと、ペットの問いがより強く育ちます。" },
+    th: { title: "lint คำถาม / maturity", specificity: "ความเฉพาะ", evidence: "หลักฐาน", bridge: "ข้ามระบบ", next: "ถัดไป", revise: "เพิ่มสถานที่ วัสดุ หรือสิ่งเปรียบเทียบ เพื่อให้ pet เติบโตเป็นคำถามที่แข็งแรงขึ้น" },
+  };
+  return copy[language];
+}
+
+function questionLintSignals(question: string) {
+  const length = question.trim().length;
+  const specificity = Math.min(100, Math.max(15, length * 2));
+  const evidence = /where|when|which|誰|哪|何|如何|怎麼|材料|組織|社群|method|material|organization|community|wiki|source/i.test(question) ? 72 : 38;
+  const bridge = /and|between|compare|relation|關係|比較|連結|之間|跨|กับ|และ|und|zwischen|と|比較/i.test(question) ? 78 : 44;
+  return { specificity, evidence, bridge };
 }
 
 function CentralComputerDialogue({
@@ -3359,6 +3467,21 @@ function App() {
                             {" "}
                             {pet.state.groupBond.toFixed(0)}
                           </p>
+                          {(() => {
+                            const lintCopy = questionLintCopy(selectedLanguage);
+                            const lint = questionLintSignals(pet.question.text);
+                            return (
+                              <div className="question-lint-card">
+                                <strong>{lintCopy.title}</strong>
+                                <div className="question-lint-grid">
+                                  <span>{lintCopy.specificity}: {lint.specificity.toFixed(0)}</span>
+                                  <span>{lintCopy.evidence}: {lint.evidence.toFixed(0)}</span>
+                                  <span>{lintCopy.bridge}: {lint.bridge.toFixed(0)}</span>
+                                </div>
+                                <p>{lintCopy.next}: {lintCopy.revise}</p>
+                              </div>
+                            );
+                          })()}
                         </button>
                       ))}
                     <div className="grid grid-cols-2 gap-2 text-sm mb-4">
