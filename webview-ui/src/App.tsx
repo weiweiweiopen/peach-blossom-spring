@@ -2998,7 +2998,7 @@ function App() {
         </div>
       )}
 
-      {playerProfile && <div className="floating-ui-layer" data-no-mobile-drag="true">
+      {playerProfile && !editorEntryEnabled && <div className="floating-ui-layer" data-no-mobile-drag="true">
         <div className="global-archive-menu">
           <button
             className="global-archive-trigger"
@@ -3103,7 +3103,10 @@ function App() {
             <BottomToolbar
               isEditMode={editor.isEditMode}
               onOpenClaude={editor.handleOpenClaude}
-              onToggleEditMode={editor.handleToggleEditMode}
+              onToggleEditMode={() => {
+                setIsSettingsOpen(false);
+                editor.handleToggleEditMode();
+              }}
               isSettingsOpen={isSettingsOpen}
               onToggleSettings={() => setIsSettingsOpen((open) => !open)}
               workspaceFolders={workspaceFolders}
@@ -3172,6 +3175,7 @@ function App() {
             })()}
 
           {appMode === "interactive" &&
+            !editorEntryEnabled &&
             nearbyPersona &&
             nearbyNpcId !== abaoAgentId &&
             !activeDialoguePersona &&
@@ -3208,6 +3212,7 @@ function App() {
             )}
 
           {appMode === "interactive" &&
+            !editorEntryEnabled &&
             isNearCentralComputer &&
             computerPromptPosition &&
             !activeDialoguePersona &&
@@ -3230,7 +3235,7 @@ function App() {
               </button>
             )}
 
-          {!isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => (
+          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => (
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
@@ -3257,6 +3262,7 @@ function App() {
           ))}
 
           {appMode === "interactive" &&
+            !editorEntryEnabled &&
             isNearAbao &&
             abaoBubble &&
             promptPosition &&
@@ -3409,6 +3415,7 @@ function App() {
           {simSnapshot &&
             playerProfile &&
             appMode === "interactive" &&
+            !editorEntryEnabled &&
             !isSplitOpen && (
               <section
                 className={`question-status-panel rpg-message-frame absolute right-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] px-7 py-6 ${
@@ -3750,7 +3757,7 @@ function App() {
             </section>
           )}
 
-          {selectedPet && (
+          {!editorEntryEnabled && selectedPet && (
             <section
               className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
                 isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""

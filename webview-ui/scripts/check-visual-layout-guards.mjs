@@ -64,8 +64,9 @@ const checks = [
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
   ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /\{editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
-  ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*onToggleEditMode=\{editor\.handleToggleEditMode\}[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
+  ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
+  ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
 ];
 
 const failures = checks.filter(([, ok]) => !ok).map(([name]) => name);
