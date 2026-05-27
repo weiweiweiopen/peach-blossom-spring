@@ -525,10 +525,26 @@ function renderFurnitureHoverHighlight(
   offsetX: number,
   offsetY: number,
   zoom: number,
+  sprite?: SpriteData,
+  mirrored?: boolean,
 ): void {
   const s = TILE_SIZE * zoom;
   const x = offsetX + col * s;
   const y = offsetY + row * s;
+  if (sprite) {
+    const outline = getCachedSprite(getOutlineSprite(sprite), zoom);
+    ctx.save();
+    ctx.globalAlpha = HOVERED_OUTLINE_ALPHA;
+    if (mirrored) {
+      ctx.translate(x + outline.width - zoom, y - zoom);
+      ctx.scale(-1, 1);
+      ctx.drawImage(outline, 0, 0);
+    } else {
+      ctx.drawImage(outline, x - zoom, y - zoom);
+    }
+    ctx.restore();
+    return;
+  }
   ctx.save();
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = Math.max(2, zoom * 0.65);
@@ -702,7 +718,7 @@ export interface SelectionRenderState {
   selectedAgentId: number | null;
   hoveredAgentId: number | null;
   hoveredTile: { col: number; row: number } | null;
-  interactiveFurnitureHighlight?: { col: number; row: number; w: number; h: number } | null;
+  interactiveFurnitureHighlight?: { col: number; row: number; w: number; h: number; sprite?: SpriteData; mirrored?: boolean } | null;
   seats: Map<string, Seat>;
   characters: Map<number, Character>;
 }
@@ -769,7 +785,7 @@ export function renderFrame(
 
   if (selection?.interactiveFurnitureHighlight) {
     const hit = selection.interactiveFurnitureHighlight;
-    renderFurnitureHoverHighlight(ctx, hit.col, hit.row, hit.w, hit.h, offsetX, offsetY, zoom);
+    renderFurnitureHoverHighlight(ctx, hit.col, hit.row, hit.w, hit.h, offsetX, offsetY, zoom, hit.sprite, hit.mirrored);
   }
 
   // Speech bubbles (always on top of characters)

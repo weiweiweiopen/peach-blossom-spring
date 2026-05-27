@@ -121,7 +121,9 @@ export function EditorToolbar({
   const isWallActive = activeTool === EditTool.WALL_PAINT;
   const isEraseActive = activeTool === EditTool.ERASE;
   const isFurnitureActive =
-    activeTool === EditTool.FURNITURE_PLACE || activeTool === EditTool.FURNITURE_PICK;
+    activeTool === EditTool.FURNITURE_PLACE ||
+    activeTool === EditTool.FURNITURE_PICK ||
+    activeTool === EditTool.SELECT;
 
   const handleResizeSubmit = () => {
     if (!onResizeMap) return;
@@ -293,6 +295,14 @@ export function EditorToolbar({
             ))}
             <div className="w-[1px] h-14 bg-white/15 mx-2 shrink-0" />
             <Button
+              variant={activeTool === EditTool.SELECT ? 'active' : 'ghost'}
+              size="sm"
+              onClick={() => onToolChange(EditTool.SELECT)}
+              title="Select placed furniture to move or delete"
+            >
+              Select
+            </Button>
+            <Button
               variant={activeTool === EditTool.FURNITURE_PICK ? 'active' : 'ghost'}
               size="sm"
               onClick={() => onToolChange(EditTool.FURNITURE_PICK)}
@@ -359,9 +369,9 @@ export function EditorToolbar({
       )}
 
       {showMapSize && (
-        <div className="flex flex-col gap-2 border-b-2 border-white/15 pb-3 text-sm">
+        <div className="flex flex-col gap-2 border-b-2 border-white/15 pb-3 text-sm" aria-label={`Map size ${mapCols} by ${mapRows}`}>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-text-muted">Map Size</span>
+            <span className="text-text">Map Size: {mapCols} x {mapRows}</span>
             <label className="flex items-center gap-2">
               <span className="text-text-muted">W</span>
               <input
@@ -384,7 +394,6 @@ export function EditorToolbar({
                 onChange={(event) => setDraftRows(event.target.value)}
               />
             </label>
-            <span className="text-text-muted">current {mapCols}x{mapRows}</span>
             <Button type="button" variant="accent" size="sm" onClick={handleResizeSubmit}>
               Apply
             </Button>

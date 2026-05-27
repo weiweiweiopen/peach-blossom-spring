@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_01",
-  "name": "CraftPix Exterior 01",
+  "name": "CraftPix Grass Bush",
   "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 32,
+  "width": 64,
   "height": 64,
-  "footprintW": 1,
-  "footprintH": 2
+  "footprintW": 4,
+  "footprintH": 4
 }

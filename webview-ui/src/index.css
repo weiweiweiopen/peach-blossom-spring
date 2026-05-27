@@ -1201,12 +1201,59 @@ html[data-language="th"],
 
   .rpg-dialogue-panel {
     min-width: 0 !important;
-    padding: 16px !important;
+    width: 100vw !important;
+    height: min(82dvh, 680px) !important;
+    padding: 14px !important;
+  }
+
+  .rpg-dialogue-header {
+    gap: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .rpg-dialogue-name {
+    font-size: clamp(24px, 7vw, 34px) !important;
+    line-height: 1.05 !important;
+  }
+
+  .rpg-dialogue-role,
+  .rpg-dialogue-kicker {
+    font-size: clamp(15px, 4.5vw, 20px) !important;
+    line-height: 1.2 !important;
+  }
+
+  .rpg-dialogue-log {
+    padding: 12px !important;
+    font-size: clamp(17px, 5vw, 22px) !important;
+    line-height: 1.42 !important;
+  }
+
+  .rpg-dialogue-message,
+  .rpg-dialogue-thinking {
+    font-size: clamp(17px, 5vw, 22px) !important;
+    line-height: 1.42 !important;
   }
 
   .rpg-dialogue-main,
   .rpg-dialogue-form {
     flex-direction: column !important;
+  }
+
+  .rpg-dialogue-form {
+    gap: 8px !important;
+  }
+
+  .rpg-dialogue-input {
+    min-height: 52px !important;
+    padding: 12px !important;
+    font-size: clamp(17px, 5vw, 22px) !important;
+  }
+
+  .rpg-dialogue-chip,
+  .rpg-dialogue-submit,
+  .rpg-dialogue-question-toggle {
+    min-height: 48px !important;
+    font-size: clamp(16px, 4.8vw, 20px) !important;
   }
 
   .retro-title-card {

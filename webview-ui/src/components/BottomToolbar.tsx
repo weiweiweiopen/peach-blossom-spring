@@ -91,13 +91,14 @@ export function BottomToolbar({
         <Button
           variant="accent"
           onClick={handleAgentClick}
+          title="Open agent workspace controls"
           className={
             isFolderPickerOpen || isBypassMenuOpen
               ? 'bg-accent-bright'
               : 'bg-accent hover:bg-accent-bright'
           }
         >
-          + Agent
+          Open Agent
         </Button>
         <Dropdown isOpen={isBypassMenuOpen}>
           <DropdownItem onClick={() => handleBypassSelect(true)}>

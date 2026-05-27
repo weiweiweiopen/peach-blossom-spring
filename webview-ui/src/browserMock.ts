@@ -27,6 +27,7 @@ import type {
   CatalogEntry,
   CharacterDirectionSprites,
 } from '../../shared/assets/types.ts';
+import { getPersonaNpcAppearance } from './personaNpcAppearance.js';
 import { createCompactEditorLayout } from './world/peachBlossomWorld.js';
 
 interface Persona {
@@ -48,13 +49,16 @@ function personaFolderNames(): Record<number, string> {
 
 function personaAgentMeta(): Record<number, { palette: number; hueShift: number }> {
   return Object.fromEntries(
-    personas.map((_, index) => [
-      index + 1,
-      {
-        palette: index % 6,
-        hueShift: (index * 37) % 360,
-      },
-    ]),
+    personas.map((persona, index) => {
+      const appearance = getPersonaNpcAppearance(persona.id, index);
+      return [
+        index + 1,
+        {
+          palette: appearance.palette,
+          hueShift: appearance.hueShift,
+        },
+      ];
+    }),
   );
 }
 

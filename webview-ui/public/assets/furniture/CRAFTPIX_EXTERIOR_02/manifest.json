@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_02",
-  "name": "CraftPix Exterior 02",
+  "name": "CraftPix Orchard Tree",
   "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 40,
-  "height": 82,
-  "footprintW": 1,
-  "footprintH": 3
+  "width": 64,
+  "height": 80,
+  "footprintW": 4,
+  "footprintH": 5
 }

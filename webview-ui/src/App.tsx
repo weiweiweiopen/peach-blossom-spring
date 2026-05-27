@@ -68,6 +68,7 @@ import { QuestionPetPreview } from "./pets/QuestionPetPreview.js";
 import { chooseThrongletExpression } from "./pets/throngletAssets.js";
 import { createThrongletWaDirectionalAnimations, resolvePetRoleSlug } from "./pets/throngletWaSprites.js";
 import { isBrowserRuntime } from "./runtime.js";
+import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   applyPlayerNpcDialogue,
   applyPlayerThrongletResponse,
@@ -159,6 +160,7 @@ const CENTRAL_COMPUTER_TILE = {
   col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
+const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
 const CAMPFIRE_DIALOGUE_NAME = "多重心智的火燄";
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
@@ -733,7 +735,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "The fire is listening through the shared memory...",
   },
   id: {
-    intro: "Saya terminal pencarian wiki PBS LLM. Tanyakan komunitas, metode, material, atau organisasi; saya menjawab dari memori bersama dan menampilkan halaman nyata di bawah.",
+    intro: "Saya Api Banyak Pikiran. Bertanyalah di sekitar api tentang komunitas, metode, material, atau organisasi; saya menjawab singkat dari memori bersama dan menampilkan halaman nyata di bawah.",
     fail: "Jawaban LLM sementara gagal; ini hasil pencarian wiki lokal yang bisa dibuka langsung.",
     needQuestion: "Masukkan dulu pertanyaan komunitas Peach Blossom Spring.",
     sourceTitle: "Hasil pencarian wiki / tautan nyata",
@@ -745,7 +747,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "Api mendengar memori bersama...",
   },
   de: {
-    intro: "Ich bin das PBS LLM Wiki-Suchdock. Frag nach Community, Methode, Material oder Organisation; ich antworte aus dem geteilten Gedächtnis und liste echte Seiten unten auf.",
+    intro: "Ich bin die Flamme vieler Geister. Frag am Feuer nach Community, Methode, Material oder Organisation; ich antworte kurz aus dem geteilten Gedaechtnis und liste echte Seiten unten auf.",
     fail: "Die LLM-Antwort ist gerade fehlgeschlagen; hier sind lokale Wiki-Suchergebnisse zum Öffnen.",
     needQuestion: "Gib zuerst eine Frage zur Peach-Blossom-Spring-Community ein.",
     sourceTitle: "Wiki-Suchergebnisse / echte Links",
@@ -757,7 +759,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "Das Feuer lauscht dem geteilten Gedaechtnis...",
   },
   ja: {
-    intro: "私は PBS LLM wiki の検索端末です。コミュニティ、方法、素材、組織について質問してください。共有記憶から答え、下に実在するページを並べます。",
+    intro: "私は多重の心の火です。火を囲んでコミュニティ、方法、素材、組織について質問してください。共有記憶から短く答え、下に実在するページを並べます。",
     fail: "LLM の回答に失敗しました。まず開けるローカル wiki 検索結果を表示します。",
     needQuestion: "先に Peach Blossom Spring のコミュニティ質問を入力してください。",
     sourceTitle: "Wiki 検索結果 / 実在リンク",
@@ -769,7 +771,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "火が共有記憶を聞いています...",
   },
   th: {
-    intro: "ฉันคือแท่นค้นหา PBS LLM wiki ถามเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
+    intro: "ฉันคือเปลวไฟแห่งหลายจิตใจ ถามรอบกองไฟเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบสั้นจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
     fail: "คำตอบจาก LLM ล้มเหลวชั่วคราว ต่อไปนี้คือผลค้นหา wiki ในเครื่องที่เปิดดูได้ทันที",
     needQuestion: "กรุณาใส่คำถามเกี่ยวกับชุมชน Peach Blossom Spring ก่อน",
     sourceTitle: "ผลค้นหา wiki / ลิงก์จริง",
@@ -802,10 +804,26 @@ const CAMPFIRE_BROADCASTS: Record<LanguageCode, string[]> = {
     "A multi-mind self is a shared pattern synchronized across people.",
     "The Greeks built temples for shared archetypes; PBS builds an index around many interview minds.",
   ],
-  id: ["Dirimu juga menyala di pikiran orang lain.", "Api ini menyatukan banyak sudut pandang wawancara."],
-  de: ["Dein Selbst brennt auch in anderen Koepfen.", "Das Feuer buendelt viele Interview-Perspektiven."],
-  ja: ["あなたの感情は他の心にも燃えている。", "この火は複数のインタビュー視点を同期する。"],
-  th: ["ตัวตนบางส่วนของคุณอาจลุกอยู่ในใจคนอื่นด้วย", "กองไฟนี้รวมหลายมุมมองสัมภาษณ์ให้เป็นความทรงจำร่วม"],
+  id: [
+    "Marah, gembira, dan ingin tahumu mungkin juga menyala di pikiran lain.",
+    "Diri banyak-pikiran adalah pola bersama yang diselaraskan antarorang.",
+    "PBS membuat indeks di sekitar banyak pikiran wawancara, seperti api yang bisa ditanyai.",
+  ],
+  de: [
+    "Dein Aerger, deine Freude und Neugier koennen auch in anderen Koepfen brennen.",
+    "Ein Viel-Geist-Selbst ist ein gemeinsames Muster, das sich zwischen Menschen synchronisiert.",
+    "PBS baut einen fragbaren Feuerkreis um viele Interview-Geister.",
+  ],
+  ja: [
+    "あなたの怒り、喜び、好奇心は、他の心にも燃えているかもしれない。",
+    "多重心智の自己は、人々のあいだで同期する共有パターンです。",
+    "PBS は複数のインタビューの心を囲む、質問できる火のインデックスを作ります。",
+  ],
+  th: [
+    "ความโกรธ ความสุข และความสงสัยของคุณอาจลุกอยู่ในใจคนอื่นด้วย",
+    "ตัวตนหลายจิตใจคือรูปแบบร่วมที่ประสานกันข้ามผู้คน",
+    "PBS สร้างดัชนีรอบจิตใจจากหลายบทสัมภาษณ์ เหมือนกองไฟที่ถามได้",
+  ],
 };
 
 const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
@@ -863,6 +881,7 @@ function CentralComputerDialogue({
   const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState("");
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
+  const logRef = useRef<HTMLDivElement | null>(null);
   const copy = PBS_COMPUTER_COPY[language];
   const suggestedQuestions = useMemo(() => {
     const shuffled = [...COMMUNITY_QUERY_PROMPTS[language]].sort(() => Math.random() - 0.5);
@@ -885,6 +904,12 @@ function CentralComputerDialogue({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  useEffect(() => {
+    const log = logRef.current;
+    if (!log) return;
+    log.scrollTop = log.scrollHeight;
+  }, [isThinking, messages]);
 
   function sharedMemoryContextFor(results: WikiSearchResult[]): string {
     return results
@@ -951,7 +976,7 @@ function CentralComputerDialogue({
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>X</button>
         </div>
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
-          <div className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
+          <div ref={logRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
               <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
                 <p className="m-0">
@@ -1774,13 +1799,20 @@ function App() {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
     const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
-    const dist = Math.abs(player.tileCol - computerTile.col) + Math.abs(player.tileRow - computerTile.row);
+    const nearestCol = Math.max(computerTile.col, Math.min(computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w - 1, player.tileCol));
+    const nearestRow = Math.max(computerTile.row, Math.min(computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, player.tileRow));
+    const dist = Math.abs(player.tileCol - nearestCol) + Math.abs(player.tileRow - nearestRow);
     return dist <= 2;
   }, [editorEntryEnabled, officeState]);
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
     const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
-    return Math.abs(col - computerTile.col) + Math.abs(row - computerTile.row) <= 2;
+    return (
+      col >= computerTile.col &&
+      col < computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w &&
+      row >= computerTile.row &&
+      row < computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h
+    );
   }, [editorEntryEnabled]);
 
   const getPlayerDistanceFromCharacter = useCallback(
@@ -2037,10 +2069,14 @@ function App() {
       if (!agentId) continue;
       if (!officeState.characters.has(agentId)) {
         const persona = personas[agentId - 1];
-        officeState.addAgent(agentId, (agentId - 1) % 6, (25 + agentId * 23) % 120, undefined, true, persona?.name ?? `NPC ${agentId}`);
+        const appearance = getPersonaNpcAppearance(persona?.id ?? "", agentId - 1);
+        officeState.addAgent(agentId, appearance.palette, appearance.hueShift, undefined, true, persona?.name ?? `NPC ${agentId}`);
       }
       const ch = officeState.characters.get(agentId);
       if (!ch) continue;
+      const appearance = getPersonaNpcAppearance(placement.personaId, agentId - 1);
+      ch.palette = appearance.palette;
+      ch.hueShift = appearance.hueShift;
       const resolvedPlacement = findNearestApproachableTile(
         officeState,
         placement.col,
@@ -2056,7 +2092,6 @@ function App() {
       ch.moveProgress = 0;
       ch.wanderTimer = 2 + (agentId % 5);
       ch.seatId = null;
-      ch.hueShift = (25 + agentId * 23) % 120;
     }
   }, [appMode, editorEntryEnabled, layoutReady, officeState]);
 
@@ -2534,7 +2569,7 @@ function App() {
         const approachTile = findNearestApproachableTile(
           officeState,
           computerTile.col,
-          computerTile.row + 1,
+          computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h,
           occupied,
         );
         const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
@@ -2793,7 +2828,7 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + (computerTile.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
+      left: (deviceOffsetX + ((computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
       top: (deviceOffsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
     };
   })();

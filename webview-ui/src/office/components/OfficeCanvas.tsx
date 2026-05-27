@@ -22,7 +22,7 @@ import type {
 } from '../engine/renderer.js';
 import { renderFrame } from '../engine/renderer.js';
 import { getCatalogEntry, isRotatable } from '../layout/furnitureCatalog.js';
-import { EditTool, TILE_SIZE } from '../types.js';
+import { EditTool, TILE_SIZE, type SpriteData } from '../types.js';
 
 interface OfficeCanvasProps {
   officeState: OfficeState;
@@ -108,7 +108,7 @@ export function OfficeCanvas({
   );
 
   const getInteractiveFurnitureHighlight = useCallback(
-    (tile: { col: number; row: number } | null): { col: number; row: number; w: number; h: number } | null => {
+    (tile: { col: number; row: number } | null): { col: number; row: number; w: number; h: number; sprite: SpriteData; mirrored?: boolean } | null => {
       if (!tile || !interactiveFurnitureTypes?.size) return null;
       for (const item of officeState.getLayout().furniture) {
         if (!interactiveFurnitureTypes.has(item.type)) continue;
@@ -120,7 +120,14 @@ export function OfficeCanvas({
           tile.row >= item.row &&
           tile.row < item.row + entry.footprintH
         ) {
-          return { col: item.col, row: item.row, w: entry.footprintW, h: entry.footprintH };
+          return {
+            col: item.col,
+            row: item.row,
+            w: entry.footprintW,
+            h: entry.footprintH,
+            sprite: entry.sprite,
+            mirrored: !!entry.mirrorSide && item.type.endsWith(':left'),
+          };
         }
       }
       return null;
