@@ -372,22 +372,26 @@ export function EditorToolbar({
         <div className="flex flex-col gap-2 border-b-2 border-white/15 pb-3 text-sm" aria-label={`Map size ${mapCols} by ${mapRows}`}>
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-text">Map Size: {mapCols} x {mapRows}</span>
-            <label className="flex items-center gap-2">
+            <label className="map-size-field flex items-center gap-2">
               <span className="text-text-muted">W</span>
               <input
-                className="w-20 bg-black/35 border-2 border-border px-2 py-1 text-text"
-                type="number"
+                className="map-size-input w-[7ch] min-w-[7ch] bg-white border-2 border-border px-2 py-1 text-black"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min={1}
                 max={MAX_COLS}
                 value={draftCols}
                 onChange={(event) => setDraftCols(event.target.value)}
               />
             </label>
-            <label className="flex items-center gap-2">
+            <label className="map-size-field flex items-center gap-2">
               <span className="text-text-muted">H</span>
               <input
-                className="w-20 bg-black/35 border-2 border-border px-2 py-1 text-text"
-                type="number"
+                className="map-size-input w-[7ch] min-w-[7ch] bg-white border-2 border-border px-2 py-1 text-black"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min={1}
                 max={MAX_ROWS}
                 value={draftRows}

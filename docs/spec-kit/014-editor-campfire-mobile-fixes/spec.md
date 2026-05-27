@@ -16,6 +16,9 @@ Fix the regressions reported after the multi-mind campfire deployment without ch
 - Generated dialogue text must auto-scroll as new content arrives.
 - Mobile dialogue/zine UI must stay readable and controls must remain tappable.
 - NGM interviewee NPCs must use real-gender-distinct appearances, with at least 16 distinct NPC character assets. If a body template is reused, skin or clothing color must distinguish it. Marc Dusseiller must wear a yellow shirt and black pants.
+- Campfire art must be native 64px pixel art, not a scaled 32px image, with an organic animated flame shape.
+- Compact editor floor must default to grass across the whole playable floor area; users must not paint it tile-by-tile.
+- Mobile dialogue type scale must fit normal sentence-length questions and keep avatar animation visible.
 
 ## Non-Goals
 
