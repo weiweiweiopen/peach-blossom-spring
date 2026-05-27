@@ -3065,6 +3065,14 @@ html[data-language="th"],
   min-height: var(--control-size);
 }
 
+.pbs-editor-toolbar {
+  position: fixed !important;
+  left: max(12px, env(safe-area-inset-left)) !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+}
+
 .world-split-toolbar,
 .question-response-panel,
 .mobile-rules-drawer,

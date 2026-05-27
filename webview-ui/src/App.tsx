@@ -3099,7 +3099,7 @@ function App() {
             <EditActionBar editor={editor} editorState={editorState} />
           )}
 
-          {playerProfile && editorEntryEnabled && (
+          {editorEntryEnabled && (
             <BottomToolbar
               isEditMode={editor.isEditMode}
               onOpenClaude={editor.handleOpenClaude}

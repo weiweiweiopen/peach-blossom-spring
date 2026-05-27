@@ -81,7 +81,7 @@ export function BottomToolbar({
   };
 
   return (
-    <div className="absolute bottom-10 left-10 z-[90] flex items-center gap-4 pixel-panel p-4">
+    <div className="pbs-editor-toolbar flex items-center gap-4 pixel-panel p-4">
       <div
         ref={folderPickerRef}
         className="relative"
