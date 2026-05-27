@@ -27,6 +27,7 @@ import type {
   CatalogEntry,
   CharacterDirectionSprites,
 } from '../../shared/assets/types.ts';
+import { createCompactEditorLayout } from './world/peachBlossomWorld.js';
 
 interface Persona {
   id: string;
@@ -249,11 +250,14 @@ export async function initBrowserMock(): Promise<void> {
       ]);
 
   const params = new URLSearchParams(window.location.search);
+  const editorPreview = params.get('editor') === '1';
   const modernPbsPreview = params.has('modern-pbs-scene') || params.has('modern-peach-blossom-spring');
   const layoutPath = modernPbsPreview ? 'default-layout-modern-taoyuan.json' : assetIndex.defaultLayout;
-  const layout = layoutPath
-    ? await fetch(`${base}assets/${layoutPath}`).then((r) => r.json())
-    : null;
+  const layout = editorPreview
+    ? createCompactEditorLayout()
+    : layoutPath
+      ? await fetch(`${base}assets/${layoutPath}`).then((r) => r.json())
+      : null;
 
   mockPayload = {
     characters,

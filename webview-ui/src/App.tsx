@@ -1336,14 +1336,14 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() =>
     qaUi.language ?? readStoredLanguage(),
   );
-  const [hasStarted, setHasStarted] = useState(qaUi.enabled);
+  const [hasStarted, setHasStarted] = useState(qaUi.enabled || editorEntryEnabled);
   const [isPostBootLoading, setIsPostBootLoading] = useState(false);
   const postBootLoadingTimerRef = useRef<number | null>(null);
   const [playerDefaults, setPlayerDefaults] = useState<PlayerProfile | null>(
     () => readSavedPlayerDefaults(),
   );
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(
-    () => qaUi.enabled ? qaPlayerProfile(qaUi.language ?? readStoredLanguage()) : null,
+    () => qaUi.enabled || editorEntryEnabled ? qaPlayerProfile(qaUi.language ?? readStoredLanguage()) : null,
   );
   const [multiplayerConfig] = useState<MultiplayerConfig | null>(() =>
     readMultiplayerConfig(),

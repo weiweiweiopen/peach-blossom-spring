@@ -9,6 +9,8 @@ const uiSystem = readFileSync(join(root, "src", "ui-system.css"), "utf8");
 const main = readFileSync(join(root, "src", "main.tsx"), "utf8");
 const app = readFileSync(join(root, "src", "App.tsx"), "utf8");
 const bottomToolbar = readFileSync(join(root, "src", "components", "BottomToolbar.tsx"), "utf8");
+const browserMock = readFileSync(join(root, "src", "browserMock.ts"), "utf8");
+const peachWorld = readFileSync(join(root, "src", "world", "peachBlossomWorld.ts"), "utf8");
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
@@ -67,6 +69,9 @@ const checks = [
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
   ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
+  ["Editor mode uses compact 32x32 layout", /function createCompactEditorLayout[\s\S]*const cols = 32[\s\S]*const rows = 32/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
+  ["CraftPix first batch is registered", /CRAFTPIX_EXTERIOR_TREE_SMALL[\s\S]*CRAFTPIX_INTERIOR_BED/.test(peachWorld)],
+  ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
 
 const failures = checks.filter(([, ok]) => !ok).map(([name]) => name);

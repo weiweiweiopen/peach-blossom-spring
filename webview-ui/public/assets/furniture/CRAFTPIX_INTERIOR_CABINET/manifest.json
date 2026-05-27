@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_INTERIOR_CABINET",
+  "name": "CraftPix Cabinet",
+  "category": "storage",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 43,
+  "height": 59,
+  "footprintW": 2,
+  "footprintH": 2
+}

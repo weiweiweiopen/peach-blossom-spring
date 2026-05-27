@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_INTERIOR_BED",
+  "name": "CraftPix Bed",
+  "category": "misc",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 90,
+  "height": 79,
+  "footprintW": 3,
+  "footprintH": 3
+}
