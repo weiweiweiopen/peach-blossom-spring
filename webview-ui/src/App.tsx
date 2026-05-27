@@ -668,64 +668,26 @@ function PlayerDialogueAvatar({ palette, label }: { palette: number; label: stri
   return <DialoguePixelAvatar sprite={sprite} label={label} />;
 }
 
-function campfireSprite(frame: number): SpriteData {
-  const sprite = Array.from({ length: 32 }, () => new Array<string>(32).fill(""));
-  const set = (x: number, y: number, color: string) => {
-    if (x >= 0 && x < 32 && y >= 0 && y < 32) sprite[y][x] = color;
-  };
-  const rect = (x: number, y: number, w: number, h: number, color: string) => {
-    for (let yy = y; yy < y + h; yy += 1) for (let xx = x; xx < x + w; xx += 1) set(xx, yy, color);
-  };
-  const ellipse = (cx: number, cy: number, rx: number, ry: number, color: string) => {
-    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y += 1) {
-      for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x += 1) {
-        const nx = (x - cx) / rx;
-        const ny = (y - cy) / ry;
-        if (nx * nx + ny * ny <= 1) set(x, y, color);
-      }
-    }
-  };
-  const polygon = (points: Array<[number, number]>, color: string) => {
-    const minY = Math.floor(Math.min(...points.map((point) => point[1])));
-    const maxY = Math.ceil(Math.max(...points.map((point) => point[1])));
-    for (let y = minY; y <= maxY; y += 1) {
-      const xs: number[] = [];
-      for (let i = 0; i < points.length; i += 1) {
-        const [x1, y1] = points[i];
-        const [x2, y2] = points[(i + 1) % points.length];
-        if ((y1 <= y && y2 > y) || (y2 <= y && y1 > y)) xs.push(x1 + ((y - y1) * (x2 - x1)) / (y2 - y1));
-      }
-      xs.sort((a, b) => a - b);
-      for (let i = 0; i < xs.length; i += 2) {
-        for (let x = Math.ceil(xs[i]); x <= Math.floor(xs[i + 1]); x += 1) set(x, y, color);
-      }
-    }
-  };
-  const phase = frame % 6;
-  const lean = [0, -1, 1, 1, -1, 0][phase];
-  const squish = [0, 1, 0, -1, 1, 0][phase];
-  ellipse(16, 21 + squish, 11, 8 - Math.min(1, squish), "#9B2B16");
-  polygon([[16 + lean, 2], [11, 13], [8, 21], [12, 29], [20, 29], [25, 20], [21, 12]], "#9B2B16");
-  ellipse(16, 21 + squish, 10, 7, "#D83A16");
-  polygon([[16 + lean, 4], [12, 14], [10, 22], [13, 28], [19, 28], [23, 21], [20, 13]], "#D83A16");
-  ellipse(16, 22 + squish, 8, 5, "#FF6B1A");
-  polygon([[16 + lean, 8], [13, 17], [12, 24], [16, 28], [20, 24], [19, 16]], "#FF6B1A");
-  ellipse(16, 22, 5, 4, "#FFB226");
-  polygon([[16 - lean, 12], [14, 20], [16, 25], [19, 20]], "#FCF46B");
-  rect(13, 20, 2, 2, "#2B1711");
-  rect(18, 20, 2, 2, "#2B1711");
-  const mouths = [[[14, 24, 4, 1]], [[14, 24, 1, 1], [18, 24, 1, 1], [15, 25, 3, 1]], [[15, 24, 3, 2]], [[14, 24, 5, 1], [15, 25, 3, 1]], [[14, 25, 4, 1]], [[15, 24, 2, 2]]];
-  for (const [x, y, w, h] of mouths[phase]) rect(x, y, w, h, "#5A1D12");
-  return sprite;
-}
-
 function ComputerDialogueAvatar() {
   const [frame, setFrame] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => setFrame((current) => current + 1), 90);
     return () => window.clearInterval(id);
   }, []);
-  return <DialoguePixelAvatar sprite={campfireSprite(frame)} label={CAMPFIRE_DIALOGUE_NAME} />;
+  const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 6) + 1}.png`;
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="border border-accent bg-bg/80 p-1" aria-hidden="true">
+        <img
+          src={src}
+          alt=""
+          className="block h-24 w-24 object-contain"
+          style={{ imageRendering: "pixelated" }}
+        />
+      </div>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{CAMPFIRE_DIALOGUE_NAME}</span>
+    </div>
+  );
 }
 
 const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
