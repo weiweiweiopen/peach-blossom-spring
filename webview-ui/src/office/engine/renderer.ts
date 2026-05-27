@@ -516,6 +516,26 @@ export function renderSelectionHighlight(
   ctx.restore();
 }
 
+function renderFurnitureHoverHighlight(
+  ctx: CanvasRenderingContext2D,
+  col: number,
+  row: number,
+  w: number,
+  h: number,
+  offsetX: number,
+  offsetY: number,
+  zoom: number,
+): void {
+  const s = TILE_SIZE * zoom;
+  const x = offsetX + col * s;
+  const y = offsetY + row * s;
+  ctx.save();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = Math.max(2, zoom * 0.65);
+  ctx.strokeRect(x + 1, y + 1, w * s - 2, h * s - 2);
+  ctx.restore();
+}
+
 /** @internal */
 export function renderDeleteButton(
   ctx: CanvasRenderingContext2D,
@@ -682,6 +702,7 @@ export interface SelectionRenderState {
   selectedAgentId: number | null;
   hoveredAgentId: number | null;
   hoveredTile: { col: number; row: number } | null;
+  interactiveFurnitureHighlight?: { col: number; row: number; w: number; h: number } | null;
   seats: Map<string, Seat>;
   characters: Map<number, Character>;
 }
@@ -745,6 +766,11 @@ export function renderFrame(
   const selectedId = selection?.selectedAgentId ?? null;
   const hoveredId = selection?.hoveredAgentId ?? null;
   renderScene(ctx, allFurniture, characters, offsetX, offsetY, zoom, selectedId, hoveredId);
+
+  if (selection?.interactiveFurnitureHighlight) {
+    const hit = selection.interactiveFurnitureHighlight;
+    renderFurnitureHoverHighlight(ctx, hit.col, hit.row, hit.w, hit.h, offsetX, offsetY, zoom);
+  }
 
   // Speech bubbles (always on top of characters)
   renderBubbles(ctx, characters, offsetX, offsetY, zoom);

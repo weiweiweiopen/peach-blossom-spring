@@ -861,6 +861,7 @@ export class OfficeState {
 
   /** Rebuild furniture instances with auto-state applied (active agents turn electronics ON) */
   private rebuildFurnitureInstances(): void {
+    const animFrame = Math.floor(this.furnitureAnimTimer / FURNITURE_ANIM_INTERVAL_SEC);
     // Collect tiles where active agents face desks
     const autoOnTiles = new Set<string>();
     for (const ch of this.characters.values()) {
@@ -893,16 +894,14 @@ export class OfficeState {
       }
     }
 
-    if (autoOnTiles.size === 0) {
-      this.furniture = layoutToFurnitureInstances(this.layout.furniture);
-      return;
-    }
-
     // Build modified furniture list with auto-state and animation applied
-    const animFrame = Math.floor(this.furnitureAnimTimer / FURNITURE_ANIM_INTERVAL_SEC);
     const modifiedFurniture: PlacedFurniture[] = this.layout.furniture.map((item) => {
+      const directFrames = getAnimationFrames(item.type);
+      const animatedItem = directFrames && directFrames.length > 1
+        ? { ...item, type: directFrames[animFrame % directFrames.length] }
+        : item;
       const entry = getCatalogEntry(item.type);
-      if (!entry) return item;
+      if (!entry || autoOnTiles.size === 0) return animatedItem;
       // Check if any tile of this furniture overlaps an auto-on tile
       for (let dr = 0; dr < entry.footprintH; dr++) {
         for (let dc = 0; dc < entry.footprintW; dc++) {
@@ -921,7 +920,7 @@ export class OfficeState {
           }
         }
       }
-      return item;
+      return animatedItem;
     });
 
     this.furniture = layoutToFurnitureInstances(modifiedFurniture);

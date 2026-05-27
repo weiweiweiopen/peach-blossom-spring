@@ -10,7 +10,13 @@ const main = readFileSync(join(root, "src", "main.tsx"), "utf8");
 const app = readFileSync(join(root, "src", "App.tsx"), "utf8");
 const bottomToolbar = readFileSync(join(root, "src", "components", "BottomToolbar.tsx"), "utf8");
 const browserMock = readFileSync(join(root, "src", "browserMock.ts"), "utf8");
+const editorToolbar = readFileSync(join(root, "src", "office", "editor", "EditorToolbar.tsx"), "utf8");
+const editorActions = readFileSync(join(root, "src", "office", "editor", "editorActions.ts"), "utf8");
+const useEditorActions = readFileSync(join(root, "src", "hooks", "useEditorActions.ts"), "utf8");
+const officeCanvas = readFileSync(join(root, "src", "office", "components", "OfficeCanvas.tsx"), "utf8");
+const officeState = readFileSync(join(root, "src", "office", "engine", "officeState.ts"), "utf8");
 const peachWorld = readFileSync(join(root, "src", "world", "peachBlossomWorld.ts"), "utf8");
+const campfireManifest = readFileSync(join(root, "public", "assets", "furniture", "MULTI_MIND_CAMPFIRE", "manifest.json"), "utf8");
 const furnitureCatalog = readFileSync(join(root, "src", "office", "layout", "furnitureCatalog.ts"), "utf8");
 const layoutSerializer = readFileSync(join(root, "src", "office", "layout", "layoutSerializer.ts"), "utf8");
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
@@ -31,7 +37,7 @@ const checks = [
   ["Japanese chips have final hard cap", /data-language="ja"\] \.rpg-dialogue-panel \.rpg-dialogue-chip[\s\S]*font-size:\s*clamp\(14px,\s*1\.05vw,\s*18px\)/.test(css)],
   ["Japanese loading copy is capped", /data-language="ja"\] \.world-split-panel--zine \.boot-loading-copy[\s\S]*font-size:\s*clamp\(16px,\s*1\.7vw,\s*24px\)/.test(css)],
   ["parent PDF handler keeps emoji text", !/button\.textContent\s*=\s*"開啟列印/.test(app)],
-  ["PBS Computer intro is localized", /PBS_COMPUTER_COPY[\s\S]*ja:\s*{[\s\S]*私は PBS LLM wiki/.test(app)],
+  ["Campfire wiki intro is localized", /PBS_COMPUTER_COPY[\s\S]*ja:\s*{[\s\S]*火が共有記憶/.test(app)],
   ["Pet HUD copy is localized", /PET_HUD_COPY[\s\S]*ja:\s*{[\s\S]*たまごっちエージェント/.test(app)],
   ["Emoji dialogue controls are fixed square", /rpg-dialogue-question-toggle\.pbs-game-button[\s\S]*width:\s*64px[\s\S]*font-size:\s*30px/.test(css)],
   ["Japanese zine toolbar is capped", /world-split-panel--zine \.world-split-toolbar h2[\s\S]*font-size:\s*clamp\(18px,\s*1\.6vw,\s*26px\)/.test(css)],
@@ -72,8 +78,10 @@ const checks = [
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
   ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
   ["Editor mode uses compact 40x40 layout", /COMPACT_EDITOR_MAP_SIZE = 40/.test(peachWorld) && /function createCompactEditorLayout[\s\S]*const cols = COMPACT_EDITOR_MAP_SIZE[\s\S]*const rows = COMPACT_EDITOR_MAP_SIZE/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
-  ["Editor compact room keeps only house and PBS Computer furniture", /addFurniture\(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE'/.test(peachWorld) && /addFurniture\(furniture, 'PC_FRONT_ON_1', COMPACT_EDITOR_COMPUTER_TILE\.col/.test(peachWorld) && !/function createCompactEditorLayout[\s\S]*CRAFTPIX_INTERIOR_21/.test(peachWorld)],
+  ["Editor compact room keeps only house and campfire furniture", /addFurniture\(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE'/.test(peachWorld) && /addFurniture\(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE\.col/.test(peachWorld) && !/function createCompactEditorLayout[\s\S]*CRAFTPIX_INTERIOR_21/.test(peachWorld)],
+  ["Campfire is animated collidable 2x2 wiki entry", /MULTI_MIND_CAMPFIRE_6/.test(campfireManifest) && /"footprintW": 2/.test(campfireManifest) && /"footprintH": 2/.test(campfireManifest) && /CAMPFIRE_DIALOGUE_NAME/.test(app) && /interactiveFurnitureTypes/.test(officeCanvas) && /getAnimationFrames\(item\.type\)/.test(officeState)],
   ["CraftPix large assets receive background collision rows", /function normalizedBackgroundTiles[\s\S]*asset\.id\.startsWith\('CRAFTPIX_'\)[\s\S]*asset\.footprintH - 1/.test(furnitureCatalog) && /let zY = \(item\.row \+ entry\.footprintH\) \* TILE_SIZE/.test(layoutSerializer)],
+  ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
 

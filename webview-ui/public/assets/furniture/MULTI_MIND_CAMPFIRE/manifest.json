@@ -1,0 +1,72 @@
+{
+  "id": "MULTI_MIND_CAMPFIRE",
+  "name": "多重心智的火燄",
+  "category": "electronics",
+  "type": "group",
+  "groupType": "animation",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "members": [
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_1",
+      "file": "MULTI_MIND_CAMPFIRE_1.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 0
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_2",
+      "file": "MULTI_MIND_CAMPFIRE_2.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 1
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_3",
+      "file": "MULTI_MIND_CAMPFIRE_3.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 2
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_4",
+      "file": "MULTI_MIND_CAMPFIRE_4.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 3
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_5",
+      "file": "MULTI_MIND_CAMPFIRE_5.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 4
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_6",
+      "file": "MULTI_MIND_CAMPFIRE_6.png",
+      "width": 32,
+      "height": 32,
+      "footprintW": 2,
+      "footprintH": 2,
+      "frame": 5
+    }
+  ]
+}

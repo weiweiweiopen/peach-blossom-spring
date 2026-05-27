@@ -36,6 +36,7 @@ interface OfficeCanvasProps {
   onRotateSelected: () => void;
   onDragMove: (uid: string, newCol: number, newRow: number) => void;
   onMobileMapTap?: (col: number, row: number) => void;
+  interactiveFurnitureTypes?: ReadonlySet<string>;
   mobileTapToMove: boolean;
   editorTick: number;
   zoom: number;
@@ -55,6 +56,7 @@ export function OfficeCanvas({
   onRotateSelected,
   onDragMove,
   onMobileMapTap,
+  interactiveFurnitureTypes,
   mobileTapToMove,
   editorTick: _editorTick,
   zoom,
@@ -103,6 +105,27 @@ export function OfficeCanvas({
       };
     },
     [officeState, zoom],
+  );
+
+  const getInteractiveFurnitureHighlight = useCallback(
+    (tile: { col: number; row: number } | null): { col: number; row: number; w: number; h: number } | null => {
+      if (!tile || !interactiveFurnitureTypes?.size) return null;
+      for (const item of officeState.getLayout().furniture) {
+        if (!interactiveFurnitureTypes.has(item.type)) continue;
+        const entry = getCatalogEntry(item.type);
+        if (!entry) continue;
+        if (
+          tile.col >= item.col &&
+          tile.col < item.col + entry.footprintW &&
+          tile.row >= item.row &&
+          tile.row < item.row + entry.footprintH
+        ) {
+          return { col: item.col, row: item.row, w: entry.footprintW, h: entry.footprintH };
+        }
+      }
+      return null;
+    },
+    [interactiveFurnitureTypes, officeState],
   );
 
   // Resize canvas backing store to device pixels (no DPR transform on ctx)
@@ -262,6 +285,7 @@ export function OfficeCanvas({
           selectedAgentId: officeState.selectedAgentId,
           hoveredAgentId: officeState.hoveredAgentId,
           hoveredTile: officeState.hoveredTile,
+          interactiveFurnitureHighlight: getInteractiveFurnitureHighlight(officeState.hoveredTile),
           seats: officeState.seats,
           characters: officeState.characters,
         };
@@ -295,7 +319,7 @@ export function OfficeCanvas({
       stop();
       observer.disconnect();
     };
-  }, [officeState, resizeCanvas, isEditMode, editorState, _editorTick, zoom, panRef]);
+  }, [officeState, resizeCanvas, isEditMode, editorState, _editorTick, zoom, panRef, getInteractiveFurnitureHighlight]);
 
   // Convert CSS mouse coords to world (sprite pixel) coords
   const screenToWorld = useCallback(
@@ -482,6 +506,8 @@ export function OfficeCanvas({
         let cursor = 'default';
         if (hitId !== null) {
           cursor = 'pointer';
+        } else if (getInteractiveFurnitureHighlight(tile)) {
+          cursor = 'pointer';
         } else if (officeState.selectedAgentId !== null && tile) {
           // Check if hovering over a clickable seat (available or own)
           const seatId = officeState.getSeatAtTile(tile.col, tile.row);
@@ -511,6 +537,7 @@ export function OfficeCanvas({
       hitTestDeleteButton,
       hitTestRotateButton,
       clampPan,
+      getInteractiveFurnitureHighlight,
     ],
   );
 

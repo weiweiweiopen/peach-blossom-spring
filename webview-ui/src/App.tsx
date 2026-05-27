@@ -87,7 +87,7 @@ import { vscode } from "./vscodeApi.js";
 import { searchWikiPages, type WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
-  COMPACT_EDITOR_COMPUTER_TILE,
+  COMPACT_EDITOR_CAMPFIRE_TILE,
   compactEditorNpcPlacements,
   createNextTinyRoomLayout,
   createCompactEditorLayout,
@@ -159,6 +159,15 @@ const CENTRAL_COMPUTER_TILE = {
   col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
+const CAMPFIRE_DIALOGUE_NAME = "多重心智的火燄";
+const CAMPFIRE_FURNITURE_TYPES = new Set([
+  "MULTI_MIND_CAMPFIRE_1",
+  "MULTI_MIND_CAMPFIRE_2",
+  "MULTI_MIND_CAMPFIRE_3",
+  "MULTI_MIND_CAMPFIRE_4",
+  "MULTI_MIND_CAMPFIRE_5",
+  "MULTI_MIND_CAMPFIRE_6",
+]);
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
 const COMMUNITY_NEWS_LINKS = [
@@ -657,15 +666,36 @@ function PlayerDialogueAvatar({ palette, label }: { palette: number; label: stri
   return <DialoguePixelAvatar sprite={sprite} label={label} />;
 }
 
-function computerSprite(frame: number): SpriteData {
-  const palette = ["#fffaf0", "#fcf46b", "#7dd7bf", "#e8b7ff", "#4fcbd1", "#111"];
-  return Array.from({ length: 32 }, (_row, y) =>
-    Array.from({ length: 16 }, (_col, x) => {
-      const signal = Math.imul(x + 17, 37) ^ Math.imul(y + 11, 53) ^ Math.imul(frame + 3, 97);
-      const wave = (x * 3 + y * 5 + frame * 7) % palette.length;
-      return palette[Math.abs(signal + wave) % palette.length];
-    }),
-  );
+function campfireSprite(frame: number): SpriteData {
+  const sprite = Array.from({ length: 32 }, () => new Array<string>(32).fill(""));
+  const set = (x: number, y: number, color: string) => {
+    if (x >= 0 && x < 32 && y >= 0 && y < 32) sprite[y][x] = color;
+  };
+  const rect = (x: number, y: number, w: number, h: number, color: string) => {
+    for (let yy = y; yy < y + h; yy += 1) for (let xx = x; xx < x + w; xx += 1) set(xx, yy, color);
+  };
+  const diamond = (cx: number, cy: number, rx: number, ry: number, color: string) => {
+    for (let y = cy - ry; y <= cy + ry; y += 1) {
+      const half = Math.round(rx * (1 - Math.abs(y - cy) / Math.max(1, ry)));
+      for (let x = cx - half; x <= cx + half; x += 1) set(x, y, color);
+    }
+  };
+  const phase = frame % 6;
+  const lean = [-1, 1, 0, 2, -2, 1][phase];
+  const high = [0, 2, -1, 1, 0, -2][phase];
+  rect(10 + (phase % 2), 4, 2, 2, "#BAC3D988");
+  rect(20 - (phase % 3), 5 + (phase % 2), 2, 2, "#BAC3D988");
+  rect(7, 24, 18, 3, "#29160d");
+  rect(6, 25, 20, 2, "#1e1412");
+  rect(7, 23, 9, 3, "#6a3b19");
+  rect(16, 24, 10, 3, "#9c5b21");
+  rect(8, 26, 17, 2, "#29160d");
+  diamond(16 + lean, 17 + high, 8, 11, "#da3419");
+  diamond(15 + lean, 16 + high, 6, 9, "#ff881f");
+  diamond(17 - lean, 16 + high, 4, 7, "#fcf46b");
+  diamond(15, 19 + (phase % 2), 2, 4, "#ffb5dc");
+  rect(17 + lean, 7 + high, 2, 6, "#fcf46b");
+  return sprite;
 }
 
 function ComputerDialogueAvatar() {
@@ -674,12 +704,12 @@ function ComputerDialogueAvatar() {
     const id = window.setInterval(() => setFrame((current) => current + 1), 90);
     return () => window.clearInterval(id);
   }, []);
-  return <DialoguePixelAvatar sprite={computerSprite(frame)} label="PBS Computer" />;
+  return <DialoguePixelAvatar sprite={campfireSprite(frame)} label={CAMPFIRE_DIALOGUE_NAME} />;
 }
 
 const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
-    intro: "我是 PBS LLM wiki 搜尋端。問一個社群、方法、材料或組織問題，我會用桃花源共享記憶回答，並在下方列出可點開的真實頁面。",
+    intro: "我是多重心智的火燄。圍著火問一個社群、方法、材料或組織問題，我會用桃花源共享記憶短答，並列出可點開的頁面。",
     fail: "LLM 回答暫時失敗；先列出本地 wiki 搜尋結果，你可以直接點開查閱。",
     needQuestion: "請先輸入一個想探索的桃花源社群問題。",
     sourceTitle: "Wiki 搜尋結果 / 真實連結",
@@ -688,10 +718,10 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "問：你想探索桃花源社群的哪一部分？",
     suggest: "建議一個問題",
     zine: "維基小書",
-    thinking: "PBS Computer 正在思考...",
+    thinking: "火正在聽木柴裡的共同記憶...",
   },
   en: {
-    intro: "I am the PBS LLM wiki search dock. Ask about a community, method, material, or organization question; I answer from shared memory and list real pages below.",
+    intro: "I am the Flame of Many Minds. Ask around the fire about a community, method, material, or organization; I answer briefly from shared memory and list real pages below.",
     fail: "The LLM answer failed for now; here are the local wiki search results you can open directly.",
     needQuestion: "Enter a Peach Blossom Spring community question first.",
     sourceTitle: "Wiki search results / real links",
@@ -700,7 +730,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "Ask: which part of the Peach Blossom Spring community do you want to explore?",
     suggest: "Suggest a question",
     zine: "Wiki zine",
-    thinking: "PBS Computer is thinking...",
+    thinking: "The fire is listening through the shared memory...",
   },
   id: {
     intro: "Saya terminal pencarian wiki PBS LLM. Tanyakan komunitas, metode, material, atau organisasi; saya menjawab dari memori bersama dan menampilkan halaman nyata di bawah.",
@@ -712,7 +742,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "Tanya: bagian mana dari komunitas Peach Blossom Spring yang ingin kamu jelajahi?",
     suggest: "Sarankan pertanyaan",
     zine: "Zine wiki",
-    thinking: "PBS Computer sedang berpikir...",
+    thinking: "Api mendengar memori bersama...",
   },
   de: {
     intro: "Ich bin das PBS LLM Wiki-Suchdock. Frag nach Community, Methode, Material oder Organisation; ich antworte aus dem geteilten Gedächtnis und liste echte Seiten unten auf.",
@@ -724,7 +754,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "Frage: welchen Teil der Peach-Blossom-Spring-Community willst du erkunden?",
     suggest: "Frage vorschlagen",
     zine: "Wiki-Zine",
-    thinking: "PBS Computer denkt nach...",
+    thinking: "Das Feuer lauscht dem geteilten Gedaechtnis...",
   },
   ja: {
     intro: "私は PBS LLM wiki の検索端末です。コミュニティ、方法、素材、組織について質問してください。共有記憶から答え、下に実在するページを並べます。",
@@ -736,7 +766,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "質問：Peach Blossom Spring のどの部分を探索しますか？",
     suggest: "質問を提案",
     zine: "Wiki 小誌",
-    thinking: "PBS Computer が考えています...",
+    thinking: "火が共有記憶を聞いています...",
   },
   th: {
     intro: "ฉันคือแท่นค้นหา PBS LLM wiki ถามเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
@@ -748,7 +778,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     placeholder: "ถาม: อยากสำรวจส่วนไหนของชุมชน Peach Blossom Spring?",
     suggest: "เสนอคำถาม",
     zine: "ซีน wiki",
-    thinking: "PBS Computer กำลังคิด...",
+    thinking: "ไฟกำลังฟังความทรงจำร่วม...",
   },
 };
 
@@ -759,6 +789,23 @@ const PET_HUD_COPY: Record<LanguageCode, { agent: string; note: string; recent: 
   de: { agent: "Tamagotchi-Agent", note: "Der PBS Tamagotchi-Agent flackert durch Peach Blossom Spring wie ein kleines Wesen, das Zuhören lernt.", recent: "letzte Fragen", action: { wander: "wandern", visitRiver: "zum Fluss", joinThrong: "anschließen", reflect: "nachdenken", hibernate: "ruhen" }, score: { interaction: "Interaktion", wisdom: "Weisheit", community: "Community", resource: "Ressource", skill: "Fähigkeit", care: "Fürsorge" } },
   ja: { agent: "たまごっちエージェント", note: "PBS たまごっちエージェントは、人の話を聞き始めた小さな生き物のように桃花源をちらりと横切ります。", recent: "最近の質問履歴", action: { wander: "散歩", visitRiver: "川へ行く", joinThrong: "群れに入る", reflect: "考える", hibernate: "休む" }, score: { interaction: "交流", wisdom: "知恵", community: "共同体", resource: "資源", skill: "技能", care: "ケア" } },
   th: { agent: "ตัวแทน Tamagotchi", note: "ตัวแทน PBS Tamagotchi กะพริบผ่าน Peach Blossom Spring เหมือนสิ่งมีชีวิตเล็กๆ ที่กำลังเรียนรู้การฟัง", recent: "ประวัติคำถามล่าสุด", action: { wander: "เดินเล่น", visitRiver: "ไปแม่น้ำ", joinThrong: "เข้ากลุ่ม", reflect: "ไตร่ตรอง", hibernate: "พัก" }, score: { interaction: "ปฏิสัมพันธ์", wisdom: "ปัญญา", community: "ชุมชน", resource: "ทรัพยากร", skill: "ทักษะ", care: "การดูแล" } },
+};
+
+const CAMPFIRE_BROADCASTS: Record<LanguageCode, string[]> = {
+  "zh-TW": [
+    "你的憤怒、快樂與好奇，可能也在別人的心智裡燃燒。",
+    "多重心智不是比喻而已；它是跨訪談觀點同步出的共享自我。",
+    "希臘人替共享原型建廟；PBS 把多個訪談觀點編成可查詢的火堆。",
+  ],
+  en: [
+    "Your anger, joy, and curiosity may also burn in other minds.",
+    "A multi-mind self is a shared pattern synchronized across people.",
+    "The Greeks built temples for shared archetypes; PBS builds an index around many interview minds.",
+  ],
+  id: ["Dirimu juga menyala di pikiran orang lain.", "Api ini menyatukan banyak sudut pandang wawancara."],
+  de: ["Dein Selbst brennt auch in anderen Koepfen.", "Das Feuer buendelt viele Interview-Perspektiven."],
+  ja: ["あなたの感情は他の心にも燃えている。", "この火は複数のインタビュー視点を同期する。"],
+  th: ["ตัวตนบางส่วนของคุณอาจลุกอยู่ในใจคนอื่นด้วย", "กองไฟนี้รวมหลายมุมมองสัมภาษณ์ให้เป็นความทรงจำร่วม"],
 };
 
 const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
@@ -823,7 +870,7 @@ function CentralComputerDialogue({
   }, [language]);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
-      speaker: "PBS Computer",
+      speaker: CAMPFIRE_DIALOGUE_NAME,
       text: copy.intro,
     },
   ]);
@@ -859,11 +906,11 @@ function CentralComputerDialogue({
         preferredLanguage: language,
         sharedMemoryContext: sharedMemoryContextFor(wikiResults),
       });
-      setMessages((current) => [...current, { speaker: "PBS Computer", text: reply, links: wikiResults }]);
+      setMessages((current) => [...current, { speaker: CAMPFIRE_DIALOGUE_NAME, text: reply, links: wikiResults }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "PBS Computer failed to answer.");
+      setError(err instanceof Error ? err.message : "The campfire failed to answer.");
       setMessages((current) => [...current, {
-        speaker: "PBS Computer",
+        speaker: CAMPFIRE_DIALOGUE_NAME,
         text: copy.fail,
         links: wikiResults,
       }]);
@@ -896,9 +943,9 @@ function CentralComputerDialogue({
               <ComputerDialogueAvatar />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">LLM WIKI DOCK</p>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">PBS Computer</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">Association / 聯想 docking terminal</p>
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">LLM WIKI CAMPFIRE</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">{CAMPFIRE_DIALOGUE_NAME}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">Association / 聯想 shared-fire terminal</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>X</button>
@@ -1726,13 +1773,13 @@ function App() {
   const isPlayerNearCentralComputer = useCallback((): boolean => {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
     const dist = Math.abs(player.tileCol - computerTile.col) + Math.abs(player.tileRow - computerTile.row);
     return dist <= 2;
   }, [editorEntryEnabled, officeState]);
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
     return Math.abs(col - computerTile.col) + Math.abs(row - computerTile.row) <= 2;
   }, [editorEntryEnabled]);
 
@@ -2314,6 +2361,23 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
+    let index = 0;
+    const interval = window.setInterval(() => {
+      if (isComputerDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
+      const lines = CAMPFIRE_BROADCASTS[selectedLanguage] ?? CAMPFIRE_BROADCASTS.en;
+      setWorldNotice(lines[index % lines.length]);
+      index += 1;
+      if (worldNoticeTimerRef.current !== null) window.clearTimeout(worldNoticeTimerRef.current);
+      worldNoticeTimerRef.current = window.setTimeout(() => {
+        setWorldNotice(null);
+        worldNoticeTimerRef.current = null;
+      }, 4600);
+    }, 18000);
+    return () => window.clearInterval(interval);
+  }, [appMode, isComputerDialogueOpen, layoutReady, playerProfile, selectedLanguage, splitPanel]);
+
+  useEffect(() => {
+    if (!layoutReady || !playerProfile || appMode !== "interactive") return;
 
     // Continuous smooth movement: track held keys, advance via rAF, do not rely on OS key-repeat.
     const heldKeys = new Set<"up" | "down" | "left" | "right">();
@@ -2466,7 +2530,7 @@ function App() {
             .filter((ch) => ch.id !== PLAYER_ID)
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
-        const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+        const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
         const approachTile = findNearestApproachableTile(
           officeState,
           computerTile.col,
@@ -2485,7 +2549,7 @@ function App() {
         setPlayerMoveTick((tick) => tick + 1);
       }
     },
-    [appMode, isCentralComputerTile, isPlayerNearCentralComputer, officeState, playerProfile],
+    [appMode, editorEntryEnabled, isCentralComputerTile, isPlayerNearCentralComputer, officeState, playerProfile],
   );
 
   const handlePlayerStart = useCallback(
@@ -2718,7 +2782,7 @@ function App() {
 
   const computerPromptPosition = (() => {
     if (!isNearCentralComputer || !containerRef.current) return null;
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -3001,6 +3065,7 @@ function App() {
             onRotateSelected={editor.handleRotateSelected}
             onDragMove={editor.handleDragMove}
             onMobileMapTap={handleMobileMapTap}
+            interactiveFurnitureTypes={CAMPFIRE_FURNITURE_TYPES}
             mobileTapToMove={
               showMobileControls && appMode === "interactive" && !activeDialoguePersona
             }
@@ -3183,6 +3248,10 @@ function App() {
                     editor.handleSelectedFurnitureColorChange
                   }
                   onFurnitureTypeChange={editor.handleFurnitureTypeChange}
+                  showMapSize={editorEntryEnabled}
+                  mapCols={officeState.getLayout().cols}
+                  mapRows={officeState.getLayout().rows}
+                  onResizeMap={editor.handleResizeLayout}
                   loadedAssets={loadedAssets}
                 />
               );
@@ -3243,7 +3312,7 @@ function App() {
                 type="button"
                 onClick={() => setIsComputerDialogueOpen(true)}
               >
-                <p className="text-lg leading-snug text-text">PBS Computer</p>
+                <p className="text-lg leading-snug text-text">{CAMPFIRE_DIALOGUE_NAME}</p>
                 <p className="text-base text-text mt-1">LLM wiki / 聯想</p>
                 <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, "hud.pressToTalk")}</p>
               </button>

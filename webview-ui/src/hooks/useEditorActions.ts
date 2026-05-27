@@ -11,6 +11,7 @@ import {
   paintTile,
   placeFurniture,
   removeFurniture,
+  resizeLayout,
   rotateFurniture,
   toggleFurnitureState,
 } from '../office/editor/editorActions.js';
@@ -56,6 +57,7 @@ interface EditorActions {
   handleRedo: () => void;
   handleReset: () => void;
   handleSave: () => void;
+  handleResizeLayout: (cols: number, rows: number) => { ok: true } | { ok: false; error: string };
   handleZoomChange: (zoom: number) => void;
   handleEditorTileAction: (col: number, row: number) => void;
   handleEditorEraseAction: (col: number, row: number) => void;
@@ -369,6 +371,24 @@ export function useEditorActions(
     setZoom(Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom)));
   }, []);
 
+  const handleResizeLayout = useCallback(
+    (cols: number, rows: number): { ok: true } | { ok: false; error: string } => {
+      const os = getOfficeState();
+      const current = os.getLayout();
+      for (const ch of os.characters.values()) {
+        if (ch.tileCol < 0 || ch.tileRow < 0 || ch.tileCol >= cols || ch.tileRow >= rows) {
+          const name = ch.folderName || (ch.isPlayer ? 'Player' : `NPC ${ch.id}`);
+          return { ok: false, error: `Resize would cut off ${name}. Move them inside first.` };
+        }
+      }
+      const result = resizeLayout(current, cols, rows);
+      if ('error' in result) return { ok: false, error: result.error };
+      if (result.layout !== current) applyEdit(result.layout);
+      return { ok: true };
+    },
+    [getOfficeState, applyEdit],
+  );
+
   const handleDragMove = useCallback(
     (uid: string, newCol: number, newRow: number) => {
       const os = getOfficeState();
@@ -627,6 +647,7 @@ export function useEditorActions(
     handleRedo,
     handleReset,
     handleSave,
+    handleResizeLayout,
     handleZoomChange,
     handleEditorTileAction,
     handleEditorEraseAction,

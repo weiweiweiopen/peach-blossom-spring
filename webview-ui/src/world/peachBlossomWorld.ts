@@ -75,7 +75,7 @@ export const NEXT_ROOM_GRID_SIZE = 25;
 export const NEXT_ROOM_MAP_SIZE = 50;
 export const NEXT_ROOM_MAP_PADDING = Math.floor((NEXT_ROOM_MAP_SIZE - NEXT_ROOM_GRID_SIZE) / 2);
 export const COMPACT_EDITOR_MAP_SIZE = 40;
-export const COMPACT_EDITOR_COMPUTER_TILE = { col: 20, row: 25 } as const;
+export const COMPACT_EDITOR_CAMPFIRE_TILE = { col: 20, row: 25 } as const;
 
 function fillRect(
   tiles: TileTypeVal[],
@@ -563,7 +563,7 @@ export function createCompactEditorLayout(): OfficeLayout {
   fillRect(tiles, tileColors, cols, { col: 18, row: 34, w: 4, h: 3 }, TileType.FLOOR_3, trailColor);
 
   addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 17, 6);
-  addFurniture(furniture, 'PC_FRONT_ON_1', COMPACT_EDITOR_COMPUTER_TILE.col, COMPACT_EDITOR_COMPUTER_TILE.row, { h: 57, s: 35, b: 10, c: 12 });
+  addFurniture(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE.col, COMPACT_EDITOR_CAMPFIRE_TILE.row);
 
   return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 40 };
 }
@@ -613,7 +613,7 @@ export function createNextTinyRoomLayout(): OfficeLayout {
   for (const [col, row, type] of peachForest) {
     addFurniture(furniture, type, col, row, peachBloomColor);
   }
-  addFurniture(furniture, 'PC_FRONT_ON_1', padding + Math.floor(roomSize / 2), padding + Math.floor(roomSize / 2), { h: 220, s: 60, b: 5, c: 25 });
+  addFurniture(furniture, 'MULTI_MIND_CAMPFIRE_1', padding + Math.floor(roomSize / 2), padding + Math.floor(roomSize / 2));
 
   return {
     version: 1,

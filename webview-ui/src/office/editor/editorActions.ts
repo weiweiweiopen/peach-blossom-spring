@@ -262,3 +262,50 @@ export function expandLayout(
     shift: { col: shiftCol, row: shiftRow },
   };
 }
+
+export function resizeLayout(
+  layout: OfficeLayout,
+  newCols: number,
+  newRows: number,
+): { layout: OfficeLayout } | { error: string } {
+  if (!Number.isInteger(newCols) || !Number.isInteger(newRows)) {
+    return { error: 'Map size must use whole numbers.' };
+  }
+  if (newCols < 1 || newRows < 1 || newCols > MAX_COLS || newRows > MAX_ROWS) {
+    return { error: `Map size must be between 1x1 and ${MAX_COLS}x${MAX_ROWS}.` };
+  }
+  if (newCols === layout.cols && newRows === layout.rows) return { layout };
+
+  for (const item of layout.furniture) {
+    const entry = getCatalogEntry(item.type);
+    if (!entry) continue;
+    if (item.col < 0 || item.row < 0 || item.col + entry.footprintW > newCols || item.row + entry.footprintH > newRows) {
+      return { error: `Resize would cut off ${entry.label}. Move or delete it first.` };
+    }
+  }
+
+  const existingColors = layout.tileColors || new Array(layout.tiles.length).fill(null);
+  const newTiles: TileTypeVal[] = new Array(newCols * newRows).fill(TileType.VOID as TileTypeVal);
+  const newColors: Array<ColorValue | null> = new Array(newCols * newRows).fill(null);
+  const copyRows = Math.min(layout.rows, newRows);
+  const copyCols = Math.min(layout.cols, newCols);
+
+  for (let row = 0; row < copyRows; row++) {
+    for (let col = 0; col < copyCols; col++) {
+      const oldIdx = row * layout.cols + col;
+      const newIdx = row * newCols + col;
+      newTiles[newIdx] = layout.tiles[oldIdx];
+      newColors[newIdx] = existingColors[oldIdx];
+    }
+  }
+
+  return {
+    layout: {
+      ...layout,
+      cols: newCols,
+      rows: newRows,
+      tiles: newTiles,
+      tileColors: newColors,
+    },
+  };
+}
