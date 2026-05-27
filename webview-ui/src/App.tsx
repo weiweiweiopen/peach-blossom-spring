@@ -12,6 +12,7 @@ import {
 
 import extraPersonaData from "../../data/extra-personas.json";
 import personaData from "../../data/personas.json";
+import { BottomToolbar } from "./components/BottomToolbar.js";
 import { DebugView } from "./components/DebugView.js";
 import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { generateBrowserAssociationZine } from "./daydream/browserAssociationGenerator.js";
@@ -116,6 +117,11 @@ const topicLabels: Record<string, string> = {
 };
 
 type QaPanel = "computer" | "npc" | "pet" | "zine" | "language" | "hud";
+
+function readEditorModeParam(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("editor") === "1";
+}
 
 function readQaUiParams(): { enabled: boolean; language: LanguageCode | null; panel: QaPanel } {
   if (typeof window === "undefined") return { enabled: false, language: null, panel: "computer" };
@@ -1302,6 +1308,7 @@ function App() {
     layoutReady,
     layoutWasReset,
     loadedAssets,
+    workspaceFolders,
     externalAssetDirectories,
     watchAllSessions,
     setWatchAllSessions,
@@ -1324,6 +1331,7 @@ function App() {
   const [isHooksInfoOpen, setIsHooksInfoOpen] = useState(false);
   const [hooksTooltipDismissed, setHooksTooltipDismissed] = useState(false);
   const [isDebugMode, setIsDebugMode] = useState(false);
+  const [editorEntryEnabled] = useState(readEditorModeParam);
   const [alwaysShowOverlay, setAlwaysShowOverlay] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(() =>
     qaUi.language ?? readStoredLanguage(),
@@ -3089,6 +3097,17 @@ function App() {
 
           {editor.isEditMode && editor.isDirty && (
             <EditActionBar editor={editor} editorState={editorState} />
+          )}
+
+          {playerProfile && editorEntryEnabled && (
+            <BottomToolbar
+              isEditMode={editor.isEditMode}
+              onOpenClaude={editor.handleOpenClaude}
+              onToggleEditMode={editor.handleToggleEditMode}
+              isSettingsOpen={isSettingsOpen}
+              onToggleSettings={() => setIsSettingsOpen((open) => !open)}
+              workspaceFolders={workspaceFolders}
+            />
           )}
 
           {playerProfile &&

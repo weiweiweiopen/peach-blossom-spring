@@ -62,6 +62,8 @@ const checks = [
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
+  ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /playerProfile && editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
+  ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*onToggleEditMode=\{editor\.handleToggleEditMode\}[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
 ];
 
 const failures = checks.filter(([, ok]) => !ok).map(([name]) => name);
