@@ -8,6 +8,7 @@ const css = readFileSync(join(root, "src", "index.css"), "utf8");
 const uiSystem = readFileSync(join(root, "src", "ui-system.css"), "utf8");
 const main = readFileSync(join(root, "src", "main.tsx"), "utf8");
 const app = readFileSync(join(root, "src", "App.tsx"), "utf8");
+const bottomToolbar = readFileSync(join(root, "src", "components", "BottomToolbar.tsx"), "utf8");
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
@@ -64,6 +65,7 @@ const checks = [
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
   ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /playerProfile && editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*onToggleEditMode=\{editor\.handleToggleEditMode\}[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
+  ["Layout editor toolbar floats above game HUD", /z-\[90\]/.test(bottomToolbar)],
 ];
 
 const failures = checks.filter(([, ok]) => !ok).map(([name]) => name);
