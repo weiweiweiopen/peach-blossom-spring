@@ -169,6 +169,12 @@ const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_4",
   "MULTI_MIND_CAMPFIRE_5",
   "MULTI_MIND_CAMPFIRE_6",
+  "MULTI_MIND_CAMPFIRE_7",
+  "MULTI_MIND_CAMPFIRE_8",
+  "MULTI_MIND_CAMPFIRE_9",
+  "MULTI_MIND_CAMPFIRE_10",
+  "MULTI_MIND_CAMPFIRE_11",
+  "MULTI_MIND_CAMPFIRE_12",
 ]);
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
@@ -674,7 +680,7 @@ function ComputerDialogueAvatar() {
     const id = window.setInterval(() => setFrame((current) => current + 1), 90);
     return () => window.clearInterval(id);
   }, []);
-  const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 6) + 1}.png`;
+  const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="border border-border bg-bg/80 p-2 w-16 h-28 flex items-center justify-center" aria-hidden="true">

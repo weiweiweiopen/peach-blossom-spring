@@ -552,12 +552,13 @@ export function createCompactEditorLayout(): OfficeLayout {
   const rows = COMPACT_EDITOR_MAP_SIZE;
   const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_4);
   const tileColors = new Array<ColorValue | null>(cols * rows).fill(forestGrassColor);
+  const pixelMapBackground = { width: 1, height: 1, palette: { '.': '#69C3AA' }, rows: ['.'] };
   const furniture: PlacedFurniture[] = [];
 
   addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 17, 6);
   addFurniture(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE.col, COMPACT_EDITOR_CAMPFIRE_TILE.row);
 
-  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 42 };
+  return { version: 1, cols, rows, tiles, tileColors, pixelMapBackground, furniture, layoutRevision: 43 };
 }
 
 export function createNextTinyRoomLayout(): OfficeLayout {

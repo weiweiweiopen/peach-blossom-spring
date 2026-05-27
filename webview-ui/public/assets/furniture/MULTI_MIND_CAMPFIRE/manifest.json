@@ -67,6 +67,66 @@
       "footprintW": 4,
       "footprintH": 4,
       "frame": 5
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_7",
+      "file": "MULTI_MIND_CAMPFIRE_7.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 6
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_8",
+      "file": "MULTI_MIND_CAMPFIRE_8.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 7
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_9",
+      "file": "MULTI_MIND_CAMPFIRE_9.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 8
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_10",
+      "file": "MULTI_MIND_CAMPFIRE_10.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 9
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_11",
+      "file": "MULTI_MIND_CAMPFIRE_11.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 10
+    },
+    {
+      "type": "asset",
+      "id": "MULTI_MIND_CAMPFIRE_12",
+      "file": "MULTI_MIND_CAMPFIRE_12.png",
+      "width": 64,
+      "height": 64,
+      "footprintW": 4,
+      "footprintH": 4,
+      "frame": 11
     }
   ]
 }

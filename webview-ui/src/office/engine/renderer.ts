@@ -532,7 +532,7 @@ function renderFurnitureHoverHighlight(
   const x = offsetX + col * s;
   const y = offsetY + row * s;
   if (sprite) {
-    const outline = getCachedSprite(getOutlineSprite(sprite), zoom);
+    const outline = getCachedSprite(getOutlineSprite(sprite, '#FFCA43'), zoom);
     ctx.save();
     ctx.globalAlpha = HOVERED_OUTLINE_ALPHA;
     if (mirrored) {

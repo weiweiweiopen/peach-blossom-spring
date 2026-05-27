@@ -177,7 +177,7 @@ export function OfficeCanvas({
             editorState.activeTool === EditTool.WALL_PAINT ||
             editorState.activeTool === EditTool.ERASE;
           editorRender = {
-            showGrid: true,
+            showGrid: false,
             ghostSprite: null,
             ghostMirrored: false,
             ghostCol: editorState.ghostCol,

@@ -4,11 +4,12 @@ const zoomCaches = new Map<number, WeakMap<SpriteData, HTMLCanvasElement>>();
 
 // ── Outline sprite generation ─────────────────────────────────
 
-const outlineCache = new WeakMap<SpriteData, SpriteData>();
+const outlineCache = new WeakMap<SpriteData, Map<string, SpriteData>>();
 
-/** Generate a 1px white outline SpriteData (2px larger in each dimension) */
-export function getOutlineSprite(sprite: SpriteData): SpriteData {
-  const cached = outlineCache.get(sprite);
+/** Generate a 1px outline SpriteData (2px larger in each dimension). */
+export function getOutlineSprite(sprite: SpriteData, color = '#FFFFFF'): SpriteData {
+  const cachedByColor = outlineCache.get(sprite);
+  const cached = cachedByColor?.get(color);
   if (cached) return cached;
 
   const rows = sprite.length;
@@ -25,10 +26,10 @@ export function getOutlineSprite(sprite: SpriteData): SpriteData {
       if (sprite[r][c] === '') continue;
       const er = r + 1;
       const ec = c + 1;
-      if (outline[er - 1][ec] === '') outline[er - 1][ec] = '#FFFFFF';
-      if (outline[er + 1][ec] === '') outline[er + 1][ec] = '#FFFFFF';
-      if (outline[er][ec - 1] === '') outline[er][ec - 1] = '#FFFFFF';
-      if (outline[er][ec + 1] === '') outline[er][ec + 1] = '#FFFFFF';
+      if (outline[er - 1][ec] === '') outline[er - 1][ec] = color;
+      if (outline[er + 1][ec] === '') outline[er + 1][ec] = color;
+      if (outline[er][ec - 1] === '') outline[er][ec - 1] = color;
+      if (outline[er][ec + 1] === '') outline[er][ec + 1] = color;
     }
   }
 
@@ -41,7 +42,9 @@ export function getOutlineSprite(sprite: SpriteData): SpriteData {
     }
   }
 
-  outlineCache.set(sprite, outline);
+  const nextCachedByColor = cachedByColor ?? new Map<string, SpriteData>();
+  nextCachedByColor.set(color, outline);
+  outlineCache.set(sprite, nextCachedByColor);
   return outline;
 }
 
