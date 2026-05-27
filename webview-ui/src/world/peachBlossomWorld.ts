@@ -74,6 +74,8 @@ const cafeColor: ColorValue = { ...paletteCream, b: 10, c: 18 };
 export const NEXT_ROOM_GRID_SIZE = 25;
 export const NEXT_ROOM_MAP_SIZE = 50;
 export const NEXT_ROOM_MAP_PADDING = Math.floor((NEXT_ROOM_MAP_SIZE - NEXT_ROOM_GRID_SIZE) / 2);
+export const COMPACT_EDITOR_MAP_SIZE = 40;
+export const COMPACT_EDITOR_COMPUTER_TILE = { col: 20, row: 25 } as const;
 
 function fillRect(
   tiles: TileTypeVal[],
@@ -419,6 +421,10 @@ export const nextTinyRoomNpcPlacements: NpcPlacement[] = [
   { personaId: 'abao', col: 35, row: 35, zoneId: 'tiny-room', idleBehavior: 'stand' },
 ];
 
+export const compactEditorNpcPlacements: NpcPlacement[] = [
+  { personaId: 'andreas-siagian', col: 20, row: 21, zoneId: 'compact-editor', idleBehavior: 'stand' },
+];
+
 export function createTamagotchiPeachForestLayout(): OfficeLayout {
   const cols = 64;
   const rows = 64;
@@ -542,30 +548,24 @@ export function createTamagotchiPeachForestLayout(): OfficeLayout {
 }
 
 export function createCompactEditorLayout(): OfficeLayout {
-  const cols = 32;
-  const rows = 32;
+  const cols = COMPACT_EDITOR_MAP_SIZE;
+  const rows = COMPACT_EDITOR_MAP_SIZE;
   const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.VOID);
   const tileColors = new Array<ColorValue | null>(cols * rows).fill(null);
   const furniture: PlacedFurniture[] = [];
 
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 26, h: 24 }, TileType.FLOOR_1, villageColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 26, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 26, w: 26, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 1, h: 24 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 28, row: 3, w: 1, h: 24 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 5, row: 5, w: 22, h: 19 }, TileType.FLOOR_4, cafeColor);
-  fillRect(tiles, tileColors, cols, { col: 14, row: 24, w: 4, h: 3 }, TileType.FLOOR_3, trailColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 34, h: 34 }, TileType.FLOOR_1, villageColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 34, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 36, w: 34, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 1, h: 34 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 36, row: 3, w: 1, h: 34 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 5, row: 5, w: 30, h: 29 }, TileType.FLOOR_4, cafeColor);
+  fillRect(tiles, tileColors, cols, { col: 18, row: 34, w: 4, h: 3 }, TileType.FLOOR_3, trailColor);
 
-  addFurniture(furniture, 'PC', 15, 18, { h: 57, s: 35, b: 10, c: 12 });
-  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 5, 5, { h: 170, s: 45, b: 30, c: 0 });
-  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 8, 5, { h: 170, s: 45, b: 30, c: 0 });
-  addFurniture(furniture, 'CRAFTPIX_INTERIOR_21', 5, 19);
-  addFurniture(furniture, 'CRAFTPIX_INTERIOR_04', 22, 6);
-  addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 11, 6);
-  addFurniture(furniture, 'TABLE_FRONT', 21, 17, { h: 18, s: 42, b: -4, c: 18 });
-  addFurniture(furniture, 'WOODEN_CHAIR', 22, 19);
+  addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 17, 6);
+  addFurniture(furniture, 'PC_FRONT_ON_1', COMPACT_EDITOR_COMPUTER_TILE.col, COMPACT_EDITOR_COMPUTER_TILE.row, { h: 57, s: 35, b: 10, c: 12 });
 
-  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 32 };
+  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 40 };
 }
 
 export function createNextTinyRoomLayout(): OfficeLayout {

@@ -46,8 +46,7 @@ export function layoutToFurnitureInstances(furniture: PlacedFurniture[]): Furnit
     if (!entry) continue;
     const x = item.col * TILE_SIZE;
     const y = item.row * TILE_SIZE;
-    const spriteH = entry.sprite.length;
-    let zY = y + spriteH;
+    let zY = (item.row + entry.footprintH) * TILE_SIZE;
 
     // Chair z-sorting: ensure characters sitting on chairs render correctly
     if (entry.category === 'chairs') {

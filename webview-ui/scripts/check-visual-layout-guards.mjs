@@ -11,6 +11,8 @@ const app = readFileSync(join(root, "src", "App.tsx"), "utf8");
 const bottomToolbar = readFileSync(join(root, "src", "components", "BottomToolbar.tsx"), "utf8");
 const browserMock = readFileSync(join(root, "src", "browserMock.ts"), "utf8");
 const peachWorld = readFileSync(join(root, "src", "world", "peachBlossomWorld.ts"), "utf8");
+const furnitureCatalog = readFileSync(join(root, "src", "office", "layout", "furnitureCatalog.ts"), "utf8");
+const layoutSerializer = readFileSync(join(root, "src", "office", "layout", "layoutSerializer.ts"), "utf8");
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
@@ -69,8 +71,9 @@ const checks = [
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
   ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
-  ["Editor mode uses compact 32x32 layout", /function createCompactEditorLayout[\s\S]*const cols = 32[\s\S]*const rows = 32/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
-  ["CraftPix first batch is registered", /CRAFTPIX_EXTERIOR_TEMPLE_HOUSE/.test(peachWorld) && /CRAFTPIX_INTERIOR_21/.test(peachWorld)],
+  ["Editor mode uses compact 40x40 layout", /COMPACT_EDITOR_MAP_SIZE = 40/.test(peachWorld) && /function createCompactEditorLayout[\s\S]*const cols = COMPACT_EDITOR_MAP_SIZE[\s\S]*const rows = COMPACT_EDITOR_MAP_SIZE/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
+  ["Editor compact room keeps only house and PBS Computer furniture", /addFurniture\(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE'/.test(peachWorld) && /addFurniture\(furniture, 'PC_FRONT_ON_1', COMPACT_EDITOR_COMPUTER_TILE\.col/.test(peachWorld) && !/function createCompactEditorLayout[\s\S]*CRAFTPIX_INTERIOR_21/.test(peachWorld)],
+  ["CraftPix large assets receive background collision rows", /function normalizedBackgroundTiles[\s\S]*asset\.id\.startsWith\('CRAFTPIX_'\)[\s\S]*asset\.footprintH - 1/.test(furnitureCatalog) && /let zY = \(item\.row \+ entry\.footprintH\) \* TILE_SIZE/.test(layoutSerializer)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
 

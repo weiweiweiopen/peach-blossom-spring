@@ -87,6 +87,8 @@ import { vscode } from "./vscodeApi.js";
 import { searchWikiPages, type WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
+  COMPACT_EDITOR_COMPUTER_TILE,
+  compactEditorNpcPlacements,
   createNextTinyRoomLayout,
   createCompactEditorLayout,
   NEXT_ROOM_GRID_SIZE,
@@ -1724,13 +1726,15 @@ function App() {
   const isPlayerNearCentralComputer = useCallback((): boolean => {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
-    const dist = Math.abs(player.tileCol - CENTRAL_COMPUTER_TILE.col) + Math.abs(player.tileRow - CENTRAL_COMPUTER_TILE.row);
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+    const dist = Math.abs(player.tileCol - computerTile.col) + Math.abs(player.tileRow - computerTile.row);
     return dist <= 2;
-  }, [officeState]);
+  }, [editorEntryEnabled, officeState]);
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
-    return Math.abs(col - CENTRAL_COMPUTER_TILE.col) + Math.abs(row - CENTRAL_COMPUTER_TILE.row) <= 2;
-  }, []);
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
+    return Math.abs(col - computerTile.col) + Math.abs(row - computerTile.row) <= 2;
+  }, [editorEntryEnabled]);
 
   const getPlayerDistanceFromCharacter = useCallback(
     (characterId: number): number => {
@@ -1970,11 +1974,18 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || appMode !== "interactive") return;
+    const placements = editorEntryEnabled ? compactEditorNpcPlacements : nextTinyRoomNpcPlacements;
+    if (editorEntryEnabled) {
+      const allowedPersonaIds = new Set(placements.map((placement) => placement.personaId));
+      personas.forEach((persona, index) => {
+        if (!allowedPersonaIds.has(persona.id)) officeState.characters.delete(index + 1);
+      });
+    }
     const personaById = new Map(
       personas.map((persona, index) => [persona.id, index + 1]),
     );
     const occupied = new Set<string>();
-    for (const placement of nextTinyRoomNpcPlacements) {
+    for (const placement of placements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId) continue;
       if (!officeState.characters.has(agentId)) {
@@ -2000,7 +2011,7 @@ function App() {
       ch.seatId = null;
       ch.hueShift = (25 + agentId * 23) % 120;
     }
-  }, [appMode, layoutReady, officeState]);
+  }, [appMode, editorEntryEnabled, layoutReady, officeState]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -2455,10 +2466,11 @@ function App() {
             .filter((ch) => ch.id !== PLAYER_ID)
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
+        const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
         const approachTile = findNearestApproachableTile(
           officeState,
-          CENTRAL_COMPUTER_TILE.col,
-          CENTRAL_COMPUTER_TILE.row + 1,
+          computerTile.col,
+          computerTile.row + 1,
           occupied,
         );
         const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
@@ -2706,6 +2718,7 @@ function App() {
 
   const computerPromptPosition = (() => {
     if (!isNearCentralComputer || !containerRef.current) return null;
+    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_COMPUTER_TILE : CENTRAL_COMPUTER_TILE;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -2716,8 +2729,8 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + (CENTRAL_COMPUTER_TILE.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
-      top: (deviceOffsetY + (CENTRAL_COMPUTER_TILE.row * TILE_SIZE - 18) * editor.zoom) / dpr,
+      left: (deviceOffsetX + (computerTile.col * TILE_SIZE + TILE_SIZE / 2) * editor.zoom) / dpr,
+      top: (deviceOffsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
     };
   })();
 

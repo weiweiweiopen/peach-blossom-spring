@@ -175,6 +175,13 @@ function createThaiTempleCatalogEntry(): CatalogEntryWithCategory {
   };
 }
 
+function normalizedBackgroundTiles(asset: LoadedAssetData['catalog'][number]): number {
+  if (asset.backgroundTiles && asset.backgroundTiles > 0) return asset.backgroundTiles;
+  if (!asset.id.startsWith('CRAFTPIX_')) return 0;
+  if (asset.footprintH <= 1) return 0;
+  return Math.max(0, asset.footprintH - 1);
+}
+
 /**
  * Build catalog from loaded assets. Returns true if successful.
  * Once built, all getCatalog* functions use the dynamic catalog.
@@ -191,6 +198,7 @@ export function buildDynamicCatalog(assets: LoadedAssetData): boolean {
         console.warn(`No sprite data for asset ${asset.id}`);
         return null;
       }
+      const backgroundTiles = normalizedBackgroundTiles(asset);
       return {
         type: asset.id,
         label: asset.label,
@@ -201,7 +209,7 @@ export function buildDynamicCatalog(assets: LoadedAssetData): boolean {
         category: asset.category as FurnitureCategory,
         ...(asset.orientation ? { orientation: asset.orientation } : {}),
         ...(asset.canPlaceOnSurfaces ? { canPlaceOnSurfaces: true } : {}),
-        ...(asset.backgroundTiles ? { backgroundTiles: asset.backgroundTiles } : {}),
+        ...(backgroundTiles ? { backgroundTiles } : {}),
         ...(asset.canPlaceOnWalls ? { canPlaceOnWalls: true } : {}),
         ...(asset.mirrorSide ? { mirrorSide: true } : {}),
       };
