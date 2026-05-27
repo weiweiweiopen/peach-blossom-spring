@@ -19,6 +19,8 @@ Fix the regressions reported after the multi-mind campfire deployment without ch
 - Campfire art must be native 64px pixel art, not a scaled 32px image, with an organic animated flame shape.
 - Compact editor floor must default to grass across the whole playable floor area; users must not paint it tile-by-tile.
 - Mobile dialogue type scale must fit normal sentence-length questions and keep avatar animation visible.
+- Mobile dialogue panels should use full viewport height, with action buttons aligned to the right.
+- Mobile zine panels should cover top HUD/language controls and inject a phone-readable one-column zine style without changing desktop zine layout.
 
 ## Non-Goals
 

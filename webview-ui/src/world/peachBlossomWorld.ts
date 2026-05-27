@@ -550,22 +550,14 @@ export function createTamagotchiPeachForestLayout(): OfficeLayout {
 export function createCompactEditorLayout(): OfficeLayout {
   const cols = COMPACT_EDITOR_MAP_SIZE;
   const rows = COMPACT_EDITOR_MAP_SIZE;
-  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.VOID);
-  const tileColors = new Array<ColorValue | null>(cols * rows).fill(null);
+  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_4);
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill(forestGrassColor);
   const furniture: PlacedFurniture[] = [];
-
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 34, h: 34 }, TileType.FLOOR_9, forestGrassColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 34, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 36, w: 34, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 1, h: 34 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 36, row: 3, w: 1, h: 34 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 5, row: 5, w: 30, h: 29 }, TileType.FLOOR_9, forestGrassColor);
-  fillRect(tiles, tileColors, cols, { col: 18, row: 34, w: 4, h: 3 }, TileType.FLOOR_9, forestGrassColor);
 
   addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 17, 6);
   addFurniture(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE.col, COMPACT_EDITOR_CAMPFIRE_TILE.row);
 
-  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 41 };
+  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 42 };
 }
 
 export function createNextTinyRoomLayout(): OfficeLayout {

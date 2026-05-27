@@ -7498,9 +7498,13 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 @media (max-width: 700px), (pointer: coarse) {
   .rpg-dialogue-panel[data-language] {
     width: 100vw !important;
-    height: min(70dvh, 560px) !important;
-    max-height: calc(100dvh - 112px) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
     padding: 10px 10px max(10px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-header {
+    margin-bottom: 8px !important;
   }
 
   .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars {
@@ -7544,8 +7548,9 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   .rpg-dialogue-panel[data-language] .rpg-dialogue-form,
   .rpg-dialogue-panel[data-language] .rpg-dialogue-form:has(.rpg-dialogue-chip.pbs-game-button--bubble) {
     display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: 1fr repeat(3, 48px) !important;
     gap: 8px !important;
+    align-items: end !important;
   }
 
   .rpg-dialogue-panel[data-language] .rpg-dialogue-input {
@@ -7569,6 +7574,47 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     padding: 6px 8px !important;
     font-size: 22px !important;
     flex: 1 1 auto !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-question-toggle.pbs-game-button {
+    grid-column: 2 !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-submit.pbs-game-button {
+    grid-column: 3 !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-chip.pbs-game-button--bubble {
+    grid-column: 4 !important;
+  }
+
+  .world-split-panel--zine,
+  .world-split-panel--zine.is-expanded,
+  .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel.world-split-panel--zine {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: none !important;
+    z-index: 20000 !important;
+  }
+
+  .world-split-panel--zine .world-split-toolbar {
+    padding: 8px 10px !important;
+  }
+
+  .world-split-panel--zine .world-split-content {
+    padding: 6px !important;
+  }
+
+  .world-split-panel--zine .world-split-final-document,
+  .world-split-panel--zine .world-split-iframe {
+    width: 100% !important;
+    min-width: 0 !important;
   }
 
   .world-split-panel--zine .field-note-input,

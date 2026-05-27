@@ -676,27 +676,46 @@ function campfireSprite(frame: number): SpriteData {
   const rect = (x: number, y: number, w: number, h: number, color: string) => {
     for (let yy = y; yy < y + h; yy += 1) for (let xx = x; xx < x + w; xx += 1) set(xx, yy, color);
   };
-  const diamond = (cx: number, cy: number, rx: number, ry: number, color: string) => {
-    for (let y = cy - ry; y <= cy + ry; y += 1) {
-      const half = Math.round(rx * (1 - Math.abs(y - cy) / Math.max(1, ry)));
-      for (let x = cx - half; x <= cx + half; x += 1) set(x, y, color);
+  const ellipse = (cx: number, cy: number, rx: number, ry: number, color: string) => {
+    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y += 1) {
+      for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x += 1) {
+        const nx = (x - cx) / rx;
+        const ny = (y - cy) / ry;
+        if (nx * nx + ny * ny <= 1) set(x, y, color);
+      }
+    }
+  };
+  const polygon = (points: Array<[number, number]>, color: string) => {
+    const minY = Math.floor(Math.min(...points.map((point) => point[1])));
+    const maxY = Math.ceil(Math.max(...points.map((point) => point[1])));
+    for (let y = minY; y <= maxY; y += 1) {
+      const xs: number[] = [];
+      for (let i = 0; i < points.length; i += 1) {
+        const [x1, y1] = points[i];
+        const [x2, y2] = points[(i + 1) % points.length];
+        if ((y1 <= y && y2 > y) || (y2 <= y && y1 > y)) xs.push(x1 + ((y - y1) * (x2 - x1)) / (y2 - y1));
+      }
+      xs.sort((a, b) => a - b);
+      for (let i = 0; i < xs.length; i += 2) {
+        for (let x = Math.ceil(xs[i]); x <= Math.floor(xs[i + 1]); x += 1) set(x, y, color);
+      }
     }
   };
   const phase = frame % 6;
-  const lean = [-1, 1, 0, 2, -2, 1][phase];
-  const high = [0, 2, -1, 1, 0, -2][phase];
-  rect(10 + (phase % 2), 4, 2, 2, "#BAC3D988");
-  rect(20 - (phase % 3), 5 + (phase % 2), 2, 2, "#BAC3D988");
-  rect(7, 24, 18, 3, "#29160d");
-  rect(6, 25, 20, 2, "#1e1412");
-  rect(7, 23, 9, 3, "#6a3b19");
-  rect(16, 24, 10, 3, "#9c5b21");
-  rect(8, 26, 17, 2, "#29160d");
-  diamond(16 + lean, 17 + high, 8, 11, "#da3419");
-  diamond(15 + lean, 16 + high, 6, 9, "#ff881f");
-  diamond(17 - lean, 16 + high, 4, 7, "#fcf46b");
-  diamond(15, 19 + (phase % 2), 2, 4, "#ffb5dc");
-  rect(17 + lean, 7 + high, 2, 6, "#fcf46b");
+  const lean = [0, -1, 1, 1, -1, 0][phase];
+  const squish = [0, 1, 0, -1, 1, 0][phase];
+  ellipse(16, 21 + squish, 11, 8 - Math.min(1, squish), "#9B2B16");
+  polygon([[16 + lean, 2], [11, 13], [8, 21], [12, 29], [20, 29], [25, 20], [21, 12]], "#9B2B16");
+  ellipse(16, 21 + squish, 10, 7, "#D83A16");
+  polygon([[16 + lean, 4], [12, 14], [10, 22], [13, 28], [19, 28], [23, 21], [20, 13]], "#D83A16");
+  ellipse(16, 22 + squish, 8, 5, "#FF6B1A");
+  polygon([[16 + lean, 8], [13, 17], [12, 24], [16, 28], [20, 24], [19, 16]], "#FF6B1A");
+  ellipse(16, 22, 5, 4, "#FFB226");
+  polygon([[16 - lean, 12], [14, 20], [16, 25], [19, 20]], "#FCF46B");
+  rect(13, 20, 2, 2, "#2B1711");
+  rect(18, 20, 2, 2, "#2B1711");
+  const mouths = [[[14, 24, 4, 1]], [[14, 24, 1, 1], [18, 24, 1, 1], [15, 25, 3, 1]], [[15, 24, 3, 2]], [[14, 24, 5, 1], [15, 25, 3, 1]], [[14, 25, 4, 1]], [[15, 24, 2, 2]]];
+  for (const [x, y, w, h] of mouths[phase]) rect(x, y, w, h, "#5A1D12");
   return sprite;
 }
 
@@ -1054,6 +1073,20 @@ function waitForNextPaint(): Promise<void> {
 function attachZineIframeControls(iframe: HTMLIFrameElement): void {
   const doc = iframe.contentDocument;
   if (!doc) return;
+  if (window.matchMedia("(max-width: 700px), (pointer: coarse)").matches && !doc.getElementById("pbs-mobile-zine-readable")) {
+    const style = doc.createElement("style");
+    style.id = "pbs-mobile-zine-readable";
+    style.textContent = `
+      html, body { margin: 0 !important; width: 100% !important; overflow-x: hidden !important; }
+      .daydream-html { width: 100% !important; max-width: none !important; min-width: 0 !important; padding: 16px !important; box-sizing: border-box !important; }
+      .daydream-html--pbs-reset, .daydream-html--soft-commons, .daydream-html--aino-grid, .dd-reset-hero, .dd-reset-sections, .dd-reset-protocol, .dd-soft-body, .dd-aino-grid, .dd-aino-footer { display: block !important; grid-template-columns: none !important; }
+      .dd-reset-card, .dd-reset-opening, .dd-reset-protocol, .dd-soft-card, .dd-aino-card, section, article { margin: 0 0 10px !important; padding: 12px !important; max-width: none !important; box-sizing: border-box !important; }
+      h1 { font-size: 34px !important; line-height: 1.04 !important; }
+      h2 { font-size: 22px !important; line-height: 1.12 !important; }
+      p, li { font-size: 16px !important; line-height: 1.42 !important; }
+    `;
+    doc.head.appendChild(style);
+  }
   const pressButton = (button: HTMLElement, pressed: boolean) => {
     button.style.transform = pressed ? "translate(3px, 3px)" : "";
     button.style.boxShadow = pressed ? "1px 1px 0 #000" : "4px 4px 0 #000";
