@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_INTERIOR_21",
+  "name": "CraftPix Interior 21",
+  "category": "storage",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 90,
+  "height": 79,
+  "footprintW": 3,
+  "footprintH": 2
+}

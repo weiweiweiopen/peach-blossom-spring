@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_HOUSE_DETAIL_07",
+  "name": "CraftPix House Detail 07",
+  "category": "decor",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 15,
+  "height": 18,
+  "footprintW": 1,
+  "footprintH": 1
+}

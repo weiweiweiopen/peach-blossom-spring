@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_EXTERIOR_TEMPLE_HOUSE",
+  "name": "CraftPix Temple House",
+  "category": "misc",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 162,
+  "height": 208,
+  "footprintW": 6,
+  "footprintH": 7
+}

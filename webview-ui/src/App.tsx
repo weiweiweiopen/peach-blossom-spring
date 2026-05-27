@@ -88,6 +88,7 @@ import { searchWikiPages, type WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   createNextTinyRoomLayout,
+  createCompactEditorLayout,
   NEXT_ROOM_GRID_SIZE,
   NEXT_ROOM_MAP_PADDING,
   nextTinyRoomNpcPlacements,
@@ -1747,7 +1748,7 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     if (!worldInitialized) {
-      officeState.rebuildFromLayout(createNextTinyRoomLayout());
+      officeState.rebuildFromLayout(editorEntryEnabled ? createCompactEditorLayout() : createNextTinyRoomLayout());
       setWorldInitialized(true);
     }
     if (appMode === "interactive") {
@@ -1761,7 +1762,7 @@ function App() {
       officeState.characters.delete(PLAYER_ID);
       officeState.cameraFollowId = null;
     }
-  }, [appMode, layoutReady, officeState, playerProfile, worldInitialized]);
+  }, [appMode, editorEntryEnabled, layoutReady, officeState, playerProfile, worldInitialized]);
 
   const applyRemotePresence = useCallback(
     (presence: MultiplayerPresence, localPlayerId: string) => {

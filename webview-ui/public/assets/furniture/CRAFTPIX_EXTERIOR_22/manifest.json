@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_EXTERIOR_22",
+  "name": "CraftPix Exterior 22",
+  "category": "decor",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 0,
+  "width": 51,
+  "height": 64,
+  "footprintW": 2,
+  "footprintH": 2
+}

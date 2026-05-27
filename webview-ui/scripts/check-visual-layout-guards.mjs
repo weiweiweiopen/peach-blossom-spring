@@ -70,7 +70,7 @@ const checks = [
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
   ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
   ["Editor mode uses compact 32x32 layout", /function createCompactEditorLayout[\s\S]*const cols = 32[\s\S]*const rows = 32/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
-  ["CraftPix first batch is registered", /CRAFTPIX_EXTERIOR_TREE_SMALL[\s\S]*CRAFTPIX_INTERIOR_BED/.test(peachWorld)],
+  ["CraftPix first batch is registered", /CRAFTPIX_EXTERIOR_TEMPLE_HOUSE/.test(peachWorld) && /CRAFTPIX_INTERIOR_21/.test(peachWorld)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
 

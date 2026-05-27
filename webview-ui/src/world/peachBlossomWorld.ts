@@ -544,30 +544,26 @@ export function createTamagotchiPeachForestLayout(): OfficeLayout {
 export function createCompactEditorLayout(): OfficeLayout {
   const cols = 32;
   const rows = 32;
-  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_1);
-  const tileColors = new Array<ColorValue | null>(cols * rows).fill(villageColor);
+  const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.VOID);
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill(null);
   const furniture: PlacedFurniture[] = [];
 
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: rows }, TileType.FLOOR_1, villageColor);
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: cols, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 0, row: rows - 1, w: cols, h: 1 }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: 0, row: 0, w: 1, h: rows }, TileType.WALL, wallColor);
-  fillRect(tiles, tileColors, cols, { col: cols - 1, row: 0, w: 1, h: rows }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 26, h: 24 }, TileType.FLOOR_1, villageColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 26, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 26, w: 26, h: 1 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 3, row: 3, w: 1, h: 24 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 28, row: 3, w: 1, h: 24 }, TileType.WALL, wallColor);
+  fillRect(tiles, tileColors, cols, { col: 5, row: 5, w: 22, h: 19 }, TileType.FLOOR_4, cafeColor);
+  fillRect(tiles, tileColors, cols, { col: 14, row: 24, w: 4, h: 3 }, TileType.FLOOR_3, trailColor);
 
-  fillRect(tiles, tileColors, cols, { col: 2, row: 2, w: 28, h: 8 }, TileType.FLOOR_5, petalGroundColor);
-  fillRect(tiles, tileColors, cols, { col: 2, row: 10, w: 28, h: 12 }, TileType.FLOOR_2, fieldColor);
-  fillRect(tiles, tileColors, cols, { col: 2, row: 22, w: 28, h: 8 }, TileType.FLOOR_4, glassColor);
-  fillRect(tiles, tileColors, cols, { col: 14, row: 2, w: 4, h: 28 }, TileType.FLOOR_3, trailColor);
-
-  addFurniture(furniture, 'PC', 15, 15, { h: 57, s: 35, b: 10, c: 12 });
-  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 4, 3, { h: 170, s: 45, b: 30, c: 0 });
-  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 7, 3, { h: 170, s: 45, b: 30, c: 0 });
-  addFurniture(furniture, 'TABLE_FRONT', 20, 14, { h: 18, s: 42, b: -4, c: 18 });
-  addFurniture(furniture, 'WOODEN_CHAIR', 21, 16);
-  addFurniture(furniture, 'PLANT', 4, 12, peachBloomColor);
-  addFurniture(furniture, 'PLANT_2', 26, 18, peachBloomColor);
-  addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TREE_SMALL', 24, 4);
-  addFurniture(furniture, 'CRAFTPIX_INTERIOR_BED', 4, 24);
+  addFurniture(furniture, 'PC', 15, 18, { h: 57, s: 35, b: 10, c: 12 });
+  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 5, 5, { h: 170, s: 45, b: 30, c: 0 });
+  addFurniture(furniture, 'DOUBLE_BOOKSHELF', 8, 5, { h: 170, s: 45, b: 30, c: 0 });
+  addFurniture(furniture, 'CRAFTPIX_INTERIOR_21', 5, 19);
+  addFurniture(furniture, 'CRAFTPIX_INTERIOR_04', 22, 6);
+  addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 11, 6);
+  addFurniture(furniture, 'TABLE_FRONT', 21, 17, { h: 18, s: 42, b: -4, c: 18 });
+  addFurniture(furniture, 'WOODEN_CHAIR', 22, 19);
 
   return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 32 };
 }
