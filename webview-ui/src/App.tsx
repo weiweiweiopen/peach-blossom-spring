@@ -677,11 +677,11 @@ function ComputerDialogueAvatar() {
   const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 6) + 1}.png`;
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="border border-accent bg-bg/80 p-1" aria-hidden="true">
+      <div className="border border-border bg-bg/80 p-2 w-16 h-28 flex items-center justify-center" aria-hidden="true">
         <img
           src={src}
           alt=""
-          className="block h-24 w-24 object-contain"
+          className="block h-16 w-16 object-contain"
           style={{ imageRendering: "pixelated" }}
         />
       </div>
