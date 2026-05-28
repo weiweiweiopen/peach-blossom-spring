@@ -99,6 +99,8 @@ const checks = [
   ["Trees keep full collision footprint", /function normalizedBackgroundTiles[\s\S]*tree[\s\S]*return 0/.test(furnitureCatalog)],
   ["SGMK query boosts SGMK cards", /const wantsSgmk/.test(wikiSearch) && /family === 'SGMK' \? 12 : 0/.test(wikiSearch)],
   ["Keyboard movement uses smooth repeat and reduced sprint", /PLAYER_SPRINT_SPEED_MULTIPLIER = 2\.17/.test(app) && /const targetMaxQueue = 1/.test(app) && /isSprint \? 24 : 70/.test(app)],
+  ["LLM wiki corpus is lazy-loaded after boot", !/import \{ generateBrowserAssociationZine \}/.test(app) && !/import \{ searchWikiPages/.test(app) && /await import\("\.\/daydream\/browserAssociationGenerator\.js"\)/.test(app) && /await import\("\.\/wikiSearch\.js"\)/.test(app)],
+  ["Zine repeated sections warn instead of aborting", /Association zine repeated section warning/.test(generator) && !/LLM repeated section body after rewrite/.test(generator)],
   ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];

@@ -15,7 +15,6 @@ import personaData from "../../data/personas.json";
 import { BottomToolbar } from "./components/BottomToolbar.js";
 import { DebugView } from "./components/DebugView.js";
 import { askDeepSeekPbsComputer } from "./deepseekClient.js";
-import { generateBrowserAssociationZine } from "./daydream/browserAssociationGenerator.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
 import {
@@ -85,7 +84,7 @@ import {
 } from "./simulation/storage.js";
 import type { SimSnapshot, Thronglet } from "./simulation/types.js";
 import { vscode } from "./vscodeApi.js";
-import { searchWikiPages, type WikiSearchResult } from "./wikiSearch.js";
+import type { WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   COMPACT_EDITOR_CAMPFIRE_TILE,
@@ -162,7 +161,8 @@ const CENTRAL_COMPUTER_TILE = {
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
 const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
-const CAMPFIRE_DIALOGUE_NAME = "多重心智自我火燄（The Multi-Minds Self Campfire）";
+// English canonical name: The Multi-Minds Self Campfire.
+const CAMPFIRE_DIALOGUE_NAME = "多重心智自我火燄";
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
   "MULTI_MIND_CAMPFIRE_2",
@@ -922,12 +922,14 @@ function CentralComputerDialogue({
   async function askComputer(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isThinking) return;
-    const wikiResults = searchWikiPages(trimmed, undefined, 6);
     setDraft("");
     setError("");
     setIsThinking(true);
     setMessages((current) => [...current, { speaker: "You", text: trimmed }]);
+    let wikiResults: WikiSearchResult[] = [];
     try {
+      const { searchWikiPages } = await import("./wikiSearch.js");
+      wikiResults = searchWikiPages(trimmed, undefined, 6);
       const reply = await askDeepSeekPbsComputer({
         question: trimmed,
         preferredLanguage: language,
@@ -2957,6 +2959,7 @@ function App() {
     try {
       await waitForNextPaint();
       if (wikiGenerationRequestRef.current !== requestKey) return;
+      const { generateBrowserAssociationZine } = await import("./daydream/browserAssociationGenerator.js");
       const result = await generateBrowserAssociationZine(query, request.language, (message) => {
         setAssociationProgress(message);
       });

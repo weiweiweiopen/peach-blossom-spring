@@ -617,7 +617,7 @@ function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
     approvedForPublicLayout: true,
   };
   const repeatedSections = repeatedSectionReport(artifact.sections);
-  if (repeatedSections) throw new Error(`LLM JSON repeated section body: ${repeatedSections}`);
+  if (repeatedSections) console.warn(`Association zine repeated section warning: ${repeatedSections}`);
   return artifact;
 }
 
@@ -742,6 +742,9 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {
       section = await requestSection(true);
     }
+    if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {
+      section = await requestSection(true);
+    }
     const nextSection = {
       id: cleanLLMText(section.id ?? `llm-section-${index + 1}`),
       title: cleanLLMText(section.title ?? ""),
@@ -752,7 +755,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
       throw new Error(`LLM section ${index + 1} missing id/title/body.`);
     }
     if (isTooSimilarToExisting(nextSection.body, sections.map(({ body }) => body))) {
-      throw new Error(`LLM repeated section body after rewrite: ${nextSection.title}`);
+      console.warn(`Association zine repeated section warning after rewrite: ${nextSection.title}`);
     }
     sections.push(nextSection);
   }
