@@ -268,7 +268,7 @@ export async function initBrowserMock(): Promise<void> {
     }
   }
   const compactEditorLayout = editorPreview
-    ? await fetch(`${base}assets/default-layout-editor.json`)
+    ? await fetch(`${base}assets/pbs-editor-layout.json`)
         .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
         .catch(() => createCompactEditorLayout())
     : null;
