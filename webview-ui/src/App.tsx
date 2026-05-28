@@ -58,7 +58,7 @@ import { OfficeState } from "./office/engine/officeState.js";
 import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { isWalkable } from "./office/layout/tileMap.js";
 import { getCharacterSprites } from "./office/sprites/index.js";
-import { Direction, EditTool, type SpriteData, TILE_SIZE } from "./office/types.js";
+import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
 import {
   appearanceToSpriteData,
   generateQuestionPet,
@@ -154,6 +154,7 @@ function qaPlayerProfile(language: LanguageCode): PlayerProfile {
 
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
+const CAMPFIRE_INTERACTION_RADIUS_TILES = 3;
 const CENTRAL_COMPUTER_TILE = {
   col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
@@ -174,6 +175,19 @@ const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_11",
   "MULTI_MIND_CAMPFIRE_12",
 ]);
+
+function campfireBoundsFromLayout(layout: OfficeLayout) {
+  const campfire = layout.furniture.find((item) => CAMPFIRE_FURNITURE_TYPES.has(item.type));
+  if (!campfire) {
+    return { ...CENTRAL_COMPUTER_TILE, ...CENTRAL_COMPUTER_FOOTPRINT };
+  }
+  return {
+    col: campfire.col,
+    row: campfire.row,
+    w: CENTRAL_COMPUTER_FOOTPRINT.w,
+    h: CENTRAL_COMPUTER_FOOTPRINT.h,
+  };
+}
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
 const COMMUNITY_NEWS_LINKS = [
@@ -340,10 +354,6 @@ const ExpeditionPanel = lazy(() =>
     default: module.ExpeditionPanel,
   })),
 );
-function trimToFiftyChars(text: string): string {
-  return text.length > 50 ? `${text.slice(0, 50)}...` : text;
-}
-
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "dialogue.openWiki") return panel.persona.name;
   if (panel.kind === "wukirBandcamp") return "Institutionalized Ritual";
@@ -640,7 +650,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="bg-bg/80 border border-border p-2"
+        className="rpg-dialogue-avatar-frame bg-bg/80 border border-border p-2"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
@@ -681,11 +691,11 @@ function ComputerDialogueAvatar() {
   const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="border border-border bg-bg/80 p-2 w-16 h-28 flex items-center justify-center" aria-hidden="true">
+      <div className="rpg-dialogue-avatar-frame border border-border bg-bg/80 p-2 flex items-center justify-center overflow-hidden" aria-hidden="true">
         <img
           src={src}
           alt=""
-          className="block h-16 w-16 object-contain"
+          className="block h-20 w-20 object-contain"
           style={{ imageRendering: "pixelated" }}
         />
       </div>
@@ -1800,22 +1810,26 @@ function App() {
   const isPlayerNearCentralComputer = useCallback((): boolean => {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
-    const nearestCol = Math.max(computerTile.col, Math.min(computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w - 1, player.tileCol));
-    const nearestRow = Math.max(computerTile.row, Math.min(computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, player.tileRow));
+    const bounds = editorEntryEnabled
+      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
+      : campfireBoundsFromLayout(officeState.getLayout());
+    const nearestCol = Math.max(bounds.col, Math.min(bounds.col + bounds.w - 1, player.tileCol));
+    const nearestRow = Math.max(bounds.row, Math.min(bounds.row + bounds.h - 1, player.tileRow));
     const dist = Math.abs(player.tileCol - nearestCol) + Math.abs(player.tileRow - nearestRow);
-    return dist <= 2;
+    return dist <= CAMPFIRE_INTERACTION_RADIUS_TILES;
   }, [editorEntryEnabled, officeState]);
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
+    const bounds = editorEntryEnabled
+      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
+      : campfireBoundsFromLayout(officeState.getLayout());
     return (
-      col >= computerTile.col &&
-      col < computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w &&
-      row >= computerTile.row &&
-      row < computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h
+      col >= bounds.col - CAMPFIRE_INTERACTION_RADIUS_TILES &&
+      col < bounds.col + bounds.w + CAMPFIRE_INTERACTION_RADIUS_TILES &&
+      row >= bounds.row - CAMPFIRE_INTERACTION_RADIUS_TILES &&
+      row < bounds.row + bounds.h + CAMPFIRE_INTERACTION_RADIUS_TILES
     );
-  }, [editorEntryEnabled]);
+  }, [editorEntryEnabled, officeState]);
 
   const getPlayerDistanceFromCharacter = useCallback(
     (characterId: number): number => {
@@ -2566,11 +2580,13 @@ function App() {
             .filter((ch) => ch.id !== PLAYER_ID)
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
-        const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
+        const computerTile = editorEntryEnabled
+          ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
+          : campfireBoundsFromLayout(officeState.getLayout());
         const approachTile = findNearestApproachableTile(
           officeState,
-          computerTile.col,
-          computerTile.row + CENTRAL_COMPUTER_FOOTPRINT.h,
+          computerTile.col + Math.floor(computerTile.w / 2),
+          computerTile.row + computerTile.h,
           occupied,
         );
         const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
@@ -2818,7 +2834,9 @@ function App() {
 
   const computerPromptPosition = (() => {
     if (!isNearCentralComputer || !containerRef.current) return null;
-    const computerTile = editorEntryEnabled ? COMPACT_EDITOR_CAMPFIRE_TILE : CENTRAL_COMPUTER_TILE;
+    const computerTile = editorEntryEnabled
+      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
+      : campfireBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -2829,7 +2847,7 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + ((computerTile.col + CENTRAL_COMPUTER_FOOTPRINT.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
+      left: (deviceOffsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
       top: (deviceOffsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
     };
   })();
@@ -3301,12 +3319,11 @@ function App() {
             !isComputerDialogueOpen &&
             promptPosition && (
               <button
-                className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
+                className="absolute z-44 -translate-x-1/2 -translate-y-full text-center pointer-events-auto npc-name-tag mobile-talk-prompt mobile-talk-prompt--compact"
                 style={{
                   left: promptPosition.left,
                   top: promptPosition.top,
-                  background: "rgba(24, 24, 40, 0.58)",
-                  backdropFilter: "blur(1px)",
+                  background: "#fff",
                 }}
                 type="button"
                 onClick={() => {
@@ -3318,15 +3335,7 @@ function App() {
                   setActiveDialogueId(nearbyNpcId);
                 }}
               >
-                <p className="text-lg leading-snug text-text">
-                  {nearbyPersona.name}
-                </p>
-                <p className="text-base text-text mt-1">
-                  {trimToFiftyChars(nearbyPersona.intro)}
-                </p>
-                <p className="text-base text-accent-bright mt-2">
-                  {t(selectedLanguage, "hud.pressToTalk")}
-                </p>
+                <p>{t(selectedLanguage, "hud.pressToTalk")}</p>
               </button>
             )}
 
@@ -3338,19 +3347,16 @@ function App() {
             !isComputerDialogueOpen &&
             !isEncounterUiOpen && (
               <button
-                className="absolute z-44 -translate-x-1/2 -translate-y-full px-5 py-4 text-center pointer-events-auto rounded-[10px] border-2 border-border mobile-talk-prompt"
+                className="absolute z-44 -translate-x-1/2 -translate-y-full text-center pointer-events-auto npc-name-tag mobile-talk-prompt mobile-talk-prompt--compact"
                 style={{
                   left: computerPromptPosition.left,
                   top: computerPromptPosition.top,
-                  background: "rgba(24, 24, 40, 0.62)",
-                  backdropFilter: "blur(1px)",
+                  background: "#fff",
                 }}
                 type="button"
                 onClick={() => setIsComputerDialogueOpen(true)}
               >
-                <p className="text-lg leading-snug text-text">{CAMPFIRE_DIALOGUE_NAME}</p>
-                <p className="text-base text-text mt-1">LLM wiki / 聯想</p>
-                <p className="text-base text-accent-bright mt-2">{t(selectedLanguage, "hud.pressToTalk")}</p>
+                <p>{t(selectedLanguage, "hud.pressToTalk")}</p>
               </button>
             )}
 

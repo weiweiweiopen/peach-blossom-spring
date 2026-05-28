@@ -87,7 +87,7 @@ function languageInstruction(language: AssociationZineLanguage): string {
 }
 
 function printBindingLengthInstruction(): string {
-  return `PRINT BINDING TARGET: The finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target ${ZINE_TARGET_PRINT_PAGES} printable pages rather than 8. Do not add empty padding pages. Add useful length inside the text: opening and proposition should each be 190-260 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages; each section body should be 520-680 visible characters for CJK/Thai/Japanese or 340-460 words for Latin-script languages; each protocol body should be 90-130 visible characters for CJK/Thai/Japanese or 70-100 words for Latin-script languages. Extra length must add evidence reading, comparison, caveat, counter-evidence, or future research direction, never filler.`;
+  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, force a ${ZINE_TARGET_PRINT_PAGES}-printable-page target rather than 8. Do not add empty padding pages. Add useful length inside the text: opening and proposition should each be 190-260 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages; each section body should be 520-680 visible characters for CJK/Thai/Japanese or 340-460 words for Latin-script languages; each protocol body should be 90-130 visible characters for CJK/Thai/Japanese or 70-100 words for Latin-script languages. Extra length must add evidence reading, comparison, caveat, counter-evidence, or future research direction, never filler.`;
 }
 
 function progressCopy(language: AssociationZineLanguage) {
@@ -695,7 +695,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
         deepReadObservations: parsedUser.deepReadObservations,
         linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
       }, null, 2),
-      1400,
+      1000,
     );
     let section = await requestSection(false);
     if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {

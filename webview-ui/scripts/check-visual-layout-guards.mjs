@@ -19,6 +19,7 @@ const peachWorld = readFileSync(join(root, "src", "world", "peachBlossomWorld.ts
 const campfireManifest = readFileSync(join(root, "public", "assets", "furniture", "MULTI_MIND_CAMPFIRE", "manifest.json"), "utf8");
 const furnitureCatalog = readFileSync(join(root, "src", "office", "layout", "furnitureCatalog.ts"), "utf8");
 const layoutSerializer = readFileSync(join(root, "src", "office", "layout", "layoutSerializer.ts"), "utf8");
+const uiSystemContract = readFileSync(join(root, "src", "ui-system.css"), "utf8");
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
@@ -73,8 +74,13 @@ const checks = [
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
-  ["Zine generation targets 8-page print signatures", /ZINE_PRINT_PAGE_MULTIPLE\s*=\s*8/.test(generator) && /ZINE_TARGET_PRINT_PAGES\s*=\s*16/.test(generator) && /printBindingLengthInstruction[\s\S]*PRINT BINDING TARGET[\s\S]*target \$\{ZINE_TARGET_PRINT_PAGES\} printable pages/.test(generator)],
+  ["Zine generation targets 8-page print signatures", /ZINE_PRINT_PAGE_MULTIPLE\s*=\s*8/.test(generator) && /ZINE_TARGET_PRINT_PAGES\s*=\s*16/.test(generator) && /printBindingLengthInstruction[\s\S]*PRINT BINDING TARGET[\s\S]*force a \$\{ZINE_TARGET_PRINT_PAGES\}-printable-page target/.test(generator)],
   ["Zine section prose expands for print binding", /body 必須符合 PRINT BINDING TARGET 的 section body 長度/.test(generator) && /printBinding:[\s\S]*targetPrintPages/.test(generator)],
+  ["DeepSeek zine section tokens stay within proxy limit", !/requestSection[\s\S]*,\s*1400\s*,/.test(generator) && /requestSection[\s\S]*,\s*1000\s*,/.test(generator)],
+  ["Furniture footprints block movement fully", /function getBlockedTiles[\s\S]*for \(let dr = 0; dr < entry\.footprintH; dr\+\+\)[\s\S]*tiles\.add\(key\)/.test(layoutSerializer) && !/function getBlockedTiles[\s\S]*dr < bgRows/.test(layoutSerializer)],
+  ["Talk prompt uses compact name-tag scale", /mobile-talk-prompt--compact/.test(app) && /mobile-talk-prompt\.mobile-talk-prompt--compact[\s\S]*border-radius:\s*999px/.test(uiSystemContract)],
+  ["Dialogue avatars share one frame size", /rpg-dialogue-avatar-frame/.test(app) && /rpg-dialogue-avatar-frame[\s\S]*width:\s*92px[\s\S]*height:\s*174px/.test(uiSystemContract)],
+  ["Dialogue input matches body size", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*font-size:\s*var\(--ui-type-body\)/.test(uiSystemContract)],
   ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /\{editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],

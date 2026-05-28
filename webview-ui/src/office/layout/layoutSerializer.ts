@@ -98,8 +98,7 @@ export function layoutToFurnitureInstances(furniture: PlacedFurniture[]): Furnit
   return instances;
 }
 
-/** Get all tiles blocked by furniture footprints, optionally excluding a set of tiles.
- *  Skips top backgroundTiles rows so characters can walk through them. */
+/** Get all tiles blocked by furniture footprints, optionally excluding a set of tiles. */
 export function getBlockedTiles(
   furniture: PlacedFurniture[],
   excludeTiles?: Set<string>,
@@ -108,9 +107,7 @@ export function getBlockedTiles(
   for (const item of furniture) {
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
-    const bgRows = entry.backgroundTiles || 0;
     for (let dr = 0; dr < entry.footprintH; dr++) {
-      if (dr < bgRows) continue; // skip background rows — characters can walk through
       for (let dc = 0; dc < entry.footprintW; dc++) {
         const key = `${item.col + dc},${item.row + dr}`;
         if (excludeTiles && excludeTiles.has(key)) continue;
@@ -121,7 +118,7 @@ export function getBlockedTiles(
   return tiles;
 }
 
-/** Get tiles blocked for placement purposes — skips top backgroundTiles rows per item */
+/** Get tiles blocked for placement purposes. */
 export function getPlacementBlockedTiles(
   furniture: PlacedFurniture[],
   excludeUid?: string,
@@ -131,9 +128,7 @@ export function getPlacementBlockedTiles(
     if (item.uid === excludeUid) continue;
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
-    const bgRows = entry.backgroundTiles || 0;
     for (let dr = 0; dr < entry.footprintH; dr++) {
-      if (dr < bgRows) continue; // skip background rows
       for (let dc = 0; dc < entry.footprintW; dc++) {
         tiles.add(`${item.col + dc},${item.row + dr}`);
       }
