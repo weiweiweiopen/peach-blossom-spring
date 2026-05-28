@@ -33,7 +33,7 @@ const FRAME_COUNT = 22;
 function makeExpressionFrames(expression: ThrongletExpressionType): string[] {
   return Array.from(
     { length: FRAME_COUNT },
-    (_item, index) => `/assets/thronglets/pet/${expression}/pet-${expression}-${index.toString().padStart(2, '0')}.png`,
+    (_item, index) => `assets/thronglets/pet/${expression}/pet-${expression}-${index.toString().padStart(2, '0')}.png`,
   );
 }
 

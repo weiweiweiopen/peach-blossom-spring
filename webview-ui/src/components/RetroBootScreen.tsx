@@ -13,13 +13,14 @@ interface RetroBootScreenProps {
 
 function PixelPetSprite({ role }: { role: HomePetRole }) {
   const slug = homePetSlug(role.label);
+  const src = `assets/thronglets/home-pets/${slug}/${slug}--happy.png`;
 
   return (
     <div
       className="retro-pet"
       aria-label={role.label}
       title={role.label}
-      style={{ backgroundImage: `url(/assets/thronglets/home-pets/${slug}/${slug}--happy.png)` }}
+      style={{ backgroundImage: `url(${src})` }}
     />
   );
 }
