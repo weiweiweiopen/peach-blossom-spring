@@ -267,7 +267,11 @@ export async function initBrowserMock(): Promise<void> {
       window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
     }
   }
-  const compactEditorLayout = editorPreview ? createCompactEditorLayout() : null;
+  const compactEditorLayout = editorPreview
+    ? await fetch(`${base}assets/default-layout-editor.json`)
+        .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
+        .catch(() => createCompactEditorLayout())
+    : null;
   const editorLayout = parsedEditorLayout?.layoutRevision === compactEditorLayout?.layoutRevision
     ? parsedEditorLayout
     : compactEditorLayout;
