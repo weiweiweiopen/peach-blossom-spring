@@ -87,7 +87,40 @@ function languageInstruction(language: AssociationZineLanguage): string {
 }
 
 function printBindingLengthInstruction(): string {
-  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target ${ZINE_TARGET_PRINT_PAGES} printable pages by making the original four-section article denser, not by adding filler pages. Do not add empty padding pages. Keep exactly four main sections. Only change length: opening and proposition should each be 230-320 visible characters for CJK/Thai/Japanese or 150-210 words for Latin-script languages; each section body should be 900-1150 visible characters for CJK/Thai/Japanese or 560-720 words for Latin-script languages; each protocol body should be 220-320 visible characters for CJK/Thai/Japanese or 140-210 words for Latin-script languages.`;
+  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count should land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target approximately ${ZINE_TARGET_PRINT_PAGES} printable pages by making the original four-section article substantial, not by adding filler pages. Do not add empty padding pages. Keep exactly four main sections. Generate the main article so it naturally fills about 14-15 A4 pages before the Reading materials appendix; the Reading materials appendix is the only final page-count tuning tool. Only change quantity and length, not the semantic jobs: opening and proposition should each be 200-280 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages; each section body should be 780-980 visible characters for CJK/Thai/Japanese or 450-580 words for Latin-script languages; each protocol body should be 160-240 visible characters for CJK/Thai/Japanese or 90-140 words for Latin-script languages.`;
+}
+
+function zinePrintCalibrationScript(): string {
+  return `<script>
+(() => {
+  const targetPages = ${ZINE_TARGET_PRINT_PAGES};
+  const pageHeightPx = 1047;
+  const modes = ["trim", "compact", "standard", "expanded", "max"];
+  const estimatePages = () => Math.ceil(Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) / pageHeightPx);
+  const setMode = (mode) => {
+    const materials = document.querySelector(".pbs-reading-materials");
+    if (materials) materials.setAttribute("data-pbs-materials-mode", mode);
+    document.documentElement.setAttribute("data-pbs-zine-estimated-pages", String(estimatePages()));
+  };
+  const calibrate = () => {
+    const materials = document.querySelector(".pbs-reading-materials");
+    if (!materials) return;
+    let best = { mode: "standard", delta: Number.POSITIVE_INFINITY, pages: 0 };
+    for (const mode of modes) {
+      setMode(mode);
+      const pages = estimatePages();
+      const delta = Math.abs(targetPages - pages);
+      if (delta < best.delta || (delta === best.delta && pages === targetPages)) best = { mode, delta, pages };
+      if (pages === targetPages) break;
+    }
+    setMode(best.mode);
+    materials.setAttribute("data-pbs-materials-calibrated-pages", String(best.pages));
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", calibrate, { once: true });
+  else requestAnimationFrame(calibrate);
+  window.addEventListener("beforeprint", calibrate);
+})();
+</script>`;
 }
 
 function progressCopy(language: AssociationZineLanguage) {
@@ -192,6 +225,14 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   .body, .refs { padding: 3.5mm !important; }
   h1 { font-size: 18pt !important; line-height: 1.12 !important; overflow-wrap: anywhere !important; }
   .lead, .body, .refs { font-size: 9.2pt !important; line-height: 1.36 !important; }
+  .pbs-reading-materials { --pbs-materials-font: 9.2pt; --pbs-materials-line: 1.42; --pbs-materials-row-padding: 2.2mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="trim"] { --pbs-materials-font: 7.4pt; --pbs-materials-line: 1.16; --pbs-materials-row-padding: 0.8mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="compact"] { --pbs-materials-font: 8.2pt; --pbs-materials-line: 1.24; --pbs-materials-row-padding: 1.3mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="expanded"] { --pbs-materials-font: 10.4pt; --pbs-materials-line: 1.58; --pbs-materials-row-padding: 3.2mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="max"] { --pbs-materials-font: 11.2pt; --pbs-materials-line: 1.75; --pbs-materials-row-padding: 4mm; }
+  .pbs-reading-materials ol, .pbs-reading-materials li, .pbs-reading-materials p, .pbs-reading-materials span { font-size: var(--pbs-materials-font) !important; line-height: var(--pbs-materials-line) !important; }
+  .pbs-reading-materials li { padding-top: var(--pbs-materials-row-padding) !important; padding-bottom: var(--pbs-materials-row-padding) !important; }
+  .pbs-reading-materials[data-pbs-materials-mode="trim"] p { display: none !important; }
   html[lang="zh-Hant"] h1 { font-size: 22pt !important; line-height: 1.18 !important; }
   html[lang="zh-Hant"] .lead, html[lang="zh-Hant"] .body, html[lang="zh-Hant"] .refs { font-size: 11pt !important; line-height: 1.58 !important; }
   html[lang="zh-Hant"] .label { font-size: 10.5pt !important; line-height: 1.32 !important; }
@@ -201,7 +242,7 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   .body p, .refs p, .refs li { orphans: 2; widows: 2; }
   a { color: inherit !important; text-decoration: none !important; }
 }
-</style></head><body>${fragment}</body></html>`;
+</style></head><body>${fragment}${zinePrintCalibrationScript()}</body></html>`;
 }
 
 function compactText(text: unknown, max = 260): string {
@@ -850,7 +891,7 @@ function publicReadingCards(workflow: Workflow): Card[] {
     if (!card.url || byUrl.has(card.url)) continue;
     byUrl.set(card.url, card);
   }
-  return Array.from(byUrl.values()).slice(0, 8);
+  return Array.from(byUrl.values()).slice(0, 12);
 }
 
 function renderReadingMaterialsSection(workflow: Workflow, language: AssociationZineLanguage, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
@@ -866,7 +907,7 @@ function renderReadingMaterialsSection(workflow: Workflow, language: Association
       ${description ? `<p style="margin:8px 0 0;color:#243b3d;">${escapeHtml(description)}</p>` : ""}
     </li>`;
   }).join("");
-  return `<section class="page pbs-reading-materials" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
+  return `<section class="page pbs-reading-materials" data-pbs-materials-mode="standard" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #bac3d9;overflow-wrap:anywhere;">
       <div class="titleBlock" style="border:3px solid #111;background:#fffdf6;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #bac3d9;"><h1 style="margin:0;font-size:clamp(28px,4vw,48px);line-height:1.12;">${escapeHtml(copy.title)}</h1><p class="lead" style="margin:12px 0 0;font-size:clamp(17px,2vw,24px);line-height:1.45;">${escapeHtml(copy.intro)}</p></div>
       <ol style="margin:0;padding:0;font-size:clamp(16px,1.8vw,22px);line-height:1.45;">${rows}</ol>

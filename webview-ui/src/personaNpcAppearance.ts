@@ -22,7 +22,7 @@ const PERSONA_NPC_APPEARANCE: Record<string, PersonaNpcAppearance> = {
   'svenja-keune': { gender: 'female', palette: 12, hueShift: 0 },
   'ted-hung': { gender: 'male', palette: 13, hueShift: 0 },
   'tincuta-heinzel': { gender: 'female', palette: 14, hueShift: 0 },
-  abao: { gender: 'female', palette: 9, hueShift: 0 },
+  abao: { gender: 'female', palette: 11, hueShift: 0 },
 };
 
 export function getPersonaNpcAppearance(personaId: string, fallbackIndex = 0): PersonaNpcAppearance {

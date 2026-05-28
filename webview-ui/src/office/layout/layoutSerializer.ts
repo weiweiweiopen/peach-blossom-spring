@@ -107,7 +107,8 @@ export function getBlockedTiles(
   for (const item of furniture) {
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
-    for (let dr = 0; dr < entry.footprintH; dr++) {
+    const bgRows = entry.backgroundTiles ?? 0;
+    for (let dr = bgRows; dr < entry.footprintH; dr++) {
       for (let dc = 0; dc < entry.footprintW; dc++) {
         const key = `${item.col + dc},${item.row + dr}`;
         if (excludeTiles && excludeTiles.has(key)) continue;

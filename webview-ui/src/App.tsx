@@ -154,13 +154,15 @@ function qaPlayerProfile(language: LanguageCode): PlayerProfile {
 
 const PLAYER_ID = 0;
 const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
-const CAMPFIRE_INTERACTION_RADIUS_TILES = 3;
+const CAMPFIRE_INTERACTION_RADIUS_TILES = 1;
+const PLAYER_SPRINT_SPEED_MULTIPLIER = 2.17;
+const PET_WINDOWS_ENABLED = false;
 const CENTRAL_COMPUTER_TILE = {
   col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
 const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
-const CAMPFIRE_DIALOGUE_NAME = "多重心智的火燄";
+const CAMPFIRE_DIALOGUE_NAME = "多重心智自我火燄（The Multi-Minds Self Campfire）";
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
   "MULTI_MIND_CAMPFIRE_2",
@@ -187,6 +189,11 @@ function campfireBoundsFromLayout(layout: OfficeLayout) {
     w: CENTRAL_COMPUTER_FOOTPRINT.w,
     h: CENTRAL_COMPUTER_FOOTPRINT.h,
   };
+}
+
+function campfireStoneBoundsFromLayout(layout: OfficeLayout) {
+  const bounds = campfireBoundsFromLayout(layout);
+  return { col: bounds.col, row: bounds.row + bounds.h - 1, w: bounds.w, h: 1 };
 }
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
@@ -695,7 +702,7 @@ function ComputerDialogueAvatar() {
         <img
           src={src}
           alt=""
-          className="block h-20 w-20 object-contain"
+          className="block h-36 w-36 max-w-none object-contain"
           style={{ imageRendering: "pixelated" }}
         />
       </div>
@@ -1811,8 +1818,8 @@ function App() {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
     const bounds = editorEntryEnabled
-      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
-      : campfireBoundsFromLayout(officeState.getLayout());
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+      : campfireStoneBoundsFromLayout(officeState.getLayout());
     const nearestCol = Math.max(bounds.col, Math.min(bounds.col + bounds.w - 1, player.tileCol));
     const nearestRow = Math.max(bounds.row, Math.min(bounds.row + bounds.h - 1, player.tileRow));
     const dist = Math.abs(player.tileCol - nearestCol) + Math.abs(player.tileRow - nearestRow);
@@ -1821,13 +1828,13 @@ function App() {
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
     const bounds = editorEntryEnabled
-      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
-      : campfireBoundsFromLayout(officeState.getLayout());
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+      : campfireStoneBoundsFromLayout(officeState.getLayout());
     return (
-      col >= bounds.col - CAMPFIRE_INTERACTION_RADIUS_TILES &&
-      col < bounds.col + bounds.w + CAMPFIRE_INTERACTION_RADIUS_TILES &&
-      row >= bounds.row - CAMPFIRE_INTERACTION_RADIUS_TILES &&
-      row < bounds.row + bounds.h + CAMPFIRE_INTERACTION_RADIUS_TILES
+      col >= bounds.col &&
+      col < bounds.col + bounds.w &&
+      row >= bounds.row &&
+      row < bounds.row + bounds.h
     );
   }, [editorEntryEnabled, officeState]);
 
@@ -2458,12 +2465,12 @@ function App() {
       raf = requestAnimationFrame(tick);
       // Re-apply speed multiplier every frame so sprint actually takes effect during the whole hold.
       isSprint = sprintHeld;
-      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? 3.1 : 1);
+      officeState.setPlayerSpeedMultiplier(PLAYER_ID, isSprint ? PLAYER_SPRINT_SPEED_MULTIPLIER : 1);
 
       const ch = officeState.characters.get(PLAYER_ID);
       if (!ch) return;
       // Only push another tile when the queue is short, so direction changes feel responsive.
-      const targetMaxQueue = isSprint ? 1 : 0;
+      const targetMaxQueue = 1;
       if (ch.path.length > targetMaxQueue) return;
       if (heldKeys.size === 0) return;
       const now = performance.now();
@@ -2480,7 +2487,7 @@ function App() {
       const moved = stepOnce(dir);
       if (moved) {
         setPlayerMoveTick((t) => t + 1);
-        nextRepeatAt = now + (isSprint ? 24 : 170);
+        nextRepeatAt = now + (isSprint ? 24 : 70);
       }
     };
     raf = requestAnimationFrame(tick);
@@ -2527,10 +2534,10 @@ function App() {
         heldKeys.add(dir);
         if (fresh) {
           // Immediate one-tile push for tap responsiveness.
-          officeState.setPlayerSpeedMultiplier(PLAYER_ID, sprintHeld ? 3.1 : 1);
+          officeState.setPlayerSpeedMultiplier(PLAYER_ID, sprintHeld ? PLAYER_SPRINT_SPEED_MULTIPLIER : 1);
           if (stepOnce(dir)) {
             setPlayerMoveTick((t) => t + 1);
-            nextRepeatAt = performance.now() + (sprintHeld ? 24 : 190);
+            nextRepeatAt = performance.now() + (sprintHeld ? 24 : 70);
           }
         }
       }
@@ -2581,8 +2588,8 @@ function App() {
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
         const computerTile = editorEntryEnabled
-          ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
-          : campfireBoundsFromLayout(officeState.getLayout());
+          ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+          : campfireStoneBoundsFromLayout(officeState.getLayout());
         const approachTile = findNearestApproachableTile(
           officeState,
           computerTile.col + Math.floor(computerTile.w / 2),
@@ -2835,8 +2842,8 @@ function App() {
   const computerPromptPosition = (() => {
     if (!isNearCentralComputer || !containerRef.current) return null;
     const computerTile = editorEntryEnabled
-      ? { ...COMPACT_EDITOR_CAMPFIRE_TILE, ...CENTRAL_COMPUTER_FOOTPRINT }
-      : campfireBoundsFromLayout(officeState.getLayout());
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+      : campfireStoneBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
@@ -3360,7 +3367,7 @@ function App() {
               </button>
             )}
 
-          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => (
+          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && !promptPosition && !computerPromptPosition && nameTags.map((tag) => (
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
@@ -3538,6 +3545,7 @@ function App() {
           )}
 
           {simSnapshot &&
+            PET_WINDOWS_ENABLED &&
             playerProfile &&
             appMode === "interactive" &&
             !editorEntryEnabled &&
@@ -3684,7 +3692,7 @@ function App() {
               </section>
             )}
 
-          {(selectedDispatchPet || selectedNpcInfo) && (
+          {((PET_WINDOWS_ENABLED && selectedDispatchPet) || selectedNpcInfo) && (
             <section
               className="question-response-panel info-card pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7"
               data-no-mobile-drag="true"
@@ -3699,7 +3707,7 @@ function App() {
               >
                 X
               </button>
-              {selectedDispatchPet
+              {PET_WINDOWS_ENABLED && selectedDispatchPet
                 ? (() => {
                     const appearance = generateQuestionPet(
                       selectedDispatchPet.question,
@@ -3818,7 +3826,7 @@ function App() {
             </section>
           )}
 
-          {shouldShowMobileStatsBar && (
+          {PET_WINDOWS_ENABLED && shouldShowMobileStatsBar && (
             <button
               className="mobile-stats-bar"
               type="button"
@@ -3882,7 +3890,7 @@ function App() {
             </section>
           )}
 
-          {!editorEntryEnabled && selectedPet && (
+          {PET_WINDOWS_ENABLED && !editorEntryEnabled && selectedPet && (
             <section
               className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
                 isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""

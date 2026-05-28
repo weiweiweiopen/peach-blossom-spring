@@ -23,6 +23,7 @@ const uiSystemContract = readFileSync(join(root, "src", "ui-system.css"), "utf8"
 const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
 const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
+const wikiSearch = readFileSync(join(root, "src", "wikiSearch.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
 const editorialPrompt = readFileSync(join(root, "prompts", "association-editorial-system.md"), "utf8");
 
@@ -74,25 +75,30 @@ const checks = [
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
-  ["Zine generation targets 8-page print signatures", /ZINE_PRINT_PAGE_MULTIPLE\s*=\s*8/.test(generator) && /ZINE_TARGET_PRINT_PAGES\s*=\s*16/.test(generator) && /printBindingLengthInstruction[\s\S]*target \$\{ZINE_TARGET_PRINT_PAGES\} printable pages by making the original four-section article denser/.test(generator)],
+  ["Zine generation targets 8-page print signatures", /ZINE_PRINT_PAGE_MULTIPLE\s*=\s*8/.test(generator) && /ZINE_TARGET_PRINT_PAGES\s*=\s*16/.test(generator) && /printBindingLengthInstruction[\s\S]*target approximately \$\{ZINE_TARGET_PRINT_PAGES\} printable pages/.test(generator)],
+  ["Zine reading materials are final page tuner", /function zinePrintCalibrationScript[\s\S]*data-pbs-materials-mode[\s\S]*beforeprint/.test(generator) && /Reading materials appendix is the only final page-count tuning tool/.test(generator)],
   ["Zine section prose expands for print binding", /body 必須符合 PRINT BINDING TARGET 的 section body 長度/.test(generator) && /printBinding:[\s\S]*targetPrintPages/.test(generator)],
   ["Zine renderer keeps coherent four-section article", /sections = artifact\.sections\.slice\(0, 4\)/.test(template) && /sections = Array\.isArray\(data\.sections\) \? data\.sections\.slice\(0, 4\)/.test(generator) && /for \(let index = 0; index < 4; index \+= 1\)/.test(generator)],
   ["Zine print avoids fake fixed-height pages", !/height:\s*257mm/.test(generator) && !/page-break-after:\s*always/.test(generator) && /\.page \{ break-after: auto !important; page-break-after: auto !important/.test(generator)],
   ["Zine trace remains one appendix page", /data-folio="retrieval-trace"/.test(generator) && !/retrieval-trace-a|retrieval-trace-b|tracePage\(/.test(generator)],
   ["Zine section title is not duplicated", /<header class="top"><span class="no">\$\{String\(index \+ 2\)\.padStart\(2, "0"\)\}<\/span><span class="label">\$\{escapeHtml\(section\.title\)\}<\/span><\/header>/.test(template) && !/sectionPages[\s\S]*<h1>\$\{kineticTitle\(section\.title/.test(template)],
   ["DeepSeek zine section tokens stay within proxy limit", !/requestSection[\s\S]*,\s*1400\s*,/.test(generator) && /requestSection[\s\S]*,\s*1000\s*,/.test(generator)],
-  ["Furniture footprints block movement fully", /function getBlockedTiles[\s\S]*for \(let dr = 0; dr < entry\.footprintH; dr\+\+\)[\s\S]*tiles\.add\(key\)/.test(layoutSerializer) && !/function getBlockedTiles[\s\S]*dr < bgRows/.test(layoutSerializer)],
+  ["Furniture collision respects visual background rows", /function getBlockedTiles[\s\S]*const bgRows = entry\.backgroundTiles \?\? 0[\s\S]*for \(let dr = bgRows; dr < entry\.footprintH; dr\+\+\)/.test(layoutSerializer)],
   ["Talk prompt uses compact name-tag scale", /mobile-talk-prompt--compact/.test(app) && /mobile-talk-prompt\.mobile-talk-prompt--compact[\s\S]*border-radius:\s*999px/.test(uiSystemContract)],
   ["Dialogue avatars share one frame size", /rpg-dialogue-avatar-frame/.test(app) && /rpg-dialogue-avatar-frame[\s\S]*width:\s*92px[\s\S]*height:\s*174px/.test(uiSystemContract)],
   ["Dialogue input matches body size", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*font-size:\s*var\(--ui-type-body\)/.test(uiSystemContract)],
   ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /\{editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
-  ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /!editorEntryEnabled && selectedPet/.test(app)],
+  ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /PET_WINDOWS_ENABLED && !editorEntryEnabled && selectedPet/.test(app)],
   ["Editor mode uses compact 40x40 layout", /COMPACT_EDITOR_MAP_SIZE = 40/.test(peachWorld) && /function createCompactEditorLayout[\s\S]*const cols = COMPACT_EDITOR_MAP_SIZE[\s\S]*const rows = COMPACT_EDITOR_MAP_SIZE/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
   ["Editor compact room keeps only house and campfire furniture", /addFurniture\(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE'/.test(peachWorld) && /addFurniture\(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE\.col/.test(peachWorld) && !/function createCompactEditorLayout[\s\S]*CRAFTPIX_INTERIOR_21/.test(peachWorld)],
   ["Campfire is animated collidable 4x4 wiki entry", /MULTI_MIND_CAMPFIRE_6/.test(campfireManifest) && /"footprintW": 4/.test(campfireManifest) && /"footprintH": 4/.test(campfireManifest) && /CAMPFIRE_DIALOGUE_NAME/.test(app) && /interactiveFurnitureTypes/.test(officeCanvas) && /getAnimationFrames\(item\.type\)/.test(officeState)],
+  ["Campfire interaction uses bottom stone row", /function campfireStoneBoundsFromLayout[\s\S]*row: bounds\.row \+ bounds\.h - 1[\s\S]*isCentralComputerTile/.test(app)],
   ["CraftPix large assets receive background collision rows", /function normalizedBackgroundTiles[\s\S]*asset\.id\.startsWith\('CRAFTPIX_'\)[\s\S]*asset\.footprintH - 1/.test(furnitureCatalog) && /let zY = \(item\.row \+ entry\.footprintH\) \* TILE_SIZE/.test(layoutSerializer)],
+  ["Trees keep full collision footprint", /function normalizedBackgroundTiles[\s\S]*tree[\s\S]*return 0/.test(furnitureCatalog)],
+  ["SGMK query boosts SGMK cards", /const wantsSgmk/.test(wikiSearch) && /family === 'SGMK' \? 12 : 0/.test(wikiSearch)],
+  ["Keyboard movement uses smooth repeat and reduced sprint", /PLAYER_SPRINT_SPEED_MULTIPLIER = 2\.17/.test(app) && /const targetMaxQueue = 1/.test(app) && /isSprint \? 24 : 70/.test(app)],
   ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];

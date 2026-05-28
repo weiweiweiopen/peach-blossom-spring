@@ -177,6 +177,7 @@ function createThaiTempleCatalogEntry(): CatalogEntryWithCategory {
 
 function normalizedBackgroundTiles(asset: LoadedAssetData['catalog'][number]): number {
   if (asset.backgroundTiles && asset.backgroundTiles > 0) return asset.backgroundTiles;
+  if (/tree/i.test(asset.label) || /tree/i.test(asset.id)) return 0;
   if (!asset.id.startsWith('CRAFTPIX_')) return 0;
   if (asset.footprintH <= 1) return 0;
   return Math.max(0, asset.footprintH - 1);

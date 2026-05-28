@@ -69,7 +69,6 @@ function scoreText(queryTokens: string[], title: string, body: string): number {
 
 function cardToResult(card: SourceCard, score: number): WikiSearchResult | null {
   const family = sourceFamily(card);
-  if (family === 'Hackteria') return null;
   if (!card.url) return null;
   return {
     title: card.title,
@@ -81,7 +80,7 @@ function cardToResult(card: SourceCard, score: number): WikiSearchResult | null 
 }
 
 function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
-  if (!link.url || /hackteria/i.test(`${link.title} ${link.url}`)) return null;
+  if (!link.url) return null;
   return {
     title: link.title,
     url: link.url,
@@ -94,8 +93,13 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
 export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
   const queryTokens = tokens(query);
   if (queryTokens.length === 0) return [];
+  const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch/i.test(query);
   const corpusResults = daydreamCorpus.cards
-    .map((card) => ({ card, score: scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`) }))
+    .map((card) => {
+      const family = sourceFamily(card);
+      const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
+      return { card, score: baseScore + (wantsSgmk && family === 'SGMK' ? 12 : 0) };
+    })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))
     .filter((item): item is WikiSearchResult => Boolean(item));
