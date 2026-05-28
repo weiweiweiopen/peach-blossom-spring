@@ -90,8 +90,6 @@ import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import {
   COMPACT_EDITOR_CAMPFIRE_TILE,
   compactEditorNpcPlacements,
-  createNextTinyRoomLayout,
-  createCompactEditorLayout,
   NEXT_ROOM_GRID_SIZE,
   NEXT_ROOM_MAP_PADDING,
   nextTinyRoomNpcPlacements,
@@ -1835,7 +1833,6 @@ function App() {
   useEffect(() => {
     if (!layoutReady || !playerProfile) return;
     if (!worldInitialized) {
-      officeState.rebuildFromLayout(editorEntryEnabled ? createCompactEditorLayout() : createNextTinyRoomLayout());
       setWorldInitialized(true);
     }
     if (appMode === "interactive") {
