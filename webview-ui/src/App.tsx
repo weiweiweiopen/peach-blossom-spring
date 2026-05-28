@@ -698,12 +698,12 @@ function ComputerDialogueAvatar() {
   const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="rpg-dialogue-avatar-frame border border-border bg-bg/80 p-2 flex items-center justify-center overflow-hidden" aria-hidden="true">
+      <div className="rpg-dialogue-avatar-frame rpg-dialogue-avatar-frame--campfire border border-border bg-bg/80 p-2 flex items-center justify-center overflow-hidden" aria-hidden="true">
         <img
           src={src}
           alt=""
-          className="block h-36 w-36 max-w-none object-contain"
-          style={{ imageRendering: "pixelated" }}
+          className="block max-w-none object-contain"
+          style={{ imageRendering: "pixelated", width: 184, height: 184 }}
         />
       </div>
       <span className="max-w-[110px] truncate text-xs text-text-muted">{CAMPFIRE_DIALOGUE_NAME}</span>
@@ -1493,6 +1493,7 @@ function App() {
   >([]);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
+  const [zineQueryDraft, setZineQueryDraft] = useState("");
   const [associationProgress, setAssociationProgress] = useState("Loading...");
   const [splitPanelAnchor, setSplitPanelAnchor] = useState<
     { kind: "npc"; id: number } | null
@@ -2927,6 +2928,7 @@ function App() {
 
   const closeSplitPanel = useCallback(() => {
     setSplitPanel(null);
+    setZineQueryDraft("");
     setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
@@ -2941,6 +2943,11 @@ function App() {
     const requestKey = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const loadingTitle = "Association";
     const query = request.query || request.seed || "";
+    if (splitPanel?.kind === "finalDocument" && splitPanel.url) {
+      URL.revokeObjectURL(splitPanel.url);
+      finalDocumentObjectUrlsRef.current.delete(splitPanel.url);
+    }
+    setZineQueryDraft(query);
     setAssociationProgress("Association...");
     setSplitPanel({
       kind: "finalDocument",
@@ -4037,6 +4044,20 @@ function App() {
                   anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,
                 })
               : undefined;
+            const regenerateAssociationZine = splitPanel.kind === "finalDocument"
+              ? (event: FormEvent<HTMLFormElement>) => {
+                  event.preventDefault();
+                  const query = zineQueryDraft.trim();
+                  if (!query || splitPanel.isGenerating) return;
+                  void openAssociationZineSplit({
+                    query,
+                    seed: query,
+                    petRole: splitPanel.petRole,
+                    language: splitPanelLanguage,
+                    anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,
+                  });
+                }
+              : undefined;
             return <>
           <div className="world-split-toolbar">
             <div>
@@ -4058,6 +4079,21 @@ function App() {
               </button>
             </div>
           </div>
+          {splitPanel.kind === "finalDocument" && regenerateAssociationZine && (
+            <form className="world-split-zine-regenerate" onSubmit={regenerateAssociationZine}>
+              <input
+                type="text"
+                value={zineQueryDraft}
+                onChange={(event) => setZineQueryDraft(event.target.value)}
+                placeholder="換一個問題重新生成小誌"
+                disabled={Boolean(splitPanel.isGenerating)}
+                aria-label="換一個問題重新生成小誌"
+              />
+              <button className="pbs-frame-button" type="submit" disabled={Boolean(splitPanel.isGenerating) || !zineQueryDraft.trim()}>
+                重新生成
+              </button>
+            </form>
+          )}
           <div className="world-split-content">
             {splitPanel.kind === "dialogue.openWiki" ? (
               <div className="world-wiki-content">

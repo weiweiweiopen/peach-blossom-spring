@@ -101,6 +101,9 @@ const checks = [
   ["Keyboard movement uses smooth repeat and reduced sprint", /PLAYER_SPRINT_SPEED_MULTIPLIER = 2\.17/.test(app) && /const targetMaxQueue = 1/.test(app) && /isSprint \? 24 : 70/.test(app)],
   ["LLM wiki corpus is lazy-loaded after boot", !/import \{ generateBrowserAssociationZine \}/.test(app) && !/import \{ searchWikiPages/.test(app) && /await import\("\.\/daydream\/browserAssociationGenerator\.js"\)/.test(app) && /await import\("\.\/wikiSearch\.js"\)/.test(app)],
   ["Zine repeated sections warn instead of aborting", /Association zine repeated section warning/.test(generator) && !/LLM repeated section body after rewrite/.test(generator)],
+  ["Zine panel can regenerate without reopening campfire", /world-split-zine-regenerate/.test(app) && /setZineQueryDraft\(query\)/.test(app) && /openAssociationZineSplit\(\{[\s\S]*query,[\s\S]*seed: query/.test(app)],
+  ["Campfire avatar uses dedicated enlarged thumbnail", /rpg-dialogue-avatar-frame--campfire/.test(app) && /rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*184px/.test(uiSystem)],
+  ["DeepSeek zine timeout allows slow first response", /DEEPSEEK_REQUEST_TIMEOUT_MS\s*=\s*120000/.test(generator) && /EDITORIAL_WRITER_TIMEOUT_MS\s*=\s*300000/.test(generator)],
   ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
