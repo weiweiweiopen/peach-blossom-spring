@@ -198,6 +198,7 @@ function campfireStoneBoundsFromLayout(layout: OfficeLayout) {
   return { col: bounds.col, row: bounds.row + bounds.h - 1, w: bounds.w, h: 1 };
 }
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
+const MULTIPLAYER_REENCOUNTER_RESET_TILES = 3;
 const MULTIPLAYER_STALE_TIMEOUT_MS = 12000;
 const COMMUNITY_NEWS_LINKS = [
   {
@@ -2030,21 +2031,42 @@ function App() {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return;
 
+    if (encounterPanel) {
+      const partner = remotePresences.get(encounterPanel.partner.playerId);
+      const distance = partner ? Math.hypot(player.tileCol - partner.x, player.tileRow - partner.y) : Number.POSITIVE_INFINITY;
+      if (distance > MULTIPLAYER_PROXIMITY_DISTANCE_TILES) {
+        setDismissedVideoEncounterId(encounterPanel.partner.playerId);
+        setEncounterPanel(null);
+      }
+      setVideoEncounter(null);
+      return;
+    }
+
+    if (dismissedVideoEncounterId) {
+      const dismissed = remotePresences.get(dismissedVideoEncounterId);
+      const distance = dismissed ? Math.hypot(player.tileCol - dismissed.x, player.tileRow - dismissed.y) : Number.POSITIVE_INFINITY;
+      if (distance > MULTIPLAYER_REENCOUNTER_RESET_TILES) {
+        setDismissedVideoEncounterId(null);
+      } else {
+        setVideoEncounter(null);
+        return;
+      }
+    }
+
     let nearest: MultiplayerPresence | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
     for (const presence of remotePresences.values()) {
-      if (presence.playerId === dismissedVideoEncounterId) continue;
       const distance = Math.hypot(player.tileCol - presence.x, player.tileRow - presence.y);
       if (distance <= MULTIPLAYER_PROXIMITY_DISTANCE_TILES && distance < nearestDistance) {
         nearest = presence;
         nearestDistance = distance;
       }
     }
-    if (!nearest) setDismissedVideoEncounterId(null);
     setVideoEncounter(nearest);
   }, [
     appMode,
     dismissedVideoEncounterId,
+    encounterPanel,
     multiplayerConfig,
     officeState,
     playerMoveTick,
@@ -2064,6 +2086,11 @@ function App() {
     },
     [multiplayerConfig],
   );
+
+  useEffect(() => {
+    if (!videoEncounter || encounterPanel) return;
+    openEncounterPanel(videoEncounter);
+  }, [encounterPanel, openEncounterPanel, videoEncounter]);
 
   const sendChatMessage = useCallback(() => {
     if (!multiplayerConfig || !playerProfile || !encounterPanel) return;
@@ -4224,26 +4251,6 @@ function App() {
       {playerProfile && multiplayerConfig && (
         <div className="multiplayer-status-pill" data-status={multiplayerStatus}>
           MP {multiplayerStatus} · {multiplayerConfig.room}
-        </div>
-      )}
-
-      {playerProfile && multiplayerConfig && videoEncounter && !encounterPanel && (
-        <div className="video-encounter-card pbs-encounter-card" role="dialog" aria-live="polite">
-          <p>你遇見 {videoEncounter.displayName}</p>
-          <div className="video-encounter-actions pbs-encounter-actions">
-            <button type="button" onClick={() => openEncounterPanel(videoEncounter)}>
-              文字交談
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setDismissedVideoEncounterId(videoEncounter.playerId);
-                setVideoEncounter(null);
-              }}
-            >
-              Not now
-            </button>
-          </div>
         </div>
       )}
 
