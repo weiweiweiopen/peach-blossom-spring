@@ -1597,6 +1597,18 @@ html[data-language="th"],
   box-shadow: var(--shadow-pixel);
   font-size: 16px;
 }
+
+.world-resonance-notice--thought-gap {
+  max-width: min(820px, calc(100vw - 28px));
+  padding: 15px 18px;
+  color: #111;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--palette-yellow) 92%, white) 0 42%, color-mix(in srgb, var(--palette-pink) 70%, white) 42% 68%, color-mix(in srgb, var(--palette-blue) 70%, white) 68% 100%);
+  border: 4px solid #111;
+  box-shadow: 5px 5px 0 #111, 10px 10px 0 var(--palette-green);
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 900;
+}
 .field-note-input {
   color: var(--tama-ink);
   background: var(--tama-lcd);
@@ -2089,6 +2101,14 @@ html[data-language="th"],
 .world-association-low-relevance .pbs-game-button {
   grid-column: 2;
   justify-self: start;
+}
+
+.rpg-dialogue-form .pbs-game-button:disabled {
+  opacity: 0.22 !important;
+  filter: grayscale(0.75) saturate(0.35);
+  cursor: not-allowed;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #111 !important;
 }
 .world-split-toolbar {
   display: flex;

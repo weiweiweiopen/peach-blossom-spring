@@ -93,12 +93,13 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
 export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
   const queryTokens = tokens(query);
   if (queryTokens.length === 0) return [];
-  const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch/i.test(query);
+  const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino|diy\s*(?:電子|electronics?|synth|合成器)|電子合成器|合成器/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
-      return { card, score: baseScore + (wantsSgmk && family === 'SGMK' ? 12 : 0) };
+      const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
+      return { card, score: baseScore + sgmkBoost };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

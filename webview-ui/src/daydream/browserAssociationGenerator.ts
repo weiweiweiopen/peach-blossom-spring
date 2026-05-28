@@ -432,8 +432,8 @@ function sourceObservation(card: Card) {
     sourceFamily: sourceFamily(card),
     kind,
     publicRole: publicSourcePhrase(card),
-    concreteHint: materialHint(card.excerpt, 140),
-    topics: [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].slice(0, 8).join(", "),
+    concreteHint: materialHint(card.excerpt, 100),
+    topics: [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].slice(0, 5).join(", "),
     caution: "Use as a concrete observation only; do not paste raw excerpt or describe retrieval/source mechanics.",
   };
 }
@@ -443,14 +443,20 @@ function wantsMakingTutorial(query: string): boolean {
 }
 
 function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage) {
-  const candidateCards = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card));
-  const cards = candidateCards.slice(0, 7).map(sourceObservation);
-  const deepRead = workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card)).slice(0, 6).map(sourceObservation);
-  const linkedTrails = workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).slice(0, 7).map((trail) => ({
+  const wantsSgmk = wantsSgmkQuery(query);
+  const sgmkFirst = <T extends Card>(items: T[]) => wantsSgmk ? [...items].sort((a, b) => (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0)) : items;
+  const candidateCards = sgmkFirst(sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
+  const cards = candidateCards.slice(0, 5).map(sourceObservation);
+  const deepRead = sgmkFirst(workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card))).slice(0, 4).map(sourceObservation);
+  const linkedTrails = [...workflow.step1.report.linkedCards]
+    .filter((trail) => isAllowedZineCard(trail.card))
+    .sort((a, b) => wantsSgmk ? (sourceFamily(b.card) === "SGMK" ? 1 : 0) - (sourceFamily(a.card) === "SGMK" ? 1 : 0) : 0)
+    .slice(0, 4)
+    .map((trail) => ({
     from: trail.via?.map((card) => card.title).join(" → ") || "",
     to: trail.card.title,
     relation: trail.relation,
-    observation: materialHint(trail.card.excerpt, 160),
+    observation: materialHint(trail.card.excerpt, 100),
   }));
   const topics = workflow.step3.researchTopics.slice(0, 3).map((topic) => ({
     title: topic.title,
@@ -466,8 +472,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     enabledSourceFamilies: ENABLED_SOURCE_FAMILIES,
     hackteriaExcluded: false,
     wantsMakingTutorial: wantsMakingTutorial(query),
-    searchTerms: workflow.step1.report.keywords.slice(0, 12),
-    deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 12),
+    searchTerms: workflow.step1.report.keywords.slice(0, 8),
+    deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 8),
     desiredAngles: [
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
       "全文只服務同一個中心問題：先判斷材料揭露了什麼未被注意的事實、關係或矛盾，再用它組成一條連貫論點。",
@@ -494,7 +500,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
 }
 
 function withWritingStyle(user: string, writingStyle?: string): string {
-  const style = compactText(writingStyle, 1600);
+  const style = compactText(writingStyle, 700);
   if (!style) return user;
   const parsed = JSON.parse(user) as Record<string, unknown>;
   parsed.npcWritingStyle = style;
@@ -698,6 +704,25 @@ function errorClass(error: unknown, fallback = "unknown_error"): string {
   return fallback;
 }
 
+function isMessageTooLongError(error: unknown): boolean {
+  return /http_error\s*400|http_error_400|Message content is too long/i.test(errorMessage(error));
+}
+
+function compactRequestUser(user: string): string {
+  try {
+    const parsed = JSON.parse(user) as any;
+    parsed.sourceObservations = Array.isArray(parsed.sourceObservations) ? parsed.sourceObservations.slice(0, 4) : [];
+    parsed.deepReadObservations = Array.isArray(parsed.deepReadObservations) ? parsed.deepReadObservations.slice(0, 3) : [];
+    parsed.linkedEvidenceTrails = Array.isArray(parsed.linkedEvidenceTrails) ? parsed.linkedEvidenceTrails.slice(0, 3) : [];
+    parsed.researchTopicCandidates = Array.isArray(parsed.researchTopicCandidates) ? parsed.researchTopicCandidates.slice(0, 2) : [];
+    parsed.npcWritingStyle = compactText(parsed.npcWritingStyle, 360);
+    parsed.reminder = compactText(parsed.reminder, 520);
+    return JSON.stringify(parsed);
+  } catch {
+    return compactText(user, 5000);
+  }
+}
+
 function isAbortError(error: unknown): boolean {
   return error instanceof Error && (error.name === "AbortError" || /AbortError|timed out/i.test(error.message));
 }
@@ -774,6 +799,10 @@ async function requestDeepSeekJsonWithRetry(system: string, user: string, maxTok
         maxTokens,
         Math.max(0.45, temperature - 0.25),
       );
+    }
+    if (isMessageTooLongError(error)) {
+      console.warn("DeepSeek request was too long; retrying once with compact evidence packet.");
+      return requestDeepSeekJson(system, compactRequestUser(user), maxTokens, Math.max(0.45, temperature - 0.2));
     }
     throw error;
   }
@@ -1078,7 +1107,7 @@ function readingMaterialsCopy(language: AssociationZineLanguage): { title: strin
   return copy[language];
 }
 
-function publicReadingCards(workflow: Workflow): Card[] {
+function publicReadingCards(workflow: Workflow, query = ""): Card[] {
   const candidates = [
     ...workflow.step1.report.matchedCards,
     ...workflow.step1.report.deepReadCards,
@@ -1089,11 +1118,14 @@ function publicReadingCards(workflow: Workflow): Card[] {
     if (!card.url || byUrl.has(card.url)) continue;
     byUrl.set(card.url, card);
   }
-  return Array.from(byUrl.values()).slice(0, 12);
+  const wantsSgmk = wantsSgmkQuery(query);
+  return Array.from(byUrl.values())
+    .sort((a, b) => wantsSgmk ? (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0) : 0)
+    .slice(0, 12);
 }
 
-function renderReadingMaterialsSection(workflow: Workflow, language: AssociationZineLanguage, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
-  const cards = publicReadingCards(workflow);
+function renderReadingMaterialsSection(workflow: Workflow, language: AssociationZineLanguage, templateFilename = "01-pbs-reset-title-kinetic.html", query = ""): string {
+  const cards = publicReadingCards(workflow, query);
   if (cards.length === 0) return "";
   const copy = readingMaterialsCopy(language);
   const rows = cards.map((card, index) => {
@@ -1324,13 +1356,18 @@ function interpretQueryIntent(query: string): string {
   return `${style}: ${topic}`;
 }
 
+function wantsSgmkQuery(query: string): boolean {
+  return /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino|diy\s*(?:電子|electronics?|synth|合成器)|電子合成器|合成器/i.test(query);
+}
+
 function createBrowserWorkflow(query: string): Workflow {
   const corpus = allowedUiCorpus();
   const textileHints = /textile|fabric|wearable|sewing|tailor|織品|紡織|布|穿戴|裁縫/i.test(query)
     ? ", textile, fabric, wearable, soft circuit"
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
-  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: semantic layers, entity layers, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic. Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}.`;
+  const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
+  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: semantic layers, entity layers, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic. Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
@@ -1426,7 +1463,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
       forbiddenTermsFound,
     },
   });
-  const readingMaterials = renderReadingMaterialsSection(workflow, language, officialTemplate.filename);
+  const readingMaterials = renderReadingMaterialsSection(workflow, language, officialTemplate.filename, query);
   const workflowTrace = renderWorkflowTraceSection(trace, language, officialTemplate.filename);
   const html = htmlPage(`${articleFragment}${readingMaterials}${workflowTrace}${renderAssociationFeedbackSection(language, officialTemplate.filename)}`, artifact.title, language);
   persistClickTrace(trace);

@@ -898,6 +898,23 @@ const CAMPFIRE_BROADCASTS: Record<LanguageCode, string[]> = {
   ],
 };
 
+const THOUGHT_GAP_BROADCASTS: Record<LanguageCode, string[]> = {
+  "zh-TW": [
+    "思想缺口：SGMK 的 DIY 電子合成器頁面很多，但還缺少把套件、聲音與工作坊組織連起來的概念頁。",
+    "思想缺口：材料實作已經長出來了，照護、維修與失敗紀錄還需要被編成可比較的問題。",
+    "思想缺口：小誌可以引用頁面，但 wiki 還需要更清楚標出哪些關係只是猜想、哪些已有證據。",
+  ],
+  en: [
+    "THOUGHT GAP: SGMK has many DIY electronics pages, but still needs a concept page linking kits, sound, and workshop organization.",
+    "THOUGHT GAP: Material practice is visible; care, maintenance, and failure notes still need better comparative questions.",
+    "THOUGHT GAP: The zine can cite pages, but the wiki should mark which relations are evidence and which are still hypotheses.",
+  ],
+  id: ["THOUGHT GAP: praktik material terlihat, tetapi catatan perawatan, pemeliharaan, dan kegagalan perlu jadi pertanyaan pembanding."],
+  de: ["THOUGHT GAP: Materialpraxis ist sichtbar; Sorge, Wartung und Fehlernotizen brauchen noch vergleichbare Fragen."],
+  ja: ["THOUGHT GAP: 素材実践は見えていますが、ケア、保守、失敗記録を比較できる問いにする必要があります。"],
+  th: ["THOUGHT GAP: เห็นการปฏิบัติด้านวัสดุแล้ว แต่ care การซ่อมบำรุง และบันทึกความล้มเหลวยังต้องกลายเป็นคำถามเปรียบเทียบ"],
+};
+
 const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
   "zh-TW": { title: "本地電子雞 RAG 對話", placeholder: "用牠的記憶、材料與 A2A 證據問這隻電子雞", ask: "詢問", noEvidence: "尚未取得證據。" },
   en: { title: "Local pet RAG chat", placeholder: "Ask this pet using its memory, materials, and A2A evidence", ask: "Ask", noEvidence: "No evidence retrieved yet." },
@@ -1531,6 +1548,8 @@ function App() {
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
+  const [dismissedAutoNpcId, setDismissedAutoNpcId] = useState<number | null>(null);
+  const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
   const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
@@ -2405,6 +2424,7 @@ function App() {
       const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
       setNearbyNpcId(nearbyId);
+      if (dismissedAutoNpcId !== null && nearbyId !== dismissedAutoNpcId) setDismissedAutoNpcId(null);
       setPromptAnchor((prev) => {
         if (!nearbyId) return null;
         if (prev && prev.npcId === nearbyId) return prev;
@@ -2418,10 +2438,14 @@ function App() {
           player.tileCol,
           player.tileRow,
         );
+        if (nearbyId !== dismissedAutoNpcId && !activeDialogueIdRef.current && !computerDialogueOpenRef.current && !splitPanel && !videoEncounter && !encounterPanel) {
+          officeState.selectedAgentId = nearbyId;
+          setActiveDialogueId(nearbyId);
+        }
       }
     }, 250);
     return () => window.clearInterval(interval);
-  }, [appMode, findNearbyNpc, layoutReady, officeState, playerProfile]);
+  }, [appMode, dismissedAutoNpcId, encounterPanel, findNearbyNpc, layoutReady, officeState, playerProfile, splitPanel, videoEncounter]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -2439,8 +2463,16 @@ function App() {
         setIsComputerDialogueOpen(false);
       }
 
+      if (dismissedAutoComputer && !isPlayerNearCentralComputer()) {
+        setDismissedAutoComputer(false);
+      }
+
       if (pendingComputerOpen && !computerDialogueOpenRef.current && isPlayerNearCentralComputer()) {
         setPendingComputerOpen(false);
+        setIsComputerDialogueOpen(true);
+      }
+
+      if (!dismissedAutoComputer && !pendingComputerOpen && !computerDialogueOpenRef.current && activeDialogueIdRef.current === null && !splitPanel && !videoEncounter && !encounterPanel && isPlayerNearCentralComputer()) {
         setIsComputerDialogueOpen(true);
       }
 
@@ -2462,6 +2494,7 @@ function App() {
     return () => window.clearInterval(interval);
   }, [
     appMode,
+    dismissedAutoComputer,
     getPlayerDistanceFromCharacter,
     isPlayerNearCentralComputer,
     layoutReady,
@@ -2469,7 +2502,10 @@ function App() {
     pendingComputerOpen,
     playerProfile,
     qaUi.enabled,
+    splitPanel,
     splitPanelAnchor,
+    videoEncounter,
+    encounterPanel,
   ]);
 
   const nearbyNpcIdRef = useRef<number | null>(null);
@@ -2522,7 +2558,9 @@ function App() {
     const interval = window.setInterval(() => {
       if (isComputerDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
       const lines = CAMPFIRE_BROADCASTS[selectedLanguage] ?? CAMPFIRE_BROADCASTS.en;
-      setWorldNotice(lines[index % lines.length]);
+      const thoughtLines = THOUGHT_GAP_BROADCASTS[selectedLanguage] ?? THOUGHT_GAP_BROADCASTS.en;
+      const notice = index % 3 === 2 ? thoughtLines[Math.floor(index / 3) % thoughtLines.length] : lines[index % lines.length];
+      setWorldNotice(notice);
       index += 1;
       if (worldNoticeTimerRef.current !== null) window.clearTimeout(worldNoticeTimerRef.current);
       worldNoticeTimerRef.current = window.setTimeout(() => {
@@ -2601,6 +2639,8 @@ function App() {
       }
 
       if (event.key === "Escape") {
+        if (activeDialogueIdRef.current !== null) setDismissedAutoNpcId(activeDialogueIdRef.current);
+        if (computerDialogueOpenRef.current) setDismissedAutoComputer(true);
         setActiveDialogueId(null);
         setIsComputerDialogueOpen(false);
         setPendingComputerOpen(false);
@@ -3593,7 +3633,10 @@ function App() {
                   }}
                   topicLabels={topicLabels}
                   language={selectedLanguage}
-                  onClose={() => setActiveDialogueId(null)}
+                  onClose={() => {
+                    if (activeDialogueId !== null) setDismissedAutoNpcId(activeDialogueId);
+                    setActiveDialogueId(null);
+                  }}
                   onOpenMusic={
                     activeDialoguePersona.id === "wukir-suryadi"
                       ? () => {
@@ -3642,6 +3685,7 @@ function App() {
               playerName={playerProfile.name}
               playerPalette={playerProfile.palette}
               onClose={() => {
+                setDismissedAutoComputer(true);
                 setPendingComputerOpen(false);
                 setIsComputerDialogueOpen(false);
               }}
@@ -3658,7 +3702,7 @@ function App() {
           )}
 
           {worldNotice && (
-            <div className="world-resonance-notice">{worldNotice}</div>
+            <div className={`world-resonance-notice ${/思想缺口|THOUGHT GAP/i.test(worldNotice) ? "world-resonance-notice--thought-gap" : ""}`}>{worldNotice}</div>
           )}
 
           {simSnapshot &&

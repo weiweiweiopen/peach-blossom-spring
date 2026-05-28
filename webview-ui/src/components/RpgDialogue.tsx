@@ -322,11 +322,11 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
 function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null, query: string): string {
   const transcript = `${knowledge?.transcript_zh ?? ''}\n${knowledge?.transcript_en ?? ''}`.trim();
   const chunks = transcript ? buildTranscriptEvidenceChunks(transcript, persona.id, persona.name) : [];
-  const evidence = rankEvidence(query || persona.intro, chunks, 3).map((item) => shorten(item.text, 280));
+  const evidence = rankEvidence(query || persona.intro, chunks, 2).map((item) => shorten(item.text, 150));
   return [
     `NPC writer: ${persona.name}`,
     `Role: ${persona.role}`,
-    `Intro voice: ${persona.intro}`,
+    `Intro voice: ${shorten(persona.intro, 180)}`,
     `Transcript style clues: ${evidence.join(' / ') || 'Use the persona intro and response topics as the voice anchor.'}`,
     'Use this only for writing style, rhythm, emphasis, and choice of examples. Do not invent facts from the transcript unless the zine evidence also supports them.',
   ].join('\n');
@@ -453,7 +453,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
 
   function handleSuggestedPrompt(prompt: string): void {
     setAreSuggestionsOpen(false);
-    void submitPrompt(prompt);
+    setQuestion(prompt);
   }
 
   async function handleOpenZine(): Promise<void> {
