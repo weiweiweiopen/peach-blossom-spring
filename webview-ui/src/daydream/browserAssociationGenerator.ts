@@ -37,6 +37,10 @@ export interface BrowserAssociationResult {
   traceKey?: string;
 }
 
+export interface BrowserAssociationOptions {
+  writingStyle?: string;
+}
+
 export type AssociationProgressCallback = (message: string) => void;
 
 export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
@@ -489,6 +493,28 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
   return { system, user };
 }
 
+function withWritingStyle(user: string, writingStyle?: string): string {
+  const style = compactText(writingStyle, 1600);
+  if (!style) return user;
+  const parsed = JSON.parse(user) as Record<string, unknown>;
+  parsed.npcWritingStyle = style;
+  parsed.instruction = `${String(parsed.instruction ?? "")} If npcWritingStyle is present, adapt cadence, emphasis, examples, and metaphors to that NPC transcript voice while still using public wiki evidence and the same four section jobs.`;
+  return JSON.stringify(parsed, null, 2);
+}
+
+function assertEnoughRelevantMaterial(workflow: Workflow): void {
+  const report = workflow.step1.report;
+  const allowedMatched = report.matchedCards.filter(isAllowedZineCard).length;
+  const allowedLinked = report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length;
+  const allowedDeep = report.deepReadCards.filter(isAllowedZineCard).length;
+  const depthScore = report.depthMetrics.depthScore;
+  const enough = allowedMatched >= 2 && (allowedDeep >= 1 || allowedLinked >= 2) && depthScore >= 35;
+  if (enough) return;
+  const error = new Error(`low_relevance_zine: matched ${allowedMatched}, linked ${allowedLinked}, deep-read ${allowedDeep}, depth ${depthScore}`);
+  error.name = "LowRelevanceZineError";
+  throw error;
+}
+
 function extractJsonObject(text: string): unknown {
   const trimmed = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
   try {
@@ -662,6 +688,8 @@ function errorMessage(error: unknown): string {
 
 function errorClass(error: unknown, fallback = "unknown_error"): string {
   const message = errorMessage(error);
+  if (error instanceof Error && error.name === "LowRelevanceZineError") return "low_relevance_zine";
+  if (/low_relevance_zine|not enough relevant/i.test(message)) return "low_relevance_zine";
   if (/DeepSeek proxy failed\s+(\d+)/i.test(message)) return `http_error_${message.match(/DeepSeek proxy failed\s+(\d+)/i)?.[1] ?? "unknown"}`;
   if (/http_error\s+(\d+)/i.test(message)) return `http_error_${message.match(/http_error\s+(\d+)/i)?.[1] ?? "unknown"}`;
   if (/JSON parse failed|parseable JSON|JSON\.parse/i.test(message)) return "json_parse_failed";
@@ -852,8 +880,10 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
   return copy[language];
 }
 
-async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback): Promise<DaydreamPublicArtifactContent> {
-  const { system, user } = buildEditorialMessages(query, workflow, language);
+async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
+  const messages = buildEditorialMessages(query, workflow, language);
+  const system = messages.system;
+  const user = withWritingStyle(messages.user, options.writingStyle);
   const printLength = printBindingLengthInstruction();
   const progress = progressCopy(language);
   onProgress?.(progress.materialClues);
@@ -1328,7 +1358,7 @@ async function withBrowserTimeout<T>(promise: Promise<T>, ms: number, message: s
   }
 }
 
-export async function generateBrowserAssociationZine(query: string, language: AssociationZineLanguage = "zh-TW", onProgress?: AssociationProgressCallback): Promise<BrowserAssociationResult> {
+export async function generateBrowserAssociationZine(query: string, language: AssociationZineLanguage = "zh-TW", onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<BrowserAssociationResult> {
   const requestId = `pbs-zine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   activeDeepSeekTraceCalls = [];
   const workflow = createBrowserWorkflow(query);
@@ -1339,11 +1369,17 @@ export async function generateBrowserAssociationZine(query: string, language: As
   onProgress?.(progress.matchedNotes(workflow.step1.report.matchedCards.filter(isAllowedZineCard).length));
   onProgress?.(progress.linkedNotes(workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length));
   onProgress?.(progress.deepRead(workflow.step1.report.deepReadCards.filter(isAllowedZineCard).length));
+  try {
+    assertEnoughRelevantMaterial(workflow);
+  } catch (error) {
+    persistClickTrace(buildClickTrace({ requestId, query, language, workflow, errorClass: errorClass(error, "low_relevance_zine"), errorMessage: errorMessage(error) }));
+    throw error;
+  }
   const variant: DaydreamHtmlLayoutVariant = "pbs-reset-title";
   let artifact: DaydreamPublicArtifactContent;
   try {
     artifact = await withBrowserTimeout(
-      callDeepSeekEditorialWriter(query, workflow, language, onProgress),
+      callDeepSeekEditorialWriter(query, workflow, language, onProgress, options),
       EDITORIAL_WRITER_TIMEOUT_MS,
       "Association writer timed out; please try again.",
     );

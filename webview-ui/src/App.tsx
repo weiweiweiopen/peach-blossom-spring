@@ -242,7 +242,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "獨立研究者如何互相支持？",
     "黑客空間如何保存失敗經驗？",
     "聲音作品如何連到社群組織？",
-    "開放科學如何避免變成宣傳？",
+    "電子織品工作坊如何留下可重讀的知識？",
     "營隊如何建立臨時共同體？",
     "最近 wiki 裡有哪些新的 news 或更新？",
   ],
@@ -257,7 +257,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "How do independent researchers support one another?",
     "How do hackerspaces preserve failed experiments?",
     "How can sound work connect to community organizing?",
-    "How can open science avoid becoming publicity?",
+    "How do e-textile workshops leave reusable knowledge?",
     "How do camps create temporary commons?",
     "What new news or updates appear in the wiki?",
   ],
@@ -272,7 +272,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Bagaimana peneliti independen saling mendukung?",
     "Bagaimana hackerspace menyimpan pengalaman gagal?",
     "Bagaimana karya suara terhubung dengan pengorganisasian komunitas?",
-    "Bagaimana open science menghindari menjadi promosi?",
+    "Bagaimana lokakarya e-textile meninggalkan pengetahuan yang dapat dibaca ulang?",
     "Bagaimana camp membangun commons sementara?",
     "News atau pembaruan baru apa yang muncul di wiki?",
   ],
@@ -287,7 +287,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Wie unterstützen sich unabhängige Forschende gegenseitig?",
     "Wie bewahren Hackerspaces gescheiterte Experimente auf?",
     "Wie verbinden sich Klangarbeiten mit Community-Organisation?",
-    "Wie vermeidet Open Science, reine Werbung zu werden?",
+    "Wie hinterlassen E-Textile-Workshops wieder lesbares Wissen?",
     "Wie erzeugen Camps temporäre Commons?",
     "Welche neuen News oder Updates erscheinen im Wiki?",
   ],
@@ -302,7 +302,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "独立研究者はどう支え合う？",
     "ハッカースペースは失敗経験をどう保存する？",
     "音の作品はコミュニティ組織とどうつながる？",
-    "オープンサイエンスはどう宣伝化を避ける？",
+    "電子テキスタイルのワークショップはどう読み直せる知識を残す？",
     "キャンプはどう一時的なコモンズを作る？",
     "wiki にはどんな新しい news や更新がある？",
   ],
@@ -317,7 +317,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "นักวิจัยอิสระสนับสนุนกันอย่างไร?",
     "แฮกเกอร์สเปซเก็บประสบการณ์ล้มเหลวอย่างไร?",
     "งานเสียงเชื่อมกับการจัดตั้งชุมชนอย่างไร?",
-    "open science จะไม่กลายเป็นประชาสัมพันธ์ได้อย่างไร?",
+    "เวิร์กช็อป e-textile ทิ้งความรู้ที่อ่านซ้ำได้อย่างไร?",
     "แคมป์สร้าง commons ชั่วคราวได้อย่างไร?",
     "มี news หรืออัปเดตใหม่อะไรใน wiki?",
   ],
@@ -350,6 +350,7 @@ type SplitPanel =
       petRole?: string;
       isGenerating?: boolean;
       error?: string;
+      lowRelevance?: boolean;
     }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" }
@@ -621,6 +622,7 @@ function safeDebugText(value: unknown, max = 500): string {
 }
 
 function classifyAssociationError(message: string): string {
+  if (/low_relevance_zine|LowRelevanceZineError|not enough relevant/i.test(message)) return "low_relevance_zine";
   if (/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i.test(message)) {
     const match = message.match(/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i);
     return `http_error ${match?.[1] ?? match?.[2] ?? "unknown"}`;
@@ -629,6 +631,10 @@ function classifyAssociationError(message: string): string {
   if (/JSON parse failed|parseable JSON|JSON\.parse/i.test(message)) return "JSON parse failed";
   if (/public safety gate|public artifact|forbidden|unsupported|validation/i.test(message)) return "public_validation_error";
   return "unknown_error";
+}
+
+function isLowRelevanceAssociationError(message: string): boolean {
+  return classifyAssociationError(message) === "low_relevance_zine";
 }
 
 function readZineTraceDebug(): { errorClass: string; errorMessage: string; calls: string; forbidden: string; pages: string } | null {
@@ -680,6 +686,39 @@ function AssociationErrorPage({ message, language, onRetry }: { message: string;
       {onRetry && (
         <button className="pbs-game-button" type="button" onClick={onRetry}>{copy.retry}</button>
       )}
+    </div>
+  );
+}
+
+function AssociationLowRelevancePage({ language, query, onRetry }: { language: LanguageCode; query?: string; onRetry?: () => void }) {
+  const copy = associationErrorCopy(language);
+  const lines: Record<LanguageCode, string[]> = {
+    "zh-TW": [
+      "這個問題和現在的維基火路還沒有接上，電子雞想先幫你換一個更靠近材料的問法。",
+      "目前的維基和這個問題沒有足夠多的相關性，電子雞先把小誌鍋蓋蓋起來。",
+      "這條問題小徑暫時太霧了，電子雞需要更多頁面線索才敢裝訂成小誌。",
+    ],
+    en: [
+      "This question has not found enough warm wiki paths yet. The pet wants a more material-facing question.",
+      "The wiki does not have enough relevant traces for this question right now, so the pet is keeping the zine unbound.",
+      "This path is too foggy for a zine. The pet needs more page clues first.",
+    ],
+    id: ["Jejak wiki untuk pertanyaan ini belum cukup kuat. Pet ingin pertanyaan yang lebih dekat dengan bahan."],
+    de: ["Zu dieser Frage gibt es noch zu wenige passende Wiki-Spuren. Das Pet braucht eine materialnaehere Frage."],
+    ja: ["この問いにつながる wiki の道がまだ足りません。ペットは、もう少し材料に近い問いを待っています。"],
+    th: ["เส้นทาง wiki สำหรับคำถามนี้ยังไม่พอ pet อยากได้คำถามที่ใกล้วัสดุมากกว่านี้"],
+  };
+  const options = lines[language];
+  const index = Math.abs(Array.from(query ?? "pbs").reduce((sum, char) => sum + char.charCodeAt(0), 0)) % options.length;
+  return (
+    <div className="world-association-low-relevance" role="status" aria-live="polite">
+      <div className="world-association-low-relevance-pet">
+        <QuestionPetPreview question={query || "low relevance zine"} size={5} socialSignals={{ stress: 92, energy: 18, curiosity: 35 }} currentAction="rest" />
+      </div>
+      <div className="world-association-low-relevance-bubble">
+        <p>{options[index]}</p>
+      </div>
+      {onRetry && <button className="pbs-game-button" type="button" onClick={onRetry}>{copy.retry}</button>}
     </div>
   );
 }
@@ -918,7 +957,7 @@ function CentralComputerDialogue({
   const copy = PBS_COMPUTER_COPY[language];
   const suggestedQuestions = useMemo(() => {
     const shuffled = [...COMMUNITY_QUERY_PROMPTS[language]].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 2);
+    return shuffled.slice(0, 3);
   }, [language]);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
@@ -1144,6 +1183,8 @@ function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extrac
       )}
       {isFinalDocument && link.isGenerating ? (
         <AssociationLoadingPage language={language} progress={progress} />
+      ) : isFinalDocument && link.lowRelevance ? (
+        <AssociationLowRelevancePage language={language} query={link.query || link.seed} onRetry={onRetry} />
       ) : isFinalDocument && link.error ? (
         <AssociationErrorPage message={link.error} language={language} onRetry={onRetry} />
       ) : link.url ? (
@@ -2992,6 +3033,7 @@ function App() {
     query: string;
     seed?: string;
     petRole?: string;
+    writingStyle?: string;
     language: LanguageCode;
     anchorId?: number;
   }): Promise<void> {
@@ -3023,7 +3065,7 @@ function App() {
       const { generateBrowserAssociationZine } = await import("./daydream/browserAssociationGenerator.js");
       const result = await generateBrowserAssociationZine(query, request.language, (message) => {
         setAssociationProgress(message);
-      });
+      }, { writingStyle: request.writingStyle });
       if (wikiGenerationRequestRef.current !== requestKey) return;
       const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
       finalDocumentObjectUrlsRef.current.add(url);
@@ -3042,7 +3084,8 @@ function App() {
       if (wikiGenerationRequestRef.current !== requestKey) return;
       console.error("NPC wiki zine generation failed", error);
       const message = error instanceof Error ? error.message : String(error ?? associationErrorCopy(request.language).title);
-      setWorldNotice(associationErrorCopy(request.language).title);
+      const lowRelevance = isLowRelevanceAssociationError(message);
+      setWorldNotice(lowRelevance ? "" : associationErrorCopy(request.language).title);
       setSplitPanel({
         kind: "finalDocument",
         title: loadingTitle,
@@ -3051,6 +3094,7 @@ function App() {
         query,
         seed: request.seed ?? query,
         petRole: request.petRole,
+        lowRelevance,
         error: message,
       });
       setSplitPanelAnchor(request.anchorId === undefined ? null : { kind: "npc", id: request.anchorId });
@@ -3578,6 +3622,15 @@ function App() {
                           )
                         : current,
                     );
+                  }}
+                  onOpenAssociationZine={(query, writingStyle) => {
+                    void openAssociationZineSplit({
+                      query,
+                      petRole: activeDialoguePersona.name,
+                      writingStyle,
+                      language: selectedLanguage,
+                      anchorId: activeDialogueCharacter.id,
+                    });
                   }}
                 />
               </Suspense>

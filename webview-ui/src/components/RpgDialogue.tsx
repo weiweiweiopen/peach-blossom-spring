@@ -44,6 +44,7 @@ interface RpgDialogueProps {
   onClose: () => void;
   onOpenMusic?: () => void;
   onSimEvent?: (prompt: string, topic: string) => void;
+  onOpenAssociationZine?: (query: string, writingStyle: string) => void;
 }
 
 function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string }) {
@@ -125,23 +126,31 @@ function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] 
   if (persona.id === 'tincuta-heinzel') {
     const attemptsQuestion = '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？';
     const fallback: Record<LanguageCode, string> = {
-      'zh-TW': '這是哪？',
-      en: 'Where is this?',
-      id: 'Ini di mana?',
-      de: 'Wo ist das hier?',
-      ja: 'ここはどこ？',
-      th: 'ที่นี่คือที่ไหน?',
+      'zh-TW': '電子織品如何變成批判材料？',
+      en: 'How do electronic textiles become critical material?',
+      id: 'Bagaimana e-textile menjadi bahan kritis?',
+      de: 'Wie werden E-Textiles zu kritischem Material?',
+      ja: '電子テキスタイルはどう批評的な素材になる？',
+      th: 'e-textile กลายเป็นวัสดุวิพากษ์ได้อย่างไร?',
     };
-    return [attemptsQuestion, fallback[language]];
+    const method: Record<LanguageCode, string> = {
+      'zh-TW': '失敗紀錄如何幫助工作坊學習？',
+      en: 'How do failure notes help workshops learn?',
+      id: 'Bagaimana catatan gagal membantu lokakarya belajar?',
+      de: 'Wie helfen Fehlernotizen Workshops beim Lernen?',
+      ja: '失敗の記録はワークショップの学びをどう助ける？',
+      th: 'บันทึกความล้มเหลวช่วยให้เวิร์กช็อปเรียนรู้อย่างไร?',
+    };
+    return [attemptsQuestion, fallback[language], method[language]];
   }
   const community = representedCommunity(persona);
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': [`什麼是 ${community}？`, '這是哪？'],
-    en: [`What is ${community}?`, 'Where is this?'],
-    id: [`Apa itu ${community}?`, 'Ini di mana?'],
-    de: [`Was ist ${community}?`, 'Wo ist das hier?'],
-    ja: [`${community} とは？`, 'ここはどこ？'],
-    th: [`${community} คืออะไร?`, 'ที่นี่คือที่ไหน?'],
+    'zh-TW': [`${community} 如何組織工作坊知識？`, `${community} 和臨時共同體有什麼關係？`, `${community} 的材料實踐如何被保存？`],
+    en: [`How does ${community} organize workshop knowledge?`, `How is ${community} related to temporary commons?`, `How are ${community}'s material practices preserved?`],
+    id: [`Bagaimana ${community} mengatur pengetahuan lokakarya?`, `Apa hubungan ${community} dengan commons sementara?`, `Bagaimana praktik material ${community} disimpan?`],
+    de: [`Wie organisiert ${community} Workshop-Wissen?`, `Wie haengt ${community} mit temporaeren Commons zusammen?`, `Wie werden materielle Praktiken von ${community} bewahrt?`],
+    ja: [`${community} はワークショップ知識をどう組織する？`, `${community} は一時的な commons とどう関係する？`, `${community} の素材実践はどう保存される？`],
+    th: [`${community} จัดความรู้เวิร์กช็อปอย่างไร?`, `${community} เกี่ยวข้องกับ commons ชั่วคราวอย่างไร?`, `การปฏิบัติด้านวัสดุของ ${community} ถูกเก็บไว้อย่างไร?`],
   };
   return [...questions[language]];
 }
@@ -310,7 +319,20 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
   return messages[language];
 }
 
-export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenMusic, onSimEvent }: RpgDialogueProps) {
+function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null, query: string): string {
+  const transcript = `${knowledge?.transcript_zh ?? ''}\n${knowledge?.transcript_en ?? ''}`.trim();
+  const chunks = transcript ? buildTranscriptEvidenceChunks(transcript, persona.id, persona.name) : [];
+  const evidence = rankEvidence(query || persona.intro, chunks, 3).map((item) => shorten(item.text, 280));
+  return [
+    `NPC writer: ${persona.name}`,
+    `Role: ${persona.role}`,
+    `Intro voice: ${persona.intro}`,
+    `Transcript style clues: ${evidence.join(' / ') || 'Use the persona intro and response topics as the voice anchor.'}`,
+    'Use this only for writing style, rhythm, emphasis, and choice of examples. Do not invent facts from the transcript unless the zine evidence also supports them.',
+  ].join('\n');
+}
+
+export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenMusic, onSimEvent, onOpenAssociationZine }: RpgDialogueProps) {
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -434,6 +456,14 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
     void submitPrompt(prompt);
   }
 
+  async function handleOpenZine(): Promise<void> {
+    const trimmed = question.trim();
+    if (!trimmed || isLoading || !onOpenAssociationZine) return;
+    const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
+    if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
+    onOpenAssociationZine(trimmed, npcWritingStylePrompt(persona, dialogueKnowledge, trimmed));
+  }
+
   return (
     <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
       <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
@@ -496,7 +526,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           </div>
         )}
 
-        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4">
+        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
@@ -531,6 +561,19 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
           >
             💬
           </button>
+          {onOpenAssociationZine && (
+            <button
+              className="rpg-dialogue-chip pbs-game-button pbs-game-button--bubble disabled:opacity-50"
+              data-ui-control="icon-button"
+              type="button"
+              disabled={isLoading || !question.trim()}
+              aria-label="Wiki zine"
+              title="Wiki zine"
+              onClick={() => void handleOpenZine()}
+            >
+              📚
+            </button>
+          )}
         </form>
 
         {error && <p className="text-lg text-red-300 mt-4" data-ui-part="caption">{error}</p>}
