@@ -211,29 +211,9 @@
   transform: translateY(8px) !important;
 }
 
-.pbs-interaction-root .world-split-zine-regenerate {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto !important;
-  gap: 10px !important;
+.pbs-interaction-root .rpg-dialogue-avatar-frame--pixel {
   align-items: stretch !important;
-  padding: 10px 12px !important;
-  border-bottom: 2px solid #111 !important;
-  background: #fffaf0 !important;
-}
-
-.pbs-interaction-root .world-split-zine-regenerate input {
-  min-width: 0 !important;
-  border: 2px solid #111 !important;
-  background: #fffdf6 !important;
-  color: #111 !important;
-  padding: 8px 10px !important;
-  font-size: var(--ui-type-field) !important;
-  line-height: var(--ui-line-field) !important;
-}
-
-.pbs-interaction-root .world-split-zine-regenerate button {
-  min-height: 44px !important;
-  white-space: nowrap !important;
+  justify-items: stretch !important;
 }
 
 .pbs-interaction-root .mobile-talk-prompt.mobile-talk-prompt--compact {

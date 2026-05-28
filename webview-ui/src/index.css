@@ -444,10 +444,10 @@ html[data-language="th"],
   display: inline-block;
   width: 12px;
   height: 12px;
-  background: var(--palette-ink);
+  background: var(--palette-blue);
   box-shadow:
-    22px 0 0 var(--palette-ink),
-    44px 0 0 var(--palette-ink);
+    22px 0 0 var(--palette-pink),
+    44px 0 0 var(--palette-yellow);
   animation: tama-spinner 800ms steps(3, end) infinite;
 }
 

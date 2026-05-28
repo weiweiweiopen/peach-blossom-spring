@@ -657,7 +657,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="rpg-dialogue-avatar-frame bg-bg/80 border border-border p-2"
+        className="rpg-dialogue-avatar-frame rpg-dialogue-avatar-frame--pixel bg-bg/80 border border-border p-2"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
@@ -669,7 +669,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
           row.map((color, colIndex) => (
             <span
               key={`${rowIndex.toString()}-${colIndex.toString()}`}
-              style={{ backgroundColor: color || "transparent" }}
+              style={{ width: 3, height: 3, display: "block", backgroundColor: color || "transparent" }}
             />
           )),
         )}
@@ -1493,7 +1493,6 @@ function App() {
   >([]);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
-  const [zineQueryDraft, setZineQueryDraft] = useState("");
   const [associationProgress, setAssociationProgress] = useState("Loading...");
   const [splitPanelAnchor, setSplitPanelAnchor] = useState<
     { kind: "npc"; id: number } | null
@@ -2928,7 +2927,6 @@ function App() {
 
   const closeSplitPanel = useCallback(() => {
     setSplitPanel(null);
-    setZineQueryDraft("");
     setSplitPanelAnchor(null);
     setIsSplitExpanded(false);
   }, []);
@@ -2947,7 +2945,6 @@ function App() {
       URL.revokeObjectURL(splitPanel.url);
       finalDocumentObjectUrlsRef.current.delete(splitPanel.url);
     }
-    setZineQueryDraft(query);
     setAssociationProgress("Association...");
     setSplitPanel({
       kind: "finalDocument",
@@ -4044,20 +4041,6 @@ function App() {
                   anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,
                 })
               : undefined;
-            const regenerateAssociationZine = splitPanel.kind === "finalDocument"
-              ? (event: FormEvent<HTMLFormElement>) => {
-                  event.preventDefault();
-                  const query = zineQueryDraft.trim();
-                  if (!query || splitPanel.isGenerating) return;
-                  void openAssociationZineSplit({
-                    query,
-                    seed: query,
-                    petRole: splitPanel.petRole,
-                    language: splitPanelLanguage,
-                    anchorId: splitPanelAnchor?.kind === "npc" ? splitPanelAnchor.id : undefined,
-                  });
-                }
-              : undefined;
             return <>
           <div className="world-split-toolbar">
             <div>
@@ -4079,21 +4062,6 @@ function App() {
               </button>
             </div>
           </div>
-          {splitPanel.kind === "finalDocument" && regenerateAssociationZine && (
-            <form className="world-split-zine-regenerate" onSubmit={regenerateAssociationZine}>
-              <input
-                type="text"
-                value={zineQueryDraft}
-                onChange={(event) => setZineQueryDraft(event.target.value)}
-                placeholder="換一個問題重新生成小誌"
-                disabled={Boolean(splitPanel.isGenerating)}
-                aria-label="換一個問題重新生成小誌"
-              />
-              <button className="pbs-frame-button" type="submit" disabled={Boolean(splitPanel.isGenerating) || !zineQueryDraft.trim()}>
-                重新生成
-              </button>
-            </form>
-          )}
           <div className="world-split-content">
             {splitPanel.kind === "dialogue.openWiki" ? (
               <div className="world-wiki-content">

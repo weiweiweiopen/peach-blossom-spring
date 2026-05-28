@@ -649,6 +649,10 @@ function errorClass(error: unknown, fallback = "unknown_error"): string {
   return fallback;
 }
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && (error.name === "AbortError" || /AbortError|timed out/i.test(error.message));
+}
+
 async function requestDeepSeekJson(system: string, user: string, maxTokens = 900, temperature = 0.9): Promise<any> {
   const startedAt = Date.now();
   const controller = new AbortController();
@@ -701,16 +705,82 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
   }
 }
 
+async function requestDeepSeekJsonWithRetry(system: string, user: string, maxTokens = 900, temperature = 0.9): Promise<any> {
+  try {
+    return await requestDeepSeekJson(system, user, maxTokens, temperature);
+  } catch (error) {
+    if (!isAbortError(error)) throw error;
+    console.warn("DeepSeek JSON request timed out; retrying once.");
+    return requestDeepSeekJson(system, user, maxTokens, Math.max(0.55, temperature - 0.15));
+  }
+}
+
+function fallbackOutline(query: string, language: AssociationZineLanguage) {
+  const compactQuery = compactText(query, 120) || "the current question";
+  const copy: Record<AssociationZineLanguage, { title: string; subtitle: string; opening: string; proposition: string; quietCaveat: string }> = {
+    "zh-TW": {
+      title: `從「${compactQuery}」重新讀桃花源材料`,
+      subtitle: "一份以證據、限制與下一步問題組成的小誌。",
+      opening: `這份小誌先保留玩家問題「${compactQuery}」的模糊性，再回到公開材料中尋找可查證的線索。它不把材料硬湊成結論，而是問哪些頁面、作品、方法或社群實踐真的能推進判讀。`,
+      proposition: "核心論點是：這些材料最有用之處，不是提供單一答案，而是指出臨時共同體如何在資源、照護、技術與敘事之間形成可比較的實踐。",
+      quietCaveat: "這份方向仍需要更多材料、實地回饋與共同校正。",
+    },
+    en: {
+      title: `Reading Peach Blossom Spring Through "${compactQuery}"`,
+      subtitle: "A zine organized by evidence, limits, and next research questions.",
+      opening: `This zine keeps the player's question, "${compactQuery}", open enough to test against public materials. It asks which pages, works, methods, or community practices can actually support a reading, and where the evidence remains partial.`,
+      proposition: "The central claim is that the materials are most useful when they show how temporary commons form across resources, care, tools, and stories, rather than when they are forced into one answer.",
+      quietCaveat: "This direction still needs more materials, situated feedback, and shared correction.",
+    },
+    id: {
+      title: `Membaca Peach Blossom Spring lewat "${compactQuery}"`,
+      subtitle: "Zine tentang bukti, batas, dan pertanyaan riset berikutnya.",
+      opening: `Zine ini mempertahankan pertanyaan pemain, "${compactQuery}", sebagai pertanyaan yang perlu diuji dengan bahan publik. Fokusnya adalah halaman, karya, metode, atau praktik komunitas yang benar-benar dapat membantu pembacaan.`,
+      proposition: "Argumen utamanya: bahan-bahan ini berguna ketika menunjukkan bagaimana commons sementara terbentuk lewat sumber daya, perawatan, alat, dan cerita, bukan ketika dipaksa menjadi satu jawaban.",
+      quietCaveat: "Arah ini masih membutuhkan bahan tambahan, umpan balik situasional, dan koreksi bersama.",
+    },
+    de: {
+      title: `Peach Blossom Spring durch "${compactQuery}" lesen`,
+      subtitle: "Ein Zine ueber Evidenz, Grenzen und naechste Forschungsfragen.",
+      opening: `Dieses Zine haelt die Spielerfrage "${compactQuery}" offen genug, um sie an oeffentlichen Materialien zu pruefen. Es fragt, welche Seiten, Arbeiten, Methoden oder Community-Praktiken eine Lesart wirklich stuetzen.`,
+      proposition: "Die zentrale These lautet: Das Material ist dort am nuetzlichsten, wo es zeigt, wie temporaere Commons zwischen Ressourcen, Sorge, Werkzeugen und Erzaehlungen entstehen.",
+      quietCaveat: "Diese Richtung braucht weiterhin mehr Material, situiertes Feedback und gemeinsame Korrektur.",
+    },
+    ja: {
+      title: `「${compactQuery}」から桃花源を読む`,
+      subtitle: "証拠、限界、次の研究質問で組み立てる小誌。",
+      opening: `この小誌は、プレイヤーの問い「${compactQuery}」を、公開材料で検証できる問いとして扱う。どのページ、作品、方法、コミュニティ実践が読みを支え、どこに曖昧さが残るかを見る。`,
+      proposition: "中心となる主張は、材料の有用性が単一の答えではなく、資源、ケア、道具、語りのあいだで一時的な commons がどう形成されるかを示す点にある、ということだ。",
+      quietCaveat: "この方向には、さらに多くの材料、現場からの応答、共同での修正が必要である。",
+    },
+    th: {
+      title: `อ่าน Peach Blossom Spring ผ่าน "${compactQuery}"`,
+      subtitle: "ซีนที่จัดด้วยหลักฐาน ข้อจำกัด และคำถามวิจัยถัดไป",
+      opening: `ซีนนี้เก็บคำถามของผู้เล่น "${compactQuery}" ไว้เป็นคำถามที่ต้องตรวจสอบกับวัสดุสาธารณะ และดูว่าหน้า ผลงาน วิธี หรือการปฏิบัติของชุมชนใดช่วยรองรับการอ่านได้จริง`,
+      proposition: "ข้อเสนอหลักคือ วัสดุเหล่านี้มีประโยชน์เมื่อช่วยให้เห็นว่า commons ชั่วคราวก่อตัวผ่านทรัพยากร การดูแล เครื่องมือ และเรื่องเล่าอย่างไร มากกว่าการบังคับให้มีคำตอบเดียว",
+      quietCaveat: "ทิศทางนี้ยังต้องการวัสดุเพิ่ม คำตอบจากบริบทจริง และการปรับแก้ร่วมกัน",
+    },
+  };
+  return copy[language];
+}
+
 async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback): Promise<DaydreamPublicArtifactContent> {
   const { system, user } = buildEditorialMessages(query, workflow, language);
   const printLength = printBindingLengthInstruction();
   const progress = progressCopy(language);
   onProgress?.(progress.materialClues);
-  const outline = await requestDeepSeekJson(
-    system,
-      `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
-    1000,
-  ) as any;
+  let outline: any;
+  try {
+    outline = await requestDeepSeekJsonWithRetry(
+      system,
+        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+      1000,
+    ) as any;
+  } catch (error) {
+    if (!isAbortError(error)) throw error;
+    console.warn("Association outline timed out twice; using local outline and continuing section generation.");
+    outline = fallbackOutline(query, language);
+  }
   const title = String(outline.title ?? "材料生成的未來方向");
   const subtitle = String(outline.subtitle ?? "從本次問題與本次閱讀材料重新推導。");
   const opening = String(outline.opening ?? "");
@@ -720,7 +790,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
-    const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
+    const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
       `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 必須符合 PRINT BINDING TARGET 的 section body 長度。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單或造句式結尾。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
@@ -762,7 +832,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const protocol = [];
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.protocol[index] ?? progress.materialClues);
-    const item = await requestDeepSeekJson(
+    const item = await requestDeepSeekJsonWithRetry(
       `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 必須符合 PRINT BINDING TARGET 的 protocol body 長度。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
       JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
       900,

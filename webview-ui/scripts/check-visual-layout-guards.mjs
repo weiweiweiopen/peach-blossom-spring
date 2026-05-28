@@ -101,9 +101,11 @@ const checks = [
   ["Keyboard movement uses smooth repeat and reduced sprint", /PLAYER_SPRINT_SPEED_MULTIPLIER = 2\.17/.test(app) && /const targetMaxQueue = 1/.test(app) && /isSprint \? 24 : 70/.test(app)],
   ["LLM wiki corpus is lazy-loaded after boot", !/import \{ generateBrowserAssociationZine \}/.test(app) && !/import \{ searchWikiPages/.test(app) && /await import\("\.\/daydream\/browserAssociationGenerator\.js"\)/.test(app) && /await import\("\.\/wikiSearch\.js"\)/.test(app)],
   ["Zine repeated sections warn instead of aborting", /Association zine repeated section warning/.test(generator) && !/LLM repeated section body after rewrite/.test(generator)],
-  ["Zine panel can regenerate without reopening campfire", /world-split-zine-regenerate/.test(app) && /setZineQueryDraft\(query\)/.test(app) && /openAssociationZineSplit\(\{[\s\S]*query,[\s\S]*seed: query/.test(app)],
+  ["Zine panel does not inject regenerate controls", !/world-split-zine-regenerate/.test(app + uiSystem)],
   ["Campfire avatar uses dedicated enlarged thumbnail", /rpg-dialogue-avatar-frame--campfire/.test(app) && /rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*184px/.test(uiSystem)],
+  ["Player dialogue avatar keeps visible pixel cells", /rpg-dialogue-avatar-frame--pixel/.test(app) && /width:\s*3,\s*height:\s*3/.test(app) && /rpg-dialogue-avatar-frame--pixel[\s\S]*justify-items:\s*stretch/.test(uiSystem)],
   ["DeepSeek zine timeout allows slow first response", /DEEPSEEK_REQUEST_TIMEOUT_MS\s*=\s*120000/.test(generator) && /EDITORIAL_WRITER_TIMEOUT_MS\s*=\s*300000/.test(generator)],
+  ["Boot and zine loading dots are colorful", /\.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)[\s\S]*22px 0 0 var\(--palette-pink\)[\s\S]*44px 0 0 var\(--palette-yellow\)/.test(css) && /\.world-association-loading \.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)/.test(css)],
   ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
