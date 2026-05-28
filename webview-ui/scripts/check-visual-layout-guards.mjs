@@ -73,6 +73,8 @@ const checks = [
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
   ["Zine prompt requires seminar-style argument", /research-seminar zine[\s\S]*future research direction/.test(generator) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
+  ["Zine generation targets 8-page print signatures", /ZINE_PRINT_PAGE_MULTIPLE\s*=\s*8/.test(generator) && /ZINE_TARGET_PRINT_PAGES\s*=\s*16/.test(generator) && /printBindingLengthInstruction[\s\S]*PRINT BINDING TARGET[\s\S]*target \$\{ZINE_TARGET_PRINT_PAGES\} printable pages/.test(generator)],
+  ["Zine section prose expands for print binding", /body 必須符合 PRINT BINDING TARGET 的 section body 長度/.test(generator) && /printBinding:[\s\S]*targetPrintPages/.test(generator)],
   ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /\{editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],

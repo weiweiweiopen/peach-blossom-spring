@@ -46,6 +46,8 @@ type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WH
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
+const ZINE_PRINT_PAGE_MULTIPLE = 8;
+const ZINE_TARGET_PRINT_PAGES = 16;
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
 const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "PBS Semantic Layers / README", path: "Sources/PBS Semantic Layers/README.md", text: semanticReadme, role: "semantic layer overview" },
@@ -82,6 +84,10 @@ function languageInstruction(language: AssociationZineLanguage): string {
     th: "ภาษาไทย",
   };
   return `OUTPUT LANGUAGE: ${labels[language]}. The zine title, subtitle, section titles, body, protocol, caveat, and all visible reader-facing text must be written in ${labels[language]}. Do not fall back to Chinese unless OUTPUT LANGUAGE is 繁體中文.`;
+}
+
+function printBindingLengthInstruction(): string {
+  return `PRINT BINDING TARGET: The finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target ${ZINE_TARGET_PRINT_PAGES} printable pages rather than 8. Do not add empty padding pages. Add useful length inside the text: opening and proposition should each be 190-260 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages; each section body should be 520-680 visible characters for CJK/Thai/Japanese or 340-460 words for Latin-script languages; each protocol body should be 90-130 visible characters for CJK/Thai/Japanese or 70-100 words for Latin-script languages. Extra length must add evidence reading, comparison, caveat, counter-evidence, or future research direction, never filler.`;
 }
 
 function progressCopy(language: AssociationZineLanguage) {
@@ -656,12 +662,13 @@ async function requestDeepSeekJson(system: string, user: string, maxTokens = 900
 
 async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback): Promise<DaydreamPublicArtifactContent> {
   const { system, user } = buildEditorialMessages(query, workflow, language);
+  const printLength = printBindingLengthInstruction();
   const progress = progressCopy(language);
   onProgress?.(progress.materialClues);
   const outline = await requestDeepSeekJson(
     system,
-      `${user}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 各 120-190 字。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
-    800,
+      `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+    1000,
   ) as any;
   const title = String(outline.title ?? "材料生成的未來方向");
   const subtitle = String(outline.subtitle ?? "從本次問題與本次閱讀材料重新推導。");
@@ -673,7 +680,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 260-380 字。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單或造句式結尾。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+      `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 必須符合 PRINT BINDING TARGET 的 section body 長度。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單或造句式結尾。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -688,7 +695,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
         deepReadObservations: parsedUser.deepReadObservations,
         linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
       }, null, 2),
-      1000,
+      1400,
     );
     let section = await requestSection(false);
     if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {
@@ -712,9 +719,9 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.protocol[index] ?? progress.materialClues);
     const item = await requestDeepSeekJson(
-      `${languageInstruction(language)}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 60-90 字。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+      `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 必須符合 PRINT BINDING TARGET 的 protocol body 長度。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
       JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
-      800,
+      900,
     ) as any;
     protocol.push({ title: cleanLLMText(item.title ?? `步驟 ${index + 1}`), body: cleanLLMText(item.body ?? "") });
   }
@@ -1056,6 +1063,11 @@ function buildClickTrace(params: {
       httpStatus: activeDeepSeekTraceCalls.every((call) => call.httpStatus === 200) ? 200 : activeDeepSeekTraceCalls.at(-1)?.httpStatus ?? null,
       durationMs: activeDeepSeekTraceCalls.reduce((sum, call) => sum + call.durationMs, 0),
       calls: activeDeepSeekTraceCalls,
+    },
+    printBinding: {
+      pageMultiple: ZINE_PRINT_PAGE_MULTIPLE,
+      targetPrintPages: ZINE_TARGET_PRINT_PAGES,
+      strategy: "expand section prose rather than add blank pages",
     },
     articleSource: artifact ? "deepseek" : "blocked",
     generatedArticle: artifact ? { title: artifact.title, sectionTitles: artifact.sections.map((section) => section.title), approximateCharacterCount: articleCharacterCount(artifact), notLocalFallback: true } : null,
