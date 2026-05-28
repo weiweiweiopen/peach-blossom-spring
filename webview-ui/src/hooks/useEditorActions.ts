@@ -359,7 +359,7 @@ export function useEditorActions(
     const os = getOfficeState();
     const layout = os.getLayout();
     lastSavedLayoutRef.current = structuredClone(layout);
-    vscode.postMessage({ type: 'saveLayout', layout });
+    vscode.postMessage({ type: 'saveLayout', layout, persistToFile: true });
     editorState.isDirty = false;
     setIsDirty(false);
   }, [getOfficeState, editorState]);

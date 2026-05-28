@@ -23,13 +23,26 @@ interface DecodedCache {
   furniture: ReturnType<typeof decodeAllFurniture> | null;
 }
 
+type MiddlewareStack = {
+  use: (
+    path: string,
+    handler: (
+      req: IncomingMessage,
+      res: ServerResponse,
+      next: (err?: unknown) => void,
+    ) => void | Promise<void>,
+  ) => void;
+};
+
 // ── Vite plugin ───────────────────────────────────────────────────────────────
 
 function browserMockAssetsPlugin(): Plugin {
   const assetsDir = path.resolve(__dirname, 'public/assets');
   const distAssetsDir = path.resolve(__dirname, '../dist/webview/assets');
+  const editorLayoutPath = path.join(assetsDir, 'pbs-editor-layout.json');
 
   const cache: DecodedCache = { characters: null, floors: null, walls: null, furniture: null };
+  let suppressNextEditorLayoutReload = false;
 
   function clearCache(): void {
     cache.characters = null;
@@ -43,6 +56,45 @@ function browserMockAssetsPlugin(): Plugin {
     configureServer(server) {
       // Strip trailing slash: '/' → '', '/sub/' → '/sub'
       const base = server.config.base.replace(/\/$/, '');
+
+      server.middlewares.use('/api/editor-layout', async (req, res, next) => {
+        if (req.method !== 'POST') {
+          next();
+          return;
+        }
+
+        try {
+          const chunks: Uint8Array[] = [];
+          for await (const chunk of req) {
+            chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+          }
+          const body = Buffer.concat(chunks).toString('utf8');
+          const layout = JSON.parse(body || '{}') as { version?: unknown; cols?: unknown; rows?: unknown; tiles?: unknown; furniture?: unknown };
+          if (
+            layout.version !== 1 ||
+            typeof layout.cols !== 'number' ||
+            typeof layout.rows !== 'number' ||
+            !Array.isArray(layout.tiles) ||
+            !Array.isArray(layout.furniture)
+          ) {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Invalid editor layout payload.' }));
+            return;
+          }
+
+          suppressNextEditorLayoutReload = true;
+          fs.writeFileSync(editorLayoutPath, `${JSON.stringify(layout, null, 2)}\n`);
+          clearCache();
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ ok: true, path: path.relative(__dirname, editorLayoutPath) }));
+        } catch (error) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: error instanceof Error ? error.message : 'Failed to save editor layout.' }));
+        }
+      });
 
       // Catalog & index (existing)
       server.middlewares.use(`${base}/assets/furniture-catalog.json`, (_req, res) => {
@@ -80,6 +132,11 @@ function browserMockAssetsPlugin(): Plugin {
       server.watcher.add(assetsDir);
       server.watcher.on('change', (file) => {
         if (file.startsWith(assetsDir)) {
+          if (file === editorLayoutPath && suppressNextEditorLayoutReload) {
+            suppressNextEditorLayoutReload = false;
+            clearCache();
+            return;
+          }
           console.log(`[browser-mock-assets] Asset changed: ${path.relative(assetsDir, file)}`);
           clearCache();
           server.ws.send({ type: 'full-reload' });
@@ -101,17 +158,6 @@ function browserMockAssetsPlugin(): Plugin {
 }
 
 function deepSeekChatProxyPlugin(defaultApiKey: string): Plugin {
-  type MiddlewareStack = {
-    use: (
-      path: string,
-      handler: (
-        req: IncomingMessage,
-        res: ServerResponse,
-        next: (err?: unknown) => void,
-      ) => void | Promise<void>,
-    ) => void;
-  };
-
   function registerChatRoute(middlewares: MiddlewareStack): void {
     middlewares.use('/api/chat', async (req, res, next) => {
       if (req.method !== 'POST') {
