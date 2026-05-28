@@ -326,7 +326,7 @@ export function OfficeCanvas({
       stop();
       observer.disconnect();
     };
-  }, [officeState, resizeCanvas, isEditMode, editorState, _editorTick, zoom, panRef, getInteractiveFurnitureHighlight]);
+  }, [officeState, resizeCanvas, isEditMode, editorState, zoom, panRef, getInteractiveFurnitureHighlight]);
 
   // Convert CSS mouse coords to world (sprite pixel) coords
   const screenToWorld = useCallback(

@@ -21,6 +21,15 @@ Fix the regressions reported after the multi-mind campfire deployment without ch
 - Mobile dialogue type scale must fit normal sentence-length questions and keep avatar animation visible.
 - Mobile dialogue panels should use full viewport height, with action buttons aligned to the right.
 - Mobile zine panels should cover top HUD/language controls and inject a phone-readable one-column zine style without changing desktop zine layout.
+- Editor furniture placement must be deterministic: choosing a catalog item must immediately place that item on the next valid map click, without requiring random extra clicks or being blocked by stale Select/Pick state.
+- Select must have a clear role: select existing placed furniture; clicking empty map must clear selection and return to placement when a catalog item is chosen. Pick must sample an existing placed item into the furniture placement tool.
+- Saving in editor mode must update the active editor layout immediately and persist the same layout for subsequent editor sessions; it must not only affect unrelated production/public play state.
+- Editor mode must not spawn or render public NGM NPCs such as Andreas; only explicit editor/test actors should appear, if any.
+- Settings options that are not implemented in browser/editor mode must be hidden or disabled with a clear no-op state; Debug View must be reversible and must not trap users outside edit mode.
+- Editor mode must avoid full-canvas flicker or flash-through of an alternate background when choosing furniture, painting floors, or clicking tools.
+- Compact editor grass must be editable or explicitly treated as a background layer with a visible explanation; floor painting must not silently fail because a pixel background sits above the tile layer.
+- The compact editor house sprite must be cropped to the visible house only; stray right-side fence/stone/path pixels must be removed from the asset and footprint/collision should stay visually aligned.
+- Campfire art should visually match the NPC/house pixel density. If the source GIF is lower-resolution, upsample/detail the face and flame edges so it does not read as a different game asset pasted into the scene.
 
 ## Non-Goals
 
@@ -34,3 +43,4 @@ Fix the regressions reported after the multi-mind campfire deployment without ch
 - `npm --prefix "webview-ui" run build`
 - `npm --prefix "webview-ui" run check:screenshot-qa`
 - Manual smoke for `/?editor=1`: select/delete CraftPix item, resize map UI visible, house collision visually aligned, campfire 4x4 and opens dialogue.
+- Manual smoke for `/?editor=1`: place a chair on first click after choosing it, select clears on empty click, Pick samples an existing object, Save survives refresh, Debug View exits back to editor, settings no-op controls are not misleading, no public NPCs spawn, no flicker when clicking tools, floor editing behavior is clear.

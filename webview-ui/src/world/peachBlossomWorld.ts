@@ -64,6 +64,7 @@ const treeColor: ColorValue = { ...paletteBlue, b: -4, c: 18 };
 const peachBloomColor: ColorValue = palettePink;
 const petalGroundColor: ColorValue = { ...palettePink, b: 30, c: 4 };
 const forestGrassColor: ColorValue = { h: 128, s: 55, b: 8, c: 18 };
+const compactEditorGrassColor: ColorValue = { h: 163, s: 43, b: 18, c: 0 };
 const checkerBlackColor: ColorValue = { h: 0, s: -100, b: -42, c: 0 };
 const checkerWhiteColor: ColorValue = { h: 0, s: -100, b: 42, c: -10 };
 const lcdMintColor: ColorValue = { ...paletteSilver, b: 22, c: 8 };
@@ -551,14 +552,13 @@ export function createCompactEditorLayout(): OfficeLayout {
   const cols = COMPACT_EDITOR_MAP_SIZE;
   const rows = COMPACT_EDITOR_MAP_SIZE;
   const tiles = new Array<TileTypeVal>(cols * rows).fill(TileType.FLOOR_4);
-  const tileColors = new Array<ColorValue | null>(cols * rows).fill(forestGrassColor);
-  const pixelMapBackground = { width: 1, height: 1, palette: { '.': '#69C3AA' }, rows: ['.'] };
+  const tileColors = new Array<ColorValue | null>(cols * rows).fill(compactEditorGrassColor);
   const furniture: PlacedFurniture[] = [];
 
   addFurniture(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE', 17, 6);
   addFurniture(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE.col, COMPACT_EDITOR_CAMPFIRE_TILE.row);
 
-  return { version: 1, cols, rows, tiles, tileColors, pixelMapBackground, furniture, layoutRevision: 43 };
+  return { version: 1, cols, rows, tiles, tileColors, furniture, layoutRevision: 44 };
 }
 
 export function createNextTinyRoomLayout(): OfficeLayout {

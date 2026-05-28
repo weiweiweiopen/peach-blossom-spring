@@ -1527,8 +1527,11 @@ function App() {
   }, [alwaysShowLabels]);
 
   const handleToggleDebugMode = useCallback(
-    () => setIsDebugMode((prev) => !prev),
-    [],
+    () => {
+      if (editorEntryEnabled) return;
+      setIsDebugMode((prev) => !prev);
+    },
+    [editorEntryEnabled],
   );
   const handleToggleAlwaysShowOverlay = useCallback(() => {
     setAlwaysShowOverlay((prev) => {
@@ -2054,13 +2057,13 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || appMode !== "interactive") return;
-    const placements = editorEntryEnabled ? compactEditorNpcPlacements : nextTinyRoomNpcPlacements;
     if (editorEntryEnabled) {
-      const allowedPersonaIds = new Set(placements.map((placement) => placement.personaId));
-      personas.forEach((persona, index) => {
-        if (!allowedPersonaIds.has(persona.id)) officeState.characters.delete(index + 1);
+      personas.forEach((_persona, index) => {
+        officeState.characters.delete(index + 1);
       });
+      return;
     }
+    const placements = editorEntryEnabled ? compactEditorNpcPlacements : nextTinyRoomNpcPlacements;
     const personaById = new Map(
       personas.map((persona, index) => [persona.id, index + 1]),
     );
@@ -4278,6 +4281,7 @@ function App() {
             setHooksEnabled(newVal);
             vscode.postMessage({ type: "setHooksEnabled", enabled: newVal });
           }}
+          editorMode={editorEntryEnabled}
         />
       )}
 

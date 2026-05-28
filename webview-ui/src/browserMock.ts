@@ -28,6 +28,7 @@ import type {
   CharacterDirectionSprites,
 } from '../../shared/assets/types.ts';
 import { getPersonaNpcAppearance } from './personaNpcAppearance.js';
+import { BROWSER_EDITOR_LAYOUT_KEY } from './vscodeApi.js';
 import { createCompactEditorLayout } from './world/peachBlossomWorld.js';
 
 interface Persona {
@@ -257,8 +258,21 @@ export async function initBrowserMock(): Promise<void> {
   const editorPreview = params.get('editor') === '1';
   const modernPbsPreview = params.has('modern-pbs-scene') || params.has('modern-peach-blossom-spring');
   const layoutPath = modernPbsPreview ? 'default-layout-modern-taoyuan.json' : assetIndex.defaultLayout;
+  const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
+  let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
+  if (savedEditorLayout) {
+    try {
+      parsedEditorLayout = JSON.parse(savedEditorLayout) as ReturnType<typeof createCompactEditorLayout>;
+    } catch {
+      window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
+    }
+  }
+  const compactEditorLayout = editorPreview ? createCompactEditorLayout() : null;
+  const editorLayout = parsedEditorLayout?.layoutRevision === compactEditorLayout?.layoutRevision
+    ? parsedEditorLayout
+    : compactEditorLayout;
   const layout = editorPreview
-    ? createCompactEditorLayout()
+    ? editorLayout
     : layoutPath
       ? await fetch(`${base}assets/${layoutPath}`).then((r) => r.json())
       : null;
@@ -297,24 +311,29 @@ export function dispatchMockMessages(): void {
   dispatch({ type: 'floorTilesLoaded', sprites: floorSprites });
   dispatch({ type: 'wallTilesLoaded', sets: wallSets });
   dispatch({ type: 'furnitureAssetsLoaded', catalog: furnitureCatalog, sprites: furnitureSprites });
-  dispatch({
-    type: 'existingAgents',
-    agents: personaAgentIds,
-    agentMeta: personaAgentMeta(),
-    folderNames: personaFolderNames(),
-  });
-  dispatch({ type: 'layoutLoaded', layout });
-  personas.forEach((persona, index) => {
-    const id = index + 1;
-    dispatch({ type: 'agentStatus', id, status: 'active' });
+  const editorPreview = new URLSearchParams(window.location.search).get('editor') === '1';
+  if (!editorPreview) {
     dispatch({
-      type: 'agentToolStart',
-      id,
-      toolId: `ngm-${id}`,
-      status: persona.role,
-      toolName: 'Persona',
+      type: 'existingAgents',
+      agents: personaAgentIds,
+      agentMeta: personaAgentMeta(),
+      folderNames: personaFolderNames(),
     });
-  });
+  }
+  dispatch({ type: 'layoutLoaded', layout });
+  if (!editorPreview) {
+    personas.forEach((persona, index) => {
+      const id = index + 1;
+      dispatch({ type: 'agentStatus', id, status: 'active' });
+      dispatch({
+        type: 'agentToolStart',
+        id,
+        toolId: `ngm-${id}`,
+        status: persona.role,
+        toolName: 'Persona',
+      });
+    });
+  }
   dispatch({
     type: 'settingsLoaded',
     soundEnabled: false,

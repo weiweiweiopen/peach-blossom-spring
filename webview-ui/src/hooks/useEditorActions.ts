@@ -255,6 +255,9 @@ export function useEditorActions(
         editorState.clearGhost();
       } else {
         editorState.selectedFurnitureType = type;
+        editorState.activeTool = EditTool.FURNITURE_PLACE;
+        editorState.clearSelection();
+        editorState.clearDrag();
       }
       setEditorTick((n) => n + 1);
     },
