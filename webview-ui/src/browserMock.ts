@@ -256,8 +256,7 @@ export async function initBrowserMock(): Promise<void> {
 
   const params = new URLSearchParams(window.location.search);
   const editorPreview = params.get('editor') === '1';
-  const modernPbsPreview = params.has('modern-pbs-scene') || params.has('modern-peach-blossom-spring');
-  const layoutPath = modernPbsPreview ? 'default-layout-modern-taoyuan.json' : assetIndex.defaultLayout;
+  const layoutPath = 'pbs-editor-layout.json';
   const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
   let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
   if (savedEditorLayout) {
@@ -268,7 +267,7 @@ export async function initBrowserMock(): Promise<void> {
     }
   }
   const compactEditorLayout = editorPreview
-    ? await fetch(`${base}assets/pbs-editor-layout.json`)
+    ? await fetch(`${base}assets/${layoutPath}`)
         .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
         .catch(() => createCompactEditorLayout())
     : null;
@@ -277,9 +276,7 @@ export async function initBrowserMock(): Promise<void> {
     : compactEditorLayout;
   const layout = editorPreview
     ? editorLayout
-    : layoutPath
-      ? await fetch(`${base}assets/${layoutPath}`).then((r) => r.json())
-      : null;
+    : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
 
   mockPayload = {
     characters,

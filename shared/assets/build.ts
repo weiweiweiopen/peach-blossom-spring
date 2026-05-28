@@ -113,21 +113,9 @@ export function buildAssetIndex(assetsDir: string) {
       });
   }
 
-  let defaultLayout: string | null = null;
-  if (fs.existsSync(assetsDir)) {
-    // Keep the shipped formal default explicit. Preview/review layouts such as
-    // default-layout-30.json must not become default just because their number
-    // is higher.
-    if (fs.existsSync(path.join(assetsDir, 'pbs-editor-layout.json'))) {
-      defaultLayout = 'pbs-editor-layout.json';
-    }
-    if (!defaultLayout && fs.existsSync(path.join(assetsDir, 'default-layout-1.json'))) {
-      defaultLayout = 'default-layout-1.json';
-    }
-    if (!defaultLayout && fs.existsSync(path.join(assetsDir, 'default-layout.json'))) {
-      defaultLayout = 'default-layout.json';
-    }
-  }
+  const defaultLayout = fs.existsSync(path.join(assetsDir, 'pbs-editor-layout.json'))
+    ? 'pbs-editor-layout.json'
+    : null;
 
   return {
     floors: listSorted('floors', /^floor_\d+\.png$/i),
