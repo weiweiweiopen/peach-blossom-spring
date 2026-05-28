@@ -87,7 +87,7 @@ function languageInstruction(language: AssociationZineLanguage): string {
 }
 
 function printBindingLengthInstruction(): string {
-  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, force a ${ZINE_TARGET_PRINT_PAGES}-printable-page target rather than 8. Do not add empty padding pages. Add useful length inside the text: opening and proposition should each be 220-300 visible characters for CJK/Thai/Japanese or 140-190 words for Latin-script languages; each section body should be 760-940 visible characters for CJK/Thai/Japanese or 430-560 words for Latin-script languages; each protocol body should be 180-260 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages. Extra length must add evidence reading, comparison, caveat, counter-evidence, or future research direction, never filler.`;
+  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count must land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target ${ZINE_TARGET_PRINT_PAGES} printable pages by making the original four-section article denser, not by adding filler pages. Do not add empty padding pages. Keep exactly four main sections. Only change length: opening and proposition should each be 230-320 visible characters for CJK/Thai/Japanese or 150-210 words for Latin-script languages; each section body should be 900-1150 visible characters for CJK/Thai/Japanese or 560-720 words for Latin-script languages; each protocol body should be 220-320 visible characters for CJK/Thai/Japanese or 140-210 words for Latin-script languages.`;
 }
 
 function progressCopy(language: AssociationZineLanguage) {
@@ -179,8 +179,7 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   html, body { width: auto !important; height: auto !important; overflow: visible !important; background: #f9e9c2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { margin: 0 !important; }
   .zine-feedback-page, script, button { display: none !important; }
-  .page { break-after: page !important; page-break-after: always !important; break-before: auto !important; page-break-before: auto !important; break-inside: avoid !important; page-break-inside: avoid !important; min-height: 257mm !important; height: 257mm !important; margin: 0 !important; padding: 4mm !important; box-shadow: none !important; overflow: hidden !important; background: #f9e9c2 !important; display: block !important; }
-  .page:last-of-type { break-after: auto !important; page-break-after: auto !important; }
+  .page { break-after: auto !important; page-break-after: auto !important; break-before: auto !important; page-break-before: auto !important; break-inside: auto !important; page-break-inside: auto !important; min-height: auto !important; height: auto !important; margin: 0 0 5mm !important; padding: 4mm !important; box-shadow: none !important; overflow: visible !important; background: #f9e9c2 !important; display: block !important; }
   .sheet { min-height: auto !important; max-width: none !important; width: 100% !important; margin: 0 !important; padding: 4.5mm !important; border: 2px solid #315b63 !important; box-shadow: 2px 2px 0 #bac3d9 !important; background: #fffaf0 !important; display: block !important; break-inside: auto !important; page-break-inside: auto !important; }
   .top { margin-bottom: 3mm !important; display: flex !important; align-items: flex-start !important; gap: 3mm !important; break-inside: avoid !important; page-break-inside: avoid !important; }
   .no, .label, .titleBlock, .body, .refs { border-color: #315b63 !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -537,27 +536,22 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
   const linked = Array.isArray(parsedUser.linkedEvidenceTrails) ? parsedUser.linkedEvidenceTrails : [];
   const observationCount = Math.max(1, observations.length);
   const linkedCount = Math.max(1, linked.length);
-  const sectionJobs = [
-    "界定玩家問題：材料能回答什麼，哪裡仍模糊",
-    "提出最強支持證據：頁面/作品/方法如何推進論點",
-    "提出第二組支持證據：換一個場域或材料說明同一論點",
-    "提出限制、反例或不相合之處：避免把材料硬湊成結論",
-    "比較不同場域：同一方法在不同社群中如何變形",
-    "比較不同材料：身體、工具、文件與場地如何改變知識傳遞",
-    "提出未來研究方向：可比較、可查證、可延伸的下一個問題",
-    "收束論點：把支持、限制與下一步研究整理成可閱讀結論",
-  ];
   return {
     primaryPages: [observations[index % observationCount], observations[(index + 2) % observationCount]].filter(Boolean),
     relationTrail: linked[index % linkedCount] ?? null,
-    sectionJob: sectionJobs[index % sectionJobs.length],
+    sectionJob: [
+      "界定玩家問題：材料能回答什麼，哪裡仍模糊",
+      "提出最強支持證據：頁面/作品/方法如何推進論點",
+      "提出限制、反例或不相合之處：避免把材料硬湊成結論",
+      "提出未來研究方向：可比較、可查證、可延伸的下一個問題",
+    ][index],
   };
 }
 
 function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
-  const sections = Array.isArray(data.sections) ? data.sections.slice(0, 8) : [];
+  const sections = Array.isArray(data.sections) ? data.sections.slice(0, 4) : [];
   const protocol = Array.isArray(data.protocol) ? data.protocol.slice(0, 4) : [];
-  if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 8 || protocol.length < 4) {
+  if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 4 || protocol.length < 4) {
     throw new Error("LLM JSON missing required title/subtitle/opening/proposition/sections/protocol fields.");
   }
   const missingSection = sections.find((section: any) => !String(section?.id ?? "").trim() || !String(section?.title ?? "").trim() || !String(section?.body ?? "").trim());
@@ -682,7 +676,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
   const sections: DaydreamPublicArtifactContent["sections"] = [];
-  for (let index = 0; index < 8; index += 1) {
+  for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJson(
@@ -986,17 +980,16 @@ function renderWorkflowTraceSection(trace: Record<string, unknown>, language: As
       `${copy.warnings}: ${trace.thinSourceWarnings && Array.isArray(trace.thinSourceWarnings) && trace.thinSourceWarnings.length ? trace.thinSourceWarnings.join("; ") : copy.none}`,
       `${copy.llm}: ${deepSeek?.provider ?? copy.notRecorded}; status ${deepSeek?.httpStatus ?? copy.unknown}; ${deepSeek?.durationMs ?? "?"} ms`,
     ]),
-  ];
-  const tracePage = (items: string[], folio: string, includeIntro = false) => `<section class="page pbs-readable-trace" data-official-template="${escapeHtml(templateFilename)}" data-folio="${folio}" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#bac3d9;color:#111;">
+  ].join("");
+  return `<section class="page pbs-readable-trace" data-official-template="${escapeHtml(templateFilename)}" data-folio="retrieval-trace" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#bac3d9;color:#111;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #315b63;overflow-wrap:anywhere;">
       <div class="titleBlock" style="border:3px solid #111;background:#fcf46b;padding:clamp(12px,2vw,20px);margin-bottom:14px;box-shadow:4px 4px 0 #111;">
         <h1 style="margin:0;font-size:clamp(24px,3.2vw,38px);line-height:1.08;">${escapeHtml(copy.title)}</h1>
-        ${includeIntro ? `<p class="lead" style="margin:8px 0 0;font-size:clamp(14px,1.45vw,18px);line-height:1.38;">${escapeHtml(copy.intro)}</p>` : ""}
+        <p class="lead" style="margin:8px 0 0;font-size:clamp(14px,1.45vw,18px);line-height:1.38;">${escapeHtml(copy.intro)}</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">${items.join("")}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">${cards}</div>
     </main>
   </section>`;
-  return `${tracePage(cards.slice(0, 5), "retrieval-trace-a", true)}${tracePage(cards.slice(5), "retrieval-trace-b")}`;
 }
 
 function articleCharacterCount(artifact: DaydreamPublicArtifactContent): number {
