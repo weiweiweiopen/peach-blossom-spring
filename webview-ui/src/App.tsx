@@ -27,6 +27,8 @@ import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
+// @ts-ignore Vite raw prompt import for the in-game schema editor.
+import editorialSystemPrompt from "../prompts/association-editorial-system.md?raw";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
@@ -486,6 +488,24 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
 
 function SchemaControlRoom({ language }: { language: LanguageCode }) {
   const copy = SCHEMA_CONTROL_COPY[language];
+  const promptStorageKey = "pbs:association-editorial-system-prompt:v1";
+  const [editorialPromptDraft, setEditorialPromptDraft] = useState(() => {
+    try {
+      return window.localStorage.getItem(promptStorageKey) || editorialSystemPrompt;
+    } catch {
+      return editorialSystemPrompt;
+    }
+  });
+  const [promptSaved, setPromptSaved] = useState(false);
+  const saveEditorialPrompt = () => {
+    try {
+      window.localStorage.setItem(promptStorageKey, editorialPromptDraft);
+      setPromptSaved(true);
+      window.setTimeout(() => setPromptSaved(false), 1800);
+    } catch {
+      setPromptSaved(false);
+    }
+  };
   return (
     <div className="world-wiki-content world-about-content schema-control-room">
       <section className="schema-intro-card schema-hero-card">
@@ -549,6 +569,16 @@ function SchemaControlRoom({ language }: { language: LanguageCode }) {
         </div>
         <div className="schema-control-actions">
           {copy.actions.map((action) => <button key={action} type="button">{action}</button>)}
+        </div>
+      </section>
+
+      <section className="schema-control-prototype schema-editorial-prompt-editor">
+        <h3>Editorial prompt</h3>
+        <p>Edit the LLM Wiki zine editorial system prompt locally. Save writes to this browser only.</p>
+        <textarea value={editorialPromptDraft} onChange={(event) => setEditorialPromptDraft(event.target.value)} spellCheck={false} />
+        <div className="schema-control-actions">
+          <button type="button" onClick={saveEditorialPrompt}>Save local prompt</button>
+          {promptSaved && <span className="schema-save-status">Saved locally</span>}
         </div>
       </section>
     </div>
@@ -657,7 +687,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="rpg-dialogue-avatar-frame rpg-dialogue-avatar-frame--pixel bg-bg/80 border border-border p-2"
+        className="bg-bg/80 border border-border p-2"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
@@ -669,7 +699,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
           row.map((color, colIndex) => (
             <span
               key={`${rowIndex.toString()}-${colIndex.toString()}`}
-              style={{ width: 3, height: 3, display: "block", backgroundColor: color || "transparent" }}
+              style={{ backgroundColor: color || "transparent" }}
             />
           )),
         )}

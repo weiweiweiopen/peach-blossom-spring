@@ -26,6 +26,7 @@ const DEEPSEEK_REQUEST_TIMEOUT_MS = 120000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 300000;
 const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
+const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:association-editorial-system-prompt:v1";
 
 export interface BrowserAssociationResult {
   title: string;
@@ -102,23 +103,34 @@ function zinePrintCalibrationScript(): string {
     if (materials) materials.setAttribute("data-pbs-materials-mode", mode);
     document.documentElement.setAttribute("data-pbs-zine-estimated-pages", String(estimatePages()));
   };
+  const setPrintMode = (printing) => {
+    document.documentElement.toggleAttribute("data-pbs-printing", printing);
+    document.querySelectorAll(".zine-feedback-page").forEach((node) => {
+      if (printing) node.setAttribute("hidden", "");
+      else node.removeAttribute("hidden");
+    });
+  };
   const calibrate = () => {
     const materials = document.querySelector(".pbs-reading-materials");
     if (!materials) return;
-    let best = { mode: "standard", delta: Number.POSITIVE_INFINITY, pages: 0 };
+    let best = { mode: "standard", delta: Number.POSITIVE_INFINITY, pages: Number.POSITIVE_INFINITY };
+    let bestUnder = null;
     for (const mode of modes) {
       setMode(mode);
       const pages = estimatePages();
       const delta = Math.abs(targetPages - pages);
       if (delta < best.delta || (delta === best.delta && pages === targetPages)) best = { mode, delta, pages };
+      if (pages <= targetPages && (!bestUnder || pages > bestUnder.pages)) bestUnder = { mode, delta, pages };
       if (pages === targetPages) break;
     }
+    if (best.pages > targetPages && bestUnder) best = bestUnder;
     setMode(best.mode);
     materials.setAttribute("data-pbs-materials-calibrated-pages", String(best.pages));
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", calibrate, { once: true });
   else requestAnimationFrame(calibrate);
-  window.addEventListener("beforeprint", calibrate);
+  window.addEventListener("beforeprint", () => { setPrintMode(true); calibrate(); });
+  window.addEventListener("afterprint", () => setPrintMode(false));
 })();
 </script>`;
 }
@@ -205,6 +217,14 @@ function progressCopy(language: AssociationZineLanguage) {
   return copy[language];
 }
 
+function currentEditorialSystemPrompt(): string {
+  try {
+    return window.localStorage.getItem(EDITORIAL_PROMPT_STORAGE_KEY) || editorialSystemPrompt;
+  } catch {
+    return editorialSystemPrompt;
+  }
+}
+
 function htmlPage(fragment: string, title: string, language: AssociationZineLanguage): string {
   return `<!doctype html><html lang="${htmlLanguage(language)}"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>${escapeHtml(title)}</title><style>
 @page { size: A4 portrait; margin: 10mm; }
@@ -212,6 +232,7 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   html, body { width: auto !important; height: auto !important; overflow: visible !important; background: #f9e9c2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { margin: 0 !important; }
   .zine-feedback-page, script, button { display: none !important; }
+  html[data-pbs-printing] .zine-feedback-page, .zine-feedback-page[hidden] { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
   .page { break-after: auto !important; page-break-after: auto !important; break-before: auto !important; page-break-before: auto !important; break-inside: auto !important; page-break-inside: auto !important; min-height: auto !important; height: auto !important; margin: 0 0 5mm !important; padding: 4mm !important; box-shadow: none !important; overflow: visible !important; background: #f9e9c2 !important; display: block !important; }
   .sheet { min-height: auto !important; max-width: none !important; width: 100% !important; margin: 0 !important; padding: 4.5mm !important; border: 2px solid #315b63 !important; box-shadow: 2px 2px 0 #bac3d9 !important; background: #fffaf0 !important; display: block !important; break-inside: auto !important; page-break-inside: auto !important; }
   .top { margin-bottom: 3mm !important; display: flex !important; align-items: flex-start !important; gap: 3mm !important; break-inside: avoid !important; page-break-inside: avoid !important; }
@@ -225,11 +246,11 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   .body, .refs { padding: 3.5mm !important; }
   h1 { font-size: 18pt !important; line-height: 1.12 !important; overflow-wrap: anywhere !important; }
   .lead, .body, .refs { font-size: 9.2pt !important; line-height: 1.36 !important; }
-  .pbs-reading-materials { --pbs-materials-font: 9.2pt; --pbs-materials-line: 1.42; --pbs-materials-row-padding: 2.2mm; }
+  .pbs-reading-materials { --pbs-materials-font: 8.8pt; --pbs-materials-line: 1.34; --pbs-materials-row-padding: 1.6mm; }
   .pbs-reading-materials[data-pbs-materials-mode="trim"] { --pbs-materials-font: 7.4pt; --pbs-materials-line: 1.16; --pbs-materials-row-padding: 0.8mm; }
   .pbs-reading-materials[data-pbs-materials-mode="compact"] { --pbs-materials-font: 8.2pt; --pbs-materials-line: 1.24; --pbs-materials-row-padding: 1.3mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="expanded"] { --pbs-materials-font: 10.4pt; --pbs-materials-line: 1.58; --pbs-materials-row-padding: 3.2mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="max"] { --pbs-materials-font: 11.2pt; --pbs-materials-line: 1.75; --pbs-materials-row-padding: 4mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="expanded"] { --pbs-materials-font: 9.6pt; --pbs-materials-line: 1.44; --pbs-materials-row-padding: 2.4mm; }
+  .pbs-reading-materials[data-pbs-materials-mode="max"] { --pbs-materials-font: 10.2pt; --pbs-materials-line: 1.55; --pbs-materials-row-padding: 3mm; }
   .pbs-reading-materials ol, .pbs-reading-materials li, .pbs-reading-materials p, .pbs-reading-materials span { font-size: var(--pbs-materials-font) !important; line-height: var(--pbs-materials-line) !important; }
   .pbs-reading-materials li { padding-top: var(--pbs-materials-row-padding) !important; padding-bottom: var(--pbs-materials-row-padding) !important; }
   .pbs-reading-materials[data-pbs-materials-mode="trim"] p { display: none !important; }
@@ -464,7 +485,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. Write one coherent research-seminar zine around one useful, source-grounded insight and one future research direction.",
     reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先說材料支持什麼、不支持什麼，並指出一個不容易被注意到、但對玩家問題有用的新關係、矛盾或事實。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 可以作為一般證據來源使用，但仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
-  const system = `${editorialSystemPrompt}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
+  const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
 }
 

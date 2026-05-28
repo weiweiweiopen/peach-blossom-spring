@@ -4,7 +4,7 @@
   font-family: "FS Pixel Sans";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url("/fonts/FSPixelSansUnicode-Regular.ttf") format("truetype");
 }
 
@@ -99,6 +99,23 @@
 .schema-control-grid textarea {
   min-height: 86px;
   resize: vertical;
+}
+
+.schema-editorial-prompt-editor textarea {
+  width: 100%;
+  min-height: min(46vh, 520px);
+  border: 3px solid #111;
+  background: #fffdf6;
+  color: #111;
+  padding: 12px 14px;
+  font: 15px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  box-shadow: 3px 3px 0 #111;
+  resize: vertical;
+}
+
+.schema-save-status {
+  align-self: center;
+  font-weight: 900;
 }
 
 .schema-control-actions {
@@ -430,8 +447,9 @@ html[data-language="th"],
 
 .boot-loading-title {
   margin: 0 0 12px;
-  font-size: var(--pbs-script-home-title-font, clamp(30px, 7vw, 58px));
-  line-height: 0.98;
+  font-family: var(--font-pixel) !important;
+  font-size: clamp(26px, 4.2vw, 42px);
+  line-height: 1.02;
 }
 
 .boot-loading-copy {

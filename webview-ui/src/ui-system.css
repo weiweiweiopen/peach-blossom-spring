@@ -211,11 +211,6 @@
   transform: translateY(8px) !important;
 }
 
-.pbs-interaction-root .rpg-dialogue-avatar-frame--pixel {
-  align-items: stretch !important;
-  justify-items: stretch !important;
-}
-
 .pbs-interaction-root .mobile-talk-prompt.mobile-talk-prompt--compact {
   width: auto !important;
   max-width: min(220px, calc(100vw - 28px)) !important;
