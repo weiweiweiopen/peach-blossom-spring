@@ -10,10 +10,11 @@ Generated PBS zines currently tend to land around 12-14 printable PDF pages. Tha
 
 ## Required Outcomes
 
-- Printable zine output should target an 8-page signature multiple.
-- For the current PBS zine structure, prefer 16 pages over 8 pages because generated articles are already close to 16.
-- Do not pad with visibly empty pages as the primary strategy.
+- Printable zine output should be 16 pages for every language.
+- The 8-page signature rule remains the binding constraint, but 8-page output is not acceptable for current PBS zines.
+- Do not pad with visibly empty pages.
 - Expand the article by asking for slightly longer opening/proposition text, section bodies, and protocol notes.
+- Render the main article as 1 cover page, 8 body-section pages, and 4 next-step pages, followed by reading material and two trace pages.
 - Keep the zine evidence-grounded; extra length must add caveats, comparisons, counter-evidence, future research questions, or concrete source readings.
 - Record the target print page count in the generation trace for QA.
 

@@ -38,13 +38,13 @@ function kineticTitle(title: string, language: TemplateLanguage = "zh-TW"): stri
 }
 
 function templateCopy(language: TemplateLanguage) {
-  const copy: Record<TemplateLanguage, { map: string; sequence: string; closing: string; caveat: string }> = {
-    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
-    en: { map: "Sound map", sequence: "Reading order", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
-    id: { map: "Peta suara", sequence: "Urutan baca", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama." },
-    de: { map: "Klangkarte", sequence: "Leseordnung", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden." },
-    ja: { map: "音の地図", sequence: "読む順序", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。" },
-    th: { map: "แผนที่เสียง", sequence: "ลำดับการอ่าน", closing: "ปิดท้าย", caveat: "ให้ภาพ เสียง และจริยธรรมถูกได้ยินร่วมกัน" },
+  const copy: Record<TemplateLanguage, { map: string; sequence: string; closing: string; caveat: string; nextStep: string }> = {
+    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。", nextStep: "下一步" },
+    en: { map: "Sound map", sequence: "Reading order", closing: "Closing", caveat: "Let image, sound, and ethics be heard together.", nextStep: "Next step" },
+    id: { map: "Peta suara", sequence: "Urutan baca", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama.", nextStep: "Langkah berikut" },
+    de: { map: "Klangkarte", sequence: "Leseordnung", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden.", nextStep: "Nächster Schritt" },
+    ja: { map: "音の地図", sequence: "読む順序", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。", nextStep: "次の一手" },
+    th: { map: "แผนที่เสียง", sequence: "ลำดับการอ่าน", closing: "ปิดท้าย", caveat: "ให้ภาพ เสียง และจริยธรรมถูกได้ยินร่วมกัน", nextStep: "ขั้นตอนต่อไป" },
   };
   return copy[language];
 }
@@ -88,13 +88,20 @@ function zineLayoutGovernanceCss(): string {
 
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
   const copy = templateCopy(language);
-  const sections = artifact.sections.slice(0, 4);
-  const refs = artifact.protocol.slice(0, 6);
+  const sections = artifact.sections.slice(0, 8);
+  const refs = artifact.sections.slice(0, 8);
   const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
   <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(section.title)}</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(section.title, language)}</h1>${section.pullQuote ? `<p class="lead">${escapeHtml(section.pullQuote)}</p>` : ""}</div>
     <div class="bodyGrid bodyGrid--full"><article class="body"><p>${escapeHtml(section.body)}</p></article></div>
+  </main>
+</section>`).join("\n");
+  const protocolPages = artifact.protocol.slice(0, 4).map((item, index) => `<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + index + 1)}">
+  <header class="top"><span class="no">${String(sections.length + index + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(copy.nextStep)}</span></header>
+  <main class="sheet">
+    <div class="titleBlock"><h1>${kineticTitle(item.title, language)}</h1>${index === 3 && artifact.quietCaveat ? `<p class="lead">${escapeHtml(artifact.quietCaveat)}</p>` : ""}</div>
+    <div class="bodyGrid bodyGrid--full"><article class="body"><p>${escapeHtml(item.body)}</p></article></div>
   </main>
 </section>`).join("\n");
   return `<style>${extractStyle(template.html)}${zineLayoutGovernanceCss()}</style><section class="page p1" data-official-template="${template.filename}" style="${frameStyle(0)}">
@@ -103,10 +110,7 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
     <div class="titleBlock"><h1>${kineticTitle(artifact.title, language)}</h1><p class="lead">${escapeHtml(artifact.subtitle)}</p></div>
     <div class="bodyGrid"><article class="body"><p>${escapeHtml(artifact.opening)}</p><p>${escapeHtml(artifact.proposition)}</p></article><aside class="refs"><b>${escapeHtml(copy.sequence)}</b><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
   </main>
-</section>${sectionPages}<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + 1)}">
-  <header class="top"><span class="no">06</span><span class="label">${escapeHtml(copy.closing)}</span></header>
-  <main class="sheet"><div class="bodyGrid bodyGrid--full"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
-</section>`;
+</section>${sectionPages}${protocolPages}`;
 }
 
 function renderSoftCommons(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource): string {
