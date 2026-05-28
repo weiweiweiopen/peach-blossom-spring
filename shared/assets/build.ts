@@ -118,7 +118,10 @@ export function buildAssetIndex(assetsDir: string) {
     // Keep the shipped formal default explicit. Preview/review layouts such as
     // default-layout-30.json must not become default just because their number
     // is higher.
-    if (fs.existsSync(path.join(assetsDir, 'default-layout-1.json'))) {
+    if (fs.existsSync(path.join(assetsDir, 'pbs-editor-layout.json'))) {
+      defaultLayout = 'pbs-editor-layout.json';
+    }
+    if (!defaultLayout && fs.existsSync(path.join(assetsDir, 'default-layout-1.json'))) {
       defaultLayout = 'default-layout-1.json';
     }
     if (!defaultLayout && fs.existsSync(path.join(assetsDir, 'default-layout.json'))) {
