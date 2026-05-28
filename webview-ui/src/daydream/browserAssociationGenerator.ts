@@ -674,6 +674,10 @@ function isAbortError(error: unknown): boolean {
   return error instanceof Error && (error.name === "AbortError" || /AbortError|timed out/i.test(error.message));
 }
 
+function isJsonParseError(error: unknown): boolean {
+  return errorClass(error) === "json_parse_failed";
+}
+
 async function requestDeepSeekJson(system: string, user: string, maxTokens = 900, temperature = 0.9): Promise<any> {
   const startedAt = Date.now();
   const controller = new AbortController();
@@ -730,10 +734,73 @@ async function requestDeepSeekJsonWithRetry(system: string, user: string, maxTok
   try {
     return await requestDeepSeekJson(system, user, maxTokens, temperature);
   } catch (error) {
-    if (!isAbortError(error)) throw error;
-    console.warn("DeepSeek JSON request timed out; retrying once.");
-    return requestDeepSeekJson(system, user, maxTokens, Math.max(0.55, temperature - 0.15));
+    if (isAbortError(error)) {
+      console.warn("DeepSeek JSON request timed out; retrying once.");
+      return requestDeepSeekJson(system, user, maxTokens, Math.max(0.55, temperature - 0.15));
+    }
+    if (isJsonParseError(error)) {
+      console.warn("DeepSeek JSON response was malformed; retrying once with stricter JSON instructions.");
+      return requestDeepSeekJson(
+        `${system}\nYour previous answer was malformed or truncated. Return one complete JSON object only, with every string closed and escaped.`,
+        `${user}\n\nJSON RETRY: complete the object within the token budget. Do not stop mid-string.`,
+        maxTokens,
+        Math.max(0.45, temperature - 0.25),
+      );
+    }
+    throw error;
   }
+}
+
+function sourceTitle(value: any): string {
+  return compactText(value?.title ?? value?.card?.title ?? value?.id ?? value?.card?.id ?? "reading material", 80);
+}
+
+function sourceExcerpt(value: any): string {
+  return compactText(value?.excerpt ?? value?.card?.excerpt ?? value?.description ?? "", 220);
+}
+
+function fallbackSection(query: string, parsedUser: any, index: number, language: AssociationZineLanguage) {
+  const focus = sectionMaterialFocus(parsedUser, index) as any;
+  const primary = Array.isArray(focus.primaryPages) ? focus.primaryPages : [];
+  const firstTitle = sourceTitle(primary[0]);
+  const secondTitle = sourceTitle(primary[1]);
+  const firstExcerpt = sourceExcerpt(primary[0]);
+  const secondExcerpt = sourceExcerpt(primary[1]);
+  const job = String(focus.sectionJob ?? "read the materials");
+  const compactQuery = compactText(query, 120);
+  const copy: Record<AssociationZineLanguage, { title: string; body: string; pullQuote: string }> = {
+    "zh-TW": {
+      title: `${firstTitle} 與問題的可查證線索`,
+      body: `這一章先把「${compactQuery}」放回可查證材料，而不是把材料硬湊成結論。${firstTitle} 提供的線索是：${firstExcerpt || "它給出一組可重新閱讀的作品、方法或場域名稱。"} ${secondTitle} 則補上另一個角度：${secondExcerpt || "它讓問題可以被比較，而不是只停在單一案例。"} 因此本章的任務是「${job}」。可以確定的是，材料至少指出一條可追蹤的關係；仍模糊的是，這條關係是否在不同工作坊、社群廚房、材料實驗或組織條件中都成立。下一步應回到頁面細節，檢查哪些物件、空間條件與共同照護實踐真的反覆出現。`,
+      pullQuote: "材料最有用的地方，是指出哪些關係還需要被查證。",
+    },
+    en: {
+      title: `Verifiable Clues Around ${firstTitle}`,
+      body: `This section keeps "${compactQuery}" tied to verifiable materials rather than forcing a conclusion. ${firstTitle} offers this clue: ${firstExcerpt || "it names a work, method, or setting that can be reread."} ${secondTitle} adds another angle: ${secondExcerpt || "it makes the question comparable rather than isolated."} The section task is: ${job}. What can be said is that the materials point to a traceable relation; what remains unclear is whether that relation holds across different workshops, kitchens, material experiments, or organizational conditions. The next check is to return to page details and compare the objects, spatial conditions, and practices of care that actually recur.`,
+      pullQuote: "The useful material marks what still needs checking.",
+    },
+    id: {
+      title: `Petunjuk teruji dari ${firstTitle}`,
+      body: `Bagian ini menahan pertanyaan "${compactQuery}" pada bahan yang dapat diperiksa. ${firstTitle} memberi petunjuk: ${firstExcerpt || "ia menyebut karya, metode, atau tempat yang dapat dibaca ulang."} ${secondTitle} menambah sudut lain: ${secondExcerpt || "ia membuat pertanyaan bisa dibandingkan."} Tugas bagian ini adalah: ${job}. Bahan menunjukkan relasi yang bisa dilacak, tetapi belum membuktikan bahwa relasi itu berlaku di semua lokakarya, dapur komunitas, eksperimen material, atau kondisi organisasi. Langkah berikutnya adalah membandingkan benda, ruang, dan praktik perawatan yang benar-benar berulang.`,
+      pullQuote: "Bahan yang baik menunjukkan apa yang masih harus diperiksa.",
+    },
+    de: {
+      title: `Pruefbare Spuren um ${firstTitle}`,
+      body: `Dieser Abschnitt haelt "${compactQuery}" an pruefbaren Materialien fest. ${firstTitle} gibt den Hinweis: ${firstExcerpt || "es nennt eine Arbeit, Methode oder Situation, die erneut gelesen werden kann."} ${secondTitle} ergaenzt: ${secondExcerpt || "es macht die Frage vergleichbar statt isoliert."} Die Aufgabe lautet: ${job}. Sichtbar wird eine verfolgbare Beziehung; offen bleibt, ob sie in verschiedenen Workshops, Kuechen, Materialexperimenten oder Organisationsbedingungen traegt. Der naechste Schritt ist der Vergleich konkreter Objekte, Raeume und Sorgepraktiken.`,
+      pullQuote: "Nuetzliches Material zeigt, was noch geprueft werden muss.",
+    },
+    ja: {
+      title: `${firstTitle} から見る検証可能な手がかり`,
+      body: `この章は「${compactQuery}」を、結論に押し込まず検証可能な材料に結びつける。${firstTitle} は次の手がかりを出す：${firstExcerpt || "読み直せる作品、方法、場を示している。"} ${secondTitle} は別の角度を加える：${secondExcerpt || "問いを単独の事例ではなく比較可能にする。"} 章の仕事は「${job}」。言えるのは、材料が追跡できる関係を示すこと。まだ曖昧なのは、その関係が異なるワークショップ、台所、素材実験、組織条件でも成立するかである。次は、実際に反復する物、空間条件、ケア実践をページ細部で比べる必要がある。`,
+      pullQuote: "有用な材料は、まだ検証すべき関係を示す。",
+    },
+    th: {
+      title: `เบาะแสที่ตรวจสอบได้จาก ${firstTitle}`,
+      body: `ส่วนนี้ผูกคำถาม "${compactQuery}" ไว้กับวัสดุที่ตรวจสอบได้ ไม่บังคับให้เป็นข้อสรุปเดียว ${firstTitle} ให้เบาะแสว่า ${firstExcerpt || "มันระบุผลงาน วิธี หรือสถานที่ที่อ่านซ้ำได้"} ${secondTitle} เพิ่มอีกมุมว่า ${secondExcerpt || "มันทำให้คำถามเปรียบเทียบได้"} หน้าที่ของส่วนนี้คือ ${job} วัสดุชี้ความสัมพันธ์ที่ตามรอยได้ แต่ยังไม่ชัดว่าความสัมพันธ์นี้เกิดซ้ำในเวิร์กช็อป ครัวชุมชน การทดลองวัสดุ หรือเงื่อนไของค์กรแบบอื่นหรือไม่ ขั้นต่อไปคือกลับไปเทียบวัตถุ พื้นที่ และการดูแลที่ปรากฏซ้ำจริง`,
+      pullQuote: "วัสดุที่ดีชี้ว่าสิ่งใดยังต้องตรวจสอบ",
+    },
+  };
+  return { id: String(index + 1), ...copy[language] };
 }
 
 function fallbackOutline(query: string, language: AssociationZineLanguage) {
@@ -829,7 +896,14 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
       }, null, 2),
       1000,
     );
-    let section = await requestSection(false);
+    let section: any;
+    try {
+      section = await requestSection(false);
+    } catch (error) {
+      if (!isJsonParseError(error)) throw error;
+      console.warn(`Association section ${index + 1} malformed after retry; using evidence fallback section.`);
+      section = fallbackSection(query, parsedUser, index, language);
+    }
     if (isTooSimilarToExisting(String(section.body ?? ""), sections.map(({ body }) => body))) {
       section = await requestSection(true);
     }
