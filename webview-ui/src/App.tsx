@@ -1206,6 +1206,69 @@ function attachZineIframeControls(iframe: HTMLIFrameElement): void {
   });
 }
 
+interface ZineRepairPayload {
+  usefulParts?: string;
+  uselessParts?: string;
+  repairInstruction?: string;
+  zineTitle?: string;
+  language?: LanguageCode;
+  template?: string;
+  timestamp?: number;
+}
+
+function readLastZineTrace(): Record<string, any> | null {
+  try {
+    const parsed = JSON.parse(localStorage.getItem("pbs:last-zine-click-trace") || "null");
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function buildZineRepairReport(payload: ZineRepairPayload, panel: Extract<SplitPanel, { kind: "finalDocument" }> | null) {
+  const trace = readLastZineTrace();
+  const createdAt = new Date().toISOString();
+  const id = `zine-repair-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  return {
+    id,
+    reportKind: "zine-repair-feedback",
+    createdAt,
+    zineTitle: payload.zineTitle || panel?.title || trace?.generatedArticle?.title || "PBS zine",
+    query: panel?.query || trace?.query || panel?.seed || "",
+    language: payload.language || panel?.language || trace?.language || "zh-TW",
+    template: payload.template || "01-pbs-reset-title-kinetic.html",
+    originalRequestId: trace?.requestId ?? null,
+    usefulParts: payload.usefulParts?.trim() || "",
+    uselessParts: payload.uselessParts?.trim() || "",
+    repairInstruction: payload.repairInstruction?.trim() || "",
+    evidenceSnapshot: {
+      allowedSourceFamilies: trace?.allowedSourceFamilies ?? [],
+      searchTermsUsed: trace?.searchTermsUsed ?? [],
+      matchedPages: trace?.matchedPages ?? [],
+      deepReadPages: trace?.deepReadPages ?? [],
+      followedWikilinks: trace?.followedWikilinks ?? [],
+      publicValidation: trace?.publicValidation ?? null,
+    },
+    suggestedVaultActions: [
+      "Review whether uselessParts indicate unsupported synthesis, weak compiled Wiki notes, or missing sourceRefs.",
+      "If a useful relation is evidence-bound, consider promoting it into a reviewed Wiki note instead of raw Sources.",
+      "If the repair names missing evidence, add a Review gap artifact before mutating source or compiled Wiki pages.",
+    ],
+  };
+}
+
+function downloadZineRepairReport(report: Record<string, unknown>): void {
+  const blob = new Blob([`${JSON.stringify(report, null, 2)}\n`], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${typeof report.id === "string" ? report.id : "zine-repair-report"}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function ExternalLinkEmbed({ link, language, onRetry, progress }: { link: Extract<SplitPanel, { kind: "externalLink" | "finalDocument" }>; language: LanguageCode; onRetry?: () => void; progress?: string }) {
   const isFinalDocument = link.kind === "finalDocument";
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -3083,6 +3146,9 @@ function App() {
     seed?: string;
     petRole?: string;
     writingStyle?: string;
+    repairInstruction?: string;
+    repairUsefulParts?: string;
+    repairUselessParts?: string;
     language: LanguageCode;
     anchorId?: number;
   }): Promise<void> {
@@ -3114,7 +3180,12 @@ function App() {
       const { generateBrowserAssociationZine } = await importAssociationGenerator();
       const result = await generateBrowserAssociationZine(query, request.language, (message) => {
         setAssociationProgress(message);
-      }, { writingStyle: request.writingStyle });
+      }, {
+        writingStyle: request.writingStyle,
+        repairInstruction: request.repairInstruction,
+        repairUsefulParts: request.repairUsefulParts,
+        repairUselessParts: request.repairUselessParts,
+      });
       if (wikiGenerationRequestRef.current !== requestKey) return;
       const url = URL.createObjectURL(new Blob([result.html], { type: "text/html;charset=utf-8" }));
       finalDocumentObjectUrlsRef.current.add(url);
@@ -3155,6 +3226,45 @@ function App() {
       }
     }
   }
+
+  useEffect(() => {
+    const handleZineRepairRequest = (event: MessageEvent) => {
+      const data = event.data as { type?: string; payload?: ZineRepairPayload } | null;
+      if (!data || data.type !== "pbs:zine-repair-request" || !data.payload) return;
+      const panel = splitPanel?.kind === "finalDocument" ? splitPanel : null;
+      const report = buildZineRepairReport(data.payload, panel);
+      try {
+        const history = JSON.parse(localStorage.getItem("pbs:zine-repair-reports") || "[]") as unknown;
+        const next = Array.isArray(history) ? [...history, report].slice(-50) : [report];
+        localStorage.setItem("pbs:zine-repair-reports", JSON.stringify(next));
+      } catch (error) {
+        console.warn("PBS zine repair local history unavailable", error);
+      }
+      void fetch("/api/zine-repair-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(report),
+      }).then((response) => {
+        if (!response.ok) downloadZineRepairReport(report);
+      }).catch(() => {
+        downloadZineRepairReport(report);
+      });
+      const query = report.query || panel?.query || panel?.seed || "";
+      if (!query) return;
+      setWorldNotice(data.payload.language === "zh-TW" ? "已收到排修資訊，正在重生小誌。" : "Repair notes received. Regenerating the zine.");
+      void openAssociationZineSplit({
+        query: String(query),
+        seed: panel?.seed || String(query),
+        petRole: panel?.petRole,
+        language: (report.language as LanguageCode) || selectedLanguage,
+        repairInstruction: report.repairInstruction as string,
+        repairUsefulParts: report.usefulParts as string,
+        repairUselessParts: report.uselessParts as string,
+      });
+    };
+    window.addEventListener("message", handleZineRepairRequest);
+    return () => window.removeEventListener("message", handleZineRepairRequest);
+  }, [selectedLanguage, splitPanel]);
 
   const handleBootStart = useCallback(() => {
     setHasStarted(true);
@@ -4210,15 +4320,15 @@ function App() {
               <h2>{splitPanelTitle(splitPanel, splitPanelLanguage)}</h2>
             </div>
             <div className="world-split-actions">
-              {splitPanel.kind !== "finalDocument" && (
-                <button
-                  className="world-split-expand pbs-frame-action"
-                  type="button"
-                  onClick={() => setIsSplitExpanded((expanded) => !expanded)}
-                >
-                  {isSplitExpanded ? "↙" : "⤢"}
-                </button>
-              )}
+              <button
+                className="world-split-expand pbs-frame-action"
+                type="button"
+                onClick={() => setIsSplitExpanded((expanded) => !expanded)}
+                aria-label={isSplitExpanded ? "Minimize zine review" : "Maximize zine review"}
+                title={isSplitExpanded ? "Minimize" : "Maximize"}
+              >
+                {isSplitExpanded ? "↙" : "⤢"}
+              </button>
               <button className="world-split-close pbs-frame-action" type="button" onClick={closeSplitPanel}>
                 X
               </button>

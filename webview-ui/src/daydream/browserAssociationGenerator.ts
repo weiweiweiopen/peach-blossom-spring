@@ -40,6 +40,9 @@ export interface BrowserAssociationResult {
 
 export interface BrowserAssociationOptions {
   writingStyle?: string;
+  repairInstruction?: string;
+  repairUsefulParts?: string;
+  repairUselessParts?: string;
 }
 
 export type AssociationProgressCallback = (message: string) => void;
@@ -625,12 +628,26 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
   return { system, user };
 }
 
-function withWritingStyle(user: string, writingStyle?: string): string {
+function withWritingStyle(user: string, options: BrowserAssociationOptions = {}): string {
+  const writingStyle = options.writingStyle;
   const style = compactText(writingStyle, 700);
-  if (!style) return user;
   const parsed = JSON.parse(user) as Record<string, unknown>;
-  parsed.npcWritingStyle = style;
-  parsed.instruction = `${String(parsed.instruction ?? "")} If npcWritingStyle is present, adapt cadence, emphasis, examples, and metaphors to that NPC transcript voice while still using public wiki evidence and the same four section jobs.`;
+  if (style) {
+    parsed.npcWritingStyle = style;
+    parsed.instruction = `${String(parsed.instruction ?? "")} If npcWritingStyle is present, adapt cadence, emphasis, examples, and metaphors to that NPC transcript voice while still using public wiki evidence and the same four section jobs.`;
+  }
+  const useful = compactText(options.repairUsefulParts, 900);
+  const useless = compactText(options.repairUselessParts, 900);
+  const repair = compactText(options.repairInstruction, 1200);
+  if (useful || useless || repair) {
+    parsed.humanRepairReview = {
+      usefulParts: useful,
+      uselessOrMisleadingParts: useless,
+      requestedRepair: repair,
+      rule: "Regenerate a better public zine using this human review only as editorial guidance. Preserve the same evidence gate, four-section structure, citations/source grounding, and insufficient-evidence caveats. Do not add any claim just because the reviewer requested it; use the review to remove weak parts, sharpen useful parts, and ask clearer verification questions.",
+    };
+    parsed.instruction = `${String(parsed.instruction ?? "")} This is a repair pass. Prioritize humanRepairReview: keep the useful parts if evidence supports them; remove or rewrite useless, misleading, repetitive, or under-evidenced parts; answer requestedRepair only within retrieved evidence. If the requested repair lacks evidence, explicitly say there is not enough evidence instead of inventing support.`;
+  }
   return JSON.stringify(parsed, null, 2);
 }
 
@@ -1054,7 +1071,7 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
 async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[], onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
   const messages = buildEditorialMessages(query, workflow, language, compiledNotes);
   const system = messages.system;
-  const user = withWritingStyle(messages.user, options.writingStyle);
+  const user = withWritingStyle(messages.user, options);
   const printLength = printBindingLengthInstruction();
   const progress = progressCopy(language);
   onProgress?.(progress.materialClues);

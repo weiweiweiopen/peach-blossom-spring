@@ -35,6 +35,7 @@ Spec-kit is the project planning ledger for scoped PBS changes. Each folder shou
 | `018-mixed-repo-size-editor-association-migration` | Mixed repo-size cleanup, local-only editor rules, and staged daydream-to-association migration. |
 | `019-wiki-tool-hybrid-search-build-note-evidence-linter` | Wiki tool phase one: hybrid search, build-note, evidence lint, sample compiled note, pet/visualization follow-up. |
 | `020-wiki-tool-zine-runtime-rag-cross-community-gaps` | Wiki tool runtime RAG: export compiled Wiki JSON, feed zine prompts, cross-community gap reports. |
+| `021-zine-repair-feedback-reporting` | Replace binary zine reactions with repair feedback, report artifacts, and evidence-bound regeneration. |
 
 ## Naming Rules
 

@@ -10,30 +10,33 @@ function escapeHtml(value: string): string {
 }
 
 export function renderAssociationFeedbackSection(language: AssociationFeedbackLanguage, templateFilename = "01-pbs-reset-title-kinetic.html"): string {
-  const copy: Record<AssociationFeedbackLanguage, { title: string; placeholder: string; good: string; bad: string; pdf: string; pdfLabel: string }> = {
-    "zh-TW": { title: "這份小誌有幫助嗎？", placeholder: "寫下留言...", good: "喜歡", bad: "不適合", pdf: "列印 / 存 PDF", pdfLabel: "列印或存成 PDF" },
-    en: { title: "Was this zine useful?", placeholder: "Leave a note...", good: "Loved it", bad: "Not useful", pdf: "Print / Save PDF", pdfLabel: "Print or save PDF" },
-    id: { title: "Apakah zine ini berguna?", placeholder: "Tulis komentar...", good: "Suka", bad: "Kurang cocok", pdf: "Cetak / PDF", pdfLabel: "Cetak atau simpan PDF" },
-    de: { title: "War dieses Zine hilfreich?", placeholder: "Kommentar schreiben...", good: "Gern gelesen", bad: "Nicht passend", pdf: "Drucken / PDF", pdfLabel: "Drucken oder als PDF speichern" },
-    ja: { title: "この小誌は役に立ちましたか？", placeholder: "コメントを書く...", good: "よかった", bad: "合わなかった", pdf: "印刷 / PDF", pdfLabel: "印刷またはPDF保存" },
-    th: { title: "ซีนนี้มีประโยชน์ไหม", placeholder: "เขียนความเห็น...", good: "ชอบ", bad: "ยังไม่ใช่", pdf: "พิมพ์ / PDF", pdfLabel: "พิมพ์หรือบันทึก PDF" },
+  const copy: Record<AssociationFeedbackLanguage, { title: string; useful: string; useless: string; instruction: string; submit: string; submitted: string; pdf: string; pdfLabel: string }> = {
+    "zh-TW": { title: "向 LLM 提交故障排修資訊和人工檢驗輔助", useful: "哪些段落、頁名或論點有用？", useless: "哪些部分無用、誤導、重複或缺少證據？", instruction: "希望下一版如何修？", submit: "提交排修並重生小誌", submitted: "已送出，正在重生小誌...", pdf: "列印 / 存 PDF", pdfLabel: "列印或存成 PDF" },
+    en: { title: "Send repair notes and human review aid to the LLM", useful: "Which parts, page names, or claims were useful?", useless: "Which parts were useless, misleading, repetitive, or under-evidenced?", instruction: "How should the next version be repaired?", submit: "Submit repair and regenerate", submitted: "Submitted. Regenerating zine...", pdf: "Print / Save PDF", pdfLabel: "Print or save PDF" },
+    id: { title: "Kirim catatan perbaikan dan bantuan tinjauan manusia ke LLM", useful: "Bagian, nama halaman, atau klaim mana yang berguna?", useless: "Bagian mana yang tidak berguna, menyesatkan, berulang, atau kurang bukti?", instruction: "Bagaimana versi berikutnya perlu diperbaiki?", submit: "Kirim perbaikan dan buat ulang", submitted: "Terkirim. Membuat ulang zine...", pdf: "Cetak / PDF", pdfLabel: "Cetak atau simpan PDF" },
+    de: { title: "Reparaturhinweise und menschliche Pruefung an das LLM senden", useful: "Welche Teile, Seitennamen oder Thesen waren nuetzlich?", useless: "Welche Teile waren unnuetz, irrefuehrend, wiederholt oder zu schwach belegt?", instruction: "Wie soll die naechste Version repariert werden?", submit: "Reparatur senden und neu erzeugen", submitted: "Gesendet. Zine wird neu erzeugt...", pdf: "Drucken / PDF", pdfLabel: "Drucken oder als PDF speichern" },
+    ja: { title: "修復情報と人間による検証補助を LLM に送る", useful: "役に立った段落、ページ名、主張はどれですか？", useless: "役に立たない、誤解を招く、反復している、証拠不足の部分はどれですか？", instruction: "次の版をどう修復しますか？", submit: "修復を送信して再生成", submitted: "送信しました。小誌を再生成しています...", pdf: "印刷 / PDF", pdfLabel: "印刷またはPDF保存" },
+    th: { title: "ส่งข้อมูลซ่อมและตัวช่วยตรวจมนุษย์ให้ LLM", useful: "ส่วน ชื่อหน้า หรือข้อเสนอใดมีประโยชน์?", useless: "ส่วนใดไม่มีประโยชน์ ชวนเข้าใจผิด ซ้ำ หรือหลักฐานไม่พอ?", instruction: "ฉบับถัดไปควรซ่อมอย่างไร?", submit: "ส่งการซ่อมและสร้างใหม่", submitted: "ส่งแล้ว กำลังสร้างซีนใหม่...", pdf: "พิมพ์ / PDF", pdfLabel: "พิมพ์หรือบันทึก PDF" },
   };
   const selected = copy[language];
+  const fieldStyle = "width:100%;min-height:86px;resize:vertical;border:3px solid #000;border-radius:0;padding:14px 16px;background:#fff;color:#243b3d;box-shadow:4px 4px 0 #000;font:inherit;font-size:clamp(15px,1.8vw,20px);line-height:1.45;outline:0;box-sizing:border-box;";
   return `<section class="page zine-feedback-page" data-folio="feedback" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;"><div class="zine-system-frame">
-    <div class="zine-feedback-row" style="display:grid;grid-template-columns:minmax(0,1fr) 64px 64px 64px;gap:12px;align-items:stretch;margin:0;">
-      <label style="margin:0;min-height:64px;display:flex;align-items:stretch;border:3px solid #000;background:#fff;color:#243b3d;box-shadow:4px 4px 0 #000;">
-        <span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">${escapeHtml(selected.title)}</span>
-        <textarea data-pbs-zine-comment aria-label="${escapeHtml(selected.title)}" placeholder="${escapeHtml(selected.placeholder)}" rows="1" style="width:100%;min-height:58px;resize:vertical;border:0;border-radius:0;padding:14px 18px;background:#fff;color:#243b3d;font:inherit;font-size:clamp(16px,2.2vw,22px);line-height:1.35;outline:0;box-shadow:none;"></textarea>
-      </label>
-      <button type="button" data-pbs-zine-feedback="love" class="pbs-zine-button" aria-label="${escapeHtml(selected.good)}" title="${escapeHtml(selected.good)}" style="width:64px;height:64px;min-width:64px;min-height:64px;padding:0;color:#000;background:#fff;border:3px solid #000;border-radius:0;box-shadow:4px 4px 0 #000;font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;overflow:hidden;">❤️</button>
-      <button type="button" data-pbs-zine-feedback="broken" data-pbs-feedback-icon="black-broken-heart" class="pbs-zine-button" aria-label="${escapeHtml(selected.bad)}" title="${escapeHtml(selected.bad)}" style="width:64px;height:64px;min-width:64px;min-height:64px;padding:0;color:#000;background:#fff;border:3px solid #000;border-radius:0;box-shadow:4px 4px 0 #000;font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;overflow:hidden;"><span class="pbs-feedback-broken-heart" aria-hidden="true" style="color:#000;font-family:Arial,Helvetica,sans-serif;filter:grayscale(1);line-height:1;">💔︎</span></button>
-      <button type="button" data-pbs-zine-pdf class="pbs-zine-button" aria-label="${escapeHtml(selected.pdfLabel)}" title="${escapeHtml(selected.pdf)}" style="width:64px;height:64px;min-width:64px;min-height:64px;padding:0;color:#000;background:#FCF46B;border:3px solid #000;border-radius:0;box-shadow:4px 4px 0 #000;font-family:Arial,Helvetica,sans-serif;font-size:30px;line-height:1;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;overflow:hidden;">📖</button>
-    </div></div>
+    <form data-pbs-zine-repair-form style="display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:stretch;margin:0;">
+      <h2 style="margin:0;font-size:clamp(24px,3vw,38px);line-height:1.08;color:#111;">${escapeHtml(selected.title)}</h2>
+      <textarea data-pbs-zine-repair-useful aria-label="${escapeHtml(selected.useful)}" placeholder="${escapeHtml(selected.useful)}" rows="3" style="${fieldStyle}"></textarea>
+      <textarea data-pbs-zine-repair-useless aria-label="${escapeHtml(selected.useless)}" placeholder="${escapeHtml(selected.useless)}" rows="3" style="${fieldStyle}"></textarea>
+      <textarea data-pbs-zine-repair-instruction aria-label="${escapeHtml(selected.instruction)}" placeholder="${escapeHtml(selected.instruction)}" rows="3" style="${fieldStyle}"></textarea>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <button type="submit" data-pbs-zine-repair-submit class="pbs-zine-button pbs-zine-repair-submit" aria-label="${escapeHtml(selected.submit)}" title="${escapeHtml(selected.submit)}" style="width:auto;max-width:none;min-width:min(100%,280px);height:auto;min-height:64px;padding:12px 18px;color:#000;background:#FCF46B;border:3px solid #000;border-radius:0;box-shadow:4px 4px 0 #000;font-family:Arial,Helvetica,sans-serif;font-size:clamp(16px,1.8vw,22px);font-weight:800;line-height:1.1;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;overflow:hidden;">${escapeHtml(selected.submit)}</button>
+        <button type="button" data-pbs-zine-pdf class="pbs-zine-button" aria-label="${escapeHtml(selected.pdfLabel)}" title="${escapeHtml(selected.pdf)}" style="width:64px;height:64px;min-width:64px;min-height:64px;padding:0;color:#000;background:#fff;border:3px solid #000;border-radius:0;box-shadow:4px 4px 0 #000;font-family:Arial,Helvetica,sans-serif;font-size:30px;line-height:1;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;overflow:hidden;">PDF</button>
+      </div>
+    </form></div>
   </section><script>
 (() => {
-  const key = "pbs:zine-page-feedback";
+  const key = "pbs:zine-repair-feedback";
   const language = ${JSON.stringify(language)};
   const template = ${JSON.stringify(templateFilename)};
+  const submitted = ${JSON.stringify(selected.submitted)};
   const pressButton = (button, pressed) => {
     button.style.transform = pressed ? "translate(3px, 3px)" : "";
     button.style.boxShadow = pressed ? "1px 1px 0 #000" : "4px 4px 0 #000";
@@ -47,12 +50,14 @@ export function renderAssociationFeedbackSection(language: AssociationFeedbackLa
     });
     button.addEventListener("keyup", () => pressButton(button, false));
   });
-  document.querySelectorAll("[data-pbs-zine-feedback]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const comment = document.querySelector("[data-pbs-zine-comment]")?.value || "";
+  document.querySelectorAll("[data-pbs-zine-repair-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const button = form.querySelector("[data-pbs-zine-repair-submit]");
       const entry = {
-        value: button.getAttribute("data-pbs-zine-feedback"),
-        comment,
+        usefulParts: form.querySelector("[data-pbs-zine-repair-useful]")?.value || "",
+        uselessParts: form.querySelector("[data-pbs-zine-repair-useless]")?.value || "",
+        repairInstruction: form.querySelector("[data-pbs-zine-repair-instruction]")?.value || "",
         zineTitle: document.title,
         page: "feedback",
         language,
@@ -67,8 +72,12 @@ export function renderAssociationFeedbackSection(language: AssociationFeedbackLa
       } catch (error) {
         console.warn("PBS zine feedback storage unavailable", error);
       }
-      button.setAttribute("aria-pressed", "true");
-      pressButton(button, true);
+      if (button) {
+        button.setAttribute("aria-busy", "true");
+        button.textContent = submitted;
+        pressButton(button, true);
+      }
+      window.parent?.postMessage({ type: "pbs:zine-repair-request", payload: entry }, "*");
     });
   });
   document.querySelectorAll("[data-pbs-zine-pdf]").forEach((button) => {

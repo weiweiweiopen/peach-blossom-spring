@@ -96,6 +96,35 @@ function browserMockAssetsPlugin(): Plugin {
         }
       });
 
+      server.middlewares.use('/api/zine-repair-report', async (req, res, next) => {
+        if (req.method !== 'POST') {
+          next();
+          return;
+        }
+
+        try {
+          const chunks: Uint8Array[] = [];
+          for await (const chunk of req) {
+            chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+          }
+          const report = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}') as Record<string, unknown>;
+          const id = typeof report.id === 'string' && /^[a-zA-Z0-9._-]+$/.test(report.id) ? report.id : `zine-repair-${Date.now()}`;
+          const outDir = path.resolve(__dirname, '../obsidian-vault/Review/zine-repair-reports');
+          fs.mkdirSync(outDir, { recursive: true });
+          const jsonPath = path.join(outDir, `${id}.json`);
+          const mdPath = path.join(outDir, `${id}.md`);
+          fs.writeFileSync(jsonPath, `${JSON.stringify(report, null, 2)}\n`);
+          fs.writeFileSync(mdPath, zineRepairReportMarkdown(report));
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ ok: true, jsonPath: path.relative(path.resolve(__dirname, '..'), jsonPath), mdPath: path.relative(path.resolve(__dirname, '..'), mdPath) }));
+        } catch (error) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: error instanceof Error ? error.message : 'Failed to save zine repair report.' }));
+        }
+      });
+
       // Catalog & index (existing)
       server.middlewares.use(`${base}/assets/furniture-catalog.json`, (_req, res) => {
         res.setHeader('Content-Type', 'application/json');
@@ -240,6 +269,28 @@ function deepSeekChatProxyPlugin(defaultApiKey: string): Plugin {
       registerChatRoute(server.middlewares);
     },
   };
+}
+
+function markdownField(report: Record<string, unknown>, key: string): string {
+  const value = report[key];
+  if (typeof value === 'string') return value.trim() || '(empty)';
+  return JSON.stringify(value ?? null, null, 2);
+}
+
+function zineRepairReportMarkdown(report: Record<string, unknown>): string {
+  const title = typeof report.zineTitle === 'string' && report.zineTitle.trim() ? report.zineTitle.trim() : 'Zine repair report';
+  return `# ${title}\n\n` +
+    `- id: ${markdownField(report, 'id')}\n` +
+    `- query: ${markdownField(report, 'query')}\n` +
+    `- language: ${markdownField(report, 'language')}\n` +
+    `- createdAt: ${markdownField(report, 'createdAt')}\n` +
+    `- originalRequestId: ${markdownField(report, 'originalRequestId')}\n` +
+    `- reportKind: zine-repair-feedback\n\n` +
+    `## Useful Parts\n${markdownField(report, 'usefulParts')}\n\n` +
+    `## Useless Or Misleading Parts\n${markdownField(report, 'uselessParts')}\n\n` +
+    `## Requested Repair\n${markdownField(report, 'repairInstruction')}\n\n` +
+    `## Evidence Snapshot\n\`\`\`json\n${markdownField(report, 'evidenceSnapshot')}\n\`\`\`\n\n` +
+    `## Suggested Vault Actions\n${markdownField(report, 'suggestedVaultActions')}\n`;
 }
 
 export default defineConfig(({ mode }) => {

@@ -29,8 +29,8 @@ const editorialPrompt = readFileSync(join(root, "prompts", "association-editoria
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
-  ["feedback prompt is writable", /<textarea[^>]+data-pbs-zine-comment/.test(feedback)],
-  ["feedback stores comment", /comment\s*=\s*document\.querySelector\("\[data-pbs-zine-comment\]"\)/.test(feedback)],
+  ["zine repair feedback fields are writable", /data-pbs-zine-repair-useful/.test(feedback) && /data-pbs-zine-repair-useless/.test(feedback) && /data-pbs-zine-repair-instruction/.test(feedback)],
+  ["zine repair feedback posts regeneration request", /pbs:zine-repair-request/.test(feedback) && /humanRepairReview/.test(generator) && /repairInstruction/.test(app + generator)],
   ["Japanese talk bubble is capped", /data-language="ja"\] \.mobile-talk-prompt[\s\S]*font-size:\s*clamp\(16px,\s*1\.45vw,\s*21px\)/.test(css)],
   ["Thai talk bubble line-height is bounded", /data-language="th"\] \.mobile-talk-prompt[\s\S]*line-height:\s*1\.48/.test(css)],
   ["Japanese dialogue title is capped", /rpg-dialogue-panel\[data-language="ja"\][\s\S]*--dialogue-title-size:\s*clamp\(24px,\s*2\.25vw,\s*32px\)/.test(css)],

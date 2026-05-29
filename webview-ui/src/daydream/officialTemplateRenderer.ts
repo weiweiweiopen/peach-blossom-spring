@@ -81,6 +81,7 @@ function zineLayoutGovernanceCss(): string {
 .pbs-readable-trace, .zine-feedback-page { width:100%; max-width:100%; min-height:auto !important; }
 .pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { width:100%; max-width:980px; margin:0 auto; padding:clamp(16px,3vw,28px); border:4px solid #111; background:#fffaf0; box-shadow:none; overflow-wrap:anywhere; }
 .pbs-zine-button { inline-size:64px !important; block-size:64px !important; min-width:64px !important; min-height:64px !important; max-width:64px !important; max-height:64px !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; font-size:28px !important; line-height:1 !important; flex:0 0 64px !important; font-family:Arial, Helvetica, sans-serif !important; overflow:hidden !important; }
+.pbs-zine-repair-submit { inline-size:auto !important; block-size:auto !important; max-width:none !important; max-height:none !important; flex:1 1 280px !important; padding:12px 18px !important; }
 .pbs-zine-button span { display:inline-flex !important; align-items:center !important; justify-content:center !important; line-height:1 !important; }
 @media (max-width:700px) { .page { padding:18px; } .sheet, .body, .refs, .pbs-readable-trace > .zine-system-frame, .zine-feedback-page > .zine-system-frame { max-width:none; } .body, .refs { padding:14px; } .body p { max-width:none; } }
 `;
