@@ -1,7 +1,7 @@
 ---
 id: 019-tasks
 title: Tasks
-status: implemented-draft
+status: executed
 sourceRefs:
   - docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/spec.md
 ---
@@ -15,4 +15,4 @@ sourceRefs:
 - [x] Preserve local-only, source-bounded, no-recrawl constraints.
 - [x] Run dry run with 3-5 source cards and generate one sample note.
 - [x] Validate `py_compile`, existing wiki checks, and new CLI commands.
-- [ ] Review pet growth and visualization follow-up after evidence lint stabilizes.
+- [x] Review pet growth and visualization follow-up after evidence lint stabilizes.

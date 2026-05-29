@@ -1,7 +1,7 @@
 ---
 id: 019-pbs-llm-wiki-hybrid-rag-evidence-linter
 title: PBS LLM Wiki Hybrid RAG and Evidence Linter
-status: implemented-draft
+status: executed
 sourceRefs:
   - scripts/wiki_tool.py
   - obsidian-vault/Schema/llm-wiki-maintainer.md
@@ -35,3 +35,10 @@ PBS should differ from Connected Papers by mapping cultural terrain rather than 
 ## Pet Growth Direction
 
 The Question Pet should grow from reviewed knowledge states: unresolved evidence gaps, newly cited notes, lint warnings resolved, and terrain neighborhoods manually promoted from review artifacts.
+
+## Execution Artifacts
+
+- CLI implementation: `scripts/wiki_tool.py`
+- Sample source-bounded note: `obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md`
+- Evidence lint report: `obsidian-vault/Wiki/Logs/evidence-lint-2026-05-29.md`
+- Follow-up review: `docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/follow-up.md`
