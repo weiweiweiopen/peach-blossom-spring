@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 import re
 from pathlib import Path
@@ -74,9 +75,86 @@ TERRAIN_GAP_MOTIFS = [
     },
 ]
 
+NOTE_TYPE_FOLDERS = {
+    "Concept": "Concepts",
+    "Method": "Methods",
+    "Material": "Materials",
+    "SocialForm": "SocialForms",
+    "Project": "Projects",
+    "Synthesis": "Syntheses",
+}
+
+COMPILED_WIKI_FOLDERS = [
+    "Concepts",
+    "Methods",
+    "Materials",
+    "Theories",
+    "SocialForms",
+    "Projects",
+    "Comparisons",
+    "Syntheses",
+]
+
 
 def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def slugify(value: str) -> str:
+    slug = re.sub(r"[^\w\s-]", "", value.lower(), flags=re.UNICODE)
+    slug = re.sub(r"[\s_]+", "-", slug).strip("-")
+    return slug or "untitled-note"
+
+
+def append_wiki_log(kind: str, title: str, lines: list[str]) -> None:
+    log_path = VAULT / "Wiki/log.md"
+    if not log_path.exists():
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text("\n".join([
+            "---",
+            "type: wiki-log",
+            "status: active",
+            "sourceRefs:",
+            "  - obsidian-vault/Schema/llm-wiki-maintainer.md",
+            "---",
+            "",
+            "# PBS LLM Wiki Log",
+            "",
+        ]) + "\n", encoding="utf-8")
+    entry = ["", f"## [{now_iso()[:10]}] {kind} | {title}", "", *[f"- {line}" for line in lines], ""]
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(entry))
+
+
+def ensure_wiki_index() -> None:
+    index_path = VAULT / "Wiki/index.md"
+    if index_path.exists():
+        return
+    index_path.write_text("\n".join([
+        "---",
+        "type: wiki-index",
+        "status: active",
+        "sourceRefs:",
+        "  - obsidian-vault/Schema/llm-wiki-maintainer.md",
+        "---",
+        "",
+        "# PBS LLM Wiki Index",
+        "",
+        "This index is the entry point for compiled, citation-bearing PBS wiki notes.",
+        "",
+        "## Compiled Note Categories",
+        "",
+        "- [[Concepts/README|Concepts]]",
+        "- [[Methods/README|Methods]]",
+        "- [[Materials/README|Materials]]",
+        "- [[SocialForms/README|Social Forms]]",
+        "- [[Projects/README|Projects]]",
+        "- [[Syntheses/README|Syntheses]]",
+    ]) + "\n", encoding="utf-8")
 
 
 def load_personas() -> list[dict]:
@@ -247,6 +325,15 @@ def load_source_cards() -> list[dict]:
     return list(data.get("cards", []))
 
 
+def card_source_ref(card: dict) -> str:
+    path = str(card.get("path", "")).strip()
+    if path.startswith("obsidian-vault/"):
+        return path
+    if path:
+        return f"obsidian-vault/{path}"
+    return str(card.get("id", "unknown-source-card"))
+
+
 def card_text(card: dict) -> str:
     parts = [
         str(card.get("title", "")),
@@ -259,6 +346,286 @@ def card_text(card: dict) -> str:
         " ".join(map(str, card.get("categories") or [])),
     ]
     return "\n".join(parts)
+
+
+def tokenize(value: str) -> list[str]:
+    return [token for token in re.split(r"[^\w]+", value.lower(), flags=re.UNICODE) if len(token) > 1]
+
+
+def card_neighbors(card: dict) -> set[str]:
+    values: set[str] = set()
+    for key in ["outgoingLinks", "references", "categories", "tags", "sourceCategories"]:
+        for item in card.get(key) or []:
+            if isinstance(item, dict):
+                values.update(str(v).lower() for v in item.values() if v)
+            else:
+                values.add(str(item).lower())
+    for topic in card.get("semanticTopics") or []:
+        if isinstance(topic, dict):
+            values.add(str(topic.get("topic", "")).lower())
+    return values
+
+
+def source_card_by_ref(ref: str, cards: list[dict]) -> dict | None:
+    normalized = ref.removeprefix("obsidian-vault/")
+    for card in cards:
+        candidates = {str(card.get("id", "")), str(card.get("path", "")), card_source_ref(card)}
+        if ref in candidates or normalized in candidates:
+            return card
+    return None
+
+
+def score_source_card(card: dict, query: str, graph_terms: set[str] | None = None) -> tuple[float, list[str]]:
+    query_terms = tokenize(query)
+    text = card_text(card).lower()
+    title = str(card.get("title", "")).lower()
+    keywords = {str(item).lower() for item in card.get("keywords") or []}
+    categories = {str(item).lower() for item in card.get("categories") or []}
+    neighbors = card_neighbors(card)
+    score = 0.0
+    reasons: list[str] = []
+    for term in query_terms:
+        if term in title:
+            score += 4
+            reasons.append(f"title:{term}")
+        if term in keywords:
+            score += 3
+            reasons.append(f"keyword:{term}")
+        if any(term in item for item in categories):
+            score += 2
+            reasons.append(f"category:{term}")
+        count = text.count(term)
+        if count:
+            score += min(count, 5) * 0.6
+    if graph_terms:
+        overlap = {term for term in graph_terms if any(term in item for item in neighbors)}
+        if overlap:
+            score += min(len(overlap), 5) * 1.5
+            reasons.append("graph:" + ",".join(sorted(overlap)[:3]))
+    return score, sorted(set(reasons))[:8]
+
+
+def hybrid_search_cards(query: str, limit: int = 10, source: str | None = None) -> list[dict]:
+    cards = load_source_cards()
+    graph_terms = set(tokenize(query))
+    rows: list[dict] = []
+    for card in cards:
+        if source and str(card.get("source", "")).lower() != source.lower():
+            continue
+        score, reasons = score_source_card(card, query, graph_terms)
+        if score <= 0:
+            continue
+        rows.append({
+            "score": round(score, 2),
+            "id": card.get("id"),
+            "title": card.get("title"),
+            "source": card.get("source"),
+            "sourceRef": card_source_ref(card),
+            "semanticLayer": card.get("semanticLayer"),
+            "url": card.get("url"),
+            "reasons": reasons,
+            "excerpt": str(card.get("excerpt", ""))[:320],
+        })
+    rows.sort(key=lambda row: (-float(row["score"]), str(row.get("title") or "")))
+    return rows[:limit]
+
+
+def command_hybrid_search(args: argparse.Namespace) -> int:
+    rows = hybrid_search_cards(args.query, args.limit, args.source)
+    for row in rows:
+        print(json.dumps(row, ensure_ascii=False))
+    print(f"matches={len(rows)}")
+    return 0 if rows else 1
+
+
+def evidence_from_card(card: dict) -> str:
+    excerpt = re.sub(r"\s+", " ", str(card.get("excerpt", "")).strip())
+    if not excerpt:
+        excerpt = "沒有找到足夠的證據摘要；請人工打開 sourceRef 補證。"
+    return excerpt[:420]
+
+
+def note_path_for(note_type: str, title: str) -> Path:
+    folder = NOTE_TYPE_FOLDERS[note_type]
+    return VAULT / "Wiki" / folder / f"{slugify(title)}.md"
+
+
+def build_note_markdown(note_type: str, title: str, cards: list[dict], query: str | None) -> str:
+    source_refs = [card_source_ref(card) for card in cards]
+    related = sorted({str(topic.get("topic")) for card in cards for topic in (card.get("semanticTopics") or []) if isinstance(topic, dict) and topic.get("topic")})[:8]
+    summary = f"Source-bounded {note_type.lower()} draft for {title}. Review before promoting beyond draft status."
+    lines = [
+        "---",
+        f"id: {slugify(title)}",
+        f"title: {title}",
+        f"type: {note_type.lower()}",
+        "status: source-bounded-draft",
+        f"summary: {summary}",
+        "sourceRefs:",
+        *[f"  - {ref}" for ref in source_refs],
+        "related:",
+        *([f"  - {item}" for item in related] or ["  - evidence review"]),
+        "openQuestions:",
+        "  - Which claims should be promoted after manual source review?",
+        "---",
+        "",
+        f"# {title}",
+        "",
+        "## Scope",
+        "",
+        summary,
+        "",
+    ]
+    if query:
+        lines.extend([f"Search query used: `{query}`.", ""])
+    lines.extend([
+        "## Evidence",
+        "",
+    ])
+    for index, card in enumerate(cards, start=1):
+        lines.extend([
+            f"### Evidence {index}: {card.get('title') or card.get('id')}",
+            "",
+            f"- sourceRef: `{card_source_ref(card)}`",
+            f"- source: `{card.get('source', 'unknown')}`",
+            f"- semantic layer: `{card.get('semanticLayer', 'unknown')}`",
+            f"- citation: {evidence_from_card(card)} [{index}]",
+            "",
+        ])
+    lines.extend([
+        "## Draft Claims",
+        "",
+        "- This note is a compiled draft assembled only from the sourceRefs above.",
+        "- Do not use this note as a finished synthesis until each claim is manually checked against the cited sources.",
+        "",
+        "## Citations",
+        "",
+        *[f"[{index}] `{ref}`" for index, ref in enumerate(source_refs, start=1)],
+        "",
+        "## Open Questions",
+        "",
+        "- What stronger source passages should replace the automatic excerpts?",
+        "- Which related PBS concepts, methods, materials, or social forms should be linked after review?",
+    ])
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def command_build_note(args: argparse.Namespace) -> int:
+    if args.type not in NOTE_TYPE_FOLDERS:
+        print(f"ERROR unsupported note type {args.type}")
+        return 1
+    cards = load_source_cards()
+    selected: list[dict] = []
+    for ref in args.source_ref or []:
+        card = source_card_by_ref(ref, cards)
+        if not card:
+            print(f"ERROR sourceRef not found in source cards: {ref}")
+            return 1
+        selected.append(card)
+    if not selected:
+        query = args.query or args.title
+        search_rows = hybrid_search_cards(query, args.limit, args.source)
+        selected = [card for row in search_rows if (card := source_card_by_ref(str(row["sourceRef"]), cards))]
+    if not selected:
+        print("ERROR no local source-card evidence found")
+        return 1
+    selected = selected[: args.limit]
+    out_path = Path(args.output) if args.output else note_path_for(args.type, args.title)
+    if not out_path.is_absolute():
+        out_path = ROOT / out_path
+    if out_path.exists() and not args.overwrite:
+        print(f"ERROR output exists; pass --overwrite to replace: {rel(out_path)}")
+        return 1
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(build_note_markdown(args.type, args.title, selected, args.query), encoding="utf-8")
+    append_wiki_log("build-note", args.title, [
+        f"Created `{rel(out_path)}` as source-bounded draft.",
+        f"Used {len(selected)} local source cards; raw Sources were not mutated.",
+    ])
+    ensure_wiki_index()
+    print(f"note={rel(out_path)}")
+    print(f"source_cards={len(selected)}")
+    return 0
+
+
+def compiled_wiki_paths() -> list[Path]:
+    paths: list[Path] = []
+    for folder in COMPILED_WIKI_FOLDERS:
+        paths.extend(sorted((VAULT / "Wiki" / folder).glob("**/*.md")))
+    return [path for path in paths if path.name.lower() != "readme.md"]
+
+
+def evidence_lint_rows() -> tuple[list[str], list[str]]:
+    warnings: list[str] = []
+    errors: list[str] = []
+    seen_titles: dict[str, Path] = {}
+    for path in compiled_wiki_paths():
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        refs = parse_refs(text)
+        title_match = re.search(r"^title:\s*(.+)$", text, re.M)
+        title = title_match.group(1).strip().strip('"') if title_match else path.stem
+        normalized_title = slugify(title)
+        if normalized_title in seen_titles:
+            warnings.append(f"{rel(path)} near-duplicate title with {rel(seen_titles[normalized_title])}")
+        seen_titles[normalized_title] = path
+        if "status:" not in text:
+            warnings.append(f"{rel(path)} missing status")
+        if not refs:
+            errors.append(f"{rel(path)} missing sourceRefs")
+        if refs and len(refs) < 2 and "source-bounded-draft" not in text:
+            warnings.append(f"{rel(path)} has thin evidence: {len(refs)} sourceRef")
+        for ref in refs:
+            if ref.startswith("http://") or ref.startswith("https://"):
+                errors.append(f"{rel(path)} has network-only sourceRef {ref}")
+            elif not local_path_exists(ref):
+                errors.append(f"{rel(path)} missing local sourceRef {ref}")
+        if not re.search(r"^## Evidence\b|^## Citations\b|\[\d+\]", text, re.M):
+            warnings.append(f"{rel(path)} lacks visible evidence/citation section")
+        if re.search(r"\b(obviously|clearly proves|without doubt|絕對證明|顯然證明)\b", text, re.I):
+            warnings.append(f"{rel(path)} may overstate evidence")
+    return warnings, errors
+
+
+def command_lint_evidence(args: argparse.Namespace) -> int:
+    warnings, errors = evidence_lint_rows()
+    print(f"warnings={len(warnings)}")
+    print(f"errors={len(errors)}")
+    for item in warnings[: args.limit]:
+        print(f"WARNING {item}")
+    for item in errors[: args.limit]:
+        print(f"ERROR {item}")
+    if args.write_log:
+        out_dir = VAULT / "Wiki/Logs"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / f"evidence-lint-{now_iso()[:10]}.md"
+        lines = [
+            "---",
+            "type: evidence-lint-report",
+            "status: review-artifact",
+            "sourceRefs:",
+            "  - scripts/wiki_tool.py",
+            "---",
+            "",
+            "# Evidence Lint Report",
+            "",
+            f"- warnings: {len(warnings)}",
+            f"- errors: {len(errors)}",
+            "",
+            "## Warnings",
+            "",
+            *[f"- {item}" for item in warnings],
+            "",
+            "## Errors",
+            "",
+            *[f"- {item}" for item in errors],
+        ]
+        out_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+        append_wiki_log("lint", "evidence lint", [
+            f"Wrote `{rel(out_path)}`.",
+            f"Found {len(warnings)} warnings and {len(errors)} errors in compiled Wiki folders.",
+        ])
+        print(f"artifact={rel(out_path)}")
+    return 1 if errors else 0
 
 
 def compiled_note_text() -> str:
@@ -365,6 +732,25 @@ def main() -> int:
     search.set_defaults(func=command_search_catalog)
     sub.add_parser("lint").set_defaults(func=command_lint)
     sub.add_parser("source-coverage").set_defaults(func=command_source_coverage)
+    hybrid = sub.add_parser("hybrid-search")
+    hybrid.add_argument("--query", required=True)
+    hybrid.add_argument("--limit", type=int, default=10)
+    hybrid.add_argument("--source")
+    hybrid.set_defaults(func=command_hybrid_search)
+    build_note = sub.add_parser("build-note")
+    build_note.add_argument("--type", required=True, choices=sorted(NOTE_TYPE_FOLDERS))
+    build_note.add_argument("--title", required=True)
+    build_note.add_argument("--query")
+    build_note.add_argument("--source")
+    build_note.add_argument("--source-ref", action="append")
+    build_note.add_argument("--limit", type=int, default=5)
+    build_note.add_argument("--output")
+    build_note.add_argument("--overwrite", action="store_true")
+    build_note.set_defaults(func=command_build_note)
+    lint_evidence = sub.add_parser("lint-evidence")
+    lint_evidence.add_argument("--limit", type=int, default=80)
+    lint_evidence.add_argument("--write-log", action="store_true")
+    lint_evidence.set_defaults(func=command_lint_evidence)
     terrain = sub.add_parser("terrain-gap-lint")
     terrain.add_argument("--limit", type=int, default=10)
     terrain.set_defaults(func=command_terrain_gap_lint)
