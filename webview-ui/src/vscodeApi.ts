@@ -10,8 +10,12 @@ function saveLayoutFallback(layout: OfficeLayout): void {
 }
 
 async function saveBrowserLayout(layout: OfficeLayout): Promise<void> {
+  if (!import.meta.env.DEV) {
+    saveLayoutFallback(layout);
+    return;
+  }
   try {
-    const response = await fetch('api/editor-layout', {
+    const response = await fetch('/api/editor-layout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(layout),
