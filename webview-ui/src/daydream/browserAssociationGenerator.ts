@@ -3,6 +3,7 @@ import { renderAssociationFeedbackSection } from "./associationFeedback.js";
 import { daydreamCorpus } from "./corpus.js";
 import { runDaydreamWorkflow } from "./daydreamWorkflow.js";
 import { renderOfficialTemplateArtifactHtml } from "./officialTemplateRenderer.js";
+import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
 import type { DaydreamCorpus, SourceCard } from "./engine.js";
 import type { DaydreamPublicArtifactContent } from "./publicArtifactContent.js";
 import type { DaydreamHtmlLayoutVariant } from "./publicArtifactHtml.js";
@@ -1115,6 +1116,17 @@ function publicForbiddenMatches(text: string): string[] {
   return matches;
 }
 
+
+function publicValidationEvidenceText(workflow: Workflow): string {
+  const report = workflow.step1.report;
+  const cards = [
+    ...report.matchedCards,
+    ...report.deepReadCards,
+    ...report.linkedCards.map((item) => item.card),
+  ];
+  return cards.map(evidenceText).join("\n");
+}
+
 function validateVisibleText(text: string, workflow: Workflow, language: AssociationZineLanguage): void {
   const hits = workflowAnchorTerms(workflow).filter((anchor) => text.toLowerCase().includes(anchor.toLowerCase()));
   const repeated = repeatedSentenceReport(text);
@@ -1123,7 +1135,8 @@ function validateVisibleText(text: string, workflow: Workflow, language: Associa
   const warnings: string[] = [];
   if (forbiddenMatches.length > 0) hardFailures.push(`forbidden/process language detected: ${forbiddenMatches.join("; ")}`);
   if (language === "zh-TW" && RAW_ENGLISH_EXCERPT.test(text)) hardFailures.push("long raw English excerpt detected");
-  if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) hardFailures.push("invented unsupported bio dataset/procedure details");
+  const unsupportedBioTerms = findUnsupportedBioDetailTerms(text, publicValidationEvidenceText(workflow));
+  if (unsupportedBioTerms.length > 0) hardFailures.push(`unsupported bio dataset/procedure details absent from retrieved evidence: ${unsupportedBioTerms.join(", ")}`);
   const coverage = evidenceCoverageForQuery(workflow.step1.report.seed, workflow);
   const unsupportedClaims = coverage.filter((item) => !item.covered && new RegExp(regexEscape(item.label.split("/")[0]), "i").test(text));
   if (unsupportedClaims.length > 0 && !/沒有找到足夠(?:的)?證據|證據不足|insufficient evidence/i.test(text)) {
