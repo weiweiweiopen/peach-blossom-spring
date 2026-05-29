@@ -1116,11 +1116,11 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     outline = await requestDeepSeekJsonWithRetry(
       system,
         `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
-      1000,
+      1400,
     ) as any;
   } catch (error) {
-    if (!isAbortError(error)) throw error;
-    console.warn("Association outline timed out twice; using local outline and continuing section generation.");
+    if (!isAbortError(error) && !isJsonParseError(error)) throw error;
+    console.warn("Association outline was unavailable or malformed; using evidence fallback outline and continuing section generation.");
     outline = fallbackOutline(query, language);
   }
   const title = String(outline.title ?? "材料生成的未來方向");
@@ -1182,11 +1182,23 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const protocol = [];
   for (let index = 0; index < 4; index += 1) {
     onProgress?.(progress.protocol[index] ?? progress.materialClues);
-    const item = await requestDeepSeekJsonWithRetry(
-      `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 必須符合 PRINT BINDING TARGET 的 protocol body 長度。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
-      JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
-      900,
-    ) as any;
+    let item: any;
+    try {
+      item = await requestDeepSeekJsonWithRetry(
+        `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 必須符合 PRINT BINDING TARGET 的 protocol body 長度。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+        JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
+        900,
+      ) as any;
+    } catch (error) {
+      if (!isJsonParseError(error) && !isAbortError(error)) throw error;
+      console.warn(`Association protocol ${index + 1} unavailable; using evidence fallback protocol.`);
+      item = {
+        title: language === "zh-TW" ? `查證步驟 ${index + 1}` : `Verification step ${index + 1}`,
+        body: language === "zh-TW"
+          ? `回到本章提到的頁面與材料詞，檢查它們是否真的支持「${compactText(query, 80)}」。如果只找到相鄰線索，下一版應把它寫成問題，而不是定論。`
+          : `Return to the pages and material terms named in this section. Check whether they really support "${compactText(query, 80)}"; if they only point nearby, keep the next version as a question rather than a settled claim.`,
+      };
+    }
     protocol.push({ title: cleanLLMText(item.title ?? `步驟 ${index + 1}`), body: cleanLLMText(item.body ?? "") });
   }
   return normalizeLLMArtifact({
