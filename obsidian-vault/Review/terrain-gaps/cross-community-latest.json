@@ -1,0 +1,688 @@
+{
+  "type": "cross-community-gap-lint-report",
+  "status": "review-candidates",
+  "sourceRefs": [
+    "scripts/wiki_tool.py",
+    "obsidian-vault/daydream-export/sourceCards.enriched.json"
+  ],
+  "candidates": [
+    {
+      "topic": "Art-science practice",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "* Open speculations",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/- Open speculations [5483].md",
+          "url": "https://www.hackteria.org/wiki/*_Open_speculations"
+        },
+        {
+          "title": "15/2/2013 research on Arsenic",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/15 - 2 - 2013 research on Arsenic [2349].md",
+          "url": "https://www.hackteria.org/wiki/15/2/2013_research_on_Arsenic"
+        },
+        {
+          "title": "Akustikologi",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Akustikologi [2970].md",
+          "url": "https://www.hackteria.org/wiki/Akustikologi"
+        },
+        {
+          "title": "Art",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art [447].md",
+          "url": "https://www.hackteria.org/wiki/Art"
+        },
+        {
+          "title": "Art & Science towards Citizen Empowerement Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art & Science towards Citizen Empowerement Symposium @ UGM [2958].md",
+          "url": "https://www.hackteria.org/wiki/Art_%26_Science_towards_Citizen_Empowerement_Symposium_@_UGM"
+        },
+        {
+          "title": "Art and Politics",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art and Politics [446].md",
+          "url": "https://www.hackteria.org/wiki/Art_and_Politics"
+        },
+        {
+          "title": "Art vs. Citizen Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art vs. Citizen Science Symposium @ UGM [2952].md",
+          "url": "https://www.hackteria.org/wiki/Art_vs._Citizen_Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Artist Talk: GG Babystepper",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Artist Talk - GG Babystepper [13705].md",
+          "url": "https://www.hackteria.org/wiki/Artist_Talk:_GG_Babystepper"
+        }
+      ]
+    },
+    {
+      "topic": "Camps and festivals",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Bio-Commons Lab",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bio-Commons Lab [5090].md",
+          "url": "https://www.hackteria.org/wiki/Bio-Commons_Lab"
+        },
+        {
+          "title": "Bio-Commons Lab @ Commons Camp 2015",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bio-Commons Lab @ Commons Camp 2015 [5089].md",
+          "url": "https://www.hackteria.org/wiki/Bio-Commons_Lab_@_Commons_Camp_2015"
+        },
+        {
+          "title": "Biocomons.Lab",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Biocomons.Lab [5088].md",
+          "url": "https://www.hackteria.org/wiki/Biocomons.Lab"
+        },
+        {
+          "title": "BioInformaticsHack",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BioInformaticsHack [12690].md",
+          "url": "https://www.hackteria.org/wiki/BioInformaticsHack"
+        },
+        {
+          "title": "Book: Homemade Biological Art",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Book - Homemade Biological Art [1766].md",
+          "url": "https://www.hackteria.org/wiki/Book:_Homemade_Biological_Art"
+        },
+        {
+          "title": "Campbells soup recipes with cream of mushroom soup",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Campbells soup recipes with cream of mushroom soup [1014].md",
+          "url": "https://www.hackteria.org/wiki/Campbells_soup_recipes_with_cream_of_mushroom_soup"
+        },
+        {
+          "title": "DIY microscopy",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY microscopy [232].md",
+          "url": "https://www.hackteria.org/wiki/DIY_microscopy"
+        },
+        {
+          "title": "Hackteria Global Network - assembly at rC3",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Hackteria Global Network - assembly at rC3 [12734].md",
+          "url": "https://www.hackteria.org/wiki/Hackteria_Global_Network_-_assembly_at_rC3"
+        }
+      ]
+    },
+    {
+      "topic": "Documentation events",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Hackteria Lab Participants",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Hackteria Lab Participants [694].md",
+          "url": "https://www.hackteria.org/wiki/Hackteria_Lab_Participants"
+        },
+        {
+          "title": "Who wants to be my prom date 73",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Who wants to be my prom date 73 [1238].md",
+          "url": "https://www.hackteria.org/wiki/Who_wants_to_be_my_prom_date_73"
+        },
+        {
+          "title": "Wiki Digital Archeology Research: Hackteria",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Wiki Digital Archeology Research - Hackteria [16045].md",
+          "url": "https://www.hackteria.org/wiki/Wiki_Digital_Archeology_Research:_Hackteria"
+        },
+        {
+          "title": "Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Day 7 - 31st January, 2013 - Introduction to Participants of Hackteria Lab-Bangalore at NCBS [2296].md",
+          "url": "https://www.hackteria.org/wiki/Day_7_-_31st_January,_2013_-_Introduction_to_Participants_of_Hackteria_Lab-Bangalore_at_NCBS"
+        },
+        {
+          "title": "Drbrian",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Drbrian [14214].md",
+          "url": "https://www.hackteria.org/wiki/Drbrian"
+        },
+        {
+          "title": "HackteriaLab 2010 - Dock18/Zürich",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/HackteriaLab 2010 - Dock18 - Zürich [693].md",
+          "url": "https://www.hackteria.org/wiki/HackteriaLab_2010_-_Dock18/Z%C3%BCrich"
+        },
+        {
+          "title": "HackteriaLab 2011 Participants",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/HackteriaLab 2011 Participants [1371].md",
+          "url": "https://www.hackteria.org/wiki/HackteriaLab_2011_Participants"
+        },
+        {
+          "title": "HackteriaLab 2013 - Bangalore",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/HackteriaLab 2013 - Bangalore [2016].md",
+          "url": "https://www.hackteria.org/wiki/HackteriaLab_2013_-_Bangalore"
+        }
+      ]
+    },
+    {
+      "topic": "Material experimentation",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "BambooBox",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BambooBox [7044].md",
+          "url": "https://www.hackteria.org/wiki/BambooBox"
+        },
+        {
+          "title": "Biorecovery of Volcanic Soil",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Biorecovery of Volcanic Soil [2714].md",
+          "url": "https://www.hackteria.org/wiki/Biorecovery_of_Volcanic_Soil"
+        },
+        {
+          "title": "Bioremediation of Volcanic Soil",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bioremediation of Volcanic Soil [2965].md",
+          "url": "https://www.hackteria.org/wiki/Bioremediation_of_Volcanic_Soil"
+        },
+        {
+          "title": "CO2",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/CO2 [7043].md",
+          "url": "https://www.hackteria.org/wiki/CO2"
+        },
+        {
+          "title": "CO2 Soil Respiration Chamber",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/CO2 Soil Respiration Chamber [6949].md",
+          "url": "https://www.hackteria.org/wiki/CO2_Soil_Respiration_Chamber"
+        },
+        {
+          "title": "CO2 Soil Respirtion Chamber",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/CO2 Soil Respirtion Chamber [7066].md",
+          "url": "https://www.hackteria.org/wiki/CO2_Soil_Respirtion_Chamber"
+        },
+        {
+          "title": "DIY or DYE - BadLab project",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY or DYE - BadLab project [7845].md",
+          "url": "https://www.hackteria.org/wiki/DIY_or_DYE_-_BadLab_project"
+        },
+        {
+          "title": "Exoglands/lista materiales",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Exoglands - lista materiales [4661].md",
+          "url": "https://www.hackteria.org/wiki/Exoglands/lista_materiales"
+        }
+      ]
+    },
+    {
+      "topic": "Microscopy and imaging",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "BIO-reSEARCH",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BIO-reSEARCH [3148].md",
+          "url": "https://www.hackteria.org/wiki/BIO-reSEARCH"
+        },
+        {
+          "title": "Bioelectronics for artists @ CEMA",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bioelectronics for artists @ CEMA [467].md",
+          "url": "https://www.hackteria.org/wiki/Bioelectronics_for_artists_@_CEMA"
+        },
+        {
+          "title": "Bioelectronix for artists @ piksel09",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bioelectronix for artists @ piksel09 [470].md",
+          "url": "https://www.hackteria.org/wiki/Bioelectronix_for_artists_@_piksel09"
+        },
+        {
+          "title": "BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BIOELECTRONIX FOR ARTISTS @ Pixelache, Helsinki [1012].md",
+          "url": "https://www.hackteria.org/wiki/BIOELECTRONIX_FOR_ARTISTS_@_Pixelache,_Helsinki"
+        },
+        {
+          "title": "Day 1 - 11th January, 2013 - DIY Microscope",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Day 1 - 11th January, 2013 - DIY Microscope [2164].md",
+          "url": "https://www.hackteria.org/wiki/Day_1_-_11th_January,_2013_-_DIY_Microscope"
+        },
+        {
+          "title": "Day 1 DIY Microscope",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Day 1 DIY Microscope [2204].md",
+          "url": "https://www.hackteria.org/wiki/Day_1_DIY_Microscope"
+        },
+        {
+          "title": "Day 1: Microscope",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Day 1 - Microscope [2184].md",
+          "url": "https://www.hackteria.org/wiki/Day_1:_Microscope"
+        },
+        {
+          "title": "DIY : microscope",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY - microscope [2203].md",
+          "url": "https://www.hackteria.org/wiki/DIY_:_microscope"
+        }
+      ]
+    },
+    {
+      "topic": "Sensors and interfaces",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "BrainHacks and Playing with Perception",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BrainHacks and Playing with Perception [5356].md",
+          "url": "https://www.hackteria.org/wiki/BrainHacks_and_Playing_with_Perception"
+        },
+        {
+          "title": "DIY-MedTech Human-Computer-Interfaces - gaudi",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY-MedTech Human-Computer-Interfaces - gaudi [7551].md",
+          "url": "https://www.hackteria.org/wiki/DIY-MedTech_Human-Computer-Interfaces_-_gaudi"
+        },
+        {
+          "title": "Fish-to-Brain Interfaces, Antony Hall, Ljubljana",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Fish-to-Brain Interfaces, Antony Hall, Ljubljana [2002].md",
+          "url": "https://www.hackteria.org/wiki/Fish-to-Brain_Interfaces,_Antony_Hall,_Ljubljana"
+        },
+        {
+          "title": "Input Lectures on DIY, MedTech and Hacklabs",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Input Lectures on DIY, MedTech and Hacklabs [6872].md",
+          "url": "https://www.hackteria.org/wiki/Input_Lectures_on_DIY,_MedTech_and_Hacklabs"
+        },
+        {
+          "title": "QTouch for Water Level Sensing",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/QTouch for Water Level Sensing [4485].md",
+          "url": "https://www.hackteria.org/wiki/QTouch_for_Water_Level_Sensing"
+        },
+        {
+          "title": "QTouchADC",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/QTouchADC [4337].md",
+          "url": "https://www.hackteria.org/wiki/QTouchADC"
+        },
+        {
+          "title": "Team Amigos",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Team Amigos [12769].md",
+          "url": "https://www.hackteria.org/wiki/Team_Amigos"
+        },
+        {
+          "title": "Team Dagobert",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Team Dagobert [7424].md",
+          "url": "https://www.hackteria.org/wiki/Team_Dagobert"
+        }
+      ]
+    },
+    {
+      "topic": "Sound and musical devices",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw",
+        "sgmk"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Accordian as Data, Qualitative Thanks to Kaspar Konig https://soundcloud.com/andi-wallwhore/hook1-accordian-kaspar-konig",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Accordian as Data, Qualitative Thanks to Kaspar Konig https - soundcloud.com - andi-wall - 08560438 [13138].md",
+          "url": "https://www.hackteria.org/wiki/Accordian_as_Data,_Qualitative_Thanks_to_Kaspar_Konig_https://soundcloud.com/andi-wallwhore/hook1-accordian-kaspar-konig"
+        },
+        {
+          "title": "ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2009-Synthetic Biology for Artists and Designers [1334].md",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2009-Synthetic_Biology_for_Artists_and_Designers"
+        },
+        {
+          "title": "ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers [508].md",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2010-Synthetic_Biology_for_Artists_and_Designers"
+        },
+        {
+          "title": "ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers [1277].md",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2011-Synthetic_Biology_for_Artists_and_Designers"
+        },
+        {
+          "title": "BiodegradableSound",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BiodegradableSound [13443].md",
+          "url": "https://www.hackteria.org/wiki/BiodegradableSound"
+        },
+        {
+          "title": "DIY Laser tweezer, cell trap, oligo synthesis",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY Laser tweezer, cell trap, oligo synthesis [1940].md",
+          "url": "https://www.hackteria.org/wiki/DIY_Laser_tweezer,_cell_trap,_oligo_synthesis"
+        },
+        {
+          "title": "DIY-MedTech Sharing Playground",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY-MedTech Sharing Playground [8305].md",
+          "url": "https://www.hackteria.org/wiki/DIY-MedTech_Sharing_Playground"
+        },
+        {
+          "title": "DIY-MedTech Synths&Soundzz - dusjagr",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY-MedTech Synths&Soundzz - dusjagr [12363].md",
+          "url": "https://www.hackteria.org/wiki/DIY-MedTech_Synths%26Soundzz_-_dusjagr"
+        }
+      ]
+    },
+    {
+      "topic": "Body politics and care",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Alligators",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Alligators [7416].md",
+          "url": "https://www.hackteria.org/wiki/Alligators"
+        },
+        {
+          "title": "AnarchaGLAM SPELL",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/AnarchaGLAM SPELL [3617].md",
+          "url": "https://www.hackteria.org/wiki/AnarchaGLAM_SPELL"
+        },
+        {
+          "title": "Arduino Code für Mitsubishi Roboter",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Arduino Code für Mitsubishi Roboter [6871].md",
+          "url": "https://www.hackteria.org/wiki/Arduino_Code_f%C3%BCr_Mitsubishi_Roboter"
+        },
+        {
+          "title": "Backyard Brains Fablab Luzern KresseShield",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Backyard Brains Fablab Luzern KresseShield [6774].md",
+          "url": "https://www.hackteria.org/wiki/Backyard_Brains_Fablab_Luzern_KresseShield"
+        },
+        {
+          "title": "BadLab @ Open Source Body",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BadLab @ Open Source Body [12924].md",
+          "url": "https://www.hackteria.org/wiki/BadLab_@_Open_Source_Body"
+        },
+        {
+          "title": "Bananaplug",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bananaplug [15372].md",
+          "url": "https://www.hackteria.org/wiki/Bananaplug"
+        },
+        {
+          "title": "BIO-reSEARCH",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BIO-reSEARCH [3148].md",
+          "url": "https://www.hackteria.org/wiki/BIO-reSEARCH"
+        },
+        {
+          "title": "Bitácora",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bitácora [4730].md",
+          "url": "https://www.hackteria.org/wiki/Bit%C3%A1cora"
+        }
+      ]
+    },
+    {
+      "topic": "E-textile fabrication",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "DIY-MedTech Sharing Playground",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/DIY-MedTech Sharing Playground [8305].md",
+          "url": "https://www.hackteria.org/wiki/DIY-MedTech_Sharing_Playground"
+        },
+        {
+          "title": "Wearable LoRaWAN Muscle SpikerShield",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Wearable LoRaWAN Muscle SpikerShield [6828].md",
+          "url": "https://www.hackteria.org/wiki/Wearable_LoRaWAN_Muscle_SpikerShield"
+        },
+        {
+          "title": "Abao Nano Doctor Blade Hacker Residency",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Abao Nano Doctor Blade Hacker Residency [14639].md",
+          "url": "https://www.hackteria.org/wiki/Abao_Nano_Doctor_Blade_Hacker_Residency"
+        },
+        {
+          "title": "Another way to make conductive transparent layer with guava seeds and RISO PRINT GOCCCO LAMPS",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Another way to make conductive transparent layer with guava seeds and RISO PRINT GOCCCO LAMPS [14976].md",
+          "url": "https://www.hackteria.org/wiki/Another_way_to_make_conductive_transparent_layer_with_guava_seeds_and_RISO_PRINT_GOCCCO_LAMPS"
+        },
+        {
+          "title": "Conductive thin coating made of AgNWs",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Conductive thin coating made of AgNWs [14893].md",
+          "url": "https://www.hackteria.org/wiki/Conductive_thin_coating_made_of_AgNWs"
+        },
+        {
+          "title": "Nata de Coco",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Nata de Coco [6255].md",
+          "url": "https://www.hackteria.org/wiki/Nata_de_Coco"
+        },
+        {
+          "title": "Sintering TiO2 porous layer on mineral fabric",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Sintering TiO2 porous layer on mineral fabric [14972].md",
+          "url": "https://www.hackteria.org/wiki/Sintering_TiO2_porous_layer_on_mineral_fabric"
+        },
+        {
+          "title": "Between the Alternative Future and the Reality",
+          "source": "htgwyw",
+          "path": "Sources/How To Get What You Want Full/Between the Alternative Future and the Reality [6016].md",
+          "url": "https://www.kobakant.at/DIY/?p=6016"
+        }
+      ]
+    },
+    {
+      "topic": "Open science and commons",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Art & Science towards Citizen Empowerement Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art & Science towards Citizen Empowerement Symposium @ UGM [2958].md",
+          "url": "https://www.hackteria.org/wiki/Art_%26_Science_towards_Citizen_Empowerement_Symposium_@_UGM"
+        },
+        {
+          "title": "Art vs. Citizen Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art vs. Citizen Science Symposium @ UGM [2952].md",
+          "url": "https://www.hackteria.org/wiki/Art_vs._Citizen_Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Artist Talk: GG Babystepper",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Artist Talk - GG Babystepper [13705].md",
+          "url": "https://www.hackteria.org/wiki/Artist_Talk:_GG_Babystepper"
+        },
+        {
+          "title": "Bio-Commons Lab",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bio-Commons Lab [5090].md",
+          "url": "https://www.hackteria.org/wiki/Bio-Commons_Lab"
+        },
+        {
+          "title": "Bio-Commons Lab @ Commons Camp 2015",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bio-Commons Lab @ Commons Camp 2015 [5089].md",
+          "url": "https://www.hackteria.org/wiki/Bio-Commons_Lab_@_Commons_Camp_2015"
+        },
+        {
+          "title": "Bio-Hacking meets Citizen Science",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Bio-Hacking meets Citizen Science [5331].md",
+          "url": "https://www.hackteria.org/wiki/Bio-Hacking_meets_Citizen_Science"
+        },
+        {
+          "title": "BioArt vs. Citizen Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BioArt vs. Citizen Science Symposium @ UGM [2854].md",
+          "url": "https://www.hackteria.org/wiki/BioArt_vs._Citizen_Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Biocomons.Lab",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Biocomons.Lab [5088].md",
+          "url": "https://www.hackteria.org/wiki/Biocomons.Lab"
+        }
+      ]
+    },
+    {
+      "topic": "Talks and presentations",
+      "sourceFamilies": [
+        "hackteria",
+        "htgwyw"
+      ],
+      "matchedSourceCards": 8,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+      "reviewStatus": "cross-community-candidate-not-promoted",
+      "sampleEvidence": [
+        {
+          "title": "Art & Science towards Citizen Empowerement Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art & Science towards Citizen Empowerement Symposium @ UGM [2958].md",
+          "url": "https://www.hackteria.org/wiki/Art_%26_Science_towards_Citizen_Empowerement_Symposium_@_UGM"
+        },
+        {
+          "title": "Art vs. Citizen Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Art vs. Citizen Science Symposium @ UGM [2952].md",
+          "url": "https://www.hackteria.org/wiki/Art_vs._Citizen_Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Artist Talk: GG Babystepper",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Artist Talk - GG Babystepper [13705].md",
+          "url": "https://www.hackteria.org/wiki/Artist_Talk:_GG_Babystepper"
+        },
+        {
+          "title": "BioArt vs. Citizen Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/BioArt vs. Citizen Science Symposium @ UGM [2854].md",
+          "url": "https://www.hackteria.org/wiki/BioArt_vs._Citizen_Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Citizen-Science Symposium @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Citizen-Science Symposium @ UGM [2963].md",
+          "url": "https://www.hackteria.org/wiki/Citizen-Science_Symposium_@_UGM"
+        },
+        {
+          "title": "Ekta Paraswani",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Ekta Paraswani [1417].md",
+          "url": "https://www.hackteria.org/wiki/Ekta_Paraswani"
+        },
+        {
+          "title": "Film HakimBey",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/Film HakimBey [14463].md",
+          "url": "https://www.hackteria.org/wiki/Film_HakimBey"
+        },
+        {
+          "title": "HLab14 Symposium - Citizen Initiatives in Art & Science @ UGM",
+          "source": "hackteria",
+          "path": "Sources/Hackteria Full/HLab14 Symposium - Citizen Initiatives in Art & Science @ UGM [2857].md",
+          "url": "https://www.hackteria.org/wiki/HLab14_Symposium_-_Citizen_Initiatives_in_Art_%26_Science_@_UGM"
+        }
+      ]
+    }
+  ]
+}

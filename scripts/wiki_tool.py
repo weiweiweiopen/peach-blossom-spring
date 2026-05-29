@@ -268,6 +268,30 @@ def parse_refs(text: str) -> list[str]:
     return [line.replace("-", "", 1).strip() for line in match.group(1).splitlines()]
 
 
+def parse_frontmatter(text: str) -> dict[str, object]:
+    if not text.startswith("---\n"):
+        return {}
+    end = text.find("\n---", 4)
+    if end == -1:
+        return {}
+    lines = text[4:end].splitlines()
+    data: dict[str, object] = {}
+    current_key = ""
+    for line in lines:
+        if line.startswith("  - ") and current_key:
+            data.setdefault(current_key, [])
+            if isinstance(data[current_key], list):
+                data[current_key].append(line.replace("  - ", "", 1).strip())
+            continue
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        current_key = key.strip()
+        value = value.strip().strip('"')
+        data[current_key] = value if value else []
+    return data
+
+
 def lint_pages() -> tuple[list[str], list[str]]:
     warnings: list[str] = []
     errors: list[str] = []
@@ -586,6 +610,100 @@ def evidence_lint_rows() -> tuple[list[str], list[str]]:
     return warnings, errors
 
 
+def note_lint_status(path: Path, text: str) -> dict:
+    warnings: list[str] = []
+    errors: list[str] = []
+    refs = parse_refs(text)
+    if not refs:
+        errors.append("missing sourceRefs")
+    if "status:" not in text:
+        warnings.append("missing status")
+    if refs and len(refs) < 2 and "source-bounded-draft" not in text:
+        warnings.append(f"thin evidence: {len(refs)} sourceRef")
+    for ref in refs:
+        if ref.startswith("http://") or ref.startswith("https://"):
+            errors.append(f"network-only sourceRef {ref}")
+        elif not local_path_exists(ref):
+            errors.append(f"missing local sourceRef {ref}")
+    if not re.search(r"^## Evidence\b|^## Citations\b|\[\d+\]", text, re.M):
+        warnings.append("lacks visible evidence/citation section")
+    return {
+        "status": "error" if errors else "warning" if warnings else "pass",
+        "warnings": warnings,
+        "errors": errors,
+        "path": rel(path),
+    }
+
+
+def markdown_section(text: str, heading: str, max_chars: int = 900) -> str:
+    pattern = re.compile(rf"^##\s+{re.escape(heading)}\s*$\n([\s\S]*?)(?=^##\s+|\Z)", re.M)
+    match = pattern.search(text)
+    if not match:
+        return ""
+    return re.sub(r"\s+", " ", match.group(1)).strip()[:max_chars]
+
+
+def exportable_wiki_note(path: Path) -> dict:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    fm = parse_frontmatter(text)
+    refs = parse_refs(text)
+    title = str(fm.get("title") or path.stem)
+    note_type = str(fm.get("type") or path.parent.name.rstrip("s")).lower()
+    related = fm.get("related") if isinstance(fm.get("related"), list) else []
+    open_questions = fm.get("openQuestions") if isinstance(fm.get("openQuestions"), list) else []
+    citations = re.findall(r"^\[(\d+)\]\s+`?([^`\n]+)`?", text, re.M)
+    lint_status = note_lint_status(path, text)
+    body_text = re.sub(r"---[\s\S]*?---", "", text, count=1).strip() if text.startswith("---") else text
+    return {
+        "id": str(fm.get("id") or slugify(title)),
+        "title": title,
+        "type": note_type,
+        "status": str(fm.get("status") or "unknown"),
+        "summary": str(fm.get("summary") or markdown_section(text, "Scope", 360) or body_text[:360]),
+        "path": rel(path),
+        "sourceRefs": refs,
+        "sourceRefCount": len(refs),
+        "related": related,
+        "openQuestions": open_questions,
+        "evidence": markdown_section(text, "Evidence", 1200),
+        "citations": [{"index": index, "sourceRef": ref.strip()} for index, ref in citations],
+        "lint": lint_status,
+        "searchText": re.sub(r"\s+", " ", " ".join([title, note_type, str(fm.get("summary") or ""), " ".join(map(str, related)), body_text[:1800]])).strip(),
+    }
+
+
+def export_wiki_index_payload() -> dict:
+    notes = [exportable_wiki_note(path) for path in compiled_wiki_paths()]
+    eligible = [note for note in notes if note["lint"]["status"] != "error" and note["sourceRefCount"] > 0]
+    return {
+        "schemaVersion": "pbs-compiled-wiki-index-v1",
+        "generatedAt": now_iso(),
+        "sourceRefs": ["scripts/wiki_tool.py", "obsidian-vault/Wiki/index.md"],
+        "counts": {
+            "notes": len(notes),
+            "eligibleForZineRag": len(eligible),
+        },
+        "notes": notes,
+    }
+
+
+def command_export_wiki_index(args: argparse.Namespace) -> int:
+    payload = export_wiki_index_payload()
+    out_path = Path(args.output)
+    if not out_path.is_absolute():
+        out_path = ROOT / out_path
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    append_wiki_log("export", "compiled wiki index", [
+        f"Wrote `{rel(out_path)}` for zine runtime RAG.",
+        f"Exported {payload['counts']['notes']} notes; {payload['counts']['eligibleForZineRag']} eligible for zine RAG.",
+    ])
+    print(f"artifact={rel(out_path)}")
+    print(f"notes={payload['counts']['notes']}")
+    print(f"eligible={payload['counts']['eligibleForZineRag']}")
+    return 0
+
+
 def command_lint_evidence(args: argparse.Namespace) -> int:
     warnings, errors = evidence_lint_rows()
     print(f"warnings={len(warnings)}")
@@ -721,6 +839,92 @@ def command_terrain_gap_lint(args: argparse.Namespace) -> int:
     return 0
 
 
+def cross_community_gap_candidates(limit: int) -> list[dict]:
+    cards = load_source_cards()
+    compiled = compiled_note_text().lower()
+    topic_map: dict[str, dict] = {}
+    for card in cards:
+        family = str(card.get("source") or "unknown")
+        for topic in card.get("semanticTopics") or []:
+            if not isinstance(topic, dict) or not topic.get("topic"):
+                continue
+            title = str(topic["topic"]).strip()
+            key = title.lower()
+            item = topic_map.setdefault(key, {"topic": title, "families": set(), "cards": []})
+            item["families"].add(family)
+            if len(item["cards"]) < 8:
+                item["cards"].append({
+                    "title": card.get("title"),
+                    "source": family,
+                    "path": card.get("path"),
+                    "url": card.get("url"),
+                })
+    rows: list[dict] = []
+    for item in topic_map.values():
+        families = sorted(item["families"])
+        if len(families) < 2:
+            continue
+        compiled_exists = item["topic"].lower() in compiled
+        if compiled_exists:
+            continue
+        rows.append({
+            "topic": item["topic"],
+            "sourceFamilies": families,
+            "matchedSourceCards": len(item["cards"]),
+            "compiledNodeExists": False,
+            "candidateFolder": "Wiki/Concepts, Wiki/Methods, or Wiki/Syntheses",
+            "reviewStatus": "cross-community-candidate-not-promoted",
+            "sampleEvidence": item["cards"],
+        })
+    rows.sort(key=lambda row: (-len(row["sourceFamilies"]), str(row["topic"])))
+    return rows[:limit]
+
+
+def command_cross_community_gap_lint(args: argparse.Namespace) -> int:
+    out_dir = VAULT / "Review/terrain-gaps"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    candidates = cross_community_gap_candidates(args.limit)
+    payload = {
+        "type": "cross-community-gap-lint-report",
+        "status": "review-candidates",
+        "sourceRefs": ["scripts/wiki_tool.py", "obsidian-vault/daydream-export/sourceCards.enriched.json"],
+        "candidates": candidates,
+    }
+    json_path = out_dir / "cross-community-latest.json"
+    md_path = out_dir / "cross-community-latest.md"
+    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    lines = [
+        "---",
+        "type: cross-community-gap-lint-report",
+        "status: review-candidates",
+        "sourceRefs:",
+        "  - scripts/wiki_tool.py",
+        "  - obsidian-vault/daydream-export/sourceCards.enriched.json",
+        "---",
+        "",
+        "# Cross-Community Gap Lint Report",
+        "",
+        "These topics appear across multiple source families but do not yet have an obvious compiled Wiki note. Review before promotion.",
+        "",
+    ]
+    for item in candidates:
+        lines.extend([
+            f"## {item['topic']}",
+            "",
+            f"- source families: {', '.join(item['sourceFamilies'])}",
+            f"- candidate folder: `{item['candidateFolder']}`",
+            "- sample evidence:",
+            *[f"  - {sample.get('title')} ({sample.get('source')})" for sample in item["sampleEvidence"][:5]],
+            "",
+        ])
+    md_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    for item in candidates:
+        print(json.dumps(item, ensure_ascii=False))
+    print(f"cross_community_gap_candidates={len(candidates)}")
+    print(f"artifact={rel(md_path)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -751,9 +955,15 @@ def main() -> int:
     lint_evidence.add_argument("--limit", type=int, default=80)
     lint_evidence.add_argument("--write-log", action="store_true")
     lint_evidence.set_defaults(func=command_lint_evidence)
+    export_wiki = sub.add_parser("export-wiki-index")
+    export_wiki.add_argument("--output", default="webview-ui/public/assets/pbs-wiki-index.json")
+    export_wiki.set_defaults(func=command_export_wiki_index)
     terrain = sub.add_parser("terrain-gap-lint")
     terrain.add_argument("--limit", type=int, default=10)
     terrain.set_defaults(func=command_terrain_gap_lint)
+    cross = sub.add_parser("cross-community-gap-lint")
+    cross.add_argument("--limit", type=int, default=12)
+    cross.set_defaults(func=command_cross_community_gap_lint)
     args = parser.parse_args()
     return args.func(args)
 

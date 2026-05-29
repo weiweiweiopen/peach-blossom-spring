@@ -51,6 +51,21 @@ type Card = ReturnType<typeof sourceCards>[number];
 type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
 type EvidenceCoverage = { label: string; covered: boolean };
+type CompiledWikiNote = {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  summary: string;
+  path: string;
+  sourceRefs: string[];
+  related: string[];
+  openQuestions: string[];
+  evidence: string;
+  citations: Array<{ index: string; sourceRef: string }>;
+  lint: { status: "pass" | "warning" | "error"; warnings?: string[]; errors?: string[] };
+  searchText: string;
+};
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ZINE_PRINT_PAGE_MULTIPLE = 8;
@@ -64,6 +79,7 @@ const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "PBS Entity Layers / README", path: "Sources/PBS Entity Layers/README.md", text: entityReadme, role: "entity bridge overview" },
   { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages as orientation and semantic/entity/source layers as evidence bridges.", role: "public wiki index" },
 ];
+let compiledWikiIndexPromise: Promise<CompiledWikiNote[]> | null = null;
 const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; evidence: RegExp }> = [
   { label: "nonprofit/organization", query: /非營利|非營利組織|組織|ngo|non-?profit|organization/i, evidence: /非營利|ngo|non-?profit|organization|organis(?:ation|e|ing)|組織/i },
   { label: "maintenance/labor", query: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i, evidence: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i },
@@ -404,6 +420,45 @@ function sourceCards(workflow: Workflow) {
   });
 }
 
+async function loadCompiledWikiIndex(): Promise<CompiledWikiNote[]> {
+  if (!compiledWikiIndexPromise) {
+    const base = import.meta.env.BASE_URL || "/";
+    const url = `${base.replace(/\/$/, "")}/assets/pbs-wiki-index.json`;
+    compiledWikiIndexPromise = fetch(url, { cache: "no-cache" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`compiled wiki index unavailable: ${response.status.toString()}`);
+        const payload = await response.json() as { notes?: CompiledWikiNote[] };
+        return (payload.notes ?? []).filter((note) => note.lint?.status !== "error" && (note.sourceRefs?.length ?? 0) > 0);
+      })
+      .catch((error) => {
+        console.warn("Compiled Wiki index unavailable for zine RAG; continuing with sourceCards only.", error);
+        return [];
+      });
+  }
+  return compiledWikiIndexPromise;
+}
+
+function rankCompiledWikiNotes(query: string, workflow: Workflow, notes: CompiledWikiNote[]): CompiledWikiNote[] {
+  const terms = Array.from(new Set([
+    ...query.toLowerCase().split(/[^\p{L}\p{N}]+/u),
+    ...workflow.step1.report.keywords,
+    ...workflow.step1.report.deepReadKeywords,
+  ].map((term) => term.trim().toLowerCase()).filter((term) => term.length >= 2)));
+  const cardText = sourceCards(workflow).map((card) => evidenceText(card).toLowerCase()).join("\n");
+  return notes
+    .map((note) => {
+      const search = `${note.title} ${note.type} ${note.summary} ${note.searchText} ${note.related.join(" ")}`.toLowerCase();
+      const termHits = terms.filter((term) => search.includes(term)).length;
+      const sourceRefHits = note.sourceRefs.filter((ref) => cardText.includes(ref.replace(/^obsidian-vault\//, "").toLowerCase()) || cardText.includes(ref.toLowerCase())).length;
+      const lintBonus = note.lint.status === "pass" ? 2 : 0;
+      return { note, score: termHits + sourceRefHits * 3 + lintBonus };
+    })
+    .filter((row) => row.score > 0)
+    .sort((a, b) => b.score - a.score || a.note.title.localeCompare(b.note.title))
+    .slice(0, 4)
+    .map((row) => row.note);
+}
+
 function evidenceText(card: Partial<SourceCard>): string {
   return [
     card.title,
@@ -495,7 +550,23 @@ function wantsMakingTutorial(query: string): boolean {
   return /\b(how\s+to\s+make|how\s+to\s+build|make|build|fabricate|prototype|tutorial|toolkit|bom|materials?\s+list|step-by-step)\b|做一個|製作|如何做|怎麼做|打造|原型|教學|工具包|材料清單|步驟/i.test(query);
 }
 
-function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage) {
+function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
+  return notes.map((note) => ({
+    title: note.title,
+    type: note.type,
+    status: note.status,
+    path: note.path,
+    summary: compactText(note.summary, 280),
+    related: note.related.slice(0, 6),
+    sourceRefs: note.sourceRefs.slice(0, 6),
+    citations: note.citations.slice(0, 6),
+    evidence: compactText(note.evidence, 500),
+    lintStatus: note.lint.status,
+    lintWarnings: note.lint.warnings?.slice(0, 3) ?? [],
+  }));
+}
+
+function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[] = []) {
   const wantsSgmk = wantsSgmkQuery(query);
   const sgmkFirst = <T extends Card>(items: T[]) => wantsSgmk ? [...items].sort((a, b) => (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0)) : items;
   const candidateCards = sgmkFirst(sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
@@ -538,6 +609,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     sourceObservations: cards,
     deepReadObservations: deepRead,
     linkedEvidenceTrails: linkedTrails,
+    compiledWikiNotes: compiledWikiPromptNotes(compiledNotes),
     semanticContextSummary: {
       anchorCards: semantic.anchorCards.length,
       relatedCards: semantic.relatedCards.length,
@@ -546,8 +618,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     },
     evidenceCoverage: evidenceCoverageForQuery(query, workflow),
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, say that the evidence is insufficient and turn the piece into verification questions instead of a thesis. Write one coherent research-seminar zine around source-grounded insight and one future research direction only when the evidence supports that direction.",
-    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 可以作為一般證據來源使用，但仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, say that the evidence is insufficient and turn the piece into verification questions instead of a thesis. Prefer compiledWikiNotes when they are relevant because they already summarize sourceRefs and citations, but do not use notes with weak lint warnings as final proof without caveats. Write one coherent research-seminar zine around source-grounded insight and one future research direction only when the evidence supports that direction.",
+    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -979,8 +1051,8 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
   return copy[language];
 }
 
-async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
-  const messages = buildEditorialMessages(query, workflow, language);
+async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[], onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
+  const messages = buildEditorialMessages(query, workflow, language, compiledNotes);
   const system = messages.system;
   const user = withWritingStyle(messages.user, options.writingStyle);
   const printLength = printBindingLengthInstruction();
@@ -1022,6 +1094,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
         sourceObservations: parsedUser.sourceObservations,
         deepReadObservations: parsedUser.deepReadObservations,
         linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
+        compiledWikiNotes: parsedUser.compiledWikiNotes,
       }, null, 2),
       1000,
     );
@@ -1486,6 +1559,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   const requestId = `pbs-zine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   activeDeepSeekTraceCalls = [];
   const workflow = createBrowserWorkflow(query);
+  const compiledNotes = rankCompiledWikiNotes(query, workflow, await loadCompiledWikiIndex());
   const progress = progressCopy(language);
   const separator = language === "zh-TW" || language === "ja" || language === "th" ? "、" : ", ";
   onProgress?.(progress.parseQuery(workflow.step1.report.keywords.slice(0, 6).join(separator) || progress.fallbackQuery));
@@ -1504,7 +1578,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   let artifact: DaydreamPublicArtifactContent;
   try {
     artifact = await withBrowserTimeout(
-      callDeepSeekEditorialWriter(query, workflow, language, onProgress, options),
+      callDeepSeekEditorialWriter(query, workflow, language, compiledNotes, onProgress, options),
       EDITORIAL_WRITER_TIMEOUT_MS,
       "Association writer timed out; please try again.",
     );

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "pbs-compiled-wiki-index-v1",
+  "generatedAt": "2026-05-29T11:54:10+00:00",
+  "sourceRefs": [
+    "scripts/wiki_tool.py",
+    "obsidian-vault/Wiki/index.md"
+  ],
+  "counts": {
+    "notes": 2,
+    "eligibleForZineRag": 2
+  },
+  "notes": [
+    {
+      "id": "concept-semantic-terrain",
+      "title": "Concept Page as Semantic Terrain",
+      "type": "concept",
+      "status": "active-schema-note",
+      "summary": "Concept Pages link source-bounded evidence to NPCs, questions/pets, zines, feedback, and scene zones.",
+      "path": "obsidian-vault/Wiki/Concepts/concept-semantic-terrain.md",
+      "sourceRefs": [
+        "specs/003-modern-PBS-scene/question-concept-page-design-report.md",
+        "obsidian-vault/Schema/frontmatter-schema.md"
+      ],
+      "sourceRefCount": 2,
+      "related": [],
+      "openQuestions": [],
+      "evidence": "",
+      "citations": [],
+      "lint": {
+        "status": "warning",
+        "warnings": [
+          "lacks visible evidence/citation section"
+        ],
+        "errors": [],
+        "path": "obsidian-vault/Wiki/Concepts/concept-semantic-terrain.md"
+      },
+      "searchText": "Concept Page as Semantic Terrain concept Concept Pages link source-bounded evidence to NPCs, questions/pets, zines, feedback, and scene zones. # Concept Page as Semantic Terrain A Concept Page is not an NPC profile or a zine. It is a terrain node that links local sources, NPCs, questions/pets, zines, feedback, and scene zones with explicit evidence."
+    },
+    {
+      "id": "sgmk-diy-electronics-workshop-kits",
+      "title": "SGMK DIY electronics workshop kits",
+      "type": "method",
+      "status": "source-bounded-draft",
+      "summary": "Source-bounded method draft for SGMK DIY electronics workshop kits. Review before promoting beyond draft status.",
+      "path": "obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md",
+      "sourceRefs": [
+        "obsidian-vault/Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md",
+        "obsidian-vault/Sources/SGMK Full/HEK - 8bit MixTape Workshop [1116].md",
+        "obsidian-vault/Sources/SGMK Full/8bit Mix Tape [394].md",
+        "obsidian-vault/Sources/SGMK Full/8bit Mix Tape - Zagreb Code [1005].md",
+        "obsidian-vault/Sources/SGMK Full/Kubulu Arduino Workshop [268].md"
+      ],
+      "sourceRefCount": 5,
+      "related": [
+        "DIY lab infrastructure",
+        "Electronics and circuits",
+        "Local communities and places",
+        "Residencies and temporary labs",
+        "Workshop pedagogy",
+        "Workshops"
+      ],
+      "openQuestions": [
+        "Which claims should be promoted after manual source review?"
+      ],
+      "evidence": "### Evidence 1: FabLab Neckar-Alb - 8bit MixTape Workshop - sourceRef: `obsidian-vault/Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md` - source: `sgmk` - semantic layer: `events` - citation: FabLab Neckar Alb 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/FabLab Neckar Alb 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [1] ### Evidence 2: HEK - 8bit MixTape Workshop - sourceRef: `obsidian-vault/Sources/SGMK Full/HEK - 8bit MixTape Workshop [1116].md` - source: `sgmk` - semantic layer: `events` - citation: HEK 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/HEK 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [2] ### Evidence 3: 8bit Mix Tape - sourceRef: `obsidian-vault/Sources/SGMK Full/8bit Mix Tape [394].md` - source: `sgmk` - semantic layer: `events` - citation: 8bit Mix Tape Source: https://wiki.sgmk ssam.ch/wiki/8bit Mix Tape (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK",
+      "citations": [
+        {
+          "index": "1",
+          "sourceRef": "obsidian-vault/Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md"
+        },
+        {
+          "index": "2",
+          "sourceRef": "obsidian-vault/Sources/SGMK Full/HEK - 8bit MixTape Workshop [1116].md"
+        },
+        {
+          "index": "3",
+          "sourceRef": "obsidian-vault/Sources/SGMK Full/8bit Mix Tape [394].md"
+        },
+        {
+          "index": "4",
+          "sourceRef": "obsidian-vault/Sources/SGMK Full/8bit Mix Tape - Zagreb Code [1005].md"
+        },
+        {
+          "index": "5",
+          "sourceRef": "obsidian-vault/Sources/SGMK Full/Kubulu Arduino Workshop [268].md"
+        }
+      ],
+      "lint": {
+        "status": "pass",
+        "warnings": [],
+        "errors": [],
+        "path": "obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md"
+      },
+      "searchText": "SGMK DIY electronics workshop kits method Source-bounded method draft for SGMK DIY electronics workshop kits. Review before promoting beyond draft status. DIY lab infrastructure Electronics and circuits Local communities and places Residencies and temporary labs Workshop pedagogy Workshops # SGMK DIY electronics workshop kits ## Scope Source-bounded method draft for SGMK DIY electronics workshop kits. Review before promoting beyond draft status. Search query used: `8bit mix tape arduino gnusbuino electronics workshop`. ## Evidence ### Evidence 1: FabLab Neckar-Alb - 8bit MixTape Workshop - sourceRef: `obsidian-vault/Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md` - source: `sgmk` - semantic layer: `events` - citation: FabLab Neckar Alb 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/FabLab Neckar Alb 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [1] ### Evidence 2: HEK - 8bit MixTape Workshop - sourceRef: `obsidian-vault/Sources/SGMK Full/HEK - 8bit MixTape Workshop [1116].md` - source: `sgmk` - semantic layer: `events` - citation: HEK 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/HEK 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [2] ### Evidence 3: 8bit Mix Tape - sourceRef: `obsidian-vault/Sources/SGMK Full/8bit Mix Tape [394].md` - source: `sgmk` - semantic layer: `events` - citation: 8bit Mix Tape Source: https://wiki.sgmk ssam.ch/wiki/8bit Mix Tape (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK categories Pages with broken file links Pages with syntax highlighting errors SGMK original wiki links 8bit Mix Tape Zagreb Code Babygnusbuino Babygnusbuino v2 Dymax.iøn 8bit Mixtape \"Berliner Schule\" FabLab Neckar Alb 8bit MixTape Workshop HEK 8bit MixTap [3] ### Evidence 4: 8bit Mix Tape - Zagreb Code - sourceRef: `obsidian-vault/Sources"
+    }
+  ]
+}

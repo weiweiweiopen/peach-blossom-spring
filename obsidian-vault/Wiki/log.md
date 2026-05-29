@@ -49,3 +49,13 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 - Added `obsidian-vault/PBS Runtime Architecture.md` as the concise vault/runtime/zine/NPC process note.
 - Added `obsidian-vault/Schema/obsidian-app-integration.md` to document the native Canvas/Graph-first integration decision.
 - Replaced `obsidian-vault/PBS Wiki Visual Map.canvas` with the current Obsidian, wiki tooling, zine generation, NPC dialogue, review, and pet growth system diagram.
+
+## [2026-05-29] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2 notes; 2 eligible for zine RAG.
+
+## [2026-05-29] lint | cross-community gap report
+
+- Wrote `obsidian-vault/Review/terrain-gaps/cross-community-latest.md` and `.json`.
+- Added review candidates for source-family topics that appear across communities but lack obvious compiled Wiki notes.
