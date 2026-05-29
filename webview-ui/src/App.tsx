@@ -123,6 +123,7 @@ type QaPanel = "computer" | "npc" | "pet" | "zine" | "language" | "hud";
 
 function readEditorModeParam(): boolean {
   if (typeof window === "undefined") return false;
+  if (!import.meta.env.DEV) return false;
   return new URLSearchParams(window.location.search).get("editor") === "1";
 }
 

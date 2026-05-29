@@ -9,4 +9,12 @@ webview-ui/.env.local
 webview-ui/.env.*.local
 multiplayer-worker/.wrangler/
 webview-ui/test/output/
+webview-ui/test-results/
+webview-ui/public/assets/furniture/CRAFTPIX_EXTERIOR_[0-9]*/
+webview-ui/public/assets/furniture/CRAFTPIX_INTERIOR_*/
+webview-ui/public/assets/furniture/CRAFTPIX_HOUSE_DETAIL_*/
+webview-ui/public/assets/thronglets/mvp/
+webview-ui/public/assets/thronglets/pet-sheets/
+webview-ui/public/assets/craftpix-net-*/
+webview-ui/public/assets/modern-taoyuan-scene-plan.json
 obsidian-vault/*.canvas

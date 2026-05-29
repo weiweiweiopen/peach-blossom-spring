@@ -255,7 +255,7 @@ export async function initBrowserMock(): Promise<void> {
       ]);
 
   const params = new URLSearchParams(window.location.search);
-  const editorPreview = params.get('editor') === '1';
+  const editorPreview = import.meta.env.DEV && params.get('editor') === '1';
   const layoutPath = 'pbs-editor-layout.json';
   const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
   let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
@@ -312,7 +312,7 @@ export function dispatchMockMessages(): void {
   dispatch({ type: 'floorTilesLoaded', sprites: floorSprites });
   dispatch({ type: 'wallTilesLoaded', sets: wallSets });
   dispatch({ type: 'furnitureAssetsLoaded', catalog: furnitureCatalog, sprites: furnitureSprites });
-  const editorPreview = new URLSearchParams(window.location.search).get('editor') === '1';
+  const editorPreview = import.meta.env.DEV && new URLSearchParams(window.location.search).get('editor') === '1';
   if (!editorPreview) {
     dispatch({
       type: 'existingAgents',
