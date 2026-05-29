@@ -3,7 +3,7 @@ type: integration-decision
 status: active
 sourceRefs:
   - obsidian-vault/PBS Wiki Visual Map.canvas
-  - docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/follow-up.md
+  - docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/follow-up.md
   - scripts/wiki_tool.py
 ---
 

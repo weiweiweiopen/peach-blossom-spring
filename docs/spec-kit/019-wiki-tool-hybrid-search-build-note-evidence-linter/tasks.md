@@ -3,7 +3,7 @@ id: 019-tasks
 title: Tasks
 status: executed
 sourceRefs:
-  - docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/spec.md
+  - docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/spec.md
 ---
 
 # Tasks

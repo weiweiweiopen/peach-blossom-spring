@@ -3,7 +3,7 @@ id: 020-wiki-tool-zine-runtime-rag-tasks
 title: Wiki Tool Zine Runtime RAG Tasks
 status: implemented-draft
 sourceRefs:
-  - docs/spec-kit/020-wiki-tool-zine-runtime-rag/spec.md
+  - docs/spec-kit/020-wiki-tool-zine-runtime-rag-cross-community-gaps/spec.md
 ---
 
 # Tasks

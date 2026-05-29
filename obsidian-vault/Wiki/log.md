@@ -41,7 +41,7 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 ## [2026-05-29] planning | 019 pet growth and visualization follow-up
 
 - Completed the first review pass for Question Pet growth states and PBS cultural terrain visualization.
-- Recorded follow-up under `docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/follow-up.md`.
+- Recorded follow-up under `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/follow-up.md`.
 - Kept runtime pet growth local-first and did not route private dialogue into raw source folders.
 
 ## [2026-05-29] diagram | PBS runtime architecture canvas

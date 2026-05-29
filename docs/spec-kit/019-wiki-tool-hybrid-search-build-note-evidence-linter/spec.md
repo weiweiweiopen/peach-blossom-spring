@@ -41,4 +41,4 @@ The Question Pet should grow from reviewed knowledge states: unresolved evidence
 - CLI implementation: `scripts/wiki_tool.py`
 - Sample source-bounded note: `obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md`
 - Evidence lint report: `obsidian-vault/Wiki/Logs/evidence-lint-2026-05-29.md`
-- Follow-up review: `docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/follow-up.md`
+- Follow-up review: `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/follow-up.md`

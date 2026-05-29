@@ -3,7 +3,7 @@ id: 020-wiki-tool-zine-runtime-rag
 title: Wiki Tool Zine Runtime RAG
 status: implemented-draft
 sourceRefs:
-  - docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/spec.md
+  - docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/spec.md
   - scripts/wiki_tool.py
   - webview-ui/src/daydream/browserAssociationGenerator.ts
 ---

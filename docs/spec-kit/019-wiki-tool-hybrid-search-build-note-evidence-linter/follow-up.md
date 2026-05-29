@@ -3,7 +3,7 @@ id: 019-follow-up
 title: Pet Growth and Cultural Terrain Visualization Follow-Up
 status: review-ready
 sourceRefs:
-  - docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/spec.md
+  - docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/spec.md
   - obsidian-vault/Wiki/Logs/evidence-lint-2026-05-29.md
   - obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md
 ---
