@@ -883,6 +883,20 @@ function compactRequestUser(user: string): string {
     parsed.sourceObservations = Array.isArray(parsed.sourceObservations) ? parsed.sourceObservations.slice(0, 4) : [];
     parsed.deepReadObservations = Array.isArray(parsed.deepReadObservations) ? parsed.deepReadObservations.slice(0, 3) : [];
     parsed.linkedEvidenceTrails = Array.isArray(parsed.linkedEvidenceTrails) ? parsed.linkedEvidenceTrails.slice(0, 3) : [];
+    parsed.compiledWikiNotes = Array.isArray(parsed.compiledWikiNotes)
+      ? parsed.compiledWikiNotes.slice(0, 3).map((note: any) => ({
+        title: compactText(note.title, 100),
+        type: note.type,
+        summary: compactText(note.summary, 180),
+        relatedConcepts: Array.isArray(note.relatedConcepts) ? note.relatedConcepts.slice(0, 3) : [],
+        relatedMethods: Array.isArray(note.relatedMethods) ? note.relatedMethods.slice(0, 3) : [],
+        relatedSocialForms: Array.isArray(note.relatedSocialForms) ? note.relatedSocialForms.slice(0, 3) : [],
+        relatedProjects: Array.isArray(note.relatedProjects) ? note.relatedProjects.slice(0, 3) : [],
+        sourceRefs: Array.isArray(note.sourceRefs) ? note.sourceRefs.slice(0, 3) : [],
+        evidence: compactText(note.evidence, 220),
+        lintStatus: note.lintStatus,
+      }))
+      : [];
     parsed.researchTopicCandidates = Array.isArray(parsed.researchTopicCandidates) ? parsed.researchTopicCandidates.slice(0, 2) : [];
     parsed.npcWritingStyle = compactText(parsed.npcWritingStyle, 360);
     parsed.reminder = compactText(parsed.reminder, 520);
@@ -971,7 +985,19 @@ async function requestDeepSeekJsonWithRetry(system: string, user: string, maxTok
     }
     if (isMessageTooLongError(error)) {
       console.warn("DeepSeek request was too long; retrying once with compact evidence packet.");
-      return requestDeepSeekJson(system, compactRequestUser(user), maxTokens, Math.max(0.45, temperature - 0.2));
+      const compactUser = compactRequestUser(user);
+      try {
+        return await requestDeepSeekJson(system, compactUser, maxTokens, Math.max(0.45, temperature - 0.2));
+      } catch (compactError) {
+        if (!isJsonParseError(compactError)) throw compactError;
+        console.warn("Compact DeepSeek JSON response was malformed; retrying once with strict compact JSON instructions.");
+        return requestDeepSeekJson(
+          `${system}\nYour previous compact answer was malformed or truncated. Return exactly one complete JSON object, no prose, no code fence.`,
+          `${compactUser}\n\nSTRICT COMPACT JSON RETRY: close every string and array. Prefer shorter values over truncation.`,
+          Math.max(maxTokens, 1200),
+          Math.max(0.35, temperature - 0.35),
+        );
+      }
     }
     throw error;
   }
