@@ -135,14 +135,32 @@ function languageInstruction(preferredLanguage: LanguageCode): string {
   return [
     'Detect the player question language and reply in that same language.',
     'If the question is Thai, reply in Thai. If it is English, reply in English. If it is Japanese, reply in Japanese. If it is Traditional Chinese, reply in Traditional Chinese.',
+    'Never use Simplified Chinese characters when Traditional Chinese is requested. Use 臺灣繁體中文: 實驗, 開源, 知識, 組織, 風險, 嚴謹, 讓, 變, 這, 個, 問題.',
     preferredLanguage === 'zh-TW'
-      ? 'For UI-only prompts or ambiguous questions, use Traditional Chinese.'
+      ? 'For UI-only prompts or ambiguous questions, use Traditional Chinese only. 嚴禁簡體中文。'
       : preferredLanguage === 'ja'
         ? 'For UI-only prompts or ambiguous questions, use Japanese.'
         : preferredLanguage === 'th'
           ? 'For UI-only prompts or ambiguous questions, use Thai.'
           : 'For UI-only prompts or ambiguous questions, use English.',
   ].join(' ');
+}
+
+function normalizeTraditionalChinese(text: string, preferredLanguage: LanguageCode): string {
+  if (preferredLanguage !== 'zh-TW') return text;
+  const replacements: Array<[RegExp, string]> = [
+    [/实验/g, '實驗'], [/开源/g, '開源'], [/设备/g, '設備'], [/亲手/g, '親手'], [/摆弄/g, '擺弄'],
+    [/生命系统/g, '生命系統'], [/实践/g, '實踐'], [/夺回/g, '奪回'], [/工具和知识/g, '工具和知識'],
+    [/让/g, '讓'], [/变/g, '變'], [/真正/g, '真正'], [/张力/g, '張力'], [/专业/g, '專業'],
+    [/风险/g, '風險'], [/严谨/g, '嚴謹'], [/拥抱/g, '擁抱'], [/失败/g, '失敗'], [/即兴/g, '即興'],
+    [/层面/g, '層面'], [/组织/g, '組織'], [/一场/g, '一場'], [/一起养/g, '一起養'],
+    [/问题/g, '問題'], [/这个/g, '這個'], [/这里/g, '這裡'], [/我们/g, '我們'], [/他们/g, '他們'],
+    [/不是一门学科/g, '不是一門學科'], [/一种/g, '一種'], [/厨房/g, '廚房'], [/临时/g, '臨時'],
+    [/知识/g, '知識'], [/技术/g, '技術'], [/社会/g, '社會'], [/播放器/g, '播放器'],
+    [/问/g, '問'], [/门/g, '門'], [/学/g, '學'], [/种/g, '種'], [/里/g, '裡'], [/与/g, '與'],
+    [/对/g, '對'], [/从/g, '從'], [/为/g, '為'], [/这/g, '這'], [/个/g, '個'], [/们/g, '們'],
+  ];
+  return replacements.reduce((current, [pattern, replacement]) => current.replace(pattern, replacement), text);
 }
 
 function parseChatResponse(data: { answer?: string; content?: string; error?: string; raw?: { choices?: Array<{ message?: { content?: string } }> }; choices?: Array<{ message?: { content?: string } }> }): string {
@@ -229,7 +247,8 @@ export async function askDeepSeekGroundedAnswer({
     evidenceGroundingBlock(evidence),
     '--- end secondary source fragments ---',
   ].join('\n'));
-  return postWorkerChat(systemPrompt, `${playerName}: ${question}`, 900);
+  const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}`, 900);
+  return normalizeTraditionalChinese(reply, preferredLanguage);
 }
 
 export async function askDeepSeekPersonaRewrite({
@@ -254,7 +273,8 @@ export async function askDeepSeekPersonaRewrite({
     `Intro: ${knowledge.intro}`,
     'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report.',
   ].join('\n'));
-  return postWorkerChat(systemPrompt, `${playerName}: ${question}\n\nGrounded draft to rewrite:\n${groundedDraft}`, 700);
+  const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}\n\nGrounded draft to rewrite:\n${groundedDraft}`, 700);
+  return normalizeTraditionalChinese(reply, preferredLanguage);
 }
 
 function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, transcriptZhRaw: string): KnowledgeBase {
@@ -376,7 +396,7 @@ export async function askDeepSeekPersona({
     error?: string;
     choices?: Array<{ message?: { content?: string } }>;
   };
-  return parseChatResponse(data);
+  return normalizeTraditionalChinese(parseChatResponse(data), preferredLanguage);
 }
 
 export async function askDeepSeekPersonaWithEvidence({
@@ -413,7 +433,8 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
     sharedMemoryContext || '(no close local wiki pages found)',
     '--- end compact shared-memory context ---',
   ].join('\n'));
-  return postWorkerChat(systemPrompt, `Player question: ${question}`, 520);
+  const reply = await postWorkerChat(systemPrompt, `Player question: ${question}`, 520);
+  return normalizeTraditionalChinese(reply, preferredLanguage);
 }
 
 export type { PersonaShape };

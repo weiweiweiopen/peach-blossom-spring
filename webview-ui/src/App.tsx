@@ -1145,6 +1145,19 @@ function waitForNextPaint(): Promise<void> {
   });
 }
 
+async function importAssociationGenerator() {
+  try {
+    return await import("./daydream/browserAssociationGenerator.js");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error ?? "");
+    if (/Importing a module script failed|Failed to fetch dynamically imported module|Loading chunk/i.test(message)) {
+      await new Promise((resolve) => window.setTimeout(resolve, 800));
+      return import("./daydream/browserAssociationGenerator.js");
+    }
+    throw error;
+  }
+}
+
 function attachZineIframeControls(iframe: HTMLIFrameElement): void {
   const doc = iframe.contentDocument;
   if (!doc) return;
@@ -1551,7 +1564,6 @@ function App() {
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
-  const [dismissedAutoNpcId, setDismissedAutoNpcId] = useState<number | null>(null);
   const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
   const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
@@ -2427,7 +2439,6 @@ function App() {
       const player = officeState.characters.get(PLAYER_ID);
       const nearbyId = findNearbyNpc();
       setNearbyNpcId(nearbyId);
-      if (dismissedAutoNpcId !== null && nearbyId !== dismissedAutoNpcId) setDismissedAutoNpcId(null);
       setPromptAnchor((prev) => {
         if (!nearbyId) return null;
         if (prev && prev.npcId === nearbyId) return prev;
@@ -2441,14 +2452,10 @@ function App() {
           player.tileCol,
           player.tileRow,
         );
-        if (nearbyId !== dismissedAutoNpcId && !activeDialogueIdRef.current && !computerDialogueOpenRef.current && !splitPanel && !videoEncounter && !encounterPanel) {
-          officeState.selectedAgentId = nearbyId;
-          setActiveDialogueId(nearbyId);
-        }
       }
     }, 250);
     return () => window.clearInterval(interval);
-  }, [appMode, dismissedAutoNpcId, encounterPanel, findNearbyNpc, layoutReady, officeState, playerProfile, splitPanel, videoEncounter]);
+  }, [appMode, findNearbyNpc, layoutReady, officeState, playerProfile]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -2642,7 +2649,6 @@ function App() {
       }
 
       if (event.key === "Escape") {
-        if (activeDialogueIdRef.current !== null) setDismissedAutoNpcId(activeDialogueIdRef.current);
         if (computerDialogueOpenRef.current) setDismissedAutoComputer(true);
         setActiveDialogueId(null);
         setIsComputerDialogueOpen(false);
@@ -3105,7 +3111,7 @@ function App() {
     try {
       await waitForNextPaint();
       if (wikiGenerationRequestRef.current !== requestKey) return;
-      const { generateBrowserAssociationZine } = await import("./daydream/browserAssociationGenerator.js");
+      const { generateBrowserAssociationZine } = await importAssociationGenerator();
       const result = await generateBrowserAssociationZine(query, request.language, (message) => {
         setAssociationProgress(message);
       }, { writingStyle: request.writingStyle });
@@ -3637,7 +3643,6 @@ function App() {
                   topicLabels={topicLabels}
                   language={selectedLanguage}
                   onClose={() => {
-                    if (activeDialogueId !== null) setDismissedAutoNpcId(activeDialogueId);
                     setActiveDialogueId(null);
                   }}
                   onOpenMusic={
