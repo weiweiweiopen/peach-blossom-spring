@@ -39,3 +39,10 @@ Directly writing feedback into source pages would blur evidence with reception. 
 - The game can display thought-gap broadcasts without exposing private debug traces.
 - The pet integration remains local-first until a reviewed export/import path exists.
 - Zine feedback has a meaningful reviewed destination plan before any vault write is implemented.
+
+## Implemented Slice
+
+- `scripts/wiki_tool.py terrain-gap-lint --limit N` writes local review artifacts to `obsidian-vault/Review/terrain-gaps/latest.md` and `latest.json`.
+- `Schema/frontmatter-schema.md` now defines terrain-gap reports and Question Page terrain fields.
+- `Schema/lint-checklist.md` now separates terrain-gap candidates, pet broadcasts, and zine feedback from source evidence.
+- `Wiki/Questions/README.md`, `Wiki/Zines/README.md`, and `Wiki/log.md` document the reviewed route.

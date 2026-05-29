@@ -1,0 +1,128 @@
+{
+  "type": "terrain-gap-lint-report",
+  "status": "review-candidates",
+  "sourceRefs": [
+    "scripts/wiki_tool.py",
+    "obsidian-vault/daydream-export/sourceCards.enriched.json"
+  ],
+  "candidates": [
+    {
+      "id": "sgmk-diy-electronics-sound-kits",
+      "title": "SGMK DIY electronics, sound kits, and workshop organization",
+      "matchedSourceCards": 340,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/Methods or Wiki/Syntheses",
+      "petBroadcast": "SGMK has many DIY electronics pages, but the wiki still lacks a durable node linking kits, sound, and workshop organization.",
+      "sampleEvidence": [
+        {
+          "title": "1 Quartal 2024 notes",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/1_Quartal_2024_notes",
+          "path": "Sources/SGMK Full/1 Quartal 2024 notes [2168].md"
+        },
+        {
+          "title": "1 Quartal notes",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/1_Quartal_notes",
+          "path": "Sources/SGMK Full/1 Quartal notes [2167].md"
+        },
+        {
+          "title": "18:00 General Versammlung",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/18:00_General_Versammlung",
+          "path": "Sources/SGMK Full/18 - 00 General Versammlung [1504].md"
+        },
+        {
+          "title": "2 March - L200 - GV preps",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/2_March_-_L200_-_GV_preps",
+          "path": "Sources/SGMK Full/2 March - L200 - GV preps [1493].md"
+        },
+        {
+          "title": "20 pix display",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/20_pix_display",
+          "path": "Sources/SGMK Full/20 pix display [69].md"
+        },
+        {
+          "title": "8step sequencer",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/8step_sequencer",
+          "path": "Sources/SGMK Full/8step sequencer [1050].md"
+        },
+        {
+          "title": "9V MS20 HP-LP Filter",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/9V_MS20_HP-LP_Filter",
+          "path": "Sources/SGMK Full/9V MS20 HP-LP Filter [1067].md"
+        },
+        {
+          "title": "Abao",
+          "source": "sgmk",
+          "url": "https://wiki.sgmk-ssam.ch/wiki/Abao",
+          "path": "Sources/SGMK Full/Abao [2063].md"
+        }
+      ],
+      "reviewStatus": "candidate-not-promoted"
+    },
+    {
+      "id": "care-maintenance-failure-notes",
+      "title": "Care, maintenance, and failure notes across workshops",
+      "matchedSourceCards": 396,
+      "compiledNodeExists": false,
+      "candidateFolder": "Wiki/SocialForms or Wiki/Methods",
+      "petBroadcast": "Material practice is visible, but care, maintenance, and failure notes still need a comparative question.",
+      "sampleEvidence": [
+        {
+          "title": "An Idiot's Electrodibles Workshop",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/An_Idiot%27s_Electrodibles_Workshop",
+          "path": "Sources/Hackteria Full/An Idiot's Electrodibles Workshop [12674].md"
+        },
+        {
+          "title": "ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2010-Synthetic_Biology_for_Artists_and_Designers",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2010-Synthetic Biology for Artists and Designers [508].md"
+        },
+        {
+          "title": "ArtScienceBangalore 2011-Nanotechnology for Artists and Designers",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2011-Nanotechnology_for_Artists_and_Designers",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2011-Nanotechnology for Artists and Designers [1406].md"
+        },
+        {
+          "title": "ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/ArtScienceBangalore_2011-Synthetic_Biology_for_Artists_and_Designers",
+          "path": "Sources/Hackteria Full/ArtScienceBangalore 2011-Synthetic Biology for Artists and Designers [1277].md"
+        },
+        {
+          "title": "Bio-Hacking meets Citizen Science",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/Bio-Hacking_meets_Citizen_Science",
+          "path": "Sources/Hackteria Full/Bio-Hacking meets Citizen Science [5331].md"
+        },
+        {
+          "title": "Bonbontronix - Introduction DIY electronics workshops",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/Bonbontronix_-_Introduction_DIY_electronics_workshops",
+          "path": "Sources/Hackteria Full/Bonbontronix - Introduction DIY electronics workshops [13712].md"
+        },
+        {
+          "title": "Character Design Workshop",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/Character_Design_Workshop",
+          "path": "Sources/Hackteria Full/Character Design Workshop [1718].md"
+        },
+        {
+          "title": "DesignWorkshop2010",
+          "source": "hackteria",
+          "url": "https://www.hackteria.org/wiki/DesignWorkshop2010",
+          "path": "Sources/Hackteria Full/DesignWorkshop2010 [564].md"
+        }
+      ],
+      "reviewStatus": "candidate-not-promoted"
+    }
+  ]
+}
