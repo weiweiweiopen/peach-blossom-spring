@@ -2,18 +2,64 @@
 
 This is the Markdown fallback for the visual map. If `PBS Wiki Visual Map.canvas` does not open, use this page first.
 
+## Current Runtime Summary
+
+PBS now has four connected maintenance/runtime zones:
+
+- `Sources/`: raw evidence and source-family pages. Preserve these; do not rewrite them as answers.
+- `Wiki/`: compiled notes with `sourceRefs`, including Concepts, Methods, Materials, SocialForms, Projects, NPCs, Pets, and Zines.
+- `Schema / Review / Logs`: rules, lint, firewall, review artifacts, and maintenance records.
+- `webview-ui`: runtime surfaces for PBS Computer, NPC dialogue, Question Pet, and zine generation.
+
+Open the concise architecture note:
+
+- [[PBS Runtime Architecture]]
+- [[Schema/obsidian-app-integration|Obsidian App Integration Decision]]
+
 ## Core map
 
 ```mermaid
 graph LR
-  PBS[Peach Blossom Spring] --> HFI[Hackteria Full Index
-1410 pages]
-  PBS --> SGMK[SGMK Index]
-  PBS --> KOB[How To Get What You Want / KOBAKANT]
-  HFI --> HW[Hackteria Wiki source note]
-  SGMK --> BIO[Hackteria & SGMK BioCyberKidzz]
-  SGMK --> ARCH[Wiki Digital Archeology Research: SGMK]
-  HW --> ABAO[Abao Nano Doctor Blade Hacker Residency]
+  Sources[Raw Sources] --> Cards[Source Cards + Semantic/Entity Layers]
+  Cards --> Tool[scripts/wiki_tool.py]
+  Tool --> Wiki[Compiled Wiki Notes]
+  Tool --> Review[Review + Logs]
+  Wiki --> Runtime[Web Runtime]
+  Cards --> Runtime
+  Runtime --> Zine[Zine Generation]
+  Runtime --> NPC[NPC Dialogue]
+  Runtime --> Pet[Question Pet]
+  Review --> Pet
+```
+
+## Zine Generation
+
+```mermaid
+graph TD
+  Q[Player question] --> Entry[Semantic/entity entry notes]
+  Entry --> Cards[sourceCards and wikilinks]
+  Cards --> Workflow[runDaydreamWorkflow]
+  Workflow --> Gate[Evidence coverage gate]
+  Gate --> LLM[DeepSeek section writing]
+  LLM --> Template[Official zine template]
+  Template --> Guard[Public artifact guard]
+  Guard --> Output[Printable public zine]
+```
+
+## NPC Dialogue
+
+```mermaid
+graph TD
+  Near[Player near NPC] --> Trigger[Click NPC/prompt bubble or press Space]
+  Trigger --> Dialogue[RpgDialogue]
+  Dialogue --> Persona[data/personas.json]
+  Dialogue --> Transcript[transcripts_en / transcripts_zh]
+  Dialogue --> Links[interviewee wiki links]
+  Persona --> Prompt[persona prompt]
+  Transcript --> Prompt
+  Links --> Prompt
+  Prompt --> Worker[DeepSeek Worker]
+  Worker --> Reply[NPC reply]
 ```
 
 ## Open these first

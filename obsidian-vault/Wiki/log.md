@@ -43,3 +43,9 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 - Completed the first review pass for Question Pet growth states and PBS cultural terrain visualization.
 - Recorded follow-up under `docs/spec-kit/019-pbs-llm-wiki-hybrid-rag-evidence-linter/follow-up.md`.
 - Kept runtime pet growth local-first and did not route private dialogue into raw source folders.
+
+## [2026-05-29] diagram | PBS runtime architecture canvas
+
+- Added `obsidian-vault/PBS Runtime Architecture.md` as the concise vault/runtime/zine/NPC process note.
+- Added `obsidian-vault/Schema/obsidian-app-integration.md` to document the native Canvas/Graph-first integration decision.
+- Replaced `obsidian-vault/PBS Wiki Visual Map.canvas` with the current Obsidian, wiki tooling, zine generation, NPC dialogue, review, and pet growth system diagram.
