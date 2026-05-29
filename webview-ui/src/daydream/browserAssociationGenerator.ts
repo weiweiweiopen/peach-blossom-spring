@@ -994,7 +994,7 @@ async function requestDeepSeekJsonWithRetry(system: string, user: string, maxTok
         return requestDeepSeekJson(
           `${system}\nYour previous compact answer was malformed or truncated. Return exactly one complete JSON object, no prose, no code fence.`,
           `${compactUser}\n\nSTRICT COMPACT JSON RETRY: close every string and array. Prefer shorter values over truncation.`,
-          Math.max(maxTokens, 1200),
+          maxTokens,
           Math.max(0.35, temperature - 0.35),
         );
       }
@@ -1116,7 +1116,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     outline = await requestDeepSeekJsonWithRetry(
       system,
         `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
-      1400,
+      1000,
     ) as any;
   } catch (error) {
     if (!isAbortError(error) && !isJsonParseError(error)) throw error;
