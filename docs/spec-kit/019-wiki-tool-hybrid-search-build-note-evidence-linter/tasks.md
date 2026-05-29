@@ -16,3 +16,5 @@ sourceRefs:
 - [x] Run dry run with 3-5 source cards and generate one sample note.
 - [x] Validate `py_compile`, existing wiki checks, and new CLI commands.
 - [x] Review pet growth and visualization follow-up after evidence lint stabilizes.
+- [x] Clarify that `Sources/PBS Semantic Layers` is a source-derived bridge index, not the compiled Wiki middle layer.
+- [x] Update `build-note` output to the standard compiled Wiki note shape requested in the LLM Wiki compact checkpoint.

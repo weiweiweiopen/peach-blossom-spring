@@ -17,10 +17,16 @@ Create first-stage local tooling for PBS as a long-term cultural knowledge base.
 ## Requirements
 
 - Add `hybrid-search` for lightweight keyword, metadata, and graph-neighbor retrieval over existing local source cards.
-- Add `build-note` for source-bounded Concept/Method/Material/SocialForm/Project/Synthesis draft notes with sourceRefs, evidence, citations, related topics, and open questions.
+- Add `build-note` for source-bounded Concept/Method/Material/Theory/SocialForm/Project/Comparison/Synthesis draft notes with sourceRefs, evidence, citations, typed related fields, and open questions.
 - Add `lint-evidence` for compiled Wiki note checks: missing sourceRefs, broken local refs, thin evidence, missing citation/evidence sections, duplicate titles, and overclaiming language.
 - Keep all writes local and reviewable.
 - Do not re-crawl sources, delete existing data, process all sources at once, or add large dependencies.
+
+## Middle-Layer Clarification
+
+`obsidian-vault/Sources/PBS Semantic Layers/` is retained as a source-derived semantic bridge index. It is not the Karpathy-style compiled Wiki middle layer and must not be treated as final evidence-backed synthesis.
+
+The compiled LLM Wiki middle layer is `obsidian-vault/Wiki/Concepts`, `Methods`, `Materials`, `Theories`, `SocialForms`, `Projects`, `Comparisons`, and `Syntheses`. Notes in those folders should use this standard shape: `type`, `id`, `title`, `status`, `summary`, `sourceRefs`, `evidence`, `relatedConcepts`, `relatedMethods`, `relatedMaterials`, `relatedSocialForms`, `relatedProjects`, `openQuestions`, and body links to other Wiki notes.
 
 ## Non-Goals
 
@@ -42,3 +48,4 @@ The Question Pet should grow from reviewed knowledge states: unresolved evidence
 - Sample source-bounded note: `obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md`
 - Evidence lint report: `obsidian-vault/Wiki/Logs/evidence-lint-2026-05-29.md`
 - Follow-up review: `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/follow-up.md`
+- Schema repair: `scripts/wiki_tool.py` now emits the standard compiled Wiki middle-layer fields while preserving bridge-index and zine-runtime compatibility.

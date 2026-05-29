@@ -40,9 +40,13 @@ This is the content-oriented navigation file for the compiled PBS wiki layer. Re
 ## Source and Bridge Layers
 
 - `obsidian-vault/Sources/`: raw and curated source-facing corpus structures. Treat as source of truth.
-- `obsidian-vault/Sources/PBS Semantic Layers/`: source-derived semantic bridge layer. Preserve this structure.
+- `obsidian-vault/Sources/PBS Semantic Layers/`: source-derived semantic bridge index for retrieval hints, terrain-gap detection, and note-building candidates. Preserve this structure, but do not treat it as the compiled Wiki middle layer or as final evidence-backed synthesis.
 - `obsidian-vault/Sources/PBS Entity Layers/`: source-derived entity bridge layer. Preserve this structure.
 - `obsidian-vault/daydream-export/`: Daydream export graph and source-card artifacts. Preserve conventions and avoid public body-text provenance leakage.
+
+## Compiled Middle-Layer Contract
+
+The Karpathy-style LLM Wiki core lives in the compiled category folders above, not in `Sources/PBS Semantic Layers/`. Each compiled note should include `type`, `id`, `title`, `status`, `summary`, `sourceRefs`, `evidence`, `relatedConcepts`, `relatedMethods`, `relatedMaterials`, `relatedSocialForms`, `relatedProjects`, `openQuestions`, and links to other Wiki notes.
 
 ## Maintenance Rule
 

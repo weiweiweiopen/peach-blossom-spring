@@ -10,13 +10,31 @@ sourceRefs:
   - obsidian-vault/Sources/SGMK Full/8bit Mix Tape [394].md
   - obsidian-vault/Sources/SGMK Full/8bit Mix Tape - Zagreb Code [1005].md
   - obsidian-vault/Sources/SGMK Full/Kubulu Arduino Workshop [268].md
-related:
+evidence:
+  - FabLab Neckar Alb 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/FabLab Neckar Alb 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [1]
+  - HEK 8bit MixTape Workshop Source: https://wiki.sgmk ssam.ch/wiki/HEK 8bit MixTape Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links 8bit Mix Tape [2]
+  - 8bit Mix Tape Source: https://wiki.sgmk ssam.ch/wiki/8bit Mix Tape (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK categories Pages with broken file links Pages with syntax highlighting errors SGMK original wiki links 8bit Mix Tape Zagreb Code Babygnusbuino Babygnusbuino v2 Dymax.iøn 8bit Mixtape "Berliner Schule" FabLab Neckar Alb 8bit MixTape Workshop HEK 8bit MixTap [3]
+  - 8bit Mix Tape Zagreb Code Source: https://wiki.sgmk ssam.ch/wiki/8bit Mix Tape Zagreb Code (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) [4]
+  - Kubulu Arduino Workshop Source: https://wiki.sgmk ssam.ch/wiki/Kubulu Arduino Workshop (No plaintext extract returned. Page may be redirect, empty, or mostly media/table markup.) SGMK original wiki links SGMKduino [5]
+relatedConcepts:
   - DIY lab infrastructure
   - Electronics and circuits
   - Local communities and places
   - Residencies and temporary labs
   - Workshop pedagogy
+relatedMethods:
+  - Electronics and circuits
+  - Workshop pedagogy
   - Workshops
+relatedMaterials:
+  - Electronics and circuits
+relatedSocialForms:
+  - DIY lab infrastructure
+  - Residencies and temporary labs
+  - Workshop pedagogy
+  - Workshops
+relatedProjects:
+  - evidence review
 openQuestions:
   - Which claims should be promoted after manual source review?
 ---
@@ -71,6 +89,14 @@ Search query used: `8bit mix tape arduino gnusbuino electronics workshop`.
 - This note is a compiled draft assembled only from the sourceRefs above.
 - Do not use this note as a finished synthesis until each claim is manually checked against the cited sources.
 
+## Related Wiki Notes
+
+- Concepts: [[Wiki/Concepts/diy-lab-infrastructure|DIY lab infrastructure]], [[Wiki/Concepts/electronics-and-circuits|Electronics and circuits]], [[Wiki/Concepts/local-communities-and-places|Local communities and places]], [[Wiki/Concepts/residencies-and-temporary-labs|Residencies and temporary labs]], [[Wiki/Concepts/workshop-pedagogy|Workshop pedagogy]]
+- Methods: [[Wiki/Methods/electronics-and-circuits|Electronics and circuits]], [[Wiki/Methods/workshop-pedagogy|Workshop pedagogy]], [[Wiki/Methods/workshops|Workshops]]
+- Materials: [[Wiki/Materials/electronics-and-circuits|Electronics and circuits]]
+- Social forms: [[Wiki/SocialForms/diy-lab-infrastructure|DIY lab infrastructure]], [[Wiki/SocialForms/residencies-and-temporary-labs|Residencies and temporary labs]], [[Wiki/SocialForms/workshop-pedagogy|Workshop pedagogy]], [[Wiki/SocialForms/workshops|Workshops]]
+- Projects: evidence review
+
 ## Citations
 
 [1] `obsidian-vault/Sources/SGMK Full/FabLab Neckar-Alb - 8bit MixTape Workshop [1220].md`
@@ -82,4 +108,4 @@ Search query used: `8bit mix tape arduino gnusbuino electronics workshop`.
 ## Open Questions
 
 - What stronger source passages should replace the automatic excerpts?
-- Which related PBS concepts, methods, materials, or social forms should be linked after review?
+- Which related PBS concepts, methods, materials, social forms, or projects should be linked after review?

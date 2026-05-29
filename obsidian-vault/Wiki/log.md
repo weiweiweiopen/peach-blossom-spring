@@ -59,3 +59,13 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 
 - Wrote `obsidian-vault/Review/terrain-gaps/cross-community-latest.md` and `.json`.
 - Added review candidates for source-family topics that appear across communities but lack obvious compiled Wiki notes.
+
+## [2026-05-29] build-note | SGMK DIY electronics workshop kits
+
+- Created `obsidian-vault/Wiki/Methods/sgmk-diy-electronics-workshop-kits.md` as source-bounded draft.
+- Used 5 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2 notes; 2 eligible for zine RAG.

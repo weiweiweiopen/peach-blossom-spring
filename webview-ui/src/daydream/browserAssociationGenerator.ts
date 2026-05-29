@@ -63,6 +63,11 @@ type CompiledWikiNote = {
   path: string;
   sourceRefs: string[];
   related: string[];
+  relatedConcepts?: string[];
+  relatedMethods?: string[];
+  relatedMaterials?: string[];
+  relatedSocialForms?: string[];
+  relatedProjects?: string[];
   openQuestions: string[];
   evidence: string;
   citations: Array<{ index: string; sourceRef: string }>;
@@ -561,6 +566,11 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
     path: note.path,
     summary: compactText(note.summary, 280),
     related: note.related.slice(0, 6),
+    relatedConcepts: note.relatedConcepts?.slice(0, 6) ?? [],
+    relatedMethods: note.relatedMethods?.slice(0, 6) ?? [],
+    relatedMaterials: note.relatedMaterials?.slice(0, 6) ?? [],
+    relatedSocialForms: note.relatedSocialForms?.slice(0, 6) ?? [],
+    relatedProjects: note.relatedProjects?.slice(0, 6) ?? [],
     sourceRefs: note.sourceRefs.slice(0, 6),
     citations: note.citations.slice(0, 6),
     evidence: compactText(note.evidence, 500),

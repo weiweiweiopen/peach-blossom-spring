@@ -15,6 +15,13 @@ VAULT = ROOT / "obsidian-vault"
 REQUIRED_DIRS = [
     "obsidian-vault/Wiki/Sources",
     "obsidian-vault/Wiki/Concepts",
+    "obsidian-vault/Wiki/Methods",
+    "obsidian-vault/Wiki/Materials",
+    "obsidian-vault/Wiki/Theories",
+    "obsidian-vault/Wiki/SocialForms",
+    "obsidian-vault/Wiki/Projects",
+    "obsidian-vault/Wiki/Comparisons",
+    "obsidian-vault/Wiki/Syntheses",
     "obsidian-vault/Wiki/Questions",
     "obsidian-vault/Wiki/NPCs",
     "obsidian-vault/Wiki/Pets",
@@ -26,6 +33,7 @@ REQUIRED_DIRS = [
     "obsidian-vault/Review/semantic-relations",
     "obsidian-vault/Review/terrain-gaps",
     "obsidian-vault/Review/zine-feedback",
+    "obsidian-vault/Review/zine-repair-reports",
     "obsidian-vault/Review/source-coverage",
     "obsidian-vault/_templates",
     "obsidian-vault/Schema",
@@ -79,8 +87,10 @@ NOTE_TYPE_FOLDERS = {
     "Concept": "Concepts",
     "Method": "Methods",
     "Material": "Materials",
+    "Theory": "Theories",
     "SocialForm": "SocialForms",
     "Project": "Projects",
+    "Comparison": "Comparisons",
     "Synthesis": "Syntheses",
 }
 
@@ -151,9 +161,15 @@ def ensure_wiki_index() -> None:
         "- [[Concepts/README|Concepts]]",
         "- [[Methods/README|Methods]]",
         "- [[Materials/README|Materials]]",
+        "- [[Theories/README|Theories]]",
         "- [[SocialForms/README|Social Forms]]",
         "- [[Projects/README|Projects]]",
+        "- [[Comparisons/README|Comparisons]]",
         "- [[Syntheses/README|Syntheses]]",
+        "",
+        "## Bridge Layer Boundary",
+        "",
+        "`Sources/PBS Semantic Layers/` is a source-derived bridge index for retrieval hints and candidate relations. It is not the compiled Wiki middle layer.",
     ]) + "\n", encoding="utf-8")
 
 
@@ -469,6 +485,36 @@ def evidence_from_card(card: dict) -> str:
     return excerpt[:420]
 
 
+def semantic_topics_from_cards(cards: list[dict], max_items: int = 8) -> list[str]:
+    return sorted({str(topic.get("topic")) for card in cards for topic in (card.get("semanticTopics") or []) if isinstance(topic, dict) and topic.get("topic")})[:max_items]
+
+
+def source_titles_from_cards(cards: list[dict], max_items: int = 8) -> list[str]:
+    return [str(card.get("title") or card.get("id") or "source page") for card in cards[:max_items]]
+
+
+def relation_seeds(note_type: str, cards: list[dict]) -> dict[str, list[str]]:
+    topics = semantic_topics_from_cards(cards, 8)
+    titles = source_titles_from_cards(cards, 8)
+    source_layers = sorted({str(card.get("semanticLayer") or "") for card in cards if card.get("semanticLayer")})
+    concepts = topics[:5]
+    methods = [item for item in topics if re.search(r"workshop|tool|method|kit|protocol|fabricat|electronics|circuit|實作|工具|方法|工作坊", item, re.I)][:5]
+    materials = [item for item in topics if re.search(r"material|textile|circuit|sensor|bio|electronics|sound|fabric|材料|織品|電子|聲音", item, re.I)][:5]
+    social_forms = [item for item in topics if re.search(r"workshop|camp|lab|commons|community|festival|residen|exhibition|工作坊|社群|營隊|展覽", item, re.I)][:5]
+    projects = titles[:5] if note_type in {"Project", "Comparison", "Synthesis"} else []
+    if "events" in source_layers and not social_forms:
+        social_forms = titles[:3]
+    if "tools" in source_layers and not methods:
+        methods = titles[:3]
+    return {
+        "relatedConcepts": concepts,
+        "relatedMethods": methods,
+        "relatedMaterials": materials,
+        "relatedSocialForms": social_forms,
+        "relatedProjects": projects,
+    }
+
+
 def note_path_for(note_type: str, title: str) -> Path:
     folder = NOTE_TYPE_FOLDERS[note_type]
     return VAULT / "Wiki" / folder / f"{slugify(title)}.md"
@@ -476,7 +522,7 @@ def note_path_for(note_type: str, title: str) -> Path:
 
 def build_note_markdown(note_type: str, title: str, cards: list[dict], query: str | None) -> str:
     source_refs = [card_source_ref(card) for card in cards]
-    related = sorted({str(topic.get("topic")) for card in cards for topic in (card.get("semanticTopics") or []) if isinstance(topic, dict) and topic.get("topic")})[:8]
+    relations = relation_seeds(note_type, cards)
     summary = f"Source-bounded {note_type.lower()} draft for {title}. Review before promoting beyond draft status."
     lines = [
         "---",
@@ -487,8 +533,18 @@ def build_note_markdown(note_type: str, title: str, cards: list[dict], query: st
         f"summary: {summary}",
         "sourceRefs:",
         *[f"  - {ref}" for ref in source_refs],
-        "related:",
-        *([f"  - {item}" for item in related] or ["  - evidence review"]),
+        "evidence:",
+        *[f"  - {evidence_from_card(card)} [{index}]" for index, card in enumerate(cards, start=1)],
+        "relatedConcepts:",
+        *([f"  - {item}" for item in relations["relatedConcepts"]] or ["  - evidence review"]),
+        "relatedMethods:",
+        *([f"  - {item}" for item in relations["relatedMethods"]] or ["  - evidence review"]),
+        "relatedMaterials:",
+        *([f"  - {item}" for item in relations["relatedMaterials"]] or ["  - evidence review"]),
+        "relatedSocialForms:",
+        *([f"  - {item}" for item in relations["relatedSocialForms"]] or ["  - evidence review"]),
+        "relatedProjects:",
+        *([f"  - {item}" for item in relations["relatedProjects"]] or ["  - evidence review"]),
         "openQuestions:",
         "  - Which claims should be promoted after manual source review?",
         "---",
@@ -522,6 +578,14 @@ def build_note_markdown(note_type: str, title: str, cards: list[dict], query: st
         "- This note is a compiled draft assembled only from the sourceRefs above.",
         "- Do not use this note as a finished synthesis until each claim is manually checked against the cited sources.",
         "",
+        "## Related Wiki Notes",
+        "",
+        "- Concepts: " + ", ".join(f"[[Wiki/Concepts/{slugify(item)}|{item}]]" for item in relations["relatedConcepts"][:5]) if relations["relatedConcepts"] else "- Concepts: evidence review",
+        "- Methods: " + ", ".join(f"[[Wiki/Methods/{slugify(item)}|{item}]]" for item in relations["relatedMethods"][:5]) if relations["relatedMethods"] else "- Methods: evidence review",
+        "- Materials: " + ", ".join(f"[[Wiki/Materials/{slugify(item)}|{item}]]" for item in relations["relatedMaterials"][:5]) if relations["relatedMaterials"] else "- Materials: evidence review",
+        "- Social forms: " + ", ".join(f"[[Wiki/SocialForms/{slugify(item)}|{item}]]" for item in relations["relatedSocialForms"][:5]) if relations["relatedSocialForms"] else "- Social forms: evidence review",
+        "- Projects: " + ", ".join(f"[[Wiki/Projects/{slugify(item)}|{item}]]" for item in relations["relatedProjects"][:5]) if relations["relatedProjects"] else "- Projects: evidence review",
+        "",
         "## Citations",
         "",
         *[f"[{index}] `{ref}`" for index, ref in enumerate(source_refs, start=1)],
@@ -529,7 +593,7 @@ def build_note_markdown(note_type: str, title: str, cards: list[dict], query: st
         "## Open Questions",
         "",
         "- What stronger source passages should replace the automatic excerpts?",
-        "- Which related PBS concepts, methods, materials, or social forms should be linked after review?",
+        "- Which related PBS concepts, methods, materials, social forms, or projects should be linked after review?",
     ])
     return "\n".join(lines).rstrip() + "\n"
 
@@ -596,6 +660,10 @@ def evidence_lint_rows() -> tuple[list[str], list[str]]:
             warnings.append(f"{rel(path)} missing status")
         if not refs:
             errors.append(f"{rel(path)} missing sourceRefs")
+        fm = parse_frontmatter(text)
+        for key in ["id", "title", "type", "status", "summary", "evidence", "relatedConcepts", "relatedMethods", "relatedMaterials", "relatedSocialForms", "relatedProjects", "openQuestions"]:
+            if key not in fm:
+                warnings.append(f"{rel(path)} missing compiled wiki field {key}")
         if refs and len(refs) < 2 and "source-bounded-draft" not in text:
             warnings.append(f"{rel(path)} has thin evidence: {len(refs)} sourceRef")
         for ref in refs:
@@ -616,6 +684,10 @@ def note_lint_status(path: Path, text: str) -> dict:
     refs = parse_refs(text)
     if not refs:
         errors.append("missing sourceRefs")
+    fm = parse_frontmatter(text)
+    for key in ["id", "title", "type", "status", "summary", "evidence", "relatedConcepts", "relatedMethods", "relatedMaterials", "relatedSocialForms", "relatedProjects", "openQuestions"]:
+        if key not in fm:
+            warnings.append(f"missing compiled wiki field {key}")
     if "status:" not in text:
         warnings.append("missing status")
     if refs and len(refs) < 2 and "source-bounded-draft" not in text:
@@ -649,7 +721,10 @@ def exportable_wiki_note(path: Path) -> dict:
     refs = parse_refs(text)
     title = str(fm.get("title") or path.stem)
     note_type = str(fm.get("type") or path.parent.name.rstrip("s")).lower()
-    related = fm.get("related") if isinstance(fm.get("related"), list) else []
+    relation_keys = ["relatedConcepts", "relatedMethods", "relatedMaterials", "relatedSocialForms", "relatedProjects"]
+    relations = {key: fm.get(key) if isinstance(fm.get(key), list) else [] for key in relation_keys}
+    legacy_related = fm.get("related") if isinstance(fm.get("related"), list) else []
+    related = list(dict.fromkeys([*legacy_related, *[item for values in relations.values() for item in values if item != "evidence review"]]))
     open_questions = fm.get("openQuestions") if isinstance(fm.get("openQuestions"), list) else []
     citations = re.findall(r"^\[(\d+)\]\s+`?([^`\n]+)`?", text, re.M)
     lint_status = note_lint_status(path, text)
@@ -664,6 +739,11 @@ def exportable_wiki_note(path: Path) -> dict:
         "sourceRefs": refs,
         "sourceRefCount": len(refs),
         "related": related,
+        "relatedConcepts": relations["relatedConcepts"],
+        "relatedMethods": relations["relatedMethods"],
+        "relatedMaterials": relations["relatedMaterials"],
+        "relatedSocialForms": relations["relatedSocialForms"],
+        "relatedProjects": relations["relatedProjects"],
         "openQuestions": open_questions,
         "evidence": markdown_section(text, "Evidence", 1200),
         "citations": [{"index": index, "sourceRef": ref.strip()} for index, ref in citations],
