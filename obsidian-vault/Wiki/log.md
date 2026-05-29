@@ -69,3 +69,63 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 
 - Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
 - Exported 2 notes; 2 eligible for zine RAG.
+
+## [2026-05-29] build-note | Temporary commons in art-science camps
+
+- Created `obsidian-vault/Wiki/Concepts/temporary-commons-in-art-science-camps.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Care maintenance and failure notes
+
+- Created `obsidian-vault/Wiki/Concepts/care-maintenance-and-failure-notes.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | E-textile workshop pedagogy
+
+- Created `obsidian-vault/Wiki/Methods/e-textile-workshop-pedagogy.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | DIY microscopy and imaging workshops
+
+- Created `obsidian-vault/Wiki/Methods/diy-microscopy-and-imaging-workshops.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Conductive textiles and soft circuits
+
+- Created `obsidian-vault/Wiki/Materials/conductive-textiles-and-soft-circuits.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Community labs and temporary labs
+
+- Created `obsidian-vault/Wiki/SocialForms/community-labs-and-temporary-labs.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Camps and festivals as knowledge infrastructure
+
+- Created `obsidian-vault/Wiki/SocialForms/camps-and-festivals-as-knowledge-infrastructure.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | 8bit Mix Tape
+
+- Created `obsidian-vault/Wiki/Projects/8bit-mix-tape.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | SGMK and Hackteria workshop infrastructures
+
+- Created `obsidian-vault/Wiki/Comparisons/sgmk-and-hackteria-workshop-infrastructures.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Material experimentation across community labs
+
+- Created `obsidian-vault/Wiki/Syntheses/material-experimentation-across-community-labs.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] build-note | Open hardware commons and situated pedagogy
+
+- Created `obsidian-vault/Wiki/Theories/open-hardware-commons-and-situated-pedagogy.md` as source-bounded draft.
+- Used 6 local source cards; raw Sources were not mutated.
+
+## [2026-05-29] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 13 notes; 13 eligible for zine RAG.

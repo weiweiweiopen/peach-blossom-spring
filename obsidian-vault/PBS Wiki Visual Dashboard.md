@@ -4,10 +4,11 @@ This is the Markdown fallback for the visual map. If `PBS Wiki Visual Map.canvas
 
 ## Current Runtime Summary
 
-PBS now has four connected maintenance/runtime zones:
+PBS now has four connected knowledge/runtime layers:
 
 - `Sources/`: raw evidence and source-family pages. Preserve these; do not rewrite them as answers.
-- `Wiki/`: compiled notes with `sourceRefs`, including Concepts, Methods, Materials, SocialForms, Projects, NPCs, Pets, and Zines.
+- `Sources/PBS Semantic Layers` and `Sources/PBS Entity Layers`: bridge indexes for retrieval hints and candidate relations, not final synthesis.
+- `Wiki/`: compiled LLM Wiki middle-layer notes with `sourceRefs`, evidence, typed related fields, and open questions.
 - `Schema / Review / Logs`: rules, lint, firewall, review artifacts, and maintenance records.
 - `webview-ui`: runtime surfaces for PBS Computer, NPC dialogue, Question Pet, and zine generation.
 
@@ -20,30 +21,51 @@ Open the concise architecture note:
 
 ```mermaid
 graph LR
-  Sources[Raw Sources] --> Cards[Source Cards + Semantic/Entity Layers]
-  Cards --> Tool[scripts/wiki_tool.py]
-  Tool --> Wiki[Compiled Wiki Notes]
+  Sources[Raw Sources] --> Bridge[Semantic/Entity Bridge Indexes]
+  Sources --> Cards[Source Cards]
+  Bridge --> Tool[scripts/wiki_tool.py]
+  Cards --> Tool
+  Tool --> Wiki[Compiled Wiki Middle Layer]
   Tool --> Review[Review + Logs]
+  Wiki --> Index[pbs-wiki-index.json]
+  Index --> Runtime[Web Runtime]
   Wiki --> Runtime[Web Runtime]
-  Cards --> Runtime
   Runtime --> Zine[Zine Generation]
   Runtime --> NPC[NPC Dialogue]
   Runtime --> Pet[Question Pet]
   Review --> Pet
 ```
 
+## Compiled Middle Layer
+
+- [[Wiki/Concepts/README|Concepts]]
+- [[Wiki/Methods/README|Methods]]
+- [[Wiki/Materials/README|Materials]]
+- [[Wiki/Theories/README|Theories]]
+- [[Wiki/SocialForms/README|Social Forms]]
+- [[Wiki/Projects/README|Projects]]
+- [[Wiki/Comparisons/README|Comparisons]]
+- [[Wiki/Syntheses/README|Syntheses]]
+
+## Middle-Layer Thickening
+
+The first controlled batch is documented at `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/middle-layer-thickening.md`. The rule is: use Semantic/Entity/sourceCards as candidate navigation, then compile only a small sourceRef-backed note batch.
+
 ## Zine Generation
 
 ```mermaid
 graph TD
-  Q[Player question] --> Entry[Semantic/entity entry notes]
-  Entry --> Cards[sourceCards and wikilinks]
+  Q[Player question] --> WikiIndex[compiled Wiki index]
+  Q --> Entry[Semantic/entity bridge notes]
+  WikiIndex --> Cards[sourceCards and wikilinks]
+  Entry --> Cards
   Cards --> Workflow[runDaydreamWorkflow]
   Workflow --> Gate[Evidence coverage gate]
   Gate --> LLM[DeepSeek section writing]
   LLM --> Template[Official zine template]
   Template --> Guard[Public artifact guard]
   Guard --> Output[Printable public zine]
+  Output --> Repair[Repair feedback report]
 ```
 
 ## NPC Dialogue

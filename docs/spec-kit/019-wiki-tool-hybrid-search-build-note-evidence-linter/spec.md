@@ -49,3 +49,4 @@ The Question Pet should grow from reviewed knowledge states: unresolved evidence
 - Evidence lint report: `obsidian-vault/Wiki/Logs/evidence-lint-2026-05-29.md`
 - Follow-up review: `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/follow-up.md`
 - Schema repair: `scripts/wiki_tool.py` now emits the standard compiled Wiki middle-layer fields while preserving bridge-index and zine-runtime compatibility.
+- Middle-layer thickening: `docs/spec-kit/019-wiki-tool-hybrid-search-build-note-evidence-linter/middle-layer-thickening.md` documents the controlled first batch of compiled Wiki notes.

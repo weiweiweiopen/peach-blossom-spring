@@ -40,10 +40,11 @@ test('association official final HTML includes template 1 and safe feedback meta
   const html = `${renderOfficialTemplateArtifactHtml(artifact, 'pbs-reset-title', template)}${renderAssociationFeedbackSection('ja', template.filename)}`;
 
   assert.match(html, /data-official-template="01-pbs-reset-title-kinetic\.html"/);
-  assert.match(html, /pbs:zine-page-feedback/);
-  assert.match(html, /data-pbs-feedback-icon="black-broken-heart"/);
-  assert.match(html, /class="pbs-feedback-broken-heart"/);
-  assert.match(html, /💔︎/u);
+  assert.match(html, /pbs:zine-repair-feedback/);
+  assert.match(html, /data-pbs-zine-repair-useful/);
+  assert.match(html, /data-pbs-zine-repair-useless/);
+  assert.match(html, /data-pbs-zine-repair-instruction/);
+  assert.match(html, /pbs:zine-repair-request/);
   assert.match(html, /zineTitle: document\.title/);
   assert.match(html, /page: "feedback"/);
   assert.match(html, /language = "ja"/);

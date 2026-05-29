@@ -18,3 +18,5 @@ sourceRefs:
 - [x] Review pet growth and visualization follow-up after evidence lint stabilizes.
 - [x] Clarify that `Sources/PBS Semantic Layers` is a source-derived bridge index, not the compiled Wiki middle layer.
 - [x] Update `build-note` output to the standard compiled Wiki note shape requested in the LLM Wiki compact checkpoint.
+- [x] Execute the first controlled middle-layer thickening batch across Concepts, Methods, Materials, Theories, SocialForms, Projects, Comparisons, and Syntheses.
+- [x] Update Obsidian entry pages and Canvas views to make the bridge-vs-compiled-layer split visible.

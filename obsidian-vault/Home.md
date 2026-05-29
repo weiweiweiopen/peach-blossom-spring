@@ -1,26 +1,39 @@
 # PBS Knowledge Vault
 
-Seed vault for [[Peach Blossom Spring]] research references.
+Peach Blossom Spring is a local cultural knowledge base for open-source art, DIY biology, e-textiles, community labs, workshops, instruments, and living material practices.
 
-Created: 2026-05-16 09:11 
+The vault now separates four jobs clearly: raw evidence, source-derived bridge indexes, compiled Wiki middle-layer notes, and runtime outputs.
 
-## Source clusters
+## Start
 
-- [[Sources/Hackteria Wiki]]
-- [[Sources/How To Get What You Want - KOBAKANT DIY]]
-- [[Sources/SGMK Index]]
+- [[Start Here]]: recommended reader and maintainer path.
+- [[Association Map]]: bridge indexes, compiled notes, and evidence boundaries.
+- [[Wiki/index|LLM Wiki Index]]: the compiled middle-layer navigation.
+- [[PBS Wiki Visual Map.canvas]]: Obsidian Canvas architecture map.
+- [[PBS Wiki Visual Dashboard]]: Markdown fallback for the Canvas.
 
-## Why this exists
+## Compiled Wiki Middle Layer
 
-PBS needs a local research memory for open-source art / DIY bio / e-textile / community-wiki references, instead of relying on fragile web search each time.
+These folders are the Karpathy-style shared-memory core. They contain source-bounded notes with `sourceRefs`, evidence, typed relations, open questions, and Wiki links.
 
-## Current scope
+- [[Wiki/Concepts/README|Concepts]]
+- [[Wiki/Methods/README|Methods]]
+- [[Wiki/Materials/README|Materials]]
+- [[Wiki/Theories/README|Theories]]
+- [[Wiki/SocialForms/README|Social Forms]]
+- [[Wiki/Projects/README|Projects]]
+- [[Wiki/Comparisons/README|Comparisons]]
+- [[Wiki/Syntheses/README|Syntheses]]
 
-This is a seed import, not a complete mirror. It stores source summaries, important entry pages, and stable links for later expansion.
-- [[Sources/Hackteria Relationship Index]] — internal link/category layer for meaningful graph clusters.
+## Bridge And Evidence Layers
 
-## Structure
+- [[Sources/PBS Semantic Layers/README|Semantic Layers]]: source-derived bridge index for retrieval hints and candidate relations, not final synthesis.
+- [[Sources/PBS Entity Layers/README|Entity Layers]]: people, places, and time bridge index.
+- [[Sources/Hackteria Full Index]], [[Sources/How To Get What You Want Full Index]], [[Sources/SGMK Full Index]]: raw source entrances.
 
-- [[VAULT_STRUCTURE]]
-- [[GRAPH_VIEW_GUIDE]]
-- [[PBS_COLOR_PALETTE]]
+## Runtime Outputs
+
+- [[Zines]]: public zine and repair-feedback paths.
+- [[Questions]]: active inquiry and Question Pet paths.
+- [[Characters and NPCs|Characters / NPCs]]: source-bounded character-facing knowledge.
+- [[Peach Blossom Spring]]: project knowledge hub.
