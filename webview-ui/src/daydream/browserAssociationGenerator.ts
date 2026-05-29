@@ -49,6 +49,7 @@ type Workflow = ReturnType<typeof runDaydreamWorkflow>;
 type Card = ReturnType<typeof sourceCards>[number];
 type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
+type EvidenceCoverage = { label: string; covered: boolean };
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ZINE_PRINT_PAGE_MULTIPLE = 8;
@@ -61,6 +62,13 @@ const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "PBS Semantic Layers / Events", path: "Sources/PBS Semantic Layers/Events.md", text: semanticEvents, role: "event and workshop index" },
   { title: "PBS Entity Layers / README", path: "Sources/PBS Entity Layers/README.md", text: entityReadme, role: "entity bridge overview" },
   { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages as orientation and semantic/entity/source layers as evidence bridges.", role: "public wiki index" },
+];
+const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; evidence: RegExp }> = [
+  { label: "nonprofit/organization", query: /非營利|非營利組織|組織|ngo|non-?profit|organization/i, evidence: /非營利|ngo|non-?profit|organization|organis(?:ation|e|ing)|組織/i },
+  { label: "maintenance/labor", query: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i, evidence: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i },
+  { label: "public infrastructure", query: /公共|基礎設施|common|commons|public|infrastructure/i, evidence: /公共|基礎設施|common|commons|public|infrastructure/i },
+  { label: "regeneration/sustainability", query: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, evidence: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i },
+  { label: "cross-community comparison", query: /跨社群|比較|對照|Hackteria.*SGMK|SGMK.*Hackteria|KOBAKANT.*SGMK|SGMK.*KOBAKANT|across|compare|comparison/i, evidence: /Hackteria|SGMK|SSAM|KOBAKANT|How To Get What You Want|cross|compare|comparison|跨社群|比較|對照/i },
 ];
 let activeDeepSeekTraceCalls: Array<{ status: string; httpStatus: number | null; durationMs: number; errorClass: string | null }> = [];
 
@@ -395,6 +403,50 @@ function sourceCards(workflow: Workflow) {
   });
 }
 
+function evidenceText(card: Partial<SourceCard>): string {
+  return [
+    card.title,
+    card.excerpt,
+    card.source,
+    card.path,
+    card.url,
+    ...(card.keywords ?? []),
+    ...(card.tags ?? []),
+    ...(card.categories ?? []),
+  ].join(" ");
+}
+
+function meaningfulEvidenceCards(workflow: Workflow): SourceCard[] {
+  const report = workflow.step1.report;
+  const seen = new Set<string>();
+  const cards = [
+    ...report.matchedCards,
+    ...report.deepReadCards,
+    ...report.linkedCards.map((trail) => trail.card),
+  ].filter((card) => isAllowedZineCard(card) && !isWikiEntryCard(card));
+  return cards.filter((card) => {
+    const key = card.id || card.url || card.path || card.title;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    const text = evidenceText(card);
+    return text.length >= 180 && !/No plaintext extract returned|mostly media\/table markup/i.test(text);
+  });
+}
+
+function evidenceCoverageForQuery(query: string, workflow: Workflow): EvidenceCoverage[] {
+  const cards = meaningfulEvidenceCards(workflow);
+  return ABSTRACT_RELATION_GROUPS
+    .filter((group) => group.query.test(query))
+    .map((group) => ({
+      label: group.label,
+      covered: cards.some((card) => group.evidence.test(evidenceText(card))),
+    }));
+}
+
+function asksForSynthesis(query: string): boolean {
+  return /說明|論述|分析|如何|為何|透過|從.+尋找|支持.*論點|explain|argue|analy[sz]e|through|how|why|support.*claim/i.test(query);
+}
+
 function classifyCard(card: Card): string {
   const text = `${card.title} ${card.excerpt ?? ""} ${(card.keywords ?? []).join(" ")} ${(card.tags ?? []).join(" ")}`.toLowerCase();
   if (/workshop|education|school|class|工作坊|教育/.test(text)) return "workshop";
@@ -491,9 +543,10 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
       bridgeCards: semantic.bridgeCards.length,
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
+    evidenceCoverage: evidenceCoverageForQuery(query, workflow),
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. Write one coherent research-seminar zine around one useful, source-grounded insight and one future research direction.",
-    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations 與 linkedEvidenceTrails 重寫文章；先說材料支持什麼、不支持什麼，並指出一個不容易被注意到、但對玩家問題有用的新關係、矛盾或事實。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 可以作為一般證據來源使用，但仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, say that the evidence is insufficient and turn the piece into verification questions instead of a thesis. Write one coherent research-seminar zine around source-grounded insight and one future research direction only when the evidence supports that direction.",
+    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；Hackteria 可以作為一般證據來源使用，但仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -517,6 +570,22 @@ function assertEnoughRelevantMaterial(workflow: Workflow): void {
   const enough = allowedMatched >= 2 && (allowedDeep >= 1 || allowedLinked >= 2) && depthScore >= 35;
   if (enough) return;
   const error = new Error(`low_relevance_zine: matched ${allowedMatched}, linked ${allowedLinked}, deep-read ${allowedDeep}, depth ${depthScore}`);
+  error.name = "LowRelevanceZineError";
+  throw error;
+}
+
+function assertEnoughEvidenceForClaim(query: string, workflow: Workflow): void {
+  const coverage = evidenceCoverageForQuery(query, workflow);
+  if (!asksForSynthesis(query) || coverage.length < 2) return;
+  const unsupported = coverage.filter((item) => !item.covered);
+  const meaningfulCards = meaningfulEvidenceCards(workflow);
+  const distinctFamilies = new Set(meaningfulCards.map(sourceFamily)).size;
+  const allowedUnsupported = coverage.length >= 4 ? 1 : 0;
+  const failsCoverage = unsupported.length > allowedUnsupported;
+  const failsBreadth = coverage.length >= 3 && (meaningfulCards.length < 3 || distinctFamilies < 2);
+  if (!failsCoverage && !failsBreadth) return;
+  const message = `insufficient_evidence_zine: 沒有找到足夠的證據支持這個綜合論點。unsupported=${unsupported.map((item) => item.label).join(", ") || "none"}; meaningfulPages=${meaningfulCards.length}; sourceFamilies=${distinctFamilies}`;
+  const error = new Error(message);
   error.name = "LowRelevanceZineError";
   throw error;
 }
@@ -695,7 +764,7 @@ function errorMessage(error: unknown): string {
 function errorClass(error: unknown, fallback = "unknown_error"): string {
   const message = errorMessage(error);
   if (error instanceof Error && error.name === "LowRelevanceZineError") return "low_relevance_zine";
-  if (/low_relevance_zine|not enough relevant/i.test(message)) return "low_relevance_zine";
+  if (/low_relevance_zine|insufficient_evidence_zine|not enough relevant|沒有找到足夠的證據/i.test(message)) return "low_relevance_zine";
   if (/DeepSeek proxy failed\s+(\d+)/i.test(message)) return `http_error_${message.match(/DeepSeek proxy failed\s+(\d+)/i)?.[1] ?? "unknown"}`;
   if (/http_error\s+(\d+)/i.test(message)) return `http_error_${message.match(/http_error\s+(\d+)/i)?.[1] ?? "unknown"}`;
   if (/JSON parse failed|parseable JSON|JSON\.parse/i.test(message)) return "json_parse_failed";
@@ -867,8 +936,8 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
       title: `從「${compactQuery}」重新讀桃花源材料`,
       subtitle: "一份以證據、限制與下一步問題組成的小誌。",
       opening: `這份小誌先保留玩家問題「${compactQuery}」的模糊性，再回到公開材料中尋找可查證的線索。它不把材料硬湊成結論，而是問哪些頁面、作品、方法或社群實踐真的能推進判讀。`,
-      proposition: "核心論點是：這些材料最有用之處，不是提供單一答案，而是指出臨時共同體如何在資源、照護、技術與敘事之間形成可比較的實踐。",
-      quietCaveat: "這份方向仍需要更多材料、實地回饋與共同校正。",
+      proposition: "如果材料不足，這份小誌必須承認沒有找到足夠證據，而不是把鬆散頁面寫成宏大結論。",
+      quietCaveat: "沒有足夠頁面關係時，請先查證，不要裝訂成定論。",
     },
     en: {
       title: `Reading Peach Blossom Spring Through "${compactQuery}"`,
@@ -1055,6 +1124,11 @@ function validateVisibleText(text: string, workflow: Workflow, language: Associa
   if (forbiddenMatches.length > 0) hardFailures.push(`forbidden/process language detected: ${forbiddenMatches.join("; ")}`);
   if (language === "zh-TW" && RAW_ENGLISH_EXCERPT.test(text)) hardFailures.push("long raw English excerpt detected");
   if (/\b(?:NCBI|16S|rRNA|lacZ|Phred)\b|大腸桿菌|E\.?\s*coli/i.test(text)) hardFailures.push("invented unsupported bio dataset/procedure details");
+  const coverage = evidenceCoverageForQuery(workflow.step1.report.seed, workflow);
+  const unsupportedClaims = coverage.filter((item) => !item.covered && new RegExp(regexEscape(item.label.split("/")[0]), "i").test(text));
+  if (unsupportedClaims.length > 0 && !/沒有找到足夠(?:的)?證據|證據不足|insufficient evidence/i.test(text)) {
+    hardFailures.push(`unsupported synthesis without evidence caveat: ${unsupportedClaims.map((item) => item.label).join(", ")}`);
+  }
   if (workflowAnchorTerms(workflow).length > 0 && hits.length < Math.min(2, workflowAnchorTerms(workflow).length)) warnings.push(`query anchor hits low: ${hits.join(", ")}`);
   if (!queryRelevancePass(text, workflow)) warnings.push("query relevance is shallow");
   if (repeated.length > 0) warnings.push(`repeated sentence: ${repeated[0]}`);
@@ -1408,6 +1482,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   onProgress?.(progress.deepRead(workflow.step1.report.deepReadCards.filter(isAllowedZineCard).length));
   try {
     assertEnoughRelevantMaterial(workflow);
+    assertEnoughEvidenceForClaim(query, workflow);
   } catch (error) {
     persistClickTrace(buildClickTrace({ requestId, query, language, workflow, errorClass: errorClass(error, "low_relevance_zine"), errorMessage: errorMessage(error) }));
     throw error;

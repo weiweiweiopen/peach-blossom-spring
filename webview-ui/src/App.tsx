@@ -623,7 +623,7 @@ function safeDebugText(value: unknown, max = 500): string {
 }
 
 function classifyAssociationError(message: string): string {
-  if (/low_relevance_zine|LowRelevanceZineError|not enough relevant/i.test(message)) return "low_relevance_zine";
+  if (/low_relevance_zine|insufficient_evidence_zine|LowRelevanceZineError|not enough relevant|沒有找到足夠的證據/i.test(message)) return "low_relevance_zine";
   if (/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i.test(message)) {
     const match = message.match(/http_error\s*(\d+)|DeepSeek proxy failed\s*(\d+)/i);
     return `http_error ${match?.[1] ?? match?.[2] ?? "unknown"}`;
@@ -695,11 +695,13 @@ function AssociationLowRelevancePage({ language, query, onRetry }: { language: L
   const copy = associationErrorCopy(language);
   const lines: Record<LanguageCode, string[]> = {
     "zh-TW": [
+      "沒有找到足夠的證據支持這個結論。電子雞先不裝訂，避免把鬆散頁面寫成錯誤論點。",
       "這個問題和現在的維基火路還沒有接上，電子雞想先幫你換一個更靠近材料的問法。",
       "目前的維基和這個問題沒有足夠多的相關性，電子雞先把小誌鍋蓋蓋起來。",
       "這條問題小徑暫時太霧了，電子雞需要更多頁面線索才敢裝訂成小誌。",
     ],
     en: [
+      "Not enough evidence was found to support that conclusion. The pet is keeping the zine unbound instead of turning loose pages into a false claim.",
       "This question has not found enough warm wiki paths yet. The pet wants a more material-facing question.",
       "The wiki does not have enough relevant traces for this question right now, so the pet is keeping the zine unbound.",
       "This path is too foggy for a zine. The pet needs more page clues first.",
