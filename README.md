@@ -62,6 +62,12 @@ Open the public site and press start.
 - Print or save the zine as a small public artifact.
 - Treat refusals or guidance as part of the game: the garden is telling you the question needs more shape.
 
+## Question Pet / Tamagotchi Lint System
+
+The small electronic chicken / question pet is not just a mascot. It is a symbolic lint interface: a living indicator connected to the wiki's evidence and question-quality checks.
+
+When a question is too vague, under-sourced, too far from the PBS terrain, or full of interesting missing links, the pet turns that into signals. Its job is to help players notice **creative openings** and **knowledge breakpoints**: places where a zine, note, source route, or new research question could grow.
+
 Good prompts are specific enough to touch the terrain, for example:
 
 - `How did e-textile camps become temporary commons?`
