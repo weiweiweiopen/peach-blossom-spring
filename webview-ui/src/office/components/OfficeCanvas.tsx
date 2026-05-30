@@ -159,6 +159,8 @@ export function OfficeCanvas({
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
+    window.addEventListener('resize', resizeCanvas);
+    window.visualViewport?.addEventListener('resize', resizeCanvas);
 
     const stop = startGameLoop(canvas, {
       update: (dt) => {
@@ -325,6 +327,8 @@ export function OfficeCanvas({
     return () => {
       stop();
       observer.disconnect();
+      window.removeEventListener('resize', resizeCanvas);
+      window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
   }, [officeState, resizeCanvas, isEditMode, editorState, zoom, panRef, getInteractiveFurnitureHighlight]);
 
@@ -972,7 +976,7 @@ export function OfficeCanvas({
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-bg">
+    <div ref={containerRef} className="office-canvas-container w-full h-full relative overflow-hidden">
       <canvas
         ref={canvasRef}
         onPointerDown={handlePointerDown}
@@ -987,7 +991,7 @@ export function OfficeCanvas({
         onMouseLeave={handleMouseLeave}
         onWheel={handleWheel}
         onContextMenu={handleContextMenu}
-        className="block"
+        className="office-canvas block"
         style={{ touchAction: mobileTapToMove ? 'none' : undefined }}
       />
     </div>

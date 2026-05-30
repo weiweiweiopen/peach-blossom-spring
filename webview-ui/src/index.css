@@ -3132,6 +3132,10 @@ html[data-language="th"],
 
 .pbs-interaction-root {
   isolation: isolate;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  background: #9ed8c8;
 }
 
 .pbs-world-map-layer {
@@ -3139,6 +3143,11 @@ html[data-language="th"],
   inset: 0;
   z-index: var(--z-layer-map);
   pointer-events: auto;
+}
+
+.office-canvas-container,
+.office-canvas {
+  background: #9ed8c8;
 }
 
 .pbs-interaction-root[data-modal-layer="open"] .pbs-world-map-layer {
