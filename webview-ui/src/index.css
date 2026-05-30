@@ -8082,3 +8082,54 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   line-height: var(--mobile-dialogue-line) !important;
   letter-spacing: 0 !important;
 }
+
+.rpg-dialogue-panel[data-language="en"],
+.rpg-dialogue-panel[data-language="id"],
+.rpg-dialogue-panel[data-language="de"] {
+  --dialogue-hud-copy-size: clamp(19px, 1.65vw, 25px);
+  --dialogue-hud-title-size: clamp(26px, 2.4vw, 34px);
+  --dialogue-hud-meta-size: clamp(17px, 1.35vw, 22px);
+  --dialogue-hud-line: 1.32;
+}
+
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-name {
+  font-size: var(--dialogue-hud-title-size) !important;
+  line-height: 1.12 !important;
+}
+
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-kicker,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-role,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-kicker,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-role,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-kicker,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-role {
+  font-size: var(--dialogue-hud-meta-size) !important;
+  line-height: var(--dialogue-hud-line) !important;
+}
+
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-message span,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle),
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-message span,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle),
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-message span,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+  font-size: var(--dialogue-hud-copy-size) !important;
+  line-height: var(--dialogue-hud-line) !important;
+}
