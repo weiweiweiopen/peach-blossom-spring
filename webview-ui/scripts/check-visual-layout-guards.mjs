@@ -29,7 +29,7 @@ const editorialPrompt = readFileSync(join(root, "prompts", "association-editoria
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
-  ["zine repair feedback fields are writable", /data-pbs-zine-repair-useful/.test(feedback) && /data-pbs-zine-repair-useless/.test(feedback) && /data-pbs-zine-repair-instruction/.test(feedback)],
+  ["zine repair feedback field is writable", /data-pbs-zine-repair-feedback/.test(feedback) && /repairInstruction:\s*feedback/.test(feedback) && !/data-pbs-zine-repair-useful/.test(feedback) && !/data-pbs-zine-repair-useless/.test(feedback)],
   ["zine repair feedback posts regeneration request", /pbs:zine-repair-request/.test(feedback) && /humanRepairReview/.test(generator) && /repairInstruction/.test(app + generator)],
   ["Japanese talk bubble is capped", /data-language="ja"\] \.mobile-talk-prompt[\s\S]*font-size:\s*clamp\(16px,\s*1\.45vw,\s*21px\)/.test(css)],
   ["Thai talk bubble line-height is bounded", /data-language="th"\] \.mobile-talk-prompt[\s\S]*line-height:\s*1\.48/.test(css)],

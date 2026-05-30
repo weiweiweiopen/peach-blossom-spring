@@ -1061,8 +1061,8 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
     "zh-TW": {
       title: `從「${compactQuery}」重新讀桃花源材料`,
       subtitle: "一份以證據、限制與下一步問題組成的小誌。",
-      opening: `這份小誌先保留玩家問題「${compactQuery}」的模糊性，再回到公開材料中尋找可查證的線索。它不把材料硬湊成結論，而是問哪些頁面、作品、方法或社群實踐真的能推進判讀。`,
-      proposition: "如果材料不足，這份小誌必須承認沒有找到足夠證據，而不是把鬆散頁面寫成宏大結論。",
+      opening: `先從「${compactQuery}」在材料裡真正碰到的頁面、作品、方法或社群實踐開始。`,
+      proposition: "讀法必須跟著證據走；能支持的關係才推進，不能支持的關係留作下一步查證。",
       quietCaveat: "沒有足夠頁面關係時，請先查證，不要裝訂成定論。",
     },
     en: {
@@ -1115,7 +1115,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   try {
     outline = await requestDeepSeekJsonWithRetry(
       system,
-        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 必須符合 PRINT BINDING TARGET 的長度。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 只作為內部銜接，不要寫成「這份小誌先...」「它不把...」「如果材料不足...」這類方法說明或系統說明；第 01 頁正文會直接使用第一章內容。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
       1000,
     ) as any;
   } catch (error) {

@@ -38,13 +38,13 @@ function kineticTitle(title: string, language: TemplateLanguage = "zh-TW"): stri
 }
 
 function templateCopy(language: TemplateLanguage) {
-  const copy: Record<TemplateLanguage, { map: string; sequence: string; closing: string; caveat: string }> = {
-    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
-    en: { map: "Sound map", sequence: "Reading order", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
-    id: { map: "Peta suara", sequence: "Urutan baca", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama." },
-    de: { map: "Klangkarte", sequence: "Leseordnung", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden." },
-    ja: { map: "音の地図", sequence: "読む順序", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。" },
-    th: { map: "แผนที่เสียง", sequence: "ลำดับการอ่าน", closing: "ปิดท้าย", caveat: "ให้ภาพ เสียง และจริยธรรมถูกได้ยินร่วมกัน" },
+  const copy: Record<TemplateLanguage, { map: string; sequence: string; insufficiencyNote: string; closing: string; caveat: string }> = {
+    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", insufficiencyNote: "如果材料不足，這份小誌必須承認沒有找到足夠證據，而不是把鬆散頁面寫成宏大結論。", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
+    en: { map: "Sound map", sequence: "Reading order", insufficiencyNote: "If the materials are insufficient, this zine should say so instead of turning loose pages into a grand conclusion.", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
+    id: { map: "Peta suara", sequence: "Urutan baca", insufficiencyNote: "Jika bahan tidak cukup, zine ini harus mengakuinya alih-alih mengubah halaman longgar menjadi kesimpulan besar.", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama." },
+    de: { map: "Klangkarte", sequence: "Leseordnung", insufficiencyNote: "Wenn das Material nicht reicht, muss dieses Zine das sagen, statt lose Seiten zu einer grossen These zu machen.", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden." },
+    ja: { map: "音の地図", sequence: "読む順序", insufficiencyNote: "材料が足りない場合、この小誌は十分な証拠がないと認め、散らばったページを大きな結論にしない。", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。" },
+    th: { map: "แผนที่เสียง", sequence: "ลำดับการอ่าน", insufficiencyNote: "ถ้าวัสดุไม่พอ ซีนนี้ต้องยอมรับว่าหลักฐานยังไม่พอ แทนการทำหน้ากระจัดกระจายให้เป็นข้อสรุปใหญ่", closing: "ปิดท้าย", caveat: "ให้ภาพ เสียง และจริยธรรมถูกได้ยินร่วมกัน" },
   };
   return copy[language];
 }
@@ -74,6 +74,7 @@ function zineLayoutGovernanceCss(): string {
 .body, .refs { width:100%; max-width:none; margin:0 auto; padding:clamp(14px,2vw,22px); border:3px solid var(--ink,#315b63); background:var(--pbs-body-bg) !important; box-shadow:none; overflow-wrap:anywhere; }
 .body p { max-width:none; }
 .refs { margin-top:18px; }
+.refs .sequence-note { display:block; margin-top:8px; font-size:0.72em; line-height:1.35; opacity:0.78; }
 .page h1 { font-size:clamp(34px,4.6vw,62px) !important; line-height:1.12 !important; }
 .page .lead { font-size:clamp(20px,2.2vw,28px) !important; line-height:1.55 !important; }
 .page .body, .page .refs { font-size:clamp(20px,2.15vw,28px) !important; line-height:1.62 !important; }
@@ -90,8 +91,9 @@ function zineLayoutGovernanceCss(): string {
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
   const copy = templateCopy(language);
   const sections = artifact.sections.slice(0, 4);
+  const firstSection = sections[0];
   const refs = artifact.protocol.slice(0, 6);
-  const sectionPages = sections.map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
+  const sectionPages = sections.slice(1).map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
   <header class="top"><span class="no">${String(index + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(section.title)}</span></header>
   <main class="sheet">
     ${section.pullQuote ? `<div class="titleBlock"><p class="lead">${escapeHtml(section.pullQuote)}</p></div>` : ""}
@@ -102,7 +104,7 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
   <header class="top"><span class="no">01</span><span class="label">${escapeHtml(copy.map)}</span></header>
   <main class="sheet">
     <div class="titleBlock"><h1>${kineticTitle(artifact.title, language)}</h1><p class="lead">${escapeHtml(artifact.subtitle)}</p></div>
-    <div class="bodyGrid"><article class="body"><p>${escapeHtml(artifact.opening)}</p><p>${escapeHtml(artifact.proposition)}</p></article><aside class="refs"><b>${escapeHtml(copy.sequence)}</b><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
+    <div class="bodyGrid"><article class="body">${firstSection ? `<p>${escapeHtml(firstSection.body)}</p>` : ""}</article><aside class="refs"><b>${escapeHtml(copy.sequence)}</b><small class="sequence-note">${escapeHtml(copy.insufficiencyNote)}</small><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
   </main>
 </section>${sectionPages}<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + 1)}">
   <header class="top"><span class="no">06</span><span class="label">${escapeHtml(copy.closing)}</span></header>
