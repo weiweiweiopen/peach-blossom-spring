@@ -89,31 +89,33 @@ function drawExpression(sprite: SpriteData, expression: ThrongletExpressionType,
   const black = '#000000';
   const accent = '#FCF46B';
   const blush = '#FFD4FF';
+  const clearFacePixels = (pixels: Array<[number, number]>) => {
+    pixels.forEach(([x, y]) => clearPixel(sprite, GRID_X + x, yBase + y));
+  };
 
   if (direction === Direction.UP) {
-    clearPixel(sprite, GRID_X + 5, yBase + 5);
-    clearPixel(sprite, GRID_X + 8, yBase + 5);
-    clearPixel(sprite, GRID_X + 7, yBase + 6);
+    clearFacePixels([[5, 5], [8, 5], [7, 6]]);
     drawPixels(sprite, [[GRID_X + 6, yBase + 6], [GRID_X + 7, yBase + 5], [GRID_X + 8, yBase + 6]], accent);
     return;
   }
 
   if (direction === Direction.RIGHT) {
-    clearPixel(sprite, GRID_X + 5, yBase + 5);
-    clearPixel(sprite, GRID_X + 8, yBase + 5);
-    clearPixel(sprite, GRID_X + 7, yBase + 6);
-    drawPixels(sprite, [[GRID_X + 10, yBase + 5]], black);
+    clearFacePixels([[5, 5], [8, 5], [7, 6], [9, 5], [10, 5], [10, 7], [11, 7], [10, 8], [11, 8]]);
     if (expression === 'sleepy') drawPixels(sprite, [[GRID_X + 9, yBase + 5], [GRID_X + 10, yBase + 5]], black);
+    else drawPixels(sprite, [[GRID_X + 10, yBase + 5]], black);
     if (expression === 'happy') drawPixels(sprite, [[GRID_X + 10, yBase + 7], [GRID_X + 11, yBase + 8]], black);
     else if (expression === 'stressed') drawPixels(sprite, [[GRID_X + 10, yBase + 8], [GRID_X + 11, yBase + 7]], black);
-    else drawPixels(sprite, [[GRID_X + 10, yBase + 7], [GRID_X + 11, yBase + 7]], black);
+    else drawPixels(sprite, [[GRID_X + 10, yBase + 7], [GRID_X + 11, yBase + 7]], expression === 'social' ? accent : black);
     if (expression === 'curious') drawPixels(sprite, [[GRID_X + 12, yBase + 3], [GRID_X + 13, yBase + 2], [GRID_X + 13, yBase + 4]], accent);
     setPixel(sprite, GRID_X + 11, yBase + 6, blush);
     return;
   }
 
+  clearFacePixels([[5, 5], [6, 5], [8, 5], [9, 5], [7, 6], [6, 7], [7, 7], [8, 7], [6, 8], [7, 8], [8, 8]]);
   if (expression === 'sleepy') {
     drawPixels(sprite, [[GRID_X + 5, yBase + 5], [GRID_X + 6, yBase + 5], [GRID_X + 8, yBase + 5], [GRID_X + 9, yBase + 5]], black);
+  } else {
+    drawPixels(sprite, [[GRID_X + 5, yBase + 5], [GRID_X + 8, yBase + 5]], black);
   }
   if (expression === 'happy') drawPixels(sprite, [[GRID_X + 6, yBase + 7], [GRID_X + 7, yBase + 8], [GRID_X + 8, yBase + 7]], black);
   else if (expression === 'social') drawPixels(sprite, [[GRID_X + 6, yBase + 7], [GRID_X + 7, yBase + 7], [GRID_X + 8, yBase + 7]], accent);
