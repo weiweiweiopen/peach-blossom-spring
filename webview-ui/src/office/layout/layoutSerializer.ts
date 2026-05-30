@@ -11,6 +11,7 @@ import { DEFAULT_COLS, DEFAULT_ROWS, Direction, TILE_SIZE, TileType } from '../t
 import { getCatalogEntry, getOrientationInGroup } from './furnitureCatalog.js';
 
 const GROUND_DECOR_TYPES = new Set([
+  'CRAFTPIX_EXTERIOR_05',
   'CRAFTPIX_EXTERIOR_09',
   'CRAFTPIX_EXTERIOR_21',
   'CRAFTPIX_EXTERIOR_29',

@@ -68,6 +68,12 @@ The small electronic chicken / question pet is not just a mascot. It is a symbol
 
 When a question is too vague, under-sourced, too far from the PBS terrain, or full of interesting missing links, the pet turns that into signals. Its job is to help players notice **creative openings** and **knowledge breakpoints**: places where a zine, note, source route, or new research question could grow.
 
+## Multi-Mind Self Campfire
+
+The campfire is the garden's shared-mind interface. It comes from an interest in Greek psychological ideas where emotions, impulses, and orientations are not only private inner states but shared patterns moving across people. In that view, a god can be understood as a stabilized collective mind: a virtual self held by story, ritual, image, and many bodies at once.
+
+PBS turns that into a campfire rather than a command terminal. The fire gathers many interview voices, source traces, disagreements, and recurring affects into a multi-mind self. It answers, but it also reminds players that no answer comes from one isolated brain.
+
 Good prompts are specific enough to touch the terrain, for example:
 
 - `How did e-textile camps become temporary commons?`

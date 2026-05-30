@@ -3134,7 +3134,7 @@ function App() {
     const npc = officeState.characters.get(promptAnchor.npcId);
     if (!npc) return null;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
@@ -3156,7 +3156,7 @@ function App() {
       ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
@@ -3181,7 +3181,7 @@ function App() {
         zoomScale: number;
       }>;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
