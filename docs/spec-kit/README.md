@@ -36,6 +36,8 @@ Spec-kit is the project planning ledger for scoped PBS changes. Each folder shou
 | `019-wiki-tool-hybrid-search-build-note-evidence-linter` | Wiki tool phase one: hybrid search, build-note, evidence lint, sample compiled note, pet/visualization follow-up. |
 | `020-wiki-tool-zine-runtime-rag-cross-community-gaps` | Wiki tool runtime RAG: export compiled Wiki JSON, feed zine prompts, cross-community gap reports. |
 | `021-zine-repair-feedback-reporting` | Replace binary zine reactions with repair feedback, report artifacts, and evidence-bound regeneration. |
+| `022-ingest-graphrag-pipeline-reset` | Downgrade legacy player seed pipeline and add real ingest/query/routing-gap Wiki tooling. |
+| `023-pet-lint-hud-npc-zine-feedback-vault-loop` | Connect lint/thought gaps to the Question Pet HUD, fix NPC talk bubbles, and route zine feedback into vault review structure. |
 
 ## Naming Rules
 

@@ -918,6 +918,41 @@ const THOUGHT_GAP_BROADCASTS: Record<LanguageCode, string[]> = {
   th: ["THOUGHT GAP: เห็นการปฏิบัติด้านวัสดุแล้ว แต่ care การซ่อมบำรุง และบันทึกความล้มเหลวยังต้องกลายเป็นคำถามเปรียบเทียบ"],
 };
 
+const PET_LINT_GAP_INBOX_KEY = "pbs:pet:lint-gap-inbox";
+
+interface PetLintGapItem {
+  id: string;
+  text: string;
+  language: LanguageCode;
+  createdAt: string;
+  source: "thought-gap-broadcast" | "zine-feedback";
+}
+
+function readPetLintGapInbox(): PetLintGapItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PET_LINT_GAP_INBOX_KEY) || "[]") as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is PetLintGapItem =>
+      Boolean(item) &&
+      typeof item === "object" &&
+      typeof (item as PetLintGapItem).id === "string" &&
+      typeof (item as PetLintGapItem).text === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function writePetLintGapInbox(items: PetLintGapItem[]): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PET_LINT_GAP_INBOX_KEY, JSON.stringify(items.slice(0, 24)));
+}
+
+function petLintGapTitle(language: LanguageCode): string {
+  return language === "zh-TW" ? "知識漏洞" : "Knowledge gaps";
+}
+
 const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
   "zh-TW": { title: "本地電子雞 RAG 對話", placeholder: "用牠的記憶、材料與 A2A 證據問這隻電子雞", ask: "詢問", noEvidence: "尚未取得證據。" },
   en: { title: "Local pet RAG chat", placeholder: "Ask this pet using its memory, materials, and A2A evidence", ask: "Ask", noEvidence: "No evidence retrieved yet." },
@@ -1229,6 +1264,16 @@ function buildZineRepairReport(payload: ZineRepairPayload, panel: Extract<SplitP
   const trace = readLastZineTrace();
   const createdAt = new Date().toISOString();
   const id = `zine-repair-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const repairInstruction = payload.repairInstruction?.trim() || "";
+  const uselessParts = payload.uselessParts?.trim() || "";
+  const usefulParts = payload.usefulParts?.trim() || "";
+  const feedbackText = `${usefulParts}\n${uselessParts}\n${repairInstruction}`;
+  const reviewActions = [
+    /source|citation|evidence|證據|引用|來源/i.test(feedbackText) ? "source-needed" : null,
+    /misleading|unsupported|guess|hallucinat|誤導|沒有根據|猜/i.test(feedbackText) ? "unsupported-synthesis" : null,
+    /question|ask|問題|提問/i.test(feedbackText) ? "question-reframe" : null,
+    /wiki|note|concept|compiled|概念|筆記/i.test(feedbackText) ? "compiled-note-gap" : null,
+  ].filter((item): item is string => Boolean(item));
   return {
     id,
     reportKind: "zine-repair-feedback",
@@ -1238,9 +1283,9 @@ function buildZineRepairReport(payload: ZineRepairPayload, panel: Extract<SplitP
     language: payload.language || panel?.language || trace?.language || "zh-TW",
     template: payload.template || "01-pbs-reset-title-kinetic.html",
     originalRequestId: trace?.requestId ?? null,
-    usefulParts: payload.usefulParts?.trim() || "",
-    uselessParts: payload.uselessParts?.trim() || "",
-    repairInstruction: payload.repairInstruction?.trim() || "",
+    usefulParts,
+    uselessParts,
+    repairInstruction,
     evidenceSnapshot: {
       allowedSourceFamilies: trace?.allowedSourceFamilies ?? [],
       searchTermsUsed: trace?.searchTermsUsed ?? [],
@@ -1250,10 +1295,18 @@ function buildZineRepairReport(payload: ZineRepairPayload, panel: Extract<SplitP
       publicValidation: trace?.publicValidation ?? null,
     },
     suggestedVaultActions: [
+      ...(reviewActions.length > 0 ? reviewActions : ["promote-to-wiki-draft"]),
       "Review whether uselessParts indicate unsupported synthesis, weak compiled Wiki notes, or missing sourceRefs.",
       "If a useful relation is evidence-bound, consider promoting it into a reviewed Wiki note instead of raw Sources.",
       "If the repair names missing evidence, add a Review gap artifact before mutating source or compiled Wiki pages.",
     ],
+    vaultReviewRouting: {
+      inbox: "obsidian-vault/Review/zine-feedback-inbox",
+      questionCandidates: "obsidian-vault/Review/question-candidates",
+      compiledNoteDrafts: "obsidian-vault/Review/compiled-note-drafts",
+      actions: reviewActions.length > 0 ? reviewActions : ["promote-to-wiki-draft"],
+      publicWritePolicy: "download-or-localStorage-only",
+    },
   };
 }
 
@@ -1649,6 +1702,7 @@ function App() {
   const [selectedNpcInfo, setSelectedNpcInfo] = useState<Persona | null>(null);
   const [mobileRulesOpen, setMobileRulesOpen] = useState(false);
   const [worldNotice, setWorldNotice] = useState<string | null>(null);
+  const [petLintGapInbox, setPetLintGapInbox] = useState<PetLintGapItem[]>(readPetLintGapInbox);
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [isQuestionSimMinimized, setIsQuestionSimMinimized] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
@@ -1838,9 +1892,6 @@ function App() {
     () => new Map(personas.map((persona, index) => [index + 1, persona])),
     [],
   );
-  const nearbyPersona = nearbyNpcId
-    ? (personaByAgentId.get(nearbyNpcId) ?? null)
-    : null;
   const activeDialoguePersona = activeDialogueId
     ? (personaByAgentId.get(activeDialogueId) ?? null)
     : null;
@@ -2632,8 +2683,27 @@ function App() {
       if (isComputerDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
       const lines = CAMPFIRE_BROADCASTS[selectedLanguage] ?? CAMPFIRE_BROADCASTS.en;
       const thoughtLines = THOUGHT_GAP_BROADCASTS[selectedLanguage] ?? THOUGHT_GAP_BROADCASTS.en;
-      const notice = index % 3 === 2 ? thoughtLines[Math.floor(index / 3) % thoughtLines.length] : lines[index % lines.length];
+      const isThoughtGap = index % 3 === 2;
+      const notice = isThoughtGap ? thoughtLines[Math.floor(index / 3) % thoughtLines.length] : lines[index % lines.length];
       setWorldNotice(notice);
+      if (isThoughtGap) {
+        setPetLintGapInbox((current) => {
+          const alreadyStored = current.some((item) => item.text === notice);
+          if (alreadyStored) return current;
+          const next = [
+            {
+              id: `thought-gap-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+              text: notice,
+              language: selectedLanguage,
+              createdAt: new Date().toISOString(),
+              source: "thought-gap-broadcast" as const,
+            },
+            ...current,
+          ].slice(0, 24);
+          writePetLintGapInbox(next);
+          return next;
+        });
+      }
       index += 1;
       if (worldNoticeTimerRef.current !== null) window.clearTimeout(worldNoticeTimerRef.current);
       worldNoticeTimerRef.current = window.setTimeout(() => {
@@ -3240,6 +3310,22 @@ function App() {
       } catch (error) {
         console.warn("PBS zine repair local history unavailable", error);
       }
+      setPetLintGapInbox((current) => {
+        const text = report.repairInstruction || report.uselessParts || report.query;
+        if (typeof text !== "string" || !text.trim()) return current;
+        const next = [
+          {
+            id: `zine-feedback-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+            text: `${selectedLanguage === "zh-TW" ? "小誌 feedback" : "Zine feedback"}: ${text.trim()}`,
+            language: (report.language as LanguageCode) || selectedLanguage,
+            createdAt: new Date().toISOString(),
+            source: "zine-feedback" as const,
+          },
+          ...current,
+        ].slice(0, 24);
+        writePetLintGapInbox(next);
+        return next;
+      });
       void fetch("/api/zine-repair-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -3587,34 +3673,6 @@ function App() {
 
           {appMode === "interactive" &&
             !editorEntryEnabled &&
-            nearbyPersona &&
-            nearbyNpcId !== abaoAgentId &&
-            !activeDialoguePersona &&
-            !isComputerDialogueOpen &&
-            promptPosition && (
-              <button
-                className="absolute z-44 -translate-x-1/2 -translate-y-full text-center pointer-events-auto npc-name-tag mobile-talk-prompt mobile-talk-prompt--compact"
-                style={{
-                  left: promptPosition.left,
-                  top: promptPosition.top,
-                  background: "#fff",
-                }}
-                type="button"
-                onClick={() => {
-                  if (nearbyNpcId === abaoAgentId) {
-                    showAbaoBubble();
-                    return;
-                  }
-                  officeState.selectedAgentId = nearbyNpcId;
-                  setActiveDialogueId(nearbyNpcId);
-                }}
-              >
-                <p>{t(selectedLanguage, "hud.pressToTalk")}</p>
-              </button>
-            )}
-
-          {appMode === "interactive" &&
-            !editorEntryEnabled &&
             isNearCentralComputer &&
             computerPromptPosition &&
             !activeDialoguePersona &&
@@ -3634,12 +3692,18 @@ function App() {
               </button>
             )}
 
-          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && !promptPosition && !computerPromptPosition && nameTags.map((tag) => (
+          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => {
+            const isNearbyTalkTarget =
+              appMode === "interactive" &&
+              tag.id === nearbyNpcId &&
+              tag.id !== abaoAgentId &&
+              !tag.isQuestionPet;
+            return (
             <div
               key={tag.id}
               className={`npc-name-tag absolute -translate-x-1/2 -translate-y-full px-4 py-2 rounded-full border border-black bg-white text-black text-base ${
                 "pointer-events-auto cursor-pointer"
-              }`}
+              } ${isNearbyTalkTarget ? "mobile-talk-prompt mobile-talk-prompt--compact" : ""}`}
               style={{
                 left: tag.left,
                 top: tag.top,
@@ -3652,13 +3716,18 @@ function App() {
                     handleClick(tag.id);
                     return;
                   }
+                  if (isNearbyTalkTarget) {
+                    officeState.selectedAgentId = tag.id;
+                    setActiveDialogueId(tag.id);
+                    return;
+                  }
                   officeState.selectedAgentId = tag.id;
                 }
               }
             >
-              {tag.name}
+              {isNearbyTalkTarget ? t(selectedLanguage, "hud.pressToTalk") : tag.name}
             </div>
-          ))}
+          );})}
 
           {appMode === "interactive" &&
             !editorEntryEnabled &&
@@ -3830,7 +3899,7 @@ function App() {
             !editorEntryEnabled &&
             !isSplitOpen && (
               <section
-                className={`question-status-panel rpg-message-frame absolute right-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] px-7 py-6 ${
+                className={`question-status-panel ${isQuestionSimMinimized ? "question-status-panel-compact" : "rpg-message-frame px-7 py-6"} absolute right-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] ${
                   isQuestionSimMinimized
                     ? "question-status-panel-minimized"
                     : "max-h-[46vh] overflow-auto"
@@ -3861,16 +3930,32 @@ function App() {
                   </div>
                 </div>
                 {isQuestionSimMinimized && (
-                  <div className="question-status-compact grid grid-cols-2 gap-2 text-sm">
-                    {Object.entries(simSnapshot.scores).map(([key, value]) => (
-                      <p key={key}>
-                        {petScoreLabel(selectedLanguage, key)}: {value.toFixed(1)}
-                      </p>
-                    ))}
+                  <div className="question-status-compact" aria-label="Question Pet compact status">
+                    <span>G {petLintGapInbox.length}</span>
+                    <span>T {simSnapshot.tick}</span>
+                    <span>E {simSnapshot.thronglets[0]?.state.energy.toFixed(0) ?? "0"}</span>
+                    <span>S {simSnapshot.thronglets[0]?.state.stress.toFixed(0) ?? "0"}</span>
+                    <span>B {simSnapshot.thronglets[0]?.state.groupBond.toFixed(0) ?? "0"}</span>
                   </div>
                 )}
                 {!isQuestionSimMinimized && (
                   <>
+                    <div className="pet-gap-inbox" aria-label={petLintGapTitle(selectedLanguage)}>
+                      <div className="pet-gap-inbox-header">
+                        <strong>{petLintGapTitle(selectedLanguage)}</strong>
+                        <span>{petLintGapInbox.length}</span>
+                      </div>
+                      {petLintGapInbox.length === 0 ? (
+                        <p>{selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet."}</p>
+                      ) : (
+                        petLintGapInbox.slice(0, 4).map((gap) => (
+                          <article key={gap.id} className="pet-gap-inbox-item">
+                            <p>{gap.text}</p>
+                            <time dateTime={gap.createdAt}>{new Date(gap.createdAt).toLocaleString()}</time>
+                          </article>
+                        ))
+                      )}
+                    </div>
                     {simSnapshot.thronglets.map((pet) => (
                         <button
                           key={pet.id}

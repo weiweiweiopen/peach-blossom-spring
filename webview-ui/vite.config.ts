@@ -110,14 +110,28 @@ function browserMockAssetsPlugin(): Plugin {
           const report = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}') as Record<string, unknown>;
           const id = typeof report.id === 'string' && /^[a-zA-Z0-9._-]+$/.test(report.id) ? report.id : `zine-repair-${Date.now()}`;
           const outDir = path.resolve(__dirname, '../obsidian-vault/Review/zine-repair-reports');
+          const inboxDir = path.resolve(__dirname, '../obsidian-vault/Review/zine-feedback-inbox');
+          const questionDir = path.resolve(__dirname, '../obsidian-vault/Review/question-candidates');
           fs.mkdirSync(outDir, { recursive: true });
+          fs.mkdirSync(inboxDir, { recursive: true });
+          fs.mkdirSync(questionDir, { recursive: true });
           const jsonPath = path.join(outDir, `${id}.json`);
           const mdPath = path.join(outDir, `${id}.md`);
+          const inboxPath = path.join(inboxDir, `${id}.md`);
+          const questionPath = path.join(questionDir, `${id}.md`);
           fs.writeFileSync(jsonPath, `${JSON.stringify(report, null, 2)}\n`);
           fs.writeFileSync(mdPath, zineRepairReportMarkdown(report));
+          fs.writeFileSync(inboxPath, zineReviewArtifactMarkdown(report, 'zine-feedback-inbox'));
+          fs.writeFileSync(questionPath, zineReviewArtifactMarkdown(report, 'question-candidate'));
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ ok: true, jsonPath: path.relative(path.resolve(__dirname, '..'), jsonPath), mdPath: path.relative(path.resolve(__dirname, '..'), mdPath) }));
+          res.end(JSON.stringify({
+            ok: true,
+            jsonPath: path.relative(path.resolve(__dirname, '..'), jsonPath),
+            mdPath: path.relative(path.resolve(__dirname, '..'), mdPath),
+            inboxPath: path.relative(path.resolve(__dirname, '..'), inboxPath),
+            questionPath: path.relative(path.resolve(__dirname, '..'), questionPath),
+          }));
         } catch (error) {
           res.statusCode = 400;
           res.setHeader('Content-Type', 'application/json');
@@ -275,6 +289,21 @@ function markdownField(report: Record<string, unknown>, key: string): string {
   const value = report[key];
   if (typeof value === 'string') return value.trim() || '(empty)';
   return JSON.stringify(value ?? null, null, 2);
+}
+
+function zineReviewArtifactMarkdown(report: Record<string, unknown>, artifactKind: string): string {
+  return `# ${artifactKind}: ${markdownField(report, 'zineTitle')}\n\n` +
+    `- id: ${markdownField(report, 'id')}\n` +
+    `- query: ${markdownField(report, 'query')}\n` +
+    `- createdAt: ${markdownField(report, 'createdAt')}\n` +
+    `- reviewKind: ${artifactKind}\n` +
+    `- sourceReport: zine-repair-reports/${markdownField(report, 'id')}.md\n\n` +
+    `## Review Routing\n\n\`\`\`json\n${markdownField(report, 'vaultReviewRouting')}\n\`\`\`\n\n` +
+    `## Player Feedback\n\n` +
+    `### Useful Parts\n${markdownField(report, 'usefulParts')}\n\n` +
+    `### Useless Or Misleading Parts\n${markdownField(report, 'uselessParts')}\n\n` +
+    `### Requested Repair\n${markdownField(report, 'repairInstruction')}\n\n` +
+    `## Evidence Snapshot\n\n\`\`\`json\n${markdownField(report, 'evidenceSnapshot')}\n\`\`\`\n`;
 }
 
 function zineRepairReportMarkdown(report: Record<string, unknown>): string {
