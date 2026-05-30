@@ -1,0 +1,13 @@
+{
+  "id": "CRAFTPIX_EXTERIOR_43",
+  "name": "Border Tree",
+  "category": "misc",
+  "type": "asset",
+  "canPlaceOnWalls": false,
+  "canPlaceOnSurfaces": false,
+  "backgroundTiles": 2,
+  "width": 32,
+  "height": 48,
+  "footprintW": 2,
+  "footprintH": 3
+}
