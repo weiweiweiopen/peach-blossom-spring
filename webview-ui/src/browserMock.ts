@@ -3,7 +3,7 @@
  * events the VS Code extension would send.
  *
  * In Vite dev, it prefers pre-decoded JSON endpoints from middleware.
- * In plain browser builds, it falls back to decoding PNGs at runtime.
+ * In plain browser builds, it decodes only the runtime layout's required PNGs.
  *
  * Only imported in browser runtime; tree-shaken from VS Code webview runtime.
  */
@@ -70,6 +70,12 @@ interface MockPayload {
   furnitureCatalog: CatalogEntry[];
   furnitureSprites: Record<string, string[][]>;
   layout: unknown;
+}
+
+interface RuntimeLayout {
+  version?: number;
+  tiles?: number[];
+  furniture?: Array<{ type?: string }>;
 }
 
 // ── Module-level state ─────────────────────────────────────────────────────────
@@ -208,6 +214,30 @@ async function decodeFurnitureFromPng(
   return sprites;
 }
 
+function baseFurnitureType(type: string): string {
+  return type.replace(/:left$/, '');
+}
+
+function filterCatalogForLayout(catalog: CatalogEntry[], layout: unknown): CatalogEntry[] {
+  const runtimeLayout = layout as RuntimeLayout | null;
+  const usedIds = new Set(
+    (runtimeLayout?.furniture ?? [])
+      .map((item) => typeof item.type === 'string' ? baseFurnitureType(item.type) : '')
+      .filter(Boolean),
+  );
+  if (usedIds.size === 0) return catalog;
+
+  const usedGroupIds = new Set<string>();
+  for (const item of catalog) {
+    if (usedIds.has(item.id) && item.groupId) usedGroupIds.add(item.groupId);
+  }
+
+  return catalog.filter((item) =>
+    usedIds.has(item.id) ||
+    (item.groupId !== undefined && usedGroupIds.has(item.groupId)),
+  );
+}
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 /**
@@ -219,11 +249,38 @@ export async function initBrowserMock(): Promise<void> {
   console.log('[BrowserMock] Loading assets...');
 
   const base = import.meta.env.BASE_URL; // '/' in dev, '/sub/' with a subpath, './' in production
+  const params = new URLSearchParams(window.location.search);
+  const wantsEditorAssets = params.get('editor') === '1';
+  const editorPreview = import.meta.env.DEV && wantsEditorAssets;
+  const layoutPath = 'pbs-editor-layout.json';
 
   const [assetIndex, catalog] = await Promise.all([
     fetch(`${base}assets/asset-index.json`).then((r) => r.json()) as Promise<AssetIndex>,
     fetch(`${base}assets/furniture-catalog.json`).then((r) => r.json()) as Promise<CatalogEntry[]>,
   ]);
+
+  const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
+  let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
+  if (savedEditorLayout) {
+    try {
+      parsedEditorLayout = JSON.parse(savedEditorLayout) as ReturnType<typeof createCompactEditorLayout>;
+    } catch {
+      window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
+    }
+  }
+  const compactEditorLayout = editorPreview
+    ? await fetch(`${base}assets/${layoutPath}`)
+        .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
+        .catch(() => createCompactEditorLayout())
+    : null;
+  const editorLayout = parsedEditorLayout?.layoutRevision === compactEditorLayout?.layoutRevision
+    ? parsedEditorLayout
+    : compactEditorLayout;
+  const layout = editorPreview
+    ? editorLayout
+    : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
+
+  const runtimeCatalog = wantsEditorAssets ? catalog : filterCatalogForLayout(catalog, layout);
 
   const shouldTryDecoded = import.meta.env.DEV;
   const [decodedCharacters, decodedFloors, decodedWalls, decodedFurniture] = shouldTryDecoded
@@ -246,49 +303,30 @@ export async function initBrowserMock(): Promise<void> {
   }
 
   const [characters, floorSprites, wallSets, furnitureSprites] = hasDecoded
-    ? [decodedCharacters!, decodedFloors!, decodedWalls!, decodedFurniture!]
+    ? [
+        decodedCharacters!,
+        decodedFloors!,
+        decodedWalls!,
+        Object.fromEntries(runtimeCatalog.map((item) => [item.id, decodedFurniture![item.id]]).filter(([, sprite]) => Boolean(sprite))),
+      ]
     : await Promise.all([
         decodeCharactersFromPng(base, assetIndex),
         decodeFloorsFromPng(base, assetIndex),
         decodeWallsFromPng(base, assetIndex),
-        decodeFurnitureFromPng(base, catalog),
+        decodeFurnitureFromPng(base, runtimeCatalog),
       ]);
-
-  const params = new URLSearchParams(window.location.search);
-  const editorPreview = import.meta.env.DEV && params.get('editor') === '1';
-  const layoutPath = 'pbs-editor-layout.json';
-  const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
-  let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
-  if (savedEditorLayout) {
-    try {
-      parsedEditorLayout = JSON.parse(savedEditorLayout) as ReturnType<typeof createCompactEditorLayout>;
-    } catch {
-      window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
-    }
-  }
-  const compactEditorLayout = editorPreview
-    ? await fetch(`${base}assets/${layoutPath}`)
-        .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
-        .catch(() => createCompactEditorLayout())
-    : null;
-  const editorLayout = parsedEditorLayout?.layoutRevision === compactEditorLayout?.layoutRevision
-    ? parsedEditorLayout
-    : compactEditorLayout;
-  const layout = editorPreview
-    ? editorLayout
-    : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
 
   mockPayload = {
     characters,
     floorSprites,
     wallSets,
-    furnitureCatalog: catalog,
+    furnitureCatalog: runtimeCatalog,
     furnitureSprites,
     layout,
   };
 
   console.log(
-    `[BrowserMock] Ready (${hasDecoded ? 'decoded-json' : 'browser-png-decode'}) — ${characters.length} chars, ${floorSprites.length} floors, ${wallSets.length} wall sets, ${catalog.length} furniture items`,
+    `[BrowserMock] Ready (${hasDecoded ? 'decoded-json' : 'browser-png-decode'}) — ${characters.length} chars, ${floorSprites.length} floors, ${wallSets.length} wall sets, ${runtimeCatalog.length}/${catalog.length} furniture items`,
   );
 }
 
