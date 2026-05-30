@@ -2,7 +2,6 @@ import { assertCleanPublicArtifact, extractPublicArtifactText } from "./artifact
 import { renderAssociationFeedbackSection } from "./associationFeedback.js";
 import { daydreamCorpus } from "./corpus.js";
 import { runDaydreamWorkflow } from "./daydreamWorkflow.js";
-import { evidenceFacetCoverage, evidenceFacetRelevanceScore, facetLabels, hasRelevantFacetSupport, queryEvidenceFacets } from "./evidenceFacets.js";
 import { evidenceHygienePenalty, evidenceTextForHygiene, isUsableEvidenceText } from "./evidenceHygiene.js";
 import { renderOfficialTemplateArtifactHtml } from "./officialTemplateRenderer.js";
 import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
@@ -427,9 +426,7 @@ function rankCompiledWikiNotes(query: string, workflow: Workflow, notes: Compile
       const termHits = terms.filter((term) => search.includes(term)).length;
       const sourceRefHits = note.sourceRefs.filter((ref) => cardText.includes(ref.replace(/^obsidian-vault\//, "").toLowerCase()) || cardText.includes(ref.toLowerCase())).length;
       const lintBonus = note.lint.status === "pass" ? 2 : 0;
-      const facetScore = evidenceFacetRelevanceScore(query, note);
-      const facetPenalty = hasRelevantFacetSupport(query, note) ? 0 : -8;
-      return { note, score: termHits + sourceRefHits * 3 + lintBonus + facetScore + facetPenalty };
+      return { note, score: termHits + sourceRefHits * 3 + lintBonus };
     })
     .filter((row) => row.score > 0)
     .sort((a, b) => b.score - a.score || a.note.title.localeCompare(b.note.title))
@@ -485,8 +482,7 @@ function supportHitCount(cards: SourceCard[], pattern: RegExp): number {
 }
 
 function evidenceCoverageForQuery(query: string, workflow: Workflow): EvidenceCoverage[] {
-  const relevantCards = meaningfulEvidenceCards(workflow).filter((card) => hasRelevantFacetSupport(query, card));
-  const cards = relevantCards.length >= 2 ? relevantCards : meaningfulEvidenceCards(workflow);
+  const cards = meaningfulEvidenceCards(workflow);
   return ABSTRACT_RELATION_GROUPS
     .filter((group) => group.query.test(query))
     .map((group) => {
@@ -532,9 +528,8 @@ function materialHint(text: unknown, max = 160): string {
     .replace(/\bAndreas\s+Siagian\b/gi, "Lifepatch");
 }
 
-function sourceObservation(card: Card, query = "") {
+function sourceObservation(card: Card) {
   const kind = classifyCard(card);
-  const facets = query ? facetLabels(evidenceFacetCoverage(query, card)) : [];
   return {
     title: card.title,
     url: card.url ?? "",
@@ -543,7 +538,6 @@ function sourceObservation(card: Card, query = "") {
     publicRole: publicSourcePhrase(card),
     concreteHint: materialHint(card.excerpt, 100),
     topics: [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].slice(0, 5).join(", "),
-    supportsQueryFacets: facets,
     caution: "Use as a concrete observation only; do not paste raw excerpt or describe retrieval/source mechanics.",
   };
 }
@@ -576,8 +570,6 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
 function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[] = []) {
   const wantsSgmk = wantsSgmkQuery(query);
   const wantsSoundDiy = wantsSoundDiyQuery(query);
-  const firstQueryFacet = queryEvidenceFacets(query)[0];
-  const firstFacetPriority = (card: Partial<SourceCard>) => firstQueryFacet && evidenceFacetCoverage(query, card).some((facet) => facet.id === firstQueryFacet.id) ? 48 : 0;
   const sourcePriority = (card: Partial<SourceCard>) => {
     const family = sourceFamily(card);
     if (wantsSgmk && family === "SGMK") return 40;
@@ -586,18 +578,14 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     return 0;
   };
   const rankForPrompt = <T extends Card>(items: T[]) => [...items]
-    .sort((a, b) => firstFacetPriority(b) + sourcePriority(b) + evidenceFacetRelevanceScore(query, b) + sourceEvidenceStrength(b) - (firstFacetPriority(a) + sourcePriority(a) + evidenceFacetRelevanceScore(query, a) + sourceEvidenceStrength(a)) || a.title.localeCompare(b.title));
-  const allEvidenceCandidates = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isWikiEntryCard(card) && !isOffTopicTextileCard(card));
-  const facetSupportedCandidates = allEvidenceCandidates.filter((card) => hasRelevantFacetSupport(query, card));
-  const evidenceCandidates = facetSupportedCandidates.length >= 2 ? facetSupportedCandidates : allEvidenceCandidates;
+    .sort((a, b) => sourcePriority(b) + sourceEvidenceStrength(b) - (sourcePriority(a) + sourceEvidenceStrength(a)) || a.title.localeCompare(b.title));
+  const evidenceCandidates = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isWikiEntryCard(card) && !isOffTopicTextileCard(card));
   const candidateCards = rankForPrompt(evidenceCandidates.length ? evidenceCandidates : sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
-  const cards = candidateCards.slice(0, 5).map((card) => sourceObservation(card, query));
-  const deepReadCandidates = workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card));
-  const deepReadFacetSupported = deepReadCandidates.filter((card) => hasRelevantFacetSupport(query, card));
-  const deepRead = rankForPrompt(deepReadFacetSupported.length >= 2 ? deepReadFacetSupported : deepReadCandidates).slice(0, 4).map((card) => sourceObservation(card, query));
+  const cards = candidateCards.slice(0, 5).map(sourceObservation);
+  const deepRead = rankForPrompt(workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card))).slice(0, 4).map(sourceObservation);
   const linkedTrails = [...workflow.step1.report.linkedCards]
-    .filter((trail) => isAllowedZineCard(trail.card) && hasRelevantFacetSupport(query, trail.card))
-    .sort((a, b) => sourcePriority(b.card) + evidenceFacetRelevanceScore(query, b.card) + sourceEvidenceStrength(b.card) - (sourcePriority(a.card) + evidenceFacetRelevanceScore(query, a.card) + sourceEvidenceStrength(a.card)))
+    .filter((trail) => isAllowedZineCard(trail.card))
+    .sort((a, b) => sourcePriority(b.card) + sourceEvidenceStrength(b.card) - (sourcePriority(a.card) + sourceEvidenceStrength(a.card)))
     .slice(0, 4)
     .map((trail) => ({
     from: trail.via?.map((card) => card.title).join(" → ") || "",
@@ -621,7 +609,6 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     wantsMakingTutorial: wantsMakingTutorial(query),
     searchTerms: workflow.step1.report.keywords.slice(0, 8),
     deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 8),
-    queryFacets: facetLabels(queryEvidenceFacets(query)),
     desiredAngles: [
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
       "全文只服務同一個中心問題：先判斷材料揭露了什麼未被注意的事實、關係或矛盾，再用它組成一條連貫論點。",
@@ -674,11 +661,11 @@ function withWritingStyle(user: string, options: BrowserAssociationOptions = {})
   return JSON.stringify(parsed, null, 2);
 }
 
-function assertEnoughRelevantMaterial(query: string, workflow: Workflow): void {
+function assertEnoughRelevantMaterial(workflow: Workflow): void {
   const report = workflow.step1.report;
-  const allowedMatched = report.matchedCards.filter((card) => isAllowedZineCard(card) && hasRelevantFacetSupport(query, card)).length;
-  const allowedLinked = report.linkedCards.filter((trail) => isAllowedZineCard(trail.card) && hasRelevantFacetSupport(query, trail.card)).length;
-  const allowedDeep = report.deepReadCards.filter((card) => isAllowedZineCard(card) && hasRelevantFacetSupport(query, card)).length;
+  const allowedMatched = report.matchedCards.filter(isAllowedZineCard).length;
+  const allowedLinked = report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length;
+  const allowedDeep = report.deepReadCards.filter(isAllowedZineCard).length;
   const depthScore = report.depthMetrics.depthScore;
   const enough = allowedMatched >= 2 && (allowedDeep >= 1 || allowedLinked >= 2) && depthScore >= 35;
   if (enough) return;
@@ -1224,7 +1211,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；引用頁面時先檢查 supportsQueryFacets，不能把只支撐技術/工作坊的頁面寫成廚房、發酵或公共基礎設施證據。若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是文章段落，不是檢索報告：要寫出判斷、場景、矛盾或洞見，而不是列出索引。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是文章段落，不是檢索報告：要寫出判斷、場景、矛盾或洞見，而不是列出索引。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1706,7 +1693,7 @@ function createBrowserWorkflow(query: string): Workflow {
   const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: compiled Wiki notes, curated bridge/index notes, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
-    if (sourceCards(workflow).filter((card) => isAllowedZineCard(card) && hasRelevantFacetSupport(query, card)).length >= 2) return workflow;
+    if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
     return runDaydreamWorkflow(expandedQuery, corpus);
   } catch (error) {
     console.warn("Association workflow needed a public-safe query fallback.", error);
@@ -1744,7 +1731,7 @@ export async function generateBrowserAssociationZine(query: string, language: As
   onProgress?.(progress.linkedNotes(workflow.step1.report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length));
   onProgress?.(progress.deepRead(workflow.step1.report.deepReadCards.filter(isAllowedZineCard).length));
   try {
-    assertEnoughRelevantMaterial(query, workflow);
+    assertEnoughRelevantMaterial(workflow);
     assertEnoughEvidenceForClaim(query, workflow);
   } catch (error) {
     persistClickTrace(buildClickTrace({ requestId, query, language, workflow, errorClass: errorClass(error, "low_relevance_zine"), errorMessage: errorMessage(error) }));
