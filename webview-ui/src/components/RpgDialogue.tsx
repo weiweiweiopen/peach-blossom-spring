@@ -126,31 +126,31 @@ function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] 
   if (persona.id === 'tincuta-heinzel') {
     const attemptsQuestion = '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？';
     const fallback: Record<LanguageCode, string> = {
-      'zh-TW': '電子織品如何變成批判材料？',
-      en: 'How do electronic textiles become critical material?',
-      id: 'Bagaimana e-textile menjadi bahan kritis?',
-      de: 'Wie werden E-Textiles zu kritischem Material?',
-      ja: '電子テキスタイルはどう批評的な素材になる？',
-      th: 'e-textile กลายเป็นวัสดุวิพากษ์ได้อย่างไร?',
+      'zh-TW': '電子織品如何把身體、媒體考古與照護政治連成一個批判材料問題？',
+      en: 'How do electronic textiles connect bodies, media archaeology, and care politics as a critical material question?',
+      id: 'Bagaimana e-textile menghubungkan tubuh, arkeologi media, dan politik perawatan sebagai pertanyaan material kritis?',
+      de: 'Wie verbinden E-Textiles Koerper, Medienarchaeologie und Care-Politik als kritische Materialfrage?',
+      ja: '電子テキスタイルは身体、メディア考古学、ケアの政治をどう批評的な素材問題として結ぶ？',
+      th: 'e-textile เชื่อมร่างกาย media archaeology และการเมืองของ care เป็นคำถามวัสดุเชิงวิพากษ์อย่างไร?',
     };
     const method: Record<LanguageCode, string> = {
-      'zh-TW': '失敗紀錄如何幫助工作坊學習？',
-      en: 'How do failure notes help workshops learn?',
-      id: 'Bagaimana catatan gagal membantu lokakarya belajar?',
-      de: 'Wie helfen Fehlernotizen Workshops beim Lernen?',
-      ja: '失敗の記録はワークショップの学びをどう助ける？',
-      th: 'บันทึกความล้มเหลวช่วยให้เวิร์กช็อปเรียนรู้อย่างไร?',
+      'zh-TW': '失敗紀錄如何把工作坊從教學流程改寫成可比較的研究證據？',
+      en: 'How do failure notes turn workshops from instruction sequences into comparable research evidence?',
+      id: 'Bagaimana catatan gagal mengubah lokakarya dari urutan instruksi menjadi bukti riset yang bisa dibandingkan?',
+      de: 'Wie machen Fehlernotizen aus Workshop-Ablaeufen vergleichbare Forschungsevidenz?',
+      ja: '失敗記録はワークショップを手順から比較できる研究証拠へどう変える？',
+      th: 'บันทึกความล้มเหลวเปลี่ยนเวิร์กช็อปจากขั้นตอนสอนเป็นหลักฐานวิจัยที่เปรียบเทียบได้อย่างไร?',
     };
     return [attemptsQuestion, fallback[language], method[language]];
   }
   const community = representedCommunity(persona);
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': [`${community} 如何組織工作坊知識？`, `${community} 和臨時共同體有什麼關係？`, `${community} 的材料實踐如何被保存？`],
-    en: [`How does ${community} organize workshop knowledge?`, `How is ${community} related to temporary commons?`, `How are ${community}'s material practices preserved?`],
-    id: [`Bagaimana ${community} mengatur pengetahuan lokakarya?`, `Apa hubungan ${community} dengan commons sementara?`, `Bagaimana praktik material ${community} disimpan?`],
-    de: [`Wie organisiert ${community} Workshop-Wissen?`, `Wie haengt ${community} mit temporaeren Commons zusammen?`, `Wie werden materielle Praktiken von ${community} bewahrt?`],
-    ja: [`${community} はワークショップ知識をどう組織する？`, `${community} は一時的な commons とどう関係する？`, `${community} の素材実践はどう保存される？`],
-    th: [`${community} จัดความรู้เวิร์กช็อปอย่างไร?`, `${community} เกี่ยวข้องกับ commons ชั่วคราวอย่างไร?`, `การปฏิบัติด้านวัสดุของ ${community} ถูกเก็บไว้อย่างไร?`],
+    'zh-TW': [`${community} 的工作坊如何把臨時相遇變成可重讀的公共知識？`, `${community} 的材料實踐如何顯示照護、維修與組織壓力之間的矛盾？`, `${community} 和其他 PBS 社群相比，留下了哪種可查證的知識保存方法？`],
+    en: [`How do ${community} workshops turn temporary encounters into rereadable public knowledge?`, `How do ${community}'s material practices expose tensions between care, repair, and organizational pressure?`, `Compared with other PBS communities, what checkable method of knowledge preservation does ${community} leave behind?`],
+    id: [`Bagaimana lokakarya ${community} mengubah pertemuan sementara menjadi pengetahuan publik yang bisa dibaca ulang?`, `Bagaimana praktik material ${community} menunjukkan tegangan antara care, repair, dan tekanan organisasi?`, `Dibanding komunitas PBS lain, metode pelestarian pengetahuan apa yang bisa diperiksa dari ${community}?`],
+    de: [`Wie machen Workshops von ${community} temporaere Begegnungen zu wieder lesbarem oeffentlichem Wissen?`, `Wie zeigen materielle Praktiken von ${community} Spannungen zwischen Care, Repair und Organisationsdruck?`, `Welche pruefbare Methode der Wissensbewahrung hinterlaesst ${community} im Vergleich zu anderen PBS-Communities?`],
+    ja: [`${community} のワークショップは一時的な出会いをどう読み直せる公共知に変える？`, `${community} の素材実践はケア、修理、組織的圧力の緊張をどう示す？`, `他の PBS コミュニティと比べて、${community} はどんな検証可能な知識保存の方法を残す？`],
+    th: [`เวิร์กช็อปของ ${community} เปลี่ยนการพบกันชั่วคราวเป็นความรู้สาธารณะที่อ่านซ้ำได้อย่างไร?`, `การปฏิบัติด้านวัสดุของ ${community} แสดงแรงตึงระหว่าง care, repair และแรงกดดันองค์กรอย่างไร?`, `เมื่อเทียบกับชุมชน PBS อื่น ${community} ทิ้งวิธีเก็บรักษาความรู้ที่ตรวจสอบได้แบบใด?`],
   };
   return [...questions[language]];
 }

@@ -38,7 +38,7 @@ export interface ChatEvidence {
 }
 
 
-const associationKnowledgeText = '聯想功能是 PBS 裡把玩家問題接到 LLM wiki 的生成小誌工具。它先讀 semantic/entity layers 與 wiki 入口，再追 wikilinks 到來源證據，產生有結構的小誌與可讀的 run trace。之後也可以把生成結果和 lint 檢查回饋給 wiki，讓缺少的索引、概念頁、來源橋與新問題逐步長出來。';
+const associationKnowledgeText = '聯想功能是 PBS 裡把玩家問題接到 LLM wiki 的生成小誌工具。它先讀 compiled notes、curated bridge/index notes 與 wiki 入口，再追 wikilinks 到來源證據，產生有結構的小誌與可讀的 run trace。之後也可以把生成結果和 lint 檢查回饋給 wiki，讓缺少的索引、概念頁、來源橋與新問題逐步長出來。';
 
 function isAssociationQuestion(message: string): boolean {
   return /聯想功能|association|wiki|維基|小誌|node vector|wiki query|查詢脈絡/i.test(message);

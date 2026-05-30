@@ -10,15 +10,15 @@ import type { DaydreamHtmlLayoutVariant } from "./publicArtifactHtml.js";
 // @ts-ignore Vite raw prompt import from project-level editable prompt file.
 import editorialSystemPrompt from "../../prompts/association-editorial-system.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import semanticReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
+import bridgeReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import semanticConcepts from "../../../obsidian-vault/Sources/PBS Semantic Layers/Concepts.md?raw";
+import bridgeConcepts from "../../../obsidian-vault/Sources/PBS Semantic Layers/Concepts.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import semanticTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/Tools.md?raw";
+import bridgeTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/Tools.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import semanticEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
+import bridgeEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import entityReadme from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
+import bridgeEntities from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
 // @ts-ignore Vite raw official HTML template import.
 import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
@@ -78,12 +78,12 @@ type CompiledWikiNote = {
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
 const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
-  { title: "PBS Semantic Layers / README", path: "Sources/PBS Semantic Layers/README.md", text: semanticReadme, role: "semantic layer overview" },
-  { title: "PBS Semantic Layers / Concepts", path: "Sources/PBS Semantic Layers/Concepts.md", text: semanticConcepts, role: "concept index" },
-  { title: "PBS Semantic Layers / Tools", path: "Sources/PBS Semantic Layers/Tools.md", text: semanticTools, role: "tool and method index" },
-  { title: "PBS Semantic Layers / Events", path: "Sources/PBS Semantic Layers/Events.md", text: semanticEvents, role: "event and workshop index" },
-  { title: "PBS Entity Layers / README", path: "Sources/PBS Entity Layers/README.md", text: entityReadme, role: "entity bridge overview" },
-  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages as orientation and semantic/entity/source layers as evidence bridges.", role: "public wiki index" },
+  { title: "PBS bridge notes / README", path: "Sources/PBS Semantic Layers/README.md", text: bridgeReadme, role: "compiled bridge overview" },
+  { title: "PBS bridge notes / Concepts", path: "Sources/PBS Semantic Layers/Concepts.md", text: bridgeConcepts, role: "concept index" },
+  { title: "PBS bridge notes / Tools", path: "Sources/PBS Semantic Layers/Tools.md", text: bridgeTools, role: "tool and method index" },
+  { title: "PBS bridge notes / Events", path: "Sources/PBS Semantic Layers/Events.md", text: bridgeEvents, role: "event and workshop index" },
+  { title: "PBS entity bridge notes / README", path: "Sources/PBS Entity Layers/README.md", text: bridgeEntities, role: "entity bridge overview" },
+  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages, compiled notes, and bridge/index notes as evidence entry points.", role: "public wiki index" },
 ];
 let compiledWikiIndexPromise: Promise<CompiledWikiNote[]> | null = null;
 const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; evidence: RegExp }> = [
@@ -603,7 +603,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     deepReadObservations: deepRead,
     linkedEvidenceTrails: linkedTrails,
     compiledWikiNotes: compiledWikiPromptNotes(compiledNotes),
-    semanticContextSummary: {
+    bridgeNoteSummary: {
       anchorCards: semantic.anchorCards.length,
       relatedCards: semantic.relatedCards.length,
       bridgeCards: semantic.bridgeCards.length,
@@ -612,7 +612,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     evidenceCoverage: evidenceCoverageForQuery(query, workflow),
     researchTopicCandidates: topics,
     instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, say that the evidence is insufficient and turn the piece into verification questions instead of a thesis. Prefer compiledWikiNotes when they are relevant because they already summarize sourceRefs and citations, but do not use notes with weak lint warnings as final proof without caveats. Write one coherent research-seminar zine around source-grounded insight and one future research direction only when the evidence supports that direction.",
-    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、PBS semantic/entity entry notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 retrieval evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -1108,10 +1108,10 @@ function evidenceTitleFromQuery(query: string, language: AssociationZineLanguage
   const copy: Record<AssociationZineLanguage, string> = {
     "zh-TW": c ? `${a}、${b}與${c}如何相連` : `${joined}的可查證線索`,
     en: c ? `How ${a}, ${b}, and ${c} Connect` : `What the Pages Show About ${joined}`,
-    id: c ? `Rute Bukti melalui ${a}, ${b}, dan ${c}` : `Pembacaan Material tentang ${joined}`,
-    de: c ? `Evidenzwege durch ${a}, ${b} und ${c}` : `Eine Materiallekture zu ${joined}`,
-    ja: c ? `${a}、${b}、${c}をめぐる証拠の道筋` : `${joined}を読む素材の道筋`,
-    th: c ? `เส้นทางหลักฐานผ่าน${a} ${b} และ${c}` : `การอ่านวัสดุเรื่อง${joined}`,
+    id: c ? `Bagaimana ${a}, ${b}, dan ${c} Saling Terhubung` : `Apa yang Ditunjukkan Halaman tentang ${joined}`,
+    de: c ? `Wie ${a}, ${b} und ${c} zusammenhaengen` : `Was die Seiten ueber ${joined} zeigen`,
+    ja: c ? `${a}、${b}、${c}はどうつながるか` : `${joined}についてページが示すこと`,
+    th: c ? `${a} ${b} และ${c} เชื่อมกันอย่างไร` : `หน้าต่างๆ แสดงอะไรเกี่ยวกับ${joined}`,
   };
   return copy[language];
 }
@@ -1121,8 +1121,31 @@ function sanitizeZineTitle(title: string, query: string, language: AssociationZi
   const compactQuery = compactText(query, 80).trim();
   if (!cleaned || !compactQuery) return cleaned || evidenceTitleFromQuery(query, language);
   const quotedQuery = cleaned.includes(`「${compactQuery}`) || cleaned.includes(`"${compactQuery}`) || cleaned.includes(compactQuery);
-  const genericTitle = /A Material Reading of Commons|Evidence Routes|Sound map|organized by evidence|next research questions/i.test(cleaned);
+  const genericTitle = /A Material Reading of Commons|Evidence Routes|Sound map|organized by evidence|organized by limits|next research questions|research route|reading route|evidence path|material reading|材料讀法|研究路線|閱讀路線|證據路線|證據如何|材料如何|小誌如何|工作方法|方法自述/i.test(cleaned);
   if (quotedQuery || genericTitle || textSimilarity(cleaned, compactQuery) > 0.46) return evidenceTitleFromQuery(query, language);
+  return cleaned;
+}
+
+function articleSubtitleFallback(query: string, language: AssociationZineLanguage): string {
+  const compactQuery = compactText(query, 72) || "this question";
+  const copy: Record<AssociationZineLanguage, string> = {
+    "zh-TW": `材料只支持對「${compactQuery}」的有限回答，並留下可查證的矛盾。`,
+    en: `What the materials can and cannot prove about ${compactQuery}.`,
+    id: `Apa yang dapat dan belum dapat dibuktikan bahan tentang ${compactQuery}.`,
+    de: `Was die Materialien zu ${compactQuery} belegen und offenlassen.`,
+    ja: `${compactQuery}について、資料が示すことと残す問い。`,
+    th: `สิ่งที่วัสดุยืนยันและยังยืนยันไม่ได้เกี่ยวกับ ${compactQuery}`,
+  };
+  return copy[language];
+}
+
+function sanitizeZineSubtitle(subtitle: string, query: string, language: AssociationZineLanguage): string {
+  const cleaned = cleanLLMText(subtitle).trim();
+  const compactQuery = compactText(query, 80).trim();
+  const genericSubtitle = /organized by evidence|organized by limits|next research questions|research route|reading route|evidence path|material reading|this zine|the zine|how this zine|method|workflow|prompt|retrieval|材料讀法|研究路線|閱讀路線|證據路線|材料如何|證據如何|這份小誌|本小誌|方法|工作方法|生成流程|整理材料/i.test(cleaned);
+  if (!cleaned || genericSubtitle || (compactQuery && textSimilarity(cleaned, compactQuery) > 0.62)) {
+    return articleSubtitleFallback(query, language);
+  }
   return cleaned;
 }
 
@@ -1137,7 +1160,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   try {
     outline = await requestDeepSeekJsonWithRetry(
       system,
-        `${user}\n\n${articleLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。opening/proposition 必須直接回答 query 的主題，不要寫「這份小誌」「organized by evidence」「research questions」「方法」「材料讀法」這類生成流程或通用模板說明。必須說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+        `${user}\n\n${articleLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。subtitle 必須像文章副標題：補充中心論點、矛盾或材料範圍，不得寫「如何組織材料」「證據路線」「閱讀方法」「研究問題」「這份小誌」或任何方法自述。opening/proposition 必須直接回答 query 的主題，不要寫「這份小誌」「organized by evidence」「research questions」「方法」「材料讀法」這類生成流程或通用模板說明。必須說明這批頁面實際能幫上什麼；不要寫任何人名。`,
       1000,
     ) as any;
   } catch (error) {
@@ -1146,7 +1169,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     outline = fallbackOutline(query, language);
   }
   const title = sanitizeZineTitle(String(outline.title ?? "材料生成的未來方向"), query, language);
-  const subtitle = String(outline.subtitle ?? "從本次問題與本次閱讀材料重新推導。");
+  const subtitle = sanitizeZineSubtitle(String(outline.subtitle ?? ""), query, language);
   const opening = String(outline.opening ?? "");
   const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
@@ -1155,7 +1178,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-      `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1207,7 +1230,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     let item: any;
     try {
       item = await requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
         JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
         900,
       ) as any;
@@ -1440,13 +1463,13 @@ function traceCopy(language: AssociationZineLanguage) {
   }> = {
     "zh-TW": {
       title: "閱讀路徑",
-      intro: "這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留候選來源、問題、查詢詞、wiki 連結、深讀頁面、LLM 呼叫與驗證狀態，但不把玩家問題當成 semantic layer。",
+      intro: "這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留候選材料、問題、查詢詞、wiki 連結、深讀頁面、LLM 呼叫與驗證狀態，但不把玩家問題當成知識結構本身。",
       cards: ["問題", "搜尋詞", "來源家族", "入口筆記", "命中頁面", "連結路徑", "深讀", "寫作者使用", "驗證"],
       query: "Query", seed: "Question", intent: "Intent", noSearch: "沒有記錄搜尋詞。", noFamilies: "沒有記錄來源家族篩選。", writerFallback: "寫作者比較問題、命中頁面、連結路徑與深讀筆記後，寫成一個有證據邊界的論點。", publicPassed: "公開文章通過", depthScore: "深度分數", warnings: "警告", llm: "LLM", yes: "是", needsReview: "需要複查", none: "未記錄", notRecorded: "未記錄", unknown: "未知",
     },
     en: {
       title: "Retrieval Path",
-      intro: "This page compresses how the zine found material, formed an argument, and marked what still needs checking into readable path cards. It keeps candidate sources, the question, search terms, wiki links, deep-read pages, LLM calls, and validation status without treating the player query as a semantic layer.",
+      intro: "This page compresses how the zine found material, formed an argument, and marked what still needs checking into readable path cards. It keeps candidate materials, the question, search terms, wiki links, deep-read pages, LLM calls, and validation status without treating the player query as a knowledge structure itself.",
       cards: ["Question", "Search words", "Source families", "Entry notes", "Matched pages", "Linked paths", "Deep reading", "Writer used", "Validation"],
       query: "Query", seed: "Question", intent: "Intent", noSearch: "No search terms recorded.", noFamilies: "No source-family filter recorded.", writerFallback: "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.", publicPassed: "Public article passed", depthScore: "Depth score", warnings: "Warnings", llm: "LLM", yes: "yes", needsReview: "needs review", none: "none recorded", notRecorded: "not recorded", unknown: "unknown",
     },
@@ -1571,7 +1594,7 @@ function buildClickTrace(params: {
     tagsMatched,
     depthMetrics: workflow.step1.report.depthMetrics,
     thinSourceWarnings: workflow.step1.report.depthMetrics.warnings,
-    compactPromptSummary: "Player query is interpreted as a PBS LLM wiki question. Semantic/entity entry notes are read first; matching notes and first-layer wikilinks shape the evidence packet; source pages are used only to ground concrete claims; thin evidence must remain caveated.",
+    compactPromptSummary: "Player query is interpreted as a PBS LLM wiki question. Compiled Wiki notes and curated bridge/index notes are read first; matching notes and first-layer wikilinks shape the evidence packet; source pages are used only to ground concrete claims; thin evidence must remain caveated.",
     rejectedNotes,
     corpusDiagramSummary: { nodes: diagramNodes, edges: diagramEdges },
     editorialPromptCreated: true,
@@ -1617,7 +1640,7 @@ function createBrowserWorkflow(query: string): Workflow {
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
-  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: semantic layers, entity layers, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic. Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
+  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: compiled Wiki notes, curated bridge/index notes, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic. Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
