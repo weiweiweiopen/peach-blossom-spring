@@ -3963,15 +3963,20 @@ function App() {
                 </div>
                 {isQuestionSimMinimized && (
                   <div className="question-status-compact" aria-label="Question Pet compact status">
-                    <span>G {petLintGapInbox.length}</span>
-                    <span>EV {terrainState?.evidence ?? 0}</span>
-                    <span>REL {terrainState?.relation ?? 0}</span>
-                    <span>CON {terrainState?.contradiction ?? 0}</span>
-                    <span>MISS {terrainState?.missingNode ?? 0}</span>
-                    <span>T {simSnapshot.tick}</span>
-                    <span>E {simSnapshot.thronglets[0]?.state.energy.toFixed(0) ?? "0"}</span>
-                    <span>S {simSnapshot.thronglets[0]?.state.stress.toFixed(0) ?? "0"}</span>
-                    <span>B {simSnapshot.thronglets[0]?.state.groupBond.toFixed(0) ?? "0"}</span>
+                    <div className="question-status-compact-scoregrid" aria-label="Question Pet scores">
+                      {Object.entries(simSnapshot.scores).map(([key, value]) => (
+                        <p key={key}>
+                          <span>{petScoreLabel(selectedLanguage, key)}</span>
+                          <strong>{value.toFixed(1)}</strong>
+                        </p>
+                      ))}
+                    </div>
+                    <article className="question-status-compact-lint" aria-label={petLintGapTitle(selectedLanguage)}>
+                      <strong>{petLintGapTitle(selectedLanguage)}</strong>
+                      <p>
+                        {petLintGapInbox[0]?.text ?? (selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet.")}
+                      </p>
+                    </article>
                   </div>
                 )}
                 {!isQuestionSimMinimized && (

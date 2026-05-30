@@ -7906,3 +7906,179 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     margin-top: 8px !important;
   }
 }
+
+/* 2026 HUD type pass: compact pet HUD is a small status card, not chip telemetry. */
+.question-status-panel-compact,
+.question-status-panel-minimized,
+.question-status-panel-minimized.rpg-message-frame {
+  width: min(430px, calc(100vw - 24px)) !important;
+  max-width: calc(100vw - 24px) !important;
+  max-height: min(54dvh, 420px) !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+.question-status-panel-compact .question-status-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 3px solid #000 !important;
+}
+
+.question-status-panel-compact .question-status-header h2 {
+  max-width: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  font-size: clamp(24px, 2.2vw, 31px) !important;
+  line-height: 1.08 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.question-status-panel-compact .question-status-actions {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.question-status-panel-compact .question-status-actions button {
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  font-size: 22px !important;
+}
+
+.question-status-panel-compact .question-status-compact {
+  display: grid !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  border-top: 0 !important;
+}
+
+.question-status-compact-scoregrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+}
+
+.question-status-compact-scoregrid p {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: baseline;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(18px, 1.55vw, 24px) !important;
+  line-height: 1.15 !important;
+}
+
+.question-status-compact-scoregrid span,
+.question-status-compact-scoregrid strong {
+  display: block !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.question-status-compact-scoregrid strong {
+  font-size: 1.02em !important;
+}
+
+.question-status-compact-lint {
+  padding-top: 10px;
+  border-top: 2px solid var(--palette-blue);
+}
+
+.question-status-compact-lint strong,
+.question-status-compact-lint p {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.question-status-compact-lint strong {
+  margin-bottom: 4px !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+  line-height: 1.16 !important;
+}
+
+.question-status-compact-lint p {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+  line-height: 1.28 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.pbs-interaction-root[data-language="en"] .question-status-panel,
+.pbs-interaction-root[data-language="id"] .question-status-panel,
+.pbs-interaction-root[data-language="de"] .question-status-panel {
+  font-size: clamp(20px, 1.75vw, 27px) !important;
+  line-height: 1.32 !important;
+}
+
+.pbs-interaction-root[data-language="en"] .question-status-panel :where(h2, h3, .text-lg, .type-heading),
+.pbs-interaction-root[data-language="id"] .question-status-panel :where(h2, h3, .text-lg, .type-heading),
+.pbs-interaction-root[data-language="de"] .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
+  font-size: clamp(26px, 2.4vw, 34px) !important;
+  line-height: 1.12 !important;
+}
+
+.pbs-interaction-root[data-language="en"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-body-large),
+.pbs-interaction-root[data-language="id"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-body-large),
+.pbs-interaction-root[data-language="de"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-body-large) {
+  font-size: clamp(19px, 1.65vw, 25px) !important;
+  line-height: 1.32 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel,
+.pbs-interaction-root[data-language="ja"] .question-status-panel.rpg-message-frame {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", system-ui, sans-serif !important;
+  font-size: clamp(12px, 0.9vw, 15px) !important;
+  line-height: 1.34 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
+  font-size: clamp(15px, 1.25vw, 20px) !important;
+  line-height: 1.16 !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-body-large),
+.pbs-interaction-root[data-language="ja"] .question-status-compact-scoregrid p,
+.pbs-interaction-root[data-language="ja"] .question-status-compact-lint p,
+.pbs-interaction-root[data-language="ja"] .question-status-compact-lint strong {
+  font-size: clamp(12px, 0.9vw, 15px) !important;
+  line-height: 1.34 !important;
+}
+
+.rpg-dialogue-panel[data-language="th"] {
+  --mobile-dialogue-input-size: 16px;
+  --mobile-dialogue-copy-size: 16px;
+  --mobile-dialogue-meta-size: 14px;
+  --mobile-dialogue-chip-size: 16px;
+  --mobile-dialogue-title-size: 16px;
+  --mobile-dialogue-line: 1.45;
+}
+
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+  font-size: var(--mobile-dialogue-copy-size) !important;
+  line-height: var(--mobile-dialogue-line) !important;
+  letter-spacing: 0 !important;
+}
