@@ -3480,7 +3480,8 @@ function App() {
     });
   }
 
-  const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, petLintGapInbox) : null;
+  const localizedPetLintGapInbox = petLintGapInbox.filter((item) => item.language === selectedLanguage);
+  const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, localizedPetLintGapInbox) : null;
   const terrainCopy = petTerrainStateCopy(selectedLanguage);
 
   return (
@@ -3974,7 +3975,7 @@ function App() {
                     <article className="question-status-compact-lint" aria-label={petLintGapTitle(selectedLanguage)}>
                       <strong>{petLintGapTitle(selectedLanguage)}</strong>
                       <p>
-                        {petLintGapInbox[0]?.text ?? (selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet.")}
+                        {localizedPetLintGapInbox[0]?.text ?? (selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet.")}
                       </p>
                     </article>
                   </div>
@@ -4010,12 +4011,12 @@ function App() {
                     <div className="pet-gap-inbox" aria-label={petLintGapTitle(selectedLanguage)}>
                       <div className="pet-gap-inbox-header">
                         <strong>{petLintGapTitle(selectedLanguage)}</strong>
-                        <span>{petLintGapInbox.length}</span>
+                        <span>{localizedPetLintGapInbox.length}</span>
                       </div>
-                      {petLintGapInbox.length === 0 ? (
+                      {localizedPetLintGapInbox.length === 0 ? (
                         <p>{selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet."}</p>
                       ) : (
-                        petLintGapInbox.slice(0, 4).map((gap) => (
+                        localizedPetLintGapInbox.slice(0, 4).map((gap) => (
                           <article key={gap.id} className="pet-gap-inbox-item">
                             <p>{gap.text}</p>
                             <time dateTime={gap.createdAt}>{new Date(gap.createdAt).toLocaleString()}</time>
