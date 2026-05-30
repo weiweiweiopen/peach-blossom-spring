@@ -165,7 +165,6 @@ const CENTRAL_COMPUTER_TILE = {
 };
 const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
 // English canonical name: The Multi-Minds Self Campfire.
-const CAMPFIRE_DIALOGUE_NAME = "多重心智自我火燄";
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
   "MULTI_MIND_CAMPFIRE_2",
@@ -762,7 +761,7 @@ function PlayerDialogueAvatar({ palette, label }: { palette: number; label: stri
   return <DialoguePixelAvatar sprite={sprite} label={label} />;
 }
 
-function ComputerDialogueAvatar() {
+function ComputerDialogueAvatar({ label }: { label: string }) {
   const [frame, setFrame] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => setFrame((current) => current + 1), 90);
@@ -779,15 +778,20 @@ function ComputerDialogueAvatar() {
           style={{ imageRendering: "pixelated", width: 184, height: 184 }}
         />
       </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{CAMPFIRE_DIALOGUE_NAME}</span>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
     </div>
   );
 }
 
-const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
+const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
+    name: "多重心智自我火燄",
+    kicker: "LLM WIKI 營火",
+    subtitle: "聯想 / 共享火光終端",
+    playerSpeaker: "你",
     intro: "我是多重心智的火燄。圍著火問一個社群、方法、材料或組織問題，我會用桃花源共享記憶短答，並列出可點開的頁面。",
     fail: "LLM 回答暫時失敗；先列出本地 wiki 搜尋結果，你可以直接點開查閱。",
+    failError: "營火暫時無法回答。",
     needQuestion: "請先輸入一個想探索的桃花源社群問題。",
     sourceTitle: "Wiki 搜尋結果 / 真實連結",
     noLinks: "這次沒有找到可直接連結的 wiki 頁。",
@@ -798,8 +802,13 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "火正在聽木柴裡的共同記憶...",
   },
   en: {
+    name: "The Multi-Minds Self Campfire",
+    kicker: "LLM Wiki Campfire",
+    subtitle: "Association / shared-fire terminal",
+    playerSpeaker: "You",
     intro: "I am the Flame of Many Minds. Ask around the fire about a community, method, material, or organization; I answer briefly from shared memory and list real pages below.",
     fail: "The LLM answer failed for now; here are the local wiki search results you can open directly.",
+    failError: "The campfire failed to answer.",
     needQuestion: "Enter a Peach Blossom Spring community question first.",
     sourceTitle: "Wiki search results / real links",
     noLinks: "No directly linkable wiki pages were found this time.",
@@ -810,8 +819,13 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "The fire is listening through the shared memory...",
   },
   id: {
+    name: "Api Diri Banyak Pikiran",
+    kicker: "Api Unggun Wiki LLM",
+    subtitle: "Asosiasi / terminal api bersama",
+    playerSpeaker: "Kamu",
     intro: "Saya Api Banyak Pikiran. Bertanyalah di sekitar api tentang komunitas, metode, material, atau organisasi; saya menjawab singkat dari memori bersama dan menampilkan halaman nyata di bawah.",
     fail: "Jawaban LLM sementara gagal; ini hasil pencarian wiki lokal yang bisa dibuka langsung.",
+    failError: "Api unggun gagal menjawab.",
     needQuestion: "Masukkan dulu pertanyaan komunitas Peach Blossom Spring.",
     sourceTitle: "Hasil pencarian wiki / tautan nyata",
     noLinks: "Tidak ada halaman wiki yang bisa ditautkan langsung kali ini.",
@@ -822,8 +836,13 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "Api mendengar memori bersama...",
   },
   de: {
+    name: "Das Viel-Geist-Selbst-Lagerfeuer",
+    kicker: "LLM-Wiki-Lagerfeuer",
+    subtitle: "Assoziations- / geteiltes-Feuer-Terminal",
+    playerSpeaker: "Du",
     intro: "Ich bin die Flamme vieler Geister. Frag am Feuer nach Community, Methode, Material oder Organisation; ich antworte kurz aus dem geteilten Gedaechtnis und liste echte Seiten unten auf.",
     fail: "Die LLM-Antwort ist gerade fehlgeschlagen; hier sind lokale Wiki-Suchergebnisse zum Öffnen.",
+    failError: "Das Lagerfeuer konnte nicht antworten.",
     needQuestion: "Gib zuerst eine Frage zur Peach-Blossom-Spring-Community ein.",
     sourceTitle: "Wiki-Suchergebnisse / echte Links",
     noLinks: "Diesmal wurden keine direkt verlinkbaren Wiki-Seiten gefunden.",
@@ -834,8 +853,13 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "Das Feuer lauscht dem geteilten Gedaechtnis...",
   },
   ja: {
+    name: "多重の心の自己の火",
+    kicker: "LLM Wiki の火",
+    subtitle: "連想 / 共有の火の端末",
+    playerSpeaker: "あなた",
     intro: "私は多重の心の火です。火を囲んでコミュニティ、方法、素材、組織について質問してください。共有記憶から短く答え、下に実在するページを並べます。",
     fail: "LLM の回答に失敗しました。まず開けるローカル wiki 検索結果を表示します。",
+    failError: "火は回答できませんでした。",
     needQuestion: "先に Peach Blossom Spring のコミュニティ質問を入力してください。",
     sourceTitle: "Wiki 検索結果 / 実在リンク",
     noLinks: "今回は直接開ける wiki ページが見つかりませんでした。",
@@ -846,8 +870,13 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { intro: string; fail: string; nee
     thinking: "火が共有記憶を聞いています...",
   },
   th: {
+    name: "กองไฟตัวตนหลายจิตใจ",
+    kicker: "กองไฟ Wiki ของ LLM",
+    subtitle: "การเชื่อมโยง / ปลายทางไฟร่วม",
+    playerSpeaker: "คุณ",
     intro: "ฉันคือเปลวไฟแห่งหลายจิตใจ ถามรอบกองไฟเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบสั้นจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
     fail: "คำตอบจาก LLM ล้มเหลวชั่วคราว ต่อไปนี้คือผลค้นหา wiki ในเครื่องที่เปิดดูได้ทันที",
+    failError: "กองไฟตอบไม่ได้ในตอนนี้",
     needQuestion: "กรุณาใส่คำถามเกี่ยวกับชุมชน Peach Blossom Spring ก่อน",
     sourceTitle: "ผลค้นหา wiki / ลิงก์จริง",
     noLinks: "ครั้งนี้ไม่พบหน้า wiki ที่เปิดลิงก์ได้โดยตรง",
@@ -949,8 +978,35 @@ function writePetLintGapInbox(items: PetLintGapItem[]): void {
   localStorage.setItem(PET_LINT_GAP_INBOX_KEY, JSON.stringify(items.slice(0, 24)));
 }
 
+const PET_LINT_GAP_COPY: Record<LanguageCode, { title: string; empty: string }> = {
+  "zh-TW": { title: "知識漏洞", empty: "還沒有累積的 lint / 思想缺口。" },
+  en: { title: "Knowledge gaps", empty: "No accumulated lint or thought gaps yet." },
+  id: { title: "Celah pengetahuan", empty: "Belum ada lint atau celah pikiran yang terkumpul." },
+  de: { title: "Wissensluecken", empty: "Noch keine gesammelten Lint- oder Gedankenluecken." },
+  ja: { title: "知識の穴", empty: "蓄積された lint / 思考の穴はまだありません。" },
+  th: { title: "ช่องว่างความรู้", empty: "ยังไม่มี lint หรือช่องว่างความคิดที่สะสมไว้" },
+};
+
+const PET_RUNAWAY_NOTICE: Record<LanguageCode, string> = {
+  "zh-TW": "你的問題電子雞看了你一眼，然後用不合理的速度拋下你。",
+  en: "Your question pet looks at you once, then abandons you at unreasonable speed.",
+  id: "Pet pertanyaanmu menatapmu sekali, lalu meninggalkanmu dengan kecepatan tidak masuk akal.",
+  de: "Dein Fragen-Pet sieht dich einmal an und laesst dich dann mit unvernünftiger Geschwindigkeit zurück.",
+  ja: "問いのペットは一度あなたを見てから、ありえない速さで置き去りにします。",
+  th: "สัตว์เลี้ยงคำถามมองคุณครั้งหนึ่ง แล้วทิ้งคุณไปด้วยความเร็วที่ไม่สมเหตุสมผล",
+};
+
+const ZINE_REPAIR_COPY: Record<LanguageCode, { feedback: string; received: string }> = {
+  "zh-TW": { feedback: "小誌 feedback", received: "已收到排修資訊，正在重生小誌。" },
+  en: { feedback: "Zine feedback", received: "Repair notes received. Regenerating the zine." },
+  id: { feedback: "Umpan balik zine", received: "Catatan perbaikan diterima. Zine sedang dibuat ulang." },
+  de: { feedback: "Zine-Feedback", received: "Reparaturnotizen empfangen. Das Zine wird neu erzeugt." },
+  ja: { feedback: "Zine フィードバック", received: "修正メモを受け取りました。小誌を再生成しています。" },
+  th: { feedback: "ฟีดแบ็กซีน", received: "ได้รับโน้ตซ่อมแล้ว กำลังสร้างซีนใหม่" },
+};
+
 function petLintGapTitle(language: LanguageCode): string {
-  return language === "zh-TW" ? "知識漏洞" : "Knowledge gaps";
+  return PET_LINT_GAP_COPY[language].title;
 }
 
 const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
@@ -1045,7 +1101,7 @@ function CentralComputerDialogue({
   }, [language]);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
-      speaker: CAMPFIRE_DIALOGUE_NAME,
+      speaker: copy.name,
       text: copy.intro,
     },
   ]);
@@ -1079,7 +1135,7 @@ function CentralComputerDialogue({
     setDraft("");
     setError("");
     setIsThinking(true);
-    setMessages((current) => [...current, { speaker: "You", text: trimmed }]);
+    setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     let wikiResults: WikiSearchResult[] = [];
     try {
       const { searchWikiPages } = await import("./wikiSearch.js");
@@ -1089,11 +1145,11 @@ function CentralComputerDialogue({
         preferredLanguage: language,
         sharedMemoryContext: sharedMemoryContextFor(wikiResults),
       });
-      setMessages((current) => [...current, { speaker: CAMPFIRE_DIALOGUE_NAME, text: reply, links: wikiResults }]);
+      setMessages((current) => [...current, { speaker: copy.name, text: reply, links: wikiResults }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "The campfire failed to answer.");
+      setError(err instanceof Error ? err.message : copy.failError);
       setMessages((current) => [...current, {
-        speaker: CAMPFIRE_DIALOGUE_NAME,
+        speaker: copy.name,
         text: copy.fail,
         links: wikiResults,
       }]);
@@ -1123,12 +1179,12 @@ function CentralComputerDialogue({
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
               <PlayerDialogueAvatar palette={playerPalette} label={playerName} />
-              <ComputerDialogueAvatar />
+              <ComputerDialogueAvatar label={copy.name} />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">LLM WIKI CAMPFIRE</p>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">{CAMPFIRE_DIALOGUE_NAME}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">Association / 聯想 shared-fire terminal</p>
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{copy.kicker}</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">{copy.name}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{copy.subtitle}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>X</button>
@@ -2489,11 +2545,7 @@ function App() {
         ch.moveSpeedMultiplier = 4.2;
         void officeState.walkToTile(pet.characterId, 7 - (index % 3), 7);
       });
-      setWorldNotice(
-        selectedLanguage === "zh-TW"
-          ? "你的問題電子雞看了你一眼，然後用不合理的速度拋下你。"
-          : "Your question pet looks at you once, then abandons you at unreasonable speed.",
-      );
+      setWorldNotice(PET_RUNAWAY_NOTICE[selectedLanguage]);
       window.setTimeout(() => setWorldNotice(null), 3600);
     }, 700);
     return () => window.clearTimeout(timeout);
@@ -3332,6 +3384,9 @@ function App() {
       if (!data || data.type !== "pbs:zine-repair-request" || !data.payload) return;
       const panel = splitPanel?.kind === "finalDocument" ? splitPanel : null;
       const report = buildZineRepairReport(data.payload, panel);
+      const repairLanguage = supportedLanguages.some((entry) => entry.code === report.language)
+        ? report.language as LanguageCode
+        : selectedLanguage;
       try {
         const history = JSON.parse(localStorage.getItem("pbs:zine-repair-reports") || "[]") as unknown;
         const next = Array.isArray(history) ? [...history, report].slice(-50) : [report];
@@ -3345,8 +3400,8 @@ function App() {
         const next = [
           {
             id: `zine-feedback-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
-            text: `${selectedLanguage === "zh-TW" ? "小誌 feedback" : "Zine feedback"}: ${text.trim()}`,
-            language: (report.language as LanguageCode) || selectedLanguage,
+            text: `${ZINE_REPAIR_COPY[selectedLanguage].feedback}: ${text.trim()}`,
+            language: repairLanguage,
             createdAt: new Date().toISOString(),
             source: "zine-feedback" as const,
           },
@@ -3366,12 +3421,12 @@ function App() {
       });
       const query = report.query || panel?.query || panel?.seed || "";
       if (!query) return;
-      setWorldNotice(data.payload.language === "zh-TW" ? "已收到排修資訊，正在重生小誌。" : "Repair notes received. Regenerating the zine.");
+      setWorldNotice(ZINE_REPAIR_COPY[repairLanguage].received);
       void openAssociationZineSplit({
         query: String(query),
         seed: panel?.seed || String(query),
         petRole: panel?.petRole,
-        language: (report.language as LanguageCode) || selectedLanguage,
+        language: repairLanguage,
         repairInstruction: report.repairInstruction as string,
         repairUsefulParts: report.usefulParts as string,
         repairUselessParts: report.uselessParts as string,
@@ -3483,6 +3538,7 @@ function App() {
   const localizedPetLintGapInbox = petLintGapInbox.filter((item) => item.language === selectedLanguage);
   const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, localizedPetLintGapInbox) : null;
   const terrainCopy = petTerrainStateCopy(selectedLanguage);
+  const petLintGapCopy = PET_LINT_GAP_COPY[selectedLanguage];
 
   return (
     <div
@@ -3975,7 +4031,7 @@ function App() {
                     <article className="question-status-compact-lint" aria-label={petLintGapTitle(selectedLanguage)}>
                       <strong>{petLintGapTitle(selectedLanguage)}</strong>
                       <p>
-                        {localizedPetLintGapInbox[0]?.text ?? (selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet.")}
+                        {localizedPetLintGapInbox[0]?.text ?? petLintGapCopy.empty}
                       </p>
                     </article>
                   </div>
@@ -4014,7 +4070,7 @@ function App() {
                         <span>{localizedPetLintGapInbox.length}</span>
                       </div>
                       {localizedPetLintGapInbox.length === 0 ? (
-                        <p>{selectedLanguage === "zh-TW" ? "還沒有累積的 lint / 思想缺口。" : "No accumulated lint or thought gaps yet."}</p>
+                        <p>{petLintGapCopy.empty}</p>
                       ) : (
                         localizedPetLintGapInbox.slice(0, 4).map((gap) => (
                           <article key={gap.id} className="pet-gap-inbox-item">
