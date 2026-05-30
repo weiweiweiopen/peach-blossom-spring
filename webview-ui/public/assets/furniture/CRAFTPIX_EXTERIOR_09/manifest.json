@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_09",
-  "name": "Large Stone",
-  "category": "misc",
+  "name": "CraftPix Exterior 09",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 1,
-  "width": 32,
-  "height": 32,
+  "backgroundTiles": 0,
+  "width": 53,
+  "height": 64,
   "footprintW": 2,
   "footprintH": 2
 }

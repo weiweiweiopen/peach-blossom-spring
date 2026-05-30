@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_44",
-  "name": "Stone Cluster",
-  "category": "misc",
+  "name": "CraftPix Exterior 44",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 16,
-  "height": 16,
+  "width": 29,
+  "height": 27,
   "footprintW": 1,
   "footprintH": 1
 }

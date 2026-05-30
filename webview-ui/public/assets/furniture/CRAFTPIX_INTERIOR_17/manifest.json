@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_INTERIOR_17",
-  "name": "Potion Bottles",
+  "name": "CraftPix Interior 17",
   "category": "misc",
   "type": "asset",
   "canPlaceOnWalls": false,
-  "canPlaceOnSurfaces": true,
+  "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 16,
-  "height": 16,
+  "width": 39,
+  "height": 35,
   "footprintW": 1,
   "footprintH": 1
 }

@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_23",
-  "name": "Tall Tree Variant",
-  "category": "misc",
+  "name": "CraftPix Exterior 23",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 2,
-  "width": 32,
-  "height": 48,
-  "footprintW": 2,
-  "footprintH": 3
+  "backgroundTiles": 0,
+  "width": 36,
+  "height": 37,
+  "footprintW": 1,
+  "footprintH": 1
 }

@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_55",
-  "name": "Blue Potion Bottles",
-  "category": "misc",
+  "name": "CraftPix Exterior 55",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
-  "canPlaceOnSurfaces": true,
+  "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 16,
-  "height": 16,
+  "width": 29,
+  "height": 22,
   "footprintW": 1,
   "footprintH": 1
 }

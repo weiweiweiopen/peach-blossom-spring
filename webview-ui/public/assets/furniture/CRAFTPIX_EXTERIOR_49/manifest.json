@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_49",
-  "name": "Red Potion Bottles",
-  "category": "misc",
+  "name": "CraftPix Exterior 49",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
-  "canPlaceOnSurfaces": true,
+  "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 16,
-  "height": 16,
-  "footprintW": 1,
-  "footprintH": 1
+  "width": 54,
+  "height": 63,
+  "footprintW": 2,
+  "footprintH": 2
 }

@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_INTERIOR_05",
-  "name": "Potion Table",
-  "category": "desks",
+  "name": "CraftPix Interior 05",
+  "category": "misc",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 1,
-  "width": 32,
-  "height": 32,
-  "footprintW": 2,
-  "footprintH": 2
+  "backgroundTiles": 0,
+  "width": 26,
+  "height": 38,
+  "footprintW": 1,
+  "footprintH": 1
 }

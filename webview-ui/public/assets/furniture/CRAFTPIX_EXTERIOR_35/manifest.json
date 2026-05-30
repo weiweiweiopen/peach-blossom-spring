@@ -1,13 +1,13 @@
 {
   "id": "CRAFTPIX_EXTERIOR_35",
-  "name": "Pebble",
-  "category": "misc",
+  "name": "CraftPix Exterior 35",
+  "category": "decor",
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
   "backgroundTiles": 0,
-  "width": 16,
-  "height": 16,
+  "width": 18,
+  "height": 24,
   "footprintW": 1,
   "footprintH": 1
 }
