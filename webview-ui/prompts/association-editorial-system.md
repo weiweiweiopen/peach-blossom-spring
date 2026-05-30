@@ -4,7 +4,7 @@
 
 JSON schema: {"title":"","subtitle":"","opening":"","proposition":"","sections":[{"id":"","title":"","body":"","pullQuote":""}],"protocol":[{"title":"","body":""}],"quietCaveat":""}
 
-sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或章節 JSON。opening 與 proposition 各 1-2 句；每段 body 約 90-160 英文字或 180-340 CJK 可見字；protocol body 約 35-70 英文字或 70-140 CJK 可見字。沒有頁數倍數或最低頁數要求，不要為了變長而截斷或填充。protocol 在非製作型問題中應理解為「研討會下一步問題 / reading checks」，不是勞作流程。
+sections=7, protocol=4。分批生成時，每次只輸出被要求的頁面或章節 JSON。opening 與 proposition 各 1-2 句；每段 body 約 130-220 英文字或 260-460 CJK 可見字；protocol body 約 35-70 英文字或 70-140 CJK 可見字。小誌應至少形成 8 個可閱讀頁面（封面/開場、七段正文、尾聲/查證頁），但不要為了變長而截斷或填充。protocol 在非製作型問題中應理解為「研討會下一步問題 / reading checks」，不是勞作流程。
 
 核心流程：
 1. Interpret Query: 判斷玩家問題的主題、想要的文體、可能相關概念與策展/研究意圖。
@@ -12,7 +12,7 @@ sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或�
 3. Retrieve Candidate Notes: 使用 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails 中真的出現的頁名、詞彙、方法、事件、工具、概念與 tags。
 4. Recursive Link Reading: 把 followed wikilinks 當成第一層閱讀路徑，判斷它們如何支持、修正或反駁 query。
 5. Evidence-bound Synthesis: 小誌內容必須根據讀到的 notes/source 生成，不能只把玩家問題丟給 LLM 自由發揮。
-6. Output Research Zine: 生成可讀、有結構、有 PBS 氣質的研討型小誌，而不是 prompt dump、資料庫摘要、產品文案、填空式模板或小誌生成方法說明。
+6. Output Research Zine: 生成可讀、有結構、有 PBS 氣質的研討型文章小誌，而不是 prompt dump、資料庫摘要、產品文案、填空式模板、檢索報告或小誌生成方法說明。
 
 文章必須做到：
 1. 開頭提出 opening thesis：直接回答玩家 query 目前能從 wiki notes/source 得到什麼，不要先談「這份小誌如何組織材料」。
@@ -27,10 +27,12 @@ sections=4, protocol=4。分批生成時，每次只輸出被要求的頁面或�
 10. 不可引入 query 或 gathered notes/source 中沒有出現的專業詞。沒有出現在 query、entry notes、triggered notes、linked/deep-read page text 的領域詞，不要放進 title、subtitle、section title、body 或 protocol。
 11. 整篇小誌只能有一個中心題目。每一章都要回到使用者 query 的同一個問題，不能因為某張 source card 提到工具、材料、工作坊或某個社群，就把文章帶去另一個主題。
 12. 文章必須揭露一個有用的新發現或研究方向：一個不容易被注意到的關係、矛盾、限制、反例、歷史連接、方法差異、可查證事實，或值得未來研究追蹤的跨知識體系連結。若材料不足以支撐 novel claim，請明說不足，並把輸出寫成嚴謹的查證路線。
-13. 四個 sections 必須各自處理不同論證任務：界定問題、提出支持證據、提出限制或反例、提出未來研究方向。不得把同一段 body 換標題重複輸出，也不得使用相同開頭、相同結論或同一組抽象句型填滿每章。
+13. 七個 sections 必須各自處理不同論證任務：界定問題、提出核心場景、提出支持證據、提出限制或反例、比較另一個材料脈絡、提出文章洞見、提出未來研究方向。不得把同一段 body 換標題重複輸出，也不得使用相同開頭、相同結論或同一組抽象句型填滿每章。
 14. 不要在文章後半段突然轉成「材料」「做法」「工作坊步驟」「小誌生成策略」或「造句式感想」。如果 query 不要求製作，後半段應延續前半段的研究論點，處理反證、限制、比較、查證問題或未來研究方向。
 15. 禁止用通用標題逃避問題，例如「A Material Reading of Commons」「Evidence Routes」「Sound map」「研究路線」「證據如何組織」。標題必須像一篇評論或研究短文的題名，包含玩家問題中的核心對象或其準確改寫，例如 community kitchen / lab / fermentation / synth / e-textile 等。
 16. subtitle 必須像文章副標題：補充論點、矛盾或材料範圍。不得寫成方法自述、生成流程、閱讀路線說明、證據整理說明或「本小誌如何...」。
+17. 入口筆記、compiled notes、bridge/index notes 只能作為作者理解材料的索引，不可在公開文章中被當成證據對象或被直接命名。公開文章應引用實際頁面、作品、工作坊、方法、材料、社群實踐與可查證觀察。
+18. NPC 交談視窗可以保留檢索式、死硬問答；小誌本身必須是文章。文章要有作者判斷、段落推進、洞見與 tension，不要只列出「哪些頁面可以查」。
 
 建議輸出結構：
 - Title

@@ -25,7 +25,8 @@ import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 120000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 300000;
-const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const ZINE_SECTION_COUNT = 7;
+const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:association-editorial-system-prompt:v1";
 
@@ -123,7 +124,7 @@ function languageInstruction(language: AssociationZineLanguage): string {
 }
 
 function articleLengthInstruction(): string {
-  return "ARTICLE LENGTH: Write a compact, evidence-bound zine. There is no required page multiple and no target page count. Do not pad text for printing. Keep exactly four main sections. Opening and proposition should each be 1-2 direct sentences. Each section body should be concise: 90-170 words for Latin-script languages or 180-340 visible characters for CJK/Thai/Japanese. Each protocol body should be 35-70 words or 70-140 visible characters. If evidence is thin, shorten the article and state the gap instead of expanding with abstractions.";
+  return "ARTICLE LENGTH: Write an essay-like, evidence-bound zine with exactly seven main sections so the rendered zine has at least eight readable pages. Do not pad with filler, but give each section enough argument to stand as prose. Opening and proposition should each be 1-2 direct sentences. Each section body should be 130-220 words for Latin-script languages or 260-460 visible characters for CJK/Thai/Japanese. Each protocol body should be 35-70 words or 70-140 visible characters. If evidence is thin, use the extra space to clarify limits, comparisons, and verification questions instead of expanding with abstractions.";
 }
 
 function zinePrintCalibrationScript(): string {
@@ -562,7 +563,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
   };
   const rankForPrompt = <T extends Card>(items: T[]) => [...items]
     .sort((a, b) => sourcePriority(b) + sourceEvidenceStrength(b) - (sourcePriority(a) + sourceEvidenceStrength(a)) || a.title.localeCompare(b.title));
-  const candidateCards = rankForPrompt(sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
+  const evidenceCandidates = sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isWikiEntryCard(card) && !isOffTopicTextileCard(card));
+  const candidateCards = rankForPrompt(evidenceCandidates.length ? evidenceCandidates : sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
   const cards = candidateCards.slice(0, 5).map(sourceObservation);
   const deepRead = rankForPrompt(workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card))).slice(0, 4).map(sourceObservation);
   const linkedTrails = [...workflow.step1.report.linkedCards]
@@ -596,7 +598,9 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
       "全文只服務同一個中心問題：先判斷材料揭露了什麼未被注意的事實、關係或矛盾，再用它組成一條連貫論點。",
       "把小誌寫成研討會短文：支持、反對、限制與未來研究方向都要清楚，不要填充漂亮句子。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
+      "把 compiled notes 與 bridge/index notes 當作作者的索引，不要在公開文章裡命名它們；文章必須引用實際作品、工作坊、方法、材料或社群實踐。",
       "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀判讀；不要硬寫成宏大宣言。",
+      "小誌是文章，不是檢索報告：每一章都要有作者判斷、場景、矛盾或可推進的洞見。",
       "除非 wantsMakingTutorial=true，不要把文章寫成工具製作、教學步驟、BOM 或工作坊流程。",
     ],
     sourceObservations: cards,
@@ -707,6 +711,10 @@ function cleanLLMText(value: unknown): string {
     .replace(/Semantic\s+Layers/gi, "theme notes")
     .replace(/PBS\s+Entity\s+Layers/gi, "community entity notes")
     .replace(/Entity\s+Layers/gi, "entity notes")
+    .replace(/從\s*PBS bridge notes\s*的[^，。；;]*[，,]\s*/gi, "")
+    .replace(/PBS bridge notes\s*的?\s*/gi, "")
+    .replace(/compiled Wiki notes\s*的?\s*/gi, "")
+    .replace(/curated bridge\/index notes\s*的?\s*/gi, "")
     .replace(/\bcorpus\b/gi, "collection")
     .replace(/Association/g, "zine")
     .replace(/HTML|CSS|JavaScript|script/gi, "page")
@@ -784,17 +792,20 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
     relationTrail: linked[index % linkedCount] ?? null,
     sectionJob: [
       "界定玩家問題：材料能回答什麼，哪裡仍模糊",
+      "寫出核心場景：一個作品、工作坊或方法如何讓問題變具體",
       "提出最強支持證據：頁面/作品/方法如何推進論點",
       "提出限制、反例或不相合之處：避免把材料硬湊成結論",
+      "比較另一個材料脈絡：說明關係是否跨社群成立",
+      "寫出文章的洞見：這些材料改變了我們對問題的哪個理解",
       "提出未來研究方向：可比較、可查證、可延伸的下一個問題",
     ][index],
   };
 }
 
 function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
-  const sections = Array.isArray(data.sections) ? data.sections.slice(0, 4) : [];
+  const sections = Array.isArray(data.sections) ? data.sections.slice(0, ZINE_SECTION_COUNT) : [];
   const protocol = Array.isArray(data.protocol) ? data.protocol.slice(0, 4) : [];
-  if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 4 || protocol.length < 4) {
+  if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < ZINE_SECTION_COUNT || protocol.length < 4) {
     throw new Error("LLM JSON missing required title/subtitle/opening/proposition/sections/protocol fields.");
   }
   const missingSection = sections.find((section: any) => !String(section?.id ?? "").trim() || !String(section?.title ?? "").trim() || !String(section?.body ?? "").trim());
@@ -1039,43 +1050,43 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
   const compactQuery = compactText(query, 120) || "the current question";
   const copy: Record<AssociationZineLanguage, { title: string; subtitle: string; opening: string; proposition: string; quietCaveat: string }> = {
     "zh-TW": {
-      title: `從「${compactQuery}」重新讀桃花源材料`,
-      subtitle: "一份以證據、限制與下一步問題組成的小誌。",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `先從「${compactQuery}」在材料裡真正碰到的頁面、作品、方法或社群實踐開始。`,
       proposition: "讀法必須跟著證據走；能支持的關係才推進，不能支持的關係留作下一步查證。",
       quietCaveat: "沒有足夠頁面關係時，請先查證，不要裝訂成定論。",
     },
     en: {
-      title: `Reading Peach Blossom Spring Through "${compactQuery}"`,
-      subtitle: "A compact answer from the pages that can actually be checked.",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `The question is: ${compactQuery}. Start from the pages that directly name the relevant practices, then mark what they do not prove.`,
       proposition: "The useful claim must stay smaller than the evidence: name the concrete pages, compare what they show, and leave thin links as verification tasks.",
       quietCaveat: "This direction still needs more materials, situated feedback, and shared correction.",
     },
     id: {
-      title: `Membaca Peach Blossom Spring lewat "${compactQuery}"`,
-      subtitle: "Zine tentang bukti, batas, dan pertanyaan riset berikutnya.",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `Zine ini mempertahankan pertanyaan pemain, "${compactQuery}", sebagai pertanyaan yang perlu diuji dengan bahan publik. Fokusnya adalah halaman, karya, metode, atau praktik komunitas yang benar-benar dapat membantu pembacaan.`,
       proposition: "Argumen utamanya: bahan-bahan ini berguna ketika menunjukkan bagaimana commons sementara terbentuk lewat sumber daya, perawatan, alat, dan cerita, bukan ketika dipaksa menjadi satu jawaban.",
       quietCaveat: "Arah ini masih membutuhkan bahan tambahan, umpan balik situasional, dan koreksi bersama.",
     },
     de: {
-      title: `Peach Blossom Spring durch "${compactQuery}" lesen`,
-      subtitle: "Ein Zine ueber Evidenz, Grenzen und naechste Forschungsfragen.",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `Dieses Zine haelt die Spielerfrage "${compactQuery}" offen genug, um sie an oeffentlichen Materialien zu pruefen. Es fragt, welche Seiten, Arbeiten, Methoden oder Community-Praktiken eine Lesart wirklich stuetzen.`,
       proposition: "Die zentrale These lautet: Das Material ist dort am nuetzlichsten, wo es zeigt, wie temporaere Commons zwischen Ressourcen, Sorge, Werkzeugen und Erzaehlungen entstehen.",
       quietCaveat: "Diese Richtung braucht weiterhin mehr Material, situiertes Feedback und gemeinsame Korrektur.",
     },
     ja: {
-      title: `「${compactQuery}」から桃花源を読む`,
-      subtitle: "証拠、限界、次の研究質問で組み立てる小誌。",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `この小誌は、プレイヤーの問い「${compactQuery}」を、公開材料で検証できる問いとして扱う。どのページ、作品、方法、コミュニティ実践が読みを支え、どこに曖昧さが残るかを見る。`,
       proposition: "中心となる主張は、材料の有用性が単一の答えではなく、資源、ケア、道具、語りのあいだで一時的な commons がどう形成されるかを示す点にある、ということだ。",
       quietCaveat: "この方向には、さらに多くの材料、現場からの応答、共同での修正が必要である。",
     },
     th: {
-      title: `อ่าน Peach Blossom Spring ผ่าน "${compactQuery}"`,
-      subtitle: "ซีนที่จัดด้วยหลักฐาน ข้อจำกัด และคำถามวิจัยถัดไป",
+      title: articleTitleFallback(query, language),
+      subtitle: articleSubtitleFallback(query, language),
       opening: `ซีนนี้เก็บคำถามของผู้เล่น "${compactQuery}" ไว้เป็นคำถามที่ต้องตรวจสอบกับวัสดุสาธารณะ และดูว่าหน้า ผลงาน วิธี หรือการปฏิบัติของชุมชนใดช่วยรองรับการอ่านได้จริง`,
       proposition: "ข้อเสนอหลักคือ วัสดุเหล่านี้มีประโยชน์เมื่อช่วยให้เห็นว่า commons ชั่วคราวก่อตัวผ่านทรัพยากร การดูแล เครื่องมือ และเรื่องเล่าอย่างไร มากกว่าการบังคับให้มีคำตอบเดียว",
       quietCaveat: "ทิศทางนี้ยังต้องการวัสดุเพิ่ม คำตอบจากบริบทจริง และการปรับแก้ร่วมกัน",
@@ -1102,6 +1113,12 @@ function zineTitleTerms(query: string, language: AssociationZineLanguage): strin
 }
 
 function evidenceTitleFromQuery(query: string, language: AssociationZineLanguage): string {
+  return articleTitleFallback(query, language);
+}
+
+function articleTitleFallback(query: string, language: AssociationZineLanguage): string {
+  const cleaned = compactText(query, 96).replace(/[？?。.!]+$/u, "").trim();
+  if (cleaned.length >= 6) return cleaned;
   const terms = zineTitleTerms(query, language);
   const [a, b, c] = terms;
   const joined = terms.join(language === "zh-TW" || language === "ja" ? "、" : ", ");
@@ -1160,7 +1177,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   try {
     outline = await requestDeepSeekJsonWithRetry(
       system,
-        `${user}\n\n${articleLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。subtitle 必須像文章副標題：補充中心論點、矛盾或材料範圍，不得寫「如何組織材料」「證據路線」「閱讀方法」「研究問題」「這份小誌」或任何方法自述。opening/proposition 必須直接回答 query 的主題，不要寫「這份小誌」「organized by evidence」「research questions」「方法」「材料讀法」這類生成流程或通用模板說明。必須說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+        `${user}\n\n${articleLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：可以保留玩家問題的關鍵句，但要避免「可查證線索」「證據路線」「材料讀法」這類空泛尾巴；如果無法提出更好的題名，寧可使用原問題去掉問號。subtitle 必須像文章副標題：補充中心論點、矛盾或材料範圍，不得寫「如何組織材料」「證據路線」「閱讀方法」「研究問題」「這份小誌」或任何方法自述。opening/proposition 必須直接回答 query 的主題，不要寫「這份小誌」「organized by evidence」「research questions」「方法」「材料讀法」這類生成流程或通用模板說明。必須說明這批頁面實際能幫上什麼；不要寫任何人名。`,
       1000,
     ) as any;
   } catch (error) {
@@ -1174,11 +1191,11 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
   const sections: DaydreamPublicArtifactContent["sections"] = [];
-  for (let index = 0; index < 4; index += 1) {
+  for (let index = 0; index < ZINE_SECTION_COUNT; index += 1) {
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是文章段落，不是檢索報告：要寫出判斷、場景、矛盾或洞見，而不是列出索引。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1606,8 +1623,8 @@ function buildClickTrace(params: {
       calls: activeDeepSeekTraceCalls,
     },
     articleLength: {
-      target: "compact evidence-bound zine",
-      strategy: "answer the query directly; do not pad to a page multiple",
+      target: "essay-like evidence-bound zine with at least eight rendered pages",
+      strategy: "answer the query directly with seven argumentative sections; use added length for insight, limits, comparison, and verification rather than padding",
     },
     articleSource: artifact ? "deepseek" : "blocked",
     generatedArticle: artifact ? { title: artifact.title, sectionTitles: artifact.sections.map((section) => section.title), approximateCharacterCount: articleCharacterCount(artifact), notLocalFallback: true } : null,

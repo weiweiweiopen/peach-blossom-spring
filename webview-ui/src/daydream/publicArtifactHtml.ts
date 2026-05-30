@@ -17,7 +17,7 @@ export function renderDaydreamPublicArtifactHtml(
   artifact: DaydreamPublicArtifactContent,
   variant: DaydreamHtmlLayoutVariant,
 ): string {
-  const sections = artifact.sections.slice(0, 4);
+  const sections = artifact.sections.slice(0, 7);
   const protocol = artifact.protocol.slice(0, 4);
   const terms = sections.map((section) => section.title).slice(0, 4);
   let html: string;

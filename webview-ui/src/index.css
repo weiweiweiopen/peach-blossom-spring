@@ -8053,17 +8053,23 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 }
 
 .question-status-panel-minimized.question-status-panel-compact {
-  width: min(760px, calc(100vw - 24px)) !important;
-  max-height: 58px !important;
-  padding: 8px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: min(980px, calc(100vw - 24px)) !important;
+  max-height: 46px !important;
+  padding: 6px 10px !important;
+  overflow: hidden !important;
   background: color-mix(in srgb, #fff 78%, transparent) !important;
   border: 3px solid #000 !important;
   box-shadow: 2px 2px 0 #000 !important;
 }
 
 .question-status-panel-minimized .question-status-header {
+  flex: 0 0 auto !important;
   display: flex !important;
   gap: 10px !important;
+  align-items: center !important;
   margin: 0 !important;
   padding: 0 !important;
   border-bottom: 0 !important;
@@ -8077,6 +8083,16 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   font-size: 14px !important;
   line-height: 1.2 !important;
   white-space: nowrap !important;
+}
+
+.question-status-panel-minimized .question-status-header h2 {
+  max-width: 170px !important;
+}
+
+.question-status-panel-minimized .question-status-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
 
 .question-status-panel-minimized .question-status-actions span {
@@ -8096,6 +8112,7 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 }
 
 .question-status-panel-minimized .question-status-compact {
+  flex: 1 1 auto !important;
   display: flex !important;
   flex-wrap: nowrap !important;
   gap: 10px !important;
@@ -8117,9 +8134,10 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   display: flex !important;
   flex: 0 0 auto;
   gap: 4px !important;
-  padding: 3px 6px !important;
-  background: var(--palette-cream) !important;
-  border: 2px solid #000 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .question-status-panel-minimized .question-status-compact-lint {

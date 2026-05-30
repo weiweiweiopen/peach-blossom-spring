@@ -90,7 +90,7 @@ function zineLayoutGovernanceCss(): string {
 
 function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
   const copy = templateCopy(language);
-  const sections = artifact.sections.slice(0, 4);
+  const sections = artifact.sections.slice(0, 7);
   const firstSection = sections[0];
   const refs = artifact.protocol.slice(0, 6);
   const sectionPages = sections.slice(1).map((section, index) => `<section class="page p${Math.min(index + 2, 4)}" data-official-template="${template.filename}" style="${frameStyle(index + 1)}">
@@ -107,13 +107,13 @@ function renderPbsReset(artifact: DaydreamPublicArtifactContent, template: Offic
     <div class="bodyGrid"><article class="body">${firstSection ? `<p>${escapeHtml(firstSection.body)}</p>` : ""}</article><aside class="refs"><b>${escapeHtml(copy.sequence)}</b><small class="sequence-note">${escapeHtml(copy.insufficiencyNote)}</small><ol>${refs.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")}</ol></aside></div>
   </main>
 </section>${sectionPages}<section class="page p4" data-official-template="${template.filename}" style="${frameStyle(sections.length + 1)}">
-  <header class="top"><span class="no">06</span><span class="label">${escapeHtml(copy.closing)}</span></header>
+  <header class="top"><span class="no">${String(sections.length + 2).padStart(2, "0")}</span><span class="label">${escapeHtml(copy.closing)}</span></header>
   <main class="sheet"><div class="bodyGrid bodyGrid--full"><article class="body">${artifact.protocol.map((item) => `<p><b>${escapeHtml(item.title)}</b> ${escapeHtml(item.body)}</p>`).join("")}${artifact.quietCaveat ? `<p>${escapeHtml(artifact.quietCaveat)}</p>` : ""}</article></div></main>
 </section>`;
 }
 
 function renderSoftCommons(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource): string {
-  const sections = artifact.sections.slice(0, 4);
+  const sections = artifact.sections.slice(0, 7);
   const protocol = artifact.protocol.slice(0, 4);
   return `<style>${extractStyle(template.html)}</style><div class="grain" data-official-template="${template.filename}"></div><nav><a href="#question">開場</a><a href="#body">篇章</a><a href="#score">尾聲</a></nav><header class="cover"><div class="top"><span>聲音圖譜</span><span>現場讀本</span></div><div class="hero"><h1>${escapeHtml(artifact.title)}</h1><p>${escapeHtml(artifact.subtitle)}</p></div><div class="bottom"><span>影像／聲音／身體／倫理</span><span>可被演奏的關係</span></div></header>
 <main>
@@ -125,7 +125,7 @@ ${sections.map((section, index) => `<section class="page ${index % 2 ? "spread" 
 
 function renderAinoMotion(artifact: DaydreamPublicArtifactContent, template: OfficialTemplateSource, language: TemplateLanguage): string {
   const copy = templateCopy(language);
-  const sections = artifact.sections.slice(0, 4);
+  const sections = artifact.sections.slice(0, 7);
   return `<style>${extractStyle(template.html)}</style>${sections.map((section, pageIndex) => `<section class="page p${Math.min(pageIndex + 1, 4)}" data-official-template="${template.filename}">
   <header class="mast"><div class="mark">${escapeHtml(copy.map)}</div><div class="pageNo">${String(pageIndex + 1).padStart(2, "0")}</div><div class="label">${String(pageIndex + 1).padStart(2, "0")}</div></header>
   <main class="grid"><div class="titleCol"><h1>${kineticTitle(pageIndex === 0 ? artifact.title : section.title, language)}</h1><p class="dek">${escapeHtml(pageIndex === 0 ? artifact.subtitle : section.title)}</p><div class="motionRail" aria-hidden="true"><i></i></div></div>
