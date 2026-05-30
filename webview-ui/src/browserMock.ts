@@ -238,6 +238,22 @@ function filterCatalogForLayout(catalog: CatalogEntry[], layout: unknown): Catal
   );
 }
 
+function maxFloorPatternForLayout(layout: unknown): number {
+  const runtimeLayout = layout as RuntimeLayout | null;
+  const floorIds = (runtimeLayout?.tiles ?? [])
+    .filter((tile): tile is number => Number.isInteger(tile) && tile > 0 && tile < 255);
+  return floorIds.length > 0 ? Math.max(...floorIds) : 0;
+}
+
+function filterAssetIndexForLayout(index: AssetIndex, layout: unknown): AssetIndex {
+  const maxFloorPattern = maxFloorPatternForLayout(layout);
+  if (maxFloorPattern <= 0) return index;
+  return {
+    ...index,
+    floors: index.floors.slice(0, Math.min(index.floors.length, maxFloorPattern)),
+  };
+}
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 /**
@@ -280,6 +296,7 @@ export async function initBrowserMock(): Promise<void> {
     ? editorLayout
     : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
 
+  const runtimeAssetIndex = wantsEditorAssets ? assetIndex : filterAssetIndexForLayout(assetIndex, layout);
   const runtimeCatalog = wantsEditorAssets ? catalog : filterCatalogForLayout(catalog, layout);
 
   const shouldTryDecoded = import.meta.env.DEV;
@@ -305,14 +322,14 @@ export async function initBrowserMock(): Promise<void> {
   const [characters, floorSprites, wallSets, furnitureSprites] = hasDecoded
     ? [
         decodedCharacters!,
-        decodedFloors!,
+        decodedFloors!.slice(0, runtimeAssetIndex.floors.length),
         decodedWalls!,
         Object.fromEntries(runtimeCatalog.map((item) => [item.id, decodedFurniture![item.id]]).filter(([, sprite]) => Boolean(sprite))),
       ]
     : await Promise.all([
-        decodeCharactersFromPng(base, assetIndex),
-        decodeFloorsFromPng(base, assetIndex),
-        decodeWallsFromPng(base, assetIndex),
+        decodeCharactersFromPng(base, runtimeAssetIndex),
+        decodeFloorsFromPng(base, runtimeAssetIndex),
+        decodeWallsFromPng(base, runtimeAssetIndex),
         decodeFurnitureFromPng(base, runtimeCatalog),
       ]);
 
@@ -326,7 +343,7 @@ export async function initBrowserMock(): Promise<void> {
   };
 
   console.log(
-    `[BrowserMock] Ready (${hasDecoded ? 'decoded-json' : 'browser-png-decode'}) — ${characters.length} chars, ${floorSprites.length} floors, ${wallSets.length} wall sets, ${runtimeCatalog.length}/${catalog.length} furniture items`,
+    `[BrowserMock] Ready (${hasDecoded ? 'decoded-json' : 'browser-png-decode'}) — ${characters.length}/${assetIndex.characters.length} chars, ${floorSprites.length}/${assetIndex.floors.length} floors, ${wallSets.length}/${assetIndex.walls.length} wall sets, ${runtimeCatalog.length}/${catalog.length} furniture items`,
   );
 }
 
