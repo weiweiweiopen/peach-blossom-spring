@@ -267,7 +267,7 @@ export async function initBrowserMock(): Promise<void> {
   const base = import.meta.env.BASE_URL; // '/' in dev, '/sub/' with a subpath, './' in production
   const params = new URLSearchParams(window.location.search);
   const wantsEditorAssets = params.get('editor') === '1';
-  const editorPreview = import.meta.env.DEV && wantsEditorAssets;
+  const editorPreview = wantsEditorAssets;
   const layoutPath = 'pbs-editor-layout.json';
 
   const [assetIndex, catalog] = await Promise.all([
@@ -367,7 +367,7 @@ export function dispatchMockMessages(): void {
   dispatch({ type: 'floorTilesLoaded', sprites: floorSprites });
   dispatch({ type: 'wallTilesLoaded', sets: wallSets });
   dispatch({ type: 'furnitureAssetsLoaded', catalog: furnitureCatalog, sprites: furnitureSprites });
-  const editorPreview = import.meta.env.DEV && new URLSearchParams(window.location.search).get('editor') === '1';
+  const editorPreview = new URLSearchParams(window.location.search).get('editor') === '1';
   if (!editorPreview) {
     dispatch({
       type: 'existingAgents',

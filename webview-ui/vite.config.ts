@@ -51,6 +51,12 @@ function browserMockAssetsPlugin(): Plugin {
     cache.furniture = null;
   }
 
+  function safeAssetJsonFilename(value: unknown): string {
+    const raw = typeof value === 'string' && value.trim() ? value.trim() : 'pbs-editor-layout.json';
+    const base = raw.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/^-+|-+$/g, '');
+    return (base || 'pbs-editor-layout').endsWith('.json') ? (base || 'pbs-editor-layout.json') : `${base || 'pbs-editor-layout'}.json`;
+  }
+
   return {
     name: 'browser-mock-assets',
     configureServer(server) {
@@ -69,7 +75,8 @@ function browserMockAssetsPlugin(): Plugin {
             chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
           }
           const body = Buffer.concat(chunks).toString('utf8');
-          const layout = JSON.parse(body || '{}') as { version?: unknown; cols?: unknown; rows?: unknown; tiles?: unknown; furniture?: unknown };
+          const payload = JSON.parse(body || '{}') as { filename?: unknown; layout?: unknown; version?: unknown; cols?: unknown; rows?: unknown; tiles?: unknown; furniture?: unknown };
+          const layout = (payload.layout && typeof payload.layout === 'object' ? payload.layout : payload) as { version?: unknown; cols?: unknown; rows?: unknown; tiles?: unknown; furniture?: unknown };
           if (
             layout.version !== 1 ||
             typeof layout.cols !== 'number' ||
@@ -84,11 +91,17 @@ function browserMockAssetsPlugin(): Plugin {
           }
 
           suppressNextEditorLayoutReload = true;
-          fs.writeFileSync(editorLayoutPath, `${JSON.stringify(layout, null, 2)}\n`);
+          const filename = safeAssetJsonFilename(payload.filename);
+          const targetPath = path.join(assetsDir, filename);
+          if (!targetPath.startsWith(`${assetsDir}${path.sep}`)) {
+            throw new Error('Invalid editor layout filename.');
+          }
+          fs.writeFileSync(targetPath, `${JSON.stringify(layout, null, 2)}\n`);
+          if (filename === 'pbs-editor-layout.json') suppressNextEditorLayoutReload = true;
           clearCache();
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ ok: true, path: path.relative(__dirname, editorLayoutPath) }));
+          res.end(JSON.stringify({ ok: true, path: path.relative(__dirname, targetPath) }));
         } catch (error) {
           res.statusCode = 400;
           res.setHeader('Content-Type', 'application/json');

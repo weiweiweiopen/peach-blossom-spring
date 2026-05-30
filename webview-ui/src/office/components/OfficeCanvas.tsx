@@ -645,6 +645,19 @@ export function OfficeCanvas({
           // Clicked empty space — deselect
           editorState.clearSelection();
           onEditorSelectionChange();
+          e.preventDefault();
+          officeState.cameraFollowId = null;
+          isPanningRef.current = true;
+          panMovedRef.current = false;
+          panStartRef.current = {
+            mouseX: e.clientX,
+            mouseY: e.clientY,
+            panX: panRef.current.x,
+            panY: panRef.current.y,
+          };
+          const canvas = canvasRef.current;
+          if (canvas) canvas.style.cursor = 'grabbing';
+          return;
         }
       }
 

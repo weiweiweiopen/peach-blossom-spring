@@ -2107,7 +2107,7 @@ function App() {
     if (!worldInitialized) {
       setWorldInitialized(true);
     }
-    if (appMode === "interactive") {
+    if (appMode === "interactive" && !editorEntryEnabled) {
       officeState.addPlayer(
         PLAYER_ID,
         playerProfile.palette,

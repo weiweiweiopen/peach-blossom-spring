@@ -5,28 +5,48 @@ declare function acquireVsCodeApi(): { postMessage(msg: unknown): void };
 
 const BROWSER_EDITOR_LAYOUT_KEY = 'pbs:editor-layout:v1';
 
+function safeLayoutFilename(filename?: string): string {
+  const raw = (filename ?? '').trim() || 'pbs-editor-layout.json';
+  const base = raw.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/^-+|-+$/g, '');
+  return (base || 'pbs-editor-layout').endsWith('.json') ? (base || 'pbs-editor-layout.json') : `${base || 'pbs-editor-layout'}.json`;
+}
+
+function downloadLayout(layout: OfficeLayout, filename?: string): void {
+  const blob = new Blob([`${JSON.stringify(layout, null, 2)}\n`], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = safeLayoutFilename(filename);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function saveLayoutFallback(layout: OfficeLayout): void {
   window.localStorage.setItem(BROWSER_EDITOR_LAYOUT_KEY, JSON.stringify(layout));
 }
 
-async function saveBrowserLayout(layout: OfficeLayout): Promise<void> {
+async function saveBrowserLayout(layout: OfficeLayout, filename?: string): Promise<void> {
   if (!import.meta.env.DEV) {
     saveLayoutFallback(layout);
+    downloadLayout(layout, filename);
     return;
   }
   try {
     const response = await fetch('/api/editor-layout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(layout),
+      body: JSON.stringify({ filename: safeLayoutFilename(filename), layout }),
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status.toString()}`);
     }
-    console.log('[Editor] Saved layout to webview-ui/public/assets/pbs-editor-layout.json');
+    console.log(`[Editor] Saved layout to webview-ui/public/assets/${safeLayoutFilename(filename)}`);
     window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
   } catch (error) {
     saveLayoutFallback(layout);
+    downloadLayout(layout, filename);
     console.log('[Editor] Saved layout to localStorage fallback', error);
   }
 }
@@ -34,10 +54,10 @@ async function saveBrowserLayout(layout: OfficeLayout): Promise<void> {
 function handleBrowserPostMessage(msg: unknown): void {
   console.log('[vscode.postMessage]', msg);
   if (!msg || typeof msg !== 'object') return;
-  const payload = msg as { type?: string; layout?: OfficeLayout; persistToFile?: boolean };
+  const payload = msg as { type?: string; layout?: OfficeLayout; persistToFile?: boolean; filename?: string };
   if (payload.type === 'saveLayout' && payload.layout) {
     if (payload.persistToFile) {
-      void saveBrowserLayout(payload.layout);
+      void saveBrowserLayout(payload.layout, payload.filename);
     } else {
       saveLayoutFallback(payload.layout);
     }

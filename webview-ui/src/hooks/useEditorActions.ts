@@ -358,8 +358,9 @@ export function useEditorActions(
     }
     const os = getOfficeState();
     const layout = os.getLayout();
+    const filename = window.prompt('Save layout filename in public/assets', 'pbs-editor-layout.json') ?? 'pbs-editor-layout.json';
     lastSavedLayoutRef.current = structuredClone(layout);
-    vscode.postMessage({ type: 'saveLayout', layout, persistToFile: true });
+    vscode.postMessage({ type: 'saveLayout', layout, persistToFile: true, filename });
     editorState.isDirty = false;
     setIsDirty(false);
   }, [getOfficeState, editorState]);

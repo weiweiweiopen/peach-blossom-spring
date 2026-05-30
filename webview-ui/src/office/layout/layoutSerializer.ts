@@ -10,6 +10,19 @@ import type {
 import { DEFAULT_COLS, DEFAULT_ROWS, Direction, TILE_SIZE, TileType } from '../types.js';
 import { getCatalogEntry, getOrientationInGroup } from './furnitureCatalog.js';
 
+const GROUND_DECOR_TYPES = new Set([
+  'CRAFTPIX_EXTERIOR_09',
+  'CRAFTPIX_EXTERIOR_21',
+  'CRAFTPIX_EXTERIOR_29',
+  'CRAFTPIX_EXTERIOR_32',
+  'CRAFTPIX_EXTERIOR_35',
+  'CRAFTPIX_EXTERIOR_44',
+]);
+
+function isGroundDecorType(type: string): boolean {
+  return GROUND_DECOR_TYPES.has(type);
+}
+
 /** Convert flat tile array from layout into 2D grid */
 export function layoutToTileMap(layout: OfficeLayout): TileTypeVal[][] {
   const map: TileTypeVal[][] = [];
@@ -47,6 +60,7 @@ export function layoutToFurnitureInstances(furniture: PlacedFurniture[]): Furnit
     const x = item.col * TILE_SIZE;
     const y = item.row * TILE_SIZE;
     let zY = (item.row + entry.footprintH) * TILE_SIZE;
+    if (isGroundDecorType(item.type)) zY = item.row * TILE_SIZE - 1;
 
     // Chair z-sorting: ensure characters sitting on chairs render correctly
     if (entry.category === 'chairs') {
@@ -107,6 +121,7 @@ export function getBlockedTiles(
   for (const item of furniture) {
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
+    if (isGroundDecorType(item.type)) continue;
     const bgRows = entry.backgroundTiles ?? 0;
     for (let dr = bgRows; dr < entry.footprintH; dr++) {
       for (let dc = 0; dc < entry.footprintW; dc++) {
