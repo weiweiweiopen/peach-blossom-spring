@@ -149,6 +149,16 @@ export function OfficeCanvas({
     // No ctx.scale(dpr) — we render directly in device pixels
   }, []);
 
+  const canvasScale = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 1, y: 1 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: rect.width > 0 ? canvas.width / rect.width : 1,
+      y: rect.height > 0 ? canvas.height / rect.height : 1,
+    };
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -338,19 +348,19 @@ export function OfficeCanvas({
       const canvas = canvasRef.current;
       if (!canvas) return null;
       const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+      const scale = canvasScale();
       // CSS coords relative to canvas
       const cssX = clientX - rect.left;
       const cssY = clientY - rect.top;
       // Convert to device pixels
-      const deviceX = cssX * dpr;
-      const deviceY = cssY * dpr;
+      const deviceX = cssX * scale.x;
+      const deviceY = cssY * scale.y;
       // Convert to world (sprite pixel) coords
       const worldX = (deviceX - offsetRef.current.x) / zoom;
       const worldY = (deviceY - offsetRef.current.y) / zoom;
       return { worldX, worldY, screenX: cssX, screenY: cssY, deviceX, deviceY };
     },
-    [zoom],
+    [canvasScale, zoom],
   );
 
   const screenToTile = useCallback(
@@ -398,10 +408,10 @@ export function OfficeCanvas({
     (e: React.MouseEvent) => {
       // Handle middle-mouse panning
       if (isPanningRef.current) {
-        const dpr = window.devicePixelRatio || 1;
-        const dx = (e.clientX - panStartRef.current.mouseX) * dpr;
-        const dy = (e.clientY - panStartRef.current.mouseY) * dpr;
-        if (Math.hypot(dx, dy) > 4 * dpr) panMovedRef.current = true;
+        const scale = canvasScale();
+        const dx = (e.clientX - panStartRef.current.mouseX) * scale.x;
+        const dy = (e.clientY - panStartRef.current.mouseY) * scale.y;
+        if (Math.hypot(dx, dy) > 4 * Math.max(scale.x, scale.y)) panMovedRef.current = true;
         panRef.current = clampPan(panStartRef.current.panX + dx, panStartRef.current.panY + dy);
         return;
       }
@@ -544,6 +554,7 @@ export function OfficeCanvas({
       editorState,
       onEditorTileAction,
       onEditorEraseAction,
+      canvasScale,
       panRef,
       hitTestDeleteButton,
       hitTestRotateButton,
@@ -883,15 +894,15 @@ export function OfficeCanvas({
       touchPointersRef.current.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
       const touchPan = touchPanRef.current;
       if (touchPan && touchPointersRef.current.size >= 2) {
-        const dpr = window.devicePixelRatio || 1;
+        const scale = canvasScale();
         const points = Array.from(touchPointersRef.current.values()).slice(0, 2);
         const center = {
           x: (points[0].clientX + points[1].clientX) / 2,
           y: (points[0].clientY + points[1].clientY) / 2,
         };
-        const dx = (center.x - touchPan.x) * dpr;
-        const dy = (center.y - touchPan.y) * dpr;
-        if (Math.hypot(dx, dy) > 4 * dpr) suppressNextClickRef.current = true;
+        const dx = (center.x - touchPan.x) * scale.x;
+        const dy = (center.y - touchPan.y) * scale.y;
+        if (Math.hypot(dx, dy) > 4 * Math.max(scale.x, scale.y)) suppressNextClickRef.current = true;
         panRef.current = clampPan(touchPan.panX + dx, touchPan.panY + dy);
         e.preventDefault();
         return;
@@ -901,7 +912,7 @@ export function OfficeCanvas({
     if (!hold || hold.pointerId !== e.pointerId) return;
     hold.clientX = e.clientX;
     hold.clientY = e.clientY;
-  }, [clampPan, panRef]);
+  }, [canvasScale, clampPan, panRef]);
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {

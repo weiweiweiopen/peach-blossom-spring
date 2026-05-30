@@ -36,6 +36,9 @@ function expandQuery(query: string): string {
   if (/聲音|音樂|sound|music|樂器|instrument/i.test(query)) {
     expansions.push('sound', 'music', 'musical', 'instrument', 'speaker', 'HID');
   }
+  if (/diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|聲音|sound/i.test(query)) {
+    expansions.push('diy electronics', 'synth', 'synthesizer', 'oscillator', 'sound circuit', 'speaker', 'ATtiny sound', 'Nandsynth', 'SolarpunkSynth', 'starvation synth', 'HOW TO GET WHAT YOU WANT', 'Kobakant', 'Hackteria');
+  }
   if (/穿戴|織品|布|wearable|textile|fabric|soft/i.test(query)) {
     expansions.push('wearable', 'textile', 'fabric', 'soft circuit', 'stretch sensor');
   }
@@ -67,6 +70,17 @@ function scoreText(queryTokens: string[], title: string, body: string): number {
   }, 0);
 }
 
+function hasThinOrEmptyExtract(text: string): boolean {
+  return /No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(text);
+}
+
+function evidenceQuality(card: Partial<SourceCard>): number {
+  const text = `${card.excerpt ?? ''} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`;
+  if (hasThinOrEmptyExtract(text)) return -18;
+  const length = String(card.excerpt ?? '').replace(/\s+/g, ' ').trim().length;
+  return Math.min(18, Math.floor(length / 80));
+}
+
 function cardToResult(card: SourceCard, score: number): WikiSearchResult | null {
   const family = sourceFamily(card);
   if (!card.url) return null;
@@ -93,13 +107,15 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
 export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
   const queryTokens = tokens(query);
   if (queryTokens.length === 0) return [];
-  const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino|diy\s*(?:電子|electronics?|synth|合成器)|電子合成器|合成器/i.test(query);
+  const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
+  const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
-      return { card, score: baseScore + sgmkBoost };
+      const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + evidenceQuality(card) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

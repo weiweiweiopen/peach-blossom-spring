@@ -39,8 +39,8 @@ function kineticTitle(title: string, language: TemplateLanguage = "zh-TW"): stri
 
 function templateCopy(language: TemplateLanguage) {
   const copy: Record<TemplateLanguage, { map: string; sequence: string; insufficiencyNote: string; closing: string; caveat: string }> = {
-    "zh-TW": { map: "聲音圖譜", sequence: "演奏順序", insufficiencyNote: "如果材料不足，這份小誌必須承認沒有找到足夠證據，而不是把鬆散頁面寫成宏大結論。", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
-    en: { map: "Sound map", sequence: "Reading order", insufficiencyNote: "If the materials are insufficient, this zine should say so instead of turning loose pages into a grand conclusion.", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
+    "zh-TW": { map: "閱讀圖譜", sequence: "閱讀順序", insufficiencyNote: "如果材料不足，這份小誌必須承認沒有找到足夠證據，而不是把鬆散頁面寫成宏大結論。", closing: "尾聲", caveat: "讓圖像、聲音與倫理一起被聽見。" },
+    en: { map: "Reading map", sequence: "Reading order", insufficiencyNote: "If the materials are insufficient, this zine should say so instead of turning loose pages into a grand conclusion.", closing: "Closing", caveat: "Let image, sound, and ethics be heard together." },
     id: { map: "Peta suara", sequence: "Urutan baca", insufficiencyNote: "Jika bahan tidak cukup, zine ini harus mengakuinya alih-alih mengubah halaman longgar menjadi kesimpulan besar.", closing: "Penutup", caveat: "Biarkan gambar, suara, dan etika terdengar bersama." },
     de: { map: "Klangkarte", sequence: "Leseordnung", insufficiencyNote: "Wenn das Material nicht reicht, muss dieses Zine das sagen, statt lose Seiten zu einer grossen These zu machen.", closing: "Schluss", caveat: "Bild, Klang und Ethik sollen gemeinsam hörbar werden." },
     ja: { map: "音の地図", sequence: "読む順序", insufficiencyNote: "材料が足りない場合、この小誌は十分な証拠がないと認め、散らばったページを大きな結論にしない。", closing: "結び", caveat: "イメージ、音、倫理をともに聞こえるものにする。" },

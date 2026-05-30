@@ -76,8 +76,6 @@ type CompiledWikiNote = {
 };
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
-const ZINE_PRINT_PAGE_MULTIPLE = 8;
-const ZINE_TARGET_PRINT_PAGES = 16;
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
 const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "PBS Semantic Layers / README", path: "Sources/PBS Semantic Layers/README.md", text: semanticReadme, role: "semantic layer overview" },
@@ -124,22 +122,13 @@ function languageInstruction(language: AssociationZineLanguage): string {
   return `OUTPUT LANGUAGE: ${labels[language]}. The zine title, subtitle, section titles, body, protocol, caveat, and all visible reader-facing text must be written in ${labels[language]}. Do not fall back to Chinese unless OUTPUT LANGUAGE is 繁體中文.`;
 }
 
-function printBindingLengthInstruction(): string {
-  return `PRINT BINDING TARGET: In every output language, the finished zine is for digital printing and small-book binding. Printable page count should land on an ${ZINE_PRINT_PAGE_MULTIPLE}-page multiple; for this article, target approximately ${ZINE_TARGET_PRINT_PAGES} printable pages by making the original four-section article substantial, not by adding filler pages. Do not add empty padding pages. Keep exactly four main sections. Generate the main article so it naturally fills about 14-15 A4 pages before the Reading materials appendix; the Reading materials appendix is the only final page-count tuning tool. Only change quantity and length, not the semantic jobs: opening and proposition should each be 200-280 visible characters for CJK/Thai/Japanese or 120-170 words for Latin-script languages; each section body should be 780-980 visible characters for CJK/Thai/Japanese or 450-580 words for Latin-script languages; each protocol body should be 160-240 visible characters for CJK/Thai/Japanese or 90-140 words for Latin-script languages.`;
+function articleLengthInstruction(): string {
+  return "ARTICLE LENGTH: Write a compact, evidence-bound zine. There is no required page multiple and no target page count. Do not pad text for printing. Keep exactly four main sections. Opening and proposition should each be 1-2 direct sentences. Each section body should be concise: 90-170 words for Latin-script languages or 180-340 visible characters for CJK/Thai/Japanese. Each protocol body should be 35-70 words or 70-140 visible characters. If evidence is thin, shorten the article and state the gap instead of expanding with abstractions.";
 }
 
 function zinePrintCalibrationScript(): string {
   return `<script>
 (() => {
-  const targetPages = ${ZINE_TARGET_PRINT_PAGES};
-  const pageHeightPx = 1047;
-  const modes = ["trim", "compact", "standard", "expanded", "max"];
-  const estimatePages = () => Math.ceil(Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) / pageHeightPx);
-  const setMode = (mode) => {
-    const materials = document.querySelector(".pbs-reading-materials");
-    if (materials) materials.setAttribute("data-pbs-materials-mode", mode);
-    document.documentElement.setAttribute("data-pbs-zine-estimated-pages", String(estimatePages()));
-  };
   const setPrintMode = (printing) => {
     document.documentElement.toggleAttribute("data-pbs-printing", printing);
     document.querySelectorAll(".zine-feedback-page").forEach((node) => {
@@ -147,26 +136,7 @@ function zinePrintCalibrationScript(): string {
       else node.removeAttribute("hidden");
     });
   };
-  const calibrate = () => {
-    const materials = document.querySelector(".pbs-reading-materials");
-    if (!materials) return;
-    let best = { mode: "standard", delta: Number.POSITIVE_INFINITY, pages: Number.POSITIVE_INFINITY };
-    let bestUnder = null;
-    for (const mode of modes) {
-      setMode(mode);
-      const pages = estimatePages();
-      const delta = Math.abs(targetPages - pages);
-      if (delta < best.delta || (delta === best.delta && pages === targetPages)) best = { mode, delta, pages };
-      if (pages <= targetPages && (!bestUnder || pages > bestUnder.pages)) bestUnder = { mode, delta, pages };
-      if (pages === targetPages) break;
-    }
-    if (best.pages > targetPages && bestUnder) best = bestUnder;
-    setMode(best.mode);
-    materials.setAttribute("data-pbs-materials-calibrated-pages", String(best.pages));
-  };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", calibrate, { once: true });
-  else requestAnimationFrame(calibrate);
-  window.addEventListener("beforeprint", () => { setPrintMode(true); calibrate(); });
+  window.addEventListener("beforeprint", () => setPrintMode(true));
   window.addEventListener("afterprint", () => setPrintMode(false));
 })();
 </script>`;
@@ -284,13 +254,8 @@ function htmlPage(fragment: string, title: string, language: AssociationZineLang
   h1 { font-size: 18pt !important; line-height: 1.12 !important; overflow-wrap: anywhere !important; }
   .lead, .body, .refs { font-size: 9.2pt !important; line-height: 1.36 !important; }
   .pbs-reading-materials { --pbs-materials-font: 8.8pt; --pbs-materials-line: 1.34; --pbs-materials-row-padding: 1.6mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="trim"] { --pbs-materials-font: 7.4pt; --pbs-materials-line: 1.16; --pbs-materials-row-padding: 0.8mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="compact"] { --pbs-materials-font: 8.2pt; --pbs-materials-line: 1.24; --pbs-materials-row-padding: 1.3mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="expanded"] { --pbs-materials-font: 9.6pt; --pbs-materials-line: 1.44; --pbs-materials-row-padding: 2.4mm; }
-  .pbs-reading-materials[data-pbs-materials-mode="max"] { --pbs-materials-font: 10.2pt; --pbs-materials-line: 1.55; --pbs-materials-row-padding: 3mm; }
   .pbs-reading-materials ol, .pbs-reading-materials li, .pbs-reading-materials p, .pbs-reading-materials span { font-size: var(--pbs-materials-font) !important; line-height: var(--pbs-materials-line) !important; }
   .pbs-reading-materials li { padding-top: var(--pbs-materials-row-padding) !important; padding-bottom: var(--pbs-materials-row-padding) !important; }
-  .pbs-reading-materials[data-pbs-materials-mode="trim"] p { display: none !important; }
   html[lang="zh-Hant"] h1 { font-size: 22pt !important; line-height: 1.18 !important; }
   html[lang="zh-Hant"] .lead, html[lang="zh-Hant"] .body, html[lang="zh-Hant"] .refs { font-size: 11pt !important; line-height: 1.58 !important; }
   html[lang="zh-Hant"] .label { font-size: 10.5pt !important; line-height: 1.32 !important; }
@@ -497,6 +462,12 @@ function meaningfulEvidenceCards(workflow: Workflow): SourceCard[] {
   });
 }
 
+function sourceEvidenceStrength(card: Partial<SourceCard>): number {
+  const text = evidenceText(card);
+  if (/No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(text)) return -24;
+  return Math.min(24, Math.floor(String(card.excerpt ?? "").replace(/\s+/g, " ").trim().length / 60));
+}
+
 function evidenceCoverageForQuery(query: string, workflow: Workflow): EvidenceCoverage[] {
   const cards = meaningfulEvidenceCards(workflow);
   return ABSTRACT_RELATION_GROUPS
@@ -581,13 +552,22 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
 
 function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[] = []) {
   const wantsSgmk = wantsSgmkQuery(query);
-  const sgmkFirst = <T extends Card>(items: T[]) => wantsSgmk ? [...items].sort((a, b) => (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0)) : items;
-  const candidateCards = sgmkFirst(sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
+  const wantsSoundDiy = wantsSoundDiyQuery(query);
+  const sourcePriority = (card: Partial<SourceCard>) => {
+    const family = sourceFamily(card);
+    if (wantsSgmk && family === "SGMK") return 40;
+    if (wantsSoundDiy && family === "HOW TO GET WHAT YOU WANT / KOBAKANT") return 32;
+    if (wantsSoundDiy && family === "Hackteria") return 28;
+    return 0;
+  };
+  const rankForPrompt = <T extends Card>(items: T[]) => [...items]
+    .sort((a, b) => sourcePriority(b) + sourceEvidenceStrength(b) - (sourcePriority(a) + sourceEvidenceStrength(a)) || a.title.localeCompare(b.title));
+  const candidateCards = rankForPrompt(sourceCards(workflow).filter((card) => isAllowedZineCard(card) && !isOffTopicTextileCard(card)));
   const cards = candidateCards.slice(0, 5).map(sourceObservation);
-  const deepRead = sgmkFirst(workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card))).slice(0, 4).map(sourceObservation);
+  const deepRead = rankForPrompt(workflow.step1.report.deepReadCards.filter((card) => !isOffTopicTextileCard(card))).slice(0, 4).map(sourceObservation);
   const linkedTrails = [...workflow.step1.report.linkedCards]
     .filter((trail) => isAllowedZineCard(trail.card))
-    .sort((a, b) => wantsSgmk ? (sourceFamily(b.card) === "SGMK" ? 1 : 0) - (sourceFamily(a.card) === "SGMK" ? 1 : 0) : 0)
+    .sort((a, b) => sourcePriority(b.card) + sourceEvidenceStrength(b.card) - (sourcePriority(a.card) + sourceEvidenceStrength(a.card)))
     .slice(0, 4)
     .map((trail) => ({
     from: trail.via?.map((card) => card.title).join(" → ") || "",
@@ -1067,9 +1047,9 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
     },
     en: {
       title: `Reading Peach Blossom Spring Through "${compactQuery}"`,
-      subtitle: "A zine organized by evidence, limits, and next research questions.",
-      opening: `This zine keeps the player's question, "${compactQuery}", open enough to test against public materials. It asks which pages, works, methods, or community practices can actually support a reading, and where the evidence remains partial.`,
-      proposition: "The central claim is that the materials are most useful when they show how temporary commons form across resources, care, tools, and stories, rather than when they are forced into one answer.",
+      subtitle: "A compact answer from the pages that can actually be checked.",
+      opening: `The question is: ${compactQuery}. Start from the pages that directly name the relevant practices, then mark what they do not prove.`,
+      proposition: "The useful claim must stay smaller than the evidence: name the concrete pages, compare what they show, and leave thin links as verification tasks.",
       quietCaveat: "This direction still needs more materials, situated feedback, and shared correction.",
     },
     id: {
@@ -1109,6 +1089,9 @@ function zineTitleTerms(query: string, language: AssociationZineLanguage): strin
   const termDefs: Array<{ test: RegExp; label: Record<AssociationZineLanguage, string> }> = [
     { test: /觸控|touch|sensor|感測|สัมผัส|センサ|タッチ/i, label: { "zh-TW": "觸控", en: "Touch", id: "Sentuhan", de: "Beruehrung", ja: "触覚", th: "การสัมผัส" } },
     { test: /電子織|織品|textile|wearable|fabric|ผ้า|สิ่งทอ|テキスタイル/i, label: { "zh-TW": "織品", en: "Textiles", id: "Tekstil", de: "Textilien", ja: "織物", th: "สิ่งทอ" } },
+    { test: /kitchen|cooking|food|ferment|廚房|料理|食物|發酵/i, label: { "zh-TW": "社群廚房", en: "Community Kitchens", id: "Dapur Komunitas", de: "Community-Kuechen", ja: "共同キッチン", th: "ครัวชุมชน" } },
+    { test: /technical|technology|tech|技術/i, label: { "zh-TW": "技術實驗", en: "Technical Experiments", id: "Eksperimen Teknis", de: "Technische Experimente", ja: "技術実験", th: "การทดลองเทคนิค" } },
+    { test: /synth|synthesizer|synthesiser|合成器|oscillator/i, label: { "zh-TW": "合成器", en: "DIY Synths", id: "Synth DIY", de: "DIY-Synths", ja: "DIYシンセ", th: "ซินธ์ DIY" } },
     { test: /音樂|聲音|sound|music|audio|เสียง|ดนตรี|音/i, label: { "zh-TW": "聲音", en: "Sound", id: "Suara", de: "Klang", ja: "音", th: "เสียง" } },
     { test: /合作|協作|collab|cooperat|together|ชุมชน|ร่วม|共同|協働/i, label: { "zh-TW": "協作", en: "Collaboration", id: "Kolaborasi", de: "Zusammenarbeit", ja: "協働", th: "ความร่วมมือ" } },
     { test: /workshop|工作坊|lab|實驗|เวิร์กช็อป|ワークショップ/i, label: { "zh-TW": "工作坊", en: "Workshops", id: "Lokakarya", de: "Workshops", ja: "ワークショップ", th: "เวิร์กช็อป" } },
@@ -1123,8 +1106,8 @@ function evidenceTitleFromQuery(query: string, language: AssociationZineLanguage
   const [a, b, c] = terms;
   const joined = terms.join(language === "zh-TW" || language === "ja" ? "、" : ", ");
   const copy: Record<AssociationZineLanguage, string> = {
-    "zh-TW": c ? `${a}、${b}與${c}的證據路徑` : `${joined}的材料讀法`,
-    en: c ? `Evidence Routes Through ${a}, ${b}, and ${c}` : `A Material Reading of ${joined}`,
+    "zh-TW": c ? `${a}、${b}與${c}如何相連` : `${joined}的可查證線索`,
+    en: c ? `How ${a}, ${b}, and ${c} Connect` : `What the Pages Show About ${joined}`,
     id: c ? `Rute Bukti melalui ${a}, ${b}, dan ${c}` : `Pembacaan Material tentang ${joined}`,
     de: c ? `Evidenzwege durch ${a}, ${b} und ${c}` : `Eine Materiallekture zu ${joined}`,
     ja: c ? `${a}、${b}、${c}をめぐる証拠の道筋` : `${joined}を読む素材の道筋`,
@@ -1138,7 +1121,8 @@ function sanitizeZineTitle(title: string, query: string, language: AssociationZi
   const compactQuery = compactText(query, 80).trim();
   if (!cleaned || !compactQuery) return cleaned || evidenceTitleFromQuery(query, language);
   const quotedQuery = cleaned.includes(`「${compactQuery}`) || cleaned.includes(`"${compactQuery}`) || cleaned.includes(compactQuery);
-  if (quotedQuery || textSimilarity(cleaned, compactQuery) > 0.46) return evidenceTitleFromQuery(query, language);
+  const genericTitle = /A Material Reading of Commons|Evidence Routes|Sound map|organized by evidence|next research questions/i.test(cleaned);
+  if (quotedQuery || genericTitle || textSimilarity(cleaned, compactQuery) > 0.46) return evidenceTitleFromQuery(query, language);
   return cleaned;
 }
 
@@ -1146,14 +1130,14 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const messages = buildEditorialMessages(query, workflow, language, compiledNotes);
   const system = messages.system;
   const user = withWritingStyle(messages.user, options);
-  const printLength = printBindingLengthInstruction();
+  const articleLength = articleLengthInstruction();
   const progress = progressCopy(language);
   onProgress?.(progress.materialClues);
   let outline: any;
   try {
     outline = await requestDeepSeekJsonWithRetry(
       system,
-        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。opening/proposition 只作為內部銜接，不要寫成「這份小誌先...」「它不把...」「如果材料不足...」這類方法說明或系統說明；第 01 頁正文會直接使用第一章內容。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+        `${user}\n\n${articleLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。opening/proposition 必須直接回答 query 的主題，不要寫「這份小誌」「organized by evidence」「research questions」「方法」「材料讀法」這類生成流程或通用模板說明。必須說明這批頁面實際能幫上什麼；不要寫任何人名。`,
       1000,
     ) as any;
   } catch (error) {
@@ -1171,7 +1155,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-      `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。body 必須符合 PRINT BINDING TARGET 的 section body 長度。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並讓這章接續 opening/proposition 的論證；若材料不足就寫成清楚的閱讀判讀與查證問題，不要幻想新事實。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單或造句式結尾。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+      `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1223,7 +1207,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     let item: any;
     try {
       item = await requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${printLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。body 必須符合 PRINT BINDING TARGET 的 protocol body 長度。預設寫成研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、Semantic Layers、Entity Layers、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
         JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
         900,
       ) as any;
@@ -1322,7 +1306,7 @@ function validateVisibleText(text: string, workflow: Workflow, language: Associa
   if (!queryRelevancePass(text, workflow)) warnings.push("query relevance is shallow");
   if (repeated.length > 0) warnings.push(`repeated sentence: ${repeated[0]}`);
   if (!workflow.step1.report.linkedCards.length) warnings.push("no linked traversal material");
-  if (text.length < 1400) warnings.push(`visible text thin: ${text.length}`);
+  if (text.length < 900) warnings.push(`visible text thin: ${text.length}`);
   if (warnings.length > 0) console.warn("Association zine quality warnings:", warnings.join("; "));
   if (hardFailures.length > 0) throw new Error(`Generated zine failed public safety gate: ${hardFailures.join("; ")}`);
 }
@@ -1400,7 +1384,7 @@ function renderReadingMaterialsSection(workflow: Workflow, language: Association
       ${description ? `<p style="margin:8px 0 0;color:#243b3d;">${escapeHtml(description)}</p>` : ""}
     </li>`;
   }).join("");
-  return `<section class="page pbs-reading-materials" data-pbs-materials-mode="standard" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
+  return `<section class="page pbs-reading-materials" data-official-template="${escapeHtml(templateFilename)}" data-folio="materials" style="break-before:auto;page-break-before:auto;min-height:auto;display:block;padding:clamp(14px,3vw,28px);background:#fffaf0;color:#243b3d;">
     <main class="sheet" style="width:100%;max-width:980px;margin:0 auto;padding:clamp(16px,3vw,28px);border:4px solid #111;background:#fffaf0;box-shadow:7px 7px 0 #bac3d9;overflow-wrap:anywhere;">
       <div class="titleBlock" style="border:3px solid #111;background:#fffdf6;padding:clamp(12px,2vw,22px);margin-bottom:18px;box-shadow:4px 4px 0 #bac3d9;"><h1 style="margin:0;font-size:clamp(28px,4vw,48px);line-height:1.12;">${escapeHtml(copy.title)}</h1><p class="lead" style="margin:12px 0 0;font-size:clamp(17px,2vw,24px);line-height:1.45;">${escapeHtml(copy.intro)}</p></div>
       <ol style="margin:0;padding:0;font-size:clamp(16px,1.8vw,22px);line-height:1.45;">${rows}</ol>
@@ -1456,15 +1440,15 @@ function traceCopy(language: AssociationZineLanguage) {
   }> = {
     "zh-TW": {
       title: "閱讀路徑",
-      intro: "這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留來源卡、種子、查詢詞、wiki 連結、深讀頁面、LLM 呼叫與驗證狀態，但不以工程 JSON 呈現。",
-      cards: ["問題 / 種子", "搜尋詞", "來源家族", "入口筆記", "命中頁面", "連結路徑", "深讀", "寫作者使用", "驗證"],
-      query: "Query", seed: "Seed", intent: "Intent", noSearch: "沒有記錄搜尋詞。", noFamilies: "沒有記錄來源家族篩選。", writerFallback: "寫作者比較問題、命中頁面、連結路徑與深讀筆記後，寫成一個有證據邊界的論點。", publicPassed: "公開文章通過", depthScore: "深度分數", warnings: "警告", llm: "LLM", yes: "是", needsReview: "需要複查", none: "未記錄", notRecorded: "未記錄", unknown: "未知",
+      intro: "這頁把小誌如何找到材料、如何形成論點、哪裡仍需查證，壓縮成可讀的路徑卡。它保留候選來源、問題、查詢詞、wiki 連結、深讀頁面、LLM 呼叫與驗證狀態，但不把玩家問題當成 semantic layer。",
+      cards: ["問題", "搜尋詞", "來源家族", "入口筆記", "命中頁面", "連結路徑", "深讀", "寫作者使用", "驗證"],
+      query: "Query", seed: "Question", intent: "Intent", noSearch: "沒有記錄搜尋詞。", noFamilies: "沒有記錄來源家族篩選。", writerFallback: "寫作者比較問題、命中頁面、連結路徑與深讀筆記後，寫成一個有證據邊界的論點。", publicPassed: "公開文章通過", depthScore: "深度分數", warnings: "警告", llm: "LLM", yes: "是", needsReview: "需要複查", none: "未記錄", notRecorded: "未記錄", unknown: "未知",
     },
     en: {
       title: "Retrieval Path",
-      intro: "This page compresses how the zine found material, formed an argument, and marked what still needs checking into readable path cards. It keeps source cards, seeds, search terms, wiki links, deep-read pages, LLM calls, and validation status without showing raw engineering JSON.",
-      cards: ["Question / seed", "Search words", "Source families", "Entry notes", "Matched pages", "Linked paths", "Deep reading", "Writer used", "Validation"],
-      query: "Query", seed: "Seed", intent: "Intent", noSearch: "No search terms recorded.", noFamilies: "No source-family filter recorded.", writerFallback: "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.", publicPassed: "Public article passed", depthScore: "Depth score", warnings: "Warnings", llm: "LLM", yes: "yes", needsReview: "needs review", none: "none recorded", notRecorded: "not recorded", unknown: "unknown",
+      intro: "This page compresses how the zine found material, formed an argument, and marked what still needs checking into readable path cards. It keeps candidate sources, the question, search terms, wiki links, deep-read pages, LLM calls, and validation status without treating the player query as a semantic layer.",
+      cards: ["Question", "Search words", "Source families", "Entry notes", "Matched pages", "Linked paths", "Deep reading", "Writer used", "Validation"],
+      query: "Query", seed: "Question", intent: "Intent", noSearch: "No search terms recorded.", noFamilies: "No source-family filter recorded.", writerFallback: "The writer compared the query with matched pages, linked paths, and deep-read notes, then wrote one evidence-bound argument.", publicPassed: "Public article passed", depthScore: "Depth score", warnings: "Warnings", llm: "LLM", yes: "yes", needsReview: "needs review", none: "none recorded", notRecorded: "not recorded", unknown: "unknown",
     },
     id: {
       title: "Jalur Pengambilan",
@@ -1598,10 +1582,9 @@ function buildClickTrace(params: {
       durationMs: activeDeepSeekTraceCalls.reduce((sum, call) => sum + call.durationMs, 0),
       calls: activeDeepSeekTraceCalls,
     },
-    printBinding: {
-      pageMultiple: ZINE_PRINT_PAGE_MULTIPLE,
-      targetPrintPages: ZINE_TARGET_PRINT_PAGES,
-      strategy: "expand section prose rather than add blank pages",
+    articleLength: {
+      target: "compact evidence-bound zine",
+      strategy: "answer the query directly; do not pad to a page multiple",
     },
     articleSource: artifact ? "deepseek" : "blocked",
     generatedArticle: artifact ? { title: artifact.title, sectionTitles: artifact.sections.map((section) => section.title), approximateCharacterCount: articleCharacterCount(artifact), notLocalFallback: true } : null,
@@ -1620,7 +1603,11 @@ function interpretQueryIntent(query: string): string {
 }
 
 function wantsSgmkQuery(query: string): boolean {
-  return /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino|diy\s*(?:電子|electronics?|synth|合成器)|電子合成器|合成器/i.test(query);
+  return /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
+}
+
+function wantsSoundDiyQuery(query: string): boolean {
+  return /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
 }
 
 function createBrowserWorkflow(query: string): Workflow {

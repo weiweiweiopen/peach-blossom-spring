@@ -268,7 +268,13 @@ function scoreCard(card: SourceCard, keywords: string[]): number {
     if (excerpt.includes(keyword)) score += 2 * weight;
   }
 
-  return score;
+  return score + initialEvidenceQuality(card);
+}
+
+function initialEvidenceQuality(card: SourceCard): number {
+  const excerpt = card.excerpt ?? "";
+  if (/No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(excerpt)) return -10;
+  return Math.min(10, Math.floor(excerpt.replace(/\s+/g, " ").trim().length / 90));
 }
 
 function keywordWeight(keyword: string): number {

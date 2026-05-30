@@ -57,7 +57,7 @@ import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
 import { isRotatable } from "./office/layout/furnitureCatalog.js";
-import { isWalkable } from "./office/layout/tileMap.js";
+import { findPath, isWalkable } from "./office/layout/tileMap.js";
 import { getCharacterSprites } from "./office/sprites/index.js";
 import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
 import {
@@ -155,7 +155,7 @@ function qaPlayerProfile(language: LanguageCode): PlayerProfile {
 }
 
 const PLAYER_ID = 0;
-const CONVERSATION_CLOSE_DISTANCE_TILES = 4;
+const CONVERSATION_CLOSE_DISTANCE_TILES = 2;
 const CAMPFIRE_INTERACTION_RADIUS_TILES = 1;
 const PLAYER_SPRINT_SPEED_MULTIPLIER = 2.17;
 const PET_WINDOWS_ENABLED = true;
@@ -1566,6 +1566,32 @@ function findNearestApproachableTile(
   );
 }
 
+function findNearestNpcApproachTile(
+  officeState: OfficeState,
+  playerCol: number,
+  playerRow: number,
+  npcCol: number,
+  npcRow: number,
+  occupied = new Set<string>(),
+): { col: number; row: number } | null {
+  const candidates = [
+    { col: npcCol, row: npcRow + 1 },
+    { col: npcCol - 1, row: npcRow },
+    { col: npcCol + 1, row: npcRow },
+    { col: npcCol, row: npcRow - 1 },
+  ]
+    .filter((tile) => !occupied.has(`${tile.col},${tile.row}`))
+    .filter((tile) => isWalkable(tile.col, tile.row, officeState.tileMap, officeState.blockedTiles))
+    .map((tile) => ({
+      ...tile,
+      path: findPath(playerCol, playerRow, tile.col, tile.row, officeState.tileMap, officeState.blockedTiles),
+      distance: Math.abs(tile.col - playerCol) + Math.abs(tile.row - playerRow),
+    }))
+    .filter((tile) => tile.path.length > 0 || (tile.col === playerCol && tile.row === playerRow))
+    .sort((a, b) => a.path.length - b.path.length || a.distance - b.distance);
+  return candidates[0] ? { col: candidates[0].col, row: candidates[0].row } : null;
+}
+
 function findShortNpcStep(
   officeState: OfficeState,
   startCol: number,
@@ -1941,10 +1967,12 @@ function App() {
           : Number.POSITIVE_INFINITY;
         if (distance > CONVERSATION_CLOSE_DISTANCE_TILES) {
           const occupied = new Set(
-            Array.from(officeState.characters.values()).map((ch) => `${ch.tileCol},${ch.tileRow}`),
+            Array.from(officeState.characters.values())
+              .filter((ch) => ch.id !== PLAYER_ID)
+              .map((ch) => `${ch.tileCol},${ch.tileRow}`),
           );
-          const approachTile = npc
-            ? findNearestApproachableTile(officeState, npc.tileCol, npc.tileRow, occupied)
+          const approachTile = player && npc
+            ? findNearestNpcApproachTile(officeState, player.tileCol, player.tileRow, npc.tileCol, npc.tileRow, occupied)
             : null;
           if (approachTile) {
             officeState.selectedAgentId = null;
