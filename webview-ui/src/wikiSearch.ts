@@ -1,4 +1,5 @@
 import { daydreamCorpus } from './daydream/corpus.js';
+import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './daydream/evidenceHygiene.js';
 import type { SourceCard } from './daydream/engine.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
@@ -45,6 +46,15 @@ function expandQuery(query: string): string {
   if (/紅茶菌|康普茶|kombucha|ferment|fermentation|發酵|菌膜|茶菌/i.test(query)) {
     expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
   }
+  if (/kitchen|廚房|厨房|料理|food|meal|hosting|host|餐|cook|cooking|ครัว|キッチン/i.test(query)) {
+    expansions.push('community kitchen', 'food lab', 'collective meals', 'hosting', 'fermentation', 'kombucha', 'SCOBY', 'biofilm', 'bacterial cellulose', 'care', 'maintenance', 'wetlab');
+  }
+  if (/care|照護|照料|maintenance|repair|維護|維修|保養|ดูแล|ケア|修理/i.test(query)) {
+    expansions.push('care', 'maintenance', 'repair', 'failure notes', 'documentation', 'reuse', 'stewardship', 'protocol', 'workshop');
+  }
+  if (/public|infrastructure|commons|公共|基礎設施|基盤|โครงสร้างพื้นฐาน/i.test(query)) {
+    expansions.push('commons', 'public knowledge', 'shared resource', 'open source', 'documentation', 'workshop', 'community practice', 'maintenance', 'reuse', 'infrastructure');
+  }
   return [query, ...expansions].join(' ');
 }
 
@@ -71,11 +81,12 @@ function scoreText(queryTokens: string[], title: string, body: string): number {
 }
 
 function hasThinOrEmptyExtract(text: string): boolean {
-  return /No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(text);
+  return isThinOrEmptyEvidence(text);
 }
 
 function evidenceQuality(card: Partial<SourceCard>): number {
-  const text = `${card.excerpt ?? ''} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`;
+  const text = evidenceTextForHygiene(card);
+  if (isSpamEvidence(text)) return -80;
   if (hasThinOrEmptyExtract(text)) return -18;
   const length = String(card.excerpt ?? '').replace(/\s+/g, ' ').trim().length;
   return Math.min(18, Math.floor(length / 80));
@@ -84,6 +95,7 @@ function evidenceQuality(card: Partial<SourceCard>): number {
 function cardToResult(card: SourceCard, score: number): WikiSearchResult | null {
   const family = sourceFamily(card);
   if (!card.url) return null;
+  if (isSpamEvidence(evidenceTextForHygiene(card))) return null;
   return {
     title: card.title,
     url: card.url,
@@ -95,6 +107,7 @@ function cardToResult(card: SourceCard, score: number): WikiSearchResult | null 
 
 function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
   if (!link.url) return null;
+  if (isSpamEvidence(`${link.title} ${link.description} ${link.url}`)) return null;
   return {
     title: link.title,
     url: link.url,
@@ -115,7 +128,7 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
       const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + evidenceQuality(card) };
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

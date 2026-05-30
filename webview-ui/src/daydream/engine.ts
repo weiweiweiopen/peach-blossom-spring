@@ -1,3 +1,5 @@
+import { evidenceHygienePenalty, evidenceTextForHygiene, isThinOrEmptyEvidence } from "./evidenceHygiene.js";
+
 export interface SourceCard {
   id: string;
   title: string;
@@ -158,6 +160,9 @@ const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/藝術|專案|創作/u, ["art", "project"]],
   [/基因|轉殖|改造|合成生物|生物科技/u, ["gene", "genetic", "synthetic", "biology", "bio"]],
   [/穿戴|衣服|服裝|紡織|布料|織物/u, ["wearable", "textile", "textiles", "fabric", "clothing"]],
+  [/廚房|厨房|料理|食物|餐|發酵|紅茶菌|康普茶/u, ["kitchen", "food", "hosting", "fermentation", "kombucha", "care", "workshop"]],
+  [/公共|基礎設施|基盤|共同|共用/u, ["public", "infrastructure", "commons", "shared", "documentation", "maintenance", "workshop"]],
+  [/照護|照料|維護|維修|保養/u, ["care", "maintenance", "repair", "documentation", "reuse", "workshop"]],
 ];
 
 export function parseSeedKeywords(seed: string, limit = 18): string[] {
@@ -273,7 +278,9 @@ function scoreCard(card: SourceCard, keywords: string[]): number {
 
 function initialEvidenceQuality(card: SourceCard): number {
   const excerpt = card.excerpt ?? "";
-  if (/No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(excerpt)) return -10;
+  const hygienePenalty = evidenceHygienePenalty(evidenceTextForHygiene(card));
+  if (hygienePenalty < 0) return Math.min(-10, hygienePenalty);
+  if (isThinOrEmptyEvidence(excerpt)) return -10;
   return Math.min(10, Math.floor(excerpt.replace(/\s+/g, " ").trim().length / 90));
 }
 

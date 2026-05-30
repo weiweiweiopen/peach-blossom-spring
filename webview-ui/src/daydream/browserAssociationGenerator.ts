@@ -2,6 +2,7 @@ import { assertCleanPublicArtifact, extractPublicArtifactText } from "./artifact
 import { renderAssociationFeedbackSection } from "./associationFeedback.js";
 import { daydreamCorpus } from "./corpus.js";
 import { runDaydreamWorkflow } from "./daydreamWorkflow.js";
+import { evidenceHygienePenalty, evidenceTextForHygiene, isUsableEvidenceText } from "./evidenceHygiene.js";
 import { renderOfficialTemplateArtifactHtml } from "./officialTemplateRenderer.js";
 import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
 import type { DaydreamCorpus, SourceCard } from "./engine.js";
@@ -87,12 +88,12 @@ const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages, compiled notes, and bridge/index notes as evidence entry points.", role: "public wiki index" },
 ];
 let compiledWikiIndexPromise: Promise<CompiledWikiNote[]> | null = null;
-const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; evidence: RegExp }> = [
-  { label: "nonprofit/organization", query: /非營利|非營利組織|組織|ngo|non-?profit|organization/i, evidence: /非營利|ngo|non-?profit|organization|organis(?:ation|e|ing)|組織/i },
-  { label: "maintenance/labor", query: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i, evidence: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour/i },
-  { label: "public infrastructure", query: /公共|基礎設施|common|commons|public|infrastructure/i, evidence: /公共|基礎設施|common|commons|public|infrastructure/i },
-  { label: "regeneration/sustainability", query: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, evidence: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i },
-  { label: "cross-community comparison", query: /跨社群|比較|對照|Hackteria.*SGMK|SGMK.*Hackteria|KOBAKANT.*SGMK|SGMK.*KOBAKANT|across|compare|comparison/i, evidence: /Hackteria|SGMK|SSAM|KOBAKANT|How To Get What You Want|cross|compare|comparison|跨社群|比較|對照/i },
+const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; directEvidence: RegExp; supportEvidence?: RegExp; minimumSupportHits?: number }> = [
+  { label: "nonprofit/organization", query: /非營利|非營利組織|組織|ngo|non-?profit|organization/i, directEvidence: /非營利|ngo|non-?profit|organization|organis(?:ation|e|ing)|組織/i, supportEvidence: /community|network|workshop|funding|grant|collective|collaboration|社群|網絡|工作坊|資助|協作/i, minimumSupportHits: 2 },
+  { label: "maintenance/labor", query: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour|care/i, directEvidence: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour|care/i, supportEvidence: /documentation|failure|reuse|workshop|protocol|steward|照護|紀錄|失敗|再利用|工作坊/i, minimumSupportHits: 2 },
+  { label: "public infrastructure", query: /公共|基礎設施|common|commons|public|infrastructure/i, directEvidence: /公共|基礎設施|common|commons|public|infrastructure/i, supportEvidence: /community|collective|shared|open source|documentation|workshop|maintenance|repair|reuse|hosting|kitchen|food|ferment|kombucha|lab|toolkit|protocol|社群|共同|共享|開源|文件|紀錄|工作坊|維護|維修|再利用|廚房|發酵|實驗室/i, minimumSupportHits: 3 },
+  { label: "regeneration/sustainability", query: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, directEvidence: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, supportEvidence: /reuse|repair|maintenance|recycling|care|material|long-term|再利用|維修|維護|回收|照護|材料|長期/i, minimumSupportHits: 2 },
+  { label: "cross-community comparison", query: /跨社群|比較|對照|Hackteria.*SGMK|SGMK.*Hackteria|KOBAKANT.*SGMK|SGMK.*KOBAKANT|across|compare|comparison/i, directEvidence: /Hackteria|SGMK|SSAM|KOBAKANT|How To Get What You Want|cross|compare|comparison|跨社群|比較|對照/i },
 ];
 let activeDeepSeekTraceCalls: Array<{ status: string; httpStatus: number | null; durationMs: number; errorClass: string | null }> = [];
 
@@ -459,24 +460,39 @@ function meaningfulEvidenceCards(workflow: Workflow): SourceCard[] {
     if (seen.has(key)) return false;
     seen.add(key);
     const text = evidenceText(card);
-    return text.length >= 180 && !/No plaintext extract returned|mostly media\/table markup/i.test(text);
+    return text.length >= 180 && isUsableEvidenceText(text);
   });
 }
 
 function sourceEvidenceStrength(card: Partial<SourceCard>): number {
-  const text = evidenceText(card);
-  if (/No plaintext extract returned|mostly media\/table markup|There is currently no text in this page/i.test(text)) return -24;
+  const text = evidenceTextForHygiene(card);
+  const hygienePenalty = evidenceHygienePenalty(text);
+  if (hygienePenalty < 0) return hygienePenalty;
   return Math.min(24, Math.floor(String(card.excerpt ?? "").replace(/\s+/g, " ").trim().length / 60));
+}
+
+function supportHitCount(cards: SourceCard[], pattern: RegExp): number {
+  const seen = new Set<string>();
+  for (const card of cards) {
+    const text = evidenceText(card);
+    if (!pattern.test(text)) continue;
+    seen.add(card.id || card.url || card.path || card.title);
+  }
+  return seen.size;
 }
 
 function evidenceCoverageForQuery(query: string, workflow: Workflow): EvidenceCoverage[] {
   const cards = meaningfulEvidenceCards(workflow);
   return ABSTRACT_RELATION_GROUPS
     .filter((group) => group.query.test(query))
-    .map((group) => ({
-      label: group.label,
-      covered: cards.some((card) => group.evidence.test(evidenceText(card))),
-    }));
+    .map((group) => {
+      const direct = cards.some((card) => group.directEvidence.test(evidenceText(card)));
+      const supportHits = group.supportEvidence ? supportHitCount(cards, group.supportEvidence) : 0;
+      return {
+        label: group.label,
+        covered: direct || supportHits >= (group.minimumSupportHits ?? 2),
+      };
+    });
 }
 
 function asksForSynthesis(query: string): boolean {
@@ -1650,6 +1666,23 @@ function wantsSoundDiyQuery(query: string): boolean {
   return /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
 }
 
+function conceptualQueryHints(query: string): string {
+  const hints: string[] = [];
+  if (/kitchen|廚房|厨房|料理|food|meal|hosting|host|餐|cook|cooking|ครัว|キッチン/i.test(query)) {
+    hints.push("community kitchen", "food lab", "collective meals", "hosting", "fermentation", "kombucha", "SCOBY", "biofilm", "bacterial cellulose", "wetlab");
+  }
+  if (/care|照護|照料|maintenance|repair|維護|維修|保養|ดูแล|ケア|修理/i.test(query)) {
+    hints.push("care", "maintenance", "repair", "failure notes", "documentation", "reuse", "stewardship", "protocol");
+  }
+  if (/public|infrastructure|commons|公共|基礎設施|基盤|โครงสร้างพื้นฐาน/i.test(query)) {
+    hints.push("commons", "public knowledge", "shared resource", "open source", "documentation", "workshop", "community practice", "maintenance", "reuse");
+  }
+  if (/material|材料|素材|วัสดุ/i.test(query)) {
+    hints.push("material practice", "material experiment", "soft circuit", "textile", "biofilm", "repair", "reuse");
+  }
+  return hints.length ? ` Conceptual bridge hints: ${Array.from(new Set(hints)).join(", ")}.` : "";
+}
+
 function createBrowserWorkflow(query: string): Workflow {
   const corpus = allowedUiCorpus();
   const textileHints = /textile|fabric|wearable|sewing|tailor|織品|紡織|布|穿戴|裁縫/i.test(query)
@@ -1657,7 +1690,7 @@ function createBrowserWorkflow(query: string): Workflow {
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
-  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: compiled Wiki notes, curated bridge/index notes, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic. Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
+  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: compiled Wiki notes, curated bridge/index notes, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
