@@ -51,6 +51,19 @@
   color: #000;
 }
 
+.retro-version-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  line-height: 1;
+}
+
+.retro-version-stack span:first-child {
+  font-size: 0.62em;
+  letter-spacing: 0.12em;
+}
+
 .retro-screen {
   position: relative;
   height: min(560px, 68dvh);

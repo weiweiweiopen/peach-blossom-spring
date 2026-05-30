@@ -1517,10 +1517,10 @@ function findShortNpcStep(
   occupied: Set<string>,
 ): { col: number; row: number } | null {
   const candidates: Array<{ col: number; row: number; score: number }> = [];
-  for (let dRow = -3; dRow <= 3; dRow++) {
-    for (let dCol = -3; dCol <= 3; dCol++) {
+  for (let dRow = -4; dRow <= 4; dRow++) {
+    for (let dCol = -4; dCol <= 4; dCol++) {
       const distance = Math.abs(dCol) + Math.abs(dRow);
-      if (distance < 1 || distance > 3) continue;
+      if (distance < 1 || distance > 4) continue;
       const col = startCol + dCol;
       const row = startRow + dRow;
       const tile = findNearestApproachableTile(officeState, col, row, occupied);
@@ -2406,13 +2406,13 @@ function App() {
         .map((_persona, index) => index + 1)
         .filter((id) => officeState.characters.has(id))
         .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
+        .slice(0, 3);
       for (const id of shuffled) {
         const ch = officeState.characters.get(id);
         if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
           continue;
         if (nearbyNpcIdRef.current === id) continue;
-        if (Math.random() > 0.45) continue;
+        if (Math.random() > 0.58) continue;
         const target = findShortNpcStep(
           officeState,
           ch.tileCol,
@@ -2424,7 +2424,7 @@ function App() {
           occupied.add(`${target.col},${target.row}`);
         }
       }
-    }, 4200);
+    }, 3600);
     return () => window.clearInterval(interval);
   }, [appMode, layoutReady, officeState, playerProfile]);
 

@@ -5,9 +5,9 @@
   "type": "asset",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 0,
+  "backgroundTiles": 2,
   "width": 43,
   "height": 43,
-  "footprintW": 1,
-  "footprintH": 1
+  "footprintW": 3,
+  "footprintH": 3
 }
