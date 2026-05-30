@@ -1,4 +1,5 @@
 import { daydreamCorpus } from './daydream/corpus.js';
+import { evidenceFacetCoverage, evidenceFacetRelevanceScore, hasRelevantFacetSupport, queryEvidenceFacets } from './daydream/evidenceFacets.js';
 import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './daydream/evidenceHygiene.js';
 import type { SourceCard } from './daydream/engine.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
@@ -120,6 +121,7 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
 export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
   const queryTokens = tokens(query);
   if (queryTokens.length === 0) return [];
+  const firstQueryFacet = queryEvidenceFacets(query)[0];
   const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
   const corpusResults = daydreamCorpus.cards
@@ -128,7 +130,10 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
       const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const facetScore = evidenceFacetRelevanceScore(query, card);
+      const firstFacetBoost = firstQueryFacet && evidenceFacetCoverage(query, card).some((facet) => facet.id === firstQueryFacet.id) ? 36 : 0;
+      const facetPenalty = hasRelevantFacetSupport(query, card) ? 0 : -45;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + firstFacetBoost + facetScore + facetPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))
