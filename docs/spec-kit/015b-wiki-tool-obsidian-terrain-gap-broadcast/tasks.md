@@ -8,4 +8,4 @@
 - [x] T006 Document zine feedback routing to zine/question/log review destinations.
 - [x] T007 Keep Question Pet integration local-first and broadcast-only for public GitHub Pages.
 - [ ] T008 Future: convert reviewed terrain-gap candidates into compiled wiki notes with verified sourceRefs.
-- [ ] T009 Future: add in-game pet state UI for evidence/relation/contradiction/missing-node indicators.
+- [x] T009 Future: add in-game pet state UI for evidence/relation/contradiction/missing-node indicators.

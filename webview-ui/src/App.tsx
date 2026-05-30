@@ -990,6 +990,35 @@ function questionLintSignals(question: string) {
   return { specificity, evidence, bridge };
 }
 
+function petTerrainStateCopy(language: LanguageCode) {
+  const copy: Record<LanguageCode, { title: string; evidence: string; relation: string; contradiction: string; missingNode: string; pending: string; active: string; clear: string }> = {
+    "zh-TW": { title: "地形狀態", evidence: "證據", relation: "關係", contradiction: "矛盾", missingNode: "缺節點", pending: "待查", active: "活躍", clear: "穩定" },
+    en: { title: "Terrain state", evidence: "Evidence", relation: "Relation", contradiction: "Contradiction", missingNode: "Missing node", pending: "pending", active: "active", clear: "stable" },
+    id: { title: "Status medan", evidence: "Bukti", relation: "Relasi", contradiction: "Kontradiksi", missingNode: "Node hilang", pending: "tertunda", active: "aktif", clear: "stabil" },
+    de: { title: "Terrain-Status", evidence: "Evidenz", relation: "Beziehung", contradiction: "Widerspruch", missingNode: "Fehlender Knoten", pending: "offen", active: "aktiv", clear: "stabil" },
+    ja: { title: "地形状態", evidence: "証拠", relation: "関係", contradiction: "矛盾", missingNode: "欠落ノード", pending: "確認待ち", active: "稼働", clear: "安定" },
+    th: { title: "สถานะภูมิประเทศ", evidence: "หลักฐาน", relation: "ความสัมพันธ์", contradiction: "ขัดแย้ง", missingNode: "node ที่ขาด", pending: "รอตรวจ", active: "ทำงาน", clear: "เสถียร" },
+  };
+  return copy[language];
+}
+
+function clampPercent(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function petTerrainIndicators(snapshot: SimSnapshot, inbox: PetLintGapItem[]) {
+  const lints = snapshot.thronglets.map((pet) => questionLintSignals(pet.question.text));
+  const average = (values: number[], fallback: number) => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : fallback;
+  const inboxText = inbox.map((item) => item.text).join("\n");
+  const contradictionHits = (inboxText.match(/矛盾|反證|猜想|誤導|unsupported|misleading|hypoth|contradict|failure|失敗/gi) ?? []).length;
+  const missingHits = (inboxText.match(/缺|不足|需要|missing|gap|lack|node|節點/gi) ?? []).length;
+  const evidence = clampPercent(average(lints.map((lint) => lint.evidence), 42) + Math.min(18, snapshot.a2aExchanges.length * 3));
+  const relation = clampPercent(average(lints.map((lint) => lint.bridge), 38) + Math.min(24, snapshot.throngs.length * 6 + snapshot.a2aExchanges.length * 4));
+  const contradiction = clampPercent(contradictionHits * 18 + snapshot.events.filter((event) => /contradict|fail|lint|gap|矛盾|失敗|缺/i.test(event.text ?? "")).length * 8);
+  const missingNode = clampPercent(inbox.length * 11 + missingHits * 8);
+  return { evidence, relation, contradiction, missingNode };
+}
+
 function CentralComputerDialogue({
   language,
   playerName,
@@ -3451,6 +3480,9 @@ function App() {
     });
   }
 
+  const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, petLintGapInbox) : null;
+  const terrainCopy = petTerrainStateCopy(selectedLanguage);
+
   return (
     <div
       ref={containerRef}
@@ -3932,6 +3964,10 @@ function App() {
                 {isQuestionSimMinimized && (
                   <div className="question-status-compact" aria-label="Question Pet compact status">
                     <span>G {petLintGapInbox.length}</span>
+                    <span>EV {terrainState?.evidence ?? 0}</span>
+                    <span>REL {terrainState?.relation ?? 0}</span>
+                    <span>CON {terrainState?.contradiction ?? 0}</span>
+                    <span>MISS {terrainState?.missingNode ?? 0}</span>
                     <span>T {simSnapshot.tick}</span>
                     <span>E {simSnapshot.thronglets[0]?.state.energy.toFixed(0) ?? "0"}</span>
                     <span>S {simSnapshot.thronglets[0]?.state.stress.toFixed(0) ?? "0"}</span>
@@ -3940,6 +3976,32 @@ function App() {
                 )}
                 {!isQuestionSimMinimized && (
                   <>
+                    {terrainState && (
+                      <div className="pet-terrain-state" aria-label={terrainCopy.title}>
+                        <div className="pet-terrain-state-header">
+                          <strong>{terrainCopy.title}</strong>
+                          <span>{terrainState.missingNode > 0 || terrainState.contradiction > 0 ? terrainCopy.pending : terrainCopy.clear}</span>
+                        </div>
+                        <div className="pet-terrain-state-grid">
+                          <div className="pet-terrain-state-item" data-state={terrainState.evidence >= 60 ? "active" : "pending"}>
+                            <span>{terrainCopy.evidence}</span>
+                            <strong>{terrainState.evidence}</strong>
+                          </div>
+                          <div className="pet-terrain-state-item" data-state={terrainState.relation >= 60 ? "active" : "pending"}>
+                            <span>{terrainCopy.relation}</span>
+                            <strong>{terrainState.relation}</strong>
+                          </div>
+                          <div className="pet-terrain-state-item" data-state={terrainState.contradiction > 0 ? "pending" : "clear"}>
+                            <span>{terrainCopy.contradiction}</span>
+                            <strong>{terrainState.contradiction}</strong>
+                          </div>
+                          <div className="pet-terrain-state-item" data-state={terrainState.missingNode > 0 ? "pending" : "clear"}>
+                            <span>{terrainCopy.missingNode}</span>
+                            <strong>{terrainState.missingNode}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div className="pet-gap-inbox" aria-label={petLintGapTitle(selectedLanguage)}>
                       <div className="pet-gap-inbox-header">
                         <strong>{petLintGapTitle(selectedLanguage)}</strong>

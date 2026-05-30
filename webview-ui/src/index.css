@@ -1071,6 +1071,67 @@ html[data-language="th"],
   border: 3px solid #000;
 }
 
+.pet-terrain-state {
+  margin-bottom: 16px;
+  padding: 12px;
+  color: #000;
+  background: color-mix(in srgb, var(--palette-blue) 12%, #fff 88%);
+  border: 3px solid #000;
+}
+
+.pet-terrain-state-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pet-terrain-state-header span {
+  padding: 2px 7px;
+  background: var(--palette-yellow);
+  border: 2px solid #000;
+  font-size: 12px;
+}
+
+.pet-terrain-state-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pet-terrain-state-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  background: #fff;
+  border: 2px solid #000;
+}
+
+.pet-terrain-state-item span {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.pet-terrain-state-item strong {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pet-terrain-state-item[data-state="active"] {
+  background: color-mix(in srgb, var(--palette-green) 42%, #fff 58%);
+}
+
+.pet-terrain-state-item[data-state="pending"] {
+  background: color-mix(in srgb, var(--palette-pink) 40%, #fff 60%);
+}
+
+.pet-terrain-state-item[data-state="clear"] {
+  background: color-mix(in srgb, var(--palette-silver) 38%, #fff 62%);
+}
+
 .pet-gap-inbox-header {
   display: flex;
   align-items: center;
