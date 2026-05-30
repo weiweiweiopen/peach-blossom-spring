@@ -1104,6 +1104,44 @@ function fallbackOutline(query: string, language: AssociationZineLanguage) {
   return copy[language];
 }
 
+function zineTitleTerms(query: string, language: AssociationZineLanguage): string[] {
+  const text = query.toLowerCase();
+  const termDefs: Array<{ test: RegExp; label: Record<AssociationZineLanguage, string> }> = [
+    { test: /觸控|touch|sensor|感測|สัมผัส|センサ|タッチ/i, label: { "zh-TW": "觸控", en: "Touch", id: "Sentuhan", de: "Beruehrung", ja: "触覚", th: "การสัมผัส" } },
+    { test: /電子織|織品|textile|wearable|fabric|ผ้า|สิ่งทอ|テキスタイル/i, label: { "zh-TW": "織品", en: "Textiles", id: "Tekstil", de: "Textilien", ja: "織物", th: "สิ่งทอ" } },
+    { test: /音樂|聲音|sound|music|audio|เสียง|ดนตรี|音/i, label: { "zh-TW": "聲音", en: "Sound", id: "Suara", de: "Klang", ja: "音", th: "เสียง" } },
+    { test: /合作|協作|collab|cooperat|together|ชุมชน|ร่วม|共同|協働/i, label: { "zh-TW": "協作", en: "Collaboration", id: "Kolaborasi", de: "Zusammenarbeit", ja: "協働", th: "ความร่วมมือ" } },
+    { test: /workshop|工作坊|lab|實驗|เวิร์กช็อป|ワークショップ/i, label: { "zh-TW": "工作坊", en: "Workshops", id: "Lokakarya", de: "Workshops", ja: "ワークショップ", th: "เวิร์กช็อป" } },
+    { test: /community|社群|commons|ชุมชน|共同体/i, label: { "zh-TW": "社群", en: "Commons", id: "Komunitas", de: "Commons", ja: "共同体", th: "ชุมชน" } },
+  ];
+  const terms = termDefs.filter((term) => term.test.test(text)).map((term) => term.label[language]);
+  return terms.length > 0 ? terms.slice(0, 3) : [{ "zh-TW": "材料", en: "Materials", id: "Material", de: "Material", ja: "素材", th: "วัสดุ" }[language]];
+}
+
+function evidenceTitleFromQuery(query: string, language: AssociationZineLanguage): string {
+  const terms = zineTitleTerms(query, language);
+  const [a, b, c] = terms;
+  const joined = terms.join(language === "zh-TW" || language === "ja" ? "、" : ", ");
+  const copy: Record<AssociationZineLanguage, string> = {
+    "zh-TW": c ? `${a}、${b}與${c}的證據路徑` : `${joined}的材料讀法`,
+    en: c ? `Evidence Routes Through ${a}, ${b}, and ${c}` : `A Material Reading of ${joined}`,
+    id: c ? `Rute Bukti melalui ${a}, ${b}, dan ${c}` : `Pembacaan Material tentang ${joined}`,
+    de: c ? `Evidenzwege durch ${a}, ${b} und ${c}` : `Eine Materiallekture zu ${joined}`,
+    ja: c ? `${a}、${b}、${c}をめぐる証拠の道筋` : `${joined}を読む素材の道筋`,
+    th: c ? `เส้นทางหลักฐานผ่าน${a} ${b} และ${c}` : `การอ่านวัสดุเรื่อง${joined}`,
+  };
+  return copy[language];
+}
+
+function sanitizeZineTitle(title: string, query: string, language: AssociationZineLanguage): string {
+  const cleaned = cleanLLMText(title).trim();
+  const compactQuery = compactText(query, 80).trim();
+  if (!cleaned || !compactQuery) return cleaned || evidenceTitleFromQuery(query, language);
+  const quotedQuery = cleaned.includes(`「${compactQuery}`) || cleaned.includes(`"${compactQuery}`) || cleaned.includes(compactQuery);
+  if (quotedQuery || textSimilarity(cleaned, compactQuery) > 0.46) return evidenceTitleFromQuery(query, language);
+  return cleaned;
+}
+
 async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[], onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
   const messages = buildEditorialMessages(query, workflow, language, compiledNotes);
   const system = messages.system;
@@ -1115,7 +1153,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   try {
     outline = await requestDeepSeekJsonWithRetry(
       system,
-        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。opening/proposition 只作為內部銜接，不要寫成「這份小誌先...」「它不把...」「如果材料不足...」這類方法說明或系統說明；第 01 頁正文會直接使用第一章內容。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
+        `${user}\n\n${printLength}\n\n第一批只產生封面 JSON，不要陣列：{"title":"","subtitle":"","opening":"","proposition":"","quietCaveat":""}。title 必須像一篇原創文章/評論的標題：重新命名玩家問題的研究角度，不得直接引用、複製或套用玩家原句，不得用「從『玩家問題』...」這種格式。opening/proposition 只作為內部銜接，不要寫成「這份小誌先...」「它不把...」「如果材料不足...」這類方法說明或系統說明；第 01 頁正文會直接使用第一章內容。必須直接回應玩家 query，並說明這批頁面實際能幫上什麼；不要寫任何人名。`,
       1000,
     ) as any;
   } catch (error) {
@@ -1123,7 +1161,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     console.warn("Association outline was unavailable or malformed; using evidence fallback outline and continuing section generation.");
     outline = fallbackOutline(query, language);
   }
-  const title = String(outline.title ?? "材料生成的未來方向");
+  const title = sanitizeZineTitle(String(outline.title ?? "材料生成的未來方向"), query, language);
   const subtitle = String(outline.subtitle ?? "從本次問題與本次閱讀材料重新推導。");
   const opening = String(outline.opening ?? "");
   const proposition = String(outline.proposition ?? "");
