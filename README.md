@@ -1,6 +1,6 @@
 # Peach Blossom Spring / PBS
 
-**PBS-2026.2.26701788323** is the second-version direction for Peach Blossom Spring: a playable LLM wiki world that uses NotebookLM as a fast public-source reading engine while keeping durable knowledge memory in PBS, locally or on GitHub.
+**PBS-2026.2.255** is the second-version direction for Peach Blossom Spring: a playable LLM wiki world that uses NotebookLM as a fast public-source reading engine while keeping durable knowledge memory in PBS, locally or on GitHub.
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 

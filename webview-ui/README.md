@@ -1,6 +1,6 @@
 # PBS Web UI / 2026.2
 
-This Vite/React app is the playable surface for **PBS-2026.2.26701788323**.
+This Vite/React app is the playable surface for **PBS-2026.2.255**.
 
 The web UI should not start from a generated local source-note corpus. Its second-version direction is to consume a NotebookLM-backed source pack when available, render it as zines and dialogue, and save reviewable PBS traces locally before anything becomes durable wiki memory.
 
