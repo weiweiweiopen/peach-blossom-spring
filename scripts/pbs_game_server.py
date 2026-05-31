@@ -110,6 +110,8 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "Mention links by plain language only when useful; keep source references light in NPC dialogue.",
         "Do not say no evidence was found when PBS engine evidence is present.",
         "Keep a little campfire wit when it fits, but be concrete first.",
+        "Every campfire answer must include one short practical PBS usage tip in the same language. Vary the tip: open the source links, ask for examples, turn the answer into a zine, compare communities, or use more concrete material/place names.",
+        "Occasionally, roughly one out of four answers, briefly explain the name 多重心智自我火燄: feelings, emotions, and thoughts can be shared rather than privately owned; cite it as Joscha Bach's reading of an ancient Greek idea that later became the idea of gods. Keep it short and do not force it when the user needs a direct answer.",
         "",
         "--- PBS schema context ---",
         schema_context()[:5000],
