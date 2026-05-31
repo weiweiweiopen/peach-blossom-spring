@@ -148,7 +148,7 @@ const GENERIC_TERMS = new Set([
 const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/感測器|傳感器|感應器/u, ["sensor", "sensors", "electronics"]],
   [/濕實驗室|實驗室|生物實驗/u, ["wetlab", "lab", "bio"]],
-  [/社群|社區|共同體/u, ["community", "workshop"]],
+  [/社群|社區|共同體/u, ["community", "community", "commons", "collective"]],
   [/水質|水/u, ["water", "environment"]],
   [/電子音樂|聲音|聽見|聲響|音樂/u, ["sound", "sound", "sound", "audio", "music", "electronic"]],
   [/理論|論述|研究/u, ["theory", "research", "essay"]],
@@ -159,10 +159,12 @@ const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/生物藝術/u, ["bioart", "bio", "biology", "art", "hackteria"]],
   [/藝術|專案|創作/u, ["art", "project"]],
   [/基因|轉殖|改造|合成生物|生物科技/u, ["gene", "genetic", "synthetic", "biology", "bio"]],
+  [/技術|實驗|實驗性|原型/u, ["experiment", "experimental", "lab", "protocol", "tool", "biohack", "wetlab"]],
   [/穿戴|衣服|服裝|紡織|布料|織物/u, ["wearable", "textile", "textiles", "fabric", "clothing"]],
-  [/廚房|厨房|料理|食物|餐|發酵|紅茶菌|康普茶/u, ["kitchen", "food", "hosting", "fermentation", "kombucha", "care", "workshop"]],
-  [/公共|基礎設施|基盤|共同|共用/u, ["public", "infrastructure", "commons", "shared", "documentation", "maintenance", "workshop"]],
-  [/照護|照料|維護|維修|保養/u, ["care", "maintenance", "repair", "documentation", "reuse", "workshop"]],
+  [/廚房|厨房|料理|食物|餐|發酵|紅茶菌|康普茶/u, ["kitchen", "kitchen", "kitchenlab", "mobilekitchenlab", "food", "cuisine", "hosting", "fermentation", "kombucha", "nata", "coco", "tofu", "wetlab", "biohack", "hackteria"]],
+  [/公共|基礎設施|基盤|共同|共用/u, ["public", "infrastructure", "commons", "commons", "shared", "open", "documentation", "maintenance", "community"]],
+  [/照護|照料|維護|維修|保養/u, ["care", "care", "maintenance", "repair", "documentation", "reuse", "stewardship", "protocol"]],
+  [/工作坊/u, ["workshop", "workshop", "pedagogy", "participants"]],
 ];
 
 export function parseSeedKeywords(seed: string, limit = 18): string[] {
@@ -273,7 +275,17 @@ function scoreCard(card: SourceCard, keywords: string[]): number {
     if (excerpt.includes(keyword)) score += 2 * weight;
   }
 
-  return score + initialEvidenceQuality(card);
+  return score + sourceIntentBoost(card, keywords) + initialEvidenceQuality(card);
+}
+
+function sourceIntentBoost(card: SourceCard, keywords: string[]): number {
+  const source = String(card.source ?? "").toLowerCase();
+  const keywordSet = new Set(keywords.map((keyword) => keyword.toLowerCase()));
+  const wantsHackteria = keywordSet.has("hackteria") || keywordSet.has("biohack") || keywordSet.has("wetlab") || keywordSet.has("kitchen") || keywordSet.has("kitchenlab") || keywordSet.has("mobilekitchenlab") || keywordSet.has("fermentation") || keywordSet.has("food") || keywordSet.has("cuisine") || keywordSet.has("kombucha") || keywordSet.has("nata") || keywordSet.has("coco") || keywordSet.has("tofu");
+  const wantsTextiles = keywordSet.has("textile") || keywordSet.has("textiles") || keywordSet.has("wearable") || keywordSet.has("fabric") || keywordSet.has("sensor") || keywordSet.has("sensors");
+  if (wantsHackteria && source === "hackteria") return 42;
+  if (wantsHackteria && source === "htgwyw" && !wantsTextiles) return -8;
+  return 0;
 }
 
 function initialEvidenceQuality(card: SourceCard): number {

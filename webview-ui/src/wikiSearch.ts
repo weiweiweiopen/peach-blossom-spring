@@ -47,13 +47,13 @@ function expandQuery(query: string): string {
     expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
   }
   if (/kitchen|廚房|厨房|料理|food|meal|hosting|host|餐|cook|cooking|ครัว|キッチン/i.test(query)) {
-    expansions.push('community kitchen', 'food lab', 'collective meals', 'hosting', 'fermentation', 'kombucha', 'SCOBY', 'biofilm', 'bacterial cellulose', 'care', 'maintenance', 'wetlab');
+    expansions.push('Hackteria', 'community kitchen', 'MobileKitchenLab', 'kitchenlab', 'gasigaso kitchen', 'food lab', 'collective meals', 'hosting', 'fermentation', 'kombucha', 'Nata de Coco', 'tofu', 'cuisine', 'SCOBY', 'biofilm', 'bacterial cellulose', 'wetlab', 'biohack');
   }
   if (/care|照護|照料|maintenance|repair|維護|維修|保養|ดูแล|ケア|修理/i.test(query)) {
-    expansions.push('care', 'maintenance', 'repair', 'failure notes', 'documentation', 'reuse', 'stewardship', 'protocol', 'workshop');
+    expansions.push('care', 'maintenance', 'repair', 'failure notes', 'documentation', 'reuse', 'stewardship', 'protocol');
   }
   if (/public|infrastructure|commons|公共|基礎設施|基盤|โครงสร้างพื้นฐาน/i.test(query)) {
-    expansions.push('commons', 'public knowledge', 'shared resource', 'open source', 'documentation', 'workshop', 'community practice', 'maintenance', 'reuse', 'infrastructure');
+    expansions.push('commons', 'public knowledge', 'shared resource', 'open source', 'documentation', 'community practice', 'maintenance', 'reuse', 'infrastructure');
   }
   return [query, ...expansions].join(' ');
 }
@@ -122,13 +122,15 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   if (queryTokens.length === 0) return [];
   const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
+  const wantsHackteriaKitchen = /kitchen|廚房|厨房|料理|food|meal|hosting|餐|cook|ferment|kombucha|nata|tofu|biohack|bioart|生物藝術|濕實驗室|實驗室/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
       const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const hackteriaKitchenBoost = wantsHackteriaKitchen && family === 'Hackteria' ? 34 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

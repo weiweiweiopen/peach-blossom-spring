@@ -530,13 +530,14 @@ function materialHint(text: unknown, max = 160): string {
 
 function sourceObservation(card: Card) {
   const kind = classifyCard(card);
+  const concreteHint = cleanReadingMaterialDescription(card.excerpt) || materialHint([...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].join(", "), 120);
   return {
     title: card.title,
     url: card.url ?? "",
     sourceFamily: sourceFamily(card),
     kind,
     publicRole: publicSourcePhrase(card),
-    concreteHint: materialHint(card.excerpt, 100),
+    concreteHint,
     topics: [...(card.keywords ?? []), ...(card.tags ?? []), ...(card.categories ?? [])].slice(0, 5).join(", "),
     caution: "Use as a concrete observation only; do not paste raw excerpt or describe retrieval/source mechanics.",
   };
@@ -570,9 +571,11 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
 function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[] = []) {
   const wantsSgmk = wantsSgmkQuery(query);
   const wantsSoundDiy = wantsSoundDiyQuery(query);
+  const wantsHackteriaKitchenBio = wantsHackteriaKitchenBioQuery(query);
   const sourcePriority = (card: Partial<SourceCard>) => {
     const family = sourceFamily(card);
     if (wantsSgmk && family === "SGMK") return 40;
+    if (wantsHackteriaKitchenBio && family === "Hackteria") return 72;
     if (wantsSoundDiy && family === "HOW TO GET WHAT YOU WANT / KOBAKANT") return 32;
     if (wantsSoundDiy && family === "Hackteria") return 28;
     return 0;
@@ -1427,8 +1430,13 @@ function publicReadingCards(workflow: Workflow, query = ""): Card[] {
     byUrl.set(card.url, card);
   }
   const wantsSgmk = wantsSgmkQuery(query);
+  const wantsHackteriaKitchenBio = wantsHackteriaKitchenBioQuery(query);
   return Array.from(byUrl.values())
-    .sort((a, b) => wantsSgmk ? (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0) : 0)
+    .sort((a, b) => {
+      if (wantsSgmk) return (sourceFamily(b) === "SGMK" ? 1 : 0) - (sourceFamily(a) === "SGMK" ? 1 : 0);
+      if (wantsHackteriaKitchenBio) return (sourceFamily(b) === "Hackteria" ? 1 : 0) - (sourceFamily(a) === "Hackteria" ? 1 : 0);
+      return 0;
+    })
     .slice(0, 12);
 }
 
@@ -1671,10 +1679,14 @@ function wantsSoundDiyQuery(query: string): boolean {
   return /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
 }
 
+function wantsHackteriaKitchenBioQuery(query: string): boolean {
+  return /kitchen|廚房|厨房|料理|food|meal|hosting|餐|cook|cuisine|ferment|fermentation|kombucha|nata|tofu|biohack|bioart|生物藝術|濕實驗室|生物實驗|wetlab|mobile\s*kitchen|kitchenlab/i.test(query);
+}
+
 function conceptualQueryHints(query: string): string {
   const hints: string[] = [];
   if (/kitchen|廚房|厨房|料理|food|meal|hosting|host|餐|cook|cooking|ครัว|キッチン/i.test(query)) {
-    hints.push("community kitchen", "food lab", "collective meals", "hosting", "fermentation", "kombucha", "SCOBY", "biofilm", "bacterial cellulose", "wetlab");
+    hints.push("Hackteria", "MobileKitchenLab", "kitchenlab", "gasigaso kitchen", "community kitchen", "food lab", "collective meals", "hosting", "fermentation", "kombucha", "Nata de Coco", "Do eat your laser Tofu", "Urban Cuisine", "SCOBY", "biofilm", "bacterial cellulose", "wetlab", "biohack");
   }
   if (/care|照護|照料|maintenance|repair|維護|維修|保養|ดูแล|ケア|修理/i.test(query)) {
     hints.push("care", "maintenance", "repair", "failure notes", "documentation", "reuse", "stewardship", "protocol");
