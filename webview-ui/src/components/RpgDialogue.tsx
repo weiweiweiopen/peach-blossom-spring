@@ -100,6 +100,15 @@ function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
 
+function shuffleCopy<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
     'Open Source Beehives 如何把感測器、蜂群與農地照護連成一種可共享的田野知識？',
@@ -129,12 +138,22 @@ function transcriptQuestionSeed(persona: Persona, transcript: string): string[] 
 }
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transcript = ''): string[] {
-  const fixed = personaQuestionSeeds[persona.id];
-  if (language === 'zh-TW' && fixed) return fixed;
+  const fixed = personaQuestionSeeds[persona.id] ?? [];
   const transcriptSeeds = transcriptQuestionSeed(persona, transcript);
-  if (language === 'zh-TW' && transcriptSeeds.length >= 2) return transcriptSeeds;
+  const responseEntries = Object.entries(persona.responses).slice(0, 9);
+  const sourceBridgeQuestions = [
+    `${persona.name} 的 NGM 訪談如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
+    `${persona.name} 會怎麼把訪談裡的工作坊經驗整理成一份可查證小誌？`,
+    `從 ${persona.name} 的觀點看，三個 sources 裡哪些材料最適合回答「社群如何保存知識」？`,
+    `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
+    `${persona.name} 的訪談可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
+    `${persona.name} 的訪談和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
+  ];
+  if (language === 'zh-TW') {
+    const responseQuestions = responseEntries.map(([, response]) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(response, 48)}」如何連到三個 wiki sources 的可檢查材料？`);
+    return shuffleCopy([...fixed, ...transcriptSeeds, ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
+  }
 
-  const responseEntries = Object.entries(persona.responses).slice(0, 3);
   const templates: Record<LanguageCode, (response: string) => string> = {
     'zh-TW': (response) => `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
     en: (response) => `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
@@ -143,7 +162,16 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transc
     ja: (response) => `${persona.name} のインタビュー記憶では、「${cleanQuestionPart(response, 50)}」は実践とどうつながりますか？`,
     th: (response) => `ในความทรงจำสัมภาษณ์ของ ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับการปฏิบัติอย่างไร?`,
   };
-  return responseEntries.map(([, response]) => templates[language](response));
+  const generated = responseEntries.map(([, response]) => templates[language](response));
+  const englishSourceBridge = [
+    `How does ${persona.name}'s NGM interview connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
+    `Which source pages would help turn ${persona.name}'s workshop memory into a checkable zine?`,
+    `How would ${persona.name} compare transcript memory with public workshop documentation?`,
+    `What material, tool, or community practice from the three sources best matches ${persona.name}'s concerns?`,
+    `How can ${persona.name}'s interview become a makeable, checkable, teachable zine question?`,
+    `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
+  ];
+  return shuffleCopy([...generated, ...englishSourceBridge]).slice(0, 9);
 }
 
 function sourceLinksLabel(language: LanguageCode): string {

@@ -51,7 +51,8 @@ import {
   readMultiplayerConfig,
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
-import { askCampfire } from "./localMemoryApi.js";
+import { askCampfire, canUseLocalMemoryServer } from "./localMemoryApi.js";
+import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
@@ -231,20 +232,26 @@ const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
-    "社群廚房、材料照護與技術實驗如何一起構成公共基礎設施？",
-    "DIY 合成器與聲音工具在 SGMK、Hackteria 與 KOBAKANT 材料中扮演什麼社群角色？",
-    "電子織品工作坊如何把失敗紀錄、身體知識與可重讀文件連在一起？",
-    "Hackteria 和 Lifepatch 的營隊如何把臨時共同體轉成可查證的知識網絡？",
-    "Fabricademy、Green Fablab 與開源材料實驗如何處理照護、維修與永續的張力？",
-    "獨立藝術科技組織如何在短期經費、工作坊與個人記憶之間保存知識？",
+    "Hackteria 的 Kitchen Lab 如何把料理、濕實驗與工作坊招待變成可複製的小誌方法？",
+    "SGMK 的自製合成器、8bit 音樂與 DIY electronics 頁面，可以整理成哪種聲音工作坊小誌？",
+    "How To Get What You Want 裡的 soft circuit、sensor 與 textile technique，如何變成初學者可照做的電子織品小誌？",
+    "比較 Hackteria 與 KOBAKANT：兩者如何用公開文件把失敗、材料和教學流程留下來？",
+    "從 Hackteria 的 DIY microscopy 到 SGMK 的 mechartlab，低成本工具如何支撐藝術科學社群？",
+    "以 e-textile / wearable electronics 為主題，哪些 HTG WYWant 頁面最適合組成一份材料實驗小誌？",
+    "Hackteria wiki 裡哪些 camp、workshop 與 open hardware 頁面能組成臨時共同體的案例小誌？",
+    "SGMK 的 sound、synth 與 handmade electronics 頁面如何連到社群學習和公開分享？",
+    "三個 sources 裡的 workshop documentation 可以怎麼整理成『做得出來、查得到、能再教一次』的小誌？",
   ],
   en: [
-    "How do community kitchens, material care, and technical experiments become public infrastructure?",
-    "What community role do DIY synths and sound tools play across SGMK, Hackteria, and KOBAKANT materials?",
-    "How do e-textile workshops connect failure notes, embodied knowledge, and reusable documentation?",
-    "How do Hackteria and Lifepatch camps turn temporary commons into checkable knowledge networks?",
-    "How do Fabricademy, Green Fablab, and open material experiments handle tensions between care, repair, and sustainability?",
-    "How do independent art-tech organizations preserve knowledge between short funding cycles, workshops, and personal memory?",
+    "How can Hackteria Kitchen Lab pages become a zine about cooking, wet experiments, and workshop hosting?",
+    "Which SGMK DIY synth, 8bit, and handmade electronics pages make a useful sound-workshop zine?",
+    "How can How To Get What You Want soft-circuit, sensor, and textile techniques become a beginner e-textile zine?",
+    "How do Hackteria and KOBAKANT document failure, materials, and teaching steps for reuse?",
+    "How do DIY microscopy, mechartlab, and low-cost tools support art-science communities across the sources?",
+    "Which wearable electronics pages from How To Get What You Want best form a material-experiment zine?",
+    "Which Hackteria camp, workshop, and open-hardware pages can form a zine about temporary commons?",
+    "How do SGMK sound, synth, and handmade electronics pages connect community learning with public sharing?",
+    "How can workshop documentation from the three sources become a zine that is makeable, checkable, and teachable again?",
   ],
   id: [
     "Bagaimana dapur komunitas, perawatan material, dan eksperimen teknis menjadi infrastruktur publik?",
@@ -727,6 +734,15 @@ function PlayerDialogueAvatar({ palette, label }: { palette: number; label: stri
   return <DialoguePixelAvatar sprite={sprite} label={label} />;
 }
 
+function shuffleCopy<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
 function ComputerDialogueAvatar({ label }: { label: string }) {
   const [frame, setFrame] = useState(0);
   useEffect(() => {
@@ -1095,9 +1111,7 @@ function CentralComputerDialogue({
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
   const logRef = useRef<HTMLDivElement | null>(null);
   const copy = PBS_COMPUTER_COPY[language];
-  const suggestedQuestions = useMemo(() => {
-    return COMMUNITY_QUERY_PROMPTS[language].slice(0, 3);
-  }, [language]);
+  const suggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
       speaker: copy.name,
@@ -1130,8 +1144,20 @@ function CentralComputerDialogue({
     setIsThinking(true);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     try {
-      const reply = await askCampfire(trimmed, language);
-      setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links }]);
+      const { searchWikiPages } = await import("./wikiSearch.js");
+      const links = searchWikiPages(trimmed, undefined, 8);
+      if (canUseLocalMemoryServer()) {
+        const reply = await askCampfire(trimmed, language);
+        setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links.length ? reply.links : links }]);
+      } else {
+        const sharedMemoryContext = links.map((link, index) => [
+          `[${index + 1}] ${link.title}`,
+          link.description || "",
+          link.url,
+        ].filter(Boolean).join("\n")).join("\n\n");
+        const answer = await askDeepSeekPbsComputer({ question: trimmed, preferredLanguage: language, sharedMemoryContext });
+        setMessages((current) => [...current, { speaker: copy.name, text: answer, links }]);
+      }
     } catch {
       setError("");
       const { searchWikiPages } = await import("./wikiSearch.js");
