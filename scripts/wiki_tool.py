@@ -116,6 +116,11 @@ SOURCE_FAMILY_LABELS = {
     "sgmk": "SGMK",
 }
 
+PUBLIC_SOURCE_NOTE_BLOCKLIST = re.compile(
+    r"\b(nigga|manwhore|ex[- ]boyfriend|boyfriend|funny ass|yo my big bro|yo quiero|wtf tyson)\b",
+    re.I,
+)
+
 
 def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
@@ -1160,6 +1165,8 @@ def source_cards_for_compilation() -> list[dict]:
         source = str(card.get("source") or "").strip().lower()
         if not source_path or source not in SOURCE_FAMILY_LABELS:
             continue
+        if is_public_source_note_blocked(card):
+            continue
         ref = f"obsidian-vault/{source_path}" if not source_path.startswith("obsidian-vault/") else source_path
         if not local_path_exists(ref):
             continue
@@ -1169,6 +1176,11 @@ def source_cards_for_compilation() -> list[dict]:
         seen.add(key)
         local_cards.append(card)
     return local_cards
+
+
+def is_public_source_note_blocked(card: dict) -> bool:
+    text = " ".join(str(card.get(key) or "") for key in ["title", "excerpt", "url", "path"])
+    return bool(PUBLIC_SOURCE_NOTE_BLOCKLIST.search(text))
 
 
 def source_note_path_for_card(card: dict) -> Path:
@@ -1289,9 +1301,20 @@ def source_note_markdown(card: dict) -> str:
 
 
 def command_compile_source_notes(args: argparse.Namespace) -> int:
+    all_cards_path = VAULT / "daydream-export/sourceCards.enriched.json"
+    payload = json.loads(all_cards_path.read_text(encoding="utf-8"))
+    all_cards = payload.get("cards", []) if isinstance(payload, dict) else []
     cards = source_cards_for_compilation()
     written = 0
     skipped = 0
+    filtered = 0
+    if args.overwrite:
+        for card in all_cards:
+            if isinstance(card, dict) and is_public_source_note_blocked(card):
+                path = source_note_path_for_card(card)
+                if path.exists():
+                    path.unlink()
+                filtered += 1
     for card in cards:
         path = source_note_path_for_card(card)
         if path.exists() and not args.overwrite:
@@ -1303,11 +1326,13 @@ def command_compile_source_notes(args: argparse.Namespace) -> int:
     append_wiki_log("compile", "full source-note layer", [
         f"Compiled `{written}` source notes into `obsidian-vault/Wiki/SourceNotes/`.",
         f"Skipped `{skipped}` existing source notes.",
+        f"Filtered `{filtered}` unsafe public source-note candidates.",
         "Raw source files were not modified.",
     ])
     print(f"cards={len(cards)}")
     print(f"written={written}")
     print(f"skipped={skipped}")
+    print(f"filtered={filtered}")
     return 0
 
 

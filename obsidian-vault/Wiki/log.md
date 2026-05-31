@@ -193,3 +193,15 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 
 - Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
 - Exported 2370 notes; 2370 eligible for zine RAG.
+
+## [2026-05-31] compile | full source-note layer
+
+- Compiled `2350` source notes into `obsidian-vault/Wiki/SourceNotes/`.
+- Skipped `0` existing source notes.
+- Filtered `7` unsafe public source-note candidates.
+- Raw source files were not modified.
+
+## [2026-05-31] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2363 notes; 2363 eligible for zine RAG.

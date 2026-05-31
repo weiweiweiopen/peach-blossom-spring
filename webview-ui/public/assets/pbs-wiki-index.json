@@ -1,13 +1,13 @@
 {
   "schemaVersion": "pbs-compiled-wiki-index-v1",
-  "generatedAt": "2026-05-31T03:03:17+00:00",
+  "generatedAt": "2026-05-31T03:06:44+00:00",
   "sourceRefs": [
     "scripts/wiki_tool.py",
     "obsidian-vault/Wiki/index.md"
   ],
   "counts": {
-    "notes": 2370,
-    "eligibleForZineRag": 2370
+    "notes": 2363,
+    "eligibleForZineRag": 2363
   },
   "notes": [
     {
@@ -345,47 +345,6 @@
         "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/a-brief-description-of-what-we-will-do-6865532f1b4c.md"
       },
       "searchText": "A Brief Description of What We Will Do source Compiled source note for A Brief Description of What We Will Do from Hackteria. Key terms: dna, full, sources, step, brief, description, hackteria, will. Hackteria # A Brief Description of What We Will Do ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/A Brief Description of What We Will Do [433].md` - url: https://www.hackteria.org/wiki/A_Brief_Description_of_What_We_Will_Do - source card id: `hackteria:6865532f1b4c` ## Evidence - No readable plaintext passage was available in the local source export; use this note as a routing anchor, not as proof for synthesis. [1] ## Terms - dna - full - sources - step - brief - description - hackteria - will - cells - competent - digesting - dry - mini - prep ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/A Brief Description of What We Will Do [433].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
-      "id": "source-note-hackteria-hackteria3faba2c30f76",
-      "title": "A cute ass boyfriend pain killers CHOCOLATE D life s good 0",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for A cute ass boyfriend pain killers CHOCOLATE D life s good 0 from Hackteria. Key terms: ass, boyfriend, chocolate, cute, good, hackteria, killers, life.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/a-cute-ass-boyfriend-pain-killers-chocolate-d-life-s-good-0-3faba2c30f76.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/A cute ass boyfriend pain killers CHOCOLATE D life s good 0 [1232].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/A cute ass boyfriend pain killers CHOCOLATE D life s good 0 [1232].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/a-cute-ass-boyfriend-pain-killers-chocolate-d-life-s-good-0-3faba2c30f76.md"
-      },
-      "searchText": "A cute ass boyfriend pain killers CHOCOLATE D life s good 0 source Compiled source note for A cute ass boyfriend pain killers CHOCOLATE D life s good 0 from Hackteria. Key terms: ass, boyfriend, chocolate, cute, good, hackteria, killers, life. Hackteria # A cute ass boyfriend pain killers CHOCOLATE D life s good 0 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/A cute ass boyfriend pain killers CHOCOLATE D life s good 0 [1232].md` - url: https://www.hackteria.org/wiki/A_cute_ass_boyfriend_pain_killers_CHOCOLATE_D_life_s_good_0 - source card id: `hackteria:3faba2c30f76` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - ass - boyfriend - chocolate - cute - good - hackteria - killers - life - pain - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/A cute ass boyfriend pain killers CHOCOLATE D life s good 0 [1232].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
     },
     {
       "id": "source-note-hackteria-hackteria3d897cb7b327",
@@ -34996,50 +34955,6 @@
       "searchText": "JulianChollet source Compiled source note for JulianChollet from Hackteria. Key terms: hackteria, julianchollet, api, found, layer, mediawiki, relationship. Hackteria # JulianChollet ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/JulianChollet [12927].md` - url: https://www.hackteria.org/wiki/JulianChollet - source card id: `hackteria:4f1479f2c9f5` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - hackteria - julianchollet - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/JulianChollet [12927].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
     },
     {
-      "id": "source-note-hackteria-hackteriab72452534973",
-      "title": "Junk food less cigarette less boyfriend less thrilled less 32",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for Junk food less cigarette less boyfriend less thrilled less 32 from Hackteria. Key terms: less, boyfriend, cigarette, food, hackteria, junk, thrilled, api.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/junk-food-less-cigarette-less-boyfriend-less-thrilled-less-32-b72452534973.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/Junk food less cigarette less boyfriend less thrilled less 32 [1153].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "food",
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [
-        "food"
-      ],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/Junk food less cigarette less boyfriend less thrilled less 32 [1153].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/junk-food-less-cigarette-less-boyfriend-less-thrilled-less-32-b72452534973.md"
-      },
-      "searchText": "Junk food less cigarette less boyfriend less thrilled less 32 source Compiled source note for Junk food less cigarette less boyfriend less thrilled less 32 from Hackteria. Key terms: less, boyfriend, cigarette, food, hackteria, junk, thrilled, api. food Hackteria # Junk food less cigarette less boyfriend less thrilled less 32 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Junk food less cigarette less boyfriend less thrilled less 32 [1153].md` - url: https://www.hackteria.org/wiki/Junk_food_less_cigarette_less_boyfriend_less_thrilled_less_32 - source card id: `hackteria:b72452534973` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - less - boyfriend - cigarette - food - hackteria - junk - thrilled - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Junk food less cigarette less boyfriend less thrilled less 32 [1153].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
       "id": "source-note-hackteria-hackteria61a4b5f44da3",
       "title": "Jurus Sulam Listrik workshop 2022",
       "type": "source",
@@ -62373,47 +62288,6 @@
       "searchText": "WHATS THE PLAN??? source Compiled source note for WHATS THE PLAN??? from Hackteria. Key terms: hackteria, plan, whats, api, found, layer, mediawiki, relationship. Hackteria # WHATS THE PLAN??? ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/WHATS THE PLAN - [2491].md` - url: https://www.hackteria.org/wiki/WHATS_THE_PLAN%3F%3F%3F - source card id: `hackteria:9ff9b1873c4e` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - hackteria - plan - whats - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/WHATS THE PLAN - [2491].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
     },
     {
-      "id": "source-note-hackteria-hackteria58ca12f1866e",
-      "title": "When your ex boyfriend send you any picture of him drunk WTF Tyson 41",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for When your ex boyfriend send you any picture of him drunk WTF Tyson 41 from Hackteria. Key terms: any, boyfriend, drunk, hackteria, him, picture, send, tyson.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/when-your-ex-boyfriend-send-you-any-picture-of-him-drunk-wtf-tyson-41-58ca12f1866e.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/When your ex boyfriend send you any picture of him drunk WTF Tyson 41 [1234].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/When your ex boyfriend send you any picture of him drunk WTF Tyson 41 [1234].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/when-your-ex-boyfriend-send-you-any-picture-of-him-drunk-wtf-tyson-41-58ca12f1866e.md"
-      },
-      "searchText": "When your ex boyfriend send you any picture of him drunk WTF Tyson 41 source Compiled source note for When your ex boyfriend send you any picture of him drunk WTF Tyson 41 from Hackteria. Key terms: any, boyfriend, drunk, hackteria, him, picture, send, tyson. Hackteria # When your ex boyfriend send you any picture of him drunk WTF Tyson 41 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/When your ex boyfriend send you any picture of him drunk WTF Tyson 41 [1234].md` - url: https://www.hackteria.org/wiki/When_your_ex_boyfriend_send_you_any_picture_of_him_drunk_WTF_Tyson_41 - source card id: `hackteria:58ca12f1866e` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - any - boyfriend - drunk - hackteria - him - picture - send - tyson - wtf - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/When your ex boyfriend send you any picture of him drunk WTF Tyson 41 [1234].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
       "id": "source-note-hackteria-hackteriabf38e8684aa9",
       "title": "Where da cash at 60",
       "type": "source",
@@ -64347,170 +64221,6 @@
         "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yep-lol-i-work-in-loans-collections-taxes-haha-79-67d7185ab43e.md"
       },
       "searchText": "Yep lol I work in loans collections taxes haha 79 source Compiled source note for Yep lol I work in loans collections taxes haha 79 from Hackteria. Key terms: collections, hackteria, haha, loans, lol, taxes, work, yep. Hackteria # Yep lol I work in loans collections taxes haha 79 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Yep lol I work in loans collections taxes haha 79 [1214].md` - url: https://www.hackteria.org/wiki/Yep_lol_I_work_in_loans_collections_taxes_haha_79 - source card id: `hackteria:67d7185ab43e` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - collections - hackteria - haha - loans - lol - taxes - work - yep - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Yep lol I work in loans collections taxes haha 79 [1214].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
-      "id": "source-note-hackteria-hackteria7777643f7d25",
-      "title": "Yo my big bro just roled out the for next week will b on the building 0",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for Yo my big bro just roled out the for next week will b on the building 0 from Hackteria. Key terms: big, bro, building, hackteria, just, next, out, roled.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yo-my-big-bro-just-roled-out-the-for-next-week-will-b-on-the-building-0-7777643f7d25.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/Yo my big bro just roled out the for next week will b on the building 0 [1111].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/Yo my big bro just roled out the for next week will b on the building 0 [1111].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yo-my-big-bro-just-roled-out-the-for-next-week-will-b-on-the-building-0-7777643f7d25.md"
-      },
-      "searchText": "Yo my big bro just roled out the for next week will b on the building 0 source Compiled source note for Yo my big bro just roled out the for next week will b on the building 0 from Hackteria. Key terms: big, bro, building, hackteria, just, next, out, roled. Hackteria # Yo my big bro just roled out the for next week will b on the building 0 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Yo my big bro just roled out the for next week will b on the building 0 [1111].md` - url: https://www.hackteria.org/wiki/Yo_my_big_bro_just_roled_out_the_for_next_week_will_b_on_the_building_0 - source card id: `hackteria:7777643f7d25` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - big - bro - building - hackteria - just - next - out - roled - week - will - api - found - layer - mediawiki ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Yo my big bro just roled out the for next week will b on the building 0 [1111].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
-      "id": "source-note-hackteria-hackteria584cbea77485",
-      "title": "Yo quiero ir pero esta lejos para mi que no tengo auto 36",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for Yo quiero ir pero esta lejos para mi que no tengo auto 36 from Hackteria. Key terms: auto, esta, hackteria, lejos, para, pero, que, quiero.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yo-quiero-ir-pero-esta-lejos-para-mi-que-no-tengo-auto-36-584cbea77485.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/Yo quiero ir pero esta lejos para mi que no tengo auto 36 [1161].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/Yo quiero ir pero esta lejos para mi que no tengo auto 36 [1161].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yo-quiero-ir-pero-esta-lejos-para-mi-que-no-tengo-auto-36-584cbea77485.md"
-      },
-      "searchText": "Yo quiero ir pero esta lejos para mi que no tengo auto 36 source Compiled source note for Yo quiero ir pero esta lejos para mi que no tengo auto 36 from Hackteria. Key terms: auto, esta, hackteria, lejos, para, pero, que, quiero. Hackteria # Yo quiero ir pero esta lejos para mi que no tengo auto 36 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Yo quiero ir pero esta lejos para mi que no tengo auto 36 [1161].md` - url: https://www.hackteria.org/wiki/Yo_quiero_ir_pero_esta_lejos_para_mi_que_no_tengo_auto_36 - source card id: `hackteria:584cbea77485` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - auto - esta - hackteria - lejos - para - pero - que - quiero - tengo - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Yo quiero ir pero esta lejos para mi que no tengo auto 36 [1161].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
-      "id": "source-note-hackteria-hackteriaa082cdc8a8d1",
-      "title": "Your ex boyfriend is such a manwhore i need to see him 81",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for Your ex boyfriend is such a manwhore i need to see him 81 from Hackteria. Key terms: boyfriend, hackteria, him, manwhore, need, see, such, api.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/your-ex-boyfriend-is-such-a-manwhore-i-need-to-see-him-81-a082cdc8a8d1.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/Your ex boyfriend is such a manwhore i need to see him 81 [1240].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/Your ex boyfriend is such a manwhore i need to see him 81 [1240].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/your-ex-boyfriend-is-such-a-manwhore-i-need-to-see-him-81-a082cdc8a8d1.md"
-      },
-      "searchText": "Your ex boyfriend is such a manwhore i need to see him 81 source Compiled source note for Your ex boyfriend is such a manwhore i need to see him 81 from Hackteria. Key terms: boyfriend, hackteria, him, manwhore, need, see, such, api. Hackteria # Your ex boyfriend is such a manwhore i need to see him 81 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Your ex boyfriend is such a manwhore i need to see him 81 [1240].md` - url: https://www.hackteria.org/wiki/Your_ex_boyfriend_is_such_a_manwhore_i_need_to_see_him_81 - source card id: `hackteria:a082cdc8a8d1` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - boyfriend - hackteria - him - manwhore - need - see - such - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Your ex boyfriend is such a manwhore i need to see him 81 [1240].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
-    },
-    {
-      "id": "source-note-hackteria-hackteria9dcd25ee5590",
-      "title": "Yu a funny ass nigga lol 3",
-      "type": "source",
-      "status": "compiled-source-note",
-      "summary": "Compiled source note for Yu a funny ass nigga lol 3 from Hackteria. Key terms: ass, funny, hackteria, lol, nigga, api, found, layer.",
-      "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yu-a-funny-ass-nigga-lol-3-9dcd25ee5590.md",
-      "sourceRefs": [
-        "obsidian-vault/Sources/Hackteria Full/Yu a funny ass nigga lol 3 [1157].md"
-      ],
-      "sourceRefCount": 1,
-      "related": [
-        "Hackteria"
-      ],
-      "relatedConcepts": [],
-      "relatedMethods": [],
-      "relatedMaterials": [],
-      "relatedSocialForms": [],
-      "relatedProjects": [
-        "Hackteria"
-      ],
-      "openQuestions": [
-        "Which compiled concept or synthesis note should this source support?"
-      ],
-      "evidence": "- No internal links/categories found from MediaWiki API. [1]",
-      "citations": [
-        {
-          "index": "1",
-          "sourceRef": "obsidian-vault/Sources/Hackteria Full/Yu a funny ass nigga lol 3 [1157].md"
-        }
-      ],
-      "lint": {
-        "status": "warning",
-        "warnings": [
-          "thin evidence: 1 sourceRef"
-        ],
-        "errors": [],
-        "path": "obsidian-vault/Wiki/SourceNotes/Hackteria/yu-a-funny-ass-nigga-lol-3-9dcd25ee5590.md"
-      },
-      "searchText": "Yu a funny ass nigga lol 3 source Compiled source note for Yu a funny ass nigga lol 3 from Hackteria. Key terms: ass, funny, hackteria, lol, nigga, api, found, layer. Hackteria # Yu a funny ass nigga lol 3 ## Scope This is a compiled source note for one raw source page from Hackteria. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis. ## Source - source family: `Hackteria` - sourceRef: `obsidian-vault/Sources/Hackteria Full/Yu a funny ass nigga lol 3 [1157].md` - url: https://www.hackteria.org/wiki/Yu_a_funny_ass_nigga_lol_3 - source card id: `hackteria:9dcd25ee5590` ## Evidence - No internal links/categories found from MediaWiki API. [1] ## Terms - ass - funny - hackteria - lol - nigga - api - found - layer - mediawiki - relationship ## Lint Notes - This source note was generated deterministically from the local source card export. - It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes. - The raw source page was not modified. ## Citations [1] `obsidian-vault/Sources/Hackteria Full/Yu a funny ass nigga lol 3 [1157].md` ## Open Questions - What exact claim, if any, should this source contribute to the compiled PBS wiki?"
     },
     {
       "id": "source-note-hackteria-hackteriaea0393340d71",
