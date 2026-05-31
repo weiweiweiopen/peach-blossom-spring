@@ -8602,3 +8602,67 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     font-size: calc(1em + 4px) !important;
   }
 }
+
+/* 2026-06-01 real Latin-size override: previous generic calc(1em+4px) was beaten by later dialogue/mobile rules.
+   Apply explicit final variables and direct font sizes for EN/ID/DE, including loading text. */
+.pbs-interaction-root[data-language="en"] .rpg-dialogue-panel,
+.pbs-interaction-root[data-language="id"] .rpg-dialogue-panel,
+.pbs-interaction-root[data-language="de"] .rpg-dialogue-panel,
+.rpg-dialogue-panel[data-language="en"],
+.rpg-dialogue-panel[data-language="id"],
+.rpg-dialogue-panel[data-language="de"] {
+  --dialogue-title-size: clamp(42px, 4.5vw, 60px) !important;
+  --dialogue-role-size: clamp(28px, 2.85vw, 40px) !important;
+  --dialogue-kicker-size: clamp(24px, 2.25vw, 32px) !important;
+  --dialogue-body-size: clamp(26px, 2.45vw, 35px) !important;
+  --dialogue-control-size: clamp(24px, 2.2vw, 31px) !important;
+}
+.pbs-interaction-root[data-language="en"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+.pbs-interaction-root[data-language="id"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+.pbs-interaction-root[data-language="de"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+.rpg-dialogue-panel[data-language="en"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+.rpg-dialogue-panel[data-language="id"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+.rpg-dialogue-panel[data-language="de"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking) {
+  font-size: var(--dialogue-body-size) !important;
+  line-height: 1.42 !important;
+}
+.pbs-interaction-root[data-language="en"] :is(.rpg-dialogue-name),
+.pbs-interaction-root[data-language="id"] :is(.rpg-dialogue-name),
+.pbs-interaction-root[data-language="de"] :is(.rpg-dialogue-name),
+.rpg-dialogue-panel[data-language="en"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="id"] .rpg-dialogue-name,
+.rpg-dialogue-panel[data-language="de"] .rpg-dialogue-name {
+  font-size: var(--dialogue-title-size) !important;
+  line-height: 1.12 !important;
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root[data-language="en"] .rpg-dialogue-panel,
+  .pbs-interaction-root[data-language="id"] .rpg-dialogue-panel,
+  .pbs-interaction-root[data-language="de"] .rpg-dialogue-panel,
+  .rpg-dialogue-panel[data-language="en"],
+  .rpg-dialogue-panel[data-language="id"],
+  .rpg-dialogue-panel[data-language="de"] {
+    --dialogue-title-size: clamp(36px, 8.8vw, 50px) !important;
+    --dialogue-role-size: clamp(26px, 6.4vw, 35px) !important;
+    --dialogue-kicker-size: clamp(22px, 5.4vw, 29px) !important;
+    --dialogue-body-size: clamp(24px, 6vw, 34px) !important;
+    --dialogue-control-size: clamp(23px, 5.6vw, 31px) !important;
+  }
+  .pbs-interaction-root[data-language="en"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+  .pbs-interaction-root[data-language="id"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+  .pbs-interaction-root[data-language="de"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+  .rpg-dialogue-panel[data-language="en"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+  .rpg-dialogue-panel[data-language="id"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking),
+  .rpg-dialogue-panel[data-language="de"] :is(.rpg-dialogue-kicker, .rpg-dialogue-role, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-log p, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-question-toggle, .rpg-dialogue-submit, .rpg-dialogue-thinking) {
+    font-size: var(--dialogue-body-size) !important;
+    line-height: 1.42 !important;
+  }
+  .pbs-interaction-root[data-language="en"] :is(.rpg-dialogue-name),
+  .pbs-interaction-root[data-language="id"] :is(.rpg-dialogue-name),
+  .pbs-interaction-root[data-language="de"] :is(.rpg-dialogue-name),
+  .rpg-dialogue-panel[data-language="en"] .rpg-dialogue-name,
+  .rpg-dialogue-panel[data-language="id"] .rpg-dialogue-name,
+  .rpg-dialogue-panel[data-language="de"] .rpg-dialogue-name {
+    font-size: var(--dialogue-title-size) !important;
+  }
+}
