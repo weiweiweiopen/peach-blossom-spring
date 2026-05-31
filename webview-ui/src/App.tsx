@@ -1232,21 +1232,28 @@ function CentralComputerDialogue({
           </div>
         </div>
         {showSuggestedQuestions && (
-          <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
+          <div className="rpg-dialogue-actions rpg-dialogue-question-drawer flex flex-wrap items-start gap-3 mb-5">
             <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}</p>
             {suggestedQuestions.map((question) => (
               <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
             ))}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine">
+        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             data-ui-part="field"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            autoComplete="off"
+            name="pbs-campfire-question"
+            inputMode="text"
+            enterKeyHint="send"
+            autoComplete="new-password"
+            aria-autocomplete="none"
+            data-form-type="other"
+            data-lpignore="true"
+            data-1p-ignore="true"
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}

@@ -622,14 +622,21 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           </div>
         )}
 
-        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine">
+        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             data-ui-part="field"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            autoComplete="off"
+            name={`pbs-dialogue-${persona.id}`}
+            inputMode="text"
+            enterKeyHint="send"
+            autoComplete="new-password"
+            aria-autocomplete="none"
+            data-form-type="other"
+            data-lpignore="true"
+            data-1p-ignore="true"
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}
