@@ -186,10 +186,8 @@ function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, 
     ja: snippets.length ? `\n\nインタビューには、さらにこの手がかりがあります：${evidenceJoined}` : '',
     th: snippets.length ? `\n\nฉันยังจำร่องรอยจากบทสัมภาษณ์เหล่านี้ได้: ${evidenceJoined}` : '',
   };
-  if (language === 'zh-TW') return `${response}${evidenceCopy[language]}`;
-  if (language === 'en') return `${response}${evidenceCopy[language]}`;
   const localizedLead: Record<LanguageCode, string> = {
-    'zh-TW': response,
+    'zh-TW': `${intro} 我會先從訪談記憶回答，而不是把你導向一般搜尋。`,
     en: response,
     id: `${intro} Saya akan menjawab dari memori wawancara lebih dulu, bukan sebagai mesin pencari umum.`,
     de: `${intro} Ich antworte zuerst aus der Interview-Erinnerung, nicht als allgemeine Suchmaschine.`,

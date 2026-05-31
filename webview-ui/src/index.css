@@ -8401,3 +8401,88 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     max-height: calc(100dvh - max(44px, var(--safe-top)) - max(44px, var(--safe-bottom))) !important;
   }
 }
+
+/* 2026-05-31 final dialogue typography correction:
+   keep CJK/Thai titles controlled and restore English readability. */
+.rpg-dialogue-panel[data-language] {
+  --dialogue-title-size: clamp(34px, 3.7vw, 50px) !important;
+  --dialogue-role-size: clamp(24px, 2.45vw, 34px) !important;
+  --dialogue-kicker-size: clamp(20px, 1.8vw, 26px) !important;
+  --dialogue-body-size: clamp(22px, 2vw, 30px) !important;
+  --dialogue-control-size: clamp(20px, 1.75vw, 26px) !important;
+}
+
+.rpg-dialogue-panel[data-language="en"] {
+  --dialogue-title-size: clamp(38px, 4.1vw, 56px) !important;
+  --dialogue-role-size: clamp(24px, 2.55vw, 36px) !important;
+  --dialogue-kicker-size: clamp(20px, 1.9vw, 28px) !important;
+  --dialogue-body-size: clamp(22px, 2.15vw, 31px) !important;
+  --dialogue-control-size: clamp(20px, 1.85vw, 27px) !important;
+}
+
+.rpg-dialogue-panel[data-language="ja"],
+.rpg-dialogue-panel[data-language="th"] {
+  --dialogue-title-size: clamp(30px, 3.1vw, 40px) !important;
+  --dialogue-role-size: clamp(22px, 2.25vw, 30px) !important;
+  --dialogue-kicker-size: clamp(18px, 1.7vw, 24px) !important;
+  --dialogue-body-size: clamp(20px, 1.9vw, 27px) !important;
+  --dialogue-control-size: clamp(18px, 1.65vw, 24px) !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-kicker {
+  font-size: var(--dialogue-kicker-size) !important;
+  line-height: 1.18 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-name {
+  font-size: var(--dialogue-title-size) !important;
+  line-height: 1.08 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-role {
+  font-size: var(--dialogue-role-size) !important;
+  line-height: 1.15 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking {
+  font-size: var(--dialogue-body-size) !important;
+  line-height: 1.42 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-chip,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-submit,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-question-toggle {
+  font-size: var(--dialogue-control-size) !important;
+  line-height: 1.22 !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] {
+    --dialogue-title-size: clamp(28px, 7vw, 40px) !important;
+    --dialogue-role-size: clamp(22px, 5.4vw, 30px) !important;
+    --dialogue-kicker-size: clamp(18px, 4.4vw, 24px) !important;
+    --dialogue-body-size: clamp(20px, 5vw, 29px) !important;
+    --dialogue-control-size: clamp(19px, 4.6vw, 26px) !important;
+  }
+
+  .rpg-dialogue-panel[data-language="ja"],
+  .rpg-dialogue-panel[data-language="th"] {
+    --dialogue-title-size: clamp(26px, 6.2vw, 34px) !important;
+    --dialogue-role-size: clamp(20px, 4.8vw, 27px) !important;
+    --dialogue-body-size: clamp(19px, 4.7vw, 26px) !important;
+  }
+
+  .rpg-dialogue-panel[data-language="en"] {
+    --dialogue-title-size: clamp(32px, 7.6vw, 44px) !important;
+    --dialogue-role-size: clamp(22px, 5.4vw, 31px) !important;
+    --dialogue-body-size: clamp(21px, 5.2vw, 30px) !important;
+  }
+}
