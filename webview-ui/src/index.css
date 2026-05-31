@@ -8528,3 +8528,17 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     padding: 6px 8px !important;
   }
 }
+
+/* 2026-05-31 dialogue final parity: body text must not exceed input text. */
+.rpg-dialogue-panel[data-language] {
+  --dialogue-body-size: var(--dialogue-control-size) !important;
+}
+.rpg-dialogue-panel[data-language] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message span,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-input,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-input::placeholder {
+  font-size: var(--dialogue-control-size) !important;
+}

@@ -104,8 +104,10 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "If optional NPC context is present, answer in first person as that NPC, using the persona JSON/profile, response topics, and transcript excerpts as the voice anchor.",
         "Do not write system self-description. Never say phrases like 'X persona', 'X 的人格', 'local-memory game assistant', 'retrieval', 'backend', 'source-first', or 'I will answer from interview memory'.",
         "Use PBS engine evidence for public source grounding and links, but do not flatten the NPC into a generic search assistant.",
+        "No visible Markdown/syntax language in reader-facing dialogue: no **bold**, no backticks, no headings, no bullets, no bracket citations like [1].",
+        "Do not overgeneralize from a single event page. For SGMK, describe it as the Swiss Mechatronic Art Society / mechatronic art, DIY electronics, sound, handmade technology, workshops and gatherings network. Do not call SGMK an AI-workshop organization just because one page mentions an AI talk or workshop.",
         "Use only the source evidence below plus optional NPC context. If evidence is incomplete, say what is missing in the NPC/campfire voice instead of inventing facts.",
-        "Cite evidence by bracket number when useful, but keep citations light in NPC dialogue.",
+        "Mention links by plain language only when useful; keep source references light in NPC dialogue.",
         "Do not say no evidence was found when PBS engine evidence is present.",
         "Keep a little campfire wit when it fits, but be concrete first.",
         "",
@@ -213,7 +215,7 @@ class PbsGameHandler(SimpleHTTPRequestHandler):
                     json.dumps(persona_payload, ensure_ascii=False, indent=2),
                     "Relevant transcript excerpts:",
                     transcript,
-                    "Instruction: answer as this NPC, using the persona and transcript excerpts first; then use public PBS evidence as checkable support.",
+                    "Instruction: answer as this NPC, using the persona and transcript excerpts first as the voice/stance/cadence anchor; public PBS evidence is only checkable support. Do not answer like a generic search assistant.",
                 ])
                 self.send_json(answer_with_memory(question, preferred_language, npc_context=npc_context))
                 return

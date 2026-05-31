@@ -233,6 +233,7 @@ const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
     "我想找藝術表現和生物倫理議題結合的案例，PBS 可以從哪些社群維基開始找？",
+    "我要在哪裡找到這些獨立科技藝術營和社群？",
     "為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？",
     "有沒有電子織品、soft circuit 或 wearable electronics 從教學走向產品/作品的案例？",
     "什麼是獨立藝術營，它和一般展覽、學校課程或科技工作坊有什麼不同？",
@@ -244,6 +245,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   ],
   en: [
     "I want cases where artistic expression meets bioethics; which community wiki paths can PBS start from?",
+    "Where can I find these independent technology-art camps and communities?",
     "Why do hacker camps and independent art camps so often include DIY synths, sound tools, or temporary workshops?",
     "Are there examples where e-textiles, soft circuits, or wearable electronics become products, artworks, or teaching kits?",
     "What is an independent art camp, and how is it different from an exhibition, school course, or tech workshop?",
@@ -255,6 +257,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   ],
   id: [
     "Saya ingin mencari contoh seni yang bertemu isu bioetika; jalur wiki komunitas mana yang bisa dibuka PBS?",
+    "Di mana saya bisa menemukan camp dan komunitas seni-teknologi independen seperti ini?",
     "Mengapa camp hacker atau camp seni independen sering berisi synth DIY, alat suara, dan workshop sementara?",
     "Apakah ada contoh e-textile, soft circuit, atau wearable electronics yang menjadi produk, karya, atau kit belajar?",
     "Apa itu camp seni independen, dan apa bedanya dengan pameran, kelas sekolah, atau workshop teknologi?",
@@ -266,6 +269,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   ],
   de: [
     "Ich suche Beispiele, in denen Kunst und Bioethik zusammentreffen; welche Community-Wiki-Wege kann PBS öffnen?",
+    "Wo finde ich solche unabhängigen Technologie-Kunst-Camps und Communities?",
     "Warum enthalten Hacker-Camps oder unabhängige Kunst-Camps so oft DIY-Synths, Klangwerkzeuge und temporäre Workshops?",
     "Gibt es Beispiele, in denen E-Textiles, Soft Circuits oder Wearables zu Produkten, Kunstwerken oder Lernkits werden?",
     "Was ist ein unabhängiges Kunst-Camp, und wie unterscheidet es sich von Ausstellung, Schulklasse oder Technik-Workshop?",
@@ -277,6 +281,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   ],
   ja: [
     "芸術表現と生命倫理が交わる事例を探したい。PBS はどのコミュニティ wiki から案内できる？",
+    "こうした独立系テクノロジー・アート camp やコミュニティはどこで見つけられる？",
     "ハッカーキャンプや独立アートキャンプに DIY シンセ、音の道具、臨時ワークショップがよくあるのはなぜ？",
     "電子テキスタイル、soft circuit、wearable electronics が製品・作品・教材になる例はある？",
     "独立アートキャンプとは何で、展示、学校授業、技術ワークショップとどう違う？",
@@ -288,6 +293,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   ],
   th: [
     "ฉันอยากหาเคสที่ศิลปะเชื่อมกับ bioethics; PBS ควรเริ่มจากเส้นทาง wiki ชุมชนไหน?",
+    "ฉันจะหา independent technology-art camps และชุมชนแบบนี้ได้ที่ไหน?",
     "ทำไม hacker camp หรือ independent art camp มักมี DIY synth เครื่องมือเสียง และเวิร์กช็อปชั่วคราว?",
     "มีตัวอย่าง e-textile, soft circuit หรือ wearable electronics ที่กลายเป็นสินค้า งานศิลปะ หรือชุดเรียนรู้ไหม?",
     "independent art camp คืออะไร และต่างจากนิทรรศการ ห้องเรียน หรือเวิร์กช็อปเทคโนโลยีอย่างไร?",

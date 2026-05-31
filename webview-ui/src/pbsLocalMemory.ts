@@ -86,7 +86,7 @@ export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult
       title: item.title,
       url: item.url || `${import.meta.env.BASE_URL}${item.path}`,
       description: compact(item.description, 240),
-      sourceFamily: `PBS local memory / ${item.sourceFamily}`,
+      sourceFamily: `PBS community memory / ${item.sourceFamily}`,
       score,
     }));
 }
@@ -110,12 +110,12 @@ export function pbsLocalMemorySourceCards(limit = 80): SourceCard[] {
     id: `pbs-local-memory:${item.path || index.toString()}`,
     title: item.title,
     excerpt: compact(item.description, 1200),
-    keywords: [item.sourceFamily, 'PBS local memory', 'source-first memory'],
+    keywords: [item.sourceFamily, 'PBS community memory', 'public wiki memory'],
     tags: ['pbs-local-memory', item.sourceFamily],
-    source: `PBS local memory / ${item.sourceFamily}`,
+    source: `PBS community memory / ${item.sourceFamily}`,
     url: item.url,
     path: item.path,
-    semanticLayer: 'source-first local memory',
+    semanticLayer: 'community memory',
   }));
 }
 
@@ -132,12 +132,12 @@ export function buildStaticLocalMemoryAnswer(query: string, results: WikiSearchR
   const top = results.slice(0, 3);
   const list = (separator: string) => top.map((item, i) => `[${i + 1}] ${item.title}`).join(separator);
   const copy: Record<string, string> = {
-    'zh-TW': `火先從已打包的 PBS source-first index 撿出三塊木柴。關於「${compact(query, 28)}」，可先讀 ${list('、')}，再把這些頁面當成可檢查的證據來延伸。`,
-    en: `The campfire found source-first local memory. For “${compact(query, 42)}”, start with ${list(', ')} and use these pages as checkable evidence.`,
-    id: `Api unggun menemukan memori lokal source-first. Untuk “${compact(query, 42)}”, mulai dari ${list(', ')} dan pakai halaman ini sebagai bukti yang bisa diperiksa.`,
-    de: `Das Lagerfeuer fand source-first lokale Erinnerung. Zu „${compact(query, 42)}“ beginne mit ${list(', ')} und nutze diese Seiten als prüfbare Evidenz.`,
-    ja: `火は source-first のローカル記憶を見つけました。「${compact(query, 42)}」については、まず ${list('、')} を読み、確認できる証拠として使ってください。`,
-    th: `กองไฟพบความทรงจำ local แบบ source-first สำหรับ “${compact(query, 42)}” เริ่มจาก ${list(', ')} และใช้หน้าเหล่านี้เป็นหลักฐานที่ตรวจสอบได้`,
+    'zh-TW': `火先從已打包的 PBS community index 撿出三塊木柴。關於「${compact(query, 28)}」，可先讀 ${list('、')}，再把這些頁面當成可檢查的證據來延伸。`,
+    en: `The campfire found community memory. For “${compact(query, 42)}”, start with ${list(', ')} and use these pages as checkable evidence.`,
+    id: `Api unggun menemukan memori komunitas PBS. Untuk “${compact(query, 42)}”, mulai dari ${list(', ')} dan pakai halaman ini sebagai bukti yang bisa diperiksa.`,
+    de: `Das Lagerfeuer fand PBS-Community-Erinnerung. Zu „${compact(query, 42)}“ beginne mit ${list(', ')} und nutze diese Seiten als prüfbare Evidenz.`,
+    ja: `火は PBS のコミュニティ記憶を見つけました。「${compact(query, 42)}」については、まず ${list('、')} を読み、確認できる証拠として使ってください。`,
+    th: `กองไฟพบความทรงจำชุมชนของ PBS สำหรับ “${compact(query, 42)}” เริ่มจาก ${list(', ')} และใช้หน้าเหล่านี้เป็นหลักฐานที่ตรวจสอบได้`,
   };
   return copy[language] ?? copy.en;
 }

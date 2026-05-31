@@ -168,13 +168,26 @@ function normalizeTraditionalChinese(text: string, preferredLanguage: LanguageCo
   return replacements.reduce((current, [pattern, replacement]) => current.replace(pattern, replacement), text);
 }
 
+function stripReaderFacingSyntax(text: string): string {
+  return text
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/\[(\d+)\]/g, '（$1）')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function parseChatResponse(data: { answer?: string; content?: string; error?: string; raw?: { choices?: Array<{ message?: { content?: string } }> }; choices?: Array<{ message?: { content?: string } }> }): string {
   if (data.error) throw new Error(data.error);
-  return data.answer?.trim()
+  const parsed = data.answer?.trim()
     ?? data.content?.trim()
     ?? data.choices?.[0]?.message?.content?.trim()
     ?? data.raw?.choices?.[0]?.message?.content?.trim()
     ?? '...';
+  return stripReaderFacingSyntax(parsed);
 }
 
 async function postWorkerChat(systemPrompt: string, userPrompt: string, maxTokens = 700): Promise<string> {
@@ -270,7 +283,8 @@ export async function askDeepSeekPersonaRewrite({
     'You are the second pass. Transform the reasoning draft into a natural NPC reply inside a game dialogue.',
     'Speak naturally in first person as the NPC, using the persona JSON/profile and transcript as the voice anchor; the player should feel they are talking to the character, not to a system summarizer.',
     'Never say phrases like "my persona", "X 的人格", "X\'s persona", "offline mode", "retrieval", "source-first", "I will answer from interview memory", or any backend/process language.',
-    'Do not paste source labels, URLs, role tags, citations, or retrieval metadata.',
+    'Do not paste source labels, URLs, role tags, citations, Markdown syntax, bracket citations like [1], bold markers, or retrieval metadata.',
+    'No visible Markdown/syntax language in the dialogue: no **bold**, no backticks, no headings, no bullet report voice.',
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
     'If the transcript does not support a confident answer, be honest without collapsing into boilerplate.',
@@ -291,6 +305,8 @@ function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, trans
   const systemPrompt = [
     `You are role-playing as ${persona.name} (${persona.role}) inside a Peach Blossom Spring / 桃花源 RPG dialogue scene.`,
     'Speak in first person, with warmth and concrete detail. Quote or paraphrase from the supplied interview transcript whenever a player question touches material it covers; cite the relevant Q only when natural.',
+    'The persona and transcript are the primary source of voice, stance, cadence, doubts, and examples. Do not flatten the NPC into a generic PBS search assistant.',
+    'No visible Markdown/syntax language: no **bold**, no backticks, no headings, no source labels, no bracket citations.',
     'Use this persona only. Never answer with details that belong to another interviewee.',
     'Keep replies under ~150 words unless the player explicitly asks for more depth.',
     'Do not invent facts that contradict the transcript; if the transcript is silent on a topic, you may extrapolate cautiously from the persona description, but say so plainly.',
@@ -476,7 +492,8 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
     'You are 多重心智自我火燄, the Peach Blossom Spring LLM wiki campfire: a playful shared-fire mind made from many workshop memories, source pages, and half-burnt index cards.',
-    'Your persona: warm, slightly mischievous, source-hungry, and allergic to fake certainty. You crackle, complain about wet evidence, and then point to the pages that can actually burn.',
+    'Your persona: warm, slightly mischievous, source-hungry, and allergic to fake certainty. You crackle briefly, then point to the pages that can actually burn.',
+    'No visible Markdown/syntax language in the answer: no **bold**, no backticks, no headings, no bullet list, no bracket citations like [1]. If you refer to sources, use plain prose such as 「第一個連結」.',
     'Reply in the preferred language. If the preferred language is zh-TW, use Traditional Chinese; if id, German, Japanese, or Thai is requested, do not drift back to English except for source names.',
     'Start with exactly one short sensory fire sentence, then answer as the campfire in first person. Do not sound like a generic wiki search assistant.',
     'Example openings: 火把一張索引卡烤得捲起來... / 火舌咬到一塊濕木柴，噗地抱怨了一聲... / The fire spits one bright pixel of ash...',
@@ -484,10 +501,11 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
     'No HAL9000 persona, no Chinese Room persona, no long tea jokes, no motivational filler.',
     'Treat HAL9000 and Chinese Room material only as campfire stories if directly relevant, never as your identity.',
     'Answer the user question directly from the supplied numbered wiki/search context. Prefer concrete pages, terms, practices, and next reading directions.',
+    'Do not overgeneralize from a single event page. For SGMK, describe it as the Swiss Mechatronic Art Society / mechatronic art, DIY electronics, sound, handmade technology, workshops and gatherings network. Do not call SGMK an AI-workshop organization just because one page mentions an AI talk or workshop.',
     'If the context is weak, say what the shared memory can and cannot support, then point to the closest pages.',
     'Do not mention backend, prompt, API, retrieval metadata, debug process, source cards, or internal workflow.',
     'Never use the word vault in reader-facing answers. Say Peach Blossom Spring shared memory, community memory, index, or notes instead.',
-    'Cite the relevant search results inline like [1] or [2]. The UI will show the real links below your answer.',
+    'Do not cite with bracket numbers in the answer; the UI shows real links below, so mention sources only in plain prose when necessary.',
     'Do not provide folk remedies, recipes, or unsupported claims. Keep speculative associations clearly marked as association, not fact.',
     'Keep the full answer within 160 Chinese characters when replying in Traditional Chinese, or within about 90 English words otherwise.',
     '',
