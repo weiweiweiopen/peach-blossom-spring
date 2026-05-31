@@ -27,7 +27,8 @@ const engine = readFileSync(join(root, "src", "daydream", "engine.ts"), "utf8");
 const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
 const wikiSearch = readFileSync(join(root, "src", "wikiSearch.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
-const editorialPrompt = readFileSync(join(root, "prompts", "association-editorial-system.md"), "utf8");
+const retroBoot = readFileSync(join(root, "src", "components", "RetroBootScreen.tsx"), "utf8");
+const bridgeWriterPrompt = readFileSync(join(root, "prompts", "pbs-bridge-writer-system.md"), "utf8");
 const wikiTool = readFileSync(join(root, "..", "scripts", "wiki_tool.py"), "utf8");
 
 const checks = [
@@ -77,14 +78,15 @@ const checks = [
   ["UI system uses per-language font stacks", /data-language="zh-TW"[\s\S]*PingFang TC[\s\S]*data-language="ja"[\s\S]*Hiragino Sans[\s\S]*data-language="th"[\s\S]*Noto Sans Thai/.test(uiSystem)],
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
   ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
-  ["Zine prompt uses route-first wiki mode", /route-first PBS wiki zine/.test(generator) && /route-first wiki 小誌/.test(editorialPrompt) && /reading route/.test(generator + editorialPrompt) && /support.*counter-evidence|反例/.test(editorialPrompt + generator)],
+  ["Zine prompt uses route-first wiki mode", /route-first PBS wiki zine/.test(generator) && /route-first wiki zine/.test(bridgeWriterPrompt) && /reading route/.test(generator + bridgeWriterPrompt) && /support.*counter-evidence|反例/.test(bridgeWriterPrompt + generator)],
   ["Zine generation avoids page-count padding", /articleLengthInstruction[\s\S]*exactly seven main sections[\s\S]*Do not pad with filler/.test(generator) && !/ZINE_PRINT_PAGE_MULTIPLE|ZINE_TARGET_PRINT_PAGES|PRINT BINDING TARGET/.test(generator)],
   ["Zine print script only hides feedback", /function zinePrintCalibrationScript[\s\S]*beforeprint[\s\S]*setPrintMode\(true\)/.test(generator) && !/data-pbs-materials-mode|targetPages|calibrated-pages/.test(generator)],
   ["Zine section prose is route-readable", /Each section body should be 110-190 words/.test(generator) && /visible text thin:/.test(generator) && !/body 必須符合/.test(generator)],
   ["Zine renderer keeps coherent seven-section article", /sections = artifact\.sections\.slice\(0, 7\)/.test(template) && /ZINE_SECTION_COUNT = 7/.test(generator) && /for \(let index = 0; index < ZINE_SECTION_COUNT; index \+= 1\)/.test(generator)],
   ["Evidence hygiene blocks SEO spam across retrieval", /SEO_SPAM_EVIDENCE[\s\S]*dissertation writing services/.test(evidenceHygiene) && /isSpamEvidence\(evidenceTextForHygiene\(card\)\)/.test(wikiSearch) && /evidenceHygienePenalty\(text\)/.test(generator)],
   ["Kitchen bioart queries prefer Hackteria over generic workshops", /sourceIntentBoost/.test(engine) && /wantsHackteria[\s\S]*source === "hackteria"/.test(engine) && /廚房\|厨房\|料理\|食物\|餐\|發酵/.test(engine) && !/廚房\|厨房\|料理\|食物\|餐\|發酵[^\n]+workshop/.test(engine) && /wantsHackteriaKitchenBioQuery/.test(generator + wikiSearch)],
-  ["NotebookLM source pack feeds zine runtime", /compile-source-notes/.test(wikiTool) && /SourceNotes/.test(wikiTool) && /extract_source_passages/.test(wikiTool) && /notebookSourcePack/.test(generator) && /Treat notebookSourcePack as the primary NotebookLM-style source pack/.test(generator) && /notebookSourcePack \/ compiled source notes/.test(editorialPrompt)],
+  ["PBS 2026.2 disables generated source-note startup corpus", /compile-source-notes is disabled in PBS-2026\.2/.test(wikiTool) && !/COMPILED_WIKI_FOLDERS = \[\s*"SourceNotes"/.test(wikiTool) && /PBS-2026\.2\.26701788323/.test(retroBoot) && /NOTEBOOKLM BRIDGE/.test(retroBoot) && /PBS bridge writer/.test(bridgeWriterPrompt) && /public source packet/.test(bridgeWriterPrompt) && !/notebookSourcePack \/ compiled source notes/.test(bridgeWriterPrompt)],
+  ["PBS 2026.2 preserves local wiki knowledge sovereignty", /canonical memory \/ source-of-ownership/.test(bridgeWriterPrompt) && /NotebookLM 是 shovel/.test(bridgeWriterPrompt) && /raw sources 是 source of truth/.test(bridgeWriterPrompt) && /git 審計/.test(bridgeWriterPrompt)],
   ["Analytical concepts use evidence clusters", /supportEvidence\?: RegExp/.test(generator) && /minimumSupportHits\?: number/.test(generator) && /community\|collective\|shared\|open source\|documentation\|workshop\|maintenance/.test(generator) && /conceptualQueryHints/.test(generator + wikiSearch)],
   ["Zine print avoids fake fixed-height pages", !/height:\s*257mm/.test(generator) && !/page-break-after:\s*always/.test(generator) && /\.page \{ break-after: auto !important; page-break-after: auto !important/.test(generator)],
   ["Zine print no longer page-calibrates", !/let bestUnder = null|targetPages|calibrate\(\)/.test(generator)],
@@ -123,7 +125,7 @@ const checks = [
   ["DeepSeek zine timeout allows slow first response", /DEEPSEEK_REQUEST_TIMEOUT_MS\s*=\s*120000/.test(generator) && /EDITORIAL_WRITER_TIMEOUT_MS\s*=\s*300000/.test(generator)],
   ["Boot and zine loading dots are colorful", /\.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)[\s\S]*22px 0 0 var\(--palette-pink\)[\s\S]*44px 0 0 var\(--palette-yellow\)/.test(css) && /\.world-association-loading \.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)/.test(css)],
   ["Boot loading title uses stable pixel font size", /@font-face[\s\S]*font-display:\s*block/.test(css) && /\.boot-loading-title[\s\S]*font-family:\s*var\(--font-pixel\) !important[\s\S]*font-size:\s*clamp\(26px,\s*4\.2vw,\s*42px\)/.test(css)],
-  ["Schema exposes editable local editorial prompt", /association-editorial-system\.md\?raw/.test(app) && /schema-editorial-prompt-editor/.test(app + css) && /pbs:association-editorial-system-prompt:v1/.test(app + generator) && /currentEditorialSystemPrompt/.test(generator)],
+  ["Schema exposes editable local bridge writer prompt", /pbs-bridge-writer-system\.md\?raw/.test(app + generator) && /schema-editorial-prompt-editor/.test(app + css) && /pbs:bridge-writer-system-prompt:v2/.test(app + generator) && /currentEditorialSystemPrompt/.test(generator)],
   ["Campfire header copy is multilingual", /PBS_COMPUTER_COPY[\s\S]*"zh-TW":[\s\S]*name:\s*"多重心智自我火燄"[\s\S]*en:[\s\S]*name:\s*"The Multi-Minds Self Campfire"[\s\S]*id:[\s\S]*de:[\s\S]*ja:[\s\S]*th:/.test(app) && /<h2[\s\S]*>\{copy\.name\}<\/h2>/.test(app) && !/Association \/ 聯想 shared-fire terminal/.test(app)],
   ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],

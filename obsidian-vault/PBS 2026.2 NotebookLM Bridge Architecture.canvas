@@ -1,0 +1,34 @@
+{
+	"nodes":[
+		{"id":"title","type":"text","text":"PBS 2026.2 / NotebookLM Bridge + Karpathy-Style Wiki Memory\n\nStarting condition: no generated local source corpus. NotebookLM is used as the high-speed public-source reading engine. PBS stores durable context locally or in GitHub only after player use, review, or promotion.","x":-1420,"y":-780,"width":1500,"height":190,"color":"1"},
+		{"id":"g-platform","type":"group","x":-1420,"y":-520,"width":520,"height":620,"color":"4","label":"1. Platform Boost / transient cognition"},
+		{"id":"g-adapter","type":"group","x":-820,"y":-520,"width":560,"height":620,"color":"6","label":"2. PBS NotebookLM bridge"},
+		{"id":"g-session","type":"group","x":-180,"y":-520,"width":620,"height":620,"color":"2","label":"3. Notebook session / local context"},
+		{"id":"g-wiki","type":"group","x":520,"y":-520,"width":660,"height":620,"color":"3","label":"4. Karpathy-style durable wiki memory"},
+		{"id":"g-world","type":"group","x":1260,"y":-520,"width":620,"height":620,"color":"5","label":"5. Playable PBS world"},
+		{"id":"notebooklm","type":"text","text":"NotebookLM notebook\n\n• Public Hackteria / SGMK / KOBAKANT sources\n• Google account-bound source set\n• Fast source extraction, chunking, rerank, citations, reports\n\nRule: only send public or explicitly approved source-level questions.","x":-1370,"y":-430,"width":420,"height":270,"color":"4"},
+		{"id":"privacy","type":"text","text":"Privacy boundary\n\nDo not send:\n• private player memory\n• unpublished interviews\n• secrets / API keys / cookies\n• sensitive community data\n\nPublic source questions may use Platform Boost. Private memory stays local.","x":-1370,"y":-120,"width":420,"height":250,"color":"1"},
+		{"id":"cli","type":"text","text":"Local bridge command\n\n/Users/shihweichieh/.openclaw/workspace/.venv-notebooklm/bin/notebooklm\n\nMinimal calls:\n• metadata --json\n• ask --prompt-file\n• generate report\n• source fulltext when available\n\nNo auth state is committed.","x":-770,"y":-430,"width":460,"height":270,"color":"6"},
+		{"id":"adapter","type":"text","text":"PBS adapter schema\n\nNotebookLM output → PBS trace:\n• query\n• notebookId\n• answer/report\n• cited sources\n• excerpts if available\n• claim/evidence map\n• suggested questions\n\nThis is the new source pack. It is query-time, not precompiled.","x":-770,"y":-120,"width":460,"height":250,"color":"6"},
+		{"id":"session","type":"text","text":"Notebook session store\n\nLocal-first context:\n• source pack used\n• zine generated\n• player edits\n• unsupported claims\n• repair feedback\n• promotion decisions\n\nStorage target: IndexedDB first, then optional download / GitHub commit.","x":-120,"y":-430,"width":500,"height":270,"color":"2"},
+		{"id":"trace","type":"text","text":"Trace before wiki\n\nEvery answer leaves a reviewable trace.\n\nTrace is not truth. It records what NotebookLM said, which sources it cited, and what PBS should verify or promote later.","x":-120,"y":-120,"width":500,"height":250,"color":"2"},
+		{"id":"wiki","type":"file","file":"Wiki/index.md","x":580,"y":-430,"width":260,"height":100,"color":"3"},
+		{"id":"review","type":"text","text":"Promotion queue\n\nTrace → Review first:\n• Review/notebooklm-traces/\n• Review/query-routes/\n• Review/compiled-note-drafts/\n\nOnly reviewed items become Concepts, Methods, Materials, SocialForms, Projects, Comparisons, Syntheses, Questions, Zines, or source snapshots.","x":860,"y":-430,"width":270,"height":270,"color":"3"},
+		{"id":"memory","type":"text","text":"Karpathy-style memory rule\n\nThe wiki is a persistent markdown memory bank. It grows from source-backed traces, not from startup bulk preprocessing.\n\nNo generated SourceNotes corpus at boot.","x":580,"y":-120,"width":550,"height":250,"color":"3"},
+		{"id":"world","type":"text","text":"Playable memory surfaces\n\n• PBS Computer asks NotebookLM-backed public source questions\n• Zine renders the answer as a public artifact\n• Pet marks thin claims and missing evidence\n• NPCs remember promoted traces\n• Campfire shows shared notebook sessions\n• Map grows from recurring routes","x":1320,"y":-430,"width":500,"height":310,"color":"5"},
+		{"id":"version","type":"text","text":"PBS-2026.2.26701788323\n\nSecond-version direction:\nCloud reading, local memory. Platform boost is transient; durable knowledge stays in PBS.","x":1320,"y":-80,"width":500,"height":210,"color":"1"}
+	],
+	"edges":[
+		{"id":"e-platform-cli","fromNode":"notebooklm","fromSide":"right","toNode":"cli","toSide":"left","label":"ask / report / metadata"},
+		{"id":"e-privacy-cli","fromNode":"privacy","fromSide":"right","toNode":"cli","toSide":"left","label":"public-only gate"},
+		{"id":"e-cli-adapter","fromNode":"cli","fromSide":"bottom","toNode":"adapter","toSide":"top","label":"stdout / JSON"},
+		{"id":"e-adapter-session","fromNode":"adapter","fromSide":"right","toNode":"session","toSide":"left","label":"source pack"},
+		{"id":"e-session-trace","fromNode":"session","fromSide":"bottom","toNode":"trace","toSide":"top","label":"save local trace"},
+		{"id":"e-trace-review","fromNode":"trace","fromSide":"right","toNode":"review","toSide":"left","label":"promote only after review"},
+		{"id":"e-review-wiki","fromNode":"review","fromSide":"left","toNode":"wiki","toSide":"right","label":"durable notes"},
+		{"id":"e-wiki-memory","fromNode":"wiki","fromSide":"bottom","toNode":"memory","toSide":"top","label":"persistent context"},
+		{"id":"e-session-world","fromNode":"session","fromSide":"right","toNode":"world","toSide":"left","label":"zine / NPC / pet state"},
+		{"id":"e-memory-world","fromNode":"memory","fromSide":"right","toNode":"world","toSide":"left","label":"playable wiki world"},
+		{"id":"e-version-world","fromNode":"version","fromSide":"top","toNode":"world","toSide":"bottom","label":"release label"}
+	]
+}

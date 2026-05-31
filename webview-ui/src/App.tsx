@@ -28,7 +28,7 @@ import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
 // @ts-ignore Vite raw prompt import for the in-game schema editor.
-import editorialSystemPrompt from "../prompts/association-editorial-system.md?raw";
+import bridgeWriterSystemPrompt from "../prompts/pbs-bridge-writer-system.md?raw";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
@@ -365,19 +365,19 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "小型文化組織與獨立藝術網絡依賴關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作；知識散落在訪談、wiki、雲端文件、展覽紀錄、工作坊材料、社群媒體與口述經驗中，平台或合作一斷裂，脈絡就容易消失。",
       "Non-Governmental Matters 已把電子織品、Hackteria、跨國科技藝術營隊、獨立教育、資金模式與文化差異整理成第一層田野材料。桃花源把這些材料轉成 AI 時代的知識保存問題：文化組織需要能保存、分類、召回、比較、修正與再使用知識的認知系統。",
-      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把跨 wiki、compiled notes 與 source evidence 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。Question Pet 會把玩家問題轉成 lint/maturity 訊號，提示問題如何長大。",
+      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把 public source packet 與已提升 wiki memory 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。Question Pet 會把玩家問題轉成 lint/maturity 訊號，提示問題如何長大。",
     ],
     contributionTitle: "預期貢獻",
     contributions: [
       "把 AI 理解為文化仿真機：不是保存單一過去，而是把語言、圖像、風格、資料與勞動痕跡壓縮成可被呼叫的幽靈機器或迴圈。",
       "提出 LLM Wiki 作為小型文化組織記憶基礎設施的設計方法。",
       "把文化幽靈與媒介考古轉化為 AI 知識保存的實作問題。",
-      "提出統合 compiled notes、大型語言模型與 wiki 的人機協作文化記憶治理框架。",
+      "提出統合 public source packet、大型語言模型與 wiki promotion 的人機協作文化記憶治理框架。",
     ],
     controlsTitle: "遊戲內檢索控制原型",
     controlsIntro: "這些控制項示意玩家未來如何在遊戲內調整會影響檢索、小誌與 lint 的參數，不必重新部署網站。",
     labels: { query: "問題改寫 prompt", writer: "研討型寫作 prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
-    defaults: { query: "把玩家問題改寫成可查證的 PBS LLM Wiki 研究問題；保留模糊性，但補上文化網絡、材料、方法與組織脈絡。", writer: "像研討會短文：釐清問題、提出證據、反例、限制與未來研究方向，不填模板。", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    defaults: { query: "把玩家問題改寫成可查證的 PBS LLM Wiki 研究問題；保留模糊性，但補上文化網絡、材料、方法與組織脈絡。", writer: "像研討會短文：釐清問題、提出證據、反例、限制與未來研究方向，不填模板。", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
     actions: ["預覽檢索包", "生成測試小誌", "保存本機 preset"],
   },
   en: {
@@ -386,74 +386,74 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "Small cultural organizations and independent art networks often run on key people, short grants, temporary workshops, informal communication, and personal memory. Their knowledge is scattered across interviews, wikis, cloud folders, grant files, exhibition records, workshop materials, social media, and oral accounts; when platforms, people, or funding disappear, context disappears with them.",
       "Non-Governmental Matters already turns electronic textiles, Hackteria, transnational art-tech camps, independent education, funding models, and cultural difference into first-layer field material. Peach Blossom Spring reframes those materials as an AI-era knowledge-preservation problem: these organizations need a cognitive system for preserving, classifying, recalling, comparing, correcting, and reusing knowledge.",
-      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines that expose paths across wiki, compiled notes, and source evidence. Question Pet turns player questions into lint and maturity signals, showing how a question can grow.",
+      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines from a public source packet plus promoted wiki memory. Question Pet turns player questions into lint and maturity signals, showing how a question can grow.",
     ],
     contributionTitle: "Expected contributions",
-    contributions: ["AI as cultural emulator: a ghost machine or loop that compresses past language, images, styles, data, and traces of labor into something callable.", "LLM Wiki as memory infrastructure for small cultural organizations.", "Cultural ghosts and media archaeology become practical AI knowledge-preservation problems.", "Compiled notes, LLMs, and wiki become a human-machine governance framework for cultural memory."],
+    contributions: ["AI as cultural emulator: a ghost machine or loop that compresses past language, images, styles, data, and traces of labor into something callable.", "LLM Wiki as memory infrastructure for small cultural organizations.", "Cultural ghosts and media archaeology become practical AI knowledge-preservation problems.", "Public source packets, LLMs, and wiki promotion become a human-machine governance framework for cultural memory."],
     controlsTitle: "In-game retrieval control prototype",
     controlsIntro: "These controls show how players could tune retrieval, zine writing, and lint behavior inside the game without redeploying the site.",
     labels: { query: "Query rewrite prompt", writer: "Seminar writing prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
-    defaults: { query: "Rewrite the player question into an evidence-checkable PBS LLM Wiki research question; keep ambiguity but add cultural network, material, method, and organizational context.", writer: "Write like a seminar note: clarify the question, evidence, counter-evidence, limits, and future research direction; do not fill a template.", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    defaults: { query: "Rewrite the player question into an evidence-checkable PBS LLM Wiki research question; keep ambiguity but add cultural network, material, method, and organizational context.", writer: "Write like a seminar note: clarify the question, evidence, counter-evidence, limits, and future research direction; do not fill a template.", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
     actions: ["Preview packet", "Generate test zine", "Save local preset"],
   },
   id: {
     title: "Ruang kontrol LLM Wiki",
     introTitle: "Peach Blossom Spring sebagai infrastruktur memori",
-    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine yang memperlihatkan jalur antar wiki, compiled notes, dan source evidence. Question Pet mengubah pertanyaan menjadi sinyal lint dan kematangan."],
+    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question Pet mengubah pertanyaan menjadi sinyal lint dan kematangan."],
     contributionTitle: "Kontribusi yang diharapkan",
-    contributions: ["AI sebagai emulator budaya: mesin hantu atau loop yang memadatkan bahasa, gambar, gaya, data, dan jejak kerja masa lalu.", "LLM Wiki sebagai infrastruktur memori untuk organisasi budaya kecil.", "Hantu budaya dan arkeologi media menjadi masalah praktik pelestarian pengetahuan AI.", "Compiled notes, LLM, dan wiki menjadi kerangka tata kelola memori budaya manusia-mesin."],
+    contributions: ["AI sebagai emulator budaya: mesin hantu atau loop yang memadatkan bahasa, gambar, gaya, data, dan jejak kerja masa lalu.", "LLM Wiki sebagai infrastruktur memori untuk organisasi budaya kecil.", "Hantu budaya dan arkeologi media menjadi masalah praktik pelestarian pengetahuan AI.", "Public source packet, LLM, dan wiki promotion menjadi kerangka tata kelola memori budaya manusia-mesin."],
     controlsTitle: "Prototipe kontrol retrieval dalam game",
     controlsIntro: "Kontrol ini menunjukkan bagaimana pemain dapat mengatur retrieval, penulisan zine, dan lint tanpa deploy ulang.",
     labels: { query: "Prompt tulis ulang query", writer: "Prompt tulisan seminar", schema: "Fokus schema", family: "Prioritas sumber", depth: "Kedalaman retrieval", evidence: "Ambang bukti", tone: "Bahasa / nada", output: "Output mencakup" },
-    defaults: { query: "Ubah pertanyaan pemain menjadi pertanyaan riset PBS LLM Wiki yang bisa diperiksa bukti.", writer: "Tulis seperti catatan seminar: pertanyaan, bukti, sanggahan, batas, dan arah riset masa depan.", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "artikel, tautan bacaan, trace prosa, sinyal lint, caveat" },
+    defaults: { query: "Ubah pertanyaan pemain menjadi pertanyaan riset PBS LLM Wiki yang bisa diperiksa bukti.", writer: "Tulis seperti catatan seminar: pertanyaan, bukti, sanggahan, batas, dan arah riset masa depan.", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "artikel, tautan bacaan, trace prosa, sinyal lint, caveat" },
     actions: ["Pratinjau paket", "Buat zine tes", "Simpan preset lokal"],
   },
   de: {
     title: "LLM-Wiki Kontrollraum",
     introTitle: "Peach Blossom Spring als Gedächtnis-Infrastruktur",
-    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines erzeugen, die Pfade zwischen Wiki, compiled notes und source evidence offenlegen. Question Pet übersetzt Fragen in Lint- und Reifesignale."],
+    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines aus public source packet und promoted wiki memory erzeugen. Question Pet übersetzt Fragen in Lint- und Reifesignale."],
     contributionTitle: "Erwartete Beiträge",
-    contributions: ["KI als kultureller Emulator: eine Geistermaschine oder Schleife, die vergangene Sprache, Bilder, Stile, Daten und Arbeitsspuren aufrufbar verdichtet.", "LLM Wiki als Gedächtnis-Infrastruktur für kleine Kulturorganisationen.", "Kulturelle Geister und Medienarchäologie werden praktische KI-Wissensbewahrungsfragen.", "Compiled notes, LLMs und Wiki bilden ein Mensch-Maschine-Governance-Framework für kulturelles Gedächtnis."],
+    contributions: ["KI als kultureller Emulator: eine Geistermaschine oder Schleife, die vergangene Sprache, Bilder, Stile, Daten und Arbeitsspuren aufrufbar verdichtet.", "LLM Wiki als Gedächtnis-Infrastruktur für kleine Kulturorganisationen.", "Kulturelle Geister und Medienarchäologie werden praktische KI-Wissensbewahrungsfragen.", "Public source packet, LLMs und wiki promotion bilden ein Mensch-Maschine-Governance-Framework für kulturelles Gedächtnis."],
     controlsTitle: "In-game Retrieval-Kontrollprototyp",
     controlsIntro: "Diese Regler zeigen, wie Spieler Retrieval, Zine-Schreiben und Lint im Spiel anpassen könnten, ohne neu zu deployen.",
     labels: { query: "Query-Rewrite-Prompt", writer: "Seminar-Schreibprompt", schema: "Schema-Fokus", family: "Quellenpriorität", depth: "Retrieval-Tiefe", evidence: "Evidenzschwelle", tone: "Sprache / Ton", output: "Output enthält" },
-    defaults: { query: "Forme die Spielerfrage in eine überprüfbare PBS LLM Wiki Forschungsfrage um.", writer: "Schreibe wie eine Seminarnotiz: Frage, Evidenz, Gegenbelege, Grenzen und Forschungsrichtung.", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "Artikel, Leselinks, Prosa-Trace, Lint-Signale, Caveats" },
+    defaults: { query: "Forme die Spielerfrage in eine überprüfbare PBS LLM Wiki Forschungsfrage um.", writer: "Schreibe wie eine Seminarnotiz: Frage, Evidenz, Gegenbelege, Grenzen und Forschungsrichtung.", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "Artikel, Leselinks, Prosa-Trace, Lint-Signale, Caveats" },
     actions: ["Paket prüfen", "Test-Zine", "Preset speichern"],
   },
   ja: {
     title: "LLM Wiki コントロール室",
     introTitle: "記憶基盤としての桃花源",
-    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、wiki、compiled notes、source evidence を横断する経路を小誌にすること。Question Pet は問いを lint と成熟度のシグナルに変える。"],
+    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question Pet は問いを lint と成熟度のシグナルに変える。"],
     contributionTitle: "期待される貢献",
-    contributions: ["AI を文化エミュレーター、過去の言語・画像・様式・データ・労働痕跡を呼び出せる幽霊機械またはループとして捉える。", "小さな文化組織の記憶基盤として LLM Wiki を提案する。", "文化の幽霊とメディア考古学を AI 知識保存の実践問題に変える。", "compiled notes、LLM、wiki による人間機械協働の文化記憶ガバナンスを示す。"],
+    contributions: ["AI を文化エミュレーター、過去の言語・画像・様式・データ・労働痕跡を呼び出せる幽霊機械またはループとして捉える。", "小さな文化組織の記憶基盤として LLM Wiki を提案する。", "文化の幽霊とメディア考古学を AI 知識保存の実践問題に変える。", "public source packet、LLM、wiki promotion による人間機械協働の文化記憶ガバナンスを示す。"],
     controlsTitle: "ゲーム内検索コントロール試作",
     controlsIntro: "再デプロイせず、ゲーム内で検索・小誌生成・lint を調整するための試作 UI。",
     labels: { query: "問いの書き換え prompt", writer: "研究会風の執筆 prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
-    defaults: { query: "プレイヤーの問いを、証拠で確認できる PBS LLM Wiki の研究質問に書き換える。", writer: "研究会メモのように、問い、証拠、反証、限界、次の研究方向を書く。", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    defaults: { query: "プレイヤーの問いを、証拠で確認できる PBS LLM Wiki の研究質問に書き換える。", writer: "研究会メモのように、問い、証拠、反証、限界、次の研究方向を書く。", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
     actions: ["検索包をプレビュー", "テスト小誌", "preset 保存"],
   },
   th: {
     title: "ห้องควบคุม LLM Wiki",
     introTitle: "Peach Blossom Spring ในฐานะโครงสร้างความจำ",
-    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม wiki, compiled notes และ source evidence ส่วน Question Pet แปลงคำถามเป็นสัญญาณ lint และ maturity"],
+    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน Question Pet แปลงคำถามเป็นสัญญาณ lint และ maturity"],
     contributionTitle: "ผลงานที่คาดหวัง",
-    contributions: ["AI เป็น emulator ทางวัฒนธรรม: เครื่องผีหรือ loop ที่บีบอัดภาษา ภาพ สไตล์ ข้อมูล และร่องรอยแรงงานในอดีตให้เรียกใช้ได้", "LLM Wiki เป็นโครงสร้างความจำสำหรับองค์กรวัฒนธรรมขนาดเล็ก", "ผีทางวัฒนธรรมและโบราณคดีสื่อกลายเป็นโจทย์ปฏิบัติของการเก็บรักษาความรู้ด้วย AI", "compiled notes, LLM และ wiki เป็นกรอบ governance ความทรงจำวัฒนธรรมแบบคน-เครื่อง"],
+    contributions: ["AI เป็น emulator ทางวัฒนธรรม: เครื่องผีหรือ loop ที่บีบอัดภาษา ภาพ สไตล์ ข้อมูล และร่องรอยแรงงานในอดีตให้เรียกใช้ได้", "LLM Wiki เป็นโครงสร้างความจำสำหรับองค์กรวัฒนธรรมขนาดเล็ก", "ผีทางวัฒนธรรมและโบราณคดีสื่อกลายเป็นโจทย์ปฏิบัติของการเก็บรักษาความรู้ด้วย AI", "public source packets, LLM และ wiki เป็นกรอบ governance ความทรงจำวัฒนธรรมแบบคน-เครื่อง"],
     controlsTitle: "ต้นแบบควบคุม retrieval ในเกม",
     controlsIntro: "คอนโทรลเหล่านี้แสดงวิธีปรับ retrieval, การเขียนซีน และ lint ในเกมโดยไม่ต้อง deploy ใหม่",
     labels: { query: "Query rewrite prompt", writer: "Seminar writing prompt", schema: "Schema focus", family: "Source priority", depth: "Retrieval depth", evidence: "Evidence threshold", tone: "Language / tone", output: "Output includes" },
-    defaults: { query: "เขียนคำถามผู้เล่นใหม่ให้เป็นคำถามวิจัย PBS LLM Wiki ที่ตรวจสอบด้วยหลักฐานได้", writer: "เขียนเหมือนโน้ตสัมมนา: คำถาม หลักฐาน ข้อโต้แย้ง ข้อจำกัด และทิศทางวิจัยต่อไป", schema: "compiled notes, bridge/index notes, evidence cards, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
+    defaults: { query: "เขียนคำถามผู้เล่นใหม่ให้เป็นคำถามวิจัย PBS LLM Wiki ที่ตรวจสอบด้วยหลักฐานได้", writer: "เขียนเหมือนโน้ตสัมมนา: คำถาม หลักฐาน ข้อโต้แย้ง ข้อจำกัด และทิศทางวิจัยต่อไป", schema: "public source packet, promoted wiki memory, wikilink paths, lint maturity", output: "article, reading links, prose trace, lint signals, caveats" },
     actions: ["Preview packet", "Generate test zine", "Save preset"],
   },
 };
 
 function SchemaControlRoom({ language }: { language: LanguageCode }) {
   const copy = SCHEMA_CONTROL_COPY[language];
-  const promptStorageKey = "pbs:association-editorial-system-prompt:v1";
+  const promptStorageKey = "pbs:bridge-writer-system-prompt:v2";
   const [editorialPromptDraft, setEditorialPromptDraft] = useState(() => {
     try {
-      return window.localStorage.getItem(promptStorageKey) || editorialSystemPrompt;
+      return window.localStorage.getItem(promptStorageKey) || bridgeWriterSystemPrompt;
     } catch {
-      return editorialSystemPrompt;
+      return bridgeWriterSystemPrompt;
     }
   });
   const [promptSaved, setPromptSaved] = useState(false);
@@ -533,8 +533,8 @@ function SchemaControlRoom({ language }: { language: LanguageCode }) {
       </section>
 
       <section className="schema-control-prototype schema-editorial-prompt-editor">
-        <h3>Editorial prompt</h3>
-        <p>Edit the LLM Wiki zine editorial system prompt locally. Save writes to this browser only.</p>
+        <h3>PBS bridge writer prompt</h3>
+        <p>Edit the PBS-2026.2 bridge writer prompt locally. Save writes to this browser only.</p>
         <textarea value={editorialPromptDraft} onChange={(event) => setEditorialPromptDraft(event.target.value)} spellCheck={false} />
         <div className="schema-control-actions">
           <button type="button" onClick={saveEditorialPrompt}>Save local prompt</button>
@@ -1338,7 +1338,7 @@ function buildZineRepairReport(payload: ZineRepairPayload, panel: Extract<SplitP
     },
     suggestedVaultActions: [
       ...(reviewActions.length > 0 ? reviewActions : ["promote-to-wiki-draft"]),
-      "Review whether uselessParts indicate unsupported synthesis, weak compiled Wiki notes, or missing sourceRefs.",
+      "Review whether uselessParts indicate unsupported synthesis, weak promoted wiki memory, or missing sourceRefs.",
       "If a useful relation is evidence-bound, consider promoting it into a reviewed Wiki note instead of raw Sources.",
       "If the repair names missing evidence, add a Review gap artifact before mutating source or compiled Wiki pages.",
     ],

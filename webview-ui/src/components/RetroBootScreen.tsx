@@ -38,14 +38,14 @@ function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
       <div className="retro-boot-stage pbs-frame F1 pbs-frame-f1">
         <div className="retro-sticker-bar">
           <span>PBS-2026</span>
-          <span className="retro-version-stack"><span>PBS-2026.2.36</span><span>HACKER CAMP PORN</span></span>
+          <span className="retro-version-stack"><span>PBS-2026.2.26701788323</span><span>NOTEBOOKLM BRIDGE</span></span>
         </div>
 
         <div className="retro-screen">
           <div className="retro-title-card" data-language={language}>
             <p className="retro-kicker">Non-Governmental Matters</p>
             <h1>{t(language, "home.title")}</h1>
-            <p>Dipatching a LLM wiki tamagotchi</p>
+            <p>Dispatching a NotebookLM bridge into a local LLM wiki world</p>
             <button className="retro-start-button" type="button" onClick={onStart} onKeyDown={handleKeyDown} autoFocus>
               PRESS START
             </button>

@@ -9,7 +9,7 @@ import type { DaydreamCorpus, SourceCard } from "./engine.js";
 import type { DaydreamPublicArtifactContent } from "./publicArtifactContent.js";
 import type { DaydreamHtmlLayoutVariant } from "./publicArtifactHtml.js";
 // @ts-ignore Vite raw prompt import from project-level editable prompt file.
-import editorialSystemPrompt from "../../prompts/association-editorial-system.md?raw";
+import bridgeWriterSystemPrompt from "../../prompts/pbs-bridge-writer-system.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
 import bridgeReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
 // @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
@@ -27,9 +27,9 @@ const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarr
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 120000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 300000;
 const ZINE_SECTION_COUNT = 7;
-const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes|SourceNotes|NotebookLM bridge|primarySourcePacket|notebookSourcePack)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
-const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:association-editorial-system-prompt:v1";
+const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:bridge-writer-system-prompt:v2";
 
 export interface BrowserAssociationResult {
   title: string;
@@ -81,12 +81,12 @@ type CompiledWikiNote = {
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
 const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
-  { title: "PBS bridge notes / README", path: "Sources/PBS Semantic Layers/README.md", text: bridgeReadme, role: "compiled bridge overview" },
+  { title: "PBS public theme index / README", path: "Sources/PBS Semantic Layers/README.md", text: bridgeReadme, role: "public theme overview" },
   { title: "PBS bridge notes / Concepts", path: "Sources/PBS Semantic Layers/Concepts.md", text: bridgeConcepts, role: "concept index" },
   { title: "PBS bridge notes / Tools", path: "Sources/PBS Semantic Layers/Tools.md", text: bridgeTools, role: "tool and method index" },
   { title: "PBS bridge notes / Events", path: "Sources/PBS Semantic Layers/Events.md", text: bridgeEvents, role: "event and workshop index" },
   { title: "PBS entity bridge notes / README", path: "Sources/PBS Entity Layers/README.md", text: bridgeEntities, role: "entity bridge overview" },
-  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use public reading pages, compiled notes, and bridge/index notes as evidence entry points.", role: "public wiki index" },
+  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use promoted public wiki pages as context, then ground visible claims in current public evidence.", role: "public wiki index" },
 ];
 let compiledWikiIndexPromise: Promise<CompiledWikiNote[]> | null = null;
 const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; directEvidence: RegExp; supportEvidence?: RegExp; minimumSupportHits?: number }> = [
@@ -229,9 +229,9 @@ function progressCopy(language: AssociationZineLanguage) {
 
 function currentEditorialSystemPrompt(): string {
   try {
-    return window.localStorage.getItem(EDITORIAL_PROMPT_STORAGE_KEY) || editorialSystemPrompt;
+    return window.localStorage.getItem(EDITORIAL_PROMPT_STORAGE_KEY) || bridgeWriterSystemPrompt;
   } catch {
-    return editorialSystemPrompt;
+    return bridgeWriterSystemPrompt;
   }
 }
 
@@ -571,7 +571,7 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
   }));
 }
 
-function notebookSourcePack(notes: CompiledWikiNote[]) {
+function primarySourcePacket(notes: CompiledWikiNote[]) {
   return compiledWikiPromptNotes(notes.filter((note) => note.type === "source").slice(0, 10));
 }
 
@@ -629,7 +629,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
       "全文只服務同一個中心問題：先判斷材料能形成論點，還是只能形成閱讀路徑；不要把後者偽裝成前者。",
       "把小誌寫成 PBS wiki 導讀：支持、反對、限制、缺口與未來查證方向都要清楚，不要填充漂亮句子。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
-      "把 compiled notes 與 bridge/index notes 當作作者的索引，不要在公開文章裡命名它們；文章必須引用實際作品、工作坊、方法、材料或社群實踐。",
+      "把已提升 wiki memory 當作語境，不要在公開文章裡命名內部索引；文章必須引用實際作品、工作坊、方法、材料或社群實踐。",
       "如果頁面最有價值的是作品/方法清單，就直接整理成可玩的閱讀路徑；不要硬寫成宏大宣言。",
       "小誌不是檢索報告，也不是完成論文；每一章都要有作者判斷、場景、矛盾、缺口或下一步。",
       "除非 wantsMakingTutorial=true，不要把文章寫成工具製作、教學步驟、BOM 或工作坊流程。",
@@ -637,7 +637,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     sourceObservations: cards,
     deepReadObservations: deepRead,
     linkedEvidenceTrails: linkedTrails,
-    notebookSourcePack: notebookSourcePack(compiledNotes),
+    primarySourcePacket: primarySourcePacket(compiledNotes),
     compiledWikiNotes: compiledSynthesisPack(compiledNotes),
     bridgeNoteSummary: {
       anchorCards: semantic.anchorCards.length,
@@ -648,8 +648,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     evidenceCoverage: evidenceCoverageForQuery(query, workflow),
     evidenceWarning: evidenceWarningForClaim(query, workflow),
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Treat notebookSourcePack as the primary NotebookLM-style source pack: it contains compiled source notes, sourceRefs, evidence snippets, and terms. Use compiledWikiNotes only as higher-level context. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Write one coherent source-grounded route or argument; only call it a thesis when the source pack supports that direction.",
-    reminder: "請真的依照 query、notebookSourcePack、compiledWikiNotes、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。notebookSourcePack 是主要來源包，像 NotebookLM 的 sources；compiledWikiNotes 是較高層的整理筆記。使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 notebook source pack、compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: "The query is the only editorial parameter. Treat primarySourcePacket as the current public source packet: it contains sourceRefs, evidence snippets, and terms from query-time reading. Use compiledWikiNotes only as promoted PBS memory/context. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Write one coherent source-grounded route or argument; only call it a thesis when the public packet supports that direction.",
+    reminder: "請依照 query、primarySourcePacket、compiledWikiNotes、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。primarySourcePacket 是當次 public source packet；compiledWikiNotes 是已提升 PBS wiki memory，只能做語境。使用具體 claim 時必須保留 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自當次 public source packet、已提升 wiki memory 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 公開材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -910,8 +910,8 @@ function compactRequestUser(user: string): string {
     parsed.sourceObservations = Array.isArray(parsed.sourceObservations) ? parsed.sourceObservations.slice(0, 4) : [];
     parsed.deepReadObservations = Array.isArray(parsed.deepReadObservations) ? parsed.deepReadObservations.slice(0, 3) : [];
     parsed.linkedEvidenceTrails = Array.isArray(parsed.linkedEvidenceTrails) ? parsed.linkedEvidenceTrails.slice(0, 3) : [];
-    parsed.notebookSourcePack = Array.isArray(parsed.notebookSourcePack)
-      ? parsed.notebookSourcePack.slice(0, 6).map((note: any) => ({
+    parsed.primarySourcePacket = Array.isArray(parsed.primarySourcePacket)
+      ? parsed.primarySourcePacket.slice(0, 6).map((note: any) => ({
         title: compactText(note.title, 100),
         type: note.type,
         summary: compactText(note.summary, 180),
@@ -1242,7 +1242,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、SourceNotes、NotebookLM bridge、primarySourcePacket、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1256,7 +1256,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
         sourceObservations: parsedUser.sourceObservations,
         deepReadObservations: parsedUser.deepReadObservations,
         linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
-        notebookSourcePack: parsedUser.notebookSourcePack,
+        primarySourcePacket: parsedUser.primarySourcePacket,
         compiledWikiNotes: parsedUser.compiledWikiNotes,
       }, null, 2),
       1000,
@@ -1664,7 +1664,7 @@ function buildClickTrace(params: {
     tagsMatched,
     depthMetrics: workflow.step1.report.depthMetrics,
     thinSourceWarnings: workflow.step1.report.depthMetrics.warnings,
-    compactPromptSummary: "Player query is interpreted as a PBS LLM wiki question. Compiled Wiki notes and curated bridge/index notes are read first; matching notes and first-layer wikilinks shape the evidence packet; source pages are used only to ground concrete claims; thin evidence must remain caveated.",
+    compactPromptSummary: "Player query is interpreted as a PBS-2026.2 bridge question. Current public evidence shapes the source packet; promoted wiki memory supplies context only; source pages ground concrete claims; thin evidence must remain caveated and reviewable.",
     rejectedNotes,
     corpusDiagramSummary: { nodes: diagramNodes, edges: diagramEdges },
     editorialPromptCreated: true,
@@ -1731,7 +1731,7 @@ function createBrowserWorkflow(query: string): Workflow {
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
-  const expandedQuery = `${query}\n\nPBS LLM wiki entry hints: compiled Wiki notes, curated bridge/index notes, concepts, events, public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
+  const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
     const workflow = runDaydreamWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;

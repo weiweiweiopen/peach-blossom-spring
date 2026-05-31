@@ -14,7 +14,6 @@ VAULT = ROOT / "obsidian-vault"
 
 REQUIRED_DIRS = [
     "obsidian-vault/Wiki/Sources",
-    "obsidian-vault/Wiki/SourceNotes",
     "obsidian-vault/Wiki/Concepts",
     "obsidian-vault/Wiki/Methods",
     "obsidian-vault/Wiki/Materials",
@@ -99,7 +98,6 @@ NOTE_TYPE_FOLDERS = {
 }
 
 COMPILED_WIKI_FOLDERS = [
-    "SourceNotes",
     "Concepts",
     "Methods",
     "Materials",
@@ -1301,6 +1299,9 @@ def source_note_markdown(card: dict) -> str:
 
 
 def command_compile_source_notes(args: argparse.Namespace) -> int:
+    if not args.legacy_enable:
+        print("compile-source-notes is disabled in PBS-2026.2; use NotebookLM source packs and promote traces instead.")
+        return 1
     all_cards_path = VAULT / "daydream-export/sourceCards.enriched.json"
     payload = json.loads(all_cards_path.read_text(encoding="utf-8"))
     all_cards = payload.get("cards", []) if isinstance(payload, dict) else []
@@ -1847,6 +1848,7 @@ def main() -> int:
     export_wiki.set_defaults(func=command_export_wiki_index)
     compile_sources = sub.add_parser("compile-source-notes")
     compile_sources.add_argument("--overwrite", action="store_true")
+    compile_sources.add_argument("--legacy-enable", action="store_true")
     compile_sources.set_defaults(func=command_compile_source_notes)
     query = sub.add_parser("query")
     query.add_argument("--query", required=True)

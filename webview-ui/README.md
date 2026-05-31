@@ -1,49 +1,72 @@
-# Peach Blossom Spring (WorkAdventure-first)
+# PBS Web UI / 2026.2
 
-This app is now a WorkAdventure-first explorable map prototype.
+This Vite/React app is the playable surface for **PBS-2026.2.26701788323**.
 
-- World direction: Peach Blossom Spring / 桃花源 / NGM Persona Village
-- Pixel Agents: visual inspiration for lively pixel NPCs only
-- Persona knowledge source: `data/personas.json` (preserved, no regeneration)
+The web UI should not start from a generated local source-note corpus. Its second-version direction is to consume a NotebookLM-backed source pack when available, render it as zines and dialogue, and save reviewable PBS traces locally before anything becomes durable wiki memory.
 
-## Current map architecture
+NotebookLM is the shovel, not the land. It can accelerate public-source exploration, but the canonical knowledge layer is the local PBS Markdown/wiki memory that can be opened, diffed, forked, backed up, reviewed, and moved outside a cloud product.
 
-World and interaction data lives in `src/world/peachBlossomWorld.ts`.
+## Runtime Roles
 
-- `WorldZone`: named map zones with kind + bounds
-- `NpcPlacement`: persona-to-zone placement with idle behavior hints
-- `communityLinks`: editable archive tree portal links
-- `createPeachBlossomLayout()`: hand-built prototype tile layout
+- **PBS Computer**: query entrance for public source questions.
+- **Association zine**: turns source-grounded traces into printable public artifacts.
+- **Question pet**: marks thin claims, missing evidence, and promotion opportunities.
+- **NPC dialogue**: uses promoted memory and persona context, not raw private player memory sent to NotebookLM.
+- **Campfire**: shared notebook/session memory surface.
+- **Editor mode**: local layout and world-building surface.
 
-The current map includes:
+## 2026.2 Data Boundary
 
-- river crossing + old bridge
-- storyteller context near the bridge
-- village houses
-- school/workshop area
-- restaurant/tavern area
-- music theatre area
-- forest + hut area
-- campfire circle
-- big archive tree landmark
+NotebookLM may be used as a fast public-source reading engine. Private memory stays in PBS.
 
-## Interaction model
+Raw public sources remain source of truth. The web UI may render packets and traces, but durable knowledge changes should go through review/promotion into `obsidian-vault/Wiki/`; it should not silently mutate `obsidian-vault/Sources/` or treat cloud notebook context as canonical memory.
 
-- Proximity trigger: nearby persona prompt (`Press Space to talk`)
-- Dialogue trigger: Space opens persona topic dialogue
-- Topic response source: existing `personas.json` responses only
-- Archive trigger: enter the archive tree zone to open persona index + links
-- Zone banner: active zone name + description shown while wandering
+Do not send these to NotebookLM:
 
-## Future map direction
+- API keys, cookies, or tokens
+- private player memory
+- unpublished interviews
+- sensitive community data
+- any local-only trace marked private
 
-- Keep current hand-built layout for safe iteration
-- Next step: migrate zone/layout data to Tiled or WorkAdventure-compatible JSON
-- Keep trigger architecture (zones, portals, dialogue points) compatible with that migration
+## Expected Source Flow
 
-## Local development
+```text
+NotebookLM CLI / bridge
+→ PBS source pack
+→ zine / dialogue writer
+→ local trace
+→ optional review queue
+→ promoted wiki memory
+```
+
+The generated `obsidian-vault/Wiki/SourceNotes/` corpus is intentionally removed from the startup path.
+
+Promotion is cumulative and auditable: reviewed traces can create or update Markdown pages, add backlinks, keep contradictions visible, and leave git-readable history. NotebookLM artifacts remain inputs to review, not owned PBS memory by themselves.
+
+## Development
 
 ```bash
+npm --prefix webview-ui install
+npm --prefix webview-ui run dev
+```
+
+Validation:
+
+```bash
+npm --prefix webview-ui run check:secrets
+npm --prefix webview-ui run check:visual-layout
 npm --prefix webview-ui run build
-npm --prefix webview-ui run test
+```
+
+Editor preview:
+
+```text
+http://localhost:5173/peach-blossom-spring/?editor=1
+```
+
+Public preview:
+
+```text
+https://weiweiweiopen.github.io/peach-blossom-spring/
 ```
