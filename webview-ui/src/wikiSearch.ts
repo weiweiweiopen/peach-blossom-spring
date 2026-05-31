@@ -1,6 +1,7 @@
 import { daydreamCorpus } from './daydream/corpus.js';
-import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './daydream/evidenceHygiene.js';
 import type { SourceCard } from './daydream/engine.js';
+import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './daydream/evidenceHygiene.js';
+import { searchPbsLocalMemory } from './pbsLocalMemory.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
 export interface WikiSearchResult {
@@ -142,8 +143,9 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
         .map((item) => linkToResult(item.link, item.score))
         .filter((item): item is WikiSearchResult => Boolean(item))
     : [];
+  const localMemoryResults = searchPbsLocalMemory(query, limit);
   const byUrl = new Map<string, WikiSearchResult>();
-  for (const result of [...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
+  for (const result of [...localMemoryResults, ...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
   return Array.from(byUrl.values()).slice(0, limit);

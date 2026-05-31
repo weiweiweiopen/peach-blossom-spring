@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "hackteria": {
+      "kind": "mediawiki",
+      "api": "https://www.hackteria.org/wiki/api.php",
+      "main": "https://www.hackteria.org/wiki/Main_Page",
+      "out": "Sources/Raw/hackteria"
+    },
+    "sgmk": {
+      "kind": "mediawiki",
+      "api": "https://wiki.sgmk-ssam.ch/api.php",
+      "main": "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
+      "out": "Sources/Raw/sgmk"
+    },
+    "htgwyw": {
+      "kind": "wordpress",
+      "api": "https://www.kobakant.at/DIY/?rest_route=/wp/v2/posts",
+      "main": "https://howtogetwhatyouwant.at",
+      "out": "Sources/Raw/htgwyw"
+    }
+  }
+}

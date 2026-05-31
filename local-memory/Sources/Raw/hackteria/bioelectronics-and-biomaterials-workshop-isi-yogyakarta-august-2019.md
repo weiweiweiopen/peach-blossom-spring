@@ -1,0 +1,14 @@
+---
+type: "raw-source"
+sourceFamily: "hackteria"
+title: "BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019"
+url: "https://www.hackteria.org/wiki/BioElectronics_and_BioMaterials_Workshop%2C_ISI%2C_Yogyakarta_August%2C_2019"
+fetched: "2026-05-31T13:35:13"
+links:
+  - "Dusjagr"
+categories:
+---
+
+# BioElectronics and BioMaterials Workshop, ISI, Yogyakarta August, 2019
+
+Contents 1 BioMaterials/Textiles with Sheri and Ratna 1.1 Sheri / Shih Hui Chang 1.2 What was it? 1.3 Guest Lecture by Shih Wei Chieh 2 BioElectronix for Artists with Om Jono aka Marc Dusseiller 2.1 Centiuk Nyamuk Eksperimentasi 2.2 Other Links and Inspirasi 2.3 Guest Lecture by Mary Maggic BioMaterials/Textiles with Sheri and Ratna [ edit ] Sheri / Shih Hui Chang [ edit ] bio.... http://chi-sheri.com/ What was it? [ edit ] Guest Lecture by Shih Wei Chieh [ edit ] Shih Wei Chieh is a media artist based in Taipei. His wearable art, laser performance have been presented by many global events such as CTM Berlin, SXSW, YouFab, Modern Body Festival, University Technology Sydney etc. His work “Laser Dye” project in 2015 combines laser projection and cyanotype photography innovate the digital printing technology for 3D garments, shoes-wear. He’s also the founder of “Tribe Against Machine”, a social engaged project that invites media artist, e-textile artist to work with Taiwan Atayal tribe community, explore the new role of artist in remote society, how technology should evolve by reflecting to the crisis of the world after capital. https://shihweichieh.com/ BioElectronix for Artists with Om Jono aka Marc Dusseiller [ edit ] Marc Dusseiller aka dusjagr is a nomadic researcher and workshopologist. He is part of the Center for Alternative Coconut Research and co-founder of SGMK and the Global Hackteria Network , Co-organiser of GOSH, Gathering for Open Science Hardware . He loves making DIWO laboratories for creative biological experimentation and works in an integral way, combining science, art and education. Marc entered the world of DIY electronics, designing printed circuit boards for synthesizers and organizing workshops and festivals mostly in Zürich, Taipei and Yogyakarta. He has worked as guest faculty and mentor at various schools, Srishti Institute of Art, Design and Technology, Bangalore (IN), UCSB (USA) and in Switzerland, FHNW, HEAD, ETHZ. He also loves synthesizers and coconuts . http://me.dusjagr.guru Slides on BioElectronix by dusjagr Centiuk Nyamuk Eksperimentasi [ edit ] Other Links and Inspirasi [ edit ] Fish-Hammer, Winner of Youfab 2018 https://www.youfab.info/2018/winners/fish-hammer I feel Gurk, Tim & Puma Mimi Guest Lecture by Mary Maggic [ edit ] More on Mary Maggic on here website maggic.ooo DIYSECT - Documentary series on BioArt and BioHacking Exerpts of the interviews can be found on the Youtube Channel and the full episodes on Vimeo

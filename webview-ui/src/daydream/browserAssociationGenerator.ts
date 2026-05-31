@@ -1,25 +1,26 @@
+// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
+import bridgeEntities from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
+// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
+import bridgeConcepts from "../../../obsidian-vault/Sources/PBS Semantic Layers/Concepts.md?raw";
+// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
+import bridgeEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
+// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
+import bridgeReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
+// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
+import bridgeTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/Tools.md?raw";
+// @ts-ignore Vite raw prompt import from project-level editable prompt file.
+import bridgeWriterSystemPrompt from "../../prompts/pbs-bridge-writer-system.md?raw";
+import { pbsLocalMemorySourceCards } from "../pbsLocalMemory.js";
 import { assertCleanPublicArtifact, extractPublicArtifactText } from "./artifactGuard.js";
 import { renderAssociationFeedbackSection } from "./associationFeedback.js";
 import { daydreamCorpus } from "./corpus.js";
 import { runDaydreamWorkflow } from "./daydreamWorkflow.js";
+import type { DaydreamCorpus, SourceCard } from "./engine.js";
 import { evidenceHygienePenalty, evidenceTextForHygiene, isUsableEvidenceText } from "./evidenceHygiene.js";
 import { renderOfficialTemplateArtifactHtml } from "./officialTemplateRenderer.js";
-import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
-import type { DaydreamCorpus, SourceCard } from "./engine.js";
 import type { DaydreamPublicArtifactContent } from "./publicArtifactContent.js";
 import type { DaydreamHtmlLayoutVariant } from "./publicArtifactHtml.js";
-// @ts-ignore Vite raw prompt import from project-level editable prompt file.
-import bridgeWriterSystemPrompt from "../../prompts/pbs-bridge-writer-system.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeConcepts from "../../../obsidian-vault/Sources/PBS Semantic Layers/Concepts.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/Tools.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeEntities from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
+import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
 // @ts-ignore Vite raw official HTML template import.
 import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
@@ -376,7 +377,7 @@ function extractEntryTerms(text: string): string[] {
 }
 
 function allowedUiCorpus(): DaydreamCorpus {
-  const cards = [...entryNoteCards(), ...daydreamCorpus.cards.filter(isAllowedZineCard)];
+  const cards = [...entryNoteCards(), ...pbsLocalMemorySourceCards(), ...daydreamCorpus.cards.filter(isAllowedZineCard)];
   const ids = new Set(cards.map((card) => card.id));
   return {
     cards,
@@ -1803,8 +1804,8 @@ export async function generateBrowserAssociationZine(query: string, language: As
   if (!fragment.includes('data-official-template="01-pbs-reset-title-kinetic.html"') || /02-soft|03-aino|soft-commons|aino-motion/i.test(fragment)) {
     throw new Error("Only the first PBS HTML zine template is allowed.");
   }
-  let articleFragment = linkKnownPageNames(fragment, workflow);
-  let articleHtml = htmlPage(articleFragment, artifact.title, language);
+  const articleFragment = linkKnownPageNames(fragment, workflow);
+  const articleHtml = htmlPage(articleFragment, artifact.title, language);
   let visibleText = "";
   try {
     assertCleanPublicArtifact(articleHtml);

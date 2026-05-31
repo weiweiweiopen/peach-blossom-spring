@@ -12,9 +12,10 @@ import {
 
 import extraPersonaData from "../../data/extra-personas.json";
 import personaData from "../../data/personas.json";
+// @ts-ignore Vite raw prompt import for the in-game schema editor.
+import bridgeWriterSystemPrompt from "../prompts/pbs-bridge-writer-system.md?raw";
 import { BottomToolbar } from "./components/BottomToolbar.js";
 import { DebugView } from "./components/DebugView.js";
-import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
 import {
@@ -27,9 +28,8 @@ import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
-// @ts-ignore Vite raw prompt import for the in-game schema editor.
-import bridgeWriterSystemPrompt from "../prompts/pbs-bridge-writer-system.md?raw";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
+import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
 import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
@@ -60,6 +60,8 @@ import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { findPath, isWalkable } from "./office/layout/tileMap.js";
 import { getCharacterSprites } from "./office/sprites/index.js";
 import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
+import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
+import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   appearanceToSpriteData,
   generateQuestionPet,
@@ -69,7 +71,6 @@ import { QuestionPetPreview } from "./pets/QuestionPetPreview.js";
 import { chooseThrongletExpression } from "./pets/throngletAssets.js";
 import { createThrongletWaDirectionalAnimations, resolvePetRoleSlug } from "./pets/throngletWaSprites.js";
 import { isBrowserRuntime } from "./runtime.js";
-import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   applyPlayerNpcDialogue,
   applyPlayerThrongletResponse,
@@ -81,13 +82,13 @@ import {
 import { scorePromptResonance } from "./simulation/resonance.js";
 import {
   appendPetDialogueHistory,
-  readPetDialogueHistory,
   type PetDialogueHistoryEntry,
+  readPetDialogueHistory,
 } from "./simulation/storage.js";
 import type { SimSnapshot, Thronglet } from "./simulation/types.js";
 import { vscode } from "./vscodeApi.js";
-import type { WikiSearchResult } from "./wikiSearch.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
+import type { WikiSearchResult } from "./wikiSearch.js";
 import {
   COMPACT_EDITOR_CAMPFIRE_TILE,
   compactEditorNpcPlacements,
@@ -1107,7 +1108,7 @@ function CentralComputerDialogue({
       setError(err instanceof Error ? err.message : copy.failError);
       setMessages((current) => [...current, {
         speaker: copy.name,
-        text: copy.fail,
+        text: wikiResults.length > 0 ? buildStaticLocalMemoryAnswer(trimmed, wikiResults, language) : copy.fail,
         links: wikiResults,
       }]);
     } finally {

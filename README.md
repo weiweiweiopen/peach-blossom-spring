@@ -1,137 +1,63 @@
 # Peach Blossom Spring / PBS
 
-**PBS-2026.2.255** is the second-version direction for Peach Blossom Spring: a playable LLM wiki world that uses NotebookLM as a fast public-source reading engine while keeping durable knowledge memory in PBS, locally or on GitHub.
+**PBS-2026.2.255** is the second-version direction for Peach Blossom Spring: a playable LLM wiki world backed by source-first local memory, review-first Markdown notes, and a browser-safe game export.
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 
 ## Core Idea
 
-PBS no longer starts from a giant preprocessed local source corpus.
+PBS no longer treats a cloud notebook or a giant dirty working corpus as canonical memory.
 
 The new loop is:
 
 1. Ask a public-source question.
-2. Use NotebookLM CLI as a transient high-speed reading and synthesis engine.
-3. Convert NotebookLM output into a PBS source pack, trace, and zine draft.
-4. Store the trace locally first.
-5. Promote only reviewed traces into the Karpathy-style markdown wiki memory.
-6. Let NPCs, the question pet, the campfire, zines, and the map use promoted memory as world state.
+2. Search `local-memory/Sources/Raw/` through the source-first memory engine.
+3. Export a static game index into `webview-ui/src/generated/pbsLocalMemoryIndex.json`.
+4. Let NPCs, the question pet, the campfire, zines, and the map read through the browser adapter.
+5. Draft uncertain syntheses into `local-memory/obsidian-vault/Review/`.
+6. Promote only reviewed notes into `local-memory/obsidian-vault/Wiki/`.
 
 Short version:
 
 ```text
-NotebookLM = fast public-source cognition
-PBS = local/community memory commons + playable wiki world
+local-memory = source-first public corpus + review-first wiki
+PBS game = playable interface over the local/community memory commons
 ```
 
 Operational metaphor:
 
 ```text
-NotebookLM can be the shovel, but PBS keeps the land.
-Use NotebookLM to dig through public sources quickly, then cultivate reviewed knowledge in the local PBS LLM wiki.
+The game reads a static memory export; the editable knowledge land stays in local Markdown, SQLite indexes, and review notes.
 ```
 
-## Why This Is Not A NotebookLM Clone
+## Local Memory Module
 
-NotebookLM already does the hard fast-reading work: source parsing, chunking, retrieval, reranking, citation packing, and account-bound notebook state. PBS should not spend its energy rebuilding that from scratch when the project goal is cultural memory, play, zines, and maintainable knowledge traces.
+The source-first memory engine lives in `local-memory/`:
 
-PBS uses NotebookLM as a platform boost only for public or explicitly approved source-level questions. PBS keeps the durable layer:
+- `local-memory/Sources/Raw/`: public raw-ish source pages.
+- `local-memory/scripts/pbs_engine.py`: crawl, index, search, draft, promote, and export commands.
+- `local-memory/obsidian-vault/Review/`: generated drafts awaiting review.
+- `local-memory/obsidian-vault/Wiki/`: reviewed durable shared memory.
+- `webview-ui/src/pbsLocalMemory.ts`: browser adapter used by campfire, NPC evidence, pet chat, and zine source cards.
 
-- player questions
-- source-pack traces
-- zine drafts and repairs
-- unsupported claims
-- promotion decisions
-- wiki notes
-- NPC and pet memory
-- map/campfire world state
-
-The ethical and technical difference is knowledge ownership. NotebookLM may keep a useful cloud notebook context, but PBS treats the canonical memory as a user-owned Markdown/wiki layer that can be opened in Obsidian, committed to git, diffed, forked, backed up, and moved to another model.
-
-PBS follows the Karpathy-style LLM Wiki split:
-
-1. **Raw sources** are immutable source of truth. PBS tools do not silently rewrite `obsidian-vault/Sources/`.
-2. **Wiki compilation layer** is durable Markdown memory. It contains reviewed people, concepts, events, questions, comparisons, zines, and synthesis notes.
-3. **Schema and agent rules** define naming, citation, lint, promotion, repair, and update behavior so AI works as a knowledge-base maintainer, not just a chat interface.
-
-## Privacy Boundary
-
-Using NotebookLM means Google can process whatever is sent to NotebookLM. PBS therefore treats NotebookLM as suitable for public source work, not private memory.
-
-Do not send to NotebookLM:
-
-- private player memory
-- unpublished interviews
-- sensitive community data
-- secrets, API keys, cookies, or tokens
-- anything that should not enter a Google service
-
-Recommended modes:
-
-- **Platform Boost**: public sources and public questions go through NotebookLM.
-- **Local Memory**: private traces and player memory stay in PBS only.
-- **Hybrid**: NotebookLM answers public-source parts; PBS merges them with local memory without sending private memory back.
-
-## NotebookLM Bridge
-
-The current planned bridge uses the local NotebookLM CLI:
-
-```text
-/Users/shihweichieh/.openclaw/workspace/.venv-notebooklm/bin/notebooklm
-```
-
-The package currently identified is `notebooklm-py` version `0.4.1`, an unofficial Python API/CLI for NotebookLM. It is not a Google-official library, and it uses undocumented APIs. It should be treated as a prototype bridge, not permanent infrastructure.
-
-Minimal bridge calls:
+Refresh the game-facing index from the repository root:
 
 ```bash
-notebooklm metadata --json
-notebooklm ask --prompt-file ./query.txt
-notebooklm generate report --prompt-file ./prompt.txt
-```
-
-The bridge must never commit Google auth state, cookies, tokens, or browser profiles.
-
-## PBS Trace Schema
-
-NotebookLM output is not the final PBS truth. It becomes a reviewable trace.
-
-Target trace shape:
-
-```ts
-type NotebookLmPbsTrace = {
-  query: string;
-  notebookId: string;
-  answer: string;
-  sources: Array<{
-    title: string;
-    url?: string;
-    sourceId?: string;
-    excerpt?: string;
-    citationLabel?: string;
-  }>;
-  claims: Array<{
-    text: string;
-    sourceIndexes: number[];
-    confidence: "strong" | "partial" | "unsupported";
-  }>;
-  suggestedQuestions: string[];
-  createdAt: string;
-};
+python3 local-memory/scripts/pbs_engine.py export-game-index \
+  --target "$PWD/webview-ui/src/generated/pbsLocalMemoryIndex.json"
 ```
 
 ## Karpathy-Style Wiki Memory
 
-PBS keeps a markdown memory bank under `obsidian-vault/Wiki/`, but that memory should grow through promotion, not startup bulk preprocessing.
+PBS keeps a markdown memory bank under `local-memory/obsidian-vault/Wiki/`, but that memory should grow through promotion, not startup bulk preprocessing.
 
-This layer is the canonical memory and source-of-ownership for PBS. NotebookLM can accelerate ingestion and exploration, but it must not become the final knowledge container. A useful NotebookLM answer should become a trace first; after review, it can create or update wiki pages, repair contradictions, add backlinks, record uncertainty, or spawn a new question.
+This layer is the canonical memory and source-of-ownership for PBS. Search results and zines are not durable knowledge until reviewed. A useful answer should become a review draft first; after review, it can create or update wiki pages, repair contradictions, add backlinks, record uncertainty, or spawn a new question.
 
 Promotion path:
 
 ```text
-NotebookLM answer
-→ PBS trace
-→ Review queue
+local-memory search result
+→ Review draft
 → promoted source snapshot / question / zine / concept / method / material / social-form note
 → playable memory used by NPCs, pet, map, and campfire
 ```
@@ -147,13 +73,11 @@ Promotion should be cumulative and auditable:
 - use git history as the audit trail for knowledge changes
 - prefer portable files over account-bound cloud artifacts
 
-## Architecture Canvas
+## Privacy Boundary
 
-The second-version architecture is drawn in the vault:
+The browser game reads a static public-memory export. Do not commit `.env` files, API keys, cookies, Google auth state, unpublished interviews, sensitive community data, or private player memory.
 
-- `obsidian-vault/PBS 2026.2 NotebookLM Bridge Architecture.canvas`
-
-Older architecture notes remain useful for history, but PBS-2026.2 starts from the NotebookLM bridge plus local wiki memory model.
+SQLite indexes under `local-memory/obsidian-vault/Knowledge/` are local generated files and are ignored by git. Regenerate them with `python3 local-memory/scripts/pbs_engine.py index` when needed.
 
 ## How To Play
 
@@ -188,7 +112,7 @@ Useful local tools:
 ```bash
 python3 scripts/wiki_tool.py export-wiki-index --output webview-ui/public/assets/pbs-wiki-index.json
 python3 scripts/wiki_tool.py lint-evidence
-python3 scripts/pbs_engine.py --help
+python3 local-memory/scripts/pbs_engine.py --help
 ```
 
 `compile-source-notes` is intentionally disabled unless run with an explicit legacy flag. PBS-2026.2 should not rely on generated full source-note corpora at startup.

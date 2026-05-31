@@ -1,3 +1,4 @@
+import { retrievePbsLocalMemoryEvidence } from './pbsLocalMemory.js';
 import type { A2AExchange, Thronglet, ThrongletMemoryEvent } from './simulation/types.js';
 
 interface LocalWikiLink {
@@ -368,6 +369,12 @@ export function retrieveNpcEvidence(args: {
     ...wikiCandidates(knowledge),
   ];
   const evidence = rankEvidence(retrievalQuery, candidates, 3);
+  const localMemoryEvidence = retrievePbsLocalMemoryEvidence(retrievalQuery, 2);
+  for (const item of localMemoryEvidence) {
+    if (!evidence.some((existing) => existing.id === item.id)) {
+      evidence.splice(Math.max(0, evidence.length - 1), evidence.length >= 3 ? 1 : 0, item);
+    }
+  }
   const websiteCandidates = candidates.filter((item) => item.source === 'wiki');
   const websiteEvidence = rankEvidence(retrievalQuery, websiteCandidates, 1)[0] ?? (websiteCandidates[0] ? { ...websiteCandidates[0], score: 0 } : undefined);
   if (evidence.length > 0 && websiteEvidence && !evidence.some((item) => item.id === websiteEvidence.id)) {
@@ -420,6 +427,12 @@ export function localPetChat(args: {
     ]),
   ].filter((item) => item.text.length > 0);
   const evidence = rankEvidence(message, candidates, 3);
+  const localMemoryEvidence = retrievePbsLocalMemoryEvidence(`${message}\n${pet.question.text}`, 2);
+  for (const item of localMemoryEvidence) {
+    if (!evidence.some((existing) => existing.id === item.id)) {
+      evidence.splice(Math.max(0, evidence.length - 1), evidence.length >= 3 ? 1 : 0, item);
+    }
+  }
   const memoryEvent: ThrongletMemoryEvent = {
     id: `${pet.id}-local-chat-${tick}-${Date.now().toString(36)}`,
     tick,
