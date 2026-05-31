@@ -462,11 +462,13 @@ function SourceUrlEditor({ compact = false }: { compact?: boolean }) {
     const urls = sourcesText.split(",").map((url) => url.trim()).filter(Boolean);
     try {
       window.localStorage.setItem("pbs:sources:url-list:v1", urls.join(", "));
-      await fetch("/api/sources", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ urls }),
-      }).catch(() => undefined);
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "::1") {
+        await fetch("/api/sources", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ urls }),
+        }).catch(() => undefined);
+      }
     } finally {
       setSaved(true);
       window.setTimeout(() => setSaved(false), 1800);
@@ -475,7 +477,7 @@ function SourceUrlEditor({ compact = false }: { compact?: boolean }) {
   return (
     <section className="schema-control-prototype schema-editorial-prompt-editor">
       <h3>搜尋 sources URL</h3>
-      <p>目前來源預設是 Hackteria、HOW TO GET WHAT YOU WANT / KOBAKANT、SGMK。可在這裡改搜尋目標 URL；本機 server 會同步寫入 pbs_sources.json。</p>
+      <p>目前來源預設是 Hackteria、HOW TO GET WHAT YOU WANT / KOBAKANT、SGMK。雲端版只能儲存這個欄位文字，不會即時 crawl 新 URL；要真的搜尋新來源，需在本機 server 儲存後重新 crawl / export index / build / deploy。</p>
       <textarea value={sourcesText} onChange={(event) => setSourcesText(event.target.value)} rows={compact ? 5 : 8} spellCheck={false} />
       <div className="schema-control-actions">
         <button type="button" onClick={() => void saveSources()}>儲存來源</button>

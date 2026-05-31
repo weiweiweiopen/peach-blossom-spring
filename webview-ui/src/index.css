@@ -8260,3 +8260,19 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   font-size: var(--dialogue-hud-copy-size) !important;
   line-height: var(--dialogue-hud-line) !important;
 }
+
+/* PBS schema control room: keep flat print-like color blocks, no gradient wash. */
+.schema-control-room .schema-hero-card,
+.schema-control-room .schema-intro-card,
+.schema-control-room .schema-control-prototype {
+  background-image: none !important;
+}
+.schema-control-room .schema-hero-card {
+  background: #fffaf0 !important;
+}
+.schema-control-room .schema-control-prototype {
+  background: #bac3d9 !important;
+}
+.schema-control-room .schema-editorial-prompt-editor {
+  background: #fffaf0 !important;
+}
