@@ -50,8 +50,8 @@ def language_instruction(preferred_language: str) -> str:
     if preferred_language == "de":
         return "Answer in German."
     if preferred_language == "en":
-        return "Answer in English."
-    return "Answer in the same language as the question."
+        return "Answer in English only. Do not use Chinese unless quoting a source title."
+    return "Answer in the same language as the question. Do not switch languages."
 
 
 def call_deepseek(system_prompt: str, user_prompt: str, max_tokens: int = 900, temperature: float | None = None, response_format: dict | None = None, api_key: str = "") -> str:
@@ -101,6 +101,7 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
     system_prompt = "\n".join([
         language_instruction(preferred_language),
         "You answer inside a Peach Blossom Spring RPG dialogue.",
+        "The interface language instruction is binding; do not answer in Traditional Chinese unless preferred_language is zh-TW.",
         "If optional NPC context is present, answer in first person as that NPC, using the persona JSON/profile, response topics, and transcript excerpts as the voice anchor.",
         "Do not write system self-description. Never say phrases like 'X persona', 'X 的人格', 'local-memory game assistant', 'retrieval', 'backend', 'source-first', or 'I will answer from interview memory'.",
         "Use PBS engine evidence for public source grounding and links, but do not flatten the NPC into a generic search assistant.",

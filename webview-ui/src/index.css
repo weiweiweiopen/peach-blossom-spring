@@ -8542,3 +8542,39 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 .rpg-dialogue-panel[data-language] .rpg-dialogue-input::placeholder {
   font-size: var(--dialogue-control-size) !important;
 }
+
+/* Mobile dialogue avatars: keep campfire thumbnail intact instead of cropped vertical strip. */
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars {
+    max-width: 118px !important;
+    gap: 6px !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars > div {
+    transform: none !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    padding: 2px !important;
+    overflow: hidden !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire img {
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+    object-fit: contain !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars span {
+    max-width: 54px !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+}
+
