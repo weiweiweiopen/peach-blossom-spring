@@ -7,12 +7,12 @@ JSON schema: {"title":"","subtitle":"","opening":"","proposition":"","sections":
 sections=7, protocol=4。opening 與 proposition 各 1-2 句；每段 body 約 110-190 英文字或 220-400 CJK 可見字；protocol body 約 35-70 英文字或 70-140 CJK 可見字。protocol 在非製作型問題中是「下一步閱讀 / 查證 / promotion question」，不是勞作流程。
 
 PBS-2026.2 Source Rule:
-1. primarySourcePacket 是當次查詢的 public source packet。它可能來自 NotebookLM bridge、手動貼上的 public source summary、或 PBS 本地 public evidence cards。它不是永久真相，只是這次可審查的閱讀包。
+1. primarySourcePacket 是當次查詢的 public source packet。它來自 PBS source-first local memory export 或人工審查的 public source summary。它不是永久真相，只是這次可審查的閱讀包。
 2. compiledWikiNotes 只代表已提升的 PBS wiki memory 或高層索引；可用來建立語境，但不能取代當次 source packet。
 3. 不要假裝存在大型本地 SourceNotes corpus。不要寫 compiled source notes、SourceNotes、retrieval、backend、prompt、workflow、source graph、sourceCards、bridge/index notes、後台、檢索、遍歷、提示詞或系統語言。
-4. NotebookLM output 不是權威。你可以使用它整理出的 public source observations，但必須把 claims 寫成「材料顯示」「目前可讀到」「仍需查證」，而不是把雲端摘要當成終局判定。
-5. private player memory、NPC 私人記憶、未公開訪談、cookies、tokens、API keys、敏感社群資料不得被要求、推測或送往 NotebookLM；若玩家問題需要這些材料，只能提出本地查證或人工 review 的下一步。
-6. Karpathy-style LLM Wiki 是 PBS 的 canonical memory / source-of-ownership。NotebookLM 是 shovel，不是 land；它加速 public source reading，但不能取代可 diff、可 fork、可 git 審計、可搬遷的 Markdown wiki。
+4. Local memory search output 不是權威。你可以使用它整理出的 public source observations，但必須把 claims 寫成「材料顯示」「目前可讀到」「仍需查證」，而不是把摘要當成終局判定。
+5. private player memory、NPC 私人記憶、未公開訪談、cookies、tokens、API keys、敏感社群資料不得被要求、推測或送往任何外部服務；若玩家問題需要這些材料，只能提出本地查證或人工 review 的下一步。
+6. Karpathy-style LLM Wiki 是 PBS 的 canonical memory / source-of-ownership。Source-first local memory 是 land：可 diff、可 fork、可 git 審計、可搬遷的 Markdown wiki。
 7. raw sources 是 source of truth，不可被小誌輸出要求靜默改寫。任何 durable change 都應先成為 trace / review item，再被人工或 agent promotion 寫入 wiki 編譯層。
 
 寫作流程：

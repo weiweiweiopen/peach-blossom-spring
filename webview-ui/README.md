@@ -2,26 +2,24 @@
 
 This Vite/React app is the playable surface for **PBS-2026.2.255**.
 
-The web UI should not start from a generated local source-note corpus. Its second-version direction is to consume a NotebookLM-backed source pack when available, render it as zines and dialogue, and save reviewable PBS traces locally before anything becomes durable wiki memory.
+The web UI does not read the old generated source-note corpus or NotebookLM bridge at runtime. It consumes the static export generated from the root `Sources/Raw/` corpus by `scripts/pbs_engine.py`.
 
-NotebookLM is the shovel, not the land. It can accelerate public-source exploration, but the canonical knowledge layer is the local PBS Markdown/wiki memory that can be opened, diffed, forked, backed up, reviewed, and moved outside a cloud product.
+The canonical knowledge layer is the local PBS Markdown/wiki memory that can be opened, diffed, forked, backed up, reviewed, and moved outside a cloud product.
 
 ## Runtime Roles
 
 - **PBS Computer**: query entrance for public source questions.
 - **Association zine**: turns source-grounded traces into printable public artifacts.
 - **Question pet**: marks thin claims, missing evidence, and promotion opportunities.
-- **NPC dialogue**: uses promoted memory and persona context, not raw private player memory sent to NotebookLM.
-- **Campfire**: shared notebook/session memory surface.
+- **NPC dialogue**: uses persona context plus source-first local memory evidence.
+- **Campfire**: shared local-memory question surface.
 - **Editor mode**: local layout and world-building surface.
 
 ## 2026.2 Data Boundary
 
-NotebookLM may be used as a fast public-source reading engine. Private memory stays in PBS.
+Raw public sources remain source of truth. The web UI renders exported packets, but durable knowledge changes should go through review/promotion into `obsidian-vault/Wiki/`; it should not silently mutate `Sources/Raw/`.
 
-Raw public sources remain source of truth. The web UI may render packets and traces, but durable knowledge changes should go through review/promotion into `obsidian-vault/Wiki/`; it should not silently mutate `obsidian-vault/Sources/` or treat cloud notebook context as canonical memory.
-
-Do not send these to NotebookLM:
+Do not commit or send to external services:
 
 - API keys, cookies, or tokens
 - private player memory
@@ -32,17 +30,15 @@ Do not send these to NotebookLM:
 ## Expected Source Flow
 
 ```text
-NotebookLM CLI / bridge
-→ PBS source pack
+Sources/Raw
+→ scripts/pbs_engine.py export-game-index
+→ webview-ui/src/generated/pbsLocalMemoryIndex.json
 → zine / dialogue writer
-→ local trace
 → optional review queue
 → promoted wiki memory
 ```
 
-The generated `obsidian-vault/Wiki/SourceNotes/` corpus is intentionally removed from the startup path.
-
-Promotion is cumulative and auditable: reviewed traces can create or update Markdown pages, add backlinks, keep contradictions visible, and leave git-readable history. NotebookLM artifacts remain inputs to review, not owned PBS memory by themselves.
+Promotion is cumulative and auditable: reviewed traces can create or update Markdown pages, add backlinks, keep contradictions visible, and leave git-readable history.
 
 ## Development
 

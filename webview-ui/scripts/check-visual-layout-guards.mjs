@@ -29,7 +29,7 @@ const wikiSearch = readFileSync(join(root, "src", "wikiSearch.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
 const retroBoot = readFileSync(join(root, "src", "components", "RetroBootScreen.tsx"), "utf8");
 const bridgeWriterPrompt = readFileSync(join(root, "prompts", "pbs-bridge-writer-system.md"), "utf8");
-const wikiTool = readFileSync(join(root, "..", "scripts", "wiki_tool.py"), "utf8");
+const pbsEngine = readFileSync(join(root, "..", "scripts", "pbs_engine.py"), "utf8");
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -85,8 +85,8 @@ const checks = [
   ["Zine renderer keeps coherent seven-section article", /sections = artifact\.sections\.slice\(0, 7\)/.test(template) && /ZINE_SECTION_COUNT = 7/.test(generator) && /for \(let index = 0; index < ZINE_SECTION_COUNT; index \+= 1\)/.test(generator)],
   ["Evidence hygiene blocks SEO spam across retrieval", /SEO_SPAM_EVIDENCE[\s\S]*dissertation writing services/.test(evidenceHygiene) && /isSpamEvidence\(evidenceTextForHygiene\(card\)\)/.test(wikiSearch) && /evidenceHygienePenalty\(text\)/.test(generator)],
   ["Kitchen bioart queries prefer Hackteria over generic workshops", /sourceIntentBoost/.test(engine) && /wantsHackteria[\s\S]*source === "hackteria"/.test(engine) && /廚房\|厨房\|料理\|食物\|餐\|發酵/.test(engine) && !/廚房\|厨房\|料理\|食物\|餐\|發酵[^\n]+workshop/.test(engine) && /wantsHackteriaKitchenBioQuery/.test(generator + wikiSearch)],
-  ["PBS 2026.2 disables generated source-note startup corpus", /compile-source-notes is disabled in PBS-2026\.2/.test(wikiTool) && !/COMPILED_WIKI_FOLDERS = \[\s*"SourceNotes"/.test(wikiTool) && /PBS-2026\.2\.255/.test(retroBoot) && /LOCAL MEMORY/.test(retroBoot) && /PBS bridge writer/.test(bridgeWriterPrompt) && /public source packet/.test(bridgeWriterPrompt) && !/notebookSourcePack \/ compiled source notes/.test(bridgeWriterPrompt)],
-  ["PBS 2026.2 preserves local wiki knowledge sovereignty", /canonical memory \/ source-of-ownership/.test(bridgeWriterPrompt) && /NotebookLM 是 shovel/.test(bridgeWriterPrompt) && /raw sources 是 source of truth/.test(bridgeWriterPrompt) && /git 審計/.test(bridgeWriterPrompt)],
+  ["PBS 2026.2 uses source-first local memory", /export-game-index/.test(pbsEngine) && /PBS-2026\.2\.255/.test(retroBoot) && /LOCAL MEMORY/.test(retroBoot) && /PBS bridge writer/.test(bridgeWriterPrompt) && /public source packet/.test(bridgeWriterPrompt) && !/notebookSourcePack \/ compiled source notes/.test(bridgeWriterPrompt)],
+  ["PBS 2026.2 preserves local wiki knowledge sovereignty", /canonical memory \/ source-of-ownership/.test(bridgeWriterPrompt) && /Source-first local memory 是 land/.test(bridgeWriterPrompt) && /raw sources 是 source of truth/.test(bridgeWriterPrompt) && /git 審計/.test(bridgeWriterPrompt)],
   ["Analytical concepts use evidence clusters", /supportEvidence\?: RegExp/.test(generator) && /minimumSupportHits\?: number/.test(generator) && /community\|collective\|shared\|open source\|documentation\|workshop\|maintenance/.test(generator) && /conceptualQueryHints/.test(generator + wikiSearch)],
   ["Zine print avoids fake fixed-height pages", !/height:\s*257mm/.test(generator) && !/page-break-after:\s*always/.test(generator) && /\.page \{ break-after: auto !important; page-break-after: auto !important/.test(generator)],
   ["Zine print no longer page-calibrates", !/let bestUnder = null|targetPages|calibrate\(\)/.test(generator)],

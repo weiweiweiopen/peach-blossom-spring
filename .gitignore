@@ -18,7 +18,7 @@ webview-ui/public/assets/thronglets/pet-sheets/
 webview-ui/public/assets/craftpix-net-*/
 webview-ui/public/assets/modern-taoyuan-scene-plan.json
 obsidian-vault/*.canvas
-local-memory/obsidian-vault/Knowledge/*.sqlite
-local-memory/obsidian-vault/Knowledge/*.sqlite-*
-local-memory/obsidian-vault/Knowledge/*.db
-local-memory/**/__pycache__/
+obsidian-vault/Knowledge/*.sqlite
+obsidian-vault/Knowledge/*.sqlite-*
+obsidian-vault/Knowledge/*.db
+**/__pycache__/

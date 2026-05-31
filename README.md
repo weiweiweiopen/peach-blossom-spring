@@ -1,6 +1,6 @@
 # Peach Blossom Spring / PBS
 
-**PBS-2026.2.255** is the second-version direction for Peach Blossom Spring: a playable LLM wiki world backed by source-first local memory, review-first Markdown notes, and a browser-safe game export.
+**PBS-2026.2.255** is Peach Blossom Spring rebuilt around the `pbs-local-memory` source-first workspace plus the existing playable game layer.
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 
@@ -11,16 +11,16 @@ PBS no longer treats a cloud notebook or a giant dirty working corpus as canonic
 The new loop is:
 
 1. Ask a public-source question.
-2. Search `local-memory/Sources/Raw/` through the source-first memory engine.
+2. Search `Sources/Raw/` through the source-first memory engine.
 3. Export a static game index into `webview-ui/src/generated/pbsLocalMemoryIndex.json`.
 4. Let NPCs, the question pet, the campfire, zines, and the map read through the browser adapter.
-5. Draft uncertain syntheses into `local-memory/obsidian-vault/Review/`.
-6. Promote only reviewed notes into `local-memory/obsidian-vault/Wiki/`.
+5. Draft uncertain syntheses into `obsidian-vault/Review/`.
+6. Promote only reviewed notes into `obsidian-vault/Wiki/`.
 
 Short version:
 
 ```text
-local-memory = source-first public corpus + review-first wiki
+Sources + obsidian-vault = source-first public corpus + review-first wiki
 PBS game = playable interface over the local/community memory commons
 ```
 
@@ -32,31 +32,31 @@ The game reads a static memory export; the editable knowledge land stays in loca
 
 ## Local Memory Module
 
-The source-first memory engine lives in `local-memory/`:
+The source-first memory engine lives at the repository root, matching `pbs-local-memory`:
 
-- `local-memory/Sources/Raw/`: public raw-ish source pages.
-- `local-memory/scripts/pbs_engine.py`: crawl, index, search, draft, promote, and export commands.
-- `local-memory/obsidian-vault/Review/`: generated drafts awaiting review.
-- `local-memory/obsidian-vault/Wiki/`: reviewed durable shared memory.
+- `Sources/Raw/`: public raw-ish source pages.
+- `scripts/pbs_engine.py`: crawl, index, search, draft, promote, and export commands.
+- `obsidian-vault/Review/`: generated drafts awaiting review.
+- `obsidian-vault/Wiki/`: reviewed durable shared memory.
 - `webview-ui/src/pbsLocalMemory.ts`: browser adapter used by campfire, NPC evidence, pet chat, and zine source cards.
 
 Refresh the game-facing index from the repository root:
 
 ```bash
-python3 local-memory/scripts/pbs_engine.py export-game-index \
+python3 scripts/pbs_engine.py export-game-index \
   --target "$PWD/webview-ui/src/generated/pbsLocalMemoryIndex.json"
 ```
 
 ## Karpathy-Style Wiki Memory
 
-PBS keeps a markdown memory bank under `local-memory/obsidian-vault/Wiki/`, but that memory should grow through promotion, not startup bulk preprocessing.
+PBS keeps a markdown memory bank under `obsidian-vault/Wiki/`, but that memory should grow through promotion, not startup bulk preprocessing.
 
 This layer is the canonical memory and source-of-ownership for PBS. Search results and zines are not durable knowledge until reviewed. A useful answer should become a review draft first; after review, it can create or update wiki pages, repair contradictions, add backlinks, record uncertainty, or spawn a new question.
 
 Promotion path:
 
 ```text
-local-memory search result
+source-first search result
 → Review draft
 → promoted source snapshot / question / zine / concept / method / material / social-form note
 → playable memory used by NPCs, pet, map, and campfire
@@ -77,7 +77,7 @@ Promotion should be cumulative and auditable:
 
 The browser game reads a static public-memory export. Do not commit `.env` files, API keys, cookies, Google auth state, unpublished interviews, sensitive community data, or private player memory.
 
-SQLite indexes under `local-memory/obsidian-vault/Knowledge/` are local generated files and are ignored by git. Regenerate them with `python3 local-memory/scripts/pbs_engine.py index` when needed.
+SQLite indexes under `obsidian-vault/Knowledge/` are local generated files and are ignored by git. Regenerate them with `python3 scripts/pbs_engine.py index` when needed.
 
 ## How To Play
 
@@ -110,19 +110,16 @@ npm --prefix webview-ui run build
 Useful local tools:
 
 ```bash
-python3 scripts/wiki_tool.py export-wiki-index --output webview-ui/public/assets/pbs-wiki-index.json
-python3 scripts/wiki_tool.py lint-evidence
-python3 local-memory/scripts/pbs_engine.py --help
+python3 scripts/pbs_engine.py --help
+python3 scripts/pbs_engine.py search "e-textile sensor workshop" --limit 8
 ```
-
-`compile-source-notes` is intentionally disabled unless run with an explicit legacy flag. PBS-2026.2 should not rely on generated full source-note corpora at startup.
 
 ## Project Status
 
 PBS is part digital garden, part LLM wiki, part zine machine, part virtual camp. The 2026.2 direction is:
 
 ```text
-cloud reading, local memory, playable knowledge commons
+source-first local memory, playable knowledge commons
 ```
 
 The point is not to finish the garden. The point is to keep it alive while preserving who asked, what was cited, what remained uncertain, and what the community chose to remember.

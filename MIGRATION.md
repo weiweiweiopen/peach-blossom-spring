@@ -26,21 +26,20 @@ The dirty files from the original worktree were not staged or copied into this m
 
 ## Moved / Added
 
-- `local-memory/`: source-first PBS local memory engine copied from `pbs-local-memory`.
-- `local-memory/scripts/pbs_engine.py`: crawl, index, search, draft, promote, and game-index export commands.
-- `local-memory/Sources/Raw/`: public source markdown corpus.
-- `local-memory/obsidian-vault/Wiki/`: reviewed shared memory notes.
-- `local-memory/obsidian-vault/Review/`: review drafts.
-- `local-memory/obsidian-vault/Schema/`: source-first maintainer rules.
-- `webview-ui/src/generated/pbsLocalMemoryIndex.json`: static game-facing export generated from `local-memory/Sources/Raw/`.
+- `Sources/Raw/`: public source markdown corpus copied from `pbs-local-memory`.
+- `scripts/pbs_engine.py`: crawl, index, search, draft, promote, and game-index export commands.
+- `obsidian-vault/Wiki/`: reviewed shared memory notes copied from `pbs-local-memory`.
+- `obsidian-vault/Review/`: review drafts copied from `pbs-local-memory`.
+- `obsidian-vault/Schema/`: source-first maintainer rules copied from `pbs-local-memory`.
+- `webview-ui/src/generated/pbsLocalMemoryIndex.json`: static game-facing export generated from `Sources/Raw/`.
 - `webview-ui/src/pbsLocalMemory.ts`: browser-safe adapter for local memory search, evidence, source cards, and campfire fallback answers.
 
 ## Runtime Data Flow
 
 ```text
-local-memory/Sources/Raw/*.md
-  -> local-memory/scripts/pbs_engine.py index/search/draft-note/promote-note
-  -> local-memory/scripts/pbs_engine.py export-game-index
+Sources/Raw/*.md
+  -> scripts/pbs_engine.py index/search/draft-note/promote-note
+  -> scripts/pbs_engine.py export-game-index
   -> webview-ui/src/generated/pbsLocalMemoryIndex.json
   -> webview-ui/src/pbsLocalMemory.ts
   -> wikiSearch / NPC evidence / pet chat / Association zine source cards / campfire answers
@@ -60,10 +59,10 @@ The game does not call Python, SQLite, the filesystem, or an LLM provider direct
 ## What Was Avoided
 
 - No `.env`, auth, cookies, Google/NotebookLM credentials, or private data were copied.
-- No SQLite database was committed; local-memory database files are ignored and can be regenerated.
+- No SQLite database was committed; `obsidian-vault/Knowledge/*.sqlite` files are ignored and can be regenerated.
 - No dirty files from the original worktree were staged.
-- No `daydream-export` source archive was copied or mutated.
+- The old PBS `obsidian-vault/daydream-export`, generated source-note corpus, `scripts/wiki_tool.py`, and NotebookLM bridge scripts were removed from the corrected migration root.
 
 ## Follow-Up
 
-This branch keeps the existing game functional while routing new source-first memory through `local-memory`. A later lightweight cleanup can remove old corpus artifacts and reduce bundle size after behavior is verified.
+This branch keeps the existing game functional while making `pbs-local-memory` the root memory layout. A later lightweight cleanup can further reduce frontend bundle size after behavior is verified.

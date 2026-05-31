@@ -1,16 +1,5 @@
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeEntities from "../../../obsidian-vault/Sources/PBS Entity Layers/README.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeConcepts from "../../../obsidian-vault/Sources/PBS Semantic Layers/Concepts.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeEvents from "../../../obsidian-vault/Sources/PBS Semantic Layers/Events.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeReadme from "../../../obsidian-vault/Sources/PBS Semantic Layers/README.md?raw";
-// @ts-ignore Vite raw wiki entry-note imports from the PBS Obsidian vault.
-import bridgeTools from "../../../obsidian-vault/Sources/PBS Semantic Layers/Tools.md?raw";
 // @ts-ignore Vite raw prompt import from project-level editable prompt file.
 import bridgeWriterSystemPrompt from "../../prompts/pbs-bridge-writer-system.md?raw";
-import { pbsLocalMemorySourceCards } from "../pbsLocalMemory.js";
 import { assertCleanPublicArtifact, extractPublicArtifactText } from "./artifactGuard.js";
 import { renderAssociationFeedbackSection } from "./associationFeedback.js";
 import { daydreamCorpus } from "./corpus.js";
@@ -53,7 +42,7 @@ export type AssociationProgressCallback = (message: string) => void;
 export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
 
 type Workflow = ReturnType<typeof runDaydreamWorkflow>;
-type Card = ReturnType<typeof sourceCards>[number];
+type Card = SourceCard;
 type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
 type EvidenceCoverage = { label: string; covered: boolean };
@@ -81,14 +70,7 @@ type CompiledWikiNote = {
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
 const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
-const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
-  { title: "PBS public theme index / README", path: "Sources/PBS Semantic Layers/README.md", text: bridgeReadme, role: "public theme overview" },
-  { title: "PBS bridge notes / Concepts", path: "Sources/PBS Semantic Layers/Concepts.md", text: bridgeConcepts, role: "concept index" },
-  { title: "PBS bridge notes / Tools", path: "Sources/PBS Semantic Layers/Tools.md", text: bridgeTools, role: "tool and method index" },
-  { title: "PBS bridge notes / Events", path: "Sources/PBS Semantic Layers/Events.md", text: bridgeEvents, role: "event and workshop index" },
-  { title: "PBS entity bridge notes / README", path: "Sources/PBS Entity Layers/README.md", text: bridgeEntities, role: "entity bridge overview" },
-  { title: "LLM Wiki / index", path: "Wiki/index.md", text: "PBS public wiki index: Home, Start Here, Association Map, Concepts, Questions, Characters and NPCs, Zines, Long Notes. Use promoted public wiki pages as context, then ground visible claims in current public evidence.", role: "public wiki index" },
-];
+const WIKI_ENTRY_NOTES: WikiEntryNote[] = [];
 let compiledWikiIndexPromise: Promise<CompiledWikiNote[]> | null = null;
 const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; directEvidence: RegExp; supportEvidence?: RegExp; minimumSupportHits?: number }> = [
   { label: "nonprofit/organization", query: /非營利|非營利組織|組織|ngo|non-?profit|organization/i, directEvidence: /非營利|ngo|non-?profit|organization|organis(?:ation|e|ing)|組織/i, supportEvidence: /community|network|workshop|funding|grant|collective|collaboration|社群|網絡|工作坊|資助|協作/i, minimumSupportHits: 2 },
@@ -308,7 +290,7 @@ function isAllowedZineCard(card: SourceCard): boolean {
 }
 
 function githubVaultUrl(path: string): string {
-  return `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/obsidian-vault/${encodeURI(path)}`;
+  return `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/${encodeURI(path)}`;
 }
 
 function linkForCard(card: Partial<SourceCard>): string {
@@ -377,7 +359,7 @@ function extractEntryTerms(text: string): string[] {
 }
 
 function allowedUiCorpus(): DaydreamCorpus {
-  const cards = [...entryNoteCards(), ...pbsLocalMemorySourceCards(), ...daydreamCorpus.cards.filter(isAllowedZineCard)];
+  const cards = [...entryNoteCards(), ...daydreamCorpus.cards.filter(isAllowedZineCard)];
   const ids = new Set(cards.map((card) => card.id));
   return {
     cards,
@@ -400,17 +382,8 @@ function sourceCards(workflow: Workflow) {
 async function loadCompiledWikiIndex(): Promise<CompiledWikiNote[]> {
   if (!compiledWikiIndexPromise) {
     const base = import.meta.env.BASE_URL || "/";
-    const url = `${base.replace(/\/$/, "")}/assets/pbs-wiki-index.json`;
-    compiledWikiIndexPromise = fetch(url, { cache: "no-cache" })
-      .then(async (response) => {
-        if (!response.ok) throw new Error(`compiled wiki index unavailable: ${response.status.toString()}`);
-        const payload = await response.json() as { notes?: CompiledWikiNote[] };
-        return (payload.notes ?? []).filter((note) => note.lint?.status !== "error" && (note.sourceRefs?.length ?? 0) > 0);
-      })
-      .catch((error) => {
-        console.warn("Compiled Wiki index unavailable for zine RAG; continuing with sourceCards only.", error);
-        return [];
-      });
+    void base;
+    compiledWikiIndexPromise = Promise.resolve([]);
   }
   return compiledWikiIndexPromise;
 }

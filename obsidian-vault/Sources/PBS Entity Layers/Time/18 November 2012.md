@@ -1,9 +1,0 @@
-# 18 November 2012
-
-Entity type: times
-
-Cards: 1
-
-## Linked source cards
-
-- [[Sources/How To Get What You Want Full/Soft & Tiny Arduino Workshop [3655]|Soft & Tiny Arduino Workshop]] `htgwyw` semantic:`tools`

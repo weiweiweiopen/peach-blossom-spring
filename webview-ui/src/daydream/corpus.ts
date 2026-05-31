@@ -1,41 +1,17 @@
-import sourceCardsExport from "../../../obsidian-vault/daydream-export/sourceCards.enriched.json";
-import categoryGraphExport from "../../../obsidian-vault/daydream-export/categoryGraph.enriched.json";
-import corpusManifestExport from "../../../obsidian-vault/daydream-export/corpusManifest.enriched.json";
-import type { CategoryGraphEdge, DaydreamCorpus, SourceCard } from "./engine.js";
+import { pbsLocalMemorySourceCards } from "../pbsLocalMemory.js";
+import type { DaydreamCorpus } from "./engine.js";
 
-type SourceCardsExport = {
-  cards?: SourceCard[];
-};
-
-type CategoryGraphExport = {
-  edges?: CategoryGraphEdge[];
-};
-
-type CorpusManifestExport = {
-  schemaVersion?: string;
-  generatedAt?: string;
-  counts?: {
-    sourceCards?: number;
-    graphEdges?: number;
-  };
-};
-
-const exportedSourceCards = sourceCardsExport as SourceCardsExport;
-const exportedCategoryGraph = categoryGraphExport as CategoryGraphExport;
-const exportedManifest = corpusManifestExport as CorpusManifestExport;
-
-const sourceCards = exportedSourceCards.cards ?? [];
-const categoryGraphEdges = exportedCategoryGraph.edges ?? [];
+const sourceCards = pbsLocalMemorySourceCards(200);
 
 export const daydreamCorpus: DaydreamCorpus = {
   cards: sourceCards,
-  edges: categoryGraphEdges,
+  edges: [],
   manifest: {
-    schemaVersion: exportedManifest.schemaVersion ?? "obsidian-daydream-export-v1",
-    generatedAt: exportedManifest.generatedAt ?? "obsidian-vault/daydream-export",
+    schemaVersion: "pbs-local-memory-game-index-v1",
+    generatedAt: "webview-ui/src/generated/pbsLocalMemoryIndex.json",
     counts: {
-      sourceCards: exportedManifest.counts?.sourceCards ?? sourceCards.length,
-      graphEdges: exportedManifest.counts?.graphEdges ?? categoryGraphEdges.length,
+      sourceCards: sourceCards.length,
+      graphEdges: 0,
     },
   },
 };
