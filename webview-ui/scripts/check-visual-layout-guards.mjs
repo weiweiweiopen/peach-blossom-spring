@@ -28,6 +28,7 @@ const template = readFileSync(join(root, "src", "daydream", "officialTemplateRen
 const wikiSearch = readFileSync(join(root, "src", "wikiSearch.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
 const editorialPrompt = readFileSync(join(root, "prompts", "association-editorial-system.md"), "utf8");
+const wikiTool = readFileSync(join(root, "..", "scripts", "wiki_tool.py"), "utf8");
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -83,6 +84,7 @@ const checks = [
   ["Zine renderer keeps coherent seven-section article", /sections = artifact\.sections\.slice\(0, 7\)/.test(template) && /ZINE_SECTION_COUNT = 7/.test(generator) && /for \(let index = 0; index < ZINE_SECTION_COUNT; index \+= 1\)/.test(generator)],
   ["Evidence hygiene blocks SEO spam across retrieval", /SEO_SPAM_EVIDENCE[\s\S]*dissertation writing services/.test(evidenceHygiene) && /isSpamEvidence\(evidenceTextForHygiene\(card\)\)/.test(wikiSearch) && /evidenceHygienePenalty\(text\)/.test(generator)],
   ["Kitchen bioart queries prefer Hackteria over generic workshops", /sourceIntentBoost/.test(engine) && /wantsHackteria[\s\S]*source === "hackteria"/.test(engine) && /廚房\|厨房\|料理\|食物\|餐\|發酵/.test(engine) && !/廚房\|厨房\|料理\|食物\|餐\|發酵[^\n]+workshop/.test(engine) && /wantsHackteriaKitchenBioQuery/.test(generator + wikiSearch)],
+  ["NotebookLM source pack feeds zine runtime", /compile-source-notes/.test(wikiTool) && /SourceNotes/.test(wikiTool) && /extract_source_passages/.test(wikiTool) && /notebookSourcePack/.test(generator) && /Treat notebookSourcePack as the primary NotebookLM-style source pack/.test(generator) && /notebookSourcePack \/ compiled source notes/.test(editorialPrompt)],
   ["Analytical concepts use evidence clusters", /supportEvidence\?: RegExp/.test(generator) && /minimumSupportHits\?: number/.test(generator) && /community\|collective\|shared\|open source\|documentation\|workshop\|maintenance/.test(generator) && /conceptualQueryHints/.test(generator + wikiSearch)],
   ["Zine print avoids fake fixed-height pages", !/height:\s*257mm/.test(generator) && !/page-break-after:\s*always/.test(generator) && /\.page \{ break-after: auto !important; page-break-after: auto !important/.test(generator)],
   ["Zine print no longer page-calibrates", !/let bestUnder = null|targetPages|calibrate\(\)/.test(generator)],

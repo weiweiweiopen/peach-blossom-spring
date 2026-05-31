@@ -1,0 +1,72 @@
+---
+id: "source-note-sgmk-sgmk578ca2f75e6a"
+title: "MechArtLab Wishlist"
+type: source
+status: compiled-source-note
+summary: "Compiled source note for MechArtLab Wishlist from SGMK. Key terms: sgmk, lab, mechartlab, wishlist, ssam, Art-science practice, Local communities and places, Residencies and temporary labs."
+sourceRefs:
+  - obsidian-vault/Sources/SGMK Full/MechArtLab Wishlist [1100].md
+evidence:
+  - "No readable plaintext passage was available in the local source export; use this note as a routing anchor, not as proof for synthesis."
+relatedConcepts:
+  - lab
+  - mechartlab
+  - Art-science practice
+  - Residencies and temporary labs
+  - DIY lab infrastructure
+relatedMethods:
+  - DIY lab infrastructure
+relatedMaterials:
+relatedSocialForms:
+  - lab
+  - mechartlab
+  - Residencies and temporary labs
+  - DIY lab infrastructure
+relatedProjects:
+  - SGMK
+openQuestions:
+  - What stronger source passage should replace this automatic source-card summary?
+---
+
+# MechArtLab Wishlist
+
+## Scope
+
+This is a compiled source note for one raw source page from SGMK. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis.
+
+## Source
+
+- source family: `SGMK`
+- sourceRef: `obsidian-vault/Sources/SGMK Full/MechArtLab Wishlist [1100].md`
+- url: https://wiki.sgmk-ssam.ch/wiki/MechArtLab_Wishlist
+- source card id: `sgmk:578ca2f75e6a`
+
+## Evidence
+
+- No readable plaintext passage was available in the local source export; use this note as a routing anchor, not as proof for synthesis. [1]
+
+## Terms
+
+- sgmk
+- lab
+- mechartlab
+- wishlist
+- ssam
+- Art-science practice
+- Local communities and places
+- Residencies and temporary labs
+- DIY lab infrastructure
+
+## Lint Notes
+
+- This source note was generated deterministically from the local source card export.
+- It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes.
+- The raw source page was not modified.
+
+## Citations
+
+[1] `obsidian-vault/Sources/SGMK Full/MechArtLab Wishlist [1100].md`
+
+## Open Questions
+
+- What exact claim, if any, should this source contribute to the compiled PBS wiki?

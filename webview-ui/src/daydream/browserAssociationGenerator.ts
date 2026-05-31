@@ -56,10 +56,11 @@ type Card = ReturnType<typeof sourceCards>[number];
 type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
 type EvidenceCoverage = { label: string; covered: boolean };
+type CompiledWikiNoteType = "source" | "concept" | "method" | "material" | "socialform" | "project" | "comparison" | "synthesis" | "theory" | string;
 type CompiledWikiNote = {
   id: string;
   title: string;
-  type: string;
+  type: CompiledWikiNoteType;
   status: string;
   summary: string;
   path: string;
@@ -426,11 +427,13 @@ function rankCompiledWikiNotes(query: string, workflow: Workflow, notes: Compile
       const termHits = terms.filter((term) => search.includes(term)).length;
       const sourceRefHits = note.sourceRefs.filter((ref) => cardText.includes(ref.replace(/^obsidian-vault\//, "").toLowerCase()) || cardText.includes(ref.toLowerCase())).length;
       const lintBonus = note.lint.status === "pass" ? 2 : 0;
-      return { note, score: termHits + sourceRefHits * 3 + lintBonus };
+      const sourceNoteBonus = note.type === "source" && termHits > 0 ? 4 : 0;
+      const compiledTopicBonus = note.type !== "source" && termHits > 0 ? 8 : 0;
+      return { note, score: termHits + sourceRefHits * 5 + lintBonus + sourceNoteBonus + compiledTopicBonus };
     })
     .filter((row) => row.score > 0)
     .sort((a, b) => b.score - a.score || a.note.title.localeCompare(b.note.title))
-    .slice(0, 4)
+    .slice(0, 14)
     .map((row) => row.note);
 }
 
@@ -568,6 +571,14 @@ function compiledWikiPromptNotes(notes: CompiledWikiNote[]) {
   }));
 }
 
+function notebookSourcePack(notes: CompiledWikiNote[]) {
+  return compiledWikiPromptNotes(notes.filter((note) => note.type === "source").slice(0, 10));
+}
+
+function compiledSynthesisPack(notes: CompiledWikiNote[]) {
+  return compiledWikiPromptNotes(notes.filter((note) => note.type !== "source").slice(0, 6));
+}
+
 function buildEditorialMessages(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[] = []) {
   const wantsSgmk = wantsSgmkQuery(query);
   const wantsSoundDiy = wantsSoundDiyQuery(query);
@@ -626,7 +637,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     sourceObservations: cards,
     deepReadObservations: deepRead,
     linkedEvidenceTrails: linkedTrails,
-    compiledWikiNotes: compiledWikiPromptNotes(compiledNotes),
+    notebookSourcePack: notebookSourcePack(compiledNotes),
+    compiledWikiNotes: compiledSynthesisPack(compiledNotes),
     bridgeNoteSummary: {
       anchorCards: semantic.anchorCards.length,
       relatedCards: semantic.relatedCards.length,
@@ -636,8 +648,8 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     evidenceCoverage: evidenceCoverageForQuery(query, workflow),
     evidenceWarning: evidenceWarningForClaim(query, workflow),
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Prefer compiledWikiNotes when they are relevant because they already summarize sourceRefs and citations, but do not use notes with weak lint warnings as final proof without caveats. Write one coherent source-grounded route or argument; only call it a thesis when the evidence supports that direction.",
-    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: "The query is the only editorial parameter. Treat notebookSourcePack as the primary NotebookLM-style source pack: it contains compiled source notes, sourceRefs, evidence snippets, and terms. Use compiledWikiNotes only as higher-level context. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Write one coherent source-grounded route or argument; only call it a thesis when the source pack supports that direction.",
+    reminder: "請真的依照 query、notebookSourcePack、compiledWikiNotes、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。notebookSourcePack 是主要來源包，像 NotebookLM 的 sources；compiledWikiNotes 是較高層的整理筆記。使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 notebook source pack、compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -898,6 +910,17 @@ function compactRequestUser(user: string): string {
     parsed.sourceObservations = Array.isArray(parsed.sourceObservations) ? parsed.sourceObservations.slice(0, 4) : [];
     parsed.deepReadObservations = Array.isArray(parsed.deepReadObservations) ? parsed.deepReadObservations.slice(0, 3) : [];
     parsed.linkedEvidenceTrails = Array.isArray(parsed.linkedEvidenceTrails) ? parsed.linkedEvidenceTrails.slice(0, 3) : [];
+    parsed.notebookSourcePack = Array.isArray(parsed.notebookSourcePack)
+      ? parsed.notebookSourcePack.slice(0, 6).map((note: any) => ({
+        title: compactText(note.title, 100),
+        type: note.type,
+        summary: compactText(note.summary, 180),
+        sourceRefs: Array.isArray(note.sourceRefs) ? note.sourceRefs.slice(0, 2) : [],
+        evidence: compactText(note.evidence, 220),
+        relatedMaterials: Array.isArray(note.relatedMaterials) ? note.relatedMaterials.slice(0, 3) : [],
+        relatedSocialForms: Array.isArray(note.relatedSocialForms) ? note.relatedSocialForms.slice(0, 3) : [],
+      }))
+      : [];
     parsed.compiledWikiNotes = Array.isArray(parsed.compiledWikiNotes)
       ? parsed.compiledWikiNotes.slice(0, 3).map((note: any) => ({
         title: compactText(note.title, 100),
@@ -1233,6 +1256,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
         sourceObservations: parsedUser.sourceObservations,
         deepReadObservations: parsedUser.deepReadObservations,
         linkedEvidenceTrails: parsedUser.linkedEvidenceTrails,
+        notebookSourcePack: parsedUser.notebookSourcePack,
         compiledWikiNotes: parsedUser.compiledWikiNotes,
       }, null, 2),
       1000,

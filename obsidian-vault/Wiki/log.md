@@ -129,3 +129,67 @@ Append-only chronological record of wiki maintenance. Use entries such as `## [Y
 
 - Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
 - Exported 13 notes; 13 eligible for zine RAG.
+
+## [2026-05-29] query | e-textile summer camp as temporary commons
+
+- Wrote `obsidian-vault/Review/query-routes/e-textile-summer-camp-as-temporary-commons.md` route trace.
+- Anchors: 5; expansions: 0.
+
+## [2026-05-29] ingest-source | E-textile summer camp as temporary commons
+
+- Created `obsidian-vault/Review/thickened-notes/e-textile-summer-camp-as-temporary-commons.md` as ingest-draft.
+- Read 6 sourceRefs; raw Sources were not mutated.
+
+## [2026-05-29] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 13 notes; 13 eligible for zine RAG.
+
+## [2026-05-29] ingest-source | E-textile summer camp as temporary commons
+
+- Created `obsidian-vault/Review/thickened-notes/e-textile-summer-camp-as-temporary-commons.md` as ingest-draft.
+- Read 6 sourceRefs; raw Sources were not mutated.
+
+## [2026-05-31] compile | full source-note layer
+
+- Compiled `2357` source notes into `obsidian-vault/Wiki/SourceNotes/`.
+- Skipped `0` existing source notes.
+- Raw source files were not modified.
+
+## [2026-05-31] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2370 notes; 2370 eligible for zine RAG.
+
+## [2026-05-31] compile | full source-note layer
+
+- Compiled `2357` source notes into `obsidian-vault/Wiki/SourceNotes/`.
+- Skipped `0` existing source notes.
+- Raw source files were not modified.
+
+## [2026-05-31] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2370 notes; 2370 eligible for zine RAG.
+
+## [2026-05-31] compile | full source-note layer
+
+- Compiled `2357` source notes into `obsidian-vault/Wiki/SourceNotes/`.
+- Skipped `0` existing source notes.
+- Raw source files were not modified.
+
+## [2026-05-31] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2370 notes; 2370 eligible for zine RAG.
+
+## [2026-05-31] compile | full source-note layer
+
+- Compiled `2357` source notes into `obsidian-vault/Wiki/SourceNotes/`.
+- Skipped `0` existing source notes.
+- Raw source files were not modified.
+
+## [2026-05-31] export | compiled wiki index
+
+- Wrote `webview-ui/public/assets/pbs-wiki-index.json` for zine runtime RAG.
+- Exported 2370 notes; 2370 eligible for zine RAG.

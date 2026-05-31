@@ -14,6 +14,7 @@ VAULT = ROOT / "obsidian-vault"
 
 REQUIRED_DIRS = [
     "obsidian-vault/Wiki/Sources",
+    "obsidian-vault/Wiki/SourceNotes",
     "obsidian-vault/Wiki/Concepts",
     "obsidian-vault/Wiki/Methods",
     "obsidian-vault/Wiki/Materials",
@@ -35,6 +36,9 @@ REQUIRED_DIRS = [
     "obsidian-vault/Review/zine-feedback",
     "obsidian-vault/Review/zine-repair-reports",
     "obsidian-vault/Review/source-coverage",
+    "obsidian-vault/Review/query-routes",
+    "obsidian-vault/Review/routing-gaps",
+    "obsidian-vault/Review/thickened-notes",
     "obsidian-vault/_templates",
     "obsidian-vault/Schema",
 ]
@@ -95,6 +99,7 @@ NOTE_TYPE_FOLDERS = {
 }
 
 COMPILED_WIKI_FOLDERS = [
+    "SourceNotes",
     "Concepts",
     "Methods",
     "Materials",
@@ -104,6 +109,12 @@ COMPILED_WIKI_FOLDERS = [
     "Comparisons",
     "Syntheses",
 ]
+
+SOURCE_FAMILY_LABELS = {
+    "hackteria": "Hackteria",
+    "htgwyw": "How To Get What You Want / KOBAKANT",
+    "sgmk": "SGMK",
+}
 
 
 def rel(path: Path) -> str:
@@ -118,6 +129,155 @@ def slugify(value: str) -> str:
     slug = re.sub(r"[^\w\s-]", "", value.lower(), flags=re.UNICODE)
     slug = re.sub(r"[\s_]+", "-", slug).strip("-")
     return slug or "untitled-note"
+
+
+def local_path(path: str) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return ROOT / path
+
+
+def path_title(path: Path, text: str) -> str:
+    fm = parse_frontmatter(text)
+    title = fm.get("title")
+    if isinstance(title, str) and title.strip():
+        return title.strip().strip('"')
+    heading = re.search(r"^#\s+(.+)$", text, re.M)
+    if heading:
+        return heading.group(1).strip()
+    return path.stem
+
+
+def compact(value: str, max_chars: int = 360) -> str:
+    text = re.sub(r"\s+", " ", value).strip()
+    if len(text) <= max_chars:
+        return text
+    return text[: max_chars - 3].rstrip() + "..."
+
+
+def strip_frontmatter(text: str) -> str:
+    if not text.startswith("---\n"):
+        return text
+    end = text.find("\n---", 4)
+    if end == -1:
+        return text
+    return text[end + 4 :].lstrip()
+
+
+def is_thin_source_text(text: str) -> bool:
+    body = strip_frontmatter(text)
+    plain = re.sub(r"<!--.*?-->", " ", body, flags=re.S)
+    plain = re.sub(r"\s+", " ", plain).strip()
+    return len(plain) < 420 or "No plaintext extract returned" in plain
+
+
+def extract_source_passages(path: Path, max_items: int = 5) -> list[str]:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    body = strip_frontmatter(text)
+    body = re.sub(r"<!--.*?-->", " ", body, flags=re.S)
+    lines = [line.strip() for line in body.splitlines()]
+    passages: list[str] = []
+    buffer: list[str] = []
+    for line in lines:
+        if not line or line.startswith("#") or line.startswith("Source:") or line.startswith("#pbs/"):
+            if buffer:
+                passages.append(" ".join(buffer))
+                buffer = []
+            continue
+        if line.startswith("-"):
+            passages.append(line.lstrip("- ").strip())
+            continue
+        buffer.append(line)
+        if len(" ".join(buffer)) > 420:
+            passages.append(" ".join(buffer))
+            buffer = []
+    if buffer:
+        passages.append(" ".join(buffer))
+    cleaned = []
+    for passage in passages:
+        normalized = compact(passage, 520)
+        if len(normalized) < 40:
+            continue
+        if "No plaintext extract returned" in normalized:
+            continue
+        if normalized.startswith("[[") and normalized.endswith("]]"):
+            continue
+        without_links = re.sub(r"\[\[[\s\S]*?\]\]", " ", normalized).strip()
+        if len(without_links) < 30:
+            continue
+        cleaned.append(normalized)
+    return cleaned[:max_items]
+
+
+def extract_wikilink_targets(text: str) -> list[str]:
+    targets = []
+    for raw in re.findall(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]", text):
+        target = raw.strip()
+        if target:
+            targets.append(target)
+    return targets
+
+
+def source_ref_from_wikilink(target: str) -> str | None:
+    if target.startswith("obsidian-vault/"):
+        return target if local_path_exists(target) else None
+    if target.startswith("Sources/"):
+        direct = f"obsidian-vault/{target}.md" if not target.endswith(".md") else f"obsidian-vault/{target}"
+        if local_path_exists(direct):
+            return direct
+        folder = ROOT / "obsidian-vault" / target.rsplit("/", 1)[0]
+        stem = target.rsplit("/", 1)[-1]
+        if folder.is_dir():
+            matches = sorted(folder.glob(f"{stem}*.md"))
+            if matches:
+                return rel(matches[0])
+    return None
+
+
+def source_refs_from_bridge(path: Path, limit: int) -> list[str]:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    refs: list[str] = []
+    for target in extract_wikilink_targets(text):
+        ref = source_ref_from_wikilink(target)
+        if ref and ref not in refs:
+            refs.append(ref)
+        if len(refs) >= limit:
+            break
+    return refs
+
+
+def related_existing_wiki_links(title: str, passages: list[str], max_items: int = 8) -> dict[str, list[str]]:
+    haystack = f"{title}\n" + "\n".join(passages)
+    query_terms = set(tokenize(haystack))
+    relations: dict[str, list[str]] = {key: [] for key in ["relatedConcepts", "relatedMethods", "relatedMaterials", "relatedSocialForms", "relatedProjects"]}
+    key_for_folder = {
+        "Concepts": "relatedConcepts",
+        "Methods": "relatedMethods",
+        "Materials": "relatedMaterials",
+        "SocialForms": "relatedSocialForms",
+        "Projects": "relatedProjects",
+    }
+    scored: list[tuple[int, Path, str, str]] = []
+    for path in compiled_wiki_paths():
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        note_title = str(parse_frontmatter(text).get("title") or path.stem)
+        terms = set(tokenize(note_title + " " + markdown_section(text, "Scope", 600) + " " + markdown_section(text, "Definition", 600)))
+        score = len(query_terms & terms)
+        if score > 0:
+            scored.append((score, path, note_title, path.parent.name))
+    for _score, path, note_title, folder in sorted(scored, key=lambda item: (-item[0], item[2]))[:max_items]:
+        key = key_for_folder.get(folder)
+        if key:
+            relations[key].append(note_title)
+    return relations
+
+
+def evidence_quality_label(path: Path) -> str:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    if is_thin_source_text(text):
+        return "thin-source"
+    return "readable-source"
 
 
 def append_wiki_log(kind: str, title: str, lines: list[str]) -> None:
@@ -636,6 +796,209 @@ def command_build_note(args: argparse.Namespace) -> int:
     return 0
 
 
+def source_refs_for_ingest(args: argparse.Namespace) -> list[str]:
+    refs: list[str] = []
+    for ref in args.source_ref or []:
+        if ref not in refs:
+            refs.append(ref)
+    if args.source:
+        source_path = local_path(args.source)
+        if not source_path.exists():
+            raise ValueError(f"source does not exist: {args.source}")
+        refs.append(rel(source_path) if source_path.is_relative_to(ROOT) else str(source_path))
+    if args.bridge:
+        bridge_path = local_path(args.bridge)
+        if not bridge_path.exists():
+            raise ValueError(f"bridge does not exist: {args.bridge}")
+        for ref in source_refs_from_bridge(bridge_path, args.limit):
+            if ref not in refs:
+                refs.append(ref)
+    if not refs and args.query:
+        for row in hybrid_search_cards(args.query, args.limit, args.source_family):
+            ref = str(row["sourceRef"])
+            if ref not in refs:
+                refs.append(ref)
+    existing = []
+    for ref in refs[: args.limit]:
+        if local_path_exists(ref):
+            existing.append(ref)
+    return existing
+
+
+def infer_note_type_from_title(title: str, requested: str | None) -> str:
+    if requested:
+        return requested
+    if re.search(r"workshop|method|pedagog|protocol|practice|how|方法|工作坊", title, re.I):
+        return "Method"
+    if re.search(r"material|textile|circuit|biofilm|sensor|材料|織品", title, re.I):
+        return "Material"
+    if re.search(r"lab|camp|festival|commons|community|社群|營隊", title, re.I):
+        return "SocialForm"
+    if re.search(r"compare|comparison|versus|and .* infrastructures|比較", title, re.I):
+        return "Comparison"
+    return "Concept"
+
+
+def build_thick_note_markdown(note_type: str, title: str, source_refs: list[str], query: str | None = None) -> str:
+    source_items = []
+    all_passages: list[str] = []
+    for ref in source_refs:
+        path = local_path(ref)
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        passages = extract_source_passages(path, 4)
+        all_passages.extend(passages)
+        linked_refs = [linked for target in extract_wikilink_targets(text) if (linked := source_ref_from_wikilink(target))]
+        source_items.append({
+            "ref": ref,
+            "title": path_title(path, text),
+            "quality": evidence_quality_label(path),
+            "passages": passages,
+            "linkedRefs": linked_refs[:6],
+        })
+    relations = related_existing_wiki_links(title, all_passages)
+    definition = all_passages[0] if all_passages else "沒有找到足夠的證據；此 note 只能作為待補證的 ingest 草稿。"
+    source_backed_claims = all_passages[:5]
+    if not source_backed_claims:
+        source_backed_claims = ["沒有找到足夠的證據；需要回到 sourceRefs 或其 linked sourceRefs 補讀。"]
+    summary = f"Evidence-backed ingest draft for {title}; built from {len(source_refs)} local sourceRefs and marked for review."
+    lines = [
+        "---",
+        f"id: {slugify(title)}",
+        f"title: {title}",
+        f"type: {note_type.lower()}",
+        "status: ingest-draft",
+        f"summary: {summary}",
+        "sourceRefs:",
+        *[f"  - {ref}" for ref in source_refs],
+        "evidence:",
+        *[f"  - {compact(item['passages'][0] if item['passages'] else item['title'] + ' has thin local text; follow linkedRefs before promotion.', 360)} [{index}]" for index, item in enumerate(source_items, start=1)],
+        "relatedConcepts:",
+        *([f"  - {item}" for item in relations["relatedConcepts"]] or ["  - evidence review"]),
+        "relatedMethods:",
+        *([f"  - {item}" for item in relations["relatedMethods"]] or ["  - evidence review"]),
+        "relatedMaterials:",
+        *([f"  - {item}" for item in relations["relatedMaterials"]] or ["  - evidence review"]),
+        "relatedSocialForms:",
+        *([f"  - {item}" for item in relations["relatedSocialForms"]] or ["  - evidence review"]),
+        "relatedProjects:",
+        *([f"  - {item}" for item in relations["relatedProjects"]] or ["  - evidence review"]),
+        "openQuestions:",
+        "  - Which claims can be promoted after human review of every sourceRef?",
+        "  - Which thin sourceRefs require one-hop linked source reading?",
+        "---",
+        "",
+        f"# {title}",
+        "",
+        "## Definition",
+        "",
+        compact(definition, 900),
+        "",
+    ]
+    if query:
+        lines.extend(["## Ingest Route", "", f"- query: `{query}`", "- route type: local sourceRefs to compiled Wiki draft; no raw source mutation.", ""])
+    lines.extend(["## Source-Backed Claims", ""])
+    for index, claim in enumerate(source_backed_claims, start=1):
+        citation = min(index, len(source_refs))
+        lines.append(f"- {compact(claim, 520)} [{citation}]")
+    lines.extend(["", "## Evidence", ""])
+    for index, item in enumerate(source_items, start=1):
+        lines.extend([
+            f"### Evidence {index}: {item['title']}",
+            "",
+            f"- sourceRef: `{item['ref']}`",
+            f"- quality: `{item['quality']}`",
+        ])
+        if item["linkedRefs"]:
+            lines.append("- one-hop linked sourceRefs:")
+            lines.extend([f"  - `{ref}`" for ref in item["linkedRefs"][:4]])
+        if item["passages"]:
+            lines.extend(["- readable passages:", *[f"  - {passage}" for passage in item["passages"][:3]]])
+        else:
+            lines.append("- warning: 沒有找到足夠的證據；source text is thin and needs linked source review.")
+        lines.append("")
+    lines.extend([
+        "## Related Wiki Notes",
+        "",
+        "- Concepts: " + ", ".join(f"[[Wiki/Concepts/{slugify(item)}|{item}]]" for item in relations["relatedConcepts"][:5]) if relations["relatedConcepts"] else "- Concepts: evidence review",
+        "- Methods: " + ", ".join(f"[[Wiki/Methods/{slugify(item)}|{item}]]" for item in relations["relatedMethods"][:5]) if relations["relatedMethods"] else "- Methods: evidence review",
+        "- Materials: " + ", ".join(f"[[Wiki/Materials/{slugify(item)}|{item}]]" for item in relations["relatedMaterials"][:5]) if relations["relatedMaterials"] else "- Materials: evidence review",
+        "- Social forms: " + ", ".join(f"[[Wiki/SocialForms/{slugify(item)}|{item}]]" for item in relations["relatedSocialForms"][:5]) if relations["relatedSocialForms"] else "- Social forms: evidence review",
+        "- Projects: " + ", ".join(f"[[Wiki/Projects/{slugify(item)}|{item}]]" for item in relations["relatedProjects"][:5]) if relations["relatedProjects"] else "- Projects: evidence review",
+        "",
+        "## What PBS Can Answer",
+        "",
+        f"- Which local sources currently support or weaken the question around `{title}`.",
+        "- Which linked sourceRefs should be read before this draft becomes a stable synthesis.",
+        "- Which compiled Wiki notes already form a partial route around this topic.",
+        "",
+        "## Citations",
+        "",
+        *[f"[{index}] `{ref}`" for index, ref in enumerate(source_refs, start=1)],
+        "",
+        "## Open Questions",
+        "",
+        "- Which evidence passages are strong enough to preserve as claims after review?",
+        "- Which one-hop linked sources should be promoted into sourceRefs?",
+    ])
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def command_ingest_source(args: argparse.Namespace) -> int:
+    refs = source_refs_for_ingest(args)
+    if not refs:
+        print("ERROR no local sourceRefs found for ingest")
+        return 1
+    title = args.title
+    if not title:
+        first = local_path(refs[0])
+        title = path_title(first, first.read_text(encoding="utf-8", errors="ignore"))
+    note_type = infer_note_type_from_title(title, args.type)
+    out_path = Path(args.output) if args.output else note_path_for(note_type, title)
+    if not out_path.is_absolute():
+        out_path = ROOT / out_path
+    if out_path.exists() and not args.overwrite:
+        print(f"ERROR output exists; pass --overwrite to replace: {rel(out_path)}")
+        return 1
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(build_thick_note_markdown(note_type, title, refs, args.query), encoding="utf-8")
+    append_wiki_log("ingest-source", title, [
+        f"Created `{rel(out_path)}` as ingest-draft.",
+        f"Read {len(refs)} sourceRefs; raw Sources were not mutated.",
+    ])
+    ensure_wiki_index()
+    print(f"note={rel(out_path)}")
+    print(f"sourceRefs={len(refs)}")
+    print(f"status=ingest-draft")
+    return 0
+
+
+def command_ingest_batch(args: argparse.Namespace) -> int:
+    refs = source_refs_for_ingest(args)
+    if not refs:
+        print("ERROR no local sourceRefs found for ingest batch")
+        return 1
+    out_dir = ROOT / args.output_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    created: list[str] = []
+    for ref in refs[: args.limit]:
+        path = local_path(ref)
+        title = path_title(path, path.read_text(encoding="utf-8", errors="ignore"))
+        note_type = infer_note_type_from_title(title, args.type)
+        out_path = out_dir / f"{NOTE_TYPE_FOLDERS[note_type]}-{slugify(title)}.md"
+        if out_path.exists() and not args.overwrite:
+            continue
+        out_path.write_text(build_thick_note_markdown(note_type, title, [ref], args.query), encoding="utf-8")
+        created.append(rel(out_path))
+    append_wiki_log("ingest-batch", args.title or args.query or "batch", [
+        f"Created {len(created)} review ingest drafts under `{rel(out_dir)}`.",
+        "Batch output stays in Review until a maintainer promotes individual notes.",
+    ])
+    for item in created:
+        print(f"note={item}")
+    print(f"created={len(created)}")
+    return 0 if created else 1
+
+
 def compiled_wiki_paths() -> list[Path]:
     paths: list[Path] = []
     for folder in COMPILED_WIKI_FOLDERS:
@@ -784,6 +1147,170 @@ def command_export_wiki_index(args: argparse.Namespace) -> int:
     return 0
 
 
+def source_cards_for_compilation() -> list[dict]:
+    path = VAULT / "daydream-export/sourceCards.enriched.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    cards = payload.get("cards", []) if isinstance(payload, dict) else []
+    local_cards: list[dict] = []
+    seen: set[str] = set()
+    for card in cards:
+        if not isinstance(card, dict):
+            continue
+        source_path = str(card.get("path") or "").strip()
+        source = str(card.get("source") or "").strip().lower()
+        if not source_path or source not in SOURCE_FAMILY_LABELS:
+            continue
+        ref = f"obsidian-vault/{source_path}" if not source_path.startswith("obsidian-vault/") else source_path
+        if not local_path_exists(ref):
+            continue
+        key = str(card.get("id") or ref)
+        if key in seen:
+            continue
+        seen.add(key)
+        local_cards.append(card)
+    return local_cards
+
+
+def source_note_path_for_card(card: dict) -> Path:
+    source = str(card.get("source") or "unknown").lower()
+    family = SOURCE_FAMILY_LABELS.get(source, source.title()).replace(" / ", "-").replace(" ", "-")
+    title = str(card.get("title") or "untitled source")
+    card_id = re.sub(r"[^a-zA-Z0-9]+", "-", str(card.get("id") or "source")).strip("-").lower()
+    slug = slugify(title)[:90]
+    return VAULT / "Wiki" / "SourceNotes" / family / f"{slug}-{card_id[-12:]}.md"
+
+
+def card_terms(card: dict, limit: int = 14) -> list[str]:
+    terms: list[str] = []
+    for key in ["keywords", "tags", "categories", "sourceCategories"]:
+        value = card.get(key)
+        if isinstance(value, list):
+            for item in value:
+                term = str(item).strip()
+                if term and term not in terms:
+                    terms.append(term)
+    for topic in card.get("semanticTopics") or []:
+        if isinstance(topic, dict):
+            term = str(topic.get("topic") or "").strip()
+            if term and term not in terms:
+                terms.append(term)
+    return terms[:limit]
+
+
+def yaml_string(value: object) -> str:
+    return json.dumps(str(value), ensure_ascii=False)
+
+
+def source_note_markdown(card: dict) -> str:
+    title = str(card.get("title") or "Untitled source").strip() or "Untitled source"
+    source = str(card.get("source") or "unknown").lower()
+    source_label = SOURCE_FAMILY_LABELS.get(source, source)
+    source_path = str(card.get("path") or "")
+    source_ref = f"obsidian-vault/{source_path}" if not source_path.startswith("obsidian-vault/") else source_path
+    url = str(card.get("url") or "")
+    terms = card_terms(card)
+    excerpt = compact(str(card.get("excerpt") or ""), 900)
+    source_passages = extract_source_passages(local_path(source_ref), max_items=5) if local_path_exists(source_ref) else []
+    if source_passages:
+        evidence_items = source_passages
+    elif excerpt and "No plaintext extract returned" not in excerpt:
+        evidence_items = [excerpt]
+    else:
+        evidence_items = ["No readable plaintext passage was available in the local source export; use this note as a routing anchor, not as proof for synthesis."]
+    summary_terms = ", ".join(terms[:8]) or source_label
+    thin = not source_passages and ("No plaintext extract returned" in excerpt or len(excerpt) < 120)
+    summary = f"Compiled source note for {title} from {source_label}. Key terms: {summary_terms}."
+    note_id = f"source-note-{source}-{slugify(str(card.get('id') or title))}"
+    related_concepts = [term for term in terms if re.search(r"commons|community|bio|care|infrastructure|art|lab|fermentation|kitchen|documentation", term, re.I)][:8]
+    related_methods = [term for term in terms if re.search(r"workshop|protocol|diy|experiment|tool|kit|fabrication|electronics", term, re.I)][:8]
+    related_materials = [term for term in terms if re.search(r"textile|fabric|circuit|food|coco|cellulose|sensor|material|fermentation|tofu", term, re.I)][:8]
+    related_social = [term for term in terms if re.search(r"community|commons|lab|kitchen|camp|festival|workshop|hosting", term, re.I)][:8]
+    lines = [
+        "---",
+        f"id: {yaml_string(note_id)}",
+        f"title: {yaml_string(title)}",
+        "type: source",
+        "status: compiled-source-note",
+        f"summary: {yaml_string(summary)}",
+        "sourceRefs:",
+        f"  - {source_ref}",
+        "evidence:",
+        *[f"  - {yaml_string(item)}" for item in evidence_items[:5]],
+        "relatedConcepts:",
+        *[f"  - {term}" for term in related_concepts],
+        "relatedMethods:",
+        *[f"  - {term}" for term in related_methods],
+        "relatedMaterials:",
+        *[f"  - {term}" for term in related_materials],
+        "relatedSocialForms:",
+        *[f"  - {term}" for term in related_social],
+        "relatedProjects:",
+        f"  - {source_label}",
+        "openQuestions:",
+        "  - What stronger source passage should replace this automatic source-card summary?" if thin else "  - Which compiled concept or synthesis note should this source support?",
+        "---",
+        "",
+        f"# {title}",
+        "",
+        "## Scope",
+        "",
+        f"This is a compiled source note for one raw source page from {source_label}. It is part of the PBS Karpathy Core v1 source-note layer: raw sources remain immutable, while this note gives the runtime a durable, citable wiki page to query before synthesis.",
+        "",
+        "## Source",
+        "",
+        f"- source family: `{source_label}`",
+        f"- sourceRef: `{source_ref}`",
+        f"- url: {url or 'not recorded'}",
+        f"- source card id: `{card.get('id') or ''}`",
+        "",
+        "## Evidence",
+        "",
+        *[f"- {item} [1]" for item in evidence_items[:5]],
+        "",
+        "## Terms",
+        "",
+        *(f"- {term}" for term in terms),
+        "",
+        "## Lint Notes",
+        "",
+        "- This source note was generated deterministically from the local source card export.",
+        "- It is safe as a retrieval anchor, but claims still need stronger human/LLM review before promotion into concept, material, social-form, comparison, or synthesis notes.",
+        "- The raw source page was not modified.",
+        "",
+        "## Citations",
+        "",
+        f"[1] `{source_ref}`",
+        "",
+        "## Open Questions",
+        "",
+        "- What exact claim, if any, should this source contribute to the compiled PBS wiki?",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def command_compile_source_notes(args: argparse.Namespace) -> int:
+    cards = source_cards_for_compilation()
+    written = 0
+    skipped = 0
+    for card in cards:
+        path = source_note_path_for_card(card)
+        if path.exists() and not args.overwrite:
+            skipped += 1
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(source_note_markdown(card), encoding="utf-8")
+        written += 1
+    append_wiki_log("compile", "full source-note layer", [
+        f"Compiled `{written}` source notes into `obsidian-vault/Wiki/SourceNotes/`.",
+        f"Skipped `{skipped}` existing source notes.",
+        "Raw source files were not modified.",
+    ])
+    print(f"cards={len(cards)}")
+    print(f"written={written}")
+    print(f"skipped={skipped}")
+    return 0
+
+
 def command_lint_evidence(args: argparse.Namespace) -> int:
     warnings, errors = evidence_lint_rows()
     print(f"warnings={len(warnings)}")
@@ -824,6 +1351,237 @@ def command_lint_evidence(args: argparse.Namespace) -> int:
         ])
         print(f"artifact={rel(out_path)}")
     return 1 if errors else 0
+
+
+def wiki_note_key(path: Path, text: str) -> str:
+    return slugify(str(parse_frontmatter(text).get("title") or path.stem))
+
+
+def compiled_note_records() -> list[dict]:
+    records: list[dict] = []
+    for path in compiled_wiki_paths():
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        fm = parse_frontmatter(text)
+        title = str(fm.get("title") or path.stem)
+        records.append({
+            "path": path,
+            "relPath": rel(path),
+            "title": title,
+            "key": slugify(title),
+            "folder": path.parent.name,
+            "text": text,
+            "refs": parse_refs(text),
+            "links": extract_wikilink_targets(text),
+            "searchText": re.sub(r"\s+", " ", f"{title} {fm.get('summary') or ''} {markdown_section(text, 'Definition', 900)} {markdown_section(text, 'Source-Backed Claims', 900)} {markdown_section(text, 'Evidence', 900)}"),
+        })
+    return records
+
+
+def compiled_note_lookup(records: list[dict]) -> dict[str, dict]:
+    lookup: dict[str, dict] = {}
+    for record in records:
+        path = record["path"]
+        keys = {
+            record["key"],
+            slugify(str(record["title"])),
+            slugify(path.stem),
+            slugify(f"Wiki/{record['folder']}/{path.stem}"),
+            slugify(f"{record['folder']}/{path.stem}"),
+        }
+        for key in keys:
+            lookup[key] = record
+    return lookup
+
+
+def score_wiki_record(record: dict, query: str) -> tuple[float, list[str]]:
+    terms = tokenize(query)
+    title = str(record["title"]).lower()
+    text = str(record["searchText"]).lower()
+    score = 0.0
+    reasons: list[str] = []
+    for term in terms:
+        if term in title:
+            score += 6
+            reasons.append(f"title:{term}")
+        count = text.count(term)
+        if count:
+            score += min(count, 5)
+    if record["refs"]:
+        score += min(len(record["refs"]), 5) * 0.25
+    if "## Source-Backed Claims" in str(record["text"]):
+        score += 1.5
+        reasons.append("claims")
+    return score, sorted(set(reasons))[:8]
+
+
+def graph_neighbors(record: dict, lookup: dict[str, dict]) -> list[dict]:
+    neighbors = []
+    for target in record["links"]:
+        key = slugify(target)
+        candidate = lookup.get(key) or lookup.get(slugify(target.rsplit("/", 1)[-1]))
+        if candidate and candidate["relPath"] != record["relPath"] and candidate not in neighbors:
+            neighbors.append(candidate)
+    for candidate in lookup.values():
+        if candidate["relPath"] == record["relPath"]:
+            continue
+        if any(slugify(target) == record["key"] or slugify(target.rsplit("/", 1)[-1]) == record["key"] for target in candidate["links"]):
+            if candidate not in neighbors:
+                neighbors.append(candidate)
+    return neighbors
+
+
+def query_route(query: str, hops: int, limit: int) -> dict:
+    records = compiled_note_records()
+    lookup = compiled_note_lookup(records)
+    ranked = []
+    for record in records:
+        score, reasons = score_wiki_record(record, query)
+        if score > 0:
+            ranked.append({"record": record, "score": round(score, 2), "reasons": reasons})
+    ranked.sort(key=lambda item: (-item["score"], item["record"]["title"]))
+    anchors = ranked[:limit]
+    visited = {item["record"]["relPath"] for item in anchors}
+    frontier = [item["record"] for item in anchors]
+    expansions: list[dict] = []
+    for depth in range(1, hops + 1):
+        next_frontier = []
+        for record in frontier:
+            for neighbor in graph_neighbors(record, lookup):
+                if neighbor["relPath"] in visited:
+                    continue
+                visited.add(neighbor["relPath"])
+                expansions.append({"from": record["relPath"], "to": neighbor["relPath"], "depth": depth, "title": neighbor["title"]})
+                next_frontier.append(neighbor)
+        frontier = next_frontier
+    used_records = [item["record"] for item in anchors] + [next(record for record in records if record["relPath"] == item["to"]) for item in expansions]
+    source_refs = list(dict.fromkeys([ref for record in used_records for ref in record["refs"]]))
+    verified_refs = []
+    thin_refs = []
+    for ref in source_refs:
+        if not local_path_exists(ref):
+            continue
+        path = local_path(ref)
+        (thin_refs if is_thin_source_text(path.read_text(encoding="utf-8", errors="ignore")) else verified_refs).append(ref)
+    return {
+        "type": "wiki-query-route",
+        "status": "review-artifact",
+        "query": query,
+        "hops": hops,
+        "anchors": [{"path": item["record"]["relPath"], "title": item["record"]["title"], "score": item["score"], "reasons": item["reasons"]} for item in anchors],
+        "expansions": expansions,
+        "sourceRefs": source_refs,
+        "verifiedReadableSourceRefs": verified_refs,
+        "thinSourceRefs": thin_refs,
+        "warnings": [] if anchors else ["query found no compiled Wiki anchor"],
+    }
+
+
+def command_query(args: argparse.Namespace) -> int:
+    route = query_route(args.query, args.hops, args.limit)
+    out_dir = VAULT / "Review/query-routes"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    slug = slugify(args.query)[:80]
+    json_path = out_dir / f"{slug}.json"
+    md_path = out_dir / f"{slug}.md"
+    json_path.write_text(json.dumps(route, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    lines = [
+        "---",
+        "type: wiki-query-route",
+        "status: review-artifact",
+        "sourceRefs:",
+        "  - scripts/wiki_tool.py",
+        "  - obsidian-vault/Wiki/index.md",
+        "---",
+        "",
+        f"# Query Route: {args.query}",
+        "",
+        "## Anchors",
+        "",
+    ]
+    lines.extend([f"- [[{item['path'].replace('obsidian-vault/Wiki/', '').removesuffix('.md')}|{item['title']}]] score `{item['score']}` reasons `{', '.join(item['reasons']) or 'text match'}`" for item in route["anchors"]] or ["- No compiled Wiki anchor found."])
+    lines.extend(["", "## Traversal", ""])
+    lines.extend([f"- depth {item['depth']}: `{item['from']}` -> `{item['to']}`" for item in route["expansions"]] or ["- No wikilink traversal available."])
+    lines.extend(["", "## Source Verification", "", f"- readable sourceRefs: {len(route['verifiedReadableSourceRefs'])}", f"- thin sourceRefs: {len(route['thinSourceRefs'])}", ""])
+    if route["thinSourceRefs"]:
+        lines.extend(["## Thin SourceRefs", "", *[f"- `{ref}`" for ref in route["thinSourceRefs"][:20]], ""])
+    md_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    append_wiki_log("query", args.query, [f"Wrote `{rel(md_path)}` route trace.", f"Anchors: {len(route['anchors'])}; expansions: {len(route['expansions'])}."])
+    print(f"artifact={rel(md_path)}")
+    print(f"anchors={len(route['anchors'])}")
+    print(f"expansions={len(route['expansions'])}")
+    return 0 if route["anchors"] else 1
+
+
+def incoming_link_counts(records: list[dict], lookup: dict[str, dict]) -> dict[str, int]:
+    counts = {record["relPath"]: 0 for record in records}
+    for record in records:
+        for neighbor in graph_neighbors(record, lookup):
+            counts[neighbor["relPath"]] = counts.get(neighbor["relPath"], 0) + 1
+    return counts
+
+
+def routing_gap_rows(query: str | None = None, limit: int = 40) -> list[dict]:
+    records = compiled_note_records()
+    lookup = compiled_note_lookup(records)
+    incoming = incoming_link_counts(records, lookup)
+    rows: list[dict] = []
+    compiled_text = compiled_note_text().lower()
+    bridge_dir = VAULT / "Sources/PBS Semantic Layers/Concepts"
+    for path in sorted(bridge_dir.glob("*.md")) if bridge_dir.is_dir() else []:
+        title = path.stem
+        if slugify(title) not in {record["key"] for record in records} and title.lower() not in compiled_text:
+            rows.append({"kind": "bridge-without-compiled-note", "path": rel(path), "title": title, "severity": "high"})
+    for record in records:
+        if incoming.get(record["relPath"], 0) == 0:
+            rows.append({"kind": "compiled-note-without-incoming-links", "path": record["relPath"], "title": record["title"], "severity": "medium"})
+        if record["refs"] and "## Source-Backed Claims" not in str(record["text"]):
+            rows.append({"kind": "sourceRefs-without-source-backed-claims", "path": record["relPath"], "title": record["title"], "severity": "high"})
+        if record["refs"] and all(local_path_exists(ref) and is_thin_source_text(local_path(ref).read_text(encoding="utf-8", errors="ignore")) for ref in record["refs"]):
+            rows.append({"kind": "all-sourceRefs-are-thin", "path": record["relPath"], "title": record["title"], "severity": "high"})
+    if query:
+        route = query_route(query, 1, 5)
+        if not route["anchors"]:
+            rows.append({"kind": "query-without-core-note", "query": query, "title": query, "severity": "high"})
+    severity_order = {"high": 0, "medium": 1, "low": 2}
+    rows.sort(key=lambda row: (severity_order.get(str(row.get("severity")), 9), str(row.get("kind")), str(row.get("title"))))
+    return rows[:limit]
+
+
+def command_routing_gap_lint(args: argparse.Namespace) -> int:
+    out_dir = VAULT / "Review/routing-gaps"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rows = routing_gap_rows(args.query, args.limit)
+    payload = {"type": "routing-gap-lint-report", "status": "review-candidates", "sourceRefs": ["scripts/wiki_tool.py", "obsidian-vault/Wiki/index.md"], "query": args.query, "candidates": rows}
+    json_path = out_dir / "latest.json"
+    md_path = out_dir / "latest.md"
+    json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    lines = [
+        "---",
+        "type: routing-gap-lint-report",
+        "status: review-candidates",
+        "sourceRefs:",
+        "  - scripts/wiki_tool.py",
+        "  - obsidian-vault/Wiki/index.md",
+        "---",
+        "",
+        "# Routing Gap Lint Report",
+        "",
+        "These gaps identify where the compiled Wiki still fails as a queryable GraphRAG layer.",
+        "",
+    ]
+    for row in rows:
+        lines.extend([f"## {row['title']}", "", f"- kind: `{row['kind']}`", f"- severity: `{row['severity']}`"])
+        if row.get("path"):
+            lines.append(f"- path: `{row['path']}`")
+        if row.get("query"):
+            lines.append(f"- query: `{row['query']}`")
+        lines.append("")
+    md_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    for row in rows:
+        print(json.dumps(row, ensure_ascii=False))
+    print(f"routing_gap_candidates={len(rows)}")
+    print(f"artifact={rel(md_path)}")
+    return 0
 
 
 def compiled_note_text() -> str:
@@ -1031,6 +1789,30 @@ def main() -> int:
     build_note.add_argument("--output")
     build_note.add_argument("--overwrite", action="store_true")
     build_note.set_defaults(func=command_build_note)
+    ingest_source = sub.add_parser("ingest-source")
+    ingest_source.add_argument("--source")
+    ingest_source.add_argument("--bridge")
+    ingest_source.add_argument("--source-ref", action="append")
+    ingest_source.add_argument("--query")
+    ingest_source.add_argument("--source-family")
+    ingest_source.add_argument("--type", choices=sorted(NOTE_TYPE_FOLDERS))
+    ingest_source.add_argument("--title")
+    ingest_source.add_argument("--limit", type=int, default=6)
+    ingest_source.add_argument("--output")
+    ingest_source.add_argument("--overwrite", action="store_true")
+    ingest_source.set_defaults(func=command_ingest_source)
+    ingest_batch = sub.add_parser("ingest-batch")
+    ingest_batch.add_argument("--source")
+    ingest_batch.add_argument("--bridge")
+    ingest_batch.add_argument("--source-ref", action="append")
+    ingest_batch.add_argument("--query")
+    ingest_batch.add_argument("--source-family")
+    ingest_batch.add_argument("--type", choices=sorted(NOTE_TYPE_FOLDERS))
+    ingest_batch.add_argument("--title")
+    ingest_batch.add_argument("--limit", type=int, default=5)
+    ingest_batch.add_argument("--output-dir", default="obsidian-vault/Review/thickened-notes")
+    ingest_batch.add_argument("--overwrite", action="store_true")
+    ingest_batch.set_defaults(func=command_ingest_batch)
     lint_evidence = sub.add_parser("lint-evidence")
     lint_evidence.add_argument("--limit", type=int, default=80)
     lint_evidence.add_argument("--write-log", action="store_true")
@@ -1038,6 +1820,18 @@ def main() -> int:
     export_wiki = sub.add_parser("export-wiki-index")
     export_wiki.add_argument("--output", default="webview-ui/public/assets/pbs-wiki-index.json")
     export_wiki.set_defaults(func=command_export_wiki_index)
+    compile_sources = sub.add_parser("compile-source-notes")
+    compile_sources.add_argument("--overwrite", action="store_true")
+    compile_sources.set_defaults(func=command_compile_source_notes)
+    query = sub.add_parser("query")
+    query.add_argument("--query", required=True)
+    query.add_argument("--hops", type=int, default=2)
+    query.add_argument("--limit", type=int, default=5)
+    query.set_defaults(func=command_query)
+    routing = sub.add_parser("routing-gap-lint")
+    routing.add_argument("--query")
+    routing.add_argument("--limit", type=int, default=40)
+    routing.set_defaults(func=command_routing_gap_lint)
     terrain = sub.add_parser("terrain-gap-lint")
     terrain.add_argument("--limit", type=int, default=10)
     terrain.set_defaults(func=command_terrain_gap_lint)
