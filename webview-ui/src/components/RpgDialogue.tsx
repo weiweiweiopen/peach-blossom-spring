@@ -92,86 +92,74 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
+function normalizeWhitespace(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
 
-function personaFocus(persona: Persona): string {
-  return cleanQuestionPart(persona.role.split('/')[0] || persona.name, 42);
+const personaQuestionSeeds: Record<string, string[]> = {
+  'jonathan-minchin': [
+    'Open Source Beehives 如何把感測器、蜂群與農地照護連成一種可共享的田野知識？',
+    'Green Fab Lab 的農業機器人與生態日曆，怎麼改變 fab lab 只做工具展示的想像？',
+    'Jonathan 的訪談裡，什麼樣的在地關係比實驗室設備更能讓技術留下來？',
+  ],
+  'marc-dusseiller': [
+    'Marc 說的 Hackteria 精神裡，為什麼便宜、可拆、好笑會比正式實驗室更重要？',
+    '在 Marc 的工作坊經驗裡，失敗、料理、焊接和友誼怎麼一起變成教學方法？',
+    '如果一個 science-art box 不能被打開、污染、重做，Marc 會怎麼批評它？',
+  ],
+  'tincuta-heinzel': [
+    '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？',
+    'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
+    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具，而不是教學活動？',
+  ],
+};
+
+function transcriptQuestionSeed(persona: Persona, transcript: string): string[] {
+  const text = transcript || Object.values(persona.responses).join(' ');
+  const sentences = normalizeWhitespace(text)
+    .split(/(?<=[。！？.!?])\s+|\n+/)
+    .map((line) => normalizeWhitespace(line))
+    .filter((line) => line.length > 36 && line.length < 180 && !/^https?:/i.test(line))
+    .slice(0, 6);
+  return sentences.slice(0, 3).map((line) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(line, 48)}」可以怎麼理解？`);
 }
 
-function topicHint(persona: Persona, topicLabels: Record<string, string>, topic: string): string {
-  const label = topicLabels[topic] || topic;
-  const response = persona.responses[topic] || '';
-  const hint = response ? cleanQuestionPart(response, 60) : label;
-  return hint || label;
+function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transcript = ''): string[] {
+  const fixed = personaQuestionSeeds[persona.id];
+  if (language === 'zh-TW' && fixed) return fixed;
+  const transcriptSeeds = transcriptQuestionSeed(persona, transcript);
+  if (language === 'zh-TW' && transcriptSeeds.length >= 2) return transcriptSeeds;
+
+  const responseEntries = Object.entries(persona.responses).slice(0, 3);
+  const questionsZh = responseEntries.map(([, response]) =>
+    `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
+  );
+  const questionsEn = responseEntries.map(([, response]) =>
+    `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
+  );
+  return language === 'zh-TW' ? questionsZh : questionsEn;
 }
 
-function makeSuggestedQuestions(language: LanguageCode, persona: Persona, topicLabels: Record<string, string>): string[] {
-  const availableTopics = Object.keys(topicLabels).filter((topic) => persona.responses[topic]);
-  const chosenTopics = availableTopics.length ? availableTopics.slice(0, 3) : Object.keys(persona.responses).slice(0, 3);
-  const focus = personaFocus(persona);
-  const topicA = chosenTopics[0] ?? 'practice';
-  const topicB = chosenTopics[1] ?? topicA;
-  const topicC = chosenTopics[2] ?? topicB;
-  const hintA = topicHint(persona, topicLabels, topicA);
-  const hintB = topicHint(persona, topicLabels, topicB);
-  const hintC = topicHint(persona, topicLabels, topicC);
-
-  if (persona.id === 'tincuta-heinzel') {
-    const attemptsQuestion = '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？';
-    const fallback: Record<LanguageCode, string> = {
-      'zh-TW': 'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
-      en: 'How does Tincuta turn failure, curating, and local response into preservable research questions?',
-      id: 'Bagaimana Tincuta mengubah kegagalan, kurasi, dan respons lokal menjadi pertanyaan riset yang bisa disimpan?',
-      de: 'Wie macht Tincuta Scheitern, Kuratieren und lokale Antworten zu bewahrbaren Forschungsfragen?',
-      ja: 'Tincuta は失敗、キュレーション、地域の応答をどう保存可能な研究質問に変える？',
-      th: 'Tincuta เปลี่ยนความล้มเหลว ภัณฑารักษ์ และการตอบสนองท้องถิ่นเป็นคำถามวิจัยที่เก็บรักษาได้อย่างไร?',
-    };
-    const method: Record<LanguageCode, string> = {
-      'zh-TW': `從 ${hintA} 來看，營隊什麼時候比較像策展工具，而不是教學活動？`,
-      en: `From ${hintA}, when does a camp behave more like a curatorial tool than a class?`,
-      id: `Dari ${hintA}, kapan sebuah kamp lebih mirip alat kuratorial daripada kelas?`,
-      de: `Ausgehend von ${hintA}: Wann ist ein Camp eher kuratorisches Werkzeug als Unterricht?`,
-      ja: `${hintA} から見ると、キャンプはいつ授業ではなくキュレーションの道具になる？`,
-      th: `จาก ${hintA} แคมป์กลายเป็นเครื่องมือภัณฑารักษ์มากกว่าชั้นเรียนเมื่อไร?`,
-    };
-    return [attemptsQuestion, fallback[language], method[language]];
+function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
+  const response = persona.responses[topic] || persona.intro;
+  const snippets = transcriptEvidence
+    .slice(0, 2)
+    .map((item) => cleanQuestionPart(item.text, 92))
+    .filter(Boolean);
+  if (language === 'zh-TW') {
+    const evidenceText = snippets.length
+      ? `\n\n訪談線索：${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('；')}`
+      : '';
+    return `${persona.name} 會先從自己的訪談與角色脈絡回答，而不是假裝即時外網檢索。\n\n${response}${evidenceText}\n\n這個雲端版使用已打包的 PBS source-first index；如果需要更新 URL 內容，要在本機重新 crawl / export / deploy。`;
   }
-
-  const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': [
-      `以 ${persona.name} 的角度，${hintA} 和 ${focus} 的關係是什麼？`,
-      `${persona.name} 的訪談裡，${hintB} 暴露了哪些照護、維修或組織壓力？`,
-      `如果把 ${persona.name} 的經驗存進 PBS 共享記憶，${hintC} 應該留下什麼可查證線索？`,
-    ],
-    en: [
-      `From ${persona.name}'s perspective, how does ${hintA} relate to ${focus}?`,
-      `In ${persona.name}'s interview memory, what care, repair, or organizational tensions appear around ${hintB}?`,
-      `If ${persona.name}'s experience enters PBS shared memory, what checkable traces should ${hintC} leave?`,
-    ],
-    id: [
-      `Dari sudut pandang ${persona.name}, bagaimana ${hintA} berhubungan dengan ${focus}?`,
-      `Dalam memori wawancara ${persona.name}, tegangan care, repair, atau organisasi apa yang muncul di sekitar ${hintB}?`,
-      `Jika pengalaman ${persona.name} masuk ke memori bersama PBS, jejak terperiksa apa yang perlu ditinggalkan oleh ${hintC}?`,
-    ],
-    de: [
-      `Aus ${persona.name}s Perspektive: Wie hängt ${hintA} mit ${focus} zusammen?`,
-      `Welche Care-, Repair- oder Organisationsspannungen zeigt ${persona.name}s Interviewgedächtnis bei ${hintB}?`,
-      `Wenn ${persona.name}s Erfahrung ins PBS-Gedächtnis eingeht: Welche prüfbaren Spuren soll ${hintC} hinterlassen?`,
-    ],
-    ja: [
-      `${persona.name} の視点では、${hintA} は ${focus} とどう関係する？`,
-      `${persona.name} のインタビュー記憶では、${hintB} の周りにどんなケア、修理、組織的緊張が出てくる？`,
-      `${persona.name} の経験を PBS 共有記憶に入れるなら、${hintC} はどんな検証可能な手がかりを残すべき？`,
-    ],
-    th: [
-      `จากมุมมองของ ${persona.name}, ${hintA} เกี่ยวข้องกับ ${focus} อย่างไร?`,
-      `ในความทรงจำสัมภาษณ์ของ ${persona.name}, ${hintB} เผยแรงตึงเรื่อง care, repair หรือองค์กรแบบใด?`,
-      `ถ้าประสบการณ์ของ ${persona.name} เข้าไปในความจำร่วม PBS, ${hintC} ควรทิ้งร่องรอยที่ตรวจสอบได้อะไร?`,
-    ],
-  };
-  return questions[language];
+  const evidenceText = snippets.length
+    ? `\n\nInterview traces: ${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('; ')}`
+    : '';
+  return `${persona.name} answers from persona and interview memory first, not from live URL crawling.\n\n${response}${evidenceText}\n\nThis cloud build uses the bundled PBS source-first index; update URLs locally by crawling/exporting/redeploying.`;
 }
 
 function wukirMusicLabel(language: LanguageCode): string {
@@ -361,7 +349,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
-  const fixedQuestions = useMemo(() => makeSuggestedQuestions(language, persona, topicLabels), [language, persona, topicLabels]);
+  const fixedQuestions = useMemo(() => makeSuggestedQuestions(language, persona, `${loadedKnowledge?.transcript_zh ?? ""}
+${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -452,15 +441,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
         });
         setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
       } else {
-        const personaTopic = persona.responses[topic] || persona.intro;
-        const sourceNote = links.slice(0, 3).map((link, index) => `[${index + 1}] ${link.title}`).join('、');
-        const fallbackText = language === 'zh-TW'
-          ? `${persona.name} 先用我自己的訪談記憶回答：${personaTopic}。
-
-雲端版不會即時呼叫本機 PBS memory server；這裡改用已打包的 source-first index。可先讀 ${sourceNote || '目前沒有足夠 source links'}，如果要更深的外部取材，需要在本機重新 crawl / export index 後部署。`
-          : `${persona.name} answers from persona/transcript memory first: ${personaTopic}
-
-The cloud build cannot call the localhost PBS memory server, so this uses the bundled source-first index. Start with ${sourceNote || 'no strong source links yet'}; deeper external sourcing requires local crawl/export and redeploy.`;
+        const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
         setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
       }
     } catch (err) {

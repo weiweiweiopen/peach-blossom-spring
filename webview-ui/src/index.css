@@ -8276,3 +8276,27 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 .schema-control-room .schema-editorial-prompt-editor {
   background: #fffaf0 !important;
 }
+
+/* NPC dialogue source links must not inherit oversized pixel-heading styles. */
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki,
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki *,
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki a,
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki p,
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki span {
+  font-size: 1em !important;
+  line-height: 1.42 !important;
+  letter-spacing: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki h3 {
+  font-size: 1em !important;
+  line-height: 1.3 !important;
+  margin: 0 0 0.35em;
+}
+.rpg-dialogue-panel .rpg-dialogue-message .rpg-dialogue-wiki a {
+  display: block;
+  padding: 0.2em 0;
+  background: transparent !important;
+  border: 0 !important;
+}

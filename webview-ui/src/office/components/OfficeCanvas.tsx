@@ -165,12 +165,18 @@ export function OfficeCanvas({
 
     resizeCanvas();
 
-    const observer = new ResizeObserver(() => resizeCanvas());
+    const observer = new ResizeObserver(() => {
+      resizeCanvas();
+      // Some Safari/GitHub Pages loads report the right CSS size before all
+      // decoded image assets settle. A second frame prevents partial map clears.
+      window.requestAnimationFrame(resizeCanvas);
+    });
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
     window.addEventListener('resize', resizeCanvas);
     window.visualViewport?.addEventListener('resize', resizeCanvas);
+    const settleTimers = [80, 250, 700, 1400].map((ms) => window.setTimeout(resizeCanvas, ms));
 
     const stop = startGameLoop(canvas, {
       update: (dt) => {
@@ -339,6 +345,7 @@ export function OfficeCanvas({
       observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
       window.visualViewport?.removeEventListener('resize', resizeCanvas);
+      settleTimers.forEach((id) => window.clearTimeout(id));
     };
   }, [officeState, resizeCanvas, isEditMode, editorState, zoom, panRef, getInteractiveFurnitureHighlight]);
 
