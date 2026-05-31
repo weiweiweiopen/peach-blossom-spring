@@ -1124,8 +1124,8 @@ function CentralComputerDialogue({
     try {
       const reply = await askCampfire(trimmed, language);
       setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links }]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : copy.failError);
+    } catch {
+      setError("");
       const { searchWikiPages } = await import("./wikiSearch.js");
       const links = searchWikiPages(trimmed, undefined, 8);
       setMessages((current) => [...current, {

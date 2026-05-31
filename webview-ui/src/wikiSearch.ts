@@ -41,8 +41,8 @@ function expandQuery(query: string): string {
   if (/diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|聲音|sound/i.test(query)) {
     expansions.push('diy electronics', 'synth', 'synthesizer', 'oscillator', 'sound circuit', 'speaker', 'ATtiny sound', 'Nandsynth', 'SolarpunkSynth', 'starvation synth', 'HOW TO GET WHAT YOU WANT', 'Kobakant', 'Hackteria');
   }
-  if (/穿戴|織品|布|wearable|textile|fabric|soft/i.test(query)) {
-    expansions.push('wearable', 'textile', 'fabric', 'soft circuit', 'stretch sensor');
+  if (/穿戴|織品|電子織品|布|身體|體感|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|soft|body|embod|somatic|failure|documentation|document/i.test(query)) {
+    expansions.push('wearable', 'e-textile', 'textile', 'fabric', 'soft circuit', 'stretch sensor', 'body', 'embodied knowledge', 'body interface', 'skin', 'touch', 'gesture', 'sensing', 'failure notes', 'trials and errors', 'documentation', 're-readable documentation', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'Fabricademy', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
   if (/紅茶菌|康普茶|kombucha|ferment|fermentation|發酵|菌膜|茶菌/i.test(query)) {
     expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
@@ -124,6 +124,7 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
   const wantsHackteriaKitchen = /kitchen|廚房|厨房|料理|food|meal|hosting|餐|cook|ferment|kombucha|nata|tofu|biohack|bioart|生物藝術|濕實驗室|實驗室/i.test(query);
+  const wantsBodyTextile = /穿戴|織品|電子織品|布|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|body|embod|somatic|skin|gesture|failure|documentation|document/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
@@ -131,7 +132,9 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
       const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
       const hackteriaKitchenBoost = wantsHackteriaKitchen && family === 'Hackteria' ? 34 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const bodyTextileText = `${card.title} ${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`.toLowerCase();
+      const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want|fabricademy/i.test(bodyTextileText) ? 42 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

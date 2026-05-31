@@ -29,8 +29,8 @@ function expandQuery(query: string): string {
   if (/發酵|ferment|fermentation|microbe|微生物/i.test(query)) {
     expansions.push('fermentation', 'microbe', 'yeast', 'fungus', 'Sato', 'culture');
   }
-  if (/織品|textile|wearable|sensor|感測|穿戴/i.test(query)) {
-    expansions.push('textile', 'e-textile', 'sensor', 'soft circuit', 'wearable', 'Kobakant');
+  if (/織品|電子織品|textile|e-?textile|wearable|sensor|感測|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(query)) {
+    expansions.push('textile', 'e-textile', 'sensor', 'soft circuit', 'wearable', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'Fabricademy', 'body', 'embodied knowledge', 'skin', 'touch', 'gesture', 'stretch sensor', 'failure notes', 'trials and errors', 'documentation', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
   if (/open|開源|hardware|硬體|lab|實驗室|temporary|臨時|公共|基礎設施|commons/i.test(query)) {
     expansions.push('open science', 'open hardware', 'temporary lab', 'community lab', 'workshop', 'commons', 'documentation');
@@ -60,7 +60,8 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
   const familyBoost = /htgwyw|hackteria|sgmk/i.test(item.sourceFamily) ? 1 : 0;
-  return score + familyBoost;
+  const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(queryTokens.join(' ')) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|fabricademy|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
+  return score + familyBoost + bodyTextileBoost;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {
@@ -116,7 +117,7 @@ export function buildStaticLocalMemoryAnswer(query: string, results: WikiSearchR
   }
   const top = results.slice(0, 3);
   if (language === 'zh-TW') {
-    return `火先從本地記憶包撿出三塊木柴。關於「${compact(query, 28)}」，可先讀 ${top.map((item, i) => `[${i + 1}] ${item.title}`).join('、')}；它們提供可查證的 source-first 線索，下一步應把答案整理成 Review 草稿再提升到 Wiki。`;
+    return `火先從已打包的 PBS source-first index 撿出三塊木柴，不是即時外網爬取。關於「${compact(query, 28)}」，可先讀 ${top.map((item, i) => `[${i + 1}] ${item.title}`).join('、')}；若要更新或補例子，需要先重新 crawl / export index，再把答案整理成 Review 草稿提升到 Wiki。`;
   }
   return `The campfire found source-first local memory. For “${compact(query, 42)}”, start with ${top.map((item, i) => `[${i + 1}] ${item.title}`).join(', ')}; use these pages as evidence, then turn the synthesis into a reviewed Wiki note.`;
 }

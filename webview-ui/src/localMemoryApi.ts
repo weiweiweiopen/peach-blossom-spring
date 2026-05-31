@@ -8,7 +8,16 @@ export interface MemoryChatResponse {
   links: WikiSearchResult[];
 }
 
+export function canUseLocalMemoryServer(): boolean {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+}
+
 async function postJson<T>(path: string, payload: unknown): Promise<T> {
+  if (!canUseLocalMemoryServer()) {
+    throw new Error('PBS local memory server is only available on localhost. Cloud pages use the bundled source index fallback.');
+  }
   let response: Response;
   try {
     response = await fetch(path, {
@@ -17,11 +26,11 @@ async function postJson<T>(path: string, payload: unknown): Promise<T> {
       body: JSON.stringify(payload),
     });
   } catch {
-    throw new Error('Local PBS memory server is unavailable. Start scripts/pbs_game_server.py and open the local URL.');
+    throw new Error('PBS local memory server is unavailable. Start scripts/pbs_game_server.py and open the local URL.');
   }
   if (!response.ok) {
     const details = await response.text();
-    throw new Error(`Local PBS memory server failed (${response.status.toString()}): ${details}`);
+    throw new Error(`PBS local memory server failed (${response.status.toString()}): ${details}`);
   }
   return (await response.json()) as T;
 }

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KnowledgeBase } from '../deepseekClient.js';
 import { loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { askNpc } from '../localMemoryApi.js';
+import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
@@ -441,17 +441,30 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       );
       const transcriptEvidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
       const transcript = transcriptEvidence.map((item) => `${item.label}\n${item.text}`).join('\n\n');
-      const answer = await askNpc({
-        question: trimmed,
-        npcName: persona.name,
-        persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
-        transcript,
-        preferredLanguage: language,
-      });
       const links = searchWikiPages(trimmed, persona.id, 8);
-      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links }]);
+      if (canUseLocalMemoryServer()) {
+        const answer = await askNpc({
+          question: trimmed,
+          npcName: persona.name,
+          persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
+          transcript,
+          preferredLanguage: language,
+        });
+        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
+      } else {
+        const personaTopic = persona.responses[topic] || persona.intro;
+        const sourceNote = links.slice(0, 3).map((link, index) => `[${index + 1}] ${link.title}`).join('、');
+        const fallbackText = language === 'zh-TW'
+          ? `${persona.name} 先用我自己的訪談記憶回答：${personaTopic}。
+
+雲端版不會即時呼叫本機 PBS memory server；這裡改用已打包的 source-first index。可先讀 ${sourceNote || '目前沒有足夠 source links'}，如果要更深的外部取材，需要在本機重新 crawl / export index 後部署。`
+          : `${persona.name} answers from persona/transcript memory first: ${personaTopic}
+
+The cloud build cannot call the localhost PBS memory server, so this uses the bundled source-first index. Start with ${sourceNote || 'no strong source links yet'}; deeper external sourcing requires local crawl/export and redeploy.`;
+        setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : t(language, 'dialogue.requestFailed'));
+      setError(err instanceof Error && canUseLocalMemoryServer() ? err.message : t(language, 'dialogue.requestFailed'));
     } finally {
       setIsLoading(false);
     }
