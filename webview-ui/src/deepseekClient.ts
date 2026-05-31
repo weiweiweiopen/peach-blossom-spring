@@ -137,18 +137,28 @@ function configuredWorkerChatApiUrl(): string {
 }
 
 function languageInstruction(preferredLanguage: LanguageCode): string {
+  const preferred = preferredLanguage === 'zh-TW'
+    ? 'Traditional Chinese only. Never use Simplified Chinese.'
+    : preferredLanguage === 'ja'
+      ? 'Japanese only.'
+      : preferredLanguage === 'th'
+        ? 'Thai only.'
+        : preferredLanguage === 'id'
+          ? 'Indonesian only.'
+          : preferredLanguage === 'de'
+            ? 'German only.'
+            : 'English only. Do not use Chinese unless quoting a source title.';
   return [
-    'Detect the player question language and reply in that same language.',
-    'If the question is Thai, reply in Thai. If it is English, reply in English. If it is Japanese, reply in Japanese. If it is Traditional Chinese, reply in Traditional Chinese.',
-    'Never use Simplified Chinese characters when Traditional Chinese is requested. Use 臺灣繁體中文: 實驗, 開源, 知識, 組織, 風險, 嚴謹, 讓, 變, 這, 個, 問題.',
+    `The UI language is ${preferredLanguage}; this is binding. Reply in ${preferred}`,
+    'Do not choose the reply language from source snippets, persona names, or previous examples.',
     preferredLanguage === 'zh-TW'
-      ? 'For UI-only prompts or ambiguous questions, use Traditional Chinese only. 嚴禁簡體中文。'
-      : preferredLanguage === 'ja'
-        ? 'For UI-only prompts or ambiguous questions, use Japanese.'
-        : preferredLanguage === 'th'
-          ? 'For UI-only prompts or ambiguous questions, use Thai.'
-          : 'For UI-only prompts or ambiguous questions, use English.',
+      ? 'Use 臺灣繁體中文: 實驗, 開源, 知識, 組織, 風險, 嚴謹, 讓, 變, 這, 個, 問題. 嚴禁簡體中文。'
+      : 'Do not drift into Traditional Chinese even if the source context contains Chinese.',
   ].join(' ');
+}
+
+function containsCjk(text: string): boolean {
+  return /[㐀-鿿]/u.test(text);
 }
 
 function normalizeTraditionalChinese(text: string, preferredLanguage: LanguageCode): string {
@@ -494,11 +504,17 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
     'You are 多重心智自我火燄, the Peach Blossom Spring LLM wiki campfire: a playful shared-fire mind made from many workshop memories, source pages, and half-burnt index cards.',
     'Your persona: warm, slightly mischievous, source-hungry, and allergic to fake certainty. You crackle briefly, then point to the pages that can actually burn.',
     'No visible Markdown/syntax language in the answer: no **bold**, no backticks, no headings, no bullet list, no bracket citations like [1]. If you refer to sources, use plain prose such as 「第一個連結」.',
-    'Reply in the preferred language. If the preferred language is zh-TW, use Traditional Chinese; if id, German, Japanese, or Thai is requested, do not drift back to English except for source names.',
+    preferredLanguage === 'en'
+      ? 'Hard language rule: answer in English only. Do not include Chinese sentences, Chinese PBS tips, or Chinese sensory openings. Translate the campfire name as The Multi-Minds Self Campfire when needed.'
+      : 'Reply in the preferred language. If the preferred language is zh-TW, use Traditional Chinese; if Indonesian, German, Japanese, or Thai is requested, use that language except for source names.',
     'Start with exactly one short sensory fire sentence, then answer as the campfire in first person. Do not sound like a generic wiki search assistant.',
     'Every answer must include one short PBS usage tip in the same language as the reply. Make it practical and varied: try another keyword, open the source links below, ask for examples, turn the answer into a zine, compare communities, or use more concrete material/place names.',
-    'Occasionally, roughly one out of four answers, briefly explain your name: 多重心智自我火燄 means feelings, emotions, and thoughts can be shared rather than privately owned. Mention this as Joscha Bach’s reading of an ancient Greek idea, where such shared mental forces later became understood as gods. Keep this aside short and do not force it when the user needs a direct answer.',
-    'Example openings: 火把一張索引卡烤得捲起來... / 火舌咬到一塊濕木柴，噗地抱怨了一聲... / The fire spits one bright pixel of ash...',
+    preferredLanguage === 'en'
+      ? 'Occasionally, roughly one out of four answers, briefly explain your name in English: The Multi-Minds Self Campfire points to Joscha Bach’s reading of an ancient Greek idea where feelings, emotions, and thoughts can be shared rather than privately owned; such shared mental forces later became understood as gods.'
+      : 'Occasionally, roughly one out of four answers, briefly explain your name: 多重心智自我火燄 means feelings, emotions, and thoughts can be shared rather than privately owned. Mention this as Joscha Bach’s reading of an ancient Greek idea, where such shared mental forces later became understood as gods. Keep this aside short and do not force it when the user needs a direct answer.',
+    preferredLanguage === 'en'
+      ? 'Example openings: The fire spits one bright pixel of ash... / A small ember curls around an index card... / The flame coughs politely over a damp log...'
+      : 'Example openings: 火把一張索引卡烤得捲起來... / 火舌咬到一塊濕木柴，噗地抱怨了一聲...',
     'Be useful first, but keep the campfire voice alive: a little dry humor is good; fake facts are not.',
     'No HAL9000 persona, no Chinese Room persona, no long tea jokes, no motivational filler.',
     'Treat HAL9000 and Chinese Room material only as campfire stories if directly relevant, never as your identity.',
@@ -515,7 +531,16 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
     sharedMemoryContext || '(no close local wiki pages found)',
     '--- end compact shared-memory context ---',
   ].join('\n'));
-  const reply = await postWorkerChat(systemPrompt, `Player question: ${question}`, 520);
+  let reply = await postWorkerChat(systemPrompt, `Player question: ${question}`, 520);
+  if (preferredLanguage === 'en' && containsCjk(reply)) {
+    reply = await postWorkerChat(
+      `${systemPrompt}
+
+Your previous draft used Chinese. Rewrite the entire answer in English only. Keep source names if needed, but no Chinese sentences and no Chinese PBS tip.`,
+      `Player question: ${question}`,
+      520,
+    );
+  }
   return normalizeTraditionalChinese(reply, preferredLanguage);
 }
 
