@@ -135,31 +135,68 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transc
   if (language === 'zh-TW' && transcriptSeeds.length >= 2) return transcriptSeeds;
 
   const responseEntries = Object.entries(persona.responses).slice(0, 3);
-  const questionsZh = responseEntries.map(([, response]) =>
-    `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
-  );
-  const questionsEn = responseEntries.map(([, response]) =>
-    `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
-  );
-  return language === 'zh-TW' ? questionsZh : questionsEn;
+  const templates: Record<LanguageCode, (response: string) => string> = {
+    'zh-TW': (response) => `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
+    en: (response) => `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
+    id: (response) => `Dalam memori wawancara ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan praktiknya?`,
+    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ in ${persona.name}s Interview-Erinnerung mit der Praxis?`,
+    ja: (response) => `${persona.name} のインタビュー記憶では、「${cleanQuestionPart(response, 50)}」は実践とどうつながりますか？`,
+    th: (response) => `ในความทรงจำสัมภาษณ์ของ ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับการปฏิบัติอย่างไร?`,
+  };
+  return responseEntries.map(([, response]) => templates[language](response));
+}
+
+function sourceLinksLabel(language: LanguageCode): string {
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': '相關連結',
+    en: 'Source links',
+    id: 'Tautan sumber',
+    de: 'Quellenlinks',
+    ja: '関連リンク',
+    th: 'ลิงก์แหล่งที่มา',
+  };
+  return copy[language];
+}
+
+function zineLabel(language: LanguageCode): string {
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': 'Wiki 小誌',
+    en: 'Wiki zine',
+    id: 'Zine wiki',
+    de: 'Wiki-Zine',
+    ja: 'Wiki 小誌',
+    th: 'ซีน wiki',
+  };
+  return copy[language];
 }
 
 function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
   const response = persona.responses[topic] || persona.intro;
+  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
   const snippets = transcriptEvidence
     .slice(0, 2)
     .map((item) => cleanQuestionPart(item.text, 92))
     .filter(Boolean);
-  if (language === 'zh-TW') {
-    const evidenceText = snippets.length
-      ? `\n\n我記得訪談裡還有兩個線索：${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('；')}`
-      : '';
-    return `${response}${evidenceText}`;
-  }
-  const evidenceText = snippets.length
-    ? `\n\nI also remember these interview traces: ${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('; ')}`
-    : '';
-  return `${response}${evidenceText}`;
+  const evidenceJoined = snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join(language === 'zh-TW' || language === 'ja' ? '；' : '; ');
+  const evidenceCopy: Record<LanguageCode, string> = {
+    'zh-TW': snippets.length ? `\n\n我記得訪談裡還有兩個線索：${evidenceJoined}` : '',
+    en: snippets.length ? `\n\nI also remember these interview traces: ${evidenceJoined}` : '',
+    id: snippets.length ? `\n\nSaya juga mengingat jejak wawancara ini: ${evidenceJoined}` : '',
+    de: snippets.length ? `\n\nIch erinnere außerdem diese Interviewspuren: ${evidenceJoined}` : '',
+    ja: snippets.length ? `\n\nインタビューには、さらにこの手がかりがあります：${evidenceJoined}` : '',
+    th: snippets.length ? `\n\nฉันยังจำร่องรอยจากบทสัมภาษณ์เหล่านี้ได้: ${evidenceJoined}` : '',
+  };
+  if (language === 'zh-TW') return `${response}${evidenceCopy[language]}`;
+  if (language === 'en') return `${response}${evidenceCopy[language]}`;
+  const localizedLead: Record<LanguageCode, string> = {
+    'zh-TW': response,
+    en: response,
+    id: `${intro} Saya akan menjawab dari memori wawancara lebih dulu, bukan sebagai mesin pencari umum.`,
+    de: `${intro} Ich antworte zuerst aus der Interview-Erinnerung, nicht als allgemeine Suchmaschine.`,
+    ja: `${intro} まず一般的な検索ではなく、インタビュー記憶から答えます。`,
+    th: `${intro} ฉันจะตอบจากความทรงจำสัมภาษณ์ก่อน ไม่ใช่ในฐานะเครื่องมือค้นหาทั่วไป`,
+  };
+  return `${localizedLead[language]}${evidenceCopy[language]}`;
 }
 
 function wukirMusicLabel(language: LanguageCode): string {
@@ -503,8 +540,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   {message.text}
                 </p>
                 {message.links && message.links.length > 0 && (
-                  <details className="rpg-dialogue-source-links" aria-label="source links">
-                    <summary>Source links ({message.links.length})</summary>
+                  <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
+                    <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
                     <div className="rpg-dialogue-source-link-list">
                       {message.links.slice(0, 8).map((link, linkIndex) => (
                         <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
@@ -587,8 +624,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
               data-ui-control="icon-button"
               type="button"
               disabled={isLoading || !question.trim()}
-              aria-label="Wiki zine"
-              title="Wiki zine"
+              aria-label={zineLabel(language)}
+              title={zineLabel(language)}
               onClick={() => void handleOpenZine()}
             >
               📚

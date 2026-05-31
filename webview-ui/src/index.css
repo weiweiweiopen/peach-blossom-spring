@@ -8349,3 +8349,55 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   font-style: normal;
   flex: 0 0 auto;
 }
+
+/* 2026-05-31 UI unification: all peach glyphs match the HUD logo size. */
+.archive-tree-menu.global-menu-options .archive-tree-kicker,
+.retro-home-archive-options.global-menu-options .archive-tree-kicker,
+.archive-tree-menu.F1 .archive-tree-kicker,
+.archive-tree-menu :where(.archive-tree-kicker) {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: var(--pbs-emoji-control-size) !important;
+  height: var(--pbs-emoji-control-size) !important;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif !important;
+  font-size: var(--pbs-emoji-control-size) !important;
+  line-height: 1 !important;
+  transform: none !important;
+}
+
+/* Campfire and NPC answers share the same compact source-link sub-window. */
+.pbs-computer-source-panel,
+.pbs-computer-source-list {
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+
+/* Wukir music popup should open as a full reading window, like zines. */
+.world-split-panel--wukir.is-expanded {
+  inset: max(8px, var(--safe-top)) max(8px, var(--safe-right)) max(8px, var(--safe-bottom)) max(8px, var(--safe-left)) !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.world-split-panel--wukir.is-expanded .world-split-content,
+.world-split-panel--wukir.is-expanded .wukir-bandcamp-panel,
+.world-split-panel--wukir.is-expanded .wukir-bandcamp-frame,
+.world-split-panel--wukir.is-expanded .wukir-bandcamp-frame iframe {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-overlay {
+    align-items: center !important;
+    padding-top: max(22px, var(--safe-top)) !important;
+    padding-bottom: max(22px, var(--safe-bottom)) !important;
+  }
+
+  .rpg-dialogue-panel {
+    height: min(84dvh, 600px) !important;
+    max-height: calc(100dvh - max(44px, var(--safe-top)) - max(44px, var(--safe-bottom))) !important;
+  }
+}

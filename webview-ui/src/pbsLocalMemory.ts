@@ -110,14 +110,24 @@ export function pbsLocalMemorySourceCards(limit = 80): SourceCard[] {
 }
 
 export function buildStaticLocalMemoryAnswer(query: string, results: WikiSearchResult[], language = 'zh-TW'): string {
-  if (results.length === 0) {
-    return language === 'zh-TW'
-      ? '我目前在本地記憶包裡沒有找到足夠線索；請換成更具體的材料、方法、社群或場域關鍵字。'
-      : 'I could not find enough local-memory evidence yet. Try a more concrete material, method, community, or place keyword.';
-  }
+  const empty: Record<string, string> = {
+    'zh-TW': '我目前在本地記憶包裡沒有找到足夠線索；請換成更具體的材料、方法、社群或場域關鍵字。',
+    en: 'I could not find enough local-memory evidence yet. Try a more concrete material, method, community, or place keyword.',
+    id: 'Saya belum menemukan cukup bukti di paket memori lokal. Coba kata kunci material, metode, komunitas, atau tempat yang lebih konkret.',
+    de: 'Ich finde im lokalen Erinnerungspaket noch nicht genug Hinweise. Versuche ein konkreteres Material, eine Methode, Community oder einen Ort.',
+    ja: 'ローカル記憶パックには、まだ十分な手がかりが見つかりません。素材、方法、コミュニティ、場所をもう少し具体的にしてください。',
+    th: 'ฉันยังไม่พบหลักฐานพอในชุดความทรงจำ local ลองใช้คำสำคัญที่เฉพาะขึ้น เช่น วัสดุ วิธี ชุมชน หรือสถานที่',
+  };
+  if (results.length === 0) return empty[language] ?? empty.en;
   const top = results.slice(0, 3);
-  if (language === 'zh-TW') {
-    return `火先從已打包的 PBS source-first index 撿出三塊木柴，不是即時外網爬取。關於「${compact(query, 28)}」，可先讀 ${top.map((item, i) => `[${i + 1}] ${item.title}`).join('、')}；若要更新或補例子，需要先重新 crawl / export index，再把答案整理成 Review 草稿提升到 Wiki。`;
-  }
-  return `The campfire found source-first local memory. For “${compact(query, 42)}”, start with ${top.map((item, i) => `[${i + 1}] ${item.title}`).join(', ')}; use these pages as evidence, then turn the synthesis into a reviewed Wiki note.`;
+  const list = (separator: string) => top.map((item, i) => `[${i + 1}] ${item.title}`).join(separator);
+  const copy: Record<string, string> = {
+    'zh-TW': `火先從已打包的 PBS source-first index 撿出三塊木柴。關於「${compact(query, 28)}」，可先讀 ${list('、')}，再把這些頁面當成可檢查的證據來延伸。`,
+    en: `The campfire found source-first local memory. For “${compact(query, 42)}”, start with ${list(', ')} and use these pages as checkable evidence.`,
+    id: `Api unggun menemukan memori lokal source-first. Untuk “${compact(query, 42)}”, mulai dari ${list(', ')} dan pakai halaman ini sebagai bukti yang bisa diperiksa.`,
+    de: `Das Lagerfeuer fand source-first lokale Erinnerung. Zu „${compact(query, 42)}“ beginne mit ${list(', ')} und nutze diese Seiten als prüfbare Evidenz.`,
+    ja: `火は source-first のローカル記憶を見つけました。「${compact(query, 42)}」については、まず ${list('、')} を読み、確認できる証拠として使ってください。`,
+    th: `กองไฟพบความทรงจำ local แบบ source-first สำหรับ “${compact(query, 42)}” เริ่มจาก ${list(', ')} และใช้หน้าเหล่านี้เป็นหลักฐานที่ตรวจสอบได้`,
+  };
+  return copy[language] ?? copy.en;
 }

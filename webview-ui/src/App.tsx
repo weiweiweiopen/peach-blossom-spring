@@ -749,7 +749,7 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
   );
 }
 
-const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
+const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; sourceLinks: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
     name: "多重心智自我火燄",
     kicker: "LLM WIKI 營火",
@@ -760,6 +760,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "營火暫時無法回答。",
     needQuestion: "請先輸入一個想探索的桃花源社群問題。",
     sourceTitle: "Wiki 搜尋結果 / 真實連結",
+    sourceLinks: "相關連結",
     noLinks: "這次沒有找到可直接連結的 wiki 頁。",
     suggestions: "問我一個關於你想探索桃花源社群哪一部分的問題：",
     placeholder: "問：你想探索桃花源社群的哪一部分？",
@@ -777,6 +778,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "The campfire failed to answer.",
     needQuestion: "Enter a Peach Blossom Spring community question first.",
     sourceTitle: "Wiki search results / real links",
+    sourceLinks: "Source links",
     noLinks: "No directly linkable wiki pages were found this time.",
     suggestions: "Pick a question about the part of Peach Blossom Spring you want to explore:",
     placeholder: "Ask: which part of the Peach Blossom Spring community do you want to explore?",
@@ -794,6 +796,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "Api unggun gagal menjawab.",
     needQuestion: "Masukkan dulu pertanyaan komunitas Peach Blossom Spring.",
     sourceTitle: "Hasil pencarian wiki / tautan nyata",
+    sourceLinks: "Tautan sumber",
     noLinks: "Tidak ada halaman wiki yang bisa ditautkan langsung kali ini.",
     suggestions: "Pilih pertanyaan tentang bagian Peach Blossom Spring yang ingin kamu jelajahi:",
     placeholder: "Tanya: bagian mana dari komunitas Peach Blossom Spring yang ingin kamu jelajahi?",
@@ -811,6 +814,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "Das Lagerfeuer konnte nicht antworten.",
     needQuestion: "Gib zuerst eine Frage zur Peach-Blossom-Spring-Community ein.",
     sourceTitle: "Wiki-Suchergebnisse / echte Links",
+    sourceLinks: "Quellenlinks",
     noLinks: "Diesmal wurden keine direkt verlinkbaren Wiki-Seiten gefunden.",
     suggestions: "Wähle eine Frage zu dem Teil von Peach Blossom Spring, den du erkunden willst:",
     placeholder: "Frage: welchen Teil der Peach-Blossom-Spring-Community willst du erkunden?",
@@ -828,6 +832,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "火は回答できませんでした。",
     needQuestion: "先に Peach Blossom Spring のコミュニティ質問を入力してください。",
     sourceTitle: "Wiki 検索結果 / 実在リンク",
+    sourceLinks: "関連リンク",
     noLinks: "今回は直接開ける wiki ページが見つかりませんでした。",
     suggestions: "Peach Blossom Spring のどの部分を探索するか質問を選んでください：",
     placeholder: "質問：Peach Blossom Spring のどの部分を探索しますか？",
@@ -845,6 +850,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     failError: "กองไฟตอบไม่ได้ในตอนนี้",
     needQuestion: "กรุณาใส่คำถามเกี่ยวกับชุมชน Peach Blossom Spring ก่อน",
     sourceTitle: "ผลค้นหา wiki / ลิงก์จริง",
+    sourceLinks: "ลิงก์แหล่งที่มา",
     noLinks: "ครั้งนี้ไม่พบหน้า wiki ที่เปิดลิงก์ได้โดยตรง",
     suggestions: "เลือกคำถามเกี่ยวกับส่วนของ Peach Blossom Spring ที่อยากสำรวจ:",
     placeholder: "ถาม: อยากสำรวจส่วนไหนของชุมชน Peach Blossom Spring?",
@@ -1180,21 +1186,19 @@ function CentralComputerDialogue({
                   {message.text}
                 </p>
                 {message.links && (
-                  <div className="pbs-computer-source-panel mt-3 border border-border bg-bg/60 px-4 py-3 text-base leading-snug" data-ui-part="caption">
-                    <p className="m-0 mb-2 text-text-muted">{copy.sourceTitle}</p>
-                    {message.links.length > 0 ? <ol className="pbs-computer-source-list m-0 pl-7">
-                    {message.links.map((link, linkIndex) => (
-                      <li key={link.url} className="mb-2">
-                        <a href={link.url} target="_blank" rel="noreferrer" className="underline decoration-2 underline-offset-4">
-                          [{linkIndex + 1}] {link.title}
-                        </a>
-                        <span className="text-text-muted"> {link.sourceFamily}</span>
-                        {link.description ? <p className="m-0 text-text-muted">{link.description}</p> : null}
-                        <p className="m-0 break-all text-[0.85em] text-text-muted">{link.url}</p>
-                      </li>
-                    ))}
-                    </ol> : <p className="m-0 text-text-muted">{copy.noLinks}</p>}
-                  </div>
+                  <details className="rpg-dialogue-source-links" aria-label={copy.sourceTitle}>
+                    <summary>{copy.sourceLinks} ({message.links.length})</summary>
+                    {message.links.length > 0 ? (
+                      <div className="rpg-dialogue-source-link-list">
+                        {message.links.slice(0, 8).map((link, linkIndex) => (
+                          <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
+                            <span>[{linkIndex + 1}] {link.title}</span>
+                            <em>{link.sourceFamily}</em>
+                          </a>
+                        ))}
+                      </div>
+                    ) : <p className="m-0 text-text-muted">{copy.noLinks}</p>}
+                  </details>
                 )}
               </div>
             ))}
@@ -3914,7 +3918,7 @@ function App() {
                             kind: "npc",
                             id: activeDialogueCharacter.id,
                           });
-                          setIsSplitExpanded(false);
+                          setIsSplitExpanded(true);
                         }
                       : undefined
                   }
@@ -4378,7 +4382,7 @@ function App() {
 
       {splitPanel && (
         <aside
-          className={`world-split-panel rpg-message-frame ${isSplitExpanded ? "is-expanded" : ""} ${splitPanel.kind === "finalDocument" ? "world-split-panel--zine" : ""}`}
+          className={`world-split-panel rpg-message-frame ${isSplitExpanded ? "is-expanded" : ""} ${splitPanel.kind === "finalDocument" ? "world-split-panel--zine" : ""} ${splitPanel.kind === "wukirBandcamp" ? "world-split-panel--wukir" : ""}`}
           data-no-mobile-drag="true"
         >
           {(() => {

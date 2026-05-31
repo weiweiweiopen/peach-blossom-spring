@@ -50,6 +50,12 @@ def language_instruction(preferred_language: str) -> str:
         return "Answer in Japanese."
     if preferred_language == "th":
         return "Answer in Thai."
+    if preferred_language == "id":
+        return "Answer in Indonesian."
+    if preferred_language == "de":
+        return "Answer in German."
+    if preferred_language == "en":
+        return "Answer in English."
     return "Answer in the same language as the question."
 
 
