@@ -29,18 +29,13 @@ def json_bytes(payload: object) -> bytes:
 
 
 def fallback_answer(question: str, evidence: list[dict], error: str = "") -> str:
-    lines = [
-        "Local PBS memory server found source evidence, but DeepSeek is unavailable right now.",
-        "PBS engine evidence fallback:",
-    ]
-    for index, item in enumerate(evidence, start=1):
-        label = item.get("label") or item.get("sourceLabel") or f"Source {index}"
-        text = item.get("text") or ""
-        url = item.get("url") or ""
-        lines.append(f"{index}. {label}: {text} {url}".strip())
-    if error:
-        lines.append(f"DeepSeek error: {error}")
-    return "\n".join(lines)
+    if not evidence:
+        return "這題火邊暫時沒有撿到可靠材料；換一個更具體的作品、材料或工作坊名稱，我再翻一次灰。"
+    first = evidence[0]
+    label = first.get("label") or first.get("sourceLabel") or "第一個來源"
+    text = str(first.get("text") or "").strip()
+    snippet = text[:180].strip()
+    return f"我先抓住「{label}」這根木柴：{snippet}。這不是完整答案，只是火暫時把能檢查的材料推到你手邊；等外部腦袋醒來，我再把它烤成比較像話的回應。"
 
 
 def language_instruction(preferred_language: str) -> str:
@@ -105,12 +100,14 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
     )
     system_prompt = "\n".join([
         language_instruction(preferred_language),
-        "You answer as the PBS local-memory game assistant.",
-        "If optional NPC context is present, answer through that NPC's persona, response topics, and transcript excerpts. Keep the NPC's role, concerns, and interview memory as the voice anchor.",
+        "You answer inside a Peach Blossom Spring RPG dialogue.",
+        "If optional NPC context is present, answer in first person as that NPC, using the persona JSON/profile, response topics, and transcript excerpts as the voice anchor.",
+        "Do not write system self-description. Never say phrases like 'X persona', 'X 的人格', 'local-memory game assistant', 'retrieval', 'backend', 'source-first', or 'I will answer from interview memory'.",
         "Use PBS engine evidence for public source grounding and links, but do not flatten the NPC into a generic search assistant.",
-        "Use only the source evidence below plus optional NPC context. If evidence is incomplete, say what is missing instead of inventing facts.",
-        "Cite evidence by bracket number when useful.",
+        "Use only the source evidence below plus optional NPC context. If evidence is incomplete, say what is missing in the NPC/campfire voice instead of inventing facts.",
+        "Cite evidence by bracket number when useful, but keep citations light in NPC dialogue.",
         "Do not say no evidence was found when PBS engine evidence is present.",
+        "Keep a little campfire wit when it fits, but be concrete first.",
         "",
         "--- PBS schema context ---",
         schema_context()[:5000],

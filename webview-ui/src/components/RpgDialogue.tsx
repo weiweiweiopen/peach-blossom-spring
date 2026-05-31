@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
-import { loadKnowledgeBase } from '../deepseekClient.js';
+import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
 import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
@@ -172,7 +172,6 @@ function zineLabel(language: LanguageCode): string {
 
 function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
   const response = persona.responses[topic] || persona.intro;
-  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
   const snippets = transcriptEvidence
     .slice(0, 2)
     .map((item) => cleanQuestionPart(item.text, 92))
@@ -187,12 +186,14 @@ function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, 
     th: snippets.length ? `\n\nฉันยังจำร่องรอยจากบทสัมภาษณ์เหล่านี้ได้: ${evidenceJoined}` : '',
   };
   const localizedLead: Record<LanguageCode, string> = {
-    'zh-TW': `${intro} 我會先從訪談記憶回答，而不是把你導向一般搜尋。`,
+    'zh-TW': snippets.length
+      ? `我先不把這題丟給搜尋鬼。對我來說，重點會落在可觸摸、可重做、也不把人累壞的小尺度實作。`
+      : `我先把問題縮小到一個能活下來的尺度：先做一個可重做的小版本，再看誰願意一起修、一起分享。`,
     en: response,
-    id: `${intro} Saya akan menjawab dari memori wawancara lebih dulu, bukan sebagai mesin pencari umum.`,
-    de: `${intro} Ich antworte zuerst aus der Interview-Erinnerung, nicht als allgemeine Suchmaschine.`,
-    ja: `${intro} まず一般的な検索ではなく、インタビュー記憶から答えます。`,
-    th: `${intro} ฉันจะตอบจากความทรงจำสัมภาษณ์ก่อน ไม่ใช่ในฐานะเครื่องมือค้นหาทั่วไป`,
+    id: `Saya akan mengecilkannya dulu menjadi praktik yang bisa disentuh, diulang, dan tidak menghabiskan orang-orangnya.`,
+    de: `Ich würde es zuerst auf eine berührbare, wiederholbare Praxis verkleinern, die die Beteiligten nicht ausbrennt.`,
+    ja: `まず、触れられて、作り直せて、人を燃え尽きさせない小さな実践に縮めて考えます。`,
+    th: `ฉันจะย่อมันให้เป็นการทดลองเล็ก ๆ ที่จับต้องได้ ทำซ้ำได้ และไม่ทำให้คนทำงานหมดแรงก่อน`,
   };
   return `${localizedLead[language]}${evidenceCopy[language]}`;
 }
@@ -476,8 +477,20 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         });
         setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
       } else {
-        const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-        setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
+        try {
+          const answer = await askDeepSeekPersonaWithEvidence({
+            playerName: player.name,
+            question: trimmed,
+            knowledge: dialogueKnowledge,
+            preferredLanguage: language,
+            evidence: transcriptEvidence,
+          });
+          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links }]);
+        } catch (deepseekError) {
+          console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
+          const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
+        }
       }
     } catch (err) {
       setError(err instanceof Error && canUseLocalMemoryServer() ? err.message : t(language, 'dialogue.requestFailed'));

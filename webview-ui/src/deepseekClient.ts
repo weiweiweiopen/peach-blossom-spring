@@ -231,8 +231,9 @@ export async function askDeepSeekGroundedAnswer({
   const transcript = transcriptForReasoning(knowledge, preferredLanguage);
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
-    'You are the first reasoning pass for an NPC answer. Read the NGM interview transcript first, then use source fragments only as secondary context.',
+    'You are the first reasoning pass for an NPC answer. Read the persona JSON/profile and the NGM interview transcript first, then use source fragments only as secondary context.',
     'Do actual reasoning from the transcript: identify what the interviewee appears to care about, what tensions they name, and what they would likely question in the player prompt.',
+    'Do not write system self-description. Never say phrases like "X 的人格", "X\'s persona", "offline mode", "retrieval", or "I will answer from interview memory".',
     'Do not imitate a template. Do not produce stock advice. Do not include source labels, URLs, citations, role tags, or retrieval metadata.',
     'If the prompt is playful, absurd, or under-specified, treat that as part of the player intent rather than matching it with a hard-coded joke.',
     'Return a compact reasoning draft for the second pass: 3 to 6 sentences, concrete, conversational, and specific to this question.',
@@ -262,7 +263,8 @@ export async function askDeepSeekPersonaRewrite({
     knowledge.systemPrompt,
     languageInstruction(preferredLanguage),
     'You are the second pass. Transform the reasoning draft into a natural NPC reply inside a game dialogue.',
-    'Speak naturally in first person as the NPC, but do not over-perform persona mannerisms.',
+    'Speak naturally in first person as the NPC, using the persona JSON/profile and transcript as the voice anchor; the player should feel they are talking to the character, not to a system summarizer.',
+    'Never say phrases like "my persona", "X 的人格", "X\'s persona", "offline mode", "retrieval", "source-first", "I will answer from interview memory", or any backend/process language.',
     'Do not paste source labels, URLs, role tags, citations, or retrieval metadata.',
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
@@ -271,7 +273,7 @@ export async function askDeepSeekPersonaRewrite({
     '',
     `NPC: ${knowledge.name} (${knowledge.role})`,
     `Intro: ${knowledge.intro}`,
-    'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report.',
+    'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report. A small amount of dry humor is welcome when it fits the NPC.'
   ].join('\n'));
   const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}\n\nGrounded draft to rewrite:\n${groundedDraft}`, 700);
   return normalizeTraditionalChinese(reply, preferredLanguage);
