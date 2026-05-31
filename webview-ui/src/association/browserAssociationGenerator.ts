@@ -1717,6 +1717,18 @@ function conceptualQueryHints(query: string): string {
   if (/public|infrastructure|commons|公共|基礎設施|基盤|โครงสร้างพื้นฐาน/i.test(query)) {
     hints.push("commons", "public knowledge", "shared resource", "open source", "documentation", "workshop", "community practice", "maintenance", "reuse");
   }
+  if (/NGM|Non-?Governmental Matters|國際網絡|international network|社群背景|community background|Hackteria|SGMK|KOBAKANT/i.test(query)) {
+    hints.push("Non-Governmental Matters", "Hackteria", "SGMK", "HOW TO GET WHAT YOU WANT", "KOBAKANT", "community network", "international network", "documentation", "workshop", "camp");
+  }
+  if (/倫理|bioethic|生命倫理|art.*bio|藝術.*生物|生物倫理/i.test(query)) {
+    hints.push("bioart", "DIY biology", "wetlab", "biotechnology", "Hackteria", "Open Source Body", "MedTech-DIY", "biohacking", "ethics", "art science");
+  }
+  if (/camp|營|キャンプ|แคมป์|alternative education|替代教育|independent art camp|獨立藝術營|temporary school|summer school/i.test(query)) {
+    hints.push("camp", "HackteriaLab", "temporary commons", "temporary lab", "workshop", "alternative education", "summer school", "field school", "community learning", "public sharing");
+  }
+  if (/產品|product|kit|教具/i.test(query)) {
+    hints.push("product", "prototype", "kit", "teaching kit", "wearable", "soft circuit", "e-textile", "KOBAKANT", "HOW TO GET WHAT YOU WANT");
+  }
   if (/material|材料|素材|วัสดุ/i.test(query)) {
     hints.push("material practice", "material experiment", "soft circuit", "textile", "biofilm", "repair", "reuse");
   }
@@ -1725,8 +1737,8 @@ function conceptualQueryHints(query: string): string {
 
 function createBrowserWorkflow(query: string): Workflow {
   const corpus = allowedUiCorpus();
-  const textileHints = /textile|fabric|wearable|sewing|tailor|織品|紡織|布|穿戴|裁縫/i.test(query)
-    ? ", textile, fabric, wearable, soft circuit"
+  const textileHints = /textile|fabric|wearable|sewing|tailor|織品|紡織|布|穿戴|裁縫|產品|product|kit|教具/i.test(query)
+    ? ", textile, fabric, wearable, soft circuit, product, prototype, teaching kit"
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";

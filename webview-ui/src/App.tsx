@@ -52,7 +52,7 @@ import {
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, canUseLocalMemoryServer } from "./localMemoryApi.js";
-import { askDeepSeekPbsComputer } from "./deepseekClient.js";
+import { askDeepSeekPbsComputer, askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
 import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
@@ -232,59 +232,80 @@ const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
-    "Hackteria 的 Kitchen Lab 如何把料理、濕實驗與工作坊招待變成可複製的小誌方法？",
-    "SGMK 的自製合成器、8bit 音樂與 DIY electronics 頁面，可以整理成哪種聲音工作坊小誌？",
-    "How To Get What You Want 裡的 soft circuit、sensor 與 textile technique，如何變成初學者可照做的電子織品小誌？",
-    "比較 Hackteria 與 KOBAKANT：兩者如何用公開文件把失敗、材料和教學流程留下來？",
-    "從 Hackteria 的 DIY microscopy 到 SGMK 的 mechartlab，低成本工具如何支撐藝術科學社群？",
-    "以 e-textile / wearable electronics 為主題，哪些 HTG WYWant 頁面最適合組成一份材料實驗小誌？",
-    "Hackteria wiki 裡哪些 camp、workshop 與 open hardware 頁面能組成臨時共同體的案例小誌？",
-    "SGMK 的 sound、synth 與 handmade electronics 頁面如何連到社群學習和公開分享？",
-    "三個 sources 裡的 workshop documentation 可以怎麼整理成『做得出來、查得到、能再教一次』的小誌？",
+    "我想找藝術表現和生物倫理議題結合的案例，PBS 可以從哪些社群維基開始找？",
+    "為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？",
+    "有沒有電子織品、soft circuit 或 wearable electronics 從教學走向產品/作品的案例？",
+    "什麼是獨立藝術營，它和一般展覽、學校課程或科技工作坊有什麼不同？",
+    "為什麼 camp 可以作為替代教育形式，而不只是短期活動？",
+    "NGM 連到的社群如何把失敗筆記、材料清單和教學步驟變成可重用的公共知識？",
+    "低成本工具、DIY 顯微鏡、手作電子和生物實驗如何支持藝術與科學之間的合作？",
+    "如果完全不認識 Hackteria、SGMK、KOBAKANT，PBS 可以怎麼帶我看懂它們的關係？",
+    "我想做一份給新手看的小誌：哪些維基頁能介紹 NGM 的國際網絡、材料實驗和社群背景？",
   ],
   en: [
-    "How can Hackteria Kitchen Lab pages become a zine about cooking, wet experiments, and workshop hosting?",
-    "Which SGMK DIY synth, 8bit, and handmade electronics pages make a useful sound-workshop zine?",
-    "How can How To Get What You Want soft-circuit, sensor, and textile techniques become a beginner e-textile zine?",
-    "How do Hackteria and KOBAKANT document failure, materials, and teaching steps for reuse?",
-    "How do DIY microscopy, mechartlab, and low-cost tools support art-science communities across the sources?",
-    "Which wearable electronics pages from How To Get What You Want best form a material-experiment zine?",
-    "Which Hackteria camp, workshop, and open-hardware pages can form a zine about temporary commons?",
-    "How do SGMK sound, synth, and handmade electronics pages connect community learning with public sharing?",
-    "How can workshop documentation from the three sources become a zine that is makeable, checkable, and teachable again?",
+    "I want cases where artistic expression meets bioethics; which community wiki paths can PBS start from?",
+    "Why do hacker camps and independent art camps so often include DIY synths, sound tools, or temporary workshops?",
+    "Are there examples where e-textiles, soft circuits, or wearable electronics become products, artworks, or teaching kits?",
+    "What is an independent art camp, and how is it different from an exhibition, school course, or tech workshop?",
+    "Why can a camp work as alternative education instead of just a short event?",
+    "How do NGM-related communities turn failure notes, material lists, and teaching steps into reusable public knowledge?",
+    "How do low-cost tools, DIY microscopy, handmade electronics, and wet experiments support art-science collaboration?",
+    "If I know nothing about Hackteria, SGMK, or KOBAKANT, how can PBS explain how these communities are connected?",
+    "Which wiki pages could become a beginner zine about NGM's international network, material experiments, and community background?",
   ],
   id: [
-    "Bagaimana dapur komunitas, perawatan material, dan eksperimen teknis menjadi infrastruktur publik?",
-    "Peran komunitas apa yang dimainkan synth DIY dan alat suara di bahan SGMK, Hackteria, dan KOBAKANT?",
-    "Bagaimana lokakarya e-textile menghubungkan catatan gagal, pengetahuan tubuh, dan dokumentasi yang dapat dipakai ulang?",
-    "Bagaimana camp Hackteria dan Lifepatch mengubah commons sementara menjadi jaringan pengetahuan yang bisa diperiksa?",
-    "Bagaimana Fabricademy, Green Fablab, dan eksperimen material terbuka menangani care, repair, dan sustainability?",
-    "Bagaimana organisasi seni-teknologi independen menyimpan pengetahuan di antara dana singkat, lokakarya, dan memori pribadi?",
+    "Saya ingin mencari contoh seni yang bertemu isu bioetika; jalur wiki komunitas mana yang bisa dibuka PBS?",
+    "Mengapa camp hacker atau camp seni independen sering berisi synth DIY, alat suara, dan workshop sementara?",
+    "Apakah ada contoh e-textile, soft circuit, atau wearable electronics yang menjadi produk, karya, atau kit belajar?",
+    "Apa itu camp seni independen, dan apa bedanya dengan pameran, kelas sekolah, atau workshop teknologi?",
+    "Mengapa camp bisa menjadi pendidikan alternatif, bukan hanya acara singkat?",
+    "Bagaimana komunitas yang terkait NGM mengubah catatan gagal, daftar material, dan langkah mengajar menjadi pengetahuan publik?",
+    "Bagaimana alat murah, mikroskop DIY, elektronik buatan tangan, dan wet experiment mendukung kerja sama seni-sains?",
+    "Jika saya belum mengenal Hackteria, SGMK, atau KOBAKANT, bagaimana PBS menjelaskan hubungan antar komunitas ini?",
+    "Halaman wiki mana yang cocok menjadi zine pemula tentang jaringan internasional NGM dan eksperimen material?",
   ],
   de: [
-    "Wie werden Community-Kuechen, Materialpflege und technische Experimente zu oeffentlicher Infrastruktur?",
-    "Welche Community-Rolle spielen DIY-Synths und Klangwerkzeuge in SGMK-, Hackteria- und KOBAKANT-Materialien?",
-    "Wie verbinden E-Textile-Workshops Fehlernotizen, Koerperwissen und wiederverwendbare Dokumentation?",
-    "Wie machen Hackteria- und Lifepatch-Camps temporaere Commons zu pruefbaren Wissensnetzwerken?",
-    "Wie verhandeln Fabricademy, Green Fablab und offene Materialexperimente Care, Repair und Nachhaltigkeit?",
-    "Wie bewahren unabhaengige Kunst-Technik-Organisationen Wissen zwischen kurzen Foerderungen, Workshops und persoenlicher Erinnerung?",
+    "Ich suche Beispiele, in denen Kunst und Bioethik zusammentreffen; welche Community-Wiki-Wege kann PBS öffnen?",
+    "Warum enthalten Hacker-Camps oder unabhängige Kunst-Camps so oft DIY-Synths, Klangwerkzeuge und temporäre Workshops?",
+    "Gibt es Beispiele, in denen E-Textiles, Soft Circuits oder Wearables zu Produkten, Kunstwerken oder Lernkits werden?",
+    "Was ist ein unabhängiges Kunst-Camp, und wie unterscheidet es sich von Ausstellung, Schulklasse oder Technik-Workshop?",
+    "Warum kann ein Camp als alternative Bildung funktionieren und nicht nur als kurzes Event?",
+    "Wie machen NGM-nahe Communities Fehlernotizen, Materiallisten und Lehrschritte zu wiederverwendbarem öffentlichem Wissen?",
+    "Wie unterstützen Low-Cost-Tools, DIY-Mikroskopie, handgemachte Elektronik und Wet Experiments Kunst-Wissenschaft-Kollaboration?",
+    "Wenn ich Hackteria, SGMK und KOBAKANT nicht kenne, wie kann PBS ihre Beziehungen erklären?",
+    "Welche Wiki-Seiten ergeben ein Anfänger-Zine über NGMs internationales Netzwerk, Materialexperimente und Community-Hintergrund?",
   ],
   ja: [
-    "コミュニティキッチン、素材のケア、技術実験はどう公共インフラになる？",
-    "SGMK、Hackteria、KOBAKANT の資料で DIY シンセと音の道具はどんな共同体的役割を持つ？",
-    "電子テキスタイルのワークショップは失敗記録、身体知、再利用できる記録をどう結びつける？",
-    "Hackteria と Lifepatch のキャンプは一時的な commons をどう検証可能な知識ネットワークにする？",
-    "Fabricademy、Green Fablab、オープン素材実験はケア、修理、持続可能性の緊張をどう扱う？",
-    "独立したアート・テック組織は短期助成、ワークショップ、個人記憶のあいだで知識をどう保存する？",
+    "芸術表現と生命倫理が交わる事例を探したい。PBS はどのコミュニティ wiki から案内できる？",
+    "ハッカーキャンプや独立アートキャンプに DIY シンセ、音の道具、臨時ワークショップがよくあるのはなぜ？",
+    "電子テキスタイル、soft circuit、wearable electronics が製品・作品・教材になる例はある？",
+    "独立アートキャンプとは何で、展示、学校授業、技術ワークショップとどう違う？",
+    "なぜ camp は短期イベントではなく代替教育になりうる？",
+    "NGM に関わるコミュニティは失敗記録、素材リスト、教える手順をどう公共知に変える？",
+    "低コスト工具、DIY 顕微鏡、手作り電子工作、wet experiment は芸術と科学の協働をどう支える？",
+    "Hackteria、SGMK、KOBAKANT を知らない人に、PBS はそれぞれの関係をどう説明できる？",
+    "NGM の国際ネットワーク、素材実験、コミュニティ背景を新手向け zine にするならどの wiki ページがよい？",
   ],
   th: [
-    "ครัวชุมชน การดูแลวัสดุ และการทดลองทางเทคนิคกลายเป็นโครงสร้างพื้นฐานสาธารณะได้อย่างไร?",
-    "ซินธ์ DIY และเครื่องมือเสียงมีบทบาทชุมชนอย่างไรในวัสดุ SGMK, Hackteria และ KOBAKANT?",
-    "เวิร์กช็อป e-textile เชื่อมบันทึกความล้มเหลว ความรู้จากร่างกาย และเอกสารที่ใช้ซ้ำได้อย่างไร?",
-    "แคมป์ Hackteria และ Lifepatch เปลี่ยน commons ชั่วคราวเป็นเครือข่ายความรู้ที่ตรวจสอบได้อย่างไร?",
-    "Fabricademy, Green Fablab และการทดลองวัสดุเปิดจัดการแรงตึงระหว่าง care, repair และ sustainability อย่างไร?",
-    "องค์กรศิลปะ-เทคโนโลยีอิสระเก็บความรู้ระหว่างทุนสั้น เวิร์กช็อป และความทรงจำส่วนบุคคลอย่างไร?",
+    "ฉันอยากหาเคสที่ศิลปะเชื่อมกับ bioethics; PBS ควรเริ่มจากเส้นทาง wiki ชุมชนไหน?",
+    "ทำไม hacker camp หรือ independent art camp มักมี DIY synth เครื่องมือเสียง และเวิร์กช็อปชั่วคราว?",
+    "มีตัวอย่าง e-textile, soft circuit หรือ wearable electronics ที่กลายเป็นสินค้า งานศิลปะ หรือชุดเรียนรู้ไหม?",
+    "independent art camp คืออะไร และต่างจากนิทรรศการ ห้องเรียน หรือเวิร์กช็อปเทคโนโลยีอย่างไร?",
+    "ทำไม camp จึงเป็น alternative education ได้ ไม่ใช่แค่อีเวนต์สั้นๆ?",
+    "ชุมชนที่เกี่ยวกับ NGM เปลี่ยนบันทึกความล้มเหลว รายการวัสดุ และขั้นตอนสอนเป็นความรู้สาธารณะอย่างไร?",
+    "เครื่องมือราคาถูก DIY microscopy งานอิเล็กทรอนิกส์ทำมือ และ wet experiment สนับสนุน art-science collaboration อย่างไร?",
+    "ถ้าฉันไม่รู้จัก Hackteria, SGMK หรือ KOBAKANT เลย PBS จะอธิบายความเชื่อมโยงอย่างไร?",
+    "หน้า wiki ไหนเหมาะทำ zine สำหรับมือใหม่เรื่องเครือข่ายนานาชาติ NGM การทดลองวัสดุ และภูมิหลังชุมชน?",
   ],
+};
+
+const QUESTION_SUGGESTION_LOADING_COPY: Record<LanguageCode, string> = {
+  "zh-TW": " DeepSeek 正在找更適合新手的問題…",
+  en: " DeepSeek is finding better beginner questions…",
+  id: " DeepSeek sedang mencari pertanyaan pemula yang lebih baik…",
+  de: " DeepSeek sucht bessere Einstiegsfragen…",
+  ja: " DeepSeek が初心者向けの質問を探しています…",
+  th: " DeepSeek กำลังหาคำถามสำหรับผู้เริ่มต้น…",
 };
 
 type PlayMode = "camp" | "expedition";
@@ -778,8 +799,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "Wiki 搜尋結果 / 真實連結",
     sourceLinks: "相關連結",
     noLinks: "這次沒有找到可直接連結的 wiki 頁。",
-    suggestions: "問我一個關於你想探索桃花源社群哪一部分的問題：",
-    placeholder: "問：你想探索桃花源社群的哪一部分？",
+    suggestions: "選一個給新手的入口問題，讓 PBS 帶你認識 NGM、材料實驗、營隊與國際社群網絡：",
+    placeholder: "問：想找藝術/生物倫理、DIY synth、電子織品、獨立藝術營或替代教育案例嗎？",
     suggest: "建議一個問題",
     zine: "維基小書",
     thinking: "火正在聽木柴裡的共同記憶...",
@@ -796,8 +817,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "Wiki search results / real links",
     sourceLinks: "Source links",
     noLinks: "No directly linkable wiki pages were found this time.",
-    suggestions: "Pick a question about the part of Peach Blossom Spring you want to explore:",
-    placeholder: "Ask: which part of the Peach Blossom Spring community do you want to explore?",
+    suggestions: "Pick a beginner-friendly host question about NGM, material experiments, camps, and international community networks:",
+    placeholder: "Ask about art/bioethics, DIY synths, e-textiles, independent art camps, or alternative education…",
     suggest: "Suggest a question",
     zine: "Wiki zine",
     thinking: "The fire is listening through the shared memory...",
@@ -814,8 +835,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "Hasil pencarian wiki / tautan nyata",
     sourceLinks: "Tautan sumber",
     noLinks: "Tidak ada halaman wiki yang bisa ditautkan langsung kali ini.",
-    suggestions: "Pilih pertanyaan tentang bagian Peach Blossom Spring yang ingin kamu jelajahi:",
-    placeholder: "Tanya: bagian mana dari komunitas Peach Blossom Spring yang ingin kamu jelajahi?",
+    suggestions: "Pilih pertanyaan pengantar tentang NGM, eksperimen material, camp, dan jaringan komunitas internasional:",
+    placeholder: "Tanya tentang seni/bioetika, synth DIY, e-textile, camp seni independen, atau pendidikan alternatif…",
     suggest: "Sarankan pertanyaan",
     zine: "Zine wiki",
     thinking: "Api mendengar memori bersama...",
@@ -832,8 +853,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "Wiki-Suchergebnisse / echte Links",
     sourceLinks: "Quellenlinks",
     noLinks: "Diesmal wurden keine direkt verlinkbaren Wiki-Seiten gefunden.",
-    suggestions: "Wähle eine Frage zu dem Teil von Peach Blossom Spring, den du erkunden willst:",
-    placeholder: "Frage: welchen Teil der Peach-Blossom-Spring-Community willst du erkunden?",
+    suggestions: "Wähle eine Einstiegsfrage zu NGM, Materialexperimenten, Camps und internationalen Community-Netzwerken:",
+    placeholder: "Frage nach Kunst/Bioethik, DIY-Synths, E-Textiles, unabhängigen Kunst-Camps oder alternativer Bildung…",
     suggest: "Frage vorschlagen",
     zine: "Wiki-Zine",
     thinking: "Das Feuer lauscht dem geteilten Gedaechtnis...",
@@ -850,8 +871,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "Wiki 検索結果 / 実在リンク",
     sourceLinks: "関連リンク",
     noLinks: "今回は直接開ける wiki ページが見つかりませんでした。",
-    suggestions: "Peach Blossom Spring のどの部分を探索するか質問を選んでください：",
-    placeholder: "質問：Peach Blossom Spring のどの部分を探索しますか？",
+    suggestions: "NGM、素材実験、camp、国際コミュニティネットワークを知るための入口質問を選んでください：",
+    placeholder: "芸術/生命倫理、DIY シンセ、電子テキスタイル、独立アートキャンプ、代替教育について聞く…",
     suggest: "質問を提案",
     zine: "Wiki 小誌",
     thinking: "火が共有記憶を聞いています...",
@@ -868,8 +889,8 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     sourceTitle: "ผลค้นหา wiki / ลิงก์จริง",
     sourceLinks: "ลิงก์แหล่งที่มา",
     noLinks: "ครั้งนี้ไม่พบหน้า wiki ที่เปิดลิงก์ได้โดยตรง",
-    suggestions: "เลือกคำถามเกี่ยวกับส่วนของ Peach Blossom Spring ที่อยากสำรวจ:",
-    placeholder: "ถาม: อยากสำรวจส่วนไหนของชุมชน Peach Blossom Spring?",
+    suggestions: "เลือกคำถามเริ่มต้นเกี่ยวกับ NGM การทดลองวัสดุ camp และเครือข่ายชุมชนนานาชาติ:",
+    placeholder: "ถามเรื่องศิลปะ/bioethics, DIY synth, e-textile, independent art camp หรือ alternative education…",
     suggest: "เสนอคำถาม",
     zine: "ซีน wiki",
     thinking: "ไฟกำลังฟังความทรงจำร่วม...",
@@ -1111,7 +1132,9 @@ function CentralComputerDialogue({
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
   const logRef = useRef<HTMLDivElement | null>(null);
   const copy = PBS_COMPUTER_COPY[language];
-  const suggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
+  const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
+  const [isSuggestingQuestions, setIsSuggestingQuestions] = useState(false);
   const [messages, setMessages] = useState<ComputerMessage[]>(() => [
     {
       speaker: copy.name,
@@ -1129,6 +1152,29 @@ function CentralComputerDialogue({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  useEffect(() => {
+    setSuggestedQuestions(fallbackSuggestedQuestions);
+  }, [fallbackSuggestedQuestions]);
+
+  useEffect(() => {
+    if (!showSuggestedQuestions) return;
+    let cancelled = false;
+    setIsSuggestingQuestions(true);
+    void askDeepSeekPbsQuestionSuggestions({
+      preferredLanguage: language,
+      seedQuestions: fallbackSuggestedQuestions,
+    }).then((questions) => {
+      if (!cancelled && questions.length) setSuggestedQuestions(questions.slice(0, 9));
+    }).catch(() => {
+      if (!cancelled) setSuggestedQuestions(fallbackSuggestedQuestions);
+    }).finally(() => {
+      if (!cancelled) setIsSuggestingQuestions(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [fallbackSuggestedQuestions, language, showSuggestedQuestions]);
 
   useEffect(() => {
     const log = logRef.current;
@@ -1233,7 +1279,7 @@ function CentralComputerDialogue({
         </div>
         {showSuggestedQuestions && (
           <div className="rpg-dialogue-actions rpg-dialogue-question-drawer flex flex-wrap items-start gap-3 mb-5">
-            <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}</p>
+            <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
             {suggestedQuestions.map((question) => (
               <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
             ))}

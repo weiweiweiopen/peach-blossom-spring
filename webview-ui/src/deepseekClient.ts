@@ -48,6 +48,11 @@ interface AskPbsComputerArgs {
   sharedMemoryContext: string;
 }
 
+interface AskPbsQuestionSuggestionsArgs {
+  preferredLanguage: LanguageCode;
+  seedQuestions: string[];
+}
+
 interface PersonaShape {
   id: string;
   name: string;
@@ -410,6 +415,61 @@ export async function askDeepSeekPersonaWithEvidence({
 }: AskPersonaWithEvidenceArgs): Promise<string> {
   const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence });
   return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, groundedDraft });
+}
+
+
+function parseSuggestionList(raw: string, preferredLanguage: LanguageCode): string[] {
+  const cleaned = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+  let values: unknown = null;
+  try {
+    values = JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (match) {
+      try {
+        values = JSON.parse(match[0]);
+      } catch {
+        values = null;
+      }
+    }
+  }
+  const list = Array.isArray(values)
+    ? values
+    : cleaned
+        .split('\n')
+        .map((line) => line.replace(/^[-*\d.、\s]+/, '').trim())
+        .filter(Boolean);
+  const unique: string[] = [];
+  for (const item of list) {
+    const question = normalizeTraditionalChinese(String(item ?? '').replace(/^['"]|['"]$/g, '').trim(), preferredLanguage);
+    if (!question || question.length < 8 || unique.includes(question)) continue;
+    unique.push(question);
+    if (unique.length >= 9) break;
+  }
+  return unique;
+}
+
+export async function askDeepSeekPbsQuestionSuggestions({ preferredLanguage, seedQuestions }: AskPbsQuestionSuggestionsArgs): Promise<string[]> {
+  const systemPrompt = trimMessage([
+    languageInstruction(preferredLanguage),
+    'You are the activity host for Peach Blossom Spring / Non-Governmental Matters. Your job is to propose audience-friendly starter questions for a wiki-zine interface.',
+    'The audience may know nothing about NGM, Hackteria, SGMK, HOW TO GET WHAT YOU WANT / KOBAKANT, e-textiles, DIY biology, DIY synths, independent art camps, or alternative education.',
+    'Do not lock each question to one fixed community. Make questions broad enough that several community wiki pages could answer them, while still naming concrete materials, practices, or social formats when useful.',
+    'The questions should gently reveal what PBS can do: search across community wikis, connect cases, compare methods, find examples, explain backgrounds, and turn source traces into zines.',
+    'Good question patterns include: finding cases that connect artistic expression and bioethics; why hacker camps often include DIY synths; examples of e-textile products; what an independent art camp is; why camps can work as alternative education.',
+    'Avoid grant jargon, internal project-management wording, and overly narrow page titles. Each item must be answerable by public community wiki/source memory rather than outside speculation.',
+    'Return only a JSON array of 9 question strings. No markdown, no commentary.',
+  ].join('\n'));
+  const userPrompt = [
+    'Seed examples and current fallback questions:',
+    ...seedQuestions.map((question, index) => `${index + 1}. ${question}`),
+    '',
+    'Rewrite them into better host-style starter questions for complete newcomers.',
+  ].join('\n');
+  const reply = await postWorkerChat(systemPrompt, userPrompt, 900);
+  const parsed = parseSuggestionList(reply, preferredLanguage);
+  if (parsed.length < 4) throw new Error('DeepSeek did not return enough question suggestions.');
+  return parsed;
 }
 
 export async function askDeepSeekPbsComputer({ question, preferredLanguage, sharedMemoryContext }: AskPbsComputerArgs): Promise<string> {

@@ -23,8 +23,14 @@ function expandQuery(query: string): string {
   if (/廚房|厨房|kitchen|food|料理|cook|cooking|餐|meal/i.test(query)) {
     expansions.push('kitchen', 'kitchenlab', 'food', 'fermentation', 'microbe', 'bioplastic', 'radical food science', 'gastronomy');
   }
-  if (/生物藝術|bioart|biology|生物|wetlab|濕實驗/i.test(query)) {
-    expansions.push('bioart', 'wetlab', 'DIY biology', 'tissue culture', 'biotechnology', 'Hackteria');
+  if (/生物藝術|bioart|biology|生物|wetlab|濕實驗|倫理|bio-?ethic|生命倫理|art.*bio|藝術.*生物/i.test(query)) {
+    expansions.push('bioart', 'wetlab', 'DIY biology', 'tissue culture', 'biotechnology', 'Hackteria', 'Open Source Body', 'MedTech-DIY', 'biohacking', 'ethics', 'art science');
+  }
+  if (/NGM|Non-?Governmental Matters|國際網絡|international network|社群背景|community background|Hackteria|SGMK|KOBAKANT/i.test(query)) {
+    expansions.push('Non-Governmental Matters', 'Hackteria', 'SGMK', 'HOW TO GET WHAT YOU WANT', 'KOBAKANT', 'community network', 'international network', 'workshop', 'camp', 'documentation');
+  }
+  if (/camp|營|替代教育|alternative education|獨立藝術營|independent art camp|temporary school|summer school/i.test(query)) {
+    expansions.push('camp', 'HackteriaLab', 'temporary commons', 'temporary lab', 'workshop', 'alternative education', 'summer school', 'unconference', 'field school', 'community learning', 'documentation');
   }
   if (/發酵|ferment|fermentation|microbe|微生物/i.test(query)) {
     expansions.push('fermentation', 'microbe', 'yeast', 'fungus', 'Sato', 'culture');
@@ -60,8 +66,12 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
   const familyBoost = /htgwyw|hackteria|sgmk/i.test(item.sourceFamily) ? 1 : 0;
-  const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(queryTokens.join(' ')) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|fabricademy|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
-  return score + familyBoost + bodyTextileBoost;
+  const joinedQuery = queryTokens.join(' ');
+  const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(joinedQuery) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|fabricademy|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
+  const soundDiyBoost = /diy|自製|自造|合成器|synth|sound|聲音|音樂|樂器/i.test(joinedQuery) && /sgmk|synth|sound|music|instrument|speaker|8bit|nandsynth|gnusbuino|mechartlab|home made|diy electronics|handmade electronics/i.test(haystack) ? 28 : 0;
+  const campEducationBoost = /camp|營|alternative|education|替代教育|獨立藝術營|independent art/i.test(joinedQuery) && /camp|hackterialab|workshop|summer school|field|community|education|unconference|commons|colabs/i.test(haystack) ? 22 : 0;
+  const networkBoost = /ngm|hackteria|sgmk|kobakant|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
+  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {

@@ -32,8 +32,17 @@ function expandQuery(query: string): string {
   if (/觸控|觸摸|touch|介面|界面|interface|互動|interaction/i.test(query)) {
     expansions.push('touch', 'touchpad', 'interface', 'interfaces', 'interaction', 'physical interface', 'sensor', 'capacitive', 'qtouch', 'HID');
   }
-  if (/作品|project|work|案例|example/i.test(query)) {
-    expansions.push('project', 'workshop', 'prototype', 'experiment', 'toy', 'instrument');
+  if (/作品|產品|product|教具|kit|project|work|案例|example/i.test(query)) {
+    expansions.push('project', 'workshop', 'prototype', 'experiment', 'toy', 'instrument', 'product', 'kit', 'teaching kit');
+  }
+  if (/NGM|Non-?Governmental Matters|國際網絡|国际网络|international network|社群背景|community background|Hackteria|SGMK|KOBAKANT/i.test(query)) {
+    expansions.push('Non-Governmental Matters', 'Hackteria', 'SGMK', 'HOW TO GET WHAT YOU WANT', 'KOBAKANT', 'community network', 'international network', 'workshop', 'camp', 'documentation');
+  }
+  if (/倫理|伦理|bioethic|bio-?ethic|生命倫理|艺术.*生物|藝術.*生物|art.*bio|bio.*art/i.test(query)) {
+    expansions.push('bioart', 'DIY biology', 'wetlab', 'biotechnology', 'Hackteria', 'Open Source Body', 'MedTech-DIY', 'tissue culture', 'biohacking', 'ethics', 'art science');
+  }
+  if (/camp|營|营|キャンプ|แคมป์|替代教育|alternative education|獨立藝術營|独立艺术营|independent art camp|temporary school|summer school/i.test(query)) {
+    expansions.push('camp', 'HackteriaLab', 'temporary commons', 'temporary lab', 'workshop', 'alternative education', 'summer school', 'unconference', 'field school', 'community learning', 'documentation', 'public sharing');
   }
   if (/聲音|音樂|sound|music|樂器|instrument/i.test(query)) {
     expansions.push('sound', 'music', 'musical', 'instrument', 'speaker', 'HID');
