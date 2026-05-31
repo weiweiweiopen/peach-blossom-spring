@@ -125,7 +125,7 @@ function languageInstruction(language: AssociationZineLanguage): string {
 }
 
 function articleLengthInstruction(): string {
-  return "ARTICLE LENGTH: Write an essay-like, evidence-bound zine with exactly seven main sections so the rendered zine has at least eight readable pages. Do not pad with filler, but give each section enough argument to stand as prose. Opening and proposition should each be 1-2 direct sentences. Each section body should be 130-220 words for Latin-script languages or 260-460 visible characters for CJK/Thai/Japanese. Each protocol body should be 35-70 words or 70-140 visible characters. If evidence is thin, use the extra space to clarify limits, comparisons, and verification questions instead of expanding with abstractions.";
+  return "ARTICLE LENGTH: Write a route-first PBS wiki zine with exactly seven main sections so the rendered zine has at least eight readable pages. Do not pad with filler, and do not force a thesis when the evidence only supports a reading route. Opening and proposition should each be 1-2 direct sentences. Each section body should be 110-190 words for Latin-script languages or 220-400 visible characters for CJK/Thai/Japanese. Each protocol body should be 35-70 words or 70-140 visible characters. If evidence is thin, make the section more useful by naming concrete pages, what each page can and cannot prove, and the next verification step; do not expand with abstractions.";
 }
 
 function zinePrintCalibrationScript(): string {
@@ -609,14 +609,15 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     wantsMakingTutorial: wantsMakingTutorial(query),
     searchTerms: workflow.step1.report.keywords.slice(0, 8),
     deepReadKeywords: workflow.step1.report.deepReadKeywords.slice(0, 8),
+    editorialMode: "route-first PBS wiki zine",
     desiredAngles: [
       "從玩家提供的問題出發，不要套用固定題材、預設領域或上一份小誌的成功形式。",
-      "全文只服務同一個中心問題：先判斷材料揭露了什麼未被注意的事實、關係或矛盾，再用它組成一條連貫論點。",
-      "把小誌寫成研討會短文：支持、反對、限制與未來研究方向都要清楚，不要填充漂亮句子。",
+      "全文只服務同一個中心問題：先判斷材料能形成論點，還是只能形成閱讀路徑；不要把後者偽裝成前者。",
+      "把小誌寫成 PBS wiki 導讀：支持、反對、限制、缺口與未來查證方向都要清楚，不要填充漂亮句子。",
       "只使用 sourceObservations、deepReadObservations 與 linkedEvidenceTrails 裡真的出現的頁名、詞彙、材料與方法。",
       "把 compiled notes 與 bridge/index notes 當作作者的索引，不要在公開文章裡命名它們；文章必須引用實際作品、工作坊、方法、材料或社群實踐。",
-      "如果頁面最有價值的是作品/方法清單，就直接整理成閱讀判讀；不要硬寫成宏大宣言。",
-      "小誌是文章，不是檢索報告：每一章都要有作者判斷、場景、矛盾或可推進的洞見。",
+      "如果頁面最有價值的是作品/方法清單，就直接整理成可玩的閱讀路徑；不要硬寫成宏大宣言。",
+      "小誌不是檢索報告，也不是完成論文；每一章都要有作者判斷、場景、矛盾、缺口或下一步。",
       "除非 wantsMakingTutorial=true，不要把文章寫成工具製作、教學步驟、BOM 或工作坊流程。",
     ],
     sourceObservations: cards,
@@ -630,9 +631,10 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
       futureDirections: semantic.futureDirections.slice(0, 4).map((item: any) => item.topic ?? item.title ?? String(item)),
     },
     evidenceCoverage: evidenceCoverageForQuery(query, workflow),
+    evidenceWarning: evidenceWarningForClaim(query, workflow),
     researchTopicCandidates: topics,
-    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, say that the evidence is insufficient and turn the piece into verification questions instead of a thesis. Prefer compiledWikiNotes when they are relevant because they already summarize sourceRefs and citations, but do not use notes with weak lint warnings as final proof without caveats. Write one coherent research-seminar zine around source-grounded insight and one future research direction only when the evidence supports that direction.",
-    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫文章；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認「沒有找到足夠的證據」，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    instruction: "The query is the only editorial parameter. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Prefer compiledWikiNotes when they are relevant because they already summarize sourceRefs and citations, but do not use notes with weak lint warnings as final proof without caveats. Write one coherent source-grounded route or argument; only call it a thesis when the evidence supports that direction.",
+    reminder: "請真的依照 query、searchTerms、sourceObservations、deepReadObservations、linkedEvidenceTrails、compiledWikiNotes 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。compiledWikiNotes 是已整理的 Wiki 筆記，使用其中的具體 claim 時必須保留它的 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。材料可以來自 compiled Wiki notes、curated bridge/index notes 與 Hackteria、SGMK、Fabricademy、HOW TO GET WHAT YOU WANT / KOBAKANT 材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -644,7 +646,7 @@ function withWritingStyle(user: string, options: BrowserAssociationOptions = {})
   const parsed = JSON.parse(user) as Record<string, unknown>;
   if (style) {
     parsed.npcWritingStyle = style;
-    parsed.instruction = `${String(parsed.instruction ?? "")} If npcWritingStyle is present, adapt cadence, emphasis, examples, and metaphors to that NPC transcript voice while still using public wiki evidence and the same four section jobs.`;
+    parsed.instruction = `${String(parsed.instruction ?? "")} If npcWritingStyle is present, adapt cadence, emphasis, examples, and metaphors to that NPC transcript voice while still using public wiki evidence and the same route-first section jobs.`;
   }
   const useful = compactText(options.repairUsefulParts, 900);
   const useless = compactText(options.repairUselessParts, 900);
@@ -654,7 +656,7 @@ function withWritingStyle(user: string, options: BrowserAssociationOptions = {})
       usefulParts: useful,
       uselessOrMisleadingParts: useless,
       requestedRepair: repair,
-      rule: "Regenerate a better public zine using this human review only as editorial guidance. Preserve the same evidence gate, four-section structure, citations/source grounding, and insufficient-evidence caveats. Do not add any claim just because the reviewer requested it; use the review to remove weak parts, sharpen useful parts, and ask clearer verification questions.",
+      rule: "Regenerate a better public zine using this human review only as editorial guidance. Preserve the same route-first structure, citations/source grounding, and insufficient-evidence caveats. Do not add any claim just because the reviewer requested it; use the review to remove weak parts, sharpen useful parts, and ask clearer verification questions.",
     };
     parsed.instruction = `${String(parsed.instruction ?? "")} This is a repair pass. Prioritize humanRepairReview: keep the useful parts if evidence supports them; remove or rewrite useless, misleading, repetitive, or under-evidenced parts; answer requestedRepair only within retrieved evidence. If the requested repair lacks evidence, explicitly say there is not enough evidence instead of inventing support.`;
   }
@@ -667,7 +669,7 @@ function assertEnoughRelevantMaterial(workflow: Workflow): void {
   const allowedLinked = report.linkedCards.filter((trail) => isAllowedZineCard(trail.card)).length;
   const allowedDeep = report.deepReadCards.filter(isAllowedZineCard).length;
   const depthScore = report.depthMetrics.depthScore;
-  const enough = allowedMatched >= 2 && (allowedDeep >= 1 || allowedLinked >= 2) && depthScore >= 35;
+  const enough = allowedMatched >= 1 || allowedLinked >= 1 || allowedDeep >= 1 || depthScore >= 12;
   if (enough) return;
   const error = new Error(`low_relevance_zine: matched ${allowedMatched}, linked ${allowedLinked}, deep-read ${allowedDeep}, depth ${depthScore}`);
   error.name = "LowRelevanceZineError";
@@ -675,19 +677,22 @@ function assertEnoughRelevantMaterial(workflow: Workflow): void {
 }
 
 function assertEnoughEvidenceForClaim(query: string, workflow: Workflow): void {
+  void query;
+  void workflow;
+  return;
+}
+
+function evidenceWarningForClaim(query: string, workflow: Workflow): string {
   const coverage = evidenceCoverageForQuery(query, workflow);
-  if (!asksForSynthesis(query) || coverage.length < 2) return;
+  if (!asksForSynthesis(query) || coverage.length < 2) return "";
   const unsupported = coverage.filter((item) => !item.covered);
   const meaningfulCards = meaningfulEvidenceCards(workflow);
   const distinctFamilies = new Set(meaningfulCards.map(sourceFamily)).size;
   const allowedUnsupported = coverage.length >= 4 ? 1 : 0;
   const failsCoverage = unsupported.length > allowedUnsupported;
   const failsBreadth = coverage.length >= 3 && (meaningfulCards.length < 3 || distinctFamilies < 2);
-  if (!failsCoverage && !failsBreadth) return;
-  const message = `insufficient_evidence_zine: 沒有找到足夠的證據支持這個綜合論點。unsupported=${unsupported.map((item) => item.label).join(", ") || "none"}; meaningfulPages=${meaningfulCards.length}; sourceFamilies=${distinctFamilies}`;
-  const error = new Error(message);
-  error.name = "LowRelevanceZineError";
-  throw error;
+  if (!failsCoverage && !failsBreadth) return "";
+  return `Evidence is not strong enough for a settled synthesis. Unsupported or thin relation groups: ${unsupported.map((item) => item.label).join(", ") || "none"}. Treat these as reading-route gaps and verification questions, not conclusions.`;
 }
 
 function extractJsonObject(text: string): unknown {
@@ -807,13 +812,13 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
     primaryPages: [observations[index % observationCount], observations[(index + 2) % observationCount]].filter(Boolean),
     relationTrail: linked[index % linkedCount] ?? null,
     sectionJob: [
-      "界定玩家問題：材料能回答什麼，哪裡仍模糊",
-      "寫出核心場景：一個作品、工作坊或方法如何讓問題變具體",
-      "提出最強支持證據：頁面/作品/方法如何推進論點",
-      "提出限制、反例或不相合之處：避免把材料硬湊成結論",
-      "比較另一個材料脈絡：說明關係是否跨社群成立",
-      "寫出文章的洞見：這些材料改變了我們對問題的哪個理解",
-      "提出未來研究方向：可比較、可查證、可延伸的下一個問題",
+      "界定玩家問題：先判斷這批材料支持論點，還是只支持閱讀路徑",
+      "建立第一條路徑：一個頁面、作品、工作坊或方法如何讓問題變具體",
+      "建立第二條路徑：另一頁材料提供什麼支持、偏移或反例",
+      "標出缺口：哪些關係目前不能被這批材料證明",
+      "比較材料脈絡：說明哪些詞只是相鄰線索，哪些是真正可用證據",
+      "寫出可保留的洞見：這些材料最多能改變我們對問題的哪個理解",
+      "提出下一步：可點開、可比較、可補頁、可查證的後續問題",
     ][index],
   };
 }
@@ -1211,7 +1216,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它如何回答 query；若材料不足就用短段落承認缺口並提出查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是文章段落，不是檢索報告：要寫出判斷、場景、矛盾或洞見，而不是列出索引。後半段必須延續論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、PBS bridge notes、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1639,8 +1644,8 @@ function buildClickTrace(params: {
       calls: activeDeepSeekTraceCalls,
     },
     articleLength: {
-      target: "essay-like evidence-bound zine with at least eight rendered pages",
-      strategy: "answer the query directly with seven argumentative sections; use added length for insight, limits, comparison, and verification rather than padding",
+      target: "route-first evidence-bound PBS wiki zine with at least eight rendered pages",
+      strategy: "answer only as far as evidence allows; otherwise make seven readable sections of routes, gaps, limits, comparison, and verification rather than padding",
     },
     articleSource: artifact ? "deepseek" : "blocked",
     generatedArticle: artifact ? { title: artifact.title, sectionTitles: artifact.sections.map((section) => section.title), approximateCharacterCount: articleCharacterCount(artifact), notLocalFallback: true } : null,
