@@ -8578,3 +8578,27 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   }
 }
 
+
+/* 2026-05-31: Latin-script languages were too small. Raise EN/ID/DE globally by ~4px on desktop and mobile. */
+.pbs-interaction-root[data-language="en"],
+.pbs-interaction-root[data-language="id"],
+.pbs-interaction-root[data-language="de"] {
+  --font-body: clamp(19px, 3.1vw, 22px);
+  --font-body-large: clamp(21px, 3.5vw, 26px);
+  --font-label: clamp(16px, 2.6vw, 18px);
+  --font-caption: clamp(14px, 2.3vw, 16px);
+  --font-micro: clamp(12px, 2vw, 14px);
+  --pbs-script-ui-font-size: calc(1em + 4px);
+}
+.pbs-interaction-root[data-language="en"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit),
+.pbs-interaction-root[data-language="id"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit),
+.pbs-interaction-root[data-language="de"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit) {
+  font-size: calc(1em + 4px) !important;
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root[data-language="en"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit),
+  .pbs-interaction-root[data-language="id"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit),
+  .pbs-interaction-root[data-language="de"] :is(.mobile-talk-prompt p, .name-tag, .abao-speech-bubble, .archive-tree-menu h1, .archive-tree-menu p, .archive-tree-menu button, .world-split-toolbar p, .world-split-toolbar h2, .world-split-embed-description, .world-wiki-content, .question-status-panel p, .question-status-panel h2, .question-status-panel span, .question-response-panel p, .question-response-panel h2, .question-response-panel h3, .rpg-dialogue-kicker, .rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more, .rpg-dialogue-submit) {
+    font-size: calc(1em + 4px) !important;
+  }
+}
