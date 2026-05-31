@@ -142,8 +142,10 @@ export function OfficeCanvas({
     if (!canvas || !container) return;
     const rect = container.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.height * dpr);
+    const nextWidth = Math.max(1, Math.ceil(rect.width * dpr));
+    const nextHeight = Math.max(1, Math.ceil(rect.height * dpr));
+    canvas.width = nextWidth;
+    canvas.height = nextHeight;
     canvas.style.width = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
     // No ctx.scale(dpr) — we render directly in device pixels

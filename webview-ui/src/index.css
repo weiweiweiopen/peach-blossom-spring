@@ -8300,3 +8300,52 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   background: transparent !important;
   border: 0 !important;
 }
+
+/* Hard override for NPC inline source links. The global pixel panel rules make
+   anchors huge; keep these compact and closed by default. */
+.rpg-dialogue-source-links,
+.rpg-dialogue-source-links *,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-source-links,
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-source-links * {
+  font-family: inherit !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+}
+.rpg-dialogue-source-links {
+  margin-top: 8px;
+  max-height: 96px;
+  overflow: auto;
+  padding: 6px 8px;
+  border: 1px solid #000;
+  background: #fffaf0 !important;
+}
+.rpg-dialogue-source-links summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.rpg-dialogue-source-link-list {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+}
+.rpg-dialogue-source-links a,
+.pixel-panel .rpg-dialogue-source-links a {
+  display: flex !important;
+  gap: 6px;
+  align-items: baseline;
+  max-width: 100%;
+  padding: 0 !important;
+  color: #000 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: underline;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+.rpg-dialogue-source-links em {
+  color: #2e7d65 !important;
+  font-style: normal;
+  flex: 0 0 auto;
+}

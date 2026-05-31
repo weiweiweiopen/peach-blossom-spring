@@ -152,14 +152,14 @@ function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, 
     .filter(Boolean);
   if (language === 'zh-TW') {
     const evidenceText = snippets.length
-      ? `\n\n訪談線索：${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('；')}`
+      ? `\n\n我記得訪談裡還有兩個線索：${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('；')}`
       : '';
-    return `${persona.name} 會先從自己的訪談與角色脈絡回答，而不是假裝即時外網檢索。\n\n${response}${evidenceText}\n\n這個雲端版使用已打包的 PBS source-first index；如果需要更新 URL 內容，要在本機重新 crawl / export / deploy。`;
+    return `${response}${evidenceText}`;
   }
   const evidenceText = snippets.length
-    ? `\n\nInterview traces: ${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('; ')}`
+    ? `\n\nI also remember these interview traces: ${snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join('; ')}`
     : '';
-  return `${persona.name} answers from persona and interview memory first, not from live URL crawling.\n\n${response}${evidenceText}\n\nThis cloud build uses the bundled PBS source-first index; update URLs locally by crawling/exporting/redeploying.`;
+  return `${response}${evidenceText}`;
 }
 
 function wukirMusicLabel(language: LanguageCode): string {
@@ -503,14 +503,17 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   {message.text}
                 </p>
                 {message.links && message.links.length > 0 && (
-                  <div className="rpg-dialogue-source-links" aria-label="source links">
-                    <strong>Source links</strong>
-                    {message.links.slice(0, 8).map((link, linkIndex) => (
-                      <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                        [{linkIndex + 1}] {link.title} <span>{link.sourceFamily}</span>
-                      </a>
-                    ))}
-                  </div>
+                  <details className="rpg-dialogue-source-links" aria-label="source links">
+                    <summary>Source links ({message.links.length})</summary>
+                    <div className="rpg-dialogue-source-link-list">
+                      {message.links.slice(0, 8).map((link, linkIndex) => (
+                        <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
+                          <span>[{linkIndex + 1}] {link.title}</span>
+                          <em>{link.sourceFamily}</em>
+                        </a>
+                      ))}
+                    </div>
+                  </details>
                 )}
               </div>
             ))}
