@@ -6,9 +6,9 @@ declare function acquireVsCodeApi(): { postMessage(msg: unknown): void };
 const BROWSER_EDITOR_LAYOUT_KEY = 'pbs:editor-layout:v1';
 
 function safeLayoutFilename(filename?: string): string {
-  const raw = (filename ?? '').trim() || 'pbs-editor-layout.json';
+  const raw = (filename ?? '').trim() || 'pbs-map.json';
   const base = raw.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/^-+|-+$/g, '');
-  return (base || 'pbs-editor-layout').endsWith('.json') ? (base || 'pbs-editor-layout.json') : `${base || 'pbs-editor-layout'}.json`;
+  return (base || 'pbs-map').endsWith('.json') ? (base || 'pbs-map.json') : `${base || 'pbs-map'}.json`;
 }
 
 function downloadLayout(layout: OfficeLayout, filename?: string): void {

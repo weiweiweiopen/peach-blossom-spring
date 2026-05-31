@@ -268,7 +268,7 @@ export async function initBrowserMock(): Promise<void> {
   const params = new URLSearchParams(window.location.search);
   const wantsEditorAssets = params.get('editor') === '1';
   const editorPreview = wantsEditorAssets;
-  const layoutPath = 'pbs-editor-layout.json';
+  const layoutPath = 'pbs-map.json';
 
   const [assetIndex, catalog] = await Promise.all([
     fetch(`${base}assets/asset-index.json`).then((r) => r.json()) as Promise<AssetIndex>,
