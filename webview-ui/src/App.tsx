@@ -29,7 +29,6 @@ import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
-import { askDeepSeekPbsComputer } from "./deepseekClient.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
 import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
@@ -41,7 +40,6 @@ import {
   t,
   writeStoredLanguage,
 } from "./i18n.js";
-import { type LocalChatReply,localPetChat } from "./localChatbot.js";
 import {
   createPresence,
   encounterIdForPlayers,
@@ -53,6 +51,8 @@ import {
   readMultiplayerConfig,
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
+import { askCampfire } from "./localMemoryApi.js";
+import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -60,7 +60,6 @@ import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { findPath, isWalkable } from "./office/layout/tileMap.js";
 import { getCharacterSprites } from "./office/sprites/index.js";
 import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
-import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   appearanceToSpriteData,
@@ -81,7 +80,6 @@ import {
 } from "./simulation/engine.js";
 import { scorePromptResonance } from "./simulation/resonance.js";
 import {
-  appendPetDialogueHistory,
   type PetDialogueHistoryEntry,
   readPetDialogueHistory,
 } from "./simulation/storage.js";
@@ -313,7 +311,8 @@ type SplitPanel =
     }
   | { kind: "archivePdf" }
   | { kind: "archiveMap" }
-  | { kind: "schema" };
+  | { kind: "schema" }
+  | { kind: "sources" };
 
 type EncounterPanel = {
   partner: MultiplayerPresence;
@@ -333,7 +332,8 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "archivePdf") return t(language, "archive.pdfTitle");
   if (panel.kind === "archiveMap") return t(language, "archive.mapTitle");
   if (panel.kind === "schema") return SCHEMA_CONTROL_COPY[language].title;
-  return "LLM Wiki";
+  if (panel.kind === "sources") return "來源";
+  return "PBS 共享記憶";
 }
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
@@ -344,7 +344,7 @@ function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
     return t(language, "archive.embeddedLink");
   }
   if (panel.kind === "finalDocument") return "WORLD WIKI: association page";
-  if (panel.kind === "schema") return "🍑";
+  if (panel.kind === "schema" || panel.kind === "sources") return "🍑";
   return "🍑";
 }
 
@@ -361,7 +361,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   actions: string[];
 }> = {
   "zh-TW": {
-    title: "LLM Wiki 控制室",
+    title: "PBS 共享記憶",
     introTitle: "桃花源作為記憶基礎設施",
     intro: [
       "小型文化組織與獨立藝術網絡依賴關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作；知識散落在訪談、wiki、雲端文件、展覽紀錄、工作坊材料、社群媒體與口述經驗中，平台或合作一斷裂，脈絡就容易消失。",
@@ -382,7 +382,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     actions: ["預覽檢索包", "生成測試小誌", "保存本機 preset"],
   },
   en: {
-    title: "LLM Wiki control room",
+    title: "PBS shared memory",
     introTitle: "Peach Blossom Spring as memory infrastructure",
     intro: [
       "Small cultural organizations and independent art networks often run on key people, short grants, temporary workshops, informal communication, and personal memory. Their knowledge is scattered across interviews, wikis, cloud folders, grant files, exhibition records, workshop materials, social media, and oral accounts; when platforms, people, or funding disappear, context disappears with them.",
@@ -398,7 +398,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     actions: ["Preview packet", "Generate test zine", "Save local preset"],
   },
   id: {
-    title: "Ruang kontrol LLM Wiki",
+    title: "Memori bersama PBS",
     introTitle: "Peach Blossom Spring sebagai infrastruktur memori",
     intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question Pet mengubah pertanyaan menjadi sinyal lint dan kematangan."],
     contributionTitle: "Kontribusi yang diharapkan",
@@ -422,7 +422,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     actions: ["Paket prüfen", "Test-Zine", "Preset speichern"],
   },
   ja: {
-    title: "LLM Wiki コントロール室",
+    title: "PBS 共有記憶",
     introTitle: "記憶基盤としての桃花源",
     intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question Pet は問いを lint と成熟度のシグナルに変える。"],
     contributionTitle: "期待される貢献",
@@ -434,7 +434,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     actions: ["検索包をプレビュー", "テスト小誌", "preset 保存"],
   },
   th: {
-    title: "ห้องควบคุม LLM Wiki",
+    title: "ความจำร่วม PBS",
     introTitle: "Peach Blossom Spring ในฐานะโครงสร้างความจำ",
     intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน Question Pet แปลงคำถามเป็นสัญญาณ lint และ maturity"],
     contributionTitle: "ผลงานที่คาดหวัง",
@@ -447,9 +447,60 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   },
 };
 
+const DEFAULT_SOURCE_URL_TEXT = "https://howtogetwhatyouwant.at, https://www.hackteria.org/wiki/Main_Page, https://wiki.sgmk-ssam.ch/wiki/Main_Page";
+
+function SourceUrlEditor({ compact = false }: { compact?: boolean }) {
+  const [sourcesText, setSourcesText] = useState(() => {
+    try {
+      return window.localStorage.getItem("pbs:sources:url-list:v1") ?? DEFAULT_SOURCE_URL_TEXT;
+    } catch {
+      return DEFAULT_SOURCE_URL_TEXT;
+    }
+  });
+  const [saved, setSaved] = useState(false);
+  const saveSources = async () => {
+    const urls = sourcesText.split(",").map((url) => url.trim()).filter(Boolean);
+    try {
+      window.localStorage.setItem("pbs:sources:url-list:v1", urls.join(", "));
+      await fetch("/api/sources", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ urls }),
+      }).catch(() => undefined);
+    } finally {
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 1800);
+    }
+  };
+  return (
+    <section className="schema-control-prototype schema-editorial-prompt-editor">
+      <h3>搜尋 sources URL</h3>
+      <p>目前來源預設是 Hackteria、HOW TO GET WHAT YOU WANT / KOBAKANT、SGMK。可在這裡改搜尋目標 URL；本機 server 會同步寫入 pbs_sources.json。</p>
+      <textarea value={sourcesText} onChange={(event) => setSourcesText(event.target.value)} rows={compact ? 5 : 8} spellCheck={false} />
+      <div className="schema-control-actions">
+        <button type="button" onClick={() => void saveSources()}>儲存來源</button>
+        {saved && <span className="schema-save-status">已儲存</span>}
+      </div>
+    </section>
+  );
+}
+
+function SourcesControlRoom() {
+  return (
+    <div className="world-wiki-content world-about-content schema-control-room">
+      <section className="schema-intro-card schema-hero-card">
+        <p className="schema-kicker">來源</p>
+        <h1>Source URLs</h1>
+        <p>這是 PBS 共享記憶控制頁裡同一個 sources URL 編輯器的獨立入口。</p>
+      </section>
+      <SourceUrlEditor />
+    </div>
+  );
+}
+
 function SchemaControlRoom({ language }: { language: LanguageCode }) {
   const copy = SCHEMA_CONTROL_COPY[language];
-  const promptStorageKey = "pbs:bridge-writer-system-prompt:v2";
+  const promptStorageKey = "pbs:association-writer-system-prompt:v1";
   const [editorialPromptDraft, setEditorialPromptDraft] = useState(() => {
     try {
       return window.localStorage.getItem(promptStorageKey) || bridgeWriterSystemPrompt;
@@ -475,71 +526,25 @@ function SchemaControlRoom({ language }: { language: LanguageCode }) {
         {copy.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
 
-      <section className="schema-intro-card schema-contribution-card">
-        <h3>{copy.contributionTitle}</h3>
-        <ul>
-          {copy.contributions.map((item) => <li key={item}>{item}</li>)}
-        </ul>
-      </section>
-
       <section className="schema-control-prototype">
         <h3>{copy.controlsTitle}</h3>
         <p>{copy.controlsIntro}</p>
-        <div className="schema-control-grid">
-          <label>
-            {copy.labels.query}
-            <textarea defaultValue={copy.defaults.query} />
-          </label>
-          <label>
-            {copy.labels.writer}
-            <textarea defaultValue={copy.defaults.writer} />
-          </label>
-          <label>
-            {copy.labels.schema}
-            <textarea defaultValue={copy.defaults.schema} />
-          </label>
-          <label>
-            {copy.labels.family}
-            <select defaultValue="all">
-              <option value="all">Hackteria + SGMK + Fabricademy + KOBAKANT</option>
-              <option value="hackteria">Hackteria first</option>
-              <option value="textile">Electronic textiles first</option>
-              <option value="wiki">PBS Wiki entry notes first</option>
-            </select>
-          </label>
-          <label>
-            {copy.labels.depth}
-            <input type="range" min="1" max="4" defaultValue="2" />
-          </label>
-          <label>
-            {copy.labels.evidence}
-            <input type="range" min="1" max="10" defaultValue="6" />
-          </label>
-          <label>
-            {copy.labels.tone}
-            <select defaultValue="zine">
-              <option value="zine">public zine voice</option>
-              <option value="research">research memo</option>
-              <option value="workshop">workshop handout</option>
-            </select>
-          </label>
-          <label>
-            {copy.labels.output}
-            <textarea defaultValue={copy.defaults.output} />
-          </label>
-        </div>
-        <div className="schema-control-actions">
-          {copy.actions.map((action) => <button key={action} type="button">{action}</button>)}
-        </div>
+        <ul>
+          <li>目前實際接線的是 sources URL、local memory source-first search、NPC persona/transcript 回答、以及小誌 writer prompt。</li>
+          <li>traversal 長度、depth、threshold 那些滑桿先不顯示，因為目前沒有接到真正的檢索參數；之後接線再放回來。</li>
+          <li>小誌 writer 使用下方可編輯 prompt；儲存後下一次生成立即套用。</li>
+        </ul>
       </section>
 
+      <SourceUrlEditor compact />
+
       <section className="schema-control-prototype schema-editorial-prompt-editor">
-        <h3>PBS bridge writer prompt</h3>
-        <p>Edit the PBS-2026.2 bridge writer prompt locally. Save writes to this browser only.</p>
+        <h3>PBS 共享記憶 writer prompt</h3>
+        <p>編輯本機小誌 editorial writer prompt；儲存後下一次小誌生成會立即套用。</p>
         <textarea value={editorialPromptDraft} onChange={(event) => setEditorialPromptDraft(event.target.value)} spellCheck={false} />
         <div className="schema-control-actions">
-          <button type="button" onClick={saveEditorialPrompt}>Save local prompt</button>
-          {promptSaved && <span className="schema-save-status">Saved locally</span>}
+          <button type="button" onClick={saveEditorialPrompt}>儲存 prompt</button>
+          {promptSaved && <span className="schema-save-status">已儲存，下一次生成生效</span>}
         </div>
       </section>
     </div>
@@ -968,21 +973,8 @@ function petLintGapTitle(language: LanguageCode): string {
   return PET_LINT_GAP_COPY[language].title;
 }
 
-const PET_LOCAL_CHAT_COPY: Record<LanguageCode, { title: string; placeholder: string; ask: string; noEvidence: string }> = {
-  "zh-TW": { title: "本地電子雞 RAG 對話", placeholder: "用牠的記憶、材料與 A2A 證據問這隻電子雞", ask: "詢問", noEvidence: "尚未取得證據。" },
-  en: { title: "Local pet RAG chat", placeholder: "Ask this pet using its memory, materials, and A2A evidence", ask: "Ask", noEvidence: "No evidence retrieved yet." },
-  id: { title: "Obrolan RAG pet lokal", placeholder: "Tanya pet ini memakai memori, material, dan bukti A2A", ask: "Tanya", noEvidence: "Belum ada bukti yang diambil." },
-  de: { title: "Lokaler Pet-RAG-Chat", placeholder: "Frag dieses Pet mit Gedächtnis, Material und A2A-Belegen", ask: "Fragen", noEvidence: "Noch keine Belege abgerufen." },
-  ja: { title: "ローカル電子ペット RAG 会話", placeholder: "記憶・素材・A2A 証拠を使ってこのペットに聞く", ask: "聞く", noEvidence: "まだ証拠は取得されていません。" },
-  th: { title: "แชต RAG สัตว์เลี้ยงในเครื่อง", placeholder: "ถามสัตว์เลี้ยงนี้ด้วยความจำ วัสดุ และหลักฐาน A2A", ask: "ถาม", noEvidence: "ยังไม่มีหลักฐานที่ดึงมา" },
-};
-
 function petActionLabel(language: LanguageCode, action: string): string {
   return PET_HUD_COPY[language].action[action] ?? action;
-}
-
-function petScoreLabel(language: LanguageCode, key: string): string {
-  return PET_HUD_COPY[language].score[key] ?? key;
 }
 
 function questionLintCopy(language: LanguageCode) {
@@ -1003,6 +995,47 @@ function questionLintSignals(question: string) {
   const evidence = /where|when|which|誰|哪|何|如何|怎麼|材料|組織|社群|method|material|organization|community|wiki|source/i.test(question) ? 72 : 38;
   const bridge = /and|between|compare|relation|關係|比較|連結|之間|跨|กับ|และ|und|zwischen|と|比較/i.test(question) ? 78 : 44;
   return { specificity, evidence, bridge };
+}
+
+
+function questionLintForSnapshot(snapshot: SimSnapshot | null, language: LanguageCode) {
+  const questions = snapshot?.thronglets.map((pet) => pet.question.text).filter(Boolean) ?? [];
+  const joined = questions.join(" / ") || "";
+  const lints = questions.map(questionLintSignals);
+  const avg = (key: "specificity" | "evidence" | "bridge", fallback: number) => {
+    if (!lints.length) return clampPercent(fallback);
+    const values = lints.map((lint) => lint[key]);
+    return clampPercent(values.reduce((sum, value) => sum + value, 0) / values.length);
+  };
+  const copy = questionLintCopy(language);
+  return {
+    title: copy.title,
+    specificity: avg("specificity", 15),
+    evidence: avg("evidence", 38),
+    bridge: avg("bridge", 44),
+    next: joined ? copy.revise : copy.revise,
+  };
+}
+
+function questionLintForPet(question: string, language: LanguageCode) {
+  const lint = questionLintSignals(question);
+  const copy = questionLintCopy(language);
+  return {
+    title: copy.title,
+    specificity: lint.specificity,
+    evidence: lint.evidence,
+    bridge: lint.bridge,
+    next: copy.revise,
+  };
+}
+
+function questionLintScoreEntries(lint: ReturnType<typeof questionLintForSnapshot> | ReturnType<typeof questionLintForPet>, language: LanguageCode) {
+  const copy = questionLintCopy(language);
+  return [
+    [copy.specificity, lint.specificity],
+    [copy.evidence, lint.evidence],
+    [copy.bridge, lint.bridge],
+  ] as const;
 }
 
 function petTerrainStateCopy(language: LanguageCode) {
@@ -1081,12 +1114,6 @@ function CentralComputerDialogue({
     log.scrollTop = log.scrollHeight;
   }, [isThinking, messages]);
 
-  function sharedMemoryContextFor(results: WikiSearchResult[]): string {
-    return results
-      .map((item, index) => `${index + 1}. ${item.title} [${item.sourceFamily}] ${item.description ?? ""} ${item.url ?? ""}`.trim())
-      .join("\n");
-  }
-
   async function askComputer(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isThinking) return;
@@ -1094,22 +1121,17 @@ function CentralComputerDialogue({
     setError("");
     setIsThinking(true);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
-    let wikiResults: WikiSearchResult[] = [];
     try {
-      const { searchWikiPages } = await import("./wikiSearch.js");
-      wikiResults = searchWikiPages(trimmed, undefined, 6);
-      const reply = await askDeepSeekPbsComputer({
-        question: trimmed,
-        preferredLanguage: language,
-        sharedMemoryContext: sharedMemoryContextFor(wikiResults),
-      });
-      setMessages((current) => [...current, { speaker: copy.name, text: reply, links: wikiResults }]);
+      const reply = await askCampfire(trimmed, language);
+      setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : copy.failError);
+      const { searchWikiPages } = await import("./wikiSearch.js");
+      const links = searchWikiPages(trimmed, undefined, 8);
       setMessages((current) => [...current, {
         speaker: copy.name,
-        text: wikiResults.length > 0 ? buildStaticLocalMemoryAnswer(trimmed, wikiResults, language) : copy.fail,
-        links: wikiResults,
+        text: buildStaticLocalMemoryAnswer(trimmed, links, language),
+        links,
       }]);
     } finally {
       setIsThinking(false);
@@ -1225,12 +1247,12 @@ function waitForNextPaint(): Promise<void> {
 
 async function importAssociationGenerator() {
   try {
-    return await import("./daydream/browserAssociationGenerator.js");
+    return await import("./association/browserAssociationGenerator.js");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error ?? "");
     if (/Importing a module script failed|Failed to fetch dynamically imported module|Loading chunk/i.test(message)) {
       await new Promise((resolve) => window.setTimeout(resolve, 800));
-      return import("./daydream/browserAssociationGenerator.js");
+      return import("./association/browserAssociationGenerator.js");
     }
     throw error;
   }
@@ -1752,6 +1774,7 @@ function App() {
   const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
   const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
+  const [terrainEditorEnabled, setTerrainEditorEnabled] = useState(editorEntryEnabled);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
   const [worldInitialized, setWorldInitialized] = useState(false);
   const [promptAnchor, setPromptAnchor] = useState<{
@@ -1775,11 +1798,8 @@ function App() {
   const [simSnapshot, setSimSnapshot] = useState<SimSnapshot | null>(null);
   const [isQuestionSimMinimized, setIsQuestionSimMinimized] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Thronglet | null>(null);
-  const [isSelectedPetPanelExpanded, setIsSelectedPetPanelExpanded] = useState(false);
   const [petResponse, setPetResponse] = useState("");
-  const [petChatDraft, setPetChatDraft] = useState("");
-  const [petChatReply, setPetChatReply] = useState<LocalChatReply | null>(null);
-  const [petDialogueHistory, setPetDialogueHistory] = useState<PetDialogueHistoryEntry[]>(() => readPetDialogueHistory());
+  const [petDialogueHistory] = useState<PetDialogueHistoryEntry[]>(() => readPetDialogueHistory());
   const [petBoardResponses, setPetBoardResponses] = useState<
     PetBoardResponse[]
   >([]);
@@ -2532,7 +2552,7 @@ function App() {
         void officeState.walkToTile(pet.characterId, 7 - (index % 3), 7);
       });
       setWorldNotice(PET_RUNAWAY_NOTICE[selectedLanguage]);
-      window.setTimeout(() => setWorldNotice(null), 3600);
+      window.setTimeout(() => setWorldNotice(null), 5000);
     }, 700);
     return () => window.clearTimeout(timeout);
   }, [
@@ -2610,7 +2630,7 @@ function App() {
         }
         return next;
       });
-    }, 450);
+    }, 1000);
     return () => window.clearInterval(interval);
   }, [appMode, layoutReady, officeState, playerProfile, simSnapshot]);
 
@@ -2750,8 +2770,8 @@ function App() {
       if (isComputerDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
       const lines = CAMPFIRE_BROADCASTS[selectedLanguage] ?? CAMPFIRE_BROADCASTS.en;
       const thoughtLines = THOUGHT_GAP_BROADCASTS[selectedLanguage] ?? THOUGHT_GAP_BROADCASTS.en;
-      const isThoughtGap = index % 3 === 2;
-      const notice = isThoughtGap ? thoughtLines[Math.floor(index / 3) % thoughtLines.length] : lines[index % lines.length];
+      const isThoughtGap = true;
+      const notice = thoughtLines[index % thoughtLines.length] || lines[index % lines.length];
       setWorldNotice(notice);
       if (isThoughtGap) {
         setPetLintGapInbox((current) => {
@@ -2776,8 +2796,8 @@ function App() {
       worldNoticeTimerRef.current = window.setTimeout(() => {
         setWorldNotice(null);
         worldNoticeTimerRef.current = null;
-      }, 4600);
-    }, 18000);
+      }, 5000);
+    }, 60000);
     return () => window.clearInterval(interval);
   }, [appMode, isComputerDialogueOpen, layoutReady, playerProfile, selectedLanguage, splitPanel]);
 
@@ -3138,7 +3158,7 @@ function App() {
         }
       }
       setDispatchedPets(petStore.listPets());
-      window.setTimeout(() => setWorldNotice(null), 3600);
+      window.setTimeout(() => setWorldNotice(null), 5000);
     }, 6000);
     return () => window.clearInterval(interval);
   }, [activeDispatchPets.length, playerProfile, selectedLanguage]);
@@ -3243,7 +3263,7 @@ function App() {
 
   // Show "Press R to rotate" hint when a rotatable item is selected or being placed
   const showRotateHint =
-    editor.isEditMode &&
+    terrainEditorEnabled && editor.isEditMode &&
     (() => {
       if (editorState.selectedFurnitureUid) {
         const item = officeState
@@ -3481,50 +3501,11 @@ function App() {
     : [];
   const localMultiplayerPlayerId = multiplayerConfig ? getOrCreatePlayerId() : "";
   const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
-  function closeSelectedPetPanel(): void {
-    setSelectedPet(null);
-    setIsSelectedPetPanelExpanded(false);
-    setPetChatDraft("");
-    setPetChatReply(null);
-  }
-
-  function handlePetLocalChat(event: FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
-    const message = petChatDraft.trim();
-    if (!message || !selectedPet || !simSnapshot) return;
-    const reply = localPetChat({
-      message,
-      pet: selectedPet,
-      exchanges: simSnapshot.a2aExchanges,
-      tick: simSnapshot.tick,
-    });
-    setPetChatDraft("");
-    setPetChatReply(reply);
-    setPetDialogueHistory(appendPetDialogueHistory({
-      petId: selectedPet.id,
-      questionId: selectedPet.question.id,
-      question: selectedPet.question.text,
-      message,
-      reply: reply.reply,
-    }));
-    if (!reply.memoryEvent) return;
-    setSimSnapshot((current) => {
-      if (!current) return current;
-      const thronglets = current.thronglets.map((pet) =>
-        pet.id === selectedPet.id
-          ? { ...pet, memory: [reply.memoryEvent!, ...pet.memory].slice(0, 16) }
-          : pet,
-      );
-      const updatedPet = thronglets.find((pet) => pet.id === selectedPet.id);
-      if (updatedPet) setSelectedPet(updatedPet);
-      return { ...current, thronglets };
-    });
-  }
-
   const localizedPetLintGapInbox = petLintGapInbox.filter((item) => item.language === selectedLanguage);
   const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, localizedPetLintGapInbox) : null;
   const terrainCopy = petTerrainStateCopy(selectedLanguage);
   const petLintGapCopy = PET_LINT_GAP_COPY[selectedLanguage];
+  const questionLintHud = questionLintForSnapshot(simSnapshot, selectedLanguage);
 
   return (
     <div
@@ -3566,7 +3547,7 @@ function App() {
         </div>
       )}
 
-      {playerProfile && !editorEntryEnabled && <div className="floating-ui-layer" data-no-mobile-drag="true">
+      {playerProfile && !(terrainEditorEnabled && editor.isEditMode) && <div className="floating-ui-layer" data-no-mobile-drag="true">
         <div className="global-archive-menu">
           <button
             className="global-archive-trigger"
@@ -3667,7 +3648,7 @@ function App() {
             <EditActionBar editor={editor} editorState={editorState} />
           )}
 
-          {editorEntryEnabled && (
+          {terrainEditorEnabled && (
             <BottomToolbar
               isEditMode={editor.isEditMode}
               onOpenClaude={editor.handleOpenClaude}
@@ -3737,7 +3718,7 @@ function App() {
                     editor.handleSelectedFurnitureColorChange
                   }
                   onFurnitureTypeChange={editor.handleFurnitureTypeChange}
-                  showMapSize={editorEntryEnabled}
+                  showMapSize={terrainEditorEnabled}
                   mapCols={officeState.getLayout().cols}
                   mapRows={officeState.getLayout().rows}
                   onResizeMap={editor.handleResizeLayout}
@@ -3767,7 +3748,7 @@ function App() {
               </button>
             )}
 
-          {!editorEntryEnabled && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => {
+          {!editorEntryEnabled && !(terrainEditorEnabled && editor.isEditMode) && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => {
             const isNearbyTalkTarget =
               appMode === "interactive" &&
               tag.id === nearbyNpcId &&
@@ -3852,13 +3833,37 @@ function App() {
                     className="pbs-frame-button"
                     type="button"
                     onClick={() => {
+                      setSplitPanel({ kind: "sources" });
+                      setSplitPanelAnchor(null);
+                      setIsSplitExpanded(false);
+                      setArchiveMenuOpen(false);
+                    }}
+                  >
+                    2. 來源
+                  </button>
+                  <button
+                    className="pbs-frame-button"
+                    type="button"
+                    onClick={() => {
+                      setTerrainEditorEnabled(true);
+                      if (!editor.isEditMode) editor.handleToggleEditMode();
+                      setSplitPanel(null);
+                      setArchiveMenuOpen(false);
+                    }}
+                  >
+                    3. 編輯地形
+                  </button>
+                  <button
+                    className="pbs-frame-button"
+                    type="button"
+                    onClick={() => {
                       setSplitPanel({ kind: "archivePdf" });
                       setSplitPanelAnchor(null);
                       setIsSplitExpanded(false);
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    2. {t(selectedLanguage, "archive.ebookButton")}
+                    4. NGM archive
                   </button>
                   <button
                     className="pbs-frame-button"
@@ -3870,7 +3875,7 @@ function App() {
                       setArchiveMenuOpen(false);
                     }}
                   >
-                    3. {t(selectedLanguage, "archive.mapButton")}
+                    5. NGM map
                   </button>
                 </div>
               </section>
@@ -3972,6 +3977,7 @@ function App() {
             playerProfile &&
             appMode === "interactive" &&
             !editorEntryEnabled &&
+            !(terrainEditorEnabled && editor.isEditMode) &&
             !isSplitOpen && (
               <section
                 className={`question-status-panel ${isQuestionSimMinimized ? "question-status-panel-compact" : "rpg-message-frame px-7 py-6"} absolute right-12 bottom-12 z-43 w-[min(430px,calc(100vw-24px))] ${
@@ -4008,10 +4014,10 @@ function App() {
                 {isQuestionSimMinimized && (
                   <div className="question-status-compact" aria-label="Question Pet compact status">
                     <div className="question-status-compact-scoregrid" aria-label="Question Pet scores">
-                      {Object.entries(simSnapshot.scores).map(([key, value]) => (
-                        <p key={key}>
-                          <span>{petScoreLabel(selectedLanguage, key)}</span>
-                          <strong>{value.toFixed(1)}</strong>
+                      {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                        <p key={label}>
+                          <span>{label}</span>
+                          <strong>{value.toFixed(0)}</strong>
                         </p>
                       ))}
                     </div>
@@ -4025,6 +4031,45 @@ function App() {
                 )}
                 {!isQuestionSimMinimized && (
                   <>
+                    {simSnapshot.thronglets.map((pet) => (
+                        <button
+                          key={pet.id}
+                          className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
+                          type="button"
+                          onClick={() => {
+                            setIsQuestionSimMinimized(false);
+                            setSelectedPet(null);
+                          }}
+                        >
+                          <div className="flex gap-4 items-center">
+                            <QuestionPetPreview
+                              question={pet.question.text}
+                              appearance={pet.appearance}
+                              size={4}
+                              socialSignals={pet.state}
+                              currentAction={pet.currentAction}
+                            />
+                            <span className="text-base leading-snug">
+                              {PET_HUD_COPY[selectedLanguage].agent}
+                            </span>
+                          </div>
+                          <p className="text-sm mt-3">{petActionLabel(selectedLanguage, pet.currentAction)}</p>
+                          {(() => {
+                            const lint = questionLintForPet(pet.question.text, selectedLanguage);
+                            return (
+                              <div className="question-lint-card">
+                                <strong>{lint.title}</strong>
+                                <div className="question-lint-grid">
+                                  {questionLintScoreEntries(lint, selectedLanguage).map(([label, value]) => (
+                                    <span key={label}>{label}: {value.toFixed(0)}</span>
+                                  ))}
+                                </div>
+                                <p>{questionLintCopy(selectedLanguage).next}: {lint.next}</p>
+                              </div>
+                            );
+                          })()}
+                        </button>
+                      ))}
                     {terrainState && (
                       <div className="pet-terrain-state" aria-label={terrainCopy.title}>
                         <div className="pet-terrain-state-header">
@@ -4067,77 +4112,15 @@ function App() {
                         ))
                       )}
                     </div>
-                    {simSnapshot.thronglets.map((pet) => (
-                        <button
-                          key={pet.id}
-                          className="w-full text-left border-2 border-[var(--palette-blue)] bg-[var(--palette-cream)] px-4 py-4 mb-4 text-[var(--palette-ink)]"
-                          type="button"
-                          onClick={() => {
-                            setSelectedPet(pet);
-                            setPetChatReply(null);
-                            setPetChatDraft("");
-                          }}
-                        >
-                          <div className="flex gap-4 items-center">
-                            <QuestionPetPreview
-                              question={pet.question.text}
-                              appearance={pet.appearance}
-                              size={4}
-                              socialSignals={pet.state}
-                              currentAction={pet.currentAction}
-                            />
-                            <span className="text-base leading-snug">
-                              {PET_HUD_COPY[selectedLanguage].agent}
-                            </span>
-                          </div>
-                          <p className="text-sm mt-3">
-                            {petActionLabel(selectedLanguage, pet.currentAction)} / {t(selectedLanguage, "pet.energy")}
-                            {" "}
-                            {pet.state.energy.toFixed(0)} {" "}
-                            {t(selectedLanguage, "pet.stress")}
-                            {" "}
-                            {pet.state.stress.toFixed(0)} {" "}
-                            {t(selectedLanguage, "pet.bond")}
-                            {" "}
-                            {pet.state.groupBond.toFixed(0)}
-                          </p>
-                          {(() => {
-                            const lintCopy = questionLintCopy(selectedLanguage);
-                            const lint = questionLintSignals(pet.question.text);
-                            return (
-                              <div className="question-lint-card">
-                                <strong>{lintCopy.title}</strong>
-                                <div className="question-lint-grid">
-                                  <span>{lintCopy.specificity}: {lint.specificity.toFixed(0)}</span>
-                                  <span>{lintCopy.evidence}: {lint.evidence.toFixed(0)}</span>
-                                  <span>{lintCopy.bridge}: {lint.bridge.toFixed(0)}</span>
-                                </div>
-                                <p>{lintCopy.next}: {lintCopy.revise}</p>
-                              </div>
-                            );
-                          })()}
-                        </button>
-                      ))}
-                    <div className="grid grid-cols-2 gap-2 text-sm mb-4">
-                      {Object.entries(simSnapshot.scores).map(([key, value]) => (
-                        <p key={key}>
-                          {petScoreLabel(selectedLanguage, key)}: {value.toFixed(1)}
-                        </p>
-                      ))}
-                    </div>
-                    {simSnapshot.throngs.map((throng) => (
-                      <p key={throng.id} className="text-sm mb-2">
-                        THRONG: {throng.topic} ({throng.memberIds.length})
-                      </p>
-                    ))}
-                    {simSnapshot.a2aExchanges[0] && (
-                      <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
-                        <strong>🐣💬 {simSnapshot.a2aExchanges[0].targetLabel}</strong>
-                        {simSnapshot.a2aExchanges[0].turns.slice(0, 4).map((turn) => (
-                          <p key={turn.id} className="mt-2">{turn.text}</p>
+                    <article className="question-lint-card">
+                      <strong>{questionLintHud.title}</strong>
+                      <div className="question-lint-grid">
+                        {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                          <span key={label}>{label}: {value.toFixed(0)}</span>
                         ))}
                       </div>
-                    )}
+                      <p>{questionLintCopy(selectedLanguage).next}: {questionLintHud.next}</p>
+                    </article>
                     {petDialogueHistory.length > 0 && (
                       <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
                         <strong>🐣 {PET_HUD_COPY[selectedLanguage].recent}</strong>
@@ -4167,7 +4150,7 @@ function App() {
               </section>
             )}
 
-          {((PET_WINDOWS_ENABLED && selectedDispatchPet) || selectedNpcInfo) && (
+          {!(terrainEditorEnabled && editor.isEditMode) && ((PET_WINDOWS_ENABLED && selectedDispatchPet) || selectedNpcInfo) && (
             <section
               className="question-response-panel info-card pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7"
               data-no-mobile-drag="true"
@@ -4310,8 +4293,8 @@ function App() {
             >
               <span>🐣 {PET_HUD_COPY[selectedLanguage].agent}</span>
               <span>{t(selectedLanguage, "hud.tick")} {simSnapshot?.tick ?? 0}</span>
-              {simSnapshot && Object.entries(simSnapshot.scores).slice(0, 3).map(([key, value]) => (
-                <span key={key}>{petScoreLabel(selectedLanguage, key)} {value.toFixed(1)}</span>
+              {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                <span key={label}>{label} {value.toFixed(0)}</span>
               ))}
               {terrainState && <span>{terrainCopy.evidence} {terrainState.evidence}</span>}
               <span>{petLintGapTitle(selectedLanguage)} {localizedPetLintGapInbox.length}</span>
@@ -4332,13 +4315,13 @@ function App() {
                 {t(selectedLanguage, "hud.questionPetSim")}
               </h2>
               <p className="text-sm mb-3">{PET_HUD_COPY[selectedLanguage].note}</p>
-              {simSnapshot && (
+              {simSnapshot && !(terrainEditorEnabled && editor.isEditMode) && (
                 <div className="question-status-compact mobile-question-status-compact" aria-label="Question Pet mobile status">
                   <div className="question-status-compact-scoregrid" aria-label="Question Pet scores">
-                    {Object.entries(simSnapshot.scores).map(([key, value]) => (
-                      <p key={key}>
-                        <span>{petScoreLabel(selectedLanguage, key)}</span>
-                        <strong>{value.toFixed(1)}</strong>
+                    {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                      <p key={label}>
+                        <span>{label}</span>
+                        <strong>{value.toFixed(0)}</strong>
                       </p>
                     ))}
                   </div>
@@ -4377,121 +4360,7 @@ function App() {
             </section>
           )}
 
-          {PET_WINDOWS_ENABLED && !editorEntryEnabled && selectedPet && (
-            <section
-              className={`question-response-panel pbs-frame F2 pbs-frame-f2 rpg-message-frame absolute right-12 bottom-12 z-51 w-[min(520px,calc(100vw-24px))] px-8 py-7 ${
-                isSelectedPetPanelExpanded ? "question-response-panel-expanded" : ""
-              }`}
-              data-no-mobile-drag="true"
-            >
-              <div className="question-response-window-actions">
-                <button
-                  className="question-response-expand pbs-frame-action"
-                  type="button"
-                  onClick={() => setIsSelectedPetPanelExpanded((expanded) => !expanded)}
-                  aria-label={isSelectedPetPanelExpanded ? "Minimize pet panel" : "Maximize pet panel"}
-                >
-                  {isSelectedPetPanelExpanded ? "↙" : "⤢"}
-                </button>
-                <button
-                  className="question-response-close pbs-frame-action"
-                  type="button"
-                  onClick={closeSelectedPetPanel}
-                  aria-label={t(selectedLanguage, "common.close")}
-                >
-                  X
-                </button>
-              </div>
-              <div className="pet-detail-header">
-                <QuestionPetPreview
-                  question={selectedPet.question.text}
-                  appearance={selectedPet.appearance}
-                  size={4}
-                  socialSignals={selectedPet.state}
-                  currentAction={selectedPet.currentAction}
-                />
-                <div>
-                  <p className="type-caption pet-detail-kicker">
-                    {petActionLabel(selectedLanguage, selectedPet.currentAction)}
-                  </p>
-                  <h2 className="type-heading">
-                    {t(selectedLanguage, "pet.questionPet")}
-                  </h2>
-                  <p className="type-label">
-                    {t(selectedLanguage, "pet.status")}: {selectedPet.kind}
-                  </p>
-                </div>
-              </div>
-              <div className="pet-detail-section">
-                  <p className="type-label pet-detail-kicker">{PET_HUD_COPY[selectedLanguage].agent}</p>
-                  <p className="type-body-large">{PET_HUD_COPY[selectedLanguage].note}</p>
-              </div>
-              <div className="pet-detail-section">
-                <h3 className="type-subheading">{PET_LOCAL_CHAT_COPY[selectedLanguage].title}</h3>
-                <form className="rpg-dialogue-form flex gap-3" onSubmit={handlePetLocalChat}>
-                  <input
-                    className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-4 py-3 text-base text-text outline-none focus:border-accent-bright"
-                    value={petChatDraft}
-                    onChange={(event) => setPetChatDraft(event.target.value)}
-                    placeholder={PET_LOCAL_CHAT_COPY[selectedLanguage].placeholder}
-                  />
-                  <button className="pbs-frame-button" type="submit">
-                    {PET_LOCAL_CHAT_COPY[selectedLanguage].ask}
-                  </button>
-                </form>
-                {petChatReply && (
-                  <div className="pet-response-list mt-3">
-                    <article className="pet-response-item">
-                      <p className="type-body">{petChatReply.reply}</p>
-                      {petChatReply.evidence.length ? (
-                        <ul className="type-caption mt-2 pl-4 list-disc">
-                          {petChatReply.evidence.map((item) => (
-                            <li key={item.id}>{item.label}: {item.text}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="type-caption mt-2">{PET_LOCAL_CHAT_COPY[selectedLanguage].noEvidence}</p>
-                      )}
-                    </article>
-                  </div>
-                )}
-                {petDialogueHistory.filter((entry) => entry.petId === selectedPet.id).length > 0 && (
-                  <div className="pet-response-list mt-3">
-                    {petDialogueHistory.filter((entry) => entry.petId === selectedPet.id).slice(-4).reverse().map((entry) => (
-                      <article className="pet-response-item" key={entry.id}>
-                        <p className="type-caption">{new Date(entry.createdAt).toLocaleString()}</p>
-                        <p className="type-body">{entry.message}</p>
-                        {entry.reply && <p className="type-caption mt-2">{entry.reply}</p>}
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="pet-detail-section pet-response-compose-section">
-                  <h3 className="type-subheading">
-                    {t(selectedLanguage, "pet.responses")}
-                  </h3>
-                  <p className="type-body pet-response-empty">
-                    電子雞正在尋找 NPC 與 wiki/community 養分；此處不提供回覆輸入控制。
-                  </p>
-                  {petBoardResponses.length > 0 && (
-                    <div className="pet-response-list">
-                      {petBoardResponses.map((response) => (
-                        <article key={response.id} className="pet-response-item">
-                          <div className="type-micro pet-response-meta">
-                            {response.author && <span>{response.author}</span>}
-                            <time dateTime={new Date(response.createdAt).toISOString()}>
-                              {new Date(response.createdAt).toLocaleString()}
-                            </time>
-                          </div>
-                          <p className="type-body">{response.text}</p>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-              </div>
-            </section>
-          )}
+
 
         </>
       ) : (
@@ -4577,6 +4446,8 @@ function App() {
               <ExternalLinkEmbed link={splitPanel} language={splitPanelLanguage} onRetry={retryAssociationZine} progress={associationProgress} />
             ) : splitPanel.kind === "schema" ? (
               <SchemaControlRoom language={selectedLanguage} />
+            ) : splitPanel.kind === "sources" ? (
+              <SourcesControlRoom />
             ) : splitPanel.kind === "archivePdf" ? (
               <iframe
                 title="NGM PDF embedded ebook"
@@ -4759,7 +4630,7 @@ function App() {
             setHooksEnabled(newVal);
             vscode.postMessage({ type: "setHooksEnabled", enabled: newVal });
           }}
-          editorMode={editorEntryEnabled}
+          editorMode={terrainEditorEnabled}
         />
       )}
 

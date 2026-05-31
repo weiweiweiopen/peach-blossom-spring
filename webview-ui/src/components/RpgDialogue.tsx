@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
-import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
+import { loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { buildTranscriptEvidenceChunks, calibratePersonaReply, type ChatEvidence, rankEvidence } from '../localChatbot.js';
+import { askNpc } from '../localMemoryApi.js';
+import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
+import { searchWikiPages, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -33,6 +35,7 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
+  links?: WikiSearchResult[];
 }
 
 interface RpgDialogueProps {
@@ -89,70 +92,86 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
-const representedCommunityByPersonaId: Record<string, string> = {
-  'andreas-siagian': 'Lifepatch',
-  'anastassia-pistofidou': 'Fabricademy',
-  'giulia-tomasello': 'wearable technology / care protocols',
-  'christian-dils': 'Fraunhofer TexLab',
-  'jonathan-minchin': 'Green Fablab',
-  'marc-dusseiller': 'Hackteria',
-  'mika-satomi': 'KOBAKANT',
-  'rully-shabara': 'Senyawa',
-  'wukir-suryadi': 'experimental instrument practice',
-  'ryu-oyama': 'Oki Wonder Lab',
-  'stephanie-pan': 'Modern Body Festival',
-  'stelio-manousakis': 'Modern Body Festival',
-  'svenja-keune': 'I.N.S.E.C.T.',
-  'ted-hung': 'Fablab Taipei',
-  'tincuta-heinzel': 'critical textile and media questions',
-  abao: 'Non-Governmental Matters',
-};
-
-function transcriptOnlyFallback(message: string, evidence: ChatEvidence[], persona: Persona, language: LanguageCode): string {
-  const excerpt = evidence[0]?.text;
-  if (excerpt) {
-    if (language === 'zh-TW') return `我先回到訪談記憶來答。關於「${shorten(message, 36)}」，我會從這段線索開始：${shorten(excerpt, 260)}`;
-    return `I will answer from the interview memory first. For “${shorten(message, 54)}”, I would begin from this trace: ${shorten(excerpt, 260)}`;
-  }
-  if (language === 'zh-TW') return `${persona.name} 的訪談記憶裡沒有直接回答這一句。我可以改從他的訪談主題慢慢回想：${shorten(persona.intro, 180)}`;
-  return `${persona.name}'s interview memory does not directly answer that. I can still recall from the persona's interview frame: ${shorten(persona.intro, 180)}`;
+function cleanQuestionPart(text: string, max = 54): string {
+  return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
 
-function representedCommunity(persona: Persona): string {
-  return representedCommunityByPersonaId[persona.id] ?? shorten(persona.role.split('/')[0] ?? persona.role, 48);
+function personaFocus(persona: Persona): string {
+  return cleanQuestionPart(persona.role.split('/')[0] || persona.name, 42);
 }
 
-function makeFixedQuestions(language: LanguageCode, persona: Persona): string[] {
+function topicHint(persona: Persona, topicLabels: Record<string, string>, topic: string): string {
+  const label = topicLabels[topic] || topic;
+  const response = persona.responses[topic] || '';
+  const hint = response ? cleanQuestionPart(response, 60) : label;
+  return hint || label;
+}
+
+function makeSuggestedQuestions(language: LanguageCode, persona: Persona, topicLabels: Record<string, string>): string[] {
+  const availableTopics = Object.keys(topicLabels).filter((topic) => persona.responses[topic]);
+  const chosenTopics = availableTopics.length ? availableTopics.slice(0, 3) : Object.keys(persona.responses).slice(0, 3);
+  const focus = personaFocus(persona);
+  const topicA = chosenTopics[0] ?? 'practice';
+  const topicB = chosenTopics[1] ?? topicA;
+  const topicC = chosenTopics[2] ?? topicB;
+  const hintA = topicHint(persona, topicLabels, topicA);
+  const hintB = topicHint(persona, topicLabels, topicB);
+  const hintC = topicHint(persona, topicLabels, topicC);
+
   if (persona.id === 'tincuta-heinzel') {
     const attemptsQuestion = '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？';
     const fallback: Record<LanguageCode, string> = {
-      'zh-TW': '電子織品如何把身體、媒體考古與照護政治連成一個批判材料問題？',
-      en: 'How do electronic textiles connect bodies, media archaeology, and care politics as a critical material question?',
-      id: 'Bagaimana e-textile menghubungkan tubuh, arkeologi media, dan politik perawatan sebagai pertanyaan material kritis?',
-      de: 'Wie verbinden E-Textiles Koerper, Medienarchaeologie und Care-Politik als kritische Materialfrage?',
-      ja: '電子テキスタイルは身体、メディア考古学、ケアの政治をどう批評的な素材問題として結ぶ？',
-      th: 'e-textile เชื่อมร่างกาย media archaeology และการเมืองของ care เป็นคำถามวัสดุเชิงวิพากษ์อย่างไร?',
+      'zh-TW': 'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
+      en: 'How does Tincuta turn failure, curating, and local response into preservable research questions?',
+      id: 'Bagaimana Tincuta mengubah kegagalan, kurasi, dan respons lokal menjadi pertanyaan riset yang bisa disimpan?',
+      de: 'Wie macht Tincuta Scheitern, Kuratieren und lokale Antworten zu bewahrbaren Forschungsfragen?',
+      ja: 'Tincuta は失敗、キュレーション、地域の応答をどう保存可能な研究質問に変える？',
+      th: 'Tincuta เปลี่ยนความล้มเหลว ภัณฑารักษ์ และการตอบสนองท้องถิ่นเป็นคำถามวิจัยที่เก็บรักษาได้อย่างไร?',
     };
     const method: Record<LanguageCode, string> = {
-      'zh-TW': '失敗紀錄如何把工作坊從教學流程改寫成可比較的研究證據？',
-      en: 'How do failure notes turn workshops from instruction sequences into comparable research evidence?',
-      id: 'Bagaimana catatan gagal mengubah lokakarya dari urutan instruksi menjadi bukti riset yang bisa dibandingkan?',
-      de: 'Wie machen Fehlernotizen aus Workshop-Ablaeufen vergleichbare Forschungsevidenz?',
-      ja: '失敗記録はワークショップを手順から比較できる研究証拠へどう変える？',
-      th: 'บันทึกความล้มเหลวเปลี่ยนเวิร์กช็อปจากขั้นตอนสอนเป็นหลักฐานวิจัยที่เปรียบเทียบได้อย่างไร?',
+      'zh-TW': `從 ${hintA} 來看，營隊什麼時候比較像策展工具，而不是教學活動？`,
+      en: `From ${hintA}, when does a camp behave more like a curatorial tool than a class?`,
+      id: `Dari ${hintA}, kapan sebuah kamp lebih mirip alat kuratorial daripada kelas?`,
+      de: `Ausgehend von ${hintA}: Wann ist ein Camp eher kuratorisches Werkzeug als Unterricht?`,
+      ja: `${hintA} から見ると、キャンプはいつ授業ではなくキュレーションの道具になる？`,
+      th: `จาก ${hintA} แคมป์กลายเป็นเครื่องมือภัณฑารักษ์มากกว่าชั้นเรียนเมื่อไร?`,
     };
     return [attemptsQuestion, fallback[language], method[language]];
   }
-  const community = representedCommunity(persona);
+
   const questions: Record<LanguageCode, string[]> = {
-    'zh-TW': [`${community} 的工作坊如何把臨時相遇變成可重讀的公共知識？`, `${community} 的材料實踐如何顯示照護、維修與組織壓力之間的矛盾？`, `${community} 和其他 PBS 社群相比，留下了哪種可查證的知識保存方法？`],
-    en: [`How do ${community} workshops turn temporary encounters into rereadable public knowledge?`, `How do ${community}'s material practices expose tensions between care, repair, and organizational pressure?`, `Compared with other PBS communities, what checkable method of knowledge preservation does ${community} leave behind?`],
-    id: [`Bagaimana lokakarya ${community} mengubah pertemuan sementara menjadi pengetahuan publik yang bisa dibaca ulang?`, `Bagaimana praktik material ${community} menunjukkan tegangan antara care, repair, dan tekanan organisasi?`, `Dibanding komunitas PBS lain, metode pelestarian pengetahuan apa yang bisa diperiksa dari ${community}?`],
-    de: [`Wie machen Workshops von ${community} temporaere Begegnungen zu wieder lesbarem oeffentlichem Wissen?`, `Wie zeigen materielle Praktiken von ${community} Spannungen zwischen Care, Repair und Organisationsdruck?`, `Welche pruefbare Methode der Wissensbewahrung hinterlaesst ${community} im Vergleich zu anderen PBS-Communities?`],
-    ja: [`${community} のワークショップは一時的な出会いをどう読み直せる公共知に変える？`, `${community} の素材実践はケア、修理、組織的圧力の緊張をどう示す？`, `他の PBS コミュニティと比べて、${community} はどんな検証可能な知識保存の方法を残す？`],
-    th: [`เวิร์กช็อปของ ${community} เปลี่ยนการพบกันชั่วคราวเป็นความรู้สาธารณะที่อ่านซ้ำได้อย่างไร?`, `การปฏิบัติด้านวัสดุของ ${community} แสดงแรงตึงระหว่าง care, repair และแรงกดดันองค์กรอย่างไร?`, `เมื่อเทียบกับชุมชน PBS อื่น ${community} ทิ้งวิธีเก็บรักษาความรู้ที่ตรวจสอบได้แบบใด?`],
+    'zh-TW': [
+      `以 ${persona.name} 的角度，${hintA} 和 ${focus} 的關係是什麼？`,
+      `${persona.name} 的訪談裡，${hintB} 暴露了哪些照護、維修或組織壓力？`,
+      `如果把 ${persona.name} 的經驗存進 PBS 共享記憶，${hintC} 應該留下什麼可查證線索？`,
+    ],
+    en: [
+      `From ${persona.name}'s perspective, how does ${hintA} relate to ${focus}?`,
+      `In ${persona.name}'s interview memory, what care, repair, or organizational tensions appear around ${hintB}?`,
+      `If ${persona.name}'s experience enters PBS shared memory, what checkable traces should ${hintC} leave?`,
+    ],
+    id: [
+      `Dari sudut pandang ${persona.name}, bagaimana ${hintA} berhubungan dengan ${focus}?`,
+      `Dalam memori wawancara ${persona.name}, tegangan care, repair, atau organisasi apa yang muncul di sekitar ${hintB}?`,
+      `Jika pengalaman ${persona.name} masuk ke memori bersama PBS, jejak terperiksa apa yang perlu ditinggalkan oleh ${hintC}?`,
+    ],
+    de: [
+      `Aus ${persona.name}s Perspektive: Wie hängt ${hintA} mit ${focus} zusammen?`,
+      `Welche Care-, Repair- oder Organisationsspannungen zeigt ${persona.name}s Interviewgedächtnis bei ${hintB}?`,
+      `Wenn ${persona.name}s Erfahrung ins PBS-Gedächtnis eingeht: Welche prüfbaren Spuren soll ${hintC} hinterlassen?`,
+    ],
+    ja: [
+      `${persona.name} の視点では、${hintA} は ${focus} とどう関係する？`,
+      `${persona.name} のインタビュー記憶では、${hintB} の周りにどんなケア、修理、組織的緊張が出てくる？`,
+      `${persona.name} の経験を PBS 共有記憶に入れるなら、${hintC} はどんな検証可能な手がかりを残すべき？`,
+    ],
+    th: [
+      `จากมุมมองของ ${persona.name}, ${hintA} เกี่ยวข้องกับ ${focus} อย่างไร?`,
+      `ในความทรงจำสัมภาษณ์ของ ${persona.name}, ${hintB} เผยแรงตึงเรื่อง care, repair หรือองค์กรแบบใด?`,
+      `ถ้าประสบการณ์ของ ${persona.name} เข้าไปในความจำร่วม PBS, ${hintC} ควรทิ้งร่องรอยที่ตรวจสอบได้อะไร?`,
+    ],
   };
-  return [...questions[language]];
+  return questions[language];
 }
 
 function wukirMusicLabel(language: LanguageCode): string {
@@ -342,7 +361,7 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
-  const fixedQuestions = useMemo(() => makeFixedQuestions(language, persona), [language, persona]);
+  const fixedQuestions = useMemo(() => makeSuggestedQuestions(language, persona, topicLabels), [language, persona, topicLabels]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -415,28 +434,22 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
       onSimEvent?.(trimmed, topic);
       const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
       if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
-      const chatKnowledge = { ...dialogueKnowledge, responses: persona.responses };
       const transcriptCandidates = buildTranscriptEvidenceChunks(
         `${dialogueKnowledge.transcript_zh}\n${dialogueKnowledge.transcript_en}`,
         dialogueKnowledge.id,
         dialogueKnowledge.name,
       );
-      const evidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
-      let reply: string;
-      try {
-        reply = await askDeepSeekPersonaWithEvidence({
-          playerName: player.name,
-          question: trimmed,
-          knowledge: dialogueKnowledge,
-          preferredLanguage: language,
-          evidence,
-        });
-        reply = calibratePersonaReply({ draft: reply, message: trimmed, knowledge: chatKnowledge, evidence });
-      } catch {
-        reply = transcriptOnlyFallback(trimmed, evidence, persona, language);
-      }
-      const answer = { reply, evidence };
-      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.reply, evidence: answer.evidence }]);
+      const transcriptEvidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
+      const transcript = transcriptEvidence.map((item) => `${item.label}\n${item.text}`).join('\n\n');
+      const answer = await askNpc({
+        question: trimmed,
+        npcName: persona.name,
+        persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
+        transcript,
+        preferredLanguage: language,
+      });
+      const links = searchWikiPages(trimmed, persona.id, 8);
+      setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : t(language, 'dialogue.requestFailed'));
     } finally {
@@ -495,6 +508,16 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
+                {message.links && message.links.length > 0 && (
+                  <div className="rpg-dialogue-source-links" aria-label="source links">
+                    <strong>Source links</strong>
+                    {message.links.slice(0, 8).map((link, linkIndex) => (
+                      <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
+                        [{linkIndex + 1}] {link.title} <span>{link.sourceFamily}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
