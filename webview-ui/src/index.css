@@ -9217,3 +9217,119 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     gap: 6px !important;
   }
 }
+
+/* 2026-06-01 correction: restore character bubble anchors and unify dialogue thumbnails. */
+.pbs-interaction-root .npc-name-tag {
+  translate: none !important;
+  transform: translate(-50%, -100%) scale(var(--npc-tag-scale, 1)) !important;
+  transform-origin: center bottom !important;
+}
+
+.pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt),
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+  min-width: auto !important;
+  max-width: min(220px, calc(100vw - 28px)) !important;
+  min-height: 0 !important;
+  padding: 7px 13px !important;
+  border-radius: 999px !important;
+  font-size: clamp(12px, 1vw, 16px) !important;
+  line-height: 1.12 !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt p {
+  margin: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.dialogue-avatar-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 90px !important;
+  min-width: 90px !important;
+}
+
+.dialogue-pixel-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-content: center !important;
+  overflow: hidden !important;
+  border: 1px solid var(--palette-blue) !important;
+  background: color-mix(in srgb, var(--palette-cream) 82%, white 18%) !important;
+}
+
+.dialogue-pixel-avatar-frame {
+  align-content: center !important;
+  justify-content: center !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 128px !important;
+  height: 128px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center 62% !important;
+}
+
+.dialogue-avatar-label {
+  max-width: 90px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+  color: var(--color-text-muted) !important;
+}
+
+.player-idea-bulb {
+  width: 18px !important;
+  height: 20px !important;
+  transform: translate(-50%, -100%) scale(var(--idea-bulb-scale, 1)) !important;
+  filter: none !important;
+}
+
+.player-idea-bulb-light {
+  left: 4px !important;
+  top: 3px !important;
+  width: 10px !important;
+  height: 14px !important;
+  background:
+    linear-gradient(#1b2830 0 0) 3px 0 / 4px 2px no-repeat,
+    linear-gradient(#1b2830 0 0) 0 3px / 2px 7px no-repeat,
+    linear-gradient(#1b2830 0 0) 8px 3px / 2px 7px no-repeat,
+    linear-gradient(#1b2830 0 0) 3px 10px / 5px 2px no-repeat,
+    linear-gradient(#ffd800 0 0) 2px 2px / 5px 8px no-repeat,
+    linear-gradient(#ffb800 0 0) 7px 3px / 2px 7px no-repeat,
+    linear-gradient(#6b6f78 0 0) 4px 12px / 3px 3px no-repeat,
+    linear-gradient(#1b2830 0 0) 3px 15px / 6px 2px no-repeat !important;
+}
+
+.player-idea-bulb-dot {
+  width: 2px !important;
+  height: 2px !important;
+  box-shadow: none !important;
+}
+
+.player-idea-bulb-dot--a { left: 0 !important; top: 5px !important; }
+.player-idea-bulb-dot--b { right: 0 !important; top: 5px !important; }
+.player-idea-bulb-dot--c { left: 4px !important; top: 0 !important; }
+.player-idea-bulb-dot--d { right: 4px !important; top: 0 !important; }
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt,
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt p {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
+    padding: 7px 12px !important;
+  }
+}

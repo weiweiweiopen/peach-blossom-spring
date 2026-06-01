@@ -727,9 +727,9 @@ function AssociationLowRelevancePage({ language, query, onRetry }: { language: L
 
 function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="dialogue-avatar-wrap">
       <div
-        className="bg-bg/80 border border-border p-2"
+        className="dialogue-pixel-avatar-frame"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
@@ -746,7 +746,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
           )),
         )}
       </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+      <span className="dialogue-avatar-label">{label}</span>
     </div>
   );
 }
@@ -778,16 +778,16 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
   }, []);
   const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="rpg-dialogue-avatar-frame rpg-dialogue-avatar-frame--campfire border border-border bg-bg/80 p-2 flex items-center justify-center overflow-hidden" aria-hidden="true">
+    <div className="dialogue-avatar-wrap">
+      <div className="dialogue-pixel-avatar-frame rpg-dialogue-avatar-frame--campfire" aria-hidden="true">
         <img
           src={src}
           alt=""
           className="block max-w-none object-contain"
-          style={{ imageRendering: "pixelated", width: 184, height: 184 }}
+          style={{ imageRendering: "pixelated" }}
         />
       </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+      <span className="dialogue-avatar-label">{label}</span>
     </div>
   );
 }
@@ -3363,7 +3363,7 @@ function App() {
         id: ch.id,
         name: ch.folderName ?? "",
         left: offsetX + ch.x * editor.zoom,
-        top: offsetY + (ch.y - 34) * editor.zoom,
+        top: offsetY + (ch.y - 32) * editor.zoom,
         isQuestionPet: Boolean(ch.isQuestionPet),
         zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
       }));
@@ -3412,8 +3412,8 @@ function App() {
     const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
       left: offsetX + player.x * editor.zoom,
-      top: offsetY + (player.y - 54) * editor.zoom,
-      zoomScale: Math.max(0.64, Math.min(1.25, editor.zoom / 4)),
+      top: offsetY + (player.y - 34) * editor.zoom,
+      zoomScale: Math.max(0.42, Math.min(0.72, editor.zoom / 7)),
     };
   })();
 
