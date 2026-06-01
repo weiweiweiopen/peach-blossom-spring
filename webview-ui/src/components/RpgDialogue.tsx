@@ -4,7 +4,7 @@ import type { KnowledgeBase } from '../deepseekClient.js';
 import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
 import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../localMemoryApi.js';
-import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
+import { buildTranscriptEvidenceChunks, retrieveNpcEvidence, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
 import { searchWikiPages, searchWikiPagesWithHints, type WikiSearchResult } from '../wikiSearch.js';
@@ -692,8 +692,18 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         dialogueKnowledge.id,
         dialogueKnowledge.name,
       );
-      const transcriptEvidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
-      const transcript = transcriptEvidence.map((item) => `${item.label}\n${item.text}`).join('\n\n');
+      const transcriptEvidence = rankEvidence(`${trimmed}
+${topic}`, transcriptCandidates, 4);
+      const npcEvidence = retrieveNpcEvidence({
+        message: trimmed,
+        retrievalContext: topic,
+        knowledge: dialogueKnowledge,
+      });
+      const mergedEvidence = [...npcEvidence, ...transcriptEvidence]
+        .filter((item, index, array) => array.findIndex((other) => other.id === item.id) === index)
+        .slice(0, 6);
+      const transcript = mergedEvidence.map((item) => `${item.label}
+${item.text}`).join('\n\n');
       const links = searchWikiPages(trimmed, persona.id, 8);
       if (canUseLocalMemoryServer()) {
         const answer = await askNpc({
@@ -713,10 +723,10 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             question: trimmed,
             knowledge: dialogueKnowledge,
             preferredLanguage: language,
-            evidence: transcriptEvidence,
+            evidence: mergedEvidence,
             dialogueHistory,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);

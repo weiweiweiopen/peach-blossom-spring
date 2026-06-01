@@ -272,8 +272,9 @@ export async function askDeepSeekGroundedAnswer({
   const transcript = transcriptForReasoning(knowledge, preferredLanguage);
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
-    'You are the first reasoning pass for an NPC answer. Read the persona JSON/profile and the NGM interview transcript first, then use source fragments only as secondary context.',
-    'Do actual reasoning from the transcript: identify what the interviewee appears to care about, what tensions they name, and what they would likely question in the player prompt.',
+    'You are the first reasoning pass for an NPC answer. First use the retrieved source fragments and related website/wiki links as evidence for factual or recent-activity questions; use the persona JSON/profile and NGM interview transcript to shape voice and interpretation.',
+    'Do actual source-grounded reasoning: if the player asks what is recent, current, where, who, event, activity, page, link, or source, answer from the retrieved fragments instead of saying you are not a search engine.',
+    'Never refuse by saying you are not a search engine. If retrieved fragments are thin, state the best source-backed clue and suggest a sharper query, but still answer what the evidence says.',
     'Do not write system self-description. Never say phrases like "X 的人格", "X\'s persona", "offline mode", "retrieval", or "I will answer from interview memory".',
     'Do not imitate a template. Do not produce stock advice. Do not include source labels, URLs, citations, role tags, or retrieval metadata.',
     'If the prompt is playful, absurd, or under-specified, treat that as part of the player intent rather than matching it with a hard-coded joke.',
@@ -290,9 +291,9 @@ export async function askDeepSeekGroundedAnswer({
     transcript || '(no transcript available)',
     '--- end NGM transcript ---',
     '',
-    '--- Secondary source fragments, if relevant ---',
+    '--- Retrieved source fragments and related pages; use these first for factual/recent/source questions ---',
     evidenceGroundingBlock(evidence),
-    '--- end secondary source fragments ---',
+    '--- end retrieved source fragments ---',
   ].join('\n'));
   const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}`, 900);
   return normalizeTraditionalChinese(reply, preferredLanguage);
@@ -316,7 +317,7 @@ export async function askDeepSeekPersonaRewrite({
     'No visible Markdown/syntax language in the dialogue: no **bold**, no backticks, no headings, no bullet report voice.',
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
-    'If the transcript does not support a confident answer, be honest without collapsing into boilerplate.',
+    'If the transcript does not support a confident answer, use the retrieved source fragments. Never say you are not a search engine; translate source-backed findings into the NPC voice.',
     'Use recent dialogue context for pronouns and follow-ups, but do not summarize the whole history unless asked.',
     'Keep the final reply concise: 3 to 6 sentences.',
     '',
