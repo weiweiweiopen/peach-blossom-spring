@@ -21,7 +21,7 @@ DEEPSEEK_URL = os.environ.get("PBS_DEEPSEEK_PROXY_URL", "https://solar-oracle-de
 DEEPSEEK_ORIGIN = os.environ.get("PBS_DEEPSEEK_ORIGIN", "https://weiweiweiopen.github.io")
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from pbs_engine import build_evidence_packet, create_review_draft, memory_search, rel, schema_context  # noqa: E402
+from pbs_engine import build_evidence_packet, create_review_draft, memory_search, memory_search_with_hints, rel, schema_context  # noqa: E402
 
 
 def json_bytes(payload: object) -> bytes:
@@ -149,7 +149,9 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         answer = call_deepseek(system_prompt, question)
     except (urllib.error.URLError, urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
         answer = fallback_answer(question, evidence, str(error)) if evidence else f"Local PBS memory server is available, but no PBS engine evidence matched this question. DeepSeek error: {error}"
-    return {"answer": answer, "evidence": evidence, "links": links}
+    resolved_links = links if links else memory_search_with_hints(question, answer, limit=8)
+    resolved_evidence = evidence if links else build_evidence_packet(resolved_links)
+    return {"answer": answer, "evidence": resolved_evidence, "links": resolved_links}
 
 
 class PbsGameHandler(SimpleHTTPRequestHandler):

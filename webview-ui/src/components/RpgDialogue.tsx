@@ -7,7 +7,7 @@ import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../lo
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
-import { searchWikiPages, type WikiSearchResult } from '../wikiSearch.js';
+import { searchWikiPages, searchWikiPagesWithHints, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -514,7 +514,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           preferredLanguage: language,
           dialogueHistory,
         });
-        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
+        const resolvedLinks = answer.links.length ? answer.links : searchWikiPagesWithHints(trimmed, answer.answer, persona.id, 8);
+        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: resolvedLinks }]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -525,11 +526,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             evidence: transcriptEvidence,
             dialogueHistory,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links }]);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, fallbackText, persona.id, 8) }]);
         }
       }
     } catch (err) {

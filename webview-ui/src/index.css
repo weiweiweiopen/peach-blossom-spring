@@ -8753,3 +8753,18 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     white-space: normal !important;
   }
 }
+
+/* Keep nearby NPC "press to talk" bubble visually aligned with the campfire prompt. */
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact,
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact p {
+  font-size: clamp(18px, 1.65vw, 24px) !important;
+  line-height: 1.42 !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact,
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact p {
+    font-size: 21px !important;
+    line-height: 1.35 !important;
+  }
+}

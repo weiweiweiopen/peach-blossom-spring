@@ -437,6 +437,37 @@ def memory_search(query: str, limit: int = 8, family: str | None = None) -> list
     return filter_relevant_links(query, results, limit)
 
 
+
+KEYWORD_HINT_PATTERNS = [
+    re.compile(r"[「『\"]([^」』\"]{2,60})[」』\"]"),
+    re.compile(r"\b([A-Z][A-Za-z0-9]*(?:[ -][A-Za-z0-9]+){1,5})\b"),
+]
+
+
+def keyword_hint_queries(text: str) -> list[str]:
+    hints: list[str] = []
+    for pattern in KEYWORD_HINT_PATTERNS:
+        for match in pattern.finditer(text):
+            value = (match.group(1) or "").strip()
+            if len(value) >= 2 and not value.lower().startswith("source fragment"):
+                hints.append(value)
+    return list(dict.fromkeys(hints))[:4]
+
+
+def memory_search_with_hints(query: str, hint_text: str = "", limit: int = 8, family: str | None = None) -> list[dict]:
+    primary = memory_search(query, limit=limit, family=family)
+    if len(primary) >= min(3, limit):
+        return primary[:limit]
+    by_url = {str(item.get("url") or item.get("path") or index): item for index, item in enumerate(primary)}
+    for hint in keyword_hint_queries(hint_text):
+        for item in memory_search(hint, limit=limit, family=family):
+            key = str(item.get("url") or item.get("path") or len(by_url))
+            if key not in by_url:
+                item = dict(item)
+                item["score"] = float(item.get("score") or 0) + 500
+                by_url[key] = item
+    return sorted(by_url.values(), key=lambda item: -float(item.get("score") or 0))[:limit]
+
 def build_evidence_packet(results: list[dict]) -> list[dict]:
     evidence = []
     for index, result in enumerate(results, start=1):

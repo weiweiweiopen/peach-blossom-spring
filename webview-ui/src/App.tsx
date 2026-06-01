@@ -1202,11 +1202,12 @@ function CentralComputerDialogue({
     const dialogueHistory = recentCampfireHistory(messages);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     try {
-      const { searchWikiPages } = await import("./wikiSearch.js");
+      const { searchWikiPages, searchWikiPagesWithHints } = await import("./wikiSearch.js");
       const links = searchWikiPages(trimmed, undefined, 8);
       if (canUseLocalMemoryServer()) {
         const reply = await askCampfire(trimmed, language, dialogueHistory);
-        setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links.length ? reply.links : links }]);
+        const resolvedLinks = reply.links.length ? reply.links : searchWikiPagesWithHints(trimmed, reply.answer, undefined, 8);
+        setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: resolvedLinks }]);
       } else {
         const sharedMemoryContext = links.map((link, index) => [
           `[${index + 1}] ${link.title}`,

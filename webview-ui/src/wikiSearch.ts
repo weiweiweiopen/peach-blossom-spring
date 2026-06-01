@@ -22,6 +22,11 @@ const LINK_STOPWORDS = new Set([
   '什麼', '這個', '那個', '知道', '請問', '如何', '為什麼', '可以', '不是', '是否', '有關', '相關', '連結', '來源', '問題', '東西', '類似', '玩類',
 ]);
 
+const KEYWORD_HINT_PATTERNS = [
+  /[「『\"]([^」』\"]{2,60})[」』\"]/g,
+  /\b([A-Z][A-Za-z0-9]*(?:[ -][A-Za-z0-9]+){1,5})\b/g,
+];
+
 function strictTokens(text: string): string[] {
   const normalized = text.toLowerCase();
   const latinTokens = normalized
@@ -49,6 +54,17 @@ function strictLinkScore(queryTokens: string[], result: WikiSearchResult): { sco
     if (!haystack.includes(token)) return acc;
     return { score: acc.score + (title.includes(token) ? 3 : 1), matches: acc.matches + 1 };
   }, { score: 0, matches: 0 });
+}
+
+function keywordHintQueries(text: string): string[] {
+  const hints: string[] = [];
+  for (const pattern of KEYWORD_HINT_PATTERNS) {
+    for (const match of text.matchAll(pattern)) {
+      const value = String(match[1] ?? '').trim();
+      if (value.length >= 2 && !/^Source fragment/i.test(value)) hints.push(value);
+    }
+  }
+  return Array.from(new Set(hints)).slice(0, 4);
 }
 
 function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: number): WikiSearchResult[] {
@@ -173,7 +189,7 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
   };
 }
 
-export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
+function collectWikiSearchResults(query: string, personaId?: string, limit = 8): WikiSearchResult[] {
   const queryTokens = tokens(query);
   if (queryTokens.length === 0) return [];
   const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
@@ -206,5 +222,29 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   for (const result of [...localMemoryResults, ...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
-  return filterRelevantLinks(query, Array.from(byUrl.values()), limit);
+  return Array.from(byUrl.values());
+}
+
+function dedupeResults(results: WikiSearchResult[]): WikiSearchResult[] {
+  const byUrl = new Map<string, WikiSearchResult>();
+  for (const result of results.sort((a, b) => b.score - a.score)) {
+    if (!byUrl.has(result.url)) byUrl.set(result.url, result);
+  }
+  return Array.from(byUrl.values());
+}
+
+export function searchWikiPages(query: string, personaId?: string, limit = 6): WikiSearchResult[] {
+  return filterRelevantLinks(query, collectWikiSearchResults(query, personaId, limit), limit);
+}
+
+export function searchWikiPagesWithHints(query: string, hintText = '', personaId?: string, limit = 6): WikiSearchResult[] {
+  const primary = searchWikiPages(query, personaId, limit);
+  if (primary.length >= Math.min(3, limit)) return primary.slice(0, limit);
+  const hintQueries = keywordHintQueries(hintText);
+  if (!hintQueries.length) return primary;
+  const hintedResults = hintQueries.flatMap((hint) =>
+    filterRelevantLinks(hint, collectWikiSearchResults(hint, personaId, limit), limit)
+      .map((result) => ({ ...result, score: result.score + 500 })),
+  );
+  return dedupeResults([...primary, ...hintedResults]).slice(0, limit);
 }
