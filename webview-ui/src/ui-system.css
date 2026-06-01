@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Sans+Thai:wght@400;700;900&family=Noto+Sans:wght@400;700;900&display=swap");
+
 /* Spec-kit 006 UI System Contract.
    Loaded after legacy CSS so protected runtime UI uses one manageable contract. */
 
@@ -5,6 +7,9 @@
   --ui-font: "FS Pixel Sans", system-ui, sans-serif;
   --emoji-font: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
 
+  /* PBS type contract: component roles, not ad-hoc Tailwind text sizes.
+     Mobile CJK/JP/Thai targets 14 readable body lines in fixed dialogue/zine frames;
+     Latin/Indonesian/German gets two additional lines by using a slightly smaller body. */
   --ui-type-title: 30px;
   --ui-type-subtitle: 18px;
   --ui-type-body: 18px;
@@ -12,6 +17,9 @@
   --ui-type-field: 18px;
   --ui-type-button: 16px;
   --ui-type-micro: 12px;
+  --ui-type-bubble: 18px;
+  --ui-type-broadcast: 18px;
+  --ui-type-zine: 18px;
 
   --ui-line-title: 1.1;
   --ui-line-subtitle: 1.25;
@@ -20,6 +28,14 @@
   --ui-line-field: 1.25;
   --ui-line-button: 1.15;
   --ui-line-micro: 1.2;
+  --ui-line-bubble: 1.18;
+  --ui-line-broadcast: 1.28;
+  --ui-line-zine: 1.42;
+
+  --ui-dialogue-visible-lines: 16;
+  --ui-title-visible-lines: 3;
+  --ui-broadcast-visible-lines: 3;
+  --ui-zine-visible-lines: 16;
 
   --ui-icon-button-size: 64px;
   --ui-icon-button-glyph: 30px;
@@ -29,50 +45,78 @@
 }
 
 .pbs-interaction-root[data-language="zh-TW"] {
-  --ui-font: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --ui-font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
 
 .pbs-interaction-root[data-language="ja"] {
-  --ui-font: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  --ui-font: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
 }
 
 .pbs-interaction-root[data-language="th"] {
-  --ui-font: "Thonburi", "Noto Sans Thai", "Tahoma", system-ui, sans-serif;
+  --ui-font: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif;
 }
 
-.pbs-interaction-root[data-language="id"],
-.pbs-interaction-root[data-language="de"] {
-  --ui-font: "FS Pixel Sans", system-ui, sans-serif;
-}
-
-.pbs-interaction-root[data-language="zh-TW"],
-.pbs-interaction-root[data-language="ja"] {
-  --ui-type-title: 28px;
-  --ui-type-subtitle: 17px;
-  --ui-type-body: 17px;
-  --ui-type-caption: 13px;
-  --ui-type-field: 17px;
-  --ui-type-button: 15px;
-  --ui-line-body: 1.48;
-  --ui-line-field: 1.35;
-}
-
-.pbs-interaction-root[data-language="th"] {
-  --ui-type-title: 27px;
-  --ui-type-subtitle: 16px;
-  --ui-type-body: 16px;
-  --ui-type-caption: 13px;
-  --ui-type-field: 16px;
-  --ui-type-button: 15px;
-  --ui-line-body: 1.55;
-  --ui-line-field: 1.42;
+.pbs-interaction-root[data-language="id"] {
+  --ui-font: "Noto Sans", "Inter", system-ui, sans-serif;
 }
 
 .pbs-interaction-root[data-language="de"],
-.pbs-interaction-root[data-language="id"] {
-  --ui-type-body: 17px;
-  --ui-type-field: 17px;
-  --ui-type-button: 15px;
+.pbs-interaction-root[data-language="en"] {
+  --ui-font: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif;
+}
+
+.pbs-interaction-root[data-language="zh-TW"],
+.pbs-interaction-root[data-language="ja"],
+.pbs-interaction-root[data-language="th"] {
+  --ui-type-title: clamp(28px, 7.2vw, 38px);
+  --ui-type-subtitle: clamp(16px, 4.4vw, 21px);
+  --ui-type-body: clamp(17px, 4.75vw, 21px);
+  --ui-type-caption: clamp(12px, 3.45vw, 15px);
+  --ui-type-field: clamp(17px, 4.75vw, 21px);
+  --ui-type-button: clamp(15px, 4.2vw, 18px);
+  --ui-type-bubble: clamp(21px, 6.2vw, 34px);
+  --ui-type-broadcast: clamp(17px, 4.6vw, 20px);
+  --ui-type-zine: clamp(17px, 4.75vw, 21px);
+  --ui-line-title: 1.08;
+  --ui-line-body: 1.38;
+  --ui-line-field: 1.34;
+  --ui-line-bubble: 1.12;
+  --ui-line-broadcast: 1.3;
+  --ui-line-zine: 1.38;
+  --ui-dialogue-visible-lines: 14;
+  --ui-zine-visible-lines: 14;
+}
+
+.pbs-interaction-root[data-language="th"] {
+  --ui-type-title: clamp(27px, 7vw, 36px);
+  --ui-type-body: clamp(16px, 4.45vw, 20px);
+  --ui-type-field: clamp(16px, 4.45vw, 20px);
+  --ui-type-bubble: clamp(21px, 6vw, 32px);
+  --ui-type-zine: clamp(16px, 4.45vw, 20px);
+  --ui-line-title: 1.18;
+  --ui-line-body: 1.48;
+  --ui-line-field: 1.42;
+  --ui-line-bubble: 1.16;
+  --ui-line-zine: 1.48;
+}
+
+.pbs-interaction-root[data-language="en"],
+.pbs-interaction-root[data-language="id"],
+.pbs-interaction-root[data-language="de"] {
+  --ui-type-title: clamp(27px, 6.8vw, 36px);
+  --ui-type-subtitle: clamp(15px, 4vw, 20px);
+  --ui-type-body: clamp(15px, 4vw, 19px);
+  --ui-type-caption: clamp(11px, 3.1vw, 14px);
+  --ui-type-field: clamp(15px, 4vw, 19px);
+  --ui-type-button: clamp(14px, 3.7vw, 17px);
+  --ui-type-bubble: clamp(18px, 5.4vw, 28px);
+  --ui-type-broadcast: clamp(15px, 3.8vw, 18px);
+  --ui-type-zine: clamp(15px, 4vw, 19px);
+  --ui-line-body: 1.36;
+  --ui-line-field: 1.3;
+  --ui-line-zine: 1.36;
+  --ui-dialogue-visible-lines: 16;
+  --ui-zine-visible-lines: 16;
 }
 
 .pbs-interaction-root :where(
@@ -298,4 +342,185 @@
 .pbs-interaction-root .world-split-toolbar p {
   font-size: var(--ui-type-caption) !important;
   line-height: var(--ui-line-caption) !important;
+}
+
+/* 2026-06 multilingual readability contract: final layer wins over legacy CSS/Tailwind.
+   Keep Chinese mobile frame area as visual baseline while unifying text roles per language. */
+.pbs-interaction-root :where(.rpg-dialogue-panel, .mobile-talk-prompt, .abao-speech-bubble, .world-resonance-notice, .world-split-panel, .world-split-panel *) {
+  font-size-adjust: none !important;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.pbs-interaction-root :where(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .abao-speech-bubble, .world-resonance-notice, .world-split-panel, .world-split-panel *) {
+  font-family: var(--ui-font) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-panel {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-header {
+  flex: 0 0 auto !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-name {
+  display: -webkit-box !important;
+  max-height: calc(var(--ui-type-title) * var(--ui-line-title) * var(--ui-title-visible-lines)) !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: var(--ui-title-visible-lines) !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-title) !important;
+  line-height: var(--ui-line-title) !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-role,
+.pbs-interaction-root .rpg-dialogue-kicker {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-subtitle) !important;
+  line-height: var(--ui-line-subtitle) !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-log {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-body) !important;
+  line-height: var(--ui-line-body) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-message,
+.pbs-interaction-root .rpg-dialogue-message p,
+.pbs-interaction-root .rpg-dialogue-message span,
+.pbs-interaction-root .rpg-dialogue-thinking {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-body) !important;
+  line-height: var(--ui-line-body) !important;
+  font-weight: 700 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-thinking {
+  opacity: 0.72;
+}
+
+.pbs-interaction-root .rpg-dialogue-input[data-ui-part="field"],
+.pbs-interaction-root .rpg-dialogue-input {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-chip:not([data-ui-control="icon-button"]),
+.pbs-interaction-root .rpg-dialogue-more,
+.pbs-interaction-root :where([data-ui-control="text-button"]),
+.pbs-interaction-root :where([data-ui-part="button-label"]) {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-button) !important;
+  line-height: var(--ui-line-button) !important;
+}
+
+.pbs-interaction-root .mobile-talk-prompt.mobile-talk-prompt--compact,
+.pbs-interaction-root .mobile-talk-prompt {
+  width: auto !important;
+  max-width: min(360px, 82vw) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 8px 14px !important;
+  border: 2px solid #111 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 2px 2px 0 #111 !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-bubble) !important;
+  line-height: var(--ui-line-bubble) !important;
+  font-weight: 900 !important;
+}
+
+.pbs-interaction-root .mobile-talk-prompt p {
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .abao-speech-bubble {
+  max-width: min(360px, 82vw) !important;
+  padding: 8px 14px !important;
+  border: 2px solid #111 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 2px 2px 0 #111 !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-bubble) !important;
+  line-height: var(--ui-line-bubble) !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .world-resonance-notice {
+  display: -webkit-box !important;
+  max-width: min(760px, calc(100vw - 24px)) !important;
+  max-height: calc(var(--ui-type-broadcast) * var(--ui-line-broadcast) * var(--ui-broadcast-visible-lines) + 28px) !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: var(--ui-broadcast-visible-lines) !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-broadcast) !important;
+  line-height: var(--ui-line-broadcast) !important;
+  font-weight: 900 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .world-split-content,
+.pbs-interaction-root .world-wiki-content,
+.pbs-interaction-root .world-split-embed-description,
+.pbs-interaction-root .world-split-external-status {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-zine) !important;
+  line-height: var(--ui-line-zine) !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pbs-interaction-root .world-split-toolbar h2 {
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-type-subtitle) !important;
+  line-height: var(--ui-line-subtitle) !important;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .pbs-interaction-root .rpg-dialogue-panel {
+    height: min(82dvh, 640px) !important;
+    padding: 12px !important;
+  }
+
+  .pbs-interaction-root .rpg-dialogue-log {
+    min-height: calc(var(--ui-type-body) * var(--ui-line-body) * var(--ui-dialogue-visible-lines) + 28px) !important;
+    padding: 10px 12px !important;
+  }
+
+  .pbs-interaction-root .rpg-dialogue-main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .pbs-interaction-root .rpg-dialogue-question-drawer {
+    max-height: 18dvh !important;
+  }
+
+  .pbs-interaction-root .world-split-panel.world-split-panel--zine .world-split-content,
+  .pbs-interaction-root .world-split-content,
+  .pbs-interaction-root .world-wiki-content {
+    font-size: var(--ui-type-zine) !important;
+    line-height: var(--ui-line-zine) !important;
+  }
 }
