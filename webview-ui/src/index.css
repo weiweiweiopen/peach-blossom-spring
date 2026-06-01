@@ -9437,3 +9437,165 @@ body[data-language="ja"],
   font-weight: 1000 !important;
   letter-spacing: 0.02em !important;
 }
+
+/* 2026-06-02: player-to-player chat HUD unified with Question Pet/Tamagotchi HUD styling. */
+.pbs-encounter-panel {
+  top: auto !important;
+  right: auto !important;
+  left: max(12px, calc(var(--safe-left) + 12px)) !important;
+  bottom: max(12px, calc(var(--safe-bottom) + 12px)) !important;
+  width: min(430px, calc(100vw - 24px)) !important;
+  height: min(46dvh, 430px) !important;
+  max-height: min(46dvh, 430px) !important;
+  padding: 12px !important;
+  border: 4px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--palette-silver) 88%, var(--palette-cream) 12%) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: 5px 5px 0 var(--tama-ink, #111), 9px 9px 0 var(--palette-blue) !important;
+  image-rendering: pixelated;
+}
+
+.pbs-encounter-panel-header {
+  align-items: center !important;
+  min-height: 44px !important;
+  margin: 0 0 8px !important;
+  padding: 0 0 8px !important;
+  border-bottom: 3px solid var(--tama-ink, #111) !important;
+}
+
+.pbs-encounter-panel h2 {
+  font-size: var(--pet-hud-title, 18px) !important;
+  line-height: 1.05 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+.pbs-encounter-kicker {
+  display: block !important;
+  margin: 0 0 3px !important;
+  color: var(--palette-blue) !important;
+  font-size: var(--pet-hud-caption, 11px) !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+
+.pbs-encounter-close,
+.pbs-chat-form button {
+  border: 3px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: var(--palette-yellow) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: 3px 3px 0 var(--tama-ink, #111) !important;
+  font-weight: 1000 !important;
+}
+
+.pbs-encounter-close {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  font-size: 18px !important;
+}
+
+.pbs-chat-panel {
+  gap: 8px !important;
+}
+
+.pbs-chat-log {
+  border: 3px solid var(--tama-ink, #111) !important;
+  background: var(--lcd-screen, var(--palette-cream)) !important;
+  box-shadow: inset 3px 3px 0 color-mix(in srgb, var(--tama-ink, #111) 18%, transparent) !important;
+  padding: 9px !important;
+}
+
+.pbs-chat-empty,
+.pbs-chat-message,
+.pbs-chat-form input,
+.pbs-chat-form button {
+  font-size: var(--pet-hud-body, 14px) !important;
+  line-height: 1.25 !important;
+}
+
+.pbs-chat-message {
+  border: 2px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--palette-cream) 90%, white 10%) !important;
+  box-shadow: 2px 2px 0 var(--tama-ink, #111) !important;
+}
+
+.pbs-chat-message.is-local {
+  background: color-mix(in srgb, var(--palette-blue) 24%, var(--palette-cream) 76%) !important;
+}
+
+.pbs-chat-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+}
+
+.pbs-chat-form input {
+  min-height: 42px !important;
+  border: 3px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: var(--lcd-screen, var(--palette-cream)) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: inset 2px 2px 0 color-mix(in srgb, var(--tama-ink, #111) 15%, transparent) !important;
+}
+
+.pbs-chat-form button {
+  min-width: 62px !important;
+  min-height: 42px !important;
+  padding: 6px 10px !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-encounter-panel {
+    left: max(8px, var(--safe-left)) !important;
+    right: max(8px, var(--safe-right)) !important;
+    bottom: max(6px, var(--safe-bottom)) !important;
+    top: auto !important;
+    width: auto !important;
+    height: min(42dvh, 340px) !important;
+    max-height: min(42dvh, 340px) !important;
+    padding: 9px !important;
+    border-width: 3px !important;
+    box-shadow: 3px 3px 0 var(--tama-ink, #111) !important;
+  }
+
+  .pbs-encounter-panel-header {
+    min-height: 36px !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .pbs-encounter-panel h2 {
+    font-size: 14px !important;
+  }
+
+  .pbs-encounter-kicker {
+    display: none !important;
+  }
+
+  .pbs-chat-log {
+    padding: 7px !important;
+  }
+
+  .pbs-chat-message {
+    max-width: 88% !important;
+    margin-bottom: 6px !important;
+    padding: 7px 8px !important;
+  }
+
+  .pbs-chat-form {
+    grid-template-columns: minmax(0, 1fr) 54px !important;
+  }
+
+  .pbs-chat-form input,
+  .pbs-chat-form button {
+    min-height: 38px !important;
+    font-size: 13px !important;
+  }
+}
