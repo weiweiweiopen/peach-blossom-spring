@@ -43,27 +43,6 @@ MEDIAWIKI_API = {
     "sgmk": "https://wiki.sgmk-ssam.ch/api.php",
 }
 
-FABRICADEMY_SEED_PAGES = [
-    "/start",
-    "/fabricademy2017",
-    "/fabricademy2017/classes/start",
-    "/fabricademy2017/classes/intro",
-    "/fabricademy2017/classes/wearables1",
-    "/fabricademy2017/classes/wearables2",
-    "/fabricademy2017/classes/skinelectronics",
-    "/fabricademy2017/classes/softrobotics",
-    "/fabricademy2017/classes/textilescaffold",
-    "/fabricademy2017/classes/biodyes",
-    "/fabricademy2017/classes/circularfashion",
-    "/fabricademy2017/classes/computational",
-    "/fabricademy2017/classes/digitalbodies",
-    "/fabricademy2017/classes/opensourcehardware",
-    "/fabricademy2017/nodes",
-    "/fabricademy2017/students",
-    "/fabrikipedia",
-    "/bibliography",
-]
-
 HIGH_VALUE_TERMS = {
     "8bit", "bio", "biology", "biomod", "camera", "camp", "chemistry", "circuit", "commons", "community",
     "diy", "electron", "festival", "hardware", "homemade", "lab", "laser", "machine", "microscope", "microscopy",
@@ -240,10 +219,10 @@ def source_family_for(path: Path) -> str:
         return "hackteria"
     if "htgwyw" in parts or "kobakant" in lowered or "how to get what you want" in lowered:
         return "htgwyw"
+    if "designposthumanism" in parts or "designandposthumanism" in lowered or "design+posthumanism" in lowered:
+        return "designposthumanism"
     if "sgmk" in parts or "sgmk full" in lowered:
         return "sgmk"
-    if "fabricademy" in parts or "textile-academy" in lowered:
-        return "fabricademy"
     return "unknown"
 
 
@@ -294,8 +273,6 @@ def memory_source_family(path: Path, text: str = "") -> str:
         return "hackteria"
     if "sgmk" in lowered:
         return "sgmk"
-    if "fabricademy" in lowered or "textile-academy" in lowered:
-        return "fabricademy"
     if "kobakant" in lowered or "how-to-get-what-you-want" in lowered or "how to get what you want" in lowered or "htgwyw" in lowered:
         return "htgwyw"
     if "/wiki/" in lowered:
@@ -335,54 +312,6 @@ def iter_memory_docs(family: str | None = None) -> list[dict]:
             })
     return docs
 
-
-
-LINK_STOPWORDS = {
-    "what", "want", "with", "from", "about", "this", "that", "there", "their", "have", "will", "would", "could", "should", "how", "why", "the", "and",
-    "什麼", "這個", "那個", "知道", "請問", "如何", "為什麼", "可以", "不是", "是否", "有關", "相關", "連結", "來源", "問題", "東西", "類似", "玩類",
-}
-
-
-def strict_link_tokens(text: str) -> list[str]:
-    normalized = text.lower()
-    latin = [term for term in re.split(r"[^\w]+", normalized, flags=re.UNICODE) if len(term) >= 3 and not re.search(r"[\u3400-\u9fff]", term) and term not in LINK_STOPWORDS]
-    cjk_tokens: list[str] = []
-    for run in re.findall(r"[\u3400-\u9fff]{2,}", normalized):
-        for size in (2, 3, 4):
-            for index in range(0, len(run) - size + 1):
-                token = run[index:index + size]
-                if token not in LINK_STOPWORDS:
-                    cjk_tokens.append(token)
-    return list(dict.fromkeys([*latin, *cjk_tokens]))
-
-
-def strict_link_score(query_tokens: list[str], result: dict) -> tuple[int, int]:
-    haystack = " ".join(str(result.get(key) or "") for key in ("title", "description", "sourceFamily", "url", "path")).lower()
-    title = str(result.get("title") or "").lower()
-    score = 0
-    matches = 0
-    for token in query_tokens:
-        if token in haystack:
-            matches += 1
-            score += 3 if token in title else 1
-    return score, matches
-
-
-def filter_relevant_links(query: str, results: list[dict], limit: int) -> list[dict]:
-    query_tokens = strict_link_tokens(query)
-    if not query_tokens:
-        return []
-    minimum_matches = 2 if len(query_tokens) >= 2 else 1
-    ranked = []
-    for result in results:
-        score, matches = strict_link_score(query_tokens, result)
-        if matches >= minimum_matches:
-            item = dict(result)
-            item["strictLinkScore"] = score
-            item["strictLinkMatches"] = matches
-            ranked.append(item)
-    ranked.sort(key=lambda item: (-int(item.get("strictLinkMatches") or 0), -int(item.get("strictLinkScore") or 0), float(item.get("score") or 0)))
-    return ranked[:limit]
 
 def _fts_query(query: str) -> str:
     terms = re.findall(r"[\w\u3400-\u9fff-]+", query.lower(), flags=re.UNICODE)
@@ -451,7 +380,7 @@ def memory_search(query: str, limit: int = 8, family: str | None = None) -> list
         return memory_search(query, limit, family)
     finally:
         conn.close()
-    results = [{
+    return [{
         "title": row["title"],
         "path": row["path"],
         "sourceFamily": row["source_family"],
@@ -459,39 +388,7 @@ def memory_search(query: str, limit: int = 8, family: str | None = None) -> list
         "score": float(row["score"]),
         "description": re.sub(r"\s+", " ", strip_frontmatter(row["snippet"] or "")).strip(),
     } for row in rows]
-    return filter_relevant_links(query, results, limit)
 
-
-
-KEYWORD_HINT_PATTERNS = [
-    re.compile(r"[「『\"]([^」』\"]{2,60})[」』\"]"),
-    re.compile(r"\b([A-Z][A-Za-z0-9]*(?:[ -][A-Za-z0-9]+){1,5})\b"),
-]
-
-
-def keyword_hint_queries(text: str) -> list[str]:
-    hints: list[str] = []
-    for pattern in KEYWORD_HINT_PATTERNS:
-        for match in pattern.finditer(text):
-            value = (match.group(1) or "").strip()
-            if len(value) >= 2 and not value.lower().startswith("source fragment"):
-                hints.append(value)
-    return list(dict.fromkeys(hints))[:4]
-
-
-def memory_search_with_hints(query: str, hint_text: str = "", limit: int = 8, family: str | None = None) -> list[dict]:
-    primary = memory_search(query, limit=limit, family=family)
-    if len(primary) >= min(3, limit):
-        return primary[:limit]
-    by_url = {str(item.get("url") or item.get("path") or index): item for index, item in enumerate(primary)}
-    for hint in keyword_hint_queries(hint_text):
-        for item in memory_search(hint, limit=limit, family=family):
-            key = str(item.get("url") or item.get("path") or len(by_url))
-            if key not in by_url:
-                item = dict(item)
-                item["score"] = float(item.get("score") or 0) + 500
-                by_url[key] = item
-    return sorted(by_url.values(), key=lambda item: -float(item.get("score") or 0))[:limit]
 
 def build_evidence_packet(results: list[dict]) -> list[dict]:
     evidence = []
@@ -1326,16 +1223,16 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     registry = sub.add_parser("build-registry")
     registry.add_argument("--limit", type=int)
-    registry.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
+    registry.add_argument("--family", choices=["designposthumanism", "hackteria", "htgwyw", "sgmk"])
     registry.set_defaults(func=command_build_registry)
     passages = sub.add_parser("extract-passages")
     passages.add_argument("--limit", type=int)
-    passages.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
+    passages.add_argument("--family", choices=["designposthumanism", "hackteria", "htgwyw", "sgmk"])
     passages.add_argument("--max-per-source", type=int, default=8)
     passages.set_defaults(func=command_extract_passages)
     claims = sub.add_parser("extract-claims")
     claims.add_argument("--limit", type=int)
-    claims.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
+    claims.add_argument("--family", choices=["designposthumanism", "hackteria", "htgwyw", "sgmk"])
     claims.add_argument("--max-per-source", type=int, default=8)
     claims.set_defaults(func=command_extract_claims)
     hydrate = sub.add_parser("hydrate-mediawiki")
@@ -1354,22 +1251,22 @@ def main() -> int:
     hydrate_old.add_argument("--force", action="store_true")
     hydrate_old.set_defaults(func=lambda args: command_hydrate_mediawiki(argparse.Namespace(**vars(args), family="hackteria")))
     index = sub.add_parser("index")
-    index.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy", "wiki", "schema"], default="all")
+    index.add_argument("--family", choices=["all", "designposthumanism", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
     index.set_defaults(func=command_index)
     search = sub.add_parser("search")
     search.add_argument("query")
-    search.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy", "wiki", "schema"], default="all")
+    search.add_argument("--family", choices=["all", "designposthumanism", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
     search.add_argument("--limit", type=int, default=8)
     search.set_defaults(func=command_search)
     sub.add_parser("status").set_defaults(func=command_status)
     query = sub.add_parser("query")
     query.add_argument("--query", required=True)
-    query.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy"], default="all")
+    query.add_argument("--family", choices=["all", "designposthumanism", "hackteria", "htgwyw", "sgmk"], default="all")
     query.add_argument("--limit", type=int, default=12)
     query.set_defaults(func=command_query)
     draft = sub.add_parser("draft-note")
     draft.add_argument("--query", required=True)
-    draft.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy"], default="all")
+    draft.add_argument("--family", choices=["all", "designposthumanism", "hackteria", "htgwyw", "sgmk"], default="all")
     draft.add_argument("--category", choices=["Concepts", "Methods", "Materials", "Theories", "SocialForms", "Projects", "Comparisons", "Syntheses"], default="Projects")
     draft.add_argument("--limit", type=int, default=12)
     draft.set_defaults(func=command_draft_note)

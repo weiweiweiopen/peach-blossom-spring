@@ -22,7 +22,7 @@ import type {
 } from '../engine/renderer.js';
 import { renderFrame } from '../engine/renderer.js';
 import { getCatalogEntry, isRotatable } from '../layout/furnitureCatalog.js';
-import { EditTool, TILE_SIZE, type SpriteData } from '../types.js';
+import { EditTool, TILE_SIZE } from '../types.js';
 
 interface OfficeCanvasProps {
   officeState: OfficeState;
@@ -36,12 +36,13 @@ interface OfficeCanvasProps {
   onRotateSelected: () => void;
   onDragMove: (uid: string, newCol: number, newRow: number) => void;
   onMobileMapTap?: (col: number, row: number) => void;
-  interactiveFurnitureTypes?: ReadonlySet<string>;
   mobileTapToMove: boolean;
   editorTick: number;
   zoom: number;
   onZoomChange: (zoom: number) => void;
   panRef: React.MutableRefObject<{ x: number; y: number }>;
+  interactiveFurnitureTypes?: ReadonlySet<string> | readonly string[];
+  hideCharactersInEditor?: boolean;
 }
 
 export function OfficeCanvas({
@@ -56,12 +57,13 @@ export function OfficeCanvas({
   onRotateSelected,
   onDragMove,
   onMobileMapTap,
-  interactiveFurnitureTypes,
   mobileTapToMove,
   editorTick: _editorTick,
   zoom,
   onZoomChange,
   panRef,
+  interactiveFurnitureTypes: _interactiveFurnitureTypes,
+  hideCharactersInEditor,
 }: OfficeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -107,58 +109,18 @@ export function OfficeCanvas({
     [officeState, zoom],
   );
 
-  const getInteractiveFurnitureHighlight = useCallback(
-    (tile: { col: number; row: number } | null): { col: number; row: number; w: number; h: number; sprite: SpriteData; mirrored?: boolean } | null => {
-      if (!tile || !interactiveFurnitureTypes?.size) return null;
-      for (const item of officeState.getLayout().furniture) {
-        if (!interactiveFurnitureTypes.has(item.type)) continue;
-        const entry = getCatalogEntry(item.type);
-        if (!entry) continue;
-        if (
-          tile.col >= item.col &&
-          tile.col < item.col + entry.footprintW &&
-          tile.row >= item.row &&
-          tile.row < item.row + entry.footprintH
-        ) {
-          return {
-            col: item.col,
-            row: item.row,
-            w: entry.footprintW,
-            h: entry.footprintH,
-            sprite: entry.sprite,
-            mirrored: !!entry.mirrorSide && item.type.endsWith(':left'),
-          };
-        }
-      }
-      return null;
-    },
-    [interactiveFurnitureTypes, officeState],
-  );
-
   // Resize canvas backing store to device pixels (no DPR transform on ctx)
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
     const rect = container.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    const nextWidth = Math.max(1, Math.ceil(rect.width * dpr));
-    const nextHeight = Math.max(1, Math.ceil(rect.height * dpr));
-    canvas.width = nextWidth;
-    canvas.height = nextHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
     canvas.style.width = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
     // No ctx.scale(dpr) — we render directly in device pixels
-  }, []);
-
-  const canvasScale = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 1, y: 1 };
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: rect.width > 0 ? canvas.width / rect.width : 1,
-      y: rect.height > 0 ? canvas.height / rect.height : 1,
-    };
   }, []);
 
   useEffect(() => {
@@ -167,18 +129,10 @@ export function OfficeCanvas({
 
     resizeCanvas();
 
-    const observer = new ResizeObserver(() => {
-      resizeCanvas();
-      // Some Safari/GitHub Pages loads report the right CSS size before all
-      // decoded image assets settle. A second frame prevents partial map clears.
-      window.requestAnimationFrame(resizeCanvas);
-    });
+    const observer = new ResizeObserver(() => resizeCanvas());
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
-    window.addEventListener('resize', resizeCanvas);
-    window.visualViewport?.addEventListener('resize', resizeCanvas);
-    const settleTimers = [80, 250, 700, 1400].map((ms) => window.setTimeout(resizeCanvas, ms));
 
     const stop = startGameLoop(canvas, {
       update: (dt) => {
@@ -197,7 +151,7 @@ export function OfficeCanvas({
             editorState.activeTool === EditTool.WALL_PAINT ||
             editorState.activeTool === EditTool.ERASE;
           editorRender = {
-            showGrid: false,
+            showGrid: true,
             ghostSprite: null,
             ghostMirrored: false,
             ghostCol: editorState.ghostCol,
@@ -312,7 +266,6 @@ export function OfficeCanvas({
           selectedAgentId: officeState.selectedAgentId,
           hoveredAgentId: officeState.hoveredAgentId,
           hoveredTile: officeState.hoveredTile,
-          interactiveFurnitureHighlight: getInteractiveFurnitureHighlight(officeState.hoveredTile),
           seats: officeState.seats,
           characters: officeState.characters,
         };
@@ -323,7 +276,7 @@ export function OfficeCanvas({
           h,
           officeState.tileMap,
           officeState.furniture,
-          officeState.getCharacters(),
+          hideCharactersInEditor && isEditMode ? [] : officeState.getCharacters(),
           zoom,
           panRef.current.x,
           panRef.current.y,
@@ -345,11 +298,8 @@ export function OfficeCanvas({
     return () => {
       stop();
       observer.disconnect();
-      window.removeEventListener('resize', resizeCanvas);
-      window.visualViewport?.removeEventListener('resize', resizeCanvas);
-      settleTimers.forEach((id) => window.clearTimeout(id));
     };
-  }, [officeState, resizeCanvas, isEditMode, editorState, zoom, panRef, getInteractiveFurnitureHighlight]);
+  }, [officeState, resizeCanvas, isEditMode, editorState, _editorTick, zoom, panRef, hideCharactersInEditor]);
 
   // Convert CSS mouse coords to world (sprite pixel) coords
   const screenToWorld = useCallback(
@@ -357,19 +307,19 @@ export function OfficeCanvas({
       const canvas = canvasRef.current;
       if (!canvas) return null;
       const rect = canvas.getBoundingClientRect();
-      const scale = canvasScale();
+      const dpr = window.devicePixelRatio || 1;
       // CSS coords relative to canvas
       const cssX = clientX - rect.left;
       const cssY = clientY - rect.top;
       // Convert to device pixels
-      const deviceX = cssX * scale.x;
-      const deviceY = cssY * scale.y;
+      const deviceX = cssX * dpr;
+      const deviceY = cssY * dpr;
       // Convert to world (sprite pixel) coords
       const worldX = (deviceX - offsetRef.current.x) / zoom;
       const worldY = (deviceY - offsetRef.current.y) / zoom;
       return { worldX, worldY, screenX: cssX, screenY: cssY, deviceX, deviceY };
     },
-    [canvasScale, zoom],
+    [zoom],
   );
 
   const screenToTile = useCallback(
@@ -417,10 +367,10 @@ export function OfficeCanvas({
     (e: React.MouseEvent) => {
       // Handle middle-mouse panning
       if (isPanningRef.current) {
-        const scale = canvasScale();
-        const dx = (e.clientX - panStartRef.current.mouseX) * scale.x;
-        const dy = (e.clientY - panStartRef.current.mouseY) * scale.y;
-        if (Math.hypot(dx, dy) > 4 * Math.max(scale.x, scale.y)) panMovedRef.current = true;
+        const dpr = window.devicePixelRatio || 1;
+        const dx = (e.clientX - panStartRef.current.mouseX) * dpr;
+        const dy = (e.clientY - panStartRef.current.mouseY) * dpr;
+        if (Math.hypot(dx, dy) > 4 * dpr) panMovedRef.current = true;
         panRef.current = clampPan(panStartRef.current.panX + dx, panStartRef.current.panY + dy);
         return;
       }
@@ -536,8 +486,6 @@ export function OfficeCanvas({
         let cursor = 'default';
         if (hitId !== null) {
           cursor = 'pointer';
-        } else if (getInteractiveFurnitureHighlight(tile)) {
-          cursor = 'pointer';
         } else if (officeState.selectedAgentId !== null && tile) {
           // Check if hovering over a clickable seat (available or own)
           const seatId = officeState.getSeatAtTile(tile.col, tile.row);
@@ -563,12 +511,10 @@ export function OfficeCanvas({
       editorState,
       onEditorTileAction,
       onEditorEraseAction,
-      canvasScale,
       panRef,
       hitTestDeleteButton,
       hitTestRotateButton,
       clampPan,
-      getInteractiveFurnitureHighlight,
     ],
   );
 
@@ -669,19 +615,6 @@ export function OfficeCanvas({
           // Clicked empty space — deselect
           editorState.clearSelection();
           onEditorSelectionChange();
-          e.preventDefault();
-          officeState.cameraFollowId = null;
-          isPanningRef.current = true;
-          panMovedRef.current = false;
-          panStartRef.current = {
-            mouseX: e.clientX,
-            mouseY: e.clientY,
-            panX: panRef.current.x,
-            panY: panRef.current.y,
-          };
-          const canvas = canvasRef.current;
-          if (canvas) canvas.style.cursor = 'grabbing';
-          return;
         }
       }
 
@@ -903,15 +836,15 @@ export function OfficeCanvas({
       touchPointersRef.current.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
       const touchPan = touchPanRef.current;
       if (touchPan && touchPointersRef.current.size >= 2) {
-        const scale = canvasScale();
+        const dpr = window.devicePixelRatio || 1;
         const points = Array.from(touchPointersRef.current.values()).slice(0, 2);
         const center = {
           x: (points[0].clientX + points[1].clientX) / 2,
           y: (points[0].clientY + points[1].clientY) / 2,
         };
-        const dx = (center.x - touchPan.x) * scale.x;
-        const dy = (center.y - touchPan.y) * scale.y;
-        if (Math.hypot(dx, dy) > 4 * Math.max(scale.x, scale.y)) suppressNextClickRef.current = true;
+        const dx = (center.x - touchPan.x) * dpr;
+        const dy = (center.y - touchPan.y) * dpr;
+        if (Math.hypot(dx, dy) > 4 * dpr) suppressNextClickRef.current = true;
         panRef.current = clampPan(touchPan.panX + dx, touchPan.panY + dy);
         e.preventDefault();
         return;
@@ -921,7 +854,7 @@ export function OfficeCanvas({
     if (!hold || hold.pointerId !== e.pointerId) return;
     hold.clientX = e.clientX;
     hold.clientY = e.clientY;
-  }, [canvasScale, clampPan, panRef]);
+  }, [clampPan, panRef]);
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
@@ -996,7 +929,7 @@ export function OfficeCanvas({
   }, []);
 
   return (
-    <div ref={containerRef} className="office-canvas-container w-full h-full relative overflow-hidden">
+    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-bg">
       <canvas
         ref={canvasRef}
         onPointerDown={handlePointerDown}
@@ -1011,7 +944,7 @@ export function OfficeCanvas({
         onMouseLeave={handleMouseLeave}
         onWheel={handleWheel}
         onContextMenu={handleContextMenu}
-        className="office-canvas block"
+        className="block"
         style={{ touchAction: mobileTapToMove ? 'none' : undefined }}
       />
     </div>

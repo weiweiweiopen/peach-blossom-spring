@@ -18,10 +18,12 @@
       "main": "https://howtogetwhatyouwant.at",
       "out": "Sources/Raw/htgwyw"
     },
-    "fabricademy": {
-      "kind": "dokuwiki",
-      "main": "http://wiki.textile-academy.org/",
-      "out": "Sources/Raw/fabricademy"
+    "designposthumanism": {
+      "kind": "wordpress",
+      "api": "https://designandposthumanism.org/wp-json/wp/v2/post",
+      "pagesApi": "https://designandposthumanism.org/wp-json/wp/v2/page",
+      "main": "https://designandposthumanism.org/",
+      "out": "Sources/Raw/designposthumanism"
     }
   }
 }

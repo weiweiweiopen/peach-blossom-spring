@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button.js';
 import { ColorPicker } from '../../components/ui/ColorPicker.js';
 import { ItemSelect } from '../../components/ui/ItemSelect.js';
 import type { ColorValue } from '../../components/ui/types.js';
-import { CANVAS_FALLBACK_TILE_COLOR, MAX_COLS, MAX_ROWS } from '../../constants.js';
+import { CANVAS_FALLBACK_TILE_COLOR } from '../../constants.js';
 import { getColorizedSprite } from '../colorize.js';
 import { getColorizedFloorSprite, getFloorPatternCount, hasFloorSprites } from '../floorTiles.js';
 import type { FurnitureCategory, LoadedAssetData } from '../layout/furnitureCatalog.js';
@@ -34,11 +34,11 @@ interface EditorToolbarProps {
   onWallSetChange: (setIndex: number) => void;
   onSelectedFurnitureColorChange: (color: ColorValue | null) => void;
   onFurnitureTypeChange: (type: string) => void;
+  loadedAssets?: LoadedAssetData;
   showMapSize?: boolean;
   mapCols?: number;
   mapRows?: number;
   onResizeMap?: (cols: number, rows: number) => { ok: true } | { ok: false; error: string };
-  loadedAssets?: LoadedAssetData;
 }
 
 const THUMB_ZOOM = 2;
@@ -61,25 +61,16 @@ export function EditorToolbar({
   onWallSetChange,
   onSelectedFurnitureColorChange,
   onFurnitureTypeChange,
-  showMapSize = false,
-  mapCols = 0,
-  mapRows = 0,
-  onResizeMap,
   loadedAssets,
+  showMapSize,
+  mapCols,
+  mapRows,
+  onResizeMap,
 }: EditorToolbarProps) {
   const [activeCategory, setActiveCategory] = useState<FurnitureCategory>('desks');
   const [showColor, setShowColor] = useState(false);
   const [showWallColor, setShowWallColor] = useState(false);
   const [showFurnitureColor, setShowFurnitureColor] = useState(false);
-  const [draftCols, setDraftCols] = useState(String(mapCols));
-  const [draftRows, setDraftRows] = useState(String(mapRows));
-  const [resizeError, setResizeError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setDraftCols(String(mapCols));
-    setDraftRows(String(mapRows));
-    setResizeError(null);
-  }, [mapCols, mapRows]);
 
   // Build dynamic catalog from loaded assets
   useEffect(() => {
@@ -121,24 +112,50 @@ export function EditorToolbar({
   const isWallActive = activeTool === EditTool.WALL_PAINT;
   const isEraseActive = activeTool === EditTool.ERASE;
   const isFurnitureActive =
-    activeTool === EditTool.FURNITURE_PLACE ||
-    activeTool === EditTool.FURNITURE_PICK ||
-    activeTool === EditTool.SELECT;
-
-  const handleResizeSubmit = () => {
-    if (!onResizeMap) return;
-    const cols = Number(draftCols);
-    const rows = Number(draftRows);
-    const result = onResizeMap(cols, rows);
-    if (result.ok) {
-      setResizeError(null);
-    } else {
-      setResizeError(result.error);
-    }
-  };
+    activeTool === EditTool.FURNITURE_PLACE || activeTool === EditTool.FURNITURE_PICK;
 
   return (
     <div className="absolute bottom-76 left-10 z-10 pixel-panel p-4 flex flex-col-reverse gap-4 max-w-[calc(100vw-20px)]">
+
+      {showMapSize && (
+        <div className="flex gap-2 items-center flex-wrap text-xs">
+          <span>Map</span>
+          <input
+            className="pixel-input w-16"
+            type="number"
+            min={1}
+            max={64}
+            defaultValue={mapCols}
+            aria-label="Map columns"
+            onBlur={(event) => {
+              const cols = Number(event.currentTarget.value);
+              const rows = mapRows ?? 1;
+              if (Number.isFinite(cols) && onResizeMap) {
+                const result = onResizeMap(cols, rows);
+                if (!result.ok) window.alert(result.error);
+              }
+            }}
+          />
+          <span>×</span>
+          <input
+            className="pixel-input w-16"
+            type="number"
+            min={1}
+            max={64}
+            defaultValue={mapRows}
+            aria-label="Map rows"
+            onBlur={(event) => {
+              const cols = mapCols ?? 1;
+              const rows = Number(event.currentTarget.value);
+              if (Number.isFinite(rows) && onResizeMap) {
+                const result = onResizeMap(cols, rows);
+                if (!result.ok) window.alert(result.error);
+              }
+            }}
+          />
+        </div>
+      )}
+
       {/* Tool row — at the bottom */}
       <div className="flex gap-4 flex-wrap">
         <Button
@@ -295,14 +312,6 @@ export function EditorToolbar({
             ))}
             <div className="w-[1px] h-14 bg-white/15 mx-2 shrink-0" />
             <Button
-              variant={activeTool === EditTool.SELECT ? 'active' : 'ghost'}
-              size="sm"
-              onClick={() => onToolChange(EditTool.SELECT)}
-              title="Select placed furniture to move or delete"
-            >
-              Select
-            </Button>
-            <Button
               variant={activeTool === EditTool.FURNITURE_PICK ? 'active' : 'ghost'}
               size="sm"
               onClick={() => onToolChange(EditTool.FURNITURE_PICK)}
@@ -365,44 +374,6 @@ export function EditorToolbar({
               showColorizeToggle
             />
           )}
-        </div>
-      )}
-
-      {showMapSize && (
-        <div className="flex flex-col gap-2 border-b-2 border-white/15 pb-3 text-sm" aria-label={`Map size ${mapCols} by ${mapRows}`}>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-text">Map Size: {mapCols} x {mapRows}</span>
-            <label className="map-size-field flex items-center gap-2">
-              <span className="text-text-muted">W</span>
-              <input
-                className="map-size-input w-[7ch] min-w-[7ch] bg-white border-2 border-border px-2 py-1 text-black"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                min={1}
-                max={MAX_COLS}
-                value={draftCols}
-                onChange={(event) => setDraftCols(event.target.value)}
-              />
-            </label>
-            <label className="map-size-field flex items-center gap-2">
-              <span className="text-text-muted">H</span>
-              <input
-                className="map-size-input w-[7ch] min-w-[7ch] bg-white border-2 border-border px-2 py-1 text-black"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                min={1}
-                max={MAX_ROWS}
-                value={draftRows}
-                onChange={(event) => setDraftRows(event.target.value)}
-              />
-            </label>
-            <Button type="button" variant="accent" size="sm" onClick={handleResizeSubmit}>
-              Apply
-            </Button>
-          </div>
-          {resizeError && <p className="text-warning max-w-[520px]">{resizeError}</p>}
         </div>
       )}
     </div>
