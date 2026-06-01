@@ -70,13 +70,22 @@ function keywordHintQueries(text: string): string[] {
 function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: number): WikiSearchResult[] {
   const originalTokens = strictTokens(query);
   if (originalTokens.length === 0) return [];
-  const minimumMatches = originalTokens.length >= 2 ? 2 : 1;
-  return results
+  const minimumMatches = originalTokens.length >= 4 ? 2 : 1;
+  const strictMatches = results
     .map((result) => ({ result, strict: strictLinkScore(originalTokens, result) }))
     .filter(({ strict }) => strict.matches >= minimumMatches)
     .sort((a, b) => (b.strict.matches - a.strict.matches) || (b.strict.score - a.strict.score) || (b.result.score - a.result.score))
     .slice(0, limit)
     .map(({ result, strict }) => ({ ...result, score: result.score + strict.score * 1000 }));
+  if (strictMatches.length > 0) return strictMatches;
+
+  // The answer generator can correctly use expanded/retrieved context even when the literal
+  // user sentence is broad or translated. Do not hide all source links in that case: show the
+  // strongest bundled-memory hits as a transparent reading trail instead of an empty UI.
+  return results
+    .filter((result) => result.score > 0 && result.url)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
 function sourceFamily(card: Partial<SourceCard>): string {
@@ -85,6 +94,10 @@ function sourceFamily(card: Partial<SourceCard>): string {
   if (source === 'sgmk' || text.includes('sgmk')) return 'SGMK';
   if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (text.includes('fabricademy')) return 'Fabricademy';
+  if (text.includes('textiltronics') || text.includes('attempts-failures-trials-and-errors')) return 'Textiltronics';
+  if (text.includes('modernbodyfestival') || text.includes('modern body')) return 'Modern Body Festival';
+  if (text.includes('valldaura')) return 'Valldaura / Green Fab Lab';
+  if (text.includes('okiwonderlab') || text.includes('oki wonder lab') || text.includes('ryuoyama')) return 'Oki Wonder Lab';
   if (source === 'htgwyw' || text.includes('kobakant') || text.includes('how to get what you want')) return 'HOW TO GET WHAT YOU WANT / KOBAKANT';
   return card.source || 'Wiki';
 }
@@ -239,12 +252,12 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
 
 export function searchWikiPagesWithHints(query: string, hintText = '', personaId?: string, limit = 6): WikiSearchResult[] {
   const primary = searchWikiPages(query, personaId, limit);
-  if (primary.length >= Math.min(3, limit)) return primary.slice(0, limit);
   const hintQueries = keywordHintQueries(hintText);
-  if (!hintQueries.length) return primary;
   const hintedResults = hintQueries.flatMap((hint) =>
     filterRelevantLinks(hint, collectWikiSearchResults(hint, personaId, limit), limit)
       .map((result) => ({ ...result, score: result.score + 500 })),
   );
-  return dedupeResults([...primary, ...hintedResults]).slice(0, limit);
+  const merged = dedupeResults([...primary, ...hintedResults]).slice(0, limit);
+  if (merged.length > 0) return merged;
+  return collectWikiSearchResults(`${query} ${hintText}`, personaId, limit).slice(0, limit);
 }
