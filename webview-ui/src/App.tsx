@@ -954,12 +954,37 @@ const THOUGHT_GAP_BROADCASTS: Record<LanguageCode, string[]> = {
   en: [
     "THOUGHT GAP: SGMK has many DIY electronics pages, but still needs a concept page linking kits, sound, and workshop organization.",
     "THOUGHT GAP: Material practice is visible; care, maintenance, and failure notes still need better comparative questions.",
-    "THOUGHT GAP: The zine can cite pages, but the wiki should mark which relations are evidence and which are still hypotheses.",
+    "THOUGHT GAP: A zine can cite pages, but the wiki still needs to mark which relations are evidence and which remain hypotheses.",
   ],
-  id: ["THOUGHT GAP: praktik material terlihat, tetapi catatan perawatan, pemeliharaan, dan kegagalan perlu jadi pertanyaan pembanding."],
-  de: ["THOUGHT GAP: Materialpraxis ist sichtbar; Sorge, Wartung und Fehlernotizen brauchen noch vergleichbare Fragen."],
-  ja: ["THOUGHT GAP: 素材実践は見えていますが、ケア、保守、失敗記録を比較できる問いにする必要があります。"],
-  th: ["THOUGHT GAP: เห็นการปฏิบัติด้านวัสดุแล้ว แต่ care การซ่อมบำรุง และบันทึกความล้มเหลวยังต้องกลายเป็นคำถามเปรียบเทียบ"],
+  id: [
+    "CELAH PIKIRAN: SGMK punya banyak halaman elektronik DIY, tetapi masih membutuhkan halaman konsep yang menghubungkan kit, suara, dan organisasi lokakarya.",
+    "CELAH PIKIRAN: Praktik material sudah terlihat; perawatan, pemeliharaan, dan catatan kegagalan masih perlu menjadi pertanyaan pembanding.",
+    "CELAH PIKIRAN: Zine dapat mengutip halaman, tetapi wiki masih perlu menandai relasi mana yang berbasis bukti dan mana yang masih hipotesis.",
+  ],
+  de: [
+    "DENKLUECKE: SGMK hat viele DIY-Elektronik-Seiten, braucht aber noch eine Konzeptseite, die Kits, Klang und Workshop-Organisation verbindet.",
+    "DENKLUECKE: Materialpraxis ist sichtbar; Sorge, Wartung und Fehlernotizen brauchen noch bessere Vergleichsfragen.",
+    "DENKLUECKE: Das Zine kann Seiten zitieren, aber das Wiki sollte markieren, welche Beziehungen belegt sind und welche Hypothesen bleiben.",
+  ],
+  ja: [
+    "思考の穴：SGMK には DIY 電子工作のページが多くありますが、キット、音、ワークショップ運営をつなぐ概念ページがまだ必要です。",
+    "思考の穴：素材実践は見えていますが、ケア、保守、失敗記録を比較できる問いに育てる必要があります。",
+    "思考の穴：zine はページを引用できますが、wiki はどの関係が証拠に基づき、どれが仮説なのかをもっと明確に示す必要があります。",
+  ],
+  th: [
+    "ช่องว่างความคิด: SGMK มีหน้าอิเล็กทรอนิกส์ DIY หลายหน้า แต่ยังต้องมีหน้าคอนเซ็ปต์ที่เชื่อม kit เสียง และการจัดเวิร์กช็อป",
+    "ช่องว่างความคิด: เห็นการปฏิบัติด้านวัสดุแล้ว แต่การดูแล การซ่อมบำรุง และบันทึกความล้มเหลวยังต้องถูกทำให้เป็นคำถามเปรียบเทียบ",
+    "ช่องว่างความคิด: zine อ้างอิงหน้าได้แล้ว แต่ wiki ยังควรระบุให้ชัดว่า ความสัมพันธ์ใดมีหลักฐาน และความสัมพันธ์ใดยังเป็นสมมติฐาน",
+  ],
+};
+
+const CHAT_COPY: Record<LanguageCode, { empty: string; localMessage: string; remoteMessage: (name: string) => string; placeholder: string; send: string }> = {
+  "zh-TW": { empty: "還沒有訊息。", localMessage: "你的訊息", remoteMessage: (name) => `${name} 的訊息`, placeholder: "輸入訊息...", send: "送出" },
+  en: { empty: "No messages yet.", localMessage: "Your message", remoteMessage: (name) => `${name}'s message`, placeholder: "Type a message...", send: "Send" },
+  id: { empty: "Belum ada pesan.", localMessage: "Pesan Anda", remoteMessage: (name) => `Pesan dari ${name}`, placeholder: "Ketik pesan...", send: "Kirim" },
+  de: { empty: "Noch keine Nachrichten.", localMessage: "Deine Nachricht", remoteMessage: (name) => `Nachricht von ${name}`, placeholder: "Nachricht eingeben...", send: "Senden" },
+  ja: { empty: "まだメッセージはありません。", localMessage: "あなたのメッセージ", remoteMessage: (name) => `${name} のメッセージ`, placeholder: "メッセージを入力...", send: "送信" },
+  th: { empty: "ยังไม่มีข้อความ", localMessage: "ข้อความของคุณ", remoteMessage: (name) => `ข้อความของ ${name}`, placeholder: "พิมพ์ข้อความ...", send: "ส่ง" },
 };
 
 const PET_LINT_GAP_INBOX_KEY = "pbs:pet:lint-gap-inbox";
@@ -4666,7 +4691,7 @@ function App() {
           <div className="pbs-chat-panel">
             <div className="pbs-chat-log" ref={chatLogRef} aria-live="polite">
               {activeEncounterMessages.length === 0 ? (
-                <p className="pbs-chat-empty">還沒有訊息。</p>
+                <p className="pbs-chat-empty">{CHAT_COPY[selectedLanguage].empty}</p>
               ) : (
                 activeEncounterMessages.map((message) => {
                   const isLocal = message.senderId === localMultiplayerPlayerId;
@@ -4674,7 +4699,7 @@ function App() {
                     <div
                       key={message.id}
                       className={`pbs-chat-message ${isLocal ? "is-local" : "is-remote"}`}
-                      aria-label={isLocal ? "你的訊息" : `${message.senderName} 的訊息`}
+                      aria-label={isLocal ? CHAT_COPY[selectedLanguage].localMessage : CHAT_COPY[selectedLanguage].remoteMessage(message.senderName)}
                     >
                       <span>{message.text}</span>
                     </div>
@@ -4694,9 +4719,9 @@ function App() {
                 value={chatDraft}
                 onChange={(event) => setChatDraft(event.target.value)}
                 maxLength={500}
-                placeholder="輸入訊息..."
+                placeholder={CHAT_COPY[selectedLanguage].placeholder}
               />
-              <button type="submit">送出</button>
+              <button type="submit">{CHAT_COPY[selectedLanguage].send}</button>
             </form>
           </div>
         </div>
