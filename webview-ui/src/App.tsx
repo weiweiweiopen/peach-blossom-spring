@@ -3400,6 +3400,36 @@ function App() {
     !selectedNpcInfo &&
     !mobileRulesOpen;
 
+  const playerIdeaBulbPosition = (() => {
+    if (!playerProfile || appMode !== "interactive" || !containerRef.current) return null;
+    const player = officeState.characters.get(PLAYER_ID);
+    if (!player) return null;
+    const rect = containerRef.current.getBoundingClientRect();
+    const layout = officeState.getLayout();
+    const mapW = layout.cols * TILE_SIZE * editor.zoom;
+    const mapH = layout.rows * TILE_SIZE * editor.zoom;
+    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
+    return {
+      left: offsetX + player.x * editor.zoom,
+      top: offsetY + (player.y - 54) * editor.zoom,
+      zoomScale: Math.max(0.64, Math.min(1.25, editor.zoom / 4)),
+    };
+  })();
+
+  const onlinePlayerTickerItems = (() => {
+    if (!playerProfile || !multiplayerConfig) return [] as Array<{ id: string; name: string }>;
+    const localId = getOrCreatePlayerId();
+    const localShortId = localId.slice(-6).toUpperCase();
+    return [
+      { id: localShortId, name: playerProfile.name || "Player" },
+      ...Array.from(remotePresences.values()).map((presence) => ({
+        id: presence.playerId.slice(-6).toUpperCase(),
+        name: presence.displayName || "Player",
+      })),
+    ];
+  })();
+
   const closeSplitPanel = useCallback(() => {
     setSplitPanel(null);
     setSplitPanelAnchor(null);
@@ -3752,6 +3782,18 @@ function App() {
             style={{ background: "var(--vignette)" }}
           />
 
+          {onlinePlayerTickerItems.length > 0 && (
+            <div className="online-player-marquee" aria-label="Online players">
+              <div className="online-player-marquee-track">
+                {[...onlinePlayerTickerItems, ...onlinePlayerTickerItems].map((player, index) => (
+                  <span key={`${player.id}-${index}`}>
+                    #{player.id} {player.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {editor.isEditMode && editor.isDirty && (
             <EditActionBar editor={editor} editorState={editorState} />
           )}
@@ -3855,6 +3897,24 @@ function App() {
                 <p>{t(selectedLanguage, "hud.pressToTalk")}</p>
               </button>
             )}
+
+          {playerIdeaBulbPosition && !editorEntryEnabled && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && (
+            <div
+              className="player-idea-bulb"
+              aria-hidden="true"
+              style={{
+                left: playerIdeaBulbPosition.left,
+                top: playerIdeaBulbPosition.top,
+                "--idea-bulb-scale": playerIdeaBulbPosition.zoomScale,
+              } as CSSProperties}
+            >
+              <span className="player-idea-bulb-light" />
+              <span className="player-idea-bulb-dot player-idea-bulb-dot--a" />
+              <span className="player-idea-bulb-dot player-idea-bulb-dot--b" />
+              <span className="player-idea-bulb-dot player-idea-bulb-dot--c" />
+              <span className="player-idea-bulb-dot player-idea-bulb-dot--d" />
+            </div>
+          )}
 
           {!editorEntryEnabled && !(terrainEditorEnabled && editor.isEditMode) && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => {
             const isNearbyTalkTarget =
@@ -4130,7 +4190,6 @@ function App() {
                       ))}
                     </div>
                     <article className="question-status-compact-lint" aria-label={petLintGapTitle(selectedLanguage)}>
-                      <strong>{petLintGapTitle(selectedLanguage)}</strong>
                       <p>
                         {localizedPetLintGapInbox[0]?.text ?? petLintGapCopy.empty}
                       </p>
@@ -4220,15 +4279,6 @@ function App() {
                         ))
                       )}
                     </div>
-                    <article className="question-lint-card question-lint-card--summary">
-                      <strong>{questionLintHud.title}</strong>
-                      <div className="question-lint-grid question-lint-grid--highlight">
-                        {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
-                          <span key={label}>{label}: {value.toFixed(0)}</span>
-                        ))}
-                      </div>
-                      <p>{questionLintCopy(selectedLanguage).next}: {questionLintHud.next}</p>
-                    </article>
                     {petDialogueHistory.length > 0 && (
                       <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
                         <strong>🐣 {PET_HUD_COPY[selectedLanguage].recent}</strong>
