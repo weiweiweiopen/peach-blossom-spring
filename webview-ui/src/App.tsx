@@ -3308,19 +3308,27 @@ function App() {
 
   const isNearCentralComputer = playerProfile && appMode === "interactive" ? isPlayerNearCentralComputer() : false;
 
+  const overlayMetrics = (() => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return null;
+    const layout = officeState.getLayout();
+    const dpr = window.devicePixelRatio || 1;
+    const mapW = (layout.cols * TILE_SIZE * editor.zoom) / dpr;
+    const mapH = (layout.rows * TILE_SIZE * editor.zoom) / dpr;
+    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x / dpr);
+    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y / dpr);
+    const scale = editor.zoom / dpr;
+    return { offsetX, offsetY, scale };
+  })();
+
   const promptPosition = (() => {
     if (!promptAnchor || !containerRef.current) return null;
     const npc = officeState.characters.get(promptAnchor.npcId);
     if (!npc) return null;
-    const rect = containerRef.current.getBoundingClientRect();
-    const layout = officeState.getLayout();
-    const mapW = layout.cols * TILE_SIZE * editor.zoom;
-    const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
+    if (!overlayMetrics) return null;
     return {
-      left: offsetX + npc.x * editor.zoom,
-      top: offsetY + (npc.y - 24) * editor.zoom,
+      left: overlayMetrics.offsetX + npc.x * overlayMetrics.scale,
+      top: overlayMetrics.offsetY + (npc.y - 24) * overlayMetrics.scale,
     };
   })();
 
@@ -3329,15 +3337,10 @@ function App() {
     const computerTile = editorEntryEnabled
       ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
-    const rect = containerRef.current.getBoundingClientRect();
-    const layout = officeState.getLayout();
-    const mapW = layout.cols * TILE_SIZE * editor.zoom;
-    const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
+    if (!overlayMetrics) return null;
     return {
-      left: offsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * editor.zoom,
-      top: offsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom,
+      left: overlayMetrics.offsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * overlayMetrics.scale,
+      top: overlayMetrics.offsetY + (computerTile.row * TILE_SIZE - 18) * overlayMetrics.scale,
     };
   })();
 
@@ -3351,12 +3354,7 @@ function App() {
         isQuestionPet: boolean;
         zoomScale: number;
       }>;
-    const rect = containerRef.current.getBoundingClientRect();
-    const layout = officeState.getLayout();
-    const mapW = layout.cols * TILE_SIZE * editor.zoom;
-    const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
+    if (!overlayMetrics) return [];
     return Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
       .map((ch) => {
@@ -3370,8 +3368,8 @@ function App() {
         return {
           id: ch.id,
           name: ch.folderName ?? "",
-          left: offsetX + ch.x * editor.zoom,
-          top: offsetY + (ch.y + sittingOffset - spriteVisualHeight - 4) * editor.zoom,
+          left: overlayMetrics.offsetX + ch.x * overlayMetrics.scale,
+          top: overlayMetrics.offsetY + (ch.y + sittingOffset - spriteVisualHeight - 4) * overlayMetrics.scale,
           isQuestionPet: Boolean(ch.isQuestionPet),
           zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
         };
@@ -3413,15 +3411,10 @@ function App() {
     if (!playerProfile || appMode !== "interactive" || !containerRef.current) return null;
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return null;
-    const rect = containerRef.current.getBoundingClientRect();
-    const layout = officeState.getLayout();
-    const mapW = layout.cols * TILE_SIZE * editor.zoom;
-    const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
+    if (!overlayMetrics) return null;
     return {
-      left: offsetX + player.x * editor.zoom,
-      top: offsetY + (player.y - 34) * editor.zoom,
+      left: overlayMetrics.offsetX + player.x * overlayMetrics.scale,
+      top: overlayMetrics.offsetY + (player.y - 34) * overlayMetrics.scale,
       zoomScale: Math.max(0.42, Math.min(0.72, editor.zoom / 7)),
     };
   })();
