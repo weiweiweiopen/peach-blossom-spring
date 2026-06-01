@@ -60,7 +60,7 @@ import { OfficeState } from "./office/engine/officeState.js";
 import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { findPath, isWalkable } from "./office/layout/tileMap.js";
 import { getCharacterSprites } from "./office/sprites/index.js";
-import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
+import { CharacterState, Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
 import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   appearanceToSpriteData,
@@ -3359,14 +3359,23 @@ function App() {
     const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
     return Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
-      .map((ch) => ({
-        id: ch.id,
-        name: ch.folderName ?? "",
-        left: offsetX + ch.x * editor.zoom,
-        top: offsetY + (ch.y - 32) * editor.zoom,
-        isQuestionPet: Boolean(ch.isQuestionPet),
-        zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
-      }));
+      .map((ch) => {
+        const spriteRows =
+          ch.spriteAnimationsByDirection?.[ch.dir]?.[0]?.length ??
+          ch.spriteAnimation?.[0]?.length ??
+          ch.spriteOverride?.length ??
+          32;
+        const spriteVisualHeight = ch.imageSpriteSize ?? spriteRows;
+        const sittingOffset = ch.state === CharacterState.TYPE ? 8 : 0;
+        return {
+          id: ch.id,
+          name: ch.folderName ?? "",
+          left: offsetX + ch.x * editor.zoom,
+          top: offsetY + (ch.y + sittingOffset - spriteVisualHeight - 4) * editor.zoom,
+          isQuestionPet: Boolean(ch.isQuestionPet),
+          zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
+        };
+      });
   })();
 
   // Show "Press R to rotate" hint when a rotatable item is selected or being placed
