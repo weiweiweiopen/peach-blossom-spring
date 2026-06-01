@@ -4444,32 +4444,39 @@ function App() {
 
           {PET_WINDOWS_ENABLED && shouldShowMobileStatsBar && (
             <button
-              className="mobile-stats-bar"
+              className="mobile-stats-bar mobile-stats-bar--marquee"
               type="button"
               onClick={() => setMobileRulesOpen(true)}
               data-no-mobile-drag="true"
             >
-              {(["zh-TW", "ja", "th"] as LanguageCode[]).includes(selectedLanguage) ? (
-                <>
-                  <span>🐣 pet</span>
-                  <span>t{simSnapshot?.tick ?? 0}</span>
-                  {questionLintScoreEntries(questionLintHud, selectedLanguage).slice(0, 3).map(([label, value], index) => (
-                    <span key={label}>{index === 0 ? "S" : index === 1 ? "E" : "X"}{value.toFixed(0)}</span>
-                  ))}
-                  {terrainState && <span>Ev{terrainState.evidence}</span>}
-                  <span>Q{localizedPetLintGapInbox.length}</span>
-                </>
-              ) : (
-                <>
-                  <span>🐣 {PET_HUD_COPY[selectedLanguage].agent}</span>
-                  <span>{t(selectedLanguage, "hud.tick")} {simSnapshot?.tick ?? 0}</span>
-                  {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
-                    <span key={label}>{label} {value.toFixed(0)}</span>
-                  ))}
-                  {terrainState && <span>{terrainCopy.evidence} {terrainState.evidence}</span>}
-                  <span>{petLintGapTitle(selectedLanguage)} {localizedPetLintGapInbox.length}</span>
-                </>
+              {simSnapshot?.thronglets[0] && (
+                <QuestionPetPreview
+                  question={simSnapshot.thronglets[0].question.text}
+                  appearance={simSnapshot.thronglets[0].appearance}
+                  size={1}
+                  socialSignals={simSnapshot.thronglets[0].state}
+                  currentAction={simSnapshot.thronglets[0].currentAction}
+                />
               )}
+              <span className="mobile-stats-marquee" aria-label="Question pet status">
+                <span className="mobile-stats-marquee-track">
+                  <span>PET</span>
+                  <span>T{simSnapshot?.tick ?? 0}</span>
+                  {questionLintScoreEntries(questionLintHud, selectedLanguage).slice(0, 3).map(([label, value], index) => (
+                    <span key={label}>{index === 0 ? "SP" : index === 1 ? "EV" : "BR"}{value.toFixed(0)}</span>
+                  ))}
+                  {terrainState && (
+                    <>
+                      <span>TE{terrainState.evidence}</span>
+                      <span>TR{terrainState.relation}</span>
+                      <span>TC{terrainState.contradiction}</span>
+                      <span>TM{terrainState.missingNode}</span>
+                    </>
+                  )}
+                  <span>L{localizedPetLintGapInbox.length}</span>
+                  <span>{localizedPetLintGapInbox[0]?.text ?? petLintGapCopy.empty}</span>
+                </span>
+              </span>
             </button>
           )}
 

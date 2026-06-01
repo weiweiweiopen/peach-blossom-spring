@@ -384,81 +384,54 @@
   display: none !important;
 }
 
-/* Mobile pet HUD must follow the compact English visual scale for zh/ja/th.
-   Typography-only: no positioning, width, height, padding, display, or transform changes. */
+
+/* Unified mobile pet HUD content: all languages share English abbreviations.
+   Preserve the original HUD frame; only organize text inside and animate overflow. */
 @media (max-width: 700px), (pointer: coarse) {
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="th"] .mobile-stats-bar {
-    font-size: clamp(9px, 2.45vw, 11px) !important;
-    line-height: 1.05 !important;
-    font-weight: 500 !important;
-    letter-spacing: 0 !important;
+  .mobile-stats-bar.mobile-stats-bar--marquee {
+    font-size: 14px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    overflow: hidden !important;
   }
 
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar :where(span, strong, b, em),
-  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar :where(span, strong, b, em),
-  .pbs-interaction-root[data-language="th"] .mobile-stats-bar :where(span, strong, b, em) {
+  .mobile-stats-bar.mobile-stats-bar--marquee .question-pet-preview {
+    flex: 0 0 auto !important;
+    width: 16px !important;
+    height: 32px !important;
+    border-width: 0 !important;
+    transform: scale(0.72) !important;
+    transform-origin: center center !important;
+    margin-right: 2px !important;
+  }
+
+  .mobile-stats-marquee {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+
+  .mobile-stats-marquee-track {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    white-space: nowrap !important;
+    font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
     font-size: inherit !important;
     line-height: inherit !important;
     font-weight: inherit !important;
-    letter-spacing: inherit !important;
+    animation: mobileStatsMarquee 18s linear infinite !important;
+    will-change: transform;
   }
 
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-rules-drawer,
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-rules-drawer :where(p, span, button, strong, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large),
-  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer,
-  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer :where(p, span, button, strong, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large),
-  .pbs-interaction-root[data-language="th"] .mobile-rules-drawer,
-  .pbs-interaction-root[data-language="th"] .mobile-rules-drawer :where(p, span, button, strong, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large) {
-    font-size: clamp(10px, 2.65vw, 12px) !important;
-    line-height: 1.16 !important;
-    font-weight: 500 !important;
-    letter-spacing: 0 !important;
-  }
-
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-rules-drawer h2,
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-rules-drawer :where(h3, .text-lg, .type-heading),
-  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer h2,
-  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer :where(h3, .text-lg, .type-heading),
-  .pbs-interaction-root[data-language="th"] .mobile-rules-drawer h2,
-  .pbs-interaction-root[data-language="th"] .mobile-rules-drawer :where(h3, .text-lg, .type-heading) {
-    font-size: clamp(12px, 3.15vw, 15px) !important;
-    line-height: 1.12 !important;
-    font-weight: 500 !important;
-    letter-spacing: 0 !important;
-  }
-
-  .pbs-interaction-root[data-language="ja"] :where(.mobile-stats-bar, .mobile-rules-drawer, .mobile-rules-drawer *) {
-    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
-  }
-
-  .pbs-interaction-root[data-language="th"] :where(.mobile-stats-bar, .mobile-rules-drawer, .mobile-rules-drawer *) {
-    font-family: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif !important;
+  .mobile-stats-marquee-track > span {
+    flex: 0 0 auto !important;
+    font: inherit !important;
   }
 }
 
-
-/* CJK/Thai mobile pet HUD only: keep en/de/id original copy and original sizing. */
-@media (max-width: 700px), (pointer: coarse) {
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="th"] .mobile-stats-bar {
-    font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
-    font-size: clamp(8px, 2.05vw, 10px) !important;
-    line-height: 1 !important;
-    font-weight: 400 !important;
-    letter-spacing: -0.02em !important;
-    white-space: nowrap !important;
-  }
-
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar :where(span, strong, b, em),
-  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar :where(span, strong, b, em),
-  .pbs-interaction-root[data-language="th"] .mobile-stats-bar :where(span, strong, b, em) {
-    font-family: inherit !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    font-weight: inherit !important;
-    letter-spacing: inherit !important;
-  }
+@keyframes mobileStatsMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-55%); }
 }
