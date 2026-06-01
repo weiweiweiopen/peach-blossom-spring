@@ -9377,13 +9377,9 @@ body[data-language="ja"],
 }
 
 .question-pet-preview,
-.question-pet-preview span,
 .question-status-panel .question-pet-preview,
-.question-status-panel .question-pet-preview span,
 .pet-runner-option .question-pet-preview,
-.pet-runner-option .question-pet-preview span,
-.pet-detail-header .question-pet-preview,
-.pet-detail-header .question-pet-preview span {
+.pet-detail-header .question-pet-preview {
   background-color: transparent !important;
 }
 

@@ -45,7 +45,7 @@ function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
           <div className="retro-title-card" data-language={language}>
             <p className="retro-kicker">Non-Governmental Matters</p>
             <h1>{t(language, "home.title")}</h1>
-            <p>A LLM wiki for science art community</p>
+            <p>A LLM WIKI FOR SCIENCE ART COMMUNITY</p>
             <button className="retro-start-button" type="button" onClick={onStart} onKeyDown={handleKeyDown} autoFocus>
               PRESS START
             </button>
