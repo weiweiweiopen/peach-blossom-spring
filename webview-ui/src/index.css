@@ -423,6 +423,16 @@ html[data-language="th"],
 }
 
 
+/* Keep Japanese kana and kanji on the same CJK fallback face.
+   FS Pixel Sans contains some kana (for example の) but not all kanji,
+   which makes mixed labels such as 知識の穴 switch typefaces mid-word. */
+:lang(ja),
+[lang="ja"],
+[data-language="ja"],
+[data-language="ja"] * {
+  font-family: "CJK Pixel Match", "FS Pixel Sans", sans-serif !important;
+}
+
 .boot-loading-screen {
   display: grid;
   width: 100%;

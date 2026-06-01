@@ -771,12 +771,7 @@ function shuffleCopy<T>(items: T[]): T[] {
 }
 
 function ComputerDialogueAvatar({ label }: { label: string }) {
-  const [frame, setFrame] = useState(0);
-  useEffect(() => {
-    const id = window.setInterval(() => setFrame((current) => current + 1), 90);
-    return () => window.clearInterval(id);
-  }, []);
-  const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
+  const src = `${import.meta.env.BASE_URL}assets/campfire.gif`;
   return (
     <div className="dialogue-avatar-wrap">
       <div className="dialogue-pixel-avatar-frame rpg-dialogue-avatar-frame--campfire" aria-hidden="true">
@@ -784,7 +779,7 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
           src={src}
           alt=""
           className="block max-w-none object-contain"
-          style={{ imageRendering: "pixelated" }}
+          style={{ imageRendering: "pixelated", width: 184, height: 184 }}
         />
       </div>
       <span className="dialogue-avatar-label">{label}</span>
