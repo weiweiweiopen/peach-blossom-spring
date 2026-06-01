@@ -323,3 +323,58 @@
   font-size: inherit !important;
   line-height: inherit !important;
 }
+
+/* Targeted HUD fixes: online monitor geometry + Japanese pet HUD text only. */
+@media (max-width: 700px), (pointer: coarse) {
+  .online-player-marquee {
+    /* Short strip between the left map zoom buttons and right peach/globe buttons. */
+    top: max(7px, var(--safe-top)) !important;
+    left: calc(var(--safe-left) + 70px) !important;
+    right: calc(var(--safe-right) + 118px) !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 24px !important;
+    transform: none !important;
+    border-width: 2px !important;
+    box-shadow: 1px 1px 0 #000 !important;
+  }
+
+  .online-player-marquee-track {
+    gap: 18px !important;
+    padding-inline: 8px !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    animation-duration: 14s !important;
+  }
+
+  .online-player-marquee-track span[data-local="true"] {
+    color: #0f5f46 !important;
+  }
+
+  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer,
+  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer :where(p, span, button, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large),
+  .pbs-interaction-root[data-language="ja"] .question-status-panel,
+  .pbs-interaction-root[data-language="ja"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large) {
+    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+    font-size: clamp(13px, 3.35vw, 16px) !important;
+    line-height: 1.24 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer h2,
+  .pbs-interaction-root[data-language="ja"] .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
+    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+    font-size: clamp(17px, 4.25vw, 21px) !important;
+    line-height: 1.16 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer button,
+  .pbs-interaction-root[data-language="ja"] .question-status-panel button {
+    font-size: clamp(13px, 3.35vw, 16px) !important;
+    line-height: 1.18 !important;
+  }
+}

@@ -3417,14 +3417,14 @@ function App() {
     };
   })();
 
-  const onlinePlayerTickerItems = (() => {
-    if (!playerProfile || !multiplayerConfig) return [] as Array<{ id: string; name: string }>;
+  const onlinePlayerTickerItems: Array<{ id: string; name: string; isLocal?: boolean }> = (() => {
+    if (!playerProfile || !multiplayerConfig) return [];
     const localId = getOrCreatePlayerId();
-    const localShortId = localId.slice(-6).toUpperCase();
+    const localShortId = localId.slice(-4).toUpperCase();
     return [
-      { id: localShortId, name: playerProfile.name || "Player" },
+      { id: localShortId, name: playerProfile.name || "Player", isLocal: true },
       ...Array.from(remotePresences.values()).map((presence) => ({
-        id: presence.playerId.slice(-6).toUpperCase(),
+        id: presence.playerId.slice(-4).toUpperCase(),
         name: presence.displayName || "Player",
       })),
     ];
@@ -3786,8 +3786,8 @@ function App() {
             <div className="online-player-marquee" aria-label="Online players">
               <div className="online-player-marquee-track">
                 {[...onlinePlayerTickerItems, ...onlinePlayerTickerItems].map((player, index) => (
-                  <span key={`${player.id}-${index}`}>
-                    #{player.id} {player.name}
+                  <span key={`${player.id}-${index}`} data-local={player.isLocal ? "true" : undefined}>
+                    {player.isLocal ? "YOU" : "P"} {player.name} · {player.id}
                   </span>
                 ))}
               </div>
