@@ -8768,26 +8768,3 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     line-height: 1.35 !important;
   }
 }
-
-/* 2026-06-01 final mobile nearby-NPC talk prompt override.
-   The tag inherits map zoom through --npc-tag-scale, so raise its base font
-   far above ordinary name tags to visually match the central campfire prompt. */
-.pbs-interaction-root .npc-name-tag.mobile-talk-prompt,
-.pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact,
-.pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact p {
-  font-size: clamp(26px, 5.8vw, 34px) !important;
-  line-height: 1.18 !important;
-  padding: 12px 18px !important;
-}
-
-@media (max-width: 700px), (pointer: coarse) {
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt,
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact,
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact p {
-    font-size: 32px !important;
-    line-height: 1.15 !important;
-    min-width: 190px !important;
-    min-height: 58px !important;
-    padding: 12px 18px !important;
-  }
-}
