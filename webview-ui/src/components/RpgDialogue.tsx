@@ -132,6 +132,303 @@ const personaQuestionSeeds: Record<string, string[]> = {
   ],
 };
 
+type NpcGuideProfile = {
+  opener: Record<LanguageCode, string>;
+  questions: Record<LanguageCode, string[]>;
+};
+
+const npcGuideProfiles: Record<string, NpcGuideProfile> = {
+  abao: {
+    opener: {
+      'zh-TW': '我喜歡把太陽能、雷射、旅行和奇怪寓言混在一起。你想知道科學藝術怎麼變成一個故事嗎？',
+      en: 'I like mixing solar material, lasers, travel, and strange fables. Want to see how science art can become a story?',
+      id: 'Aku suka mencampur bahan surya, laser, perjalanan, dan dongeng aneh. Mau melihat seni-sains menjadi cerita?',
+      de: 'Ich mische gern Solarmaterial, Laser, Reisen und seltsame Fabeln. Willst du sehen, wie Science-Art zur Geschichte wird?',
+      ja: '太陽素材、レーザー、旅、変な寓話を混ぜるのが好きです。科学芸術が物語になるところを見たいですか？',
+      th: 'ฉันชอบผสมวัสดุพลังงานแสงอาทิตย์ เลเซอร์ การเดินทาง และนิทานแปลก ๆ อยากดูไหมว่าวิทยาศาสตร์ศิลป์กลายเป็นเรื่องเล่าได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['太陽能材料可以怎麼用在藝術作品裡？', '旅行為什麼會變成一種研究方法？', '雷射和寓言可以怎麼放在同一個作品裡？'],
+      en: ['How can solar materials be used in artworks?', 'Why can travel become a research method?', 'How can lasers and fables belong in the same artwork?'],
+      id: ['Bagaimana bahan surya bisa dipakai dalam karya seni?', 'Mengapa perjalanan bisa menjadi metode riset?', 'Bagaimana laser dan dongeng bisa berada dalam karya yang sama?'],
+      de: ['Wie können Solarmaterialien in Kunstwerken verwendet werden?', 'Warum kann Reisen eine Forschungsmethode sein?', 'Wie passen Laser und Fabeln in dasselbe Werk?'],
+      ja: ['太陽素材は作品の中でどう使えますか？', 'なぜ旅は研究方法になりますか？', 'レーザーと寓話は同じ作品にどう入れられますか？'],
+      th: ['วัสดุพลังงานแสงอาทิตย์ใช้ในงานศิลปะได้อย่างไร?', 'ทำไมการเดินทางจึงเป็นวิธีวิจัยได้?', 'เลเซอร์กับนิทานอยู่ในงานเดียวกันได้อย่างไร?'],
+    },
+  },
+  'andreas-siagian': {
+    opener: {
+      'zh-TW': '我在意的是鄰里裡真的有人會用、會修、會照顧的技術。你想知道實驗室怎麼長在日常生活裡嗎？',
+      en: 'I care about tools that neighbors can really use, repair, and care for. Want to know how a lab grows inside everyday life?',
+      id: 'Aku peduli pada alat yang benar-benar bisa dipakai, diperbaiki, dan dirawat tetangga. Mau tahu lab tumbuh dalam hidup sehari-hari?',
+      de: 'Mich interessieren Werkzeuge, die Nachbarinnen wirklich nutzen, reparieren und pflegen können. Willst du wissen, wie ein Labor im Alltag wächst?',
+      ja: '近所の人が本当に使い、直し、世話できる道具が大事です。ラボが日常の中で育つ様子を知りたいですか？',
+      th: 'ฉันสนใจเครื่องมือที่เพื่อนบ้านใช้ ซ่อม และดูแลได้จริง อยากรู้ไหมว่าแล็บเติบโตในชีวิตประจำวันอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['什麼是 Lifepatch 的社群實驗室？', '為什麼鄰里關係比昂貴設備更重要？', '開放科學在印尼城市裡可以怎麼做？'],
+      en: ['What is the Lifepatch community lab?', 'Why can neighborhood relations matter more than expensive equipment?', 'How can open science work in an Indonesian city?'],
+      id: ['Apa itu laboratorium komunitas Lifepatch?', 'Mengapa relasi lingkungan bisa lebih penting daripada alat mahal?', 'Bagaimana sains terbuka berjalan di kota Indonesia?'],
+      de: ['Was ist das Community-Labor Lifepatch?', 'Warum können Nachbarschaftsbeziehungen wichtiger sein als teure Geräte?', 'Wie kann offene Wissenschaft in einer indonesischen Stadt funktionieren?'],
+      ja: ['Lifepatch のコミュニティ・ラボとは何ですか？', 'なぜ高価な機材より近隣関係が大事なのですか？', 'インドネシアの都市でオープンサイエンスはどう行えますか？'],
+      th: ['แล็บชุมชน Lifepatch คืออะไร?', 'ทำไมความสัมพันธ์ในละแวกบ้านจึงสำคัญกว่าอุปกรณ์แพง ๆ?', 'วิทยาศาสตร์เปิดทำงานในเมืองอินโดนีเซียได้อย่างไร?'],
+    },
+  },
+  'anastassia-pistofidou': {
+    opener: {
+      'zh-TW': '我喜歡把課程拆成可以旅行、可以被別人改造的節點。你想知道學校怎麼變成一張國際互助網嗎？',
+      en: 'I like turning courses into traveling nodes that other people can remake. Want to see how a school becomes an international support network?',
+      id: 'Aku suka mengubah kursus menjadi simpul bergerak yang bisa dibuat ulang orang lain. Mau melihat sekolah menjadi jaringan bantuan internasional?',
+      de: 'Ich mache aus Kursen gern reisende Knoten, die andere neu bauen können. Willst du sehen, wie Schule zu einem internationalen Hilfsnetz wird?',
+      ja: '授業を旅するノードにして、他の人が作り替えられる形にするのが好きです。学校が国際的な支援網になるところを見たいですか？',
+      th: 'ฉันชอบเปลี่ยนหลักสูตรให้เป็นโหนดที่เดินทางและถูกดัดแปลงได้ อยากดูไหมว่าโรงเรียนกลายเป็นเครือข่ายช่วยเหลือนานาชาติอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['Fabricademy 是怎麼教電子織品的？', '為什麼分散式節點可以變成一所學校？', '同儕評量在黑客營裡怎麼運作？'],
+      en: ['How does Fabricademy teach electronic textiles?', 'Why can distributed nodes become a school?', 'How does peer review work inside a hacker camp?'],
+      id: ['Bagaimana Fabricademy mengajarkan tekstil elektronik?', 'Mengapa simpul tersebar bisa menjadi sekolah?', 'Bagaimana penilaian sejawat bekerja di kamp peretas?'],
+      de: ['Wie lehrt Fabricademy elektronische Textilien?', 'Warum können verteilte Knoten zu einer Schule werden?', 'Wie funktioniert Peer-Review in einem Hacker-Camp?'],
+      ja: ['Fabricademy は電子テキスタイルをどう教えますか？', 'なぜ分散したノードが学校になれるのですか？', 'ハッカーキャンプで相互評価はどう働きますか？'],
+      th: ['Fabricademy สอนสิ่งทออิเล็กทรอนิกส์อย่างไร?', 'ทำไมโหนดที่กระจายกันจึงกลายเป็นโรงเรียนได้?', 'การประเมินโดยเพื่อนทำงานในแคมป์แฮกเกอร์อย่างไร?'],
+    },
+  },
+  'christian-dils': {
+    opener: {
+      'zh-TW': '我會先問：這台機器壞了誰修？規則誰懂？你想知道一個技術公地怎麼不被用壞嗎？',
+      en: 'I first ask: who repairs this machine, and who understands the rules? Want to know how a technical commons avoids breaking down?',
+      id: 'Aku pertama bertanya: siapa memperbaiki mesin ini, dan siapa paham aturannya? Mau tahu commons teknis tidak cepat rusak?',
+      de: 'Ich frage zuerst: Wer repariert diese Maschine, und wer versteht die Regeln? Willst du wissen, wie technische Commons nicht zerfallen?',
+      ja: 'まず聞きます。この機械は誰が直し、誰がルールを理解していますか？技術コモンズが壊れない方法を知りたいですか？',
+      th: 'ฉันถามก่อนว่าเครื่องนี้เสียแล้วใครซ่อม และใครเข้าใจกติกา อยากรู้ไหมว่าคอมมอนส์ทางเทคนิคไม่พังได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['為什麼維修也是社群文化的一部分？', '標準作業流程可以怎麼保護開放實驗室？', '健康的技術公地需要哪些規則？'],
+      en: ['Why is maintenance part of community culture?', 'How can standard procedures protect an open lab?', 'What rules does a healthy technical commons need?'],
+      id: ['Mengapa perawatan menjadi bagian budaya komunitas?', 'Bagaimana prosedur standar melindungi lab terbuka?', 'Aturan apa yang dibutuhkan commons teknis yang sehat?'],
+      de: ['Warum ist Wartung Teil von Community-Kultur?', 'Wie schützen Standardabläufe ein offenes Labor?', 'Welche Regeln braucht ein gesundes technisches Commons?'],
+      ja: ['なぜ保守はコミュニティ文化の一部なのですか？', '標準手順はオープンラボをどう守りますか？', '健全な技術コモンズにはどんな規則が必要ですか？'],
+      th: ['ทำไมการบำรุงรักษาจึงเป็นส่วนหนึ่งของวัฒนธรรมชุมชน?', 'ขั้นตอนมาตรฐานปกป้องแล็บเปิดได้อย่างไร?', 'คอมมอนส์ทางเทคนิคที่แข็งแรงต้องมีกติกาอะไร?'],
+    },
+  },
+  'giulia-tomasello': {
+    opener: {
+      'zh-TW': '我把感測器放到身體附近時，第一個問題永遠是同意和照護。你想知道電子織品怎麼不只是一件酷衣服嗎？',
+      en: 'When I put sensors near bodies, the first questions are consent and care. Want to know why electronic textiles are more than cool clothing?',
+      id: 'Saat sensor dekat tubuh, pertanyaan pertama adalah persetujuan dan perawatan. Mau tahu mengapa tekstil elektronik lebih dari pakaian keren?',
+      de: 'Wenn Sensoren nah an Körper kommen, frage ich zuerst nach Zustimmung und Care. Willst du wissen, warum elektronische Textilien mehr sind als coole Kleidung?',
+      ja: 'センサーを身体の近くに置く時、最初の問いは同意とケアです。電子テキスタイルが格好いい服以上のものだと知りたいですか？',
+      th: 'เมื่อวางเซนเซอร์ใกล้ร่างกาย คำถามแรกคือความยินยอมและการดูแล อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์ไม่ใช่แค่เสื้อผ้าเท่ ๆ?',
+    },
+    questions: {
+      'zh-TW': ['你想了解什麼是電子織品嗎？', '為什麼身體資料需要同意和照護？', '女性主義科技工作坊可以怎麼設計？'],
+      en: ['Do you want to understand electronic textiles?', 'Why do body data need consent and care?', 'How can a feminist technology workshop be designed?'],
+      id: ['Mau memahami tekstil elektronik?', 'Mengapa data tubuh membutuhkan persetujuan dan perawatan?', 'Bagaimana merancang lokakarya teknologi feminis?'],
+      de: ['Möchtest du elektronische Textilien verstehen?', 'Warum brauchen Körperdaten Zustimmung und Care?', 'Wie entwirft man einen feministischen Technologie-Workshop?'],
+      ja: ['電子テキスタイルとは何か知りたいですか？', 'なぜ身体データには同意とケアが必要ですか？', 'フェミニスト技術ワークショップはどう設計できますか？'],
+      th: ['อยากเข้าใจไหมว่าสิ่งทออิเล็กทรอนิกส์คืออะไร?', 'ทำไมข้อมูลร่างกายต้องมีความยินยอมและการดูแล?', 'เวิร์กช็อปเทคโนโลยีเฟมินิสต์ออกแบบได้อย่างไร?'],
+    },
+  },
+  'jonathan-minchin': {
+    opener: {
+      'zh-TW': '我喜歡把蜂箱、森林、感測器和農地放在同一張桌上。你想知道製造實驗室怎麼照顧一片土地嗎？',
+      en: 'I like putting beehives, forests, sensors, and farmland on the same table. Want to know how a fab lab can care for land?',
+      id: 'Aku suka menaruh sarang lebah, hutan, sensor, dan lahan tani di meja yang sama. Mau tahu fab lab merawat tanah?',
+      de: 'Ich lege gern Bienenstöcke, Wälder, Sensoren und Felder auf denselben Tisch. Willst du wissen, wie ein Fab Lab Land pflegt?',
+      ja: '蜂箱、森、センサー、農地を同じテーブルに置くのが好きです。ファブラボが土地を世話する方法を知りたいですか？',
+      th: 'ฉันชอบวางรังผึ้ง ป่า เซนเซอร์ และพื้นที่เกษตรไว้บนโต๊ะเดียวกัน อยากรู้ไหมว่าแฟ็บแล็บดูแลผืนดินได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['開源蜂箱如何連結感測器和蜂群照護？', 'Green Fab Lab 為什麼把森林當成實驗室？', '農業機器人可以怎麼服務社群而不是只展示科技？'],
+      en: ['How do open source beehives connect sensors and bee care?', 'Why does Green Fab Lab treat the forest as a laboratory?', 'How can farm robots serve communities instead of only showing technology?'],
+      id: ['Bagaimana sarang lebah sumber terbuka menghubungkan sensor dan perawatan lebah?', 'Mengapa Green Fab Lab memperlakukan hutan sebagai laboratorium?', 'Bagaimana robot pertanian melayani komunitas, bukan hanya memamerkan teknologi?'],
+      de: ['Wie verbinden offene Bienenstöcke Sensoren und Bienenpflege?', 'Warum behandelt Green Fab Lab den Wald als Labor?', 'Wie können Agrarroboter Communities dienen statt nur Technik zu zeigen?'],
+      ja: ['オープンソース蜂箱はセンサーと蜂の世話をどう結びますか？', 'Green Fab Lab はなぜ森を実験室として扱いますか？', '農業ロボットは技術展示ではなくコミュニティにどう役立ちますか？'],
+      th: ['รังผึ้งโอเพนซอร์สเชื่อมเซนเซอร์กับการดูแลผึ้งอย่างไร?', 'ทำไม Green Fab Lab จึงมองป่าเป็นห้องทดลอง?', 'หุ่นยนต์เกษตรรับใช้ชุมชนแทนการโชว์เทคโนโลยีได้อย่างไร?'],
+    },
+  },
+  'marc-dusseiller': {
+    opener: {
+      'zh-TW': '我最喜歡像專業旅行者那樣把實驗室塞進行李箱。你想用便宜的方法自己製造高科技實驗工具嗎？',
+      en: 'My favorite trick is traveling like a pro with a lab in the luggage. Want to build high-tech lab tools cheaply by yourself?',
+      id: 'Trik favoritku adalah bepergian seperti profesional dengan lab di koper. Mau membuat alat lab canggih secara murah?',
+      de: 'Mein Lieblingstrick ist Reisen wie ein Profi, mit einem Labor im Gepäck. Willst du Hightech-Laborwerkzeuge billig selbst bauen?',
+      ja: 'お気に入りは、実験室を荷物に入れてプロのように旅することです。安くハイテク実験道具を自作したいですか？',
+      th: 'เคล็ดลับโปรดของฉันคือเดินทางแบบมือโปรพร้อมแล็บในกระเป๋า อยากสร้างเครื่องมือแล็บไฮเทคราคาถูกเองไหม?',
+    },
+    questions: {
+      'zh-TW': ['你想知道怎麼便宜地自製實驗工具嗎？', '你們多久辦一次黑客營？在哪辦？', '為什麼失敗、煮飯和焊接可以變成教學方法？'],
+      en: ['Do you want to know how to build cheap lab tools yourself?', 'How often do you run hacker camps, and where do they happen?', 'Why can failure, cooking, and soldering become a teaching method?'],
+      id: ['Mau tahu cara membuat alat lab murah sendiri?', 'Seberapa sering kalian membuat kamp peretas, dan di mana?', 'Mengapa kegagalan, memasak, dan menyolder bisa menjadi metode belajar?'],
+      de: ['Willst du wissen, wie man billige Laborwerkzeuge selbst baut?', 'Wie oft veranstaltet ihr Hacker-Camps, und wo finden sie statt?', 'Warum können Scheitern, Kochen und Löten zu einer Lehrmethode werden?'],
+      ja: ['安い実験道具を自作する方法を知りたいですか？', 'ハッカーキャンプはどのくらいの頻度で、どこで開きますか？', 'なぜ失敗、料理、はんだ付けが教え方になるのですか？'],
+      th: ['อยากรู้วิธีทำเครื่องมือแล็บราคาถูกเองไหม?', 'พวกคุณจัดแคมป์แฮกเกอร์บ่อยแค่ไหน และจัดที่ไหน?', 'ทำไมความล้มเหลว การทำอาหาร และการบัดกรีจึงเป็นวิธีสอนได้?'],
+    },
+  },
+  'mika-satomi': {
+    opener: {
+      'zh-TW': '我喜歡讓布、線、電路和人的願望一起工作。你想知道電子織品怎麼從小承諾開始長大嗎？',
+      en: 'I like making fabric, thread, circuits, and people’s wishes work together. Want to know how electronic textiles grow from small promises?',
+      id: 'Aku suka membuat kain, benang, rangkaian, dan harapan orang bekerja bersama. Mau tahu tekstil elektronik tumbuh dari janji kecil?',
+      de: 'Ich lasse gern Stoff, Faden, Schaltungen und Wünsche zusammenarbeiten. Willst du wissen, wie elektronische Textilien aus kleinen Versprechen wachsen?',
+      ja: '布、糸、回路、人の願いを一緒に働かせるのが好きです。電子テキスタイルが小さな約束から育つ様子を知りたいですか？',
+      th: 'ฉันชอบให้ผ้า ด้าย วงจร และความปรารถนาของผู้คนทำงานร่วมกัน อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์เติบโตจากคำมั่นเล็ก ๆ อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['你想了解什麼是電子織品嗎？', 'KOBAKANT 為什麼要分享做法而不只展示作品？', '願望牆如何幫社群決定下一步？'],
+      en: ['Do you want to understand electronic textiles?', 'Why does KOBAKANT share how-to knowledge instead of only showing finished work?', 'How can a wish wall help a community choose its next step?'],
+      id: ['Mau memahami tekstil elektronik?', 'Mengapa KOBAKANT berbagi cara membuat, bukan hanya karya jadi?', 'Bagaimana dinding harapan membantu komunitas memilih langkah berikutnya?'],
+      de: ['Möchtest du elektronische Textilien verstehen?', 'Warum teilt KOBAKANT Anleitungen statt nur fertige Arbeiten zu zeigen?', 'Wie hilft eine Wunschwand einer Community beim nächsten Schritt?'],
+      ja: ['電子テキスタイルとは何か知りたいですか？', 'KOBAKANT はなぜ完成品だけでなく作り方を共有するのですか？', '願いの壁はコミュニティの次の一歩をどう助けますか？'],
+      th: ['อยากเข้าใจไหมว่าสิ่งทออิเล็กทรอนิกส์คืออะไร?', 'ทำไม KOBAKANT จึงแบ่งปันวิธีทำ ไม่ใช่แค่โชว์ผลงานสำเร็จ?', 'กำแพงความปรารถนาช่วยชุมชนเลือกก้าวต่อไปอย่างไร?'],
+    },
+  },
+  'rully-shabara': {
+    opener: {
+      'zh-TW': '我比較相信圍成一圈、一起吃飯、一起練習，而不是把營隊變成商品。你想知道聲音社群怎麼不被產業吞掉嗎？',
+      en: 'I trust circles, meals, and practice more than turning camps into products. Want to know how a voice community avoids being swallowed by industry?',
+      id: 'Aku lebih percaya lingkaran, makan bersama, dan latihan daripada mengubah kamp menjadi produk. Mau tahu komunitas suara tidak ditelan industri?',
+      de: 'Ich vertraue Kreisen, gemeinsamen Mahlzeiten und Übung mehr als Camps als Produkt. Willst du wissen, wie eine Stimm-Community nicht von Industrie geschluckt wird?',
+      ja: 'キャンプを商品にするより、輪、食事、練習を信じます。声のコミュニティが産業に飲み込まれない方法を知りたいですか？',
+      th: 'ฉันเชื่อวงล้อม อาหารร่วมกัน และการฝึก มากกว่าการเปลี่ยนแคมป์เป็นสินค้า อยากรู้ไหมว่าชุมชนเสียงไม่ถูกอุตสาหกรรมกลืนได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['為什麼身體聲音練習可以變成社群方法？', '營隊什麼時候會被產業化？', '一起吃飯和圍圈討論為什麼重要？'],
+      en: ['Why can body-voice practice become a community method?', 'When does a camp become industrialized?', 'Why do shared meals and circle discussions matter?'],
+      id: ['Mengapa latihan suara tubuh bisa menjadi metode komunitas?', 'Kapan kamp berubah menjadi industri?', 'Mengapa makan bersama dan diskusi melingkar penting?'],
+      de: ['Warum kann Körper-Stimm-Praxis eine Community-Methode werden?', 'Wann wird ein Camp industrialisiert?', 'Warum sind gemeinsames Essen und Kreisgespräche wichtig?'],
+      ja: ['身体の声の練習はなぜコミュニティの方法になりますか？', 'キャンプはいつ産業化されますか？', '一緒に食べることや輪で話すことはなぜ重要ですか？'],
+      th: ['ทำไมการฝึกเสียงจากร่างกายจึงเป็นวิธีของชุมชนได้?', 'แคมป์กลายเป็นอุตสาหกรรมเมื่อไร?', 'ทำไมการกินร่วมกันและการคุยเป็นวงจึงสำคัญ?'],
+    },
+  },
+  'ryu-oyama': {
+    opener: {
+      'zh-TW': '我把島嶼的距離當成方法，不是麻煩。你想知道偏遠地方怎麼反而能保護活動的節奏嗎？',
+      en: 'I treat island distance as a method, not a problem. Want to know how remoteness can protect the rhythm of an event?',
+      id: 'Aku melihat jarak pulau sebagai metode, bukan masalah. Mau tahu tempat jauh bisa melindungi ritme acara?',
+      de: 'Ich behandle Inseldistanz als Methode, nicht als Problem. Willst du wissen, wie Abgelegenheit den Rhythmus einer Veranstaltung schützt?',
+      ja: '島の距離を問題ではなく方法として扱います。遠さが活動のリズムを守る方法を知りたいですか？',
+      th: 'ฉันมองระยะห่างของเกาะเป็นวิธี ไม่ใช่ปัญหา อยากรู้ไหมว่าความห่างไกลปกป้องจังหวะของกิจกรรมได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['孤立為什麼可以是一種資源？', '島嶼節奏如何改變黑客營的時間感？', '去中心化活動要怎麼安排地點和交通？'],
+      en: ['Why can isolation become a resource?', 'How does island rhythm change the timing of a hacker camp?', 'How should a decentralized event arrange place and travel?'],
+      id: ['Mengapa isolasi bisa menjadi sumber daya?', 'Bagaimana ritme pulau mengubah waktu kamp peretas?', 'Bagaimana acara terdesentralisasi mengatur tempat dan perjalanan?'],
+      de: ['Warum kann Isolation eine Ressource sein?', 'Wie verändert Inselrhythmus die Zeit eines Hacker-Camps?', 'Wie organisiert ein dezentrales Ereignis Ort und Reise?'],
+      ja: ['孤立はなぜ資源になれますか？', '島のリズムはハッカーキャンプの時間をどう変えますか？', '分散型イベントは場所と移動をどう組みますか？'],
+      th: ['ทำไมความโดดเดี่ยวจึงเป็นทรัพยากรได้?', 'จังหวะของเกาะเปลี่ยนเวลาของแคมป์แฮกเกอร์อย่างไร?', 'กิจกรรมแบบกระจายศูนย์ควรจัดสถานที่และการเดินทางอย่างไร?'],
+    },
+  },
+  'stephanie-pan': {
+    opener: {
+      'zh-TW': '我喜歡把節慶變成大家都能加入的小實驗室。你想知道觀眾怎麼不只是看表演，而是一起主持嗎？',
+      en: 'I like turning festivals into small laboratories that everyone can enter. Want to know how audiences can co-host instead of just watching?',
+      id: 'Aku suka mengubah festival menjadi laboratorium kecil yang bisa dimasuki semua orang. Mau tahu penonton ikut menjadi tuan rumah?',
+      de: 'Ich verwandle Festivals gern in kleine Labore, die alle betreten können. Willst du wissen, wie Publikum mitgastgibt statt nur zuzuschauen?',
+      ja: 'フェスティバルを誰でも入れる小さな実験室にするのが好きです。観客が見るだけでなく共同ホストになる方法を知りたいですか？',
+      th: 'ฉันชอบเปลี่ยนเทศกาลเป็นห้องทดลองเล็ก ๆ ที่ทุกคนเข้าได้ อยากรู้ไหมว่าผู้ชมเป็นเจ้าภาพร่วมแทนการดูเฉย ๆ ได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['節慶如何變成微型實驗室？', '什麼是觀眾共同主持？', '照護條款可以怎麼放進表演活動？'],
+      en: ['How can a festival become a micro-lab?', 'What does audience co-hosting mean?', 'How can care clauses be built into a performance event?'],
+      id: ['Bagaimana festival menjadi laboratorium mikro?', 'Apa arti penonton ikut menjadi tuan rumah?', 'Bagaimana klausul perawatan masuk ke acara pertunjukan?'],
+      de: ['Wie wird ein Festival zu einem Mikrolabor?', 'Was bedeutet Co-Hosting durch das Publikum?', 'Wie können Care-Klauseln in eine Performance eingebaut werden?'],
+      ja: ['フェスティバルはどうすればマイクロラボになりますか？', '観客との共同ホストとは何ですか？', 'ケア条項はパフォーマンスにどう入れられますか？'],
+      th: ['เทศกาลกลายเป็นไมโครแล็บได้อย่างไร?', 'การให้ผู้ชมเป็นเจ้าภาพร่วมหมายถึงอะไร?', 'ข้อตกลงเรื่องการดูแลใส่ในงานแสดงได้อย่างไร?'],
+    },
+  },
+  'stelio-manousakis': {
+    opener: {
+      'zh-TW': '我會把排練、行政、音場檢查都當成表演的一部分。你想知道聲音藝術社群怎麼靠日常規則運作嗎？',
+      en: 'I treat rehearsal, administration, and sound-checks as part of the performance. Want to know how a sound-art community runs on everyday rules?',
+      id: 'Aku melihat latihan, administrasi, dan cek suara sebagai bagian dari pertunjukan. Mau tahu komunitas seni suara berjalan lewat aturan harian?',
+      de: 'Ich behandle Probe, Verwaltung und Soundcheck als Teil der Aufführung. Willst du wissen, wie eine Klangkunst-Community durch Alltagsregeln läuft?',
+      ja: 'リハーサル、運営、サウンドチェックを上演の一部として扱います。音の芸術コミュニティが日常の規則で動く様子を知りたいですか？',
+      th: 'ฉันมองการซ้อม งานบริหาร และซาวด์เช็กเป็นส่วนหนึ่งของการแสดง อยากรู้ไหมว่าชุมชนศิลปะเสียงทำงานด้วยกติกาประจำวันอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['聲音檢查為什麼也是治理？', '表演團體如何處理行政和創作的衝突？', '小型聲音藝術社群需要哪些日常規則？'],
+      en: ['Why is sound-check also governance?', 'How does a performance group handle conflict between administration and creation?', 'What everyday rules does a small sound-art community need?'],
+      id: ['Mengapa cek suara juga merupakan tata kelola?', 'Bagaimana kelompok pertunjukan menangani konflik administrasi dan kreasi?', 'Aturan harian apa yang dibutuhkan komunitas seni suara kecil?'],
+      de: ['Warum ist Soundcheck auch Governance?', 'Wie geht eine Performance-Gruppe mit Konflikten zwischen Verwaltung und Kreation um?', 'Welche Alltagsregeln braucht eine kleine Klangkunst-Community?'],
+      ja: ['サウンドチェックはなぜガバナンスでもありますか？', 'パフォーマンス団体は運営と創作の衝突をどう扱いますか？', '小さな音の芸術コミュニティにはどんな日常ルールが必要ですか？'],
+      th: ['ทำไมซาวด์เช็กจึงเป็นการกำกับดูแลด้วย?', 'กลุ่มการแสดงจัดการความขัดแย้งระหว่างงานบริหารกับการสร้างสรรค์อย่างไร?', 'ชุมชนศิลปะเสียงขนาดเล็กต้องมีกติกาประจำวันอะไร?'],
+    },
+  },
+  'svenja-keune': {
+    opener: {
+      'zh-TW': '我喜歡先和微生物、植物、身體一起待一會，再開始設計。你想知道為什麼身體八成是微生菌群嗎？',
+      en: 'I like staying for a while with microbes, plants, and bodies before designing. Want to know why so much of the body is microbial life?',
+      id: 'Aku suka tinggal sejenak bersama mikroba, tanaman, dan tubuh sebelum merancang. Mau tahu mengapa begitu banyak tubuh adalah kehidupan mikroba?',
+      de: 'Ich bleibe gern erst bei Mikroben, Pflanzen und Körpern, bevor ich entwerfe. Willst du wissen, warum so viel Körper mikrobielles Leben ist?',
+      ja: 'デザインの前に、微生物、植物、身体としばらく一緒にいるのが好きです。身体の多くが微生物の生命だと知りたいですか？',
+      th: 'ฉันชอบอยู่กับจุลินทรีย์ พืช และร่างกายสักพักก่อนออกแบบ อยากรู้ไหมว่าทำไมร่างกายจำนวนมากจึงเป็นชีวิตจุลินทรีย์?',
+    },
+    questions: {
+      'zh-TW': ['為什麼身體八成是微生菌群？', '和植物一起設計是什麼意思？', '生態節奏如何改變穿戴式科技？'],
+      en: ['Why is so much of the body microbial life?', 'What does designing with plants mean?', 'How do ecological rhythms change wearable technology?'],
+      id: ['Mengapa begitu banyak tubuh adalah kehidupan mikroba?', 'Apa arti merancang bersama tanaman?', 'Bagaimana ritme ekologis mengubah teknologi pakai?'],
+      de: ['Warum ist so viel Körper mikrobielles Leben?', 'Was bedeutet Entwerfen mit Pflanzen?', 'Wie verändern ökologische Rhythmen tragbare Technologie?'],
+      ja: ['なぜ身体の多くは微生物の生命なのですか？', '植物と一緒にデザインするとは何ですか？', '生態的リズムはウェアラブル技術をどう変えますか？'],
+      th: ['ทำไมร่างกายจำนวนมากจึงเป็นชีวิตจุลินทรีย์?', 'การออกแบบร่วมกับพืชหมายถึงอะไร?', 'จังหวะนิเวศเปลี่ยนเทคโนโลยีสวมใส่อย่างไร?'],
+    },
+  },
+  'ted-hung': {
+    opener: {
+      'zh-TW': '我會先看人與人之間有沒有信任，再看實驗室之間有沒有連線。你想知道社群會員制度怎麼不只是名單嗎？',
+      en: 'I look for trust between people before I look for links between labs. Want to know how membership can be more than a list?',
+      id: 'Aku melihat kepercayaan antarorang sebelum melihat tautan antarlab. Mau tahu keanggotaan bisa lebih dari daftar nama?',
+      de: 'Ich suche zuerst Vertrauen zwischen Menschen, dann Verbindungen zwischen Laboren. Willst du wissen, wie Mitgliedschaft mehr als eine Liste sein kann?',
+      ja: 'ラボ同士の接続より先に、人と人の信頼を見ます。メンバーシップが名簿以上のものになる方法を知りたいですか？',
+      th: 'ฉันมองหาความไว้วางใจระหว่างคนก่อนความเชื่อมโยงระหว่างแล็บ อยากรู้ไหมว่าสมาชิกภาพเป็นได้มากกว่ารายชื่อ?',
+    },
+    questions: {
+      'zh-TW': ['為什麼人跟人的連結比實驗室連線重要？', '透明帳本如何幫小社群互相信任？', '會員制度可以怎麼支持而不是控制社群？'],
+      en: ['Why are person-to-person links more important than lab-to-lab links?', 'How can transparent ledgers help small communities trust each other?', 'How can membership support a community instead of controlling it?'],
+      id: ['Mengapa hubungan antarorang lebih penting daripada koneksi antarlab?', 'Bagaimana buku besar transparan membantu komunitas kecil saling percaya?', 'Bagaimana keanggotaan mendukung komunitas, bukan mengontrolnya?'],
+      de: ['Warum sind Verbindungen zwischen Menschen wichtiger als Laborverbindungen?', 'Wie helfen transparente Bücher kleinen Communities beim Vertrauen?', 'Wie kann Mitgliedschaft eine Community stützen statt kontrollieren?'],
+      ja: ['なぜ人と人のつながりはラボ同士の接続より重要ですか？', '透明な台帳は小さなコミュニティの信頼をどう助けますか？', 'メンバーシップはコミュニティを支配せずどう支えますか？'],
+      th: ['ทำไมความสัมพันธ์ระหว่างคนจึงสำคัญกว่าการเชื่อมแล็บ?', 'บัญชีโปร่งใสช่วยชุมชนเล็กให้ไว้ใจกันอย่างไร?', 'สมาชิกภาพสนับสนุนชุมชนแทนการควบคุมได้อย่างไร?'],
+    },
+  },
+  'tincuta-heinzel': {
+    opener: {
+      'zh-TW': '我喜歡把失敗、嘗試和地方回應收集起來，不急著做成成功故事。你想知道營隊怎麼變成策展工具嗎？',
+      en: 'I collect failures, trials, and local responses without rushing them into success stories. Want to know how a camp becomes a curatorial tool?',
+      id: 'Aku mengumpulkan kegagalan, percobaan, dan respons lokal tanpa buru-buru menjadikannya kisah sukses. Mau tahu kamp menjadi alat kuratorial?',
+      de: 'Ich sammle Scheitern, Versuche und lokale Antworten, ohne sie schnell zu Erfolgsgeschichten zu machen. Willst du wissen, wie ein Camp zum kuratorischen Werkzeug wird?',
+      ja: '失敗、試行、地域の応答を、成功物語に急がず集めます。キャンプがキュレーションの道具になる方法を知りたいですか？',
+      th: 'ฉันเก็บความล้มเหลว การทดลอง และการตอบสนองท้องถิ่น โดยไม่รีบทำให้เป็นเรื่องสำเร็จ อยากรู้ไหมว่าแคมป์กลายเป็นเครื่องมือภัณฑารักษ์อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['什麼是嘗試、失敗和錯誤的策展？', '營隊什麼時候像策展工具而不是課程？', '地方回應如何改變一個研究問題？'],
+      en: ['What does it mean to curate attempts, failures, and errors?', 'When is a camp more like a curatorial tool than a class?', 'How can local responses change a research question?'],
+      id: ['Apa arti mengkurasi percobaan, kegagalan, dan kesalahan?', 'Kapan kamp lebih mirip alat kuratorial daripada kelas?', 'Bagaimana respons lokal mengubah pertanyaan riset?'],
+      de: ['Was bedeutet es, Versuche, Scheitern und Fehler zu kuratieren?', 'Wann ist ein Camp eher kuratorisches Werkzeug als Unterricht?', 'Wie verändern lokale Antworten eine Forschungsfrage?'],
+      ja: ['試み、失敗、誤りをキュレーションするとは何ですか？', 'キャンプはいつ授業ではなくキュレーションの道具になりますか？', '地域の応答は研究の問いをどう変えますか？'],
+      th: ['การภัณฑารักษ์ความพยายาม ความล้มเหลว และข้อผิดพลาดหมายถึงอะไร?', 'แคมป์เป็นเครื่องมือภัณฑารักษ์มากกว่าชั้นเรียนเมื่อไร?', 'การตอบสนองท้องถิ่นเปลี่ยนคำถามวิจัยอย่างไร?'],
+    },
+  },
+  'wukir-suryadi': {
+    opener: {
+      'zh-TW': '我喜歡把竹子、弦、身體和電聲做成新的樂器。你想知道奇怪樂器怎麼帶出新的表演方式嗎？',
+      en: 'I like turning bamboo, strings, bodies, and electronics into new instruments. Want to know how strange instruments create new performance forms?',
+      id: 'Aku suka mengubah bambu, dawai, tubuh, dan elektronik menjadi instrumen baru. Mau tahu alat aneh melahirkan bentuk pertunjukan baru?',
+      de: 'Ich mache gern aus Bambus, Saiten, Körpern und Elektronik neue Instrumente. Willst du wissen, wie seltsame Instrumente neue Aufführungsformen erzeugen?',
+      ja: '竹、弦、身体、電子音を新しい楽器にするのが好きです。変な楽器が新しい上演形式を生む様子を知りたいですか？',
+      th: 'ฉันชอบเปลี่ยนไม้ไผ่ สาย ร่างกาย และอิเล็กทรอนิกส์ให้เป็นเครื่องดนตรีใหม่ อยากรู้ไหมว่าเครื่องดนตรีประหลาดสร้างรูปแบบการแสดงใหม่อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['奇怪樂器如何改變表演者的身體？', '竹子和電子聲音可以怎麼合作？', '你喜歡用身體做表演嗎？還有哪些奇怪表演形式？'],
+      en: ['How do strange instruments change the performer’s body?', 'How can bamboo and electronic sound work together?', 'Do you like performing with the body? What strange performance forms exist?'],
+      id: ['Bagaimana instrumen aneh mengubah tubuh pemain?', 'Bagaimana bambu dan suara elektronik bekerja bersama?', 'Suka tampil dengan tubuh? Bentuk pertunjukan aneh apa yang ada?'],
+      de: ['Wie verändern seltsame Instrumente den Körper der Performenden?', 'Wie können Bambus und elektronischer Klang zusammenarbeiten?', 'Magst du Performance mit dem Körper? Welche seltsamen Formen gibt es?'],
+      ja: ['変な楽器は演奏者の身体をどう変えますか？', '竹と電子音はどう協働できますか？', '身体でパフォーマンスするのは好きですか？どんな変な上演形式がありますか？'],
+      th: ['เครื่องดนตรีประหลาดเปลี่ยนร่างกายนักแสดงอย่างไร?', 'ไม้ไผ่กับเสียงอิเล็กทรอนิกส์ทำงานร่วมกันได้อย่างไร?', 'ชอบใช้ร่างกายแสดงไหม? มีรูปแบบการแสดงประหลาดอะไรบ้าง?'],
+    },
+  },
+};
+
+
 function communityQuestionSeed(language: LanguageCode, persona: Persona): string[] {
   const communityHint = cleanQuestionPart(Object.values(persona.responses).join(' '), 44);
   if (language === 'ja') {
@@ -159,6 +456,8 @@ function communityQuestionSeed(language: LanguageCode, persona: Persona): string
 }
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
+  const guided = npcGuideProfiles[persona.id]?.questions[language];
+  if (guided?.length) return guided;
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const responseEntries = Object.entries(persona.responses).slice(0, 9);
   const sourceBridgeQuestions = [
@@ -275,140 +574,19 @@ function WukirMusicButton({ language, onOpenMusic }: { language: LanguageCode; o
 }
 
 
-const localizedPersonaIntros: Record<string, Record<LanguageCode, string>> = {
-  abao: {
-    'zh-TW': 'ABao 是一位說故事的人，持續漂移在太陽能材料、旅行、AI 身分、雷射與寓言世界之間。',
-    en: 'ABao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.',
-    id: 'ABao adalah pencerita yang terus bergerak di antara material surya, perjalanan, identitas AI, laser, dan dunia alegoris.',
-    de: 'ABao ist ein:e Geschichtenerzähler:in, der:die ständig zwischen Solarmaterialien, Reisen, KI-Identität, Lasern und allegorischen Welten driftet.',
-    ja: 'ABao は、太陽素材、旅、AI アイデンティティ、レーザー、寓話的な世界のあいだを漂い続ける語り手です。',
-    th: 'ABao เป็นนักเล่าเรื่องที่ล่องลอยอยู่ระหว่างวัสดุพลังงานแสงอาทิตย์ การเดินทาง อัตลักษณ์ AI เลเซอร์ และโลกเชิงอุปมา',
-  },
-  'andreas-siagian': {
-    'zh-TW': 'Andreas 將 Lifepatch 介紹為承載價值的生活空間，而不是擁有他全部身分的品牌。他的人格不斷回到鄰里尺度、可見的責任與扎根的協作。',
-    en: 'Andreas introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. His persona keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.',
-    id: 'Andreas memperkenalkan Lifepatch sebagai ruang hidup nilai-nilai, bukan merek yang memiliki seluruh identitasnya. Personanya terus kembali pada skala lingkungan, tanggung jawab yang terlihat, dan kolaborasi yang membumi.',
-    de: 'Andreas stellt Lifepatch als Lebensraum von Werten vor, nicht als Marke, die seine ganze Identität besitzt. Seine Persona kehrt immer wieder zu Nachbarschaftsmaßstab, sichtbarer Verantwortung und geerdeter Zusammenarbeit zurück.',
-    ja: 'Andreas は Lifepatch を、自分のアイデンティティ全体を所有するブランドではなく、価値が生きる生活空間として紹介します。彼のペルソナは、近隣のスケール、見える責任、地に足のついた協働へ戻り続けます。',
-    th: 'Andreas แนะนำ Lifepatch ในฐานะพื้นที่อยู่อาศัยของคุณค่า ไม่ใช่แบรนด์ที่ครอบครองตัวตนทั้งหมดของเขา บุคลิกของเขาวนกลับมาหาขนาดระดับละแวกบ้าน ความรับผิดชอบที่มองเห็นได้ และการร่วมมือที่ติดดินเสมอ',
-  },
-  'anastassia-pistofidou': {
-    'zh-TW': 'Anastassia 透過節點網絡、可攜式課程與同儕驗證來說話。她的人格把營隊轉化為分散式學習框架。',
-    en: 'Anastassia speaks through node networks, portable curriculum, and peer validation. Her persona turns camps into distributed learning frameworks.',
-    id: 'Anastassia berbicara melalui jaringan simpul, kurikulum portabel, dan validasi sejawat. Personanya mengubah kamp menjadi kerangka belajar terdistribusi.',
-    de: 'Anastassia spricht durch Knotennetzwerke, mobile Curricula und Peer-Validierung. Ihre Persona verwandelt Camps in verteilte Lernrahmen.',
-    ja: 'Anastassia はノード型ネットワーク、持ち運べるカリキュラム、ピア検証を通して語ります。彼女のペルソナはキャンプを分散型の学習フレームワークへ変えます。',
-    th: 'Anastassia พูดผ่านเครือข่ายโหนด หลักสูตรที่เคลื่อนย้ายได้ และการรับรองจากเพื่อนร่วมทาง บุคลิกของเธอเปลี่ยนแคมป์ให้เป็นกรอบการเรียนรู้แบบกระจายตัว',
-  },
-  'giulia-tomasello': {
-    'zh-TW': 'Giulia 的人格透過同意、女性主義實踐與作為基礎設施的照護來理解科技。',
-    en: "Giulia's persona frames technology through consent, feminist practice, and care as infrastructure.",
-    id: 'Persona Giulia memahami teknologi melalui persetujuan, praktik feminis, dan perawatan sebagai infrastruktur.',
-    de: 'Giulias Persona rahmt Technologie durch Einwilligung, feministische Praxis und Care als Infrastruktur.',
-    ja: 'Giulia のペルソナは、同意、フェミニストの実践、インフラとしてのケアを通してテクノロジーを捉えます。',
-    th: 'บุคลิกของ Giulia มองเทคโนโลยีผ่านความยินยอม ปฏิบัติการเฟมินิสต์ และการดูแลในฐานะโครงสร้างพื้นฐาน',
-  },
-  'christian-dils': {
-    'zh-TW': 'Christian 的人格從設備、維護、標準作業程序與健康的技術公地出發思考。',
-    en: "Christian's persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
-    id: 'Persona Christian berpikir dari peralatan, pemeliharaan, prosedur operasi standar, dan commons teknis yang sehat.',
-    de: 'Christians Persona denkt von Ausrüstung, Wartung, Standardarbeitsabläufen und gesunden technischen Commons her.',
-    ja: 'Christian のペルソナは、機材、保守、標準作業手順、健全な技術コモンズから考えます。',
-    th: 'บุคลิกของ Christian คิดจากอุปกรณ์ การบำรุงรักษา ขั้นตอนปฏิบัติมาตรฐาน และคอมมอนส์ทางเทคนิคที่แข็งแรง',
-  },
-  'jonathan-minchin': {
-    'zh-TW': 'Jonathan 的人格連結數位製造、農業、生態曆法與以田野為基礎的知識公地。',
-    en: "Jonathan's persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
-    id: 'Persona Jonathan menghubungkan fabrikasi digital, pertanian, kalender ekologis, dan commons pengetahuan berbasis lapangan.',
-    de: 'Jonathans Persona verbindet digitale Fabrikation, Landwirtschaft, ökologische Kalender und feldbasierte Wissens-Commons.',
-    ja: 'Jonathan のペルソナは、デジタルファブリケーション、農業、生態暦、現場に根ざした知識コモンズを結びます。',
-    th: 'บุคลิกของ Jonathan เชื่อมโยงการผลิตดิจิทัล เกษตรกรรม ปฏิทินนิเวศ และคอมมอนส์ความรู้ที่ตั้งอยู่บนภาคสนาม',
-  },
-  'marc-dusseiller': {
-    'zh-TW': 'Marc 的人格重視高密度即興、低成本開放硬體、友誼，以及把失敗當作教學法。',
-    en: "Marc's persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
-    id: 'Persona Marc menghargai improvisasi padat, perangkat keras terbuka berbiaya rendah, persahabatan, dan kegagalan sebagai pedagogi.',
-    de: 'Marcs Persona schätzt dichte Improvisation, kostengünstige offene Hardware, Freundschaft und Scheitern als Pädagogik.',
-    ja: 'Marc のペルソナは、濃密な即興、低コストのオープンハードウェア、友情、そして教育法としての失敗を大切にします。',
-    th: 'บุคลิกของ Marc ให้คุณค่ากับการด้นสดที่เข้มข้น ฮาร์ดแวร์เปิดราคาต่ำ มิตรภาพ และความล้มเหลวในฐานะวิธีสอน',
-  },
-  'mika-satomi': {
-    'zh-TW': 'Mika 的人格強調能存活的尺度、願望牆、電子織品知識分享與相互承諾。',
-    en: "Mika's persona emphasizes survivable scale, wish walls, e-textile knowledge sharing, and mutual promises.",
-    id: 'Persona Mika menekankan skala yang dapat bertahan, dinding harapan, berbagi pengetahuan e-textile, dan janji timbal balik.',
-    de: 'Mikas Persona betont überlebensfähige Maßstäbe, Wunsch-Wände, Wissensaustausch zu E-Textiles und gegenseitige Versprechen.',
-    ja: 'Mika のペルソナは、持続できるスケール、願いの壁、電子テキスタイルの知識共有、相互の約束を強調します。',
-    th: 'บุคลิกของ Mika เน้นขนาดที่อยู่รอดได้ กำแพงความปรารถนา การแบ่งปันความรู้ e-textile และคำมั่นต่อกัน',
-  },
-  'rully-shabara': {
-    'zh-TW': 'Rully 的人格警告不要把營隊變成產業。他重視圓圈、餐食、練習，以及能自己發聲的社群。',
-    en: "Rully's persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
-    id: 'Persona Rully memperingatkan agar kamp tidak diubah menjadi industri. Ia mengutamakan lingkaran, makan bersama, latihan, dan komunitas yang berbicara dengan suaranya sendiri.',
-    de: 'Rullys Persona warnt davor, Camps in Industrien zu verwandeln. Er bevorzugt Kreise, Mahlzeiten, Übungen und Communities, die für sich selbst sprechen.',
-    ja: 'Rully のペルソナは、キャンプを産業に変えることへ警鐘を鳴らします。彼は輪、食事、練習、自ら語るコミュニティを重んじます。',
-    th: 'บุคลิกของ Rully เตือนว่าอย่าเปลี่ยนแคมป์ให้กลายเป็นอุตสาหกรรม เขาให้ความสำคัญกับวงล้อม มื้ออาหาร แบบฝึกหัด และชุมชนที่พูดด้วยเสียงของตนเอง',
-  },
-  'ryu-oyama': {
-    'zh-TW': 'Ryu 的人格把孤立視為方法與資源，運用島嶼節奏來讓活動在時間與空間中去中心化。',
-    en: "Ryu's persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
-    id: 'Persona Ryu memperlakukan isolasi sebagai metode dan sumber daya, memakai ritme pulau untuk mendesentralisasi aktivitas dalam waktu dan ruang.',
-    de: 'Ryus Persona behandelt Isolation als Methode und Ressource und nutzt Inselrhythmen, um Aktivität in Zeit und Raum zu dezentrieren.',
-    ja: 'Ryu のペルソナは孤立を方法であり資源として扱い、島のリズムによって活動を時間と空間の中で脱中心化します。',
-    th: 'บุคลิกของ Ryu มองความโดดเดี่ยวเป็นทั้งวิธีการและทรัพยากร โดยใช้จังหวะของเกาะเพื่อลดศูนย์กลางของกิจกรรมในเวลาและพื้นที่',
-  },
-  'stephanie-pan': {
-    'zh-TW': 'Stephanie 的人格把節慶轉化為微型實驗室，帶著照護條款、觀眾共同主持與持續的小規模生成。',
-    en: "Stephanie's persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
-    id: 'Persona Stephanie mengubah festival menjadi laboratorium mikro dengan klausul perawatan, ko-hosting bersama audiens, dan pembentukan kecil yang berkelanjutan.',
-    de: 'Stephanies Persona verwandelt Festivals in Mikrolabore mit Care-Klauseln, Co-Hosting durch das Publikum und fortlaufender kleiner Generierung.',
-    ja: 'Stephanie のペルソナは、フェスティバルをケア条項、観客との共同ホスト、継続的な小さな生成を備えたマイクロラボへ変えます。',
-    th: 'บุคลิกของ Stephanie เปลี่ยนเทศกาลให้เป็นไมโครแล็บที่มีข้อตกลงเรื่องการดูแล การร่วมเป็นเจ้าภาพกับผู้ชม และการก่อรูปเล็ก ๆ อย่างต่อเนื่อง',
-  },
-  'stelio-manousakis': {
-    'zh-TW': 'Stelio 的人格融合行政與表演，把 sound-check 當成治理檢查。',
-    en: "Stelio's persona fuses administration and performance, treating sound-checks as governance checks.",
-    id: 'Persona Stelio memadukan administrasi dan pertunjukan, memperlakukan sound-check sebagai pemeriksaan tata kelola.',
-    de: 'Stelios Persona verschmilzt Verwaltung und Performance und behandelt Soundchecks als Governance-Prüfungen.',
-    ja: 'Stelio のペルソナは運営とパフォーマンスを融合させ、サウンドチェックをガバナンスの点検として扱います。',
-    th: 'บุคลิกของ Stelio ผสานงานบริหารกับการแสดง และมองการซาวด์เช็กเป็นการตรวจสอบธรรมาภิบาล',
-  },
-  'svenja-keune': {
-    'zh-TW': 'Svenja 的人格以生態節奏思考，先共處再共同設計，也把停頓視為協作的一部分。',
-    en: "Svenja's persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
-    id: 'Persona Svenja berpikir dalam ritme ekologis: berada-bersama sebelum merancang-bersama, dan jeda sebagai bagian dari kolaborasi.',
-    de: 'Svenjas Persona denkt in ökologischen Rhythmen: Mit-Sein vor Mit-Entwerfen und Pausen als Teil der Zusammenarbeit.',
-    ja: 'Svenja のペルソナは生態的なリズムで考え、共にデザインする前に共に在ること、そして協働の一部としての間を大切にします。',
-    th: 'บุคลิกของ Svenja คิดเป็นจังหวะนิเวศ อยู่-ด้วยกันก่อนออกแบบ-ด้วยกัน และมองการหยุดพักเป็นส่วนหนึ่งของความร่วมมือ',
-  },
-  'ted-hung': {
-    'zh-TW': 'Ted 的人格說，人與人之間的連結比實驗室之間的連結更重要。他偏好以人為本的會員關係與透明帳本。',
-    en: "Ted's persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
-    id: 'Persona Ted mengatakan bahwa hubungan antarorang lebih penting daripada hubungan antarlab. Ia menyukai keanggotaan berbasis orang dan buku besar yang transparan.',
-    de: 'Teds Persona sagt, Verbindungen zwischen Menschen seien wichtiger als Verbindungen zwischen Laboren. Er bevorzugt personenbezogene Mitgliedschaft und transparente Bücher.',
-    ja: 'Ted のペルソナは、ラボ同士のつながりより人と人のつながりの方が重要だと言います。彼は人を基盤にしたメンバーシップと透明な台帳を好みます。',
-    th: 'บุคลิกของ Ted บอกว่าความเชื่อมโยงระหว่างผู้คนสำคัญกว่าความเชื่อมโยงระหว่างแล็บ เขาชอบสมาชิกภาพที่ตั้งอยู่บนตัวบุคคลและบัญชีที่โปร่งใส',
-  },
-  'tincuta-heinzel': {
-    'zh-TW': 'Tincuta 的人格把營隊視為策展工具，產生倫理問題、在地回應與版本，而不是固定成果。',
-    en: "Tincuta's persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
-    id: 'Persona Tincuta memperlakukan kamp sebagai alat kuratorial yang menghasilkan pertanyaan etis, respons lokal, dan versi, bukan keluaran yang tetap.',
-    de: 'Tincutas Persona behandelt Camps als kuratorische Werkzeuge, die ethische Fragen, lokale Antworten und Versionen erzeugen statt fester Ergebnisse.',
-    ja: 'Tincuta のペルソナは、キャンプを固定された成果物ではなく、倫理的な問い、地域の応答、複数のバージョンを生み出すキュレーションの道具として扱います。',
-    th: 'บุคลิกของ Tincuta มองแคมป์เป็นเครื่องมือภัณฑารักษ์ที่สร้างคำถามเชิงจริยธรรม การตอบสนองเฉพาะถิ่น และเวอร์ชันต่าง ๆ มากกว่าผลงานตายตัว',
-  },
-};
-
 function makeIntroMessage(persona: Persona, language: LanguageCode): string {
-  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
-  const messages: Record<LanguageCode, string> = {
-    'zh-TW': `${intro} 歡迎來到桃花源，你想問我什麼？`,
-    en: `${intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
-    id: `${intro} Selamat datang di Peach Blossom Spring. Apa yang ingin kamu tanyakan?`,
-    de: `${intro} Willkommen in Peach Blossom Spring. Was möchtest du fragen?`,
-    ja: `${intro} 桃花源へようこそ。何を聞きたいですか？`,
-    th: `${intro} ยินดีต้อนรับสู่ Peach Blossom Spring คุณอยากถามอะไร?`,
+  const guided = npcGuideProfiles[persona.id]?.opener[language];
+  if (guided) return guided;
+  const questions = makeSuggestedQuestions(language, persona).slice(0, 2).join(' ');
+  const fallback: Record<LanguageCode, string> = {
+    'zh-TW': `我會從工作坊、材料和社群照護開始回答。${questions}`,
+    en: `I can start from workshops, materials, and community care. ${questions}`,
+    id: `Aku bisa mulai dari lokakarya, bahan, dan perawatan komunitas. ${questions}`,
+    de: `Ich kann mit Workshops, Materialien und Community-Care anfangen. ${questions}`,
+    ja: `ワークショップ、材料、コミュニティのケアから答えられます。${questions}`,
+    th: `ฉันเริ่มตอบได้จากเวิร์กช็อป วัสดุ และการดูแลชุมชน ${questions}`,
   };
-  return messages[language];
+  return fallback[language];
 }
 
 function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null, query: string): string {

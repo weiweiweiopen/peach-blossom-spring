@@ -164,6 +164,7 @@ const CENTRAL_COMPUTER_TILE = {
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
 const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
+const CAMPFIRE_FOOTPRINT = { w: 8, h: 8, stoneRows: 2 };
 // English canonical name: The Multi-Minds Self Campfire.
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
@@ -188,14 +189,19 @@ function campfireBoundsFromLayout(layout: OfficeLayout) {
   return {
     col: campfire.col,
     row: campfire.row,
-    w: CENTRAL_COMPUTER_FOOTPRINT.w,
-    h: CENTRAL_COMPUTER_FOOTPRINT.h,
+    w: CAMPFIRE_FOOTPRINT.w,
+    h: CAMPFIRE_FOOTPRINT.h,
   };
 }
 
 function campfireStoneBoundsFromLayout(layout: OfficeLayout) {
   const bounds = campfireBoundsFromLayout(layout);
-  return { col: bounds.col, row: bounds.row + bounds.h - 1, w: bounds.w, h: 1 };
+  return {
+    col: bounds.col,
+    row: bounds.row + bounds.h - CAMPFIRE_FOOTPRINT.stoneRows,
+    w: bounds.w,
+    h: CAMPFIRE_FOOTPRINT.stoneRows,
+  };
 }
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_REENCOUNTER_RESET_TILES = 3;
@@ -1662,6 +1668,19 @@ function findNearestApproachableTile(
   );
 }
 
+function findRandomApproachableTile(
+  officeState: OfficeState,
+  occupied = new Set<string>(),
+  origin?: { col: number; row: number },
+  minDistance = 0,
+): { col: number; row: number } | null {
+  const candidates = officeState.walkableTiles
+    .filter((tile) => !occupied.has(`${tile.col},${tile.row}`))
+    .filter((tile) => !origin || Math.abs(tile.col - origin.col) + Math.abs(tile.row - origin.row) >= minDistance);
+  if (!candidates.length) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)] ?? null;
+}
+
 function findNearestNpcApproachTile(
   officeState: OfficeState,
   playerCol: number,
@@ -1694,21 +1713,12 @@ function findShortNpcStep(
   startRow: number,
   occupied: Set<string>,
 ): { col: number; row: number } | null {
-  const candidates: Array<{ col: number; row: number; score: number }> = [];
-  for (let dRow = -4; dRow <= 4; dRow++) {
-    for (let dCol = -4; dCol <= 4; dCol++) {
-      const distance = Math.abs(dCol) + Math.abs(dRow);
-      if (distance < 1 || distance > 4) continue;
-      const col = startCol + dCol;
-      const row = startRow + dRow;
-      const tile = findNearestApproachableTile(officeState, col, row, occupied);
-      const key = `${tile.col},${tile.row}`;
-      if (occupied.has(key)) continue;
-      candidates.push({ ...tile, score: distance + Math.random() });
-    }
-  }
-  candidates.sort((a, b) => a.score - b.score);
-  return candidates[0] ?? null;
+  return findRandomApproachableTile(
+    officeState,
+    occupied,
+    { col: startCol, row: startRow },
+    7,
+  );
 }
 function configuredWorkerChatApiUrl(): string {
   return document
@@ -2564,12 +2574,14 @@ function App() {
       const appearance = getPersonaNpcAppearance(placement.personaId, agentId - 1);
       ch.palette = appearance.palette;
       ch.hueShift = appearance.hueShift;
-      const resolvedPlacement = findNearestApproachableTile(
-        officeState,
-        placement.col,
-        placement.row,
-        occupied,
-      );
+      const resolvedPlacement =
+        findRandomApproachableTile(officeState, occupied) ??
+        findNearestApproachableTile(
+          officeState,
+          placement.col,
+          placement.row,
+          occupied,
+        );
       occupied.add(`${resolvedPlacement.col},${resolvedPlacement.row}`);
       ch.tileCol = resolvedPlacement.col;
       ch.tileRow = resolvedPlacement.row;
@@ -2594,13 +2606,12 @@ function App() {
         .map((_persona, index) => index + 1)
         .filter((id) => officeState.characters.has(id))
         .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
+        .slice(0, 6);
       for (const id of shuffled) {
         const ch = officeState.characters.get(id);
         if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
           continue;
         if (nearbyNpcIdRef.current === id) continue;
-        if (Math.random() > 0.58) continue;
         const target = findShortNpcStep(
           officeState,
           ch.tileCol,
@@ -2612,7 +2623,7 @@ function App() {
           occupied.add(`${target.col},${target.row}`);
         }
       }
-    }, 3600);
+    }, 1800);
     return () => window.clearInterval(interval);
   }, [appMode, layoutReady, officeState, playerProfile]);
 
