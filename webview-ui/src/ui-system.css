@@ -524,3 +524,75 @@
     line-height: var(--ui-line-zine) !important;
   }
 }
+
+/* Hotfix after mobile screenshots: Japanese/Thai talk bubbles must never scale to viewport-wide banners.
+   The visual baseline is the current NPC compact bubble, with language-aware size and safe wrapping. */
+.pbs-interaction-root {
+  --ui-talk-bubble-font: clamp(16px, 4.25vw, 22px);
+  --ui-talk-bubble-max: min(220px, 58vw);
+}
+
+.pbs-interaction-root[data-language="zh-TW"] {
+  --ui-talk-bubble-font: clamp(18px, 4.8vw, 24px);
+  --ui-talk-bubble-max: min(240px, 62vw);
+}
+
+.pbs-interaction-root[data-language="ja"],
+.pbs-interaction-root[data-language="th"] {
+  --ui-talk-bubble-font: clamp(15px, 4vw, 20px);
+  --ui-talk-bubble-max: min(220px, 56vw);
+}
+
+.pbs-interaction-root :is(.mobile-talk-prompt, .mobile-talk-prompt.mobile-talk-prompt--compact, .npc-name-tag.mobile-talk-prompt, .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact, .abao-speech-bubble) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: var(--ui-talk-bubble-max) !important;
+  min-height: 0 !important;
+  padding: 7px 13px !important;
+  border: 2px solid #111 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 1px 1px 0 #111 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  font-family: var(--ui-font) !important;
+  font-size: var(--ui-talk-bubble-font) !important;
+  line-height: 1.16 !important;
+  font-weight: 800 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  text-align: center !important;
+}
+
+.pbs-interaction-root :is(.mobile-talk-prompt, .mobile-talk-prompt.mobile-talk-prompt--compact, .npc-name-tag.mobile-talk-prompt, .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact) p,
+.pbs-interaction-root :is(.abao-speech-bubble) {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: keep-all !important;
+  text-align: center !important;
+}
+
+.pbs-interaction-root[data-language="ja"] :is(.mobile-talk-prompt, .mobile-talk-prompt.mobile-talk-prompt--compact, .npc-name-tag.mobile-talk-prompt, .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact) p,
+.pbs-interaction-root[data-language="th"] :is(.mobile-talk-prompt, .mobile-talk-prompt.mobile-talk-prompt--compact, .npc-name-tag.mobile-talk-prompt, .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact) p {
+  word-break: normal !important;
+  line-break: strict !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root :is(.mobile-talk-prompt, .mobile-talk-prompt.mobile-talk-prompt--compact, .npc-name-tag.mobile-talk-prompt, .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact, .abao-speech-bubble) {
+    max-width: var(--ui-talk-bubble-max) !important;
+    transform-origin: center center !important;
+  }
+}
