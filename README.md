@@ -16,7 +16,7 @@ PBS turns NGM into a small explorable world:
 - the campfire is a shared question place for the whole archive;
 - the zine tool turns one question into a short source-grounded booklet;
 - the map, ebook, and source links show where the project came from;
-- the Question Pet follows your inquiry as a little tamagotchi-like companion.
+- the Question Pet is an experimental tamagotchi-like system tied to question linting and question maturation.
 
 The tone is playful, but the archive logic is serious: the garden should help people remember fragile community knowledge without flattening it into a report or dashboard.
 
@@ -53,6 +53,7 @@ PBS is currently a working prototype:
 - NPC and campfire conversations can use recent dialogue context;
 - source links are filtered so the game should not force unrelated links when no reliable source is found;
 - zine generation, map/archive entry points, and the local wiki-memory workflow are still being refined;
-- the next work is to keep simplifying the public explanation, improve source coverage, and make the local shared-memory workflow easier for non-technical users.
+- the Question Pet / lint system is meant to help questions mature, but its user scenario is still unclear and remains under development;
+- the next work is to keep simplifying the public explanation, improve source coverage, clarify the Question Pet use case, and make the local shared-memory workflow easier for non-technical users.
 
 The goal is not to finish a perfect archive. The goal is to keep a living garden where small community knowledge can be asked, cited, repaired, and passed on.
