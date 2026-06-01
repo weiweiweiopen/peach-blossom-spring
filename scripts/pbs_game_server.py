@@ -91,7 +91,21 @@ def call_deepseek(system_prompt: str, user_prompt: str, max_tokens: int = 900, t
     return answer.strip()
 
 
-def answer_with_memory(question: str, preferred_language: str, npc_context: str = "") -> dict:
+def dialogue_history_context(turns: object, limit: int = 8) -> str:
+    if not isinstance(turns, list):
+        return ""
+    cleaned = []
+    for turn in turns[-limit:]:
+        if not isinstance(turn, dict):
+            continue
+        speaker = str(turn.get("speaker") or "").strip()[:80]
+        text = str(turn.get("text") or "").strip().replace("\n", " ")[:900]
+        if speaker and text:
+            cleaned.append(f"{speaker}: {text}")
+    return "\n".join(cleaned)
+
+
+def answer_with_memory(question: str, preferred_language: str, npc_context: str = "", dialogue_history: str = "") -> dict:
     links = memory_search(question, limit=8)
     evidence = build_evidence_packet(links)
     evidence_block = "\n\n".join(
@@ -107,6 +121,7 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "Use PBS engine evidence for public source grounding and links, but do not flatten the NPC into a generic search assistant.",
         "No visible Markdown/syntax language in reader-facing dialogue: no **bold**, no backticks, no headings, no bullets, no bracket citations like [1].",
         "Do not overgeneralize from a single event page. For SGMK, describe it as the Swiss Mechatronic Art Society / mechatronic art, DIY electronics, sound, handmade technology, workshops and gatherings network. Do not call SGMK an AI-workshop organization just because one page mentions an AI talk or workshop.",
+        "Use the recent dialogue context to answer follow-ups and preserve continuity. Do not reset the conversation when the player refers to something already said.",
         "Use only the source evidence below plus optional NPC context. If evidence is incomplete, say what is missing in the NPC/campfire voice instead of inventing facts.",
         "Mention links by plain language only when useful; keep source references light in NPC dialogue.",
         "Do not say no evidence was found when PBS engine evidence is present.",
@@ -121,6 +136,10 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "--- optional NPC context ---",
         npc_context[:5000],
         "--- end optional NPC context ---",
+        "",
+        "--- recent dialogue context ---",
+        dialogue_history[:5000] or "(no prior dialogue in this window)",
+        "--- end recent dialogue context ---",
         "",
         "--- PBS engine evidence ---",
         evidence_block or "(no PBS engine evidence)",
@@ -162,7 +181,8 @@ class PbsGameHandler(SimpleHTTPRequestHandler):
             if self.path == "/api/chat/campfire":
                 question = str(payload.get("question") or "")
                 preferred_language = str(payload.get("preferredLanguage") or "zh-TW")
-                self.send_json(answer_with_memory(question, preferred_language))
+                dialogue_history = dialogue_history_context(payload.get("dialogueHistory"))
+                self.send_json(answer_with_memory(question, preferred_language, dialogue_history=dialogue_history))
                 return
             if self.path == "/api/sources":
                 raw_urls = payload.get("urls")
@@ -212,6 +232,7 @@ class PbsGameHandler(SimpleHTTPRequestHandler):
                 npc_name = str(payload.get("npcName") or "NPC")
                 persona_payload = payload.get("persona") if isinstance(payload.get("persona"), dict) else {}
                 transcript = str(payload.get("transcript") or "")
+                dialogue_history = dialogue_history_context(payload.get("dialogueHistory"))
                 npc_context = "\n".join([
                     f"NPC: {npc_name}",
                     "Persona JSON:",
@@ -220,7 +241,7 @@ class PbsGameHandler(SimpleHTTPRequestHandler):
                     transcript,
                     "Instruction: answer as this NPC, using the persona and transcript excerpts first as the voice/stance/cadence anchor; public PBS evidence is only checkable support. Do not answer like a generic search assistant.",
                 ])
-                self.send_json(answer_with_memory(question, preferred_language, npc_context=npc_context))
+                self.send_json(answer_with_memory(question, preferred_language, npc_context=npc_context, dialogue_history=dialogue_history))
                 return
             if self.path == "/api/memory/draft":
                 question = str(payload.get("question") or payload.get("query") or "")

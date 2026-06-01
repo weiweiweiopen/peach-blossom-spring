@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KnowledgeBase } from '../deepseekClient.js';
 import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
+import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../localMemoryApi.js';
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
@@ -36,6 +36,15 @@ interface DialogueMessage {
   text: string;
   evidence?: ChatEvidence[];
   links?: WikiSearchResult[];
+}
+
+const DIALOGUE_CONTEXT_TURNS = 8;
+
+function recentDialogueHistory(messages: DialogueMessage[]): DialogueHistoryTurn[] {
+  return messages
+    .filter((message) => message.text.trim())
+    .slice(-DIALOGUE_CONTEXT_TURNS)
+    .map((message) => ({ speaker: message.speaker, text: message.text.trim() }));
 }
 
 interface RpgDialogueProps {
@@ -481,6 +490,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
 
     setError('');
     setIsLoading(true);
+    const dialogueHistory = recentDialogueHistory(messages);
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
@@ -502,6 +512,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
           transcript,
           preferredLanguage: language,
+          dialogueHistory,
         });
         setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
       } else {
@@ -512,6 +523,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             knowledge: dialogueKnowledge,
             preferredLanguage: language,
             evidence: transcriptEvidence,
+            dialogueHistory,
           });
           setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links }]);
         } catch (deepseekError) {

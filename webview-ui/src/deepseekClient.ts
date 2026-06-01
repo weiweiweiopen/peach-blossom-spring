@@ -38,8 +38,14 @@ interface AskPersonaArgs {
   preferredLanguage: LanguageCode;
 }
 
+export interface DialogueHistoryTurn {
+  speaker: string;
+  text: string;
+}
+
 interface AskPersonaWithEvidenceArgs extends AskPersonaArgs {
   evidence: ChatEvidence[];
+  dialogueHistory?: DialogueHistoryTurn[];
 }
 
 interface AskPbsComputerArgs {
@@ -241,6 +247,12 @@ function evidenceGroundingBlock(evidence: ChatEvidence[]): string {
     : '(no retrieved source fragments)';
 }
 
+function dialogueHistoryBlock(history: DialogueHistoryTurn[] = []): string {
+  return history.length
+    ? history.slice(-8).map((turn) => `${turn.speaker}: ${turn.text}`).join('\n')
+    : '(no prior dialogue in this window)';
+}
+
 function transcriptForReasoning(knowledge: KnowledgeBase, preferredLanguage: LanguageCode): string {
   const primary = preferredLanguage === 'zh-TW'
     ? knowledge.transcript_zh || knowledge.transcript_en
@@ -255,6 +267,7 @@ export async function askDeepSeekGroundedAnswer({
   knowledge,
   preferredLanguage,
   evidence,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs): Promise<string> {
   const transcript = transcriptForReasoning(knowledge, preferredLanguage);
   const systemPrompt = trimMessage([
@@ -264,9 +277,14 @@ export async function askDeepSeekGroundedAnswer({
     'Do not write system self-description. Never say phrases like "X 的人格", "X\'s persona", "offline mode", "retrieval", or "I will answer from interview memory".',
     'Do not imitate a template. Do not produce stock advice. Do not include source labels, URLs, citations, role tags, or retrieval metadata.',
     'If the prompt is playful, absurd, or under-specified, treat that as part of the player intent rather than matching it with a hard-coded joke.',
+    'Use the recent dialogue context to preserve continuity and answer follow-ups. Do not reset the conversation when the player says \"that\", \"you said\", \"continue\", or asks a short follow-up.',
     'Return a compact reasoning draft for the second pass: 3 to 6 sentences, concrete, conversational, and specific to this question.',
     '',
     `NPC context: ${knowledge.name}, ${knowledge.role}. ${knowledge.intro}`,
+    '',
+    '--- Recent dialogue context ---',
+    dialogueHistoryBlock(dialogueHistory),
+    '--- end recent dialogue context ---',
     '',
     '--- NGM transcript to reason from ---',
     transcript || '(no transcript available)',
@@ -286,6 +304,7 @@ export async function askDeepSeekPersonaRewrite({
   knowledge,
   preferredLanguage,
   groundedDraft,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs & { groundedDraft: string }): Promise<string> {
   const systemPrompt = trimMessage([
     knowledge.systemPrompt,
@@ -298,9 +317,14 @@ export async function askDeepSeekPersonaRewrite({
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
     'If the transcript does not support a confident answer, be honest without collapsing into boilerplate.',
+    'Use recent dialogue context for pronouns and follow-ups, but do not summarize the whole history unless asked.',
     'Keep the final reply concise: 3 to 6 sentences.',
     '',
     `NPC: ${knowledge.name} (${knowledge.role})`,
+    '',
+    '--- Recent dialogue context ---',
+    dialogueHistoryBlock(dialogueHistory),
+    '--- end recent dialogue context ---',
     `Intro: ${knowledge.intro}`,
     'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report. A small amount of dry humor is welcome when it fits the NPC.'
   ].join('\n'));
@@ -438,9 +462,10 @@ export async function askDeepSeekPersonaWithEvidence({
   knowledge,
   preferredLanguage,
   evidence,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs): Promise<string> {
-  const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence });
-  return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, groundedDraft });
+  const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence, dialogueHistory });
+  return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, dialogueHistory, groundedDraft });
 }
 
 

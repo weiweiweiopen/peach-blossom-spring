@@ -51,7 +51,7 @@ import {
   readMultiplayerConfig,
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
-import { askCampfire, canUseLocalMemoryServer } from "./localMemoryApi.js";
+import { askCampfire, canUseLocalMemoryServer, type DialogueHistoryTurn } from "./localMemoryApi.js";
 import { askDeepSeekPbsComputer, askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
 import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
@@ -1132,6 +1132,11 @@ function CentralComputerDialogue({
   onOpenAssociationZine: (query?: string) => void;
 }) {
   type ComputerMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
+  const CAMPFIRE_CONTEXT_TURNS = 8;
+  const recentCampfireHistory = (items: ComputerMessage[]): DialogueHistoryTurn[] => items
+    .filter((item) => item.text.trim())
+    .slice(-CAMPFIRE_CONTEXT_TURNS)
+    .map((item) => ({ speaker: item.speaker, text: item.text.trim() }));
   const [draft, setDraft] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState("");
@@ -1194,12 +1199,13 @@ function CentralComputerDialogue({
     setDraft("");
     setError("");
     setIsThinking(true);
+    const dialogueHistory = recentCampfireHistory(messages);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     try {
       const { searchWikiPages } = await import("./wikiSearch.js");
       const links = searchWikiPages(trimmed, undefined, 8);
       if (canUseLocalMemoryServer()) {
-        const reply = await askCampfire(trimmed, language);
+        const reply = await askCampfire(trimmed, language, dialogueHistory);
         setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links.length ? reply.links : links }]);
       } else {
         const sharedMemoryContext = links.map((link, index) => [

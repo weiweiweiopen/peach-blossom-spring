@@ -40,8 +40,13 @@ export async function searchMemory(query: string, limit = 8): Promise<WikiSearch
   return data.results;
 }
 
-export async function askCampfire(question: string, preferredLanguage: LanguageCode): Promise<MemoryChatResponse> {
-  return postJson<MemoryChatResponse>('/api/chat/campfire', { question, preferredLanguage });
+export interface DialogueHistoryTurn {
+  speaker: string;
+  text: string;
+}
+
+export async function askCampfire(question: string, preferredLanguage: LanguageCode, dialogueHistory: DialogueHistoryTurn[] = []): Promise<MemoryChatResponse> {
+  return postJson<MemoryChatResponse>('/api/chat/campfire', { question, preferredLanguage, dialogueHistory });
 }
 
 export async function askNpc(args: {
@@ -50,6 +55,7 @@ export async function askNpc(args: {
   persona?: unknown;
   transcript?: string;
   preferredLanguage: LanguageCode;
+  dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
   return postJson<MemoryChatResponse>('/api/chat/npc', args);
 }

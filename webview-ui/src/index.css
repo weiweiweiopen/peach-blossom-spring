@@ -8666,3 +8666,90 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     font-size: var(--dialogue-title-size) !important;
   }
 }
+
+
+/* 2026-06-01 dialogue source-link repair: compact readable link window.
+   Keep source links from inheriting oversized body/input typography, and wrap
+   URL/title text at safe boundaries instead of slicing one character per line. */
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links *,
+.pixel-panel .rpg-dialogue-source-links,
+.pixel-panel .rpg-dialogue-source-links * {
+  font-family: inherit !important;
+  font-size: clamp(14px, 2.9vw, 17px) !important;
+  line-height: 1.32 !important;
+  letter-spacing: 0 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-height: min(18dvh, 138px) !important;
+  overflow: auto !important;
+  padding: 8px 10px !important;
+  border: 2px solid #000 !important;
+  background: #fff !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links summary {
+  display: block !important;
+  margin-bottom: 6px !important;
+  font-weight: 700 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-link-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a,
+.pixel-panel .rpg-dialogue-source-links a {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  column-gap: 8px !important;
+  align-items: baseline !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  color: #2e7d65 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: underline !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a span {
+  min-width: 0 !important;
+  color: inherit !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links em {
+  color: #2e7d65 !important;
+  font-style: normal !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links * {
+    font-size: clamp(15px, 3.8vw, 17px) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a {
+    grid-template-columns: minmax(0, 1fr) !important;
+    row-gap: 1px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links em {
+    white-space: normal !important;
+  }
+}
