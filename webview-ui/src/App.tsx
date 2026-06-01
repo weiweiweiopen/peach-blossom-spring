@@ -1753,7 +1753,17 @@ function remoteCharacterId(playerId: string): number {
   return -1000000 - Math.abs(hash % 900000);
 }
 
+function playerAvatarToken(profile: PlayerProfile): string {
+  const role = profile.avatarTitle ?? "pet-agent";
+  const seed = profile.petSeed ?? role;
+  return `pbs-player:v2;palette=${profile.palette};role=${encodeURIComponent(role)};seed=${encodeURIComponent(seed)}`;
+}
+
 function remotePalette(playerId: string, avatar: string): number {
+  const match = /(?:^|[;:])palette=(\d+)/.exec(avatar);
+  if (match) return Math.max(0, Math.min(5, Number(match[1]) || 0));
+  const legacyMatch = /^palette-(\d+)$/.exec(avatar);
+  if (legacyMatch) return Math.max(0, Math.min(5, Number(legacyMatch[1]) || 0));
   const value = `${playerId}:${avatar}`;
   let hash = 0;
   for (let index = 0; index < value.length; index++) {
@@ -2331,7 +2341,7 @@ function App() {
         multiplayerConfig,
         localPlayerId,
         playerProfile.name,
-        playerProfile.avatarTitle ?? `palette-${playerProfile.palette}`,
+        playerAvatarToken(playerProfile),
         player ? { col: player.tileCol, row: player.tileRow } : { col: 1, row: 1 },
       );
     };

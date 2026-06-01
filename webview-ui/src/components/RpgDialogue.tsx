@@ -101,10 +101,6 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
-function normalizeWhitespace(text: string): string {
-  return text.replace(/\s+/g, ' ').trim();
-}
-
 function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
@@ -136,52 +132,68 @@ const personaQuestionSeeds: Record<string, string[]> = {
   ],
 };
 
-function transcriptQuestionSeed(persona: Persona, transcript: string): string[] {
-  const text = transcript || Object.values(persona.responses).join(' ');
-  const sentences = normalizeWhitespace(text)
-    .split(/(?<=[。！？.!?])\s+|\n+/)
-    .map((line) => normalizeWhitespace(line))
-    .filter((line) => line.length > 36 && line.length < 180 && !/^https?:/i.test(line))
-    .slice(0, 6);
-  return sentences.slice(0, 3).map((line) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(line, 48)}」可以怎麼理解？`);
+function communityQuestionSeed(language: LanguageCode, persona: Persona): string[] {
+  const communityHint = cleanQuestionPart(Object.values(persona.responses).join(' '), 44);
+  if (language === 'ja') {
+    return [
+      `${persona.name} のコミュニティ経験から、桃花源の初心者はどの材料・方法・組織の問いから始めるとよいですか？`,
+      `${persona.name} は自分たちの実践を NGM、Hackteria、SGMK、KOBAKANT の公開資料とどうつなげますか？`,
+      `${persona.name} のコミュニティを小誌の問いで紹介するなら、どの道具・キャンプ・ケアの方法を比較しますか？`,
+      communityHint ? `${persona.name} が触れた「${communityHint}」は、どんな検証可能な桃花源の問いになりますか？` : `${persona.name} のコミュニティ記憶は、どんな検証可能な桃花源の問いになりますか？`,
+    ];
+  }
+  if (language === 'zh-TW') {
+    return [
+      `從 ${persona.name} 的社群經驗出發，桃花源新手可以先問哪個材料、方法或組織問題？`,
+      `${persona.name} 會怎麼把自己的社群實作連到 NGM、Hackteria、SGMK 或 KOBAKANT 的公開資料？`,
+      `如果只用一個小誌問題介紹 ${persona.name} 關心的社群，應該比較哪個工具、營隊或照護方法？`,
+      communityHint ? `${persona.name} 提到的「${communityHint}」可以變成什麼可查證的桃花源社群問題？` : `${persona.name} 的社群記憶可以怎麼變成一個可查證的桃花源問題？`,
+    ];
+  }
+  return [
+    `From ${persona.name}'s community experience, what material, method, or organization question should a Peach Blossom Spring beginner ask first?`,
+    `How would ${persona.name} connect their own community practice to NGM, Hackteria, SGMK, or KOBAKANT public sources?`,
+    `If one zine question introduced ${persona.name}'s community, which tool, camp, or care method should it compare?`,
+    communityHint ? `How can “${communityHint}” become a checkable Peach Blossom Spring community question for ${persona.name}?` : `How can ${persona.name}'s community memory become a checkable Peach Blossom Spring question?`,
+  ];
 }
 
-function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transcript = ''): string[] {
+function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
-  const transcriptSeeds = transcriptQuestionSeed(persona, transcript);
   const responseEntries = Object.entries(persona.responses).slice(0, 9);
   const sourceBridgeQuestions = [
-    `${persona.name} 的 NGM 訪談如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
-    `${persona.name} 會怎麼把訪談裡的工作坊經驗整理成一份可查證小誌？`,
-    `從 ${persona.name} 的觀點看，三個 sources 裡哪些材料最適合回答「社群如何保存知識」？`,
+    `${persona.name} 的社群實作如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
+    `${persona.name} 會怎麼把工作坊、材料或照護經驗整理成一份可查證小誌？`,
+    `從 ${persona.name} 的觀點看，哪些公開 source 最適合回答「社群如何保存知識」？`,
     `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
-    `${persona.name} 的訪談可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
-    `${persona.name} 的訪談和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
+    `${persona.name} 的社群方法可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
+    `${persona.name} 和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
   ];
   if (language === 'zh-TW') {
-    const responseQuestions = responseEntries.map(([, response]) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(response, 48)}」如何連到三個 wiki sources 的可檢查材料？`);
-    return shuffleCopy([...fixed, ...transcriptSeeds, ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
+    const responseQuestions = responseEntries.map(([, response]) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 48)}」如何連到公開 wiki sources 的可檢查材料？`);
+    return shuffleCopy([...fixed, ...communityQuestionSeed(language, persona), ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
   }
 
   const templates: Record<LanguageCode, (response: string) => string> = {
-    'zh-TW': (response) => `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
-    en: (response) => `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
-    id: (response) => `Dalam memori wawancara ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan praktiknya?`,
-    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ in ${persona.name}s Interview-Erinnerung mit der Praxis?`,
-    ja: (response) => `${persona.name} のインタビュー記憶では、「${cleanQuestionPart(response, 50)}」は実践とどうつながりますか？`,
-    th: (response) => `ในความทรงจำสัมภาษณ์ของ ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับการปฏิบัติอย่างไร?`,
+    'zh-TW': (response) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
+    en: (response) => `From ${persona.name}'s community practice, how does “${cleanQuestionPart(response, 50)}” connect to materials, methods, or care?`,
+    id: (response) => `Dari praktik komunitas ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan bahan, metode, atau perawatan?`,
+    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ aus ${persona.name}s Community-Praxis mit Material, Methode oder Sorgearbeit?`,
+    ja: (response) => `${persona.name} のコミュニティ実践から見ると、「${cleanQuestionPart(response, 50)}」は材料・方法・ケアとどうつながりますか？`,
+    th: (response) => `จากการปฏิบัติของชุมชน ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับวัสดุ วิธีการ หรือการดูแลอย่างไร?`,
   };
   const generated = responseEntries.map(([, response]) => templates[language](response));
   const englishSourceBridge = [
-    `How does ${persona.name}'s NGM interview connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
+    `How does ${persona.name}'s community practice connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
     `Which source pages would help turn ${persona.name}'s workshop memory into a checkable zine?`,
-    `How would ${persona.name} compare transcript memory with public workshop documentation?`,
-    `What material, tool, or community practice from the three sources best matches ${persona.name}'s concerns?`,
-    `How can ${persona.name}'s interview become a makeable, checkable, teachable zine question?`,
+    `How would ${persona.name} compare their community methods with public workshop documentation?`,
+    `What material, tool, or care practice from the three sources best matches ${persona.name}'s concerns?`,
+    `How can ${persona.name}'s community experience become a makeable, checkable, teachable zine question?`,
     `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
   ];
-  return shuffleCopy([...generated, ...englishSourceBridge]).slice(0, 9);
+  return shuffleCopy([...communityQuestionSeed(language, persona), ...generated, ...englishSourceBridge]).slice(0, 9);
 }
+
 
 function sourceLinksLabel(language: LanguageCode): string {
   const copy: Record<LanguageCode, string> = {

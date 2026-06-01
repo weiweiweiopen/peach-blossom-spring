@@ -9343,3 +9343,90 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     padding: 7px 12px !important;
   }
 }
+
+/* 2026-06-01 final visual corrections: single Japanese font, transparent pet cells, centered mini HUD, lower bulb, exact thumbnails. */
+html[data-language="ja"],
+body[data-language="ja"],
+[data-language="ja"],
+[data-language="ja"] :where(*, input, button, textarea, select),
+.player-setup-overlay[data-language="ja"],
+.player-setup-overlay[data-language="ja"] :where(*, input, button, textarea, select),
+.pbs-interaction-root[data-language="ja"],
+.pbs-interaction-root[data-language="ja"] :where(*, input, button, textarea, select),
+.rpg-dialogue-panel[data-language="ja"],
+.rpg-dialogue-panel[data-language="ja"] :where(*, input, button, textarea, select) {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif !important;
+  font-size-adjust: none !important;
+  letter-spacing: 0 !important;
+}
+
+.player-setup-overlay[data-language="ja"] :where(.player-setup-one-label, .pet-runner-bubble, .player-setup-action, .player-setup-field) {
+  font-size: clamp(18px, 2.1vw, 24px) !important;
+  line-height: 1.18 !important;
+  font-weight: 800 !important;
+}
+
+.player-setup-overlay[data-language="ja"] .player-setup-action {
+  font-size: clamp(22px, 2.6vw, 30px) !important;
+}
+
+.home-subtitle,
+.dd-reset-hero .dd-subtitle,
+.pbs-frame-subtitle[data-ui-part="subtitle"] {
+  text-transform: uppercase !important;
+}
+
+.question-pet-preview,
+.question-pet-preview span,
+.question-status-panel .question-pet-preview,
+.question-status-panel .question-pet-preview span,
+.pet-runner-option .question-pet-preview,
+.pet-runner-option .question-pet-preview span,
+.pet-detail-header .question-pet-preview,
+.pet-detail-header .question-pet-preview span {
+  background-color: transparent !important;
+}
+
+.question-status-panel-minimized .question-status-pet-row,
+.question-status-panel-minimized .question-status-title {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.question-status-panel-minimized .question-status-title .question-pet-preview,
+.question-status-panel-minimized .question-status-pet-row .question-pet-preview {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  overflow: visible !important;
+  transform: translateY(-1px) !important;
+  align-content: center !important;
+  justify-content: center !important;
+  place-content: center !important;
+}
+
+.player-idea-bulb {
+  margin-top: 14px !important;
+}
+
+.dialogue-pixel-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 92px !important;
+  height: 92px !important;
+  min-width: 92px !important;
+  min-height: 92px !important;
+  background: transparent !important;
+}
+
+.dialogue-avatar-wrap {
+  width: 112px !important;
+  min-width: 112px !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 92px !important;
+  height: 92px !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}

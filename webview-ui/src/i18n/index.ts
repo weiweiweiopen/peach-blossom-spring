@@ -247,7 +247,7 @@ function lookup(messages: LocaleMessages, key: TranslationKey): string | undefin
 }
 
 function governedCopyOverride(_language: LanguageCode, key: TranslationKey): string | undefined {
-  if (key === "home.subtitle") return "Dipatching a LLM wiki tamagotchi";
+  if (key === "home.subtitle") return "DISPATCHING AN LLM WIKI TAMAGOTCHI";
   if (key === "archive.tree" || key === "archive.title") return "🍑";
   return undefined;
 }

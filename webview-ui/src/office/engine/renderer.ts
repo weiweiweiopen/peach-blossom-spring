@@ -201,6 +201,26 @@ export function renderScene(
     const cached = getCachedSprite(f.sprite, zoom);
     const fx = offsetX + f.x * zoom;
     const fy = offsetY + f.y * zoom;
+    if (f.type?.startsWith('MULTI_MIND_CAMPFIRE')) {
+      const image = getImageSprite(`${import.meta.env.BASE_URL}assets/campfire.gif`);
+      if (image?.complete && image.naturalWidth > 0 && image.naturalHeight > 0) {
+        const boxW = cached.width;
+        const boxH = cached.height;
+        const size = Math.max(boxW, boxH);
+        const drawX = fx + (boxW - size) / 2;
+        const drawY = fy + boxH - size;
+        drawables.push({
+          zY: f.zY,
+          draw: (c) => {
+            c.save();
+            c.imageSmoothingEnabled = false;
+            c.drawImage(image, drawX, drawY, size, size);
+            c.restore();
+          },
+        });
+        continue;
+      }
+    }
     if (f.mirrored) {
       drawables.push({
         zY: f.zY,

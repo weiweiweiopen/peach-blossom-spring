@@ -17,7 +17,7 @@ const zhTW = {
   home: {
     ngmLabel: "Non-Governmental Matters",
     title: "桃花源",
-    subtitle: "Dipatching a LLM wiki tamagotchi",
+    subtitle: "DISPATCHING AN LLM WIKI TAMAGOTCHI",
     description: "這是一個互動寓言維度，許多奇怪的朋友在這裡一起做著奇怪的實驗和音樂，一起煮飯生活著，你無意間闖入這個世界並試圖探索並收集如何建造一個烏托邦的方法和試著記住回到這裡的路...\n\n這個遊戲的本體是一個研究訪談稿\"Non-Governmental Matters\"，該研究採訪了14位獨立科技藝術組織者和藝術家，關於經營社群可持續性的看法。這些受訪者的看法被轉化成遊戲裡可以以自然語言進行交談的 NPC。中央的多重心智的火燄是 LLM wiki query 入口：你可以圍著火問桃花源社群問題，得到短答，或把當前問題裝訂成維基小書。電子雞是陪你在桃花源裡閒晃的 pet agent。",
     createProtagonist: "創建主角",
     createTraveler: "創建異世界旅人",
