@@ -4158,9 +4158,17 @@ function App() {
                 data-no-mobile-drag="true"
               >
                 <div className="question-status-header flex items-center justify-between gap-4 mb-4">
-                  <h2 className="text-lg">
-                    <span aria-hidden="true">🐣 </span>
-                    {t(selectedLanguage, "hud.questionPetSim")}
+                  <h2 className="text-lg question-status-title">
+                    {simSnapshot.thronglets[0] && (
+                      <QuestionPetPreview
+                        question={simSnapshot.thronglets[0].question.text}
+                        appearance={simSnapshot.thronglets[0].appearance}
+                        size={3}
+                        socialSignals={simSnapshot.thronglets[0].state}
+                        currentAction={simSnapshot.thronglets[0].currentAction}
+                      />
+                    )}
+                    <span>{t(selectedLanguage, "hud.questionPetSim")}</span>
                   </h2>
                   <div className="question-status-actions">
                     <span className="text-base">
@@ -4210,19 +4218,7 @@ function App() {
                             setSelectedPet(null);
                           }}
                         >
-                          <div className="question-status-pet-row flex gap-4 items-center">
-                            <QuestionPetPreview
-                              question={pet.question.text}
-                              appearance={pet.appearance}
-                              size={4}
-                              socialSignals={pet.state}
-                              currentAction={pet.currentAction}
-                            />
-                            <span className="question-status-pet-agent text-base leading-snug">
-                              {PET_HUD_COPY[selectedLanguage].agent}
-                            </span>
-                          </div>
-                          <p className="text-sm mt-3">{petActionLabel(selectedLanguage, pet.currentAction)}</p>
+                          <p className="text-sm question-status-pet-action">{petActionLabel(selectedLanguage, pet.currentAction)}</p>
                           {(() => {
                             const lint = questionLintForPet(pet.question.text, selectedLanguage);
                             return (
@@ -4493,11 +4489,18 @@ function App() {
               >
                 X
               </button>
-              <h2 className="text-lg mb-3">
-                <span aria-hidden="true">🐣 </span>
-                {t(selectedLanguage, "hud.questionPetSim")}
+              <h2 className="text-lg mb-3 question-status-title">
+                {simSnapshot?.thronglets[0] && (
+                  <QuestionPetPreview
+                    question={simSnapshot.thronglets[0].question.text}
+                    appearance={simSnapshot.thronglets[0].appearance}
+                    size={3}
+                    socialSignals={simSnapshot.thronglets[0].state}
+                    currentAction={simSnapshot.thronglets[0].currentAction}
+                  />
+                )}
+                <span>{t(selectedLanguage, "hud.questionPetSim")}</span>
               </h2>
-              <p className="text-sm mb-3">{PET_HUD_COPY[selectedLanguage].note}</p>
               {simSnapshot && !(terrainEditorEnabled && editor.isEditMode) && (
                 <div className="question-status-compact mobile-question-status-compact" aria-label="Question Pet mobile status">
                   <div className="question-status-compact-scoregrid" aria-label="Question Pet scores">

@@ -201,22 +201,6 @@ export function renderScene(
     const cached = getCachedSprite(f.sprite, zoom);
     const fx = offsetX + f.x * zoom;
     const fy = offsetY + f.y * zoom;
-    const drawCampfireCatEyes = (c: CanvasRenderingContext2D): void => {
-      if (!f.type?.startsWith('MULTI_MIND_CAMPFIRE')) return;
-      const unit = Math.max(1, Math.round(zoom));
-      const eyeY = fy + 42 * zoom;
-      const leftX = fx + 21 * zoom;
-      const rightX = fx + 35 * zoom;
-      c.save();
-      c.imageSmoothingEnabled = false;
-      c.fillStyle = '#141414';
-      c.fillRect(leftX, eyeY, 8 * unit, 5 * unit);
-      c.fillRect(rightX, eyeY, 8 * unit, 5 * unit);
-      c.fillStyle = '#F7FFE8';
-      c.fillRect(leftX + 3 * unit, eyeY + unit, 2 * unit, 3 * unit);
-      c.fillRect(rightX + 3 * unit, eyeY + unit, 2 * unit, 3 * unit);
-      c.restore();
-    };
     if (f.mirrored) {
       drawables.push({
         zY: f.zY,
@@ -226,7 +210,6 @@ export function renderScene(
           c.scale(-1, 1);
           c.drawImage(cached, 0, 0);
           c.restore();
-          drawCampfireCatEyes(c);
         },
       });
     } else {
@@ -234,7 +217,6 @@ export function renderScene(
         zY: f.zY,
         draw: (c) => {
           c.drawImage(cached, fx, fy);
-          drawCampfireCatEyes(c);
         },
       });
     }
