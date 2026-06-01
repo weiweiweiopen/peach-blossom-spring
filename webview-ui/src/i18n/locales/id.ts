@@ -59,11 +59,11 @@ const id: typeof zhTW = {
     fixedPetMenu: "Menu peliharaan tetap",
     creatorKicker: "QUESTION PET CREATOR",
     creatorTitle: "Question Pet",
-    creatorLead: "Pilih pekerjaan peliharaan, tulis nama dan pertanyaanmu, lalu buat agen wiki tamagotchi-mu.",
+    creatorLead: "Pilih pekerjaan peliharaan, tulis nama dan pertanyaanmu, lalu buat agen wiki pet-mu.",
     petOccupationLabel: "Pekerjaan peliharaan",
     petOccupationAria: "Pilih pekerjaan peliharaan",
-    creatorSubmit: "Buat agen wiki tamagotchi-ku!",
-    creatorSubmitAria: "Buat agen wiki tamagotchi-ku",
+    creatorSubmit: "Buat agen wiki pet-ku!",
+    creatorSubmitAria: "Buat agen wiki pet-ku",
   },
   dialogue: {
     title: "Dialog",
@@ -106,7 +106,7 @@ const id: typeof zhTW = {
     language: "Bahasa",
     pressToTalk: "Ketuk untuk bicara",
     loadingExpedition: "Memuat ekspedisi...",
-    questionPetSim: "Question Pet SIM",
+    questionPetSim: "Sistem agen linting",
     tick: "Tik",
   },
   pet: {

@@ -8768,3 +8768,207 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     line-height: 1.35 !important;
   }
 }
+/* 2026-06 unified interaction surface: CSS-space anchors, bubbles below windows, and pet-HUD type scale. */
+.pbs-interaction-root {
+  --z-layer-bubbles: 80;
+  --z-layer-hud: 300;
+  --z-layer-dialogue: 700;
+  --z-layer-dialogue-front: 760;
+  --pet-hud-title: clamp(17px, 1.25vw, 22px);
+  --pet-hud-body: clamp(13px, 0.95vw, 16px);
+  --pet-hud-small: clamp(11px, 0.78vw, 13px);
+}
+
+.pbs-interaction-root :is(.npc-name-tag, .mobile-talk-prompt, .abao-speech-bubble) {
+  z-index: var(--z-layer-bubbles) !important;
+}
+
+.pbs-interaction-root :is(.archive-tree-menu, .question-status-panel, .question-response-panel, .world-split-panel, .rpg-dialogue-overlay, .mobile-rules-drawer) {
+  z-index: var(--z-layer-dialogue) !important;
+}
+
+.pbs-interaction-root :is(.question-response-panel.info-card, .world-split-panel.is-expanded, .rpg-dialogue-overlay, .final-document-window) {
+  z-index: var(--z-layer-dialogue-front) !important;
+}
+
+.pbs-interaction-root .npc-name-tag {
+  translate: -50% -100%;
+  transform: scale(var(--npc-tag-scale, 1)) !important;
+  transform-origin: center bottom;
+}
+
+.pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt) {
+  padding: 7px 13px !important;
+  font-size: clamp(14px, 1.25vw, 18px) !important;
+  line-height: 1.16 !important;
+  max-width: min(220px, calc(100vw - 28px)) !important;
+  border-radius: 999px !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+  min-width: calc(min(220px, calc(100vw - 28px)) * 3) !important;
+  max-width: min(660px, calc(100vw - 28px)) !important;
+  min-height: 64px !important;
+  padding: 18px 28px !important;
+  border-radius: 999px !important;
+  font-size: clamp(22px, 2.6vw, 34px) !important;
+  line-height: 1.18 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .npc-name-tag.mobile-talk-prompt,
+.pbs-interaction-root[data-language="th"] .npc-name-tag.mobile-talk-prompt {
+  font-size: clamp(20px, 2.2vw, 30px) !important;
+}
+
+.question-status-panel.rpg-message-frame,
+.question-status-panel-compact {
+  font-size: var(--pet-hud-body) !important;
+  line-height: 1.28 !important;
+}
+
+.question-status-panel .question-status-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.question-status-panel :where(h2, h3, .text-lg, .type-heading, .pet-terrain-state-header strong, .pet-gap-inbox-header strong, .question-lint-card > strong) {
+  font-size: var(--pet-hud-title) !important;
+  line-height: 1.12 !important;
+}
+
+.question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-label) {
+  font-size: var(--pet-hud-body) !important;
+  line-height: 1.3 !important;
+}
+
+.question-status-panel :where(time, .type-caption, .question-status-actions span) {
+  font-size: var(--pet-hud-small) !important;
+  line-height: 1.2 !important;
+}
+
+.question-status-pet-row {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+}
+
+.question-status-pet-row .question-pet-preview,
+.pet-detail-header .question-pet-preview,
+.question-hatch-screen .question-pet-preview,
+.pet-role-option .question-pet-preview {
+  aspect-ratio: 1 / 1 !important;
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  background: #fff !important;
+}
+
+.question-status-pet-agent {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 72px !important;
+  overflow: hidden !important;
+}
+
+.question-lint-card {
+  font-size: var(--pet-hud-body) !important;
+}
+
+.question-lint-grid--highlight {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+
+.question-lint-grid--highlight span {
+  display: grid !important;
+  place-items: center !important;
+  min-height: 34px !important;
+  padding: 5px 6px !important;
+  background: var(--palette-yellow) !important;
+  border: 3px solid #000 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+}
+
+.question-status-panel-minimized .question-status-compact,
+.question-status-panel-minimized .question-status-compact-lint p,
+.question-status-panel-minimized .question-status-compact-scoregrid {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.question-status-panel-minimized .question-status-compact-lint p {
+  display: block !important;
+  white-space: nowrap !important;
+  animation: pet-hud-marquee 12s linear infinite;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel-minimized,
+.pbs-interaction-root[data-language="th"] .question-status-panel-minimized {
+  --pet-hud-title: clamp(15px, 1.05vw, 18px);
+  --pet-hud-body: clamp(11px, 0.82vw, 13px);
+  --pet-hud-small: clamp(10px, 0.72vw, 12px);
+}
+
+@keyframes pet-hud-marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.rpg-dialogue-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  min-height: 58px !important;
+  padding: 2px !important;
+  overflow: hidden !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 92px !important;
+  height: 92px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root {
+    --pet-hud-title: clamp(16px, 4vw, 19px);
+    --pet-hud-body: clamp(13px, 3.35vw, 16px);
+    --pet-hud-small: clamp(11px, 2.85vw, 13px);
+  }
+  .pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt) {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+  }
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+    min-width: min(420px, calc(100vw - 24px)) !important;
+    min-height: 72px !important;
+    font-size: 26px !important;
+    padding: 16px 24px !important;
+  }
+  .question-status-pet-row .question-pet-preview,
+  .pet-detail-header .question-pet-preview {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    min-height: 58px !important;
+  }
+  .question-status-pet-agent { min-height: 58px !important; }
+}

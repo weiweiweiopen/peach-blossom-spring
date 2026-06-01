@@ -59,11 +59,11 @@ const de: typeof zhTW = {
     fixedPetMenu: "Festes Pet-Menü",
     creatorKicker: "QUESTION PET CREATOR",
     creatorTitle: "Question Pet",
-    creatorLead: "Wähle einen Pet-Beruf, schreibe deinen Namen und deine Frage und erzeuge deinen Wiki-Tamagotchi-Agenten.",
+    creatorLead: "Wähle einen Pet-Beruf, schreibe deinen Namen und deine Frage und erzeuge deinen Wiki-Pet-Agenten.",
     petOccupationLabel: "Pet-Beruf",
     petOccupationAria: "Pet-Beruf auswählen",
-    creatorSubmit: "Meinen Wiki-Tamagotchi-Agenten erzeugen!",
-    creatorSubmitAria: "Meinen Wiki-Tamagotchi-Agenten erzeugen",
+    creatorSubmit: "Meinen Wiki-Pet-Agenten erzeugen!",
+    creatorSubmitAria: "Meinen Wiki-Pet-Agenten erzeugen",
   },
   dialogue: {
     title: "Dialog",
@@ -106,7 +106,7 @@ const de: typeof zhTW = {
     language: "Sprache",
     pressToTalk: "Tippen zum Sprechen",
     loadingExpedition: "Expedition wird geladen...",
-    questionPetSim: "Question Pet SIM",
+    questionPetSim: "Linting-Agent-System",
     tick: "Tick",
   },
   pet: {

@@ -142,7 +142,7 @@ function qaPlayerProfile(language: LanguageCode): PlayerProfile {
   return {
     name: language === "zh-TW" ? "小貓 PBS QA" : "PBS QA Cat",
     palette: 1,
-    avatarTitle: "Tamagotchi agent",
+    avatarTitle: "Pet agent",
     currentRole: "Interface tester",
     mission: "Compare multilingual UI scale without breaking buttons.",
     constraints: "Keep emoji controls fixed.",
@@ -229,7 +229,7 @@ const COMMUNITY_MAP_URL =
 const WUKIR_BANDCAMP_ALBUM_URL =
   "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual";
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
-const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
+const TAMAGOTCHI_AGENT_PROMPT = "PBS pet agent";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
     "我想找藝術表現和生物倫理議題結合的案例，PBS 可以從哪些社群維基開始找？",
@@ -904,12 +904,12 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
 };
 
 const PET_HUD_COPY: Record<LanguageCode, { agent: string; note: string; recent: string; action: Record<string, string>; score: Record<string, string> }> = {
-  "zh-TW": { agent: "Tamagotchi agent", note: "「PBS Tamagotchi agent」在桃花源裡閃了一下，像剛學會聽人的小生物。", recent: "最近問題紀錄", action: { wander: "閒晃", visitRiver: "去河邊", joinThrong: "加入群聚", reflect: "反思", hibernate: "休眠" }, score: { interaction: "互動", wisdom: "智慧", community: "社群", resource: "資源", skill: "技能", care: "照護" } },
-  en: { agent: "Tamagotchi agent", note: "The PBS Tamagotchi agent flickers through Peach Blossom Spring like a small creature learning to listen.", recent: "recent question history", action: { wander: "wander", visitRiver: "visit river", joinThrong: "join throng", reflect: "reflect", hibernate: "hibernate" }, score: { interaction: "interaction", wisdom: "wisdom", community: "community", resource: "resource", skill: "skill", care: "care" } },
-  id: { agent: "Agen Tamagotchi", note: "Agen Tamagotchi PBS berkelip di Peach Blossom Spring seperti makhluk kecil yang belajar mendengar.", recent: "riwayat pertanyaan terbaru", action: { wander: "berkeliling", visitRiver: "ke sungai", joinThrong: "bergabung", reflect: "merenung", hibernate: "hibernasi" }, score: { interaction: "interaksi", wisdom: "kebijaksanaan", community: "komunitas", resource: "sumber daya", skill: "keterampilan", care: "perawatan" } },
-  de: { agent: "Tamagotchi-Agent", note: "Der PBS Tamagotchi-Agent flackert durch Peach Blossom Spring wie ein kleines Wesen, das Zuhören lernt.", recent: "letzte Fragen", action: { wander: "wandern", visitRiver: "zum Fluss", joinThrong: "anschließen", reflect: "nachdenken", hibernate: "ruhen" }, score: { interaction: "Interaktion", wisdom: "Weisheit", community: "Community", resource: "Ressource", skill: "Fähigkeit", care: "Fürsorge" } },
-  ja: { agent: "たまごっちエージェント", note: "PBS たまごっちエージェントは、人の話を聞き始めた小さな生き物のように桃花源をちらりと横切ります。", recent: "最近の質問履歴", action: { wander: "散歩", visitRiver: "川へ行く", joinThrong: "群れに入る", reflect: "考える", hibernate: "休む" }, score: { interaction: "交流", wisdom: "知恵", community: "共同体", resource: "資源", skill: "技能", care: "ケア" } },
-  th: { agent: "ตัวแทน Tamagotchi", note: "ตัวแทน PBS Tamagotchi กะพริบผ่าน Peach Blossom Spring เหมือนสิ่งมีชีวิตเล็กๆ ที่กำลังเรียนรู้การฟัง", recent: "ประวัติคำถามล่าสุด", action: { wander: "เดินเล่น", visitRiver: "ไปแม่น้ำ", joinThrong: "เข้ากลุ่ม", reflect: "ไตร่ตรอง", hibernate: "พัก" }, score: { interaction: "ปฏิสัมพันธ์", wisdom: "ปัญญา", community: "ชุมชน", resource: "ทรัพยากร", skill: "ทักษะ", care: "การดูแล" } },
+  "zh-TW": { agent: "pet agent", note: "「PBS pet agent」在桃花源裡閃了一下，像剛學會聽人的小生物。", recent: "最近問題紀錄", action: { wander: "閒晃", visitRiver: "去河邊", joinThrong: "加入群聚", reflect: "反思", hibernate: "休眠" }, score: { interaction: "互動", wisdom: "智慧", community: "社群", resource: "資源", skill: "技能", care: "照護" } },
+  en: { agent: "pet agent", note: "The PBS pet agent flickers through Peach Blossom Spring like a small creature learning to listen.", recent: "recent question history", action: { wander: "wander", visitRiver: "visit river", joinThrong: "join throng", reflect: "reflect", hibernate: "hibernate" }, score: { interaction: "interaction", wisdom: "wisdom", community: "community", resource: "resource", skill: "skill", care: "care" } },
+  id: { agent: "Agen pet", note: "Agen pet PBS berkelip di Peach Blossom Spring seperti makhluk kecil yang belajar mendengar.", recent: "riwayat pertanyaan terbaru", action: { wander: "berkeliling", visitRiver: "ke sungai", joinThrong: "bergabung", reflect: "merenung", hibernate: "hibernasi" }, score: { interaction: "interaksi", wisdom: "kebijaksanaan", community: "komunitas", resource: "sumber daya", skill: "keterampilan", care: "perawatan" } },
+  de: { agent: "Pet agent", note: "Der PBS-Pet-Agent flackert durch Peach Blossom Spring wie ein kleines Wesen, das Zuhören lernt.", recent: "letzte Fragen", action: { wander: "wandern", visitRiver: "zum Fluss", joinThrong: "anschließen", reflect: "nachdenken", hibernate: "ruhen" }, score: { interaction: "Interaktion", wisdom: "Weisheit", community: "Community", resource: "Ressource", skill: "Fähigkeit", care: "Fürsorge" } },
+  ja: { agent: "ペットエージェント", note: "PBS ペットエージェントは、人の話を聞き始めた小さな生き物のように桃花源をちらりと横切ります。", recent: "最近の質問履歴", action: { wander: "散歩", visitRiver: "川へ行く", joinThrong: "群れに入る", reflect: "考える", hibernate: "休む" }, score: { interaction: "交流", wisdom: "知恵", community: "共同体", resource: "資源", skill: "技能", care: "ケア" } },
+  th: { agent: "ตัวแทนสัตว์เลี้ยง", note: "ตัวแทน PBS pet กะพริบผ่าน Peach Blossom Spring เหมือนสิ่งมีชีวิตเล็กๆ ที่กำลังเรียนรู้การฟัง", recent: "ประวัติคำถามล่าสุด", action: { wander: "เดินเล่น", visitRiver: "ไปแม่น้ำ", joinThrong: "เข้ากลุ่ม", reflect: "ไตร่ตรอง", hibernate: "พัก" }, score: { interaction: "ปฏิสัมพันธ์", wisdom: "ปัญญา", community: "ชุมชน", resource: "ทรัพยากร", skill: "ทักษะ", care: "การดูแล" } },
 };
 
 const CAMPFIRE_BROADCASTS: Record<LanguageCode, string[]> = {
@@ -1725,13 +1725,13 @@ function configuredWorkerChatApiUrl(): string {
 async function createCloudPetPersona(profile: PlayerProfile): Promise<string | null> {
   const url = configuredWorkerChatApiUrl();
   if (!url) return null;
-  const role = profile.avatarTitle ?? "Tamagotchi agent";
+  const role = profile.avatarTitle ?? "Pet agent";
   const system = [
-    "你是桃花源遊戲的 Tamagotchi agent 人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
+    "你是桃花源遊戲的 pet agent 人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
     "人格必須像好奇、挑剔、會照看公共文字品質的小夥伴，但不要說出任何系統功能名稱。",
     "不要把電子雞設定成玩家問題的解答器；PBS Computer 才是 LLM wiki query 入口。",
   ].join("\n");
-  const user = `玩家名字：${profile.name}\n寵物類型：${role}\n請輸出 3 句以內的 Tamagotchi agent persona。`;
+  const user = `玩家名字：${profile.name}\n寵物類型：${role}\n請輸出 3 句以內的 pet agent persona。`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -3164,7 +3164,7 @@ function App() {
             "source care",
             "public language care",
             "overclaiming check",
-            `petRole:${profile.avatarTitle ?? "Tamagotchi agent"}`,
+            `petRole:${profile.avatarTitle ?? "Pet agent"}`,
             profile.skills ?? "",
           ].filter(Boolean).join("\n\n"),
           seed: profile.petSeed ?? `${Date.now()}`,
@@ -3313,19 +3313,14 @@ function App() {
     const npc = officeState.characters.get(promptAnchor.npcId);
     if (!npc) return null;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const canvasW = rect.width * dpr;
-    const canvasH = rect.height * dpr;
-    const deviceOffsetX =
-      Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const deviceOffsetY =
-      Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + npc.x * editor.zoom) / dpr,
-      top: (deviceOffsetY + (npc.y - 24) * editor.zoom) / dpr,
+      left: offsetX + npc.x * editor.zoom,
+      top: offsetY + (npc.y - 24) * editor.zoom,
     };
   })();
 
@@ -3335,17 +3330,14 @@ function App() {
       ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const canvasW = rect.width * dpr;
-    const canvasH = rect.height * dpr;
-    const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
-      top: (deviceOffsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
+      left: offsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * editor.zoom,
+      top: offsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom,
     };
   })();
 
@@ -3360,23 +3352,18 @@ function App() {
         zoomScale: number;
       }>;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
-    const canvasW = rect.width * dpr;
-    const canvasH = rect.height * dpr;
-    const deviceOffsetX =
-      Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
-    const deviceOffsetY =
-      Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
+    const offsetX = Math.floor((rect.width - mapW) / 2) + Math.round(editor.panRef.current.x);
+    const offsetY = Math.floor((rect.height - mapH) / 2) + Math.round(editor.panRef.current.y);
     return Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
       .map((ch) => ({
         id: ch.id,
         name: ch.folderName ?? "",
-        left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
-        top: (deviceOffsetY + (ch.y - 34) * editor.zoom) / dpr,
+        left: offsetX + ch.x * editor.zoom,
+        top: offsetY + (ch.y - 34) * editor.zoom,
         isQuestionPet: Boolean(ch.isQuestionPet),
         zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
       }));
@@ -4162,7 +4149,7 @@ function App() {
                             setSelectedPet(null);
                           }}
                         >
-                          <div className="flex gap-4 items-center">
+                          <div className="question-status-pet-row flex gap-4 items-center">
                             <QuestionPetPreview
                               question={pet.question.text}
                               appearance={pet.appearance}
@@ -4170,7 +4157,7 @@ function App() {
                               socialSignals={pet.state}
                               currentAction={pet.currentAction}
                             />
-                            <span className="text-base leading-snug">
+                            <span className="question-status-pet-agent text-base leading-snug">
                               {PET_HUD_COPY[selectedLanguage].agent}
                             </span>
                           </div>
@@ -4180,7 +4167,7 @@ function App() {
                             return (
                               <div className="question-lint-card">
                                 <strong>{lint.title}</strong>
-                                <div className="question-lint-grid">
+                                <div className="question-lint-grid question-lint-grid--highlight">
                                   {questionLintScoreEntries(lint, selectedLanguage).map(([label, value]) => (
                                     <span key={label}>{label}: {value.toFixed(0)}</span>
                                   ))}
@@ -4233,9 +4220,9 @@ function App() {
                         ))
                       )}
                     </div>
-                    <article className="question-lint-card">
+                    <article className="question-lint-card question-lint-card--summary">
                       <strong>{questionLintHud.title}</strong>
-                      <div className="question-lint-grid">
+                      <div className="question-lint-grid question-lint-grid--highlight">
                         {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
                           <span key={label}>{label}: {value.toFixed(0)}</span>
                         ))}
