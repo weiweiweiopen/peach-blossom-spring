@@ -299,3 +299,27 @@
   font-size: var(--ui-type-caption) !important;
   line-height: var(--ui-line-caption) !important;
 }
+
+/* Safe multilingual type pass: typography only. Do not alter layout, box size, position, padding, display, transform, width, or height. */
+.pbs-interaction-root[data-language="ja"] :is(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .npc-name-tag, .abao-speech-bubble),
+.rpg-dialogue-panel[data-language="ja"] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input) {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.pbs-interaction-root[data-language="th"] :is(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .npc-name-tag, .abao-speech-bubble),
+.rpg-dialogue-panel[data-language="th"] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input) {
+  font-family: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.pbs-interaction-root[data-language="id"] :is(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .npc-name-tag, .abao-speech-bubble),
+.rpg-dialogue-panel[data-language="id"] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input) {
+  font-family: "Noto Sans", "Inter", system-ui, sans-serif !important;
+}
+
+/* Match thinking/loading copy to dialogue body hierarchy only; no container/layout edits. */
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
