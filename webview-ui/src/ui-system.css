@@ -536,3 +536,35 @@
   font-synthesis: none !important;
   font-weight: 500 !important;
 }
+
+/* 2026-06-01: keep minimized HUD pet in a true square viewport; show full 16x32 pet centered, not clipped. */
+@media (max-width: 700px), (pointer: coarse) {
+  .mobile-stats-pet-icon {
+    flex: 0 0 34px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    aspect-ratio: 1 / 1 !important;
+    display: grid !important;
+    place-items: center !important;
+    overflow: visible !important;
+  }
+
+  .mobile-stats-pet-icon .question-pet-preview {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    aspect-ratio: 1 / 1 !important;
+    display: grid !important;
+    grid-template-columns: repeat(16, 1px) !important;
+    grid-template-rows: repeat(32, 1px) !important;
+    place-content: center !important;
+    align-content: center !important;
+    justify-content: center !important;
+    overflow: visible !important;
+    transform: none !important;
+    transform-origin: center center !important;
+  }
+}

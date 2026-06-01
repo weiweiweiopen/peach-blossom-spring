@@ -48,6 +48,10 @@ Current public source fields include:
 - Hackteria Wiki;
 - SGMK Wiki;
 - Fabricademy / Textile Academy Wiki;
+- Design+Posthumanism;
+- KUBU / Kulturhus Björkboda;
+- Radiona makerspace;
+- Green Fab Lab project pages;
 - selected public source pages connected to NGM people, workshops, tools, camps, and communities.
 
 Important boundary: **the online GitHub Pages version is a read-only exhibition export**. The shared memory only works as living, editable memory after you download or clone PBS to a local machine. Local PBS can keep indexes, review drafts, promoted wiki notes, and git history; the online version can only display the current public snapshot.

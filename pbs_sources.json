@@ -24,6 +24,31 @@
       "pagesApi": "https://designandposthumanism.org/wp-json/wp/v2/page",
       "main": "https://designandposthumanism.org/",
       "out": "Sources/Raw/designposthumanism"
+    },
+    "kubu": {
+      "kind": "wordpress",
+      "api": "https://kubu.fi/wp-json/wp/v2/pages",
+      "main": "https://kubu.fi",
+      "out": "Sources/Raw/kubu"
+    },
+    "radiona": {
+      "kind": "wordpress",
+      "api": "https://radiona.org/wp-json/wp/v2/posts",
+      "pagesApi": "https://radiona.org/wp-json/wp/v2/pages",
+      "main": "https://radiona.org",
+      "out": "Sources/Raw/radiona"
+    },
+    "greenfablab": {
+      "kind": "wordpress",
+      "api": "https://greenfablab.org/wp-json/wp/v2/posts",
+      "pagesApi": "https://greenfablab.org/wp-json/wp/v2/pages",
+      "main": "https://greenfablab.org/projects/",
+      "out": "Sources/Raw/greenfablab"
+    },
+    "fabricademy": {
+      "kind": "dokuwiki",
+      "main": "http://wiki.textile-academy.org/",
+      "out": "Sources/Raw/fabricademy"
     }
   }
 }

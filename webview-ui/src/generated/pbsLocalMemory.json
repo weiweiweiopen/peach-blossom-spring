@@ -1,12 +1,16 @@
 {
   "version": "source-first-2026-05-31",
   "name": "PBS local memory source-first index",
-  "count": 175,
+  "count": 336,
   "sourceUrls": [
     "https://www.hackteria.org/wiki/Main_Page",
     "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
     "https://howtogetwhatyouwant.at",
-    "https://designandposthumanism.org/"
+    "https://designandposthumanism.org/",
+    "https://kubu.fi",
+    "https://radiona.org",
+    "https://greenfablab.org/projects/",
+    "http://wiki.textile-academy.org/"
   ],
   "items": [
     {
@@ -871,6 +875,202 @@
       "description": "# Posthuman Dictionary Posthuman Dictionary Platform is in the form of a simple online dictionary designed to explore the basic concepts and narratives of Posthuman, with the intention of building a winter garden enriched with various articles, quotes and resources. The platform also contains, events, open calls, art projects, courses and publications. Visit Posthuman Dictionary here"
     },
     {
+      "title": "bibliography",
+      "url": "http://wiki.textile-academy.org/bibliography",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/bibliography.md",
+      "description": "# bibliography bibliography # BIBLIOGRAPHY https://www.amazon.com/Out-Hand-Materializing-Ron-Labaco/dp/1908966238 https://www.amazon.com/Postdigital-Artisans-Craftsmanship-Aesthetic-Architecture/dp/9491727613 https://www.amazon.com/Sustainable-Materials-Processes-Production-Manufacturing/dp/0500290717/ref=pd_sim_14_3?ie=UTF8&refRID=0QNDS39ZGTBJ4Y6X39Y8 https://www.amazon.com/Modelling-Behaviour-Design-Symposium-2015-ebook/dp/B017X7H6CM/ref=sr_1_cc_1?s=aps&ie=UTF8&qid=1476470447&sr=1-1-catcorr&keywords=Mette+Ramsgaard+Thomsen https://www.amazon.com/gp/product/147252375X/ref=pd_sim_14_36?ie=UTF8&psc=1&refRID=J7664J"
+    },
+    {
+      "title": "fabricademy2017",
+      "url": "http://wiki.textile-academy.org/fabricademy2017",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017.md",
+      "description": "# fabricademy2017 fabricademy2017 # Fabricademy 2017 # Lectures All lectures run on Tuesdays from 9AM to 11AM Boston time. This is 01:00PM GMT, check the World Clock if you are not sure. # State of the art, Project Management and Documentation # Tuesday, September 26th 2017 This class will introduce you to the Fabricademy topics and background and provide all the details on why and how document your work. Class notes | Video # Digital Bodies # Tuesday, October 3rd 2017 This class introduces new digital tools that complement hand tools in order to design, represent, make and modify the human figure that can then b"
+    },
+    {
+      "title": "fabricademy2017:classes:biodyes",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/biodyes",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesbiodyes.md",
+      "description": "# fabricademy2017:classes:biodyes fabricademy2017 classes biodyes # BioFabricating Dyes & Materials 17-10-2017 Cecilia Raspanti The textile industry is one of the most polluting in the world, in which one the most environmentally disastrous processes is the dyeing of fibers and textiles of the clothes we wear. Chemicals are released daily in rivers and nature destroying the environment around us to satisfy the colour demands that we create as designers, industry and consumers. Very few options are being explored in this fast changing fashion, clothing and textile industry, and the list of chemical treatments is o"
+    },
+    {
+      "title": "fabricademy2017:classes:circularfashion",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/circularfashion",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classescircularfashion.md",
+      "description": "# fabricademy2017:classes:circularfashion fabricademy2017 classes circularfashion # Fabricademy 2017 # Circular Open Source Fashion Zoe Romano In this class the lecture will outline the systems behind fashion and the textile industry, focusing on alternative systems such as circular fashion, agile fashion, open value chains. The focus will be on creating modular elements, structures and connections that allow the user to change the shape of a garment, resize it or replace certain elements. Students will publish their creations on open source platforms and learn how to monitor and promote their creations in a dist"
+    },
+    {
+      "title": "fabricademy2017:classes:computational",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/computational",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classescomputational.md",
+      "description": "# fabricademy2017:classes:computational fabricademy2017 classes computational # Table of Contents Computational Couture Libraries for Grasshopper3d Software Assignment Lecture notes # Fabricademy 2017 # Computational Couture Aldo Sollazzo # Brief Disciplines as programming and electronics become highly interconnected, blurring old boundaries and merging different fields of knowledge. Fashion has been already affected by this radical change. Therefore, clothes, shoes and other accessories can now incorporate elements of hardware and software, generating a peculiar mix between fashion and computation that is incred"
+    },
+    {
+      "title": "fabricademy2017:classes:digitalbodies",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/digitalbodies",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesdigitalbodies.md",
+      "description": "# fabricademy2017:classes:digitalbodies fabricademy2017 classes digitalbodies # Fabricademy 2017 # Week 2: Digital Bodies Anastasia Pistofidou Throughout our history we observe that the human body and its representation are of high importance in arts, sciences, medicine, psychology, etc. A fashion designer uses the human figure as his white paper to produce his masterpiece. In the same way authors were using pencil and paper, then typewriter, keyboard and currently voice dictation, the tools of the fashion designer evolved through time. On the way of enabling mass customization, the fashion industry is claiming f"
+    },
+    {
+      "title": "fabricademy2017:classes:intro",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/intro",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesintro.md",
+      "description": "# fabricademy2017:classes:intro fabricademy2017 classes intro # Table of Contents 1. State of the art, Project Management and Documentation Lecture notes Documenting your work How to document Where to document Editing your student page How to upload an image # 1. State of the art, Project Management and Documentation September 26 2017 # Lecture notes What is Fabricademy State of the art Classes Why sharing How to document # Documenting your work # How to document Documentation is an important part of Fabricademy. You should document your work for your own, and for anybody who would like to replicate your work. Yo"
+    },
+    {
+      "title": "fabricademy2017:classes:opensourcehardware",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/opensourcehardware",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesopensourcehardware.md",
+      "description": "# fabricademy2017:classes:opensourcehardware fabricademy2017 classes opensourcehardware # Fabricademy 2017 # Open Source Hardware: From fibers to fabric Global Instructors: Mar Canet & Varvara Guljajeva The class explores the open source hardware field in general and focuses on its potential in the area of textile. How to update obsolete machines for producing textile? How to take advantage of digital fabrication and open source technology to come up with an open source machine for knitting, weaving and invent new techniques. This class focuses on the importance of the techniques, tools and machines that create t"
+    },
+    {
+      "title": "fabricademy2017:classes:skinelectronics",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/skinelectronics",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesskinelectronics.md",
+      "description": "# fabricademy2017:classes:skinelectronics fabricademy2017 classes skinelectronics # Fabricademy 2017 # Skins Electronics Global Instructor: Katia Vega In the same way that the wearables industry is integrating fashion practices in their development, we envision new partnerships between the biotech/tech companies and skin professionals such as makeup artists, prosthesis experts and tattooists in order to embrace the idea of human-device symbiosis. FX e-makeup made use of special effects makeup for hiding electronic components that sense facial muscle movements, acting as a second skin. Components: Option 1: Skin M"
+    },
+    {
+      "title": "fabricademy2017:classes:softrobotics",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/softrobotics",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classessoftrobotics.md",
+      "description": "# fabricademy2017:classes:softrobotics fabricademy2017 classes softrobotics # Fabricademy 2017 # Soft Robotics Global Instructor Lily Chambers Program Outline This class will focus in the study of a specific field in robotics, the soft robotics. Unlike rigid robots we are mostly used to, soft bodied robots have similarities and performance characteristics similar to living organisms or the human body. Soft-robotics are based in Bio-inspired design or biomimicry and have applications in wearables, rehabilitation prosthetics, surgical robots, rescuing and others. We will focus on the fabrication of soft actuators, "
+    },
+    {
+      "title": "fabricademy2017:classes:start",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/start",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesstart.md",
+      "description": "# fabricademy2017:classes:start fabricademy2017 classes # Fabricademy 2017 Classes State of the art, Project Management and Documentation Digital Bodies Circular Fashion E-Textiles and Wearables 1 Computational Couture Textile as Scaffold Open Source Hardware: from fibers to fabric E-Textiles and Wearables 2 Soft Robotics Skin Electronics Final Projects Except where otherwise noted, content on this wiki is licensed under the following license: CC Attribution-Share Alike 4.0 International"
+    },
+    {
+      "title": "fabricademy2017:classes:textilescaffold",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/textilescaffold",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classestextilescaffold.md",
+      "description": "# fabricademy2017:classes:textilescaffold fabricademy2017 classes textilescaffold Fabricademy 2017 # Textile as Scaffold Global instructor: Anastasia Pistofidou Technical textiles have various applications, among which agrotech, building, clothes, geotech, sports. In this class we will use textiles for composites, polymerisation, solidification, fabric formwork, crystallization, composites and biocomposites, agglomerates. This class focuses on exploring techniques and applications of technical textiles in the industry. It introduces the concept of designing custom processes that require the design of a set of too"
+    },
+    {
+      "title": "fabricademy2017:classes:wearables1",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/wearables1",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classeswearables1.md",
+      "description": "# fabricademy2017:classes:wearables1 fabricademy2017 classes wearables1 # Table of Contents Introduction to Electricity Meet the Materials Soft Circuit Techniques Textile Sensors Assignment 1: LED Circuit Microcontrollers, ATtiny Programming Assignment 2: ATtiny Circuit Hannah Pierre Wilson and Mika Satomi are KOBAKANT and teach the class of e-textiles and wearables. You can find the documentation of the class agenda here and on their webpage In this week’s course, students will be introduced to an overview of the field of electronic textiles, example works in the field as well as materials and technical developm"
+    },
+    {
+      "title": "fabricademy2017:classes:wearables2",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/wearables2",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classeswearables2.md",
+      "description": "# fabricademy2017:classes:wearables2 fabricademy2017 classes wearables2 Global Instructor : Becky Stewart More about Becky on her Queen Mary University of London page and theleadingzero.com . Slides from other presentations and workshops on similar topics can be found on speakerdeck . This second class on the topic of wearables and e-textiles will focus on incorporating computation into soft circuits by using microcontrollers and single-board computers. Prep for Class Install the Arduino software (IDE) on your computer or test that you can use the new Web Editor for Arduino. Upload the Blink sketch. See this tuto"
+    },
+    {
+      "title": "fabricademy2017:nodes",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/nodes",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017nodes.md",
+      "description": "# fabricademy2017:nodes fabricademy2017 nodes # Fabricademy 2017 …Work in progress… # Official Nodes # Europe # Spain FabTextiles / Barcelona Fab Lab Barcelona Institute for Advanced Architecture of Catalonia Contact: Anastasia Pistofidou FabLab Leon Spain Contact: Nuria Robles Tinkerers Fab Lab Casteldefells, Barcelona, Spain Contact: Milena Orlandini # Netherlands Amsterdam Waag Society Contact: Cecilia Raspanti # Germany FabLab Kamp-Lintfort Rhine-Waal University of Applied Sciences Contact: Adriana Cabrera # France Fab Lab Digiscope Contact: Romain Di Vozzo Artilect Toulouse, France Contact: Lingchih Yang # I"
+    },
+    {
+      "title": "fabricademy2017:students",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/students",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017students.md",
+      "description": "# fabricademy2017:students fabricademy2017 students # Fabricademy 2017 Work in progress: if you don't see your name on this list, please contact us!! . # Students Textile Lab, Amsterdam Fanny Trivero Sofia Guridi Pauline Bianchi Julia van Zilt Brigitte Kock Fab Textiles, Barcelona Laura Civetti Carolin Vogler Clara Davis Zoe Powell Tinkerers Fab Lab, Castelldefels * Misha Orlandini Fab Lab Kamp Lintfort Newton Laura Thormeyer Natalia-Elisabeth Disimino Melissa Isabell Akhibi Sophie Woldeyesus Arsiema Ver Pia de-Toledo-Motta NaiadeLara Cheung Wei-Ying Giwa Philippa Ronga Elisa Hoxha Gerantina Liane Sayuri Honda Ay"
+    },
+    {
+      "title": "fabrikipedia",
+      "url": "http://wiki.textile-academy.org/fabrikipedia",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabrikipedia.md",
+      "description": "# fabrikipedia fabrikipedia # Fabrikipedia A curated collection of resources about new and existing materials * Materials index # Recent changes 10/3/2017 : Added Cotton Except where otherwise noted, content on this wiki is licensed under the following license: CC Attribution-Share Alike 4.0 International"
+    },
+    {
+      "title": "start",
+      "url": "http://wiki.textile-academy.org/start",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/start.md",
+      "description": "# start # Fabricademy - Textile and technology academy 2017-18 # Quick links Classes Nodes Students Handbook Videos Recitations # Software, Materials and Equipment Wiki Tutorials Bluejeans Video Conferencing Software Machines Bill of Materials Bibliography # Social Instagram Vimeo # 7-11 May @ WeMake Milan Bootcamp information Program Remote participation Videos # 11-15 Sep @ Villette Markerz by Woma Bootcamp information Program Remote participation Videos # 20-24 Feb @ FabLab Bcn Bootcamp information Lectures Hands-on Activities Sites Program Remote participation Videos # NEW: Fabrikipedia About Fabrikipedia Mat"
+    },
+    {
+      "title": "Contact",
+      "url": "https://greenfablab.org/contact/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/page-10-contact.md",
+      "description": "# Contact Green FabLab Ctra. BV-1415 (Horta-Cerdanyola), km 7 08290 Cerdanyola del Vallès Barcelona – Spain info@fablabbcn.org Green FabLab Ctra. BV-1415 (Horta-Cerdanyola), km 7 08290 Cerdanyola del Vallès Barcelona – Spain info@fablabbcn.org"
+    },
+    {
+      "title": "About",
+      "url": "https://greenfablab.org/about/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/page-21-about.md",
+      "description": "# About The Green Fab Lab A project promoted by IaaC (Institute for Advanced Architecture of Catalonia) and part of the Fab City network. The Green Fab Lab works towards the creation of a self-sufficient habitat and research centre at Can Valldaura. Located in the Collserola Natural Park, in the heart of the metropolitan area of Barcelona it has laboratories for the production of energy, food and things, and develops projects and academic programmes in association with leading research centres around the world. IaaC ‘Learning from nature to change the world’ As part of IaaC’s commitment to promoting and advancing"
+    },
+    {
+      "title": "Fab Academy",
+      "url": "https://greenfablab.org/fab-academy/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/page-444-fab-academy.md",
+      "description": "# Fab Academy What is Fab Academy? How to Make (Almost) Anything Fab Academy is a Digital Fabrication program directed by Neil Gershenfeld of MIT’s Center For Bits and Atoms and based on MIT’s rapid prototyping course, MAS 863: How to Make (Almost) Anything. The Fab Academy at the Green Fab Lab specializes in the use of digital fabrication tools to enharnce the Self Sufficient estate of Can Valldaura. By making considered design choices and fabricating objects and devices for human and ecological habitats of the 130 hactare forest. Together with the vision, inventory and knowhow of the Fab Lab Barcelona, the Fab "
+    },
+    {
+      "title": "Peer 2 Peer project development : Food Lab + OKNO + SONY CSL",
+      "url": "https://greenfablab.org/peer-2-peer/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-1-peer-2-peer-project-development-food-lab-okno-sony-csl.md",
+      "description": "# Peer 2 Peer project development : Food Lab + OKNO + SONY CSL As an initiating workshop at the Green Fab Lab, it was inspiring to be able to host and a number of collaborating European groups for a symposium of ideas sharing, project development and seminars. OpenGreens, by the artist collective OKNO in Brussels, is the ancestor of the P2P Food Lab project. The OpenGreens wiki and the related Time Inventors Kabinet is full of resources relating to urban food, monitoring systems, and more. It is a major repository for anyone interested in urban gardens, biodiversity, and DIY electronics. The Sony Computer Science"
+    },
+    {
+      "title": "ProdActive Landscapes",
+      "url": "https://greenfablab.org/prodactive-landscapes/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-247-prodactive-landscapes.md",
+      "description": "# ProdActive Landscapes What’s ProdActive Landscapes for? The ecological emergency and the global energy crisis are driving us to rethink architectural design in terms of optimization of local resources, reduction of water and energy requirements, and integration of technologies producing energy from renewable sources. Sustainability issues have already been transforming building’s function from places to live to multifunctional systems integrating energy production and, always more frequently, food production, including roof top or hydroponic indoor agriculture. The ProdActive Landscapes project proposes to use "
+    },
+    {
+      "title": "Moss Voltaics",
+      "url": "https://greenfablab.org/moss-voltaics/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-313-moss-voltaics.md",
+      "description": "# Moss Voltaics This project is the exploration how moss could be used as a source of renewable energy. Mentioned emerging technology is called biophotovoltaics (BPV) which uses the natural process of photosynthesis to generate electrical energy. Photosynthesis is a process by which plants and algae convert carbon dioxide from the atmosphere into organic compounds using energy from sunlight. The plants use these organic compounds (like carbohydrates, proteins and lipids) to grow. When the moss photosynthesizes it releases some of these organic compounds into the soil, which contains bacteria. The bacteria break d"
+    },
+    {
+      "title": "Zero Series 2017 – Forestry Zero Winter/Spring",
+      "url": "https://greenfablab.org/forestryzerowinterspring/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-456-zero-series-2017-forestry-zero-winter-spring.md",
+      "description": "# Zero Series 2017 – Forestry Zero Winter/Spring Forestry Zero Winter/Spring In the modern age, land use has become a global issue of importance, where large swathes of the earth are occupied and managed for Human productivity. The Anthropocene describes an epoch of human made biomes, that have social, political and environmental impacts. The Forestry Zero seasonal program is a set of 5 day immersive introductions to the practical techniques and novel management strategies that take the Forest into the future at the Valldaura Labs campus. Bringing together active experience with innovative digital technologies. W"
+    },
+    {
+      "title": "Open Source Beehives : Citizen Science tracking Bee decline",
+      "url": "https://greenfablab.org/opensourcebeehives/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-81-open-source-beehives-citizen-science-tracking-bee-decline.md",
+      "description": "# Open Source Beehives : Citizen Science tracking Bee decline The Open Source Beehives project is a network of citizen scientists tracking bee decline. We use sensor enhanced beehives and data science to study honeybee colonies throughout the world. All of our technology and methods, from the hive and sensor kit designs to the data, are documented and made openly available for anyone to use. The primary goal is to determine the cause(s) of bee decline, to identify potential solutions, and to encourage networks of concerned citizens to study and redress the issue through the use of digital technologies in fabricat"
+    },
+    {
+      "title": "Flone Drone : Technology for Conservation and Community",
+      "url": "https://greenfablab.org/flonedrone/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-83-flone-drone-technology-for-conservation-and-community.md",
+      "description": "# Flone Drone : Technology for Conservation and Community Drone Tech for Community Participation in Conservation, Agriculture, and Advocacy Community groups and interested individuals learnt how to build and fly their own drones in a recent weekend workshop at the Valldaura Green Labs site in the forested foothills just above Barcelona. Together with Lot Amoros and Alexandre Oliver of Flone-Drone we learnt to build a drone, soldering all the parts together, and conquered the coordination of piloting our tech. Putting drone technology in the hands of local residents and community groups is essential. Around the wo"
+    },
+    {
+      "title": "OPTIMA + : computational design and digital fabrication strategies",
+      "url": "https://greenfablab.org/optima/",
+      "sourceFamily": "greenfablab",
+      "path": "Sources/Raw/greenfablab/post-85-optima-computational-design-and-digital-fabrication-strategies.md",
+      "description": "# OPTIMA + : computational design and digital fabrication strategies NOUMENA & ALGORITM in partnership with SHARABASSY and in collaboration with GREEN FABLAB and IAAC (Institute for Advanced Architecture of Catalonia) organised an international competitive workshop that took place in Cairo, Egypt and Barcelona, Spain. The event was to explore innovative design and prototyping techniques, NURBS Modelling, Optimisation, and Fabrication strategies. Goal of the event was to construct 1:1 scale pavilion through all different digital fabrication processes. The event was divided into two different phases: the first one "
+    },
+    {
       "title": "Abao in GaudiLabs micro-Residency",
       "url": "https://www.hackteria.org/wiki/Abao_in_GaudiLabs_micro-Residency",
       "sourceFamily": "hackteria",
@@ -1109,6 +1309,937 @@
       "description": "# Fluffy MIDI Date: June 19/20 2024, 18:00- 21:00Location: RADIONA, Zagreb, Croatia In this two evening workshop, Mika will introduce how you can turn stuffed animals into digital musical instruments. Soft flexible familiar objects turn into MIDI interfaces which you can connect with your favorite synthesizers. The magic is made with e-textile materials: embroidery, needle felting, crochet… choose […] Date: June 19/20 2024, 18:00- 21:00 Location: RADIONA , Zagreb, Croatia In this two evening workshop, Mika will introduce how you can turn stuffed animals into digital musical instruments. Soft flexible familiar obj"
     },
     {
+      "title": "Gallery",
+      "url": "https://kubu.fi/gallery/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-1173-gallery.md",
+      "description": "# Gallery KUBU exhibition spacesKubu has several indoor and outdoor options for exhibitions. Depending on the season, also unconventional spaces, from basements to secret closets and general lobby areas can be used as stages for cultural interventions. Don’t hesitate to propose imaginative alternatives for traditional exhibition rooms. Kubu is a place for experiments.GalleryThe gallery space is a […] KUBU exhibition spaces Kubu has several indoor and outdoor options for exhibitions. Depending on the season, also unconventional spaces, from basements to secret closets and general lobby areas can be used as stages "
+    },
+    {
+      "title": "Tietosuojaseloste",
+      "url": "https://kubu.fi/tietosuojaseloste/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-1249-tietosuojaseloste.md",
+      "description": "# Tietosuojaseloste TietosuojaselosteTämä on Kulturhus BjörkbodanEU:n yleisen tietosuoja-asetuksen (GDPR) mukainen rekisteri- ja tietosuojaseloste. Laadittu 20.4.2022. Viimeisin muutos 20.4.2022.1. Rekisterinpitäjä Kulturhus BjörkbodaSmedskullantie 3FI-25860 Björkboda 2. Rekisteristä vastaava yhteyshenkilö Tuomo Tammenpäätuomo@kubu.fi040 525 4636 3. Rekisterin nimi 1. Kulturhus Björkbodan uutiskirjerekisteri2. Kulturhus Björkbodan asiakasrekisteri 4. Oikeusperuste ja henkilötietojen käsittelyn tarkoitus EU:n yleisen tietosuoja-asetuksen mukainen oikeusperuste henkilötietojen käsittelylle on dokumentoitu henkilön "
+    },
+    {
+      "title": "Discord",
+      "url": "https://kubu.fi/discord/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-1282-discord.md",
+      "description": "# Discord We are currently using Discord in our online discussions. Discord is a free-to-use service for communities to manage their online discussions and member roles under various topics under #channels. You need to register for the service and we recommend downloading an app for your laptop, smartphone, or tablet for the best user experience. See a […] We are currently using Discord in our online discussions. Discord is a free-to-use service for communities to manage their online discussions and member roles under various topics under #channels. You need to register for the service and we recommend downloadin"
+    },
+    {
+      "title": "Home",
+      "url": "https://kubu.fi/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-151-home.md",
+      "description": "# Home KEMIÖNSAARI LIVING LABLorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam molestie arcu tempor ipsum tristique, sit amet facilisis velit euismod. Nullam nec augue commodo purus vestibulum ultricies. Praesent sagittis turpis dapibus accumsan consectetur. Sed viverra eu augue at viverra. Praesent suscipit justo justo, eu faucibus mi ullamcorper ut. Morbi quis risus libero. Praesent maximus […] KUBU DIY-sauna workshop 29.5–3.6.2026 Andrew Gryf Paterson Info FÅRÖ, kaksi näytöstä: I Meri, II Maa Tapio Heikkilä 16.5.–28.6.2026 KUBU Galleria Info Valokuvajaos 15 vuotta FOCUS 16.5.–28.6.2026 KUBU Lobby "
+    },
+    {
+      "title": "skene2022",
+      "url": "https://kubu.fi/skene2022/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-1730-skene2022.md",
+      "description": "# skene2022 Sökes: MC-DJ:s & BandsMusikevenemanget arrangeras på 27.8 under Forneldarnas natt på och riktar sig till unga bandmedlemmar. Evenemanget erbjuder er möjligheten till spelning och att träffa andra! Har du och dina kompisar ett band tillsammans? Då ska ni komma med på Skene 2022! Under evenemanget har ni chansen att spela musik i olika genrer, lyssna […] Sökes: MC-DJ:s & Bands Musikevenemanget arrangeras på 27.8 under Forneldarnas natt på och riktar sig till unga bandmedlemmar. Evenemanget erbjuder er möjligheten till spelning och att träffa andra! Har du och dina kompisar ett band tillsammans? Då ska n"
+    },
+    {
+      "title": "nonprofit",
+      "url": "https://kubu.fi/nonprofit/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-2204-nonprofit.md",
+      "description": "# nonprofit Kulturhus Björkboda ei tavoittele toiminnassaan liikevoittoa. Yhteisillä ponnistuksilla kohti yhteistä hyvää. MALLIKulturhus Björkboda pyrkii kohti kestävää, voittoataoittelematonta toimintamallia, jossa kaupallisen toiminnan päämääränä on kattaa toiminnan kulut ja korvata vastuuhenkilöiden työ mutta ei kerätä toiminnasta voittoa vaan käyttää mahdollinen ylijäämä talon yhteisötoiminnan hyväksi. Yhteisötoimintaa on esimerkiksi tilojen tarjoaminen ilman korvausta yhteiseen käyttöön tai osallistujille ilmaisten työpajojen […] Non-profit Kulturhus Björkboda ei tavoittele toiminnassaan liikevoittoa. Yhteis"
+    },
+    {
+      "title": "visit",
+      "url": "https://kubu.fi/visit/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-2336-visit.md",
+      "description": "# visit VISIT KUBUWelcome to KUBU! KUBU (Kulturhus Björkboda) is located in rural Southwest Finland The Archipelago Sea is a part of the Baltic Sea between the Gulf of Bothnia, the Gulf of Finland and the Sea of Åland. While the island is connected to the mainland of Finland and close to areas of outstanding natural […] VISIT KUBU Welcome to KUBU! KUBU (Kulturhus Björkboda) is located in rural Southwest Finland The Archipelago Sea is a part of the Baltic Sea between the Gulf of Bothnia, the Gulf of Finland and the Sea of Åland. While the island is connected to the mainland of Finland and close to areas of outstan"
+    },
+    {
+      "title": "Program",
+      "url": "https://kubu.fi/program/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-343-program.md",
+      "description": "# Program KEMIÖNSAARI LIVING LABLorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam molestie arcu tempor ipsum tristique, sit amet facilisis velit euismod. Nullam nec augue commodo purus vestibulum ultricies. Praesent sagittis turpis dapibus accumsan consectetur. Sed viverra eu augue at viverra. Praesent suscipit justo justo, eu faucibus mi ullamcorper ut. Morbi quis risus libero. Praesent maximus […] Kubu Program Info Words with Isadora Santeri Niemi (M)ERI FOCUS Silja Selonen Tapio Heikkilä VÄXT 2026 TeleAgriCulture Hackathon TeleAgriculture Sandbox Jaakko Metsäpelto Niilo Kemppainen Anni Mikkonen Pi"
+    },
+    {
+      "title": "CALL",
+      "url": "https://kubu.fi/call/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-3655-call.md",
+      "description": "# CALL KEMIÖNSAARI LIVING LABLorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam molestie arcu tempor ipsum tristique, sit amet facilisis velit euismod. Nullam nec augue commodo purus vestibulum ultricies. Praesent sagittis turpis dapibus accumsan consectetur. Sed viverra eu augue at viverra. Praesent suscipit justo justo, eu faucibus mi ullamcorper ut. Morbi quis risus libero. Praesent maximus […] OPEN CALL 2027 KUBU open call for the year 2027 opens in August 2026. You can email us anytime at info@kubu.fi and ask us a reminder when the call opens. You can also approach us anytime on larger collaborat"
+    },
+    {
+      "title": "KUBU participant info",
+      "url": "https://kubu.fi/kubu-participant-info/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-4635-kubu-participant-info.md",
+      "description": "# KUBU participant info PARTICIPANT INFO This page is for KUBU participants – artists, researchers & invited guests alike.Shortcut: https://kubu.fi/artist(last update: Jan 8th, 2026) Kulturhus Björkboda aka KUBUKUBU is an artist-run, independent space dedicated to transdisciplinary artistic practice, environmental sustainability, and community engagement. Located on the island of Kemiönsaari, Finland, KUBU operates as a living, evolving project aimed at […] PARTICIPANT INFO This page is for KUBU participants – artists, researchers & invited guests alike. Shortcut: https://kubu.fi/artist (last update: Jan 8th, 202"
+    },
+    {
+      "title": "Avoimet Puutarhat 2025",
+      "url": "https://kubu.fi/avoimet-puutarhat-2025/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-4785-avoimet-puutarhat-2025.md",
+      "description": "# Avoimet Puutarhat 2025 Avoimet Puutarhat – Pajuaita- & Puretuspainantatyöpajat6.7.2025 11-17 KUBU osallistuu kansalliseen Avoimet Puutarhat tapahtumaan esittelemällä KUBUn yhteisökasvihuoneprojektin sekä pajuaita- ja puretuspainantatyöpajoilla. Sunnuntai on myös erinomainen tilaisuus tutustua “The Garden and the Hedge” ja “Piha, Pyhä, Metsä, Maa” näyttelyihin. Kahvila avoinna koko päivän.https://avoimetpuutarhat.fi/puutarhat/kubun-puutarha/ Klo 11-17Rakenna perinteinen pajuaitaSara Ilveskorpi Osana KUBUn ulkotilojen kehittämistä rakennamme yhdessä perinteisen pajuaidan pölyttäjäniityn […] Avoimet Puutarhat – Pa"
+    },
+    {
+      "title": "KUBU-PR",
+      "url": "https://kubu.fi/pr/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-4918-kubu-pr.md",
+      "description": "# KUBU-PR KUBU PR-INFO Tällä sivulla on kokoelma KUBUn PR-materiaaleja, laita(päivitetty 18.9.2025) Lyhyt info: KUBU on kulttuuritalo Kemiönsaarella. Talossa ylläpidetään ympärivuotista näyttelyohjelmaa, viikottaisia kursseja ja työpajoja, käsityökauppaa ja pop-up kahvilaa. Talosta löytyy myös kokoustilat, jumppasali ja näyttämö, pieni kirjasto sekä yhteistyötiloja. PR-kansiohttps://drive.proton.me/urls/Z5QPTV6AQ4#yLEQdoFXM5GB Linkkejä:https://www.instagram.com/kulturhus_kubu/https://www.facebook.com/kulturhuskubuhttps://www.linkedin.com/company/kulturhus-kubuhttps://mastodon.social/@kulturhus_kubuhttps://bsky.ap"
+    },
+    {
+      "title": "Elements",
+      "url": "https://kubu.fi/elements/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-4961-elements.md",
+      "description": "# Elements Marking the first in a series of interrelated programmes that take the elements (earth, water, air, fire and aether), as their starting point, The Garden and The Hedge is timed with Kimitoön’s 700th anniversary. The summer programme showcased 35 individual art works, performances, workshops and interventions. Inviting reflection on soil health, boundaries, resilience, and our […] EARTH Marking the first in a series of interrelated programmes that take the elements (earth, water, air, fire and aether), as their starting point, The Garden and The Hedge is timed with Kimitoön’s 700th anniversary. The summ"
+    },
+    {
+      "title": "Links",
+      "url": "https://kubu.fi/links/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5047-links.md",
+      "description": "# Links HYBRID CONVERSATIONSKUBU 2026: WATERKUBU 2025: EARTH HYBRID CONVERSATIONS KUBU 2026: WATER KUBU 2025: EARTH"
+    },
+    {
+      "title": "Action",
+      "url": "https://kubu.fi/action/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5063-action.md",
+      "description": "# Action GLOBAL SUMUD FLOTILLA, vapaaehtoisten muodostama kansainvälinen avustuslaivasto Gazaan on pysäytetty ja vapaahetoisia auttajia on kiinniotettu. Mukana on suomalaisia. Voit auttaa vetoamalla viranomaisiin, osallistumalla tukitapahtumiin ja jakamalla tietoa. Gazan kansanmurha on pysäytettävä.GLOBAL SUMUD FLOTILLA, en internationell hjälpflottilj av volontärer till Gaza, har stoppats och frivilliga medhjälpare har gripits. Det finns finländare ombord. Du kan hjälpa till […] GLOBAL SUMUD FLOTILLA, vapaaehtoisten muodostama kansainvälinen avustuslaivasto Gazaan on pysäytetty ja vapaahetoisia auttajia on kiinn"
+    },
+    {
+      "title": "make",
+      "url": "https://kubu.fi/make/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5187-make.md",
+      "description": "# make MAKE IN KUBUKUBU tuotteet & tuotantoMAKE IN KUBU on meidän tuotemerkkimme KUBUssa tehtävällä tuotesuunnittelulle ja piensarjoille. Vahastaan tuttu “Made in …” kääntyy KUBUssa aktivoivaan muotoon, kannustamme jokaista tekemään tuotteensa itse ja tästä syystä kehoite. Lähtökohtaisesti kaikki mistä löydät tämän leiman, ovat tuotteita joiden tekemistä voit myös itse opetella ja kokeilla. Opastus tekemiseen vaatii aina pienen […] MAKE IN KUBU KUBU tuotteet & tuotanto MAKE IN KUBU on meidän tuotemerkkimme KUBUssa tehtävällä tuotesuunnittelulle ja piensarjoille. Vahastaan tuttu “Made in …” kääntyy KUBUssa aktivoi"
+    },
+    {
+      "title": "Jul2025",
+      "url": "https://kubu.fi/5215-2/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5215-jul2025.md",
+      "description": "# Jul2025 JOULUMARKKINAT6.12. 11.00-15.00Kubun joulumarkkinat järjestetään lauantaina 6.12. klo 11:00 -15:00. Kahvila on myös auki koko aukiolon ajan. Myynnissä paikallisten käsityöläisten ja taiteilijoiden tuotteita sekä jouluherkkuja. Tervetuloa! Myyntipaikan hinta 10€. Myyntipöytien varaukset keskiviikkoon 3.12.2025 mennessä sähköpostilla info@kubu.fi tai 041 806 4766/Sari Lisätietoja tulossa myöhemmin.JULMARKNAD6.12. 11.00-15.00Kubus julmarknad hålls lördagen den 6.12. kl. 11.00 – 15.00. Caféet är också […] JOULUMARKKINAT 6.12. 11.00-15.00 Kubun joulumarkkinat järjestetään lauantaina 6.12. klo 11:00 -15:00. K"
+    },
+    {
+      "title": "LivingLab",
+      "url": "https://kubu.fi/livinglab/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5319-livinglab.md",
+      "description": "# LivingLab KEMIÖNSAARI LIVING LABLorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam molestie arcu tempor ipsum tristique, sit amet facilisis velit euismod. Nullam nec augue commodo purus vestibulum ultricies. Praesent sagittis turpis dapibus accumsan consectetur. Sed viverra eu augue at viverra. Praesent suscipit justo justo, eu faucibus mi ullamcorper ut. Morbi quis risus libero. Praesent maximus […] KEMIÖNSAARI LIVING LAB Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam molestie arcu tempor ipsum tristique, sit amet facilisis velit euismod. Nullam nec augue commodo purus vestibulum ul"
+    },
+    {
+      "title": "Hybrid Conversations",
+      "url": "https://kubu.fi/hybrid-conversations/",
+      "sourceFamily": "kubu",
+      "path": "Sources/Raw/kubu/page-5474-hybrid-conversations.md",
+      "description": "# Hybrid Conversations KUBU HYBRID CONVERSATIONSProfessor Teresa Dillon, University of Southampton,Winchester School of Art,Social Practice Lab What’s softest in the world rushes and runs over what’s hardest in the world. Water and Stone.– Ursula Le Guin, Tao Te Ching, (1997, p.43) The Social Practice Lab at Winchester School of Art, in partnership with KUBU, culture house in Kemiönsaari, Finland, […] [et_pb_section fb_built=”1″ _builder_version=”4.27.4″ _module_preset=”default” background_color=”#000000″ custom_padding=”0px|||||” saved_tabs=”all” global_colors_info=”{}”][et_pb_row _builder_version=”4.16.1″ _modu"
+    },
+    {
+      "title": "Radiona mini lab teških industrija",
+      "url": "https://radiona.org/radiona-mini-lab-teskih-industrija/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-10121-radiona-mini-lab-teških-industrija.md",
+      "description": "# Radiona mini lab teških industrija Galerija fotografija 01.01.2025. – 31.12.2025. Galerija fotografija 01.01.2024.-31.12.2024. Galerija fotografija 01.01.2025. – 31.12.2025. Galerija fotografija 01.01.2024.-31.12.2024."
+    },
+    {
+      "title": "Kodeks ponašanja / Code of Conduct",
+      "url": "https://radiona.org/about/code-of-conduct/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1082-kodeks-ponašanja-code-of-conduct.md",
+      "description": "# Kodeks ponašanja / Code of Conduct Radiona.org inkluzivna je organizacija i zajednica u kojoj su svi dobrodošli i trebaju se osjećati sigurno. Od svih se očekuje uzajamno poštovanje. To se odnosi na sva događanja Radione i drugih partnera u fizičkom prostoru udruge, kao i na sve online komunikacijske kanale i virtualne aktivnosti. Oni koji nisu članovi udruge (polaznici/sudionici programa), a krše ovaj […] Radiona.org inkluzivna je organizacija i zajednica u kojoj su svi dobrodošli i trebaju se osjećati sigurno. Od svih se očekuje uzajamno poštovanje. To se odnosi na sva događanja Radione i drugih partnera u fi"
+    },
+    {
+      "title": "About Radiona",
+      "url": "https://radiona.org/about/about-radiona/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1085-about-radiona.md",
+      "description": "# About Radiona Radiona.org je nezavisni art-tech laboratorij i community makerspace koji istražuje sjecišta umjetnosti, elektronike, otvorenog hardvera i suradničke kulture. Radiona.org is an independent art-tech lab and community makerspace exploring the intersections of art, electronics, open hardware, and collaborative culture. < >< >< >< >< >< >< ><>< >< >< >< >< >< >< >< Otvoreni dana […] Radiona.org je nezavisni art-tech laboratorij i community makerspace koji istražuje sjecišta umjetnosti, elektronike, otvorenog hardvera i suradničke kulture. Radiona.org is an independent art-tech lab and community makers"
+    },
+    {
+      "title": "Awards",
+      "url": "https://radiona.org/about/awards/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-10967-awards.md",
+      "description": "# Awards 2025 – The Main prize of the Festival for installation Objects and connotations and Audience Choice Award for installation RotoMotoMuzik @ Festival of the First – Relentless Freedom Penguin Award @ DORS/CLUC 2025 – Croatian Linux Users’ Conference 2016 Synthomir synthesizer – special mention in the category of product design – professional selection by Croatian […] 2025 – The Main prize of the Festival for installation Objects and connotations and Audience Choice Award for installation RotoMotoMuzik @ Festival of the First – Relentless Freedom Penguin Award @ DORS/CLUC 2025 – Croatian Linux Users’ Confer"
+    },
+    {
+      "title": "Partners / Collaborators",
+      "url": "https://radiona.org/about/partners/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1108-partners-collaborators.md",
+      "description": "# Partners / Collaborators International partners / Međunarodni partneri: Hackteria (international network) | SGMK – Swiss Mechatronic Art Society (Switzerland) | Chester Beatty Library (Ireland) | Cap Sciences (France) | Steps (Italy) | Heritec Limited (UK) | Dédale (France) | Michael Culture (Belgium) | Suomen museoliitto (Finland) | Ars Electronica Linz (Austria) | The Regional Museum of Skåne (Sweden) […] International partners / Međunarodni partneri: Hackteria (international network) | SGMK – Swiss Mechatronic Art Society (Switzerland) | Chester Beatty Library (Ireland) | Cap Sciences (France) | Steps (Italy"
+    },
+    {
+      "title": "Educational concept",
+      "url": "https://radiona.org/education/educational-concept/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1119-educational-concept.md",
+      "description": "# Educational concept STRATEGY: Supports: ((( S T E A M = Science – Technology – Engineering – Art – Mathematics ))) ((( ART + CULTURE + SCIENCE + TECHNOLOGY ))) // Shareable & Collaborative Cultures via Workshops // Creative and Affordable Opportunities for Everyone // DIY & DIWO Practices including High-Low Tech Integration // Innovative Approaches Based […] STRATEGY: Supports: ((( S T E A M = Science – Technology – Engineering – Art – Mathematics ))) ((( ART + CULTURE + SCIENCE + TECHNOLOGY ))) // Shareable & Collaborative Cultures via Workshops // Creative and Affordable Opportunities for Everyone // DIY & DI"
+    },
+    {
+      "title": "Active sections",
+      "url": "https://radiona.org/activities/sections-subgroups/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1121-active-sections.md",
+      "description": "# Active sections Odjeli / Departments: – Radiona Creative Tech Labs – AssistLAB² – Community Lab – InkluLAB – DigitalLAB Sekcije / Sections: – Mikrokontroleri i hands-on elektronika // Microcontrollers and hands-on electronics – DIY protetika / DIY Prosthetics – Robotika i hakiranje // Robotics and hacking – BIOsekcija // BIOsection – Audio sekcija // Audio section – […] Odjeli / Departments: – Radiona Creative Tech Labs – AssistLAB² – Community Lab – InkluLAB – DigitalLAB Sekcije / Sections: – Mikrokontroleri i hands-on elektronika // Microcontrollers and hands-on electronics – DIY protetika / DIY Prosthetics –"
+    },
+    {
+      "title": "Members",
+      "url": "https://radiona.org/about/members/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1124-members.md",
+      "description": "# Members Ljudi / People: Predsjednica / President: Deborah Hustić Dopredsjednik / Vice President: Damir Prizmić Tajnica / Executive: Ana Horvat Članovi Upravnog odbora / Members of Steering Committee: Marko Jovanović, Goran Mahovlić i/and Predsjedništvo udruge/Association Presidency. Operativno funkcioniranje / Operative functioning: Kreativna direktorica, producentica, kustosica i PM / Creative Director, Producer, Curator and PM: Deborah Hustić […] Ljudi / People: Predsjednica / President: Deborah Hustić Dopredsjednik / Vice President: Damir Prizmić Tajnica / Executive: Ana Horvat Članovi Upravnog odbora / Memb"
+    },
+    {
+      "title": "Supporters",
+      "url": "https://radiona.org/about/supporters/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1133-supporters.md",
+      "description": "# Supporters 2026 Kultura Nova Foundation City of Zagreb Ministry of Culture and Media of the Republic Croatia European Commission – Creative Europe European Commission – Erasmus+ Sport Program Government of the Republic Croatia – Office for Cooperation with NGOs 2025 Kultura Nova Foundation City of Zagreb Ministry of Culture and Media of the Republic Croatia European […] 2026 Kultura Nova Foundation City of Zagreb Ministry of Culture and Media of the Republic Croatia European Commission – Creative Europe European Commission – Erasmus+ Sport Program Government of the Republic Croatia – Office for Cooperation with"
+    },
+    {
+      "title": "Contact",
+      "url": "https://radiona.org/about/contact/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-12-contact.md",
+      "description": "# Contact Contact Information: Email: radiona.org@gmail.com Phone: +385 (0)95 3555 741 Lab Venue: Nova cesta 186, 10000 Zagreb, Hrvatska (Croatia) Contact Information: Email: radiona.org@gmail.com Phone: +385 (0)95 3555 741 Lab Venue: Nova cesta 186, 10000 Zagreb, Hrvatska (Croatia)"
+    },
+    {
+      "title": "Participation",
+      "url": "https://radiona.org/activities/appearances/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1226-participation.md",
+      "description": "# Participation 2025 Radiona.org eBadgeLAB and Neo-retro Corner II @ Deep Conference 2025: https://radiona.org/radiona-org-ebadgelab-and-neo-retro-corner-ii-deep-conference-2025/ Theremin Postcard radionica na Kulturvator programu u Zadru: https://radiona.org/theremin-postcard-radionica-kulturvator-u-zadru/ Goran Mahovlić presenting ZigZag e-badge on OSHWA Show & Tell: https://radiona.org/goran-mahovlic-presenting-zigzag-e-badge-on-oshwa-show-tell/ Projekt ICCE – inkluzivni centar cirkularne ekonomije: Repair Café s Vjevericama: https://radiona.org/projekt-icce-inkluzivni-centar-cirkularne-ekonomije-repair-cafe-s"
+    },
+    {
+      "title": "Membership",
+      "url": "https://radiona.org/about/membership/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1234-membership.md",
+      "description": "# Membership HRV Novi članovi uvijek su dobrodošli u Radionu Open lab: Utorak, 20h; Četvrtak, 20h Godišnja članarina: 60 EUR Plaćanje članarine vrši se kvartalno, polugodišnje ili godišnje preko računa IBAN: HR2123600001102369684 Članstvo vam omogućuje: – rad u labu i pristup alatima i sadržajima – rad u sekcijama i podsekcijama laba – popust na mjesečne međunarodne i […] HRV Novi članovi uvijek su dobrodošli u Radionu Open lab: Utorak, 20h; Četvrtak, 20h Godišnja članarina: 60 EUR Plaćanje članarine vrši se kvartalno, polugodišnje ili godišnje preko računa IBAN: HR2123600001102369684 Članstvo vam omogućuje: – ra"
+    },
+    {
+      "title": "Hackathons",
+      "url": "https://radiona.org/activities/hackathons/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1274-hackathons.md",
+      "description": "# Hackathons Eco Throne Hackathon @ Radiona, Zagreb, June, 2019 FPGA Odysseus Hackathon @ Radiona.org, Zagreb, March, 2019 Museomix Zagreb 2018 @ Technical Museum Nikola Tesla, Zagreb, November 2018 Hackathon Hyper Machines @ Radiona.org, Zagreb, July, 2016 Hackathon Subtle Technologies: Bio-electronic Dimensions, No.3. – Gallery Kazamat – HDLU – Osijek– concerts, presentations, workshops, public interventions03. – 05.10.2014. […] Eco Throne Hackathon @ Radiona, Zagreb, June, 2019 FPGA Odysseus Hackathon @ Radiona.org, Zagreb, March, 2019 Museomix Zagreb 2018 @ Technical Museum Nikola Tesla, Zagreb, November 2018"
+    },
+    {
+      "title": "Networking",
+      "url": "https://radiona.org/about/networking/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1366-networking.md",
+      "description": "# Networking Radiona.org – Zagreb Makerspace is: A full member and co-founder of Feral Labs Network since 2018 – a network of temporary dislocated hubs for research in art, technology and communities, consist of six partners from six EU countries, who joined in their common interest in art-science research and contemporary do-it-yourself (DIY) & do-it-with-others (DIWO) communities. […] Radiona.org – Zagreb Makerspace is: A full member and co-founder of Feral Labs Network since 2018 – a network of temporary dislocated hubs for research in art, technology and communities, consist of six partners from six EU countr"
+    },
+    {
+      "title": "Press_clipping",
+      "url": "https://radiona.org/pressclipping/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-1627-press-clipping.md",
+      "description": "# Press_clipping 2026.: https://kulturpunkt.hr/najava/radionica/krassfade/ Održane radionice za mlade u siječnju https://kulturpunkt.hr/najava/radionica/zoe-romano-radionica-izrade-mekih-senzora/ https://kulturpunkt.hr/najava/radionica/francesco-zedde-radio-hacking/ https://kulturpunkt.hr/najava/izlozba/katalog-elektro-entiteta-k-3/ https://kulturpunkt.hr/najava/radionica/synthomir/ https://kulturpunkt.hr/najava/radionica/ispod-deke-u-jaknu/ https://kulturpunkt.hr/najava/radionica/dugmetara-revisited/ https://kulturpunkt.hr/najava/radionica/radionica-fm-sinteze/ https://www.culturenet.hr/medjunarodni-webinar-diza"
+    },
+    {
+      "title": "Residencies",
+      "url": "https://radiona.org/artist-in-residence/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2158-residencies.md",
+      "description": "# Residencies Radionine rezidencije su podijeljene u dugoročne (višemjesečne i duže), zatim srednjoročne kroz period od 2 do 4 tjedna, te mikro-rezidencije u trajanju od 3 do 8 dana. Kategorije: artist-in-residence, engineer-in-residence, maker-in-residence, hacker-in-residence, scientist-in-residence, writer-in-residence, environmentalist-in-residence, InkluLAB-in-residence ///////////////////////////////////////////////////////////////////////////// Radiona’s residences are divided in long term (several months and more), medium (2-4 weeks) and micro-residencies from 3 […] Radionine rezidencije su podijeljene u "
+    },
+    {
+      "title": "2015",
+      "url": "https://radiona.org/activities/research/2015-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2166-2015.md",
+      "description": "# 2015 Ivan Marušić Klif: Modularni video sintisajzeri / Modular Video Synthesizers 01.01.2015.-31.12.2015. Više / More: https://radiona.org/istrazivanje-modularni-video-sintisajzeri/ Financijski podržala Zaklada Kultura Nova In English soon! Ivan Marušić Klif: Modularni video sintisajzeri / Modular Video Synthesizers 01.01.2015.-31.12.2015. Više / More: https://radiona.org/istrazivanje-modularni-video-sintisajzeri/ Financijski podržala Zaklada Kultura Nova In English soon!"
+    },
+    {
+      "title": "2014",
+      "url": "https://radiona.org/activities/research/2014-2-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2176-2014.md",
+      "description": "# 2014 Aplitude slike i zvuka // Amplitude of Image and Sound – 01.01.2014. – 31.12.2014. https://radiona.org/tag/amplitude/ Najava / Announcements: https://radiona.org/amplitude-slika-zvuka/ https://radiona.org/radiona-org-rezidencijalni-lab-u-g-mk/ https://radiona.org/synthomir-v0-1/ Podjela istraživanja / Research division: https://radiona.org/amplitude/ PREZENTACIJE / PRESENTATIONS: Umjetnici i znanstvenici / Artists and Scientists: https://radiona.org/radiona-titra-radiona-flickers/ https://radiona.org/radiona-titra-festival-znanosti/ https://radiona.org/zvucni-hibridi-%C2%AD-kreativna-sonologija/ Processing"
+    },
+    {
+      "title": "Awards",
+      "url": "https://radiona.org/about/awards-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2332-awards.md",
+      "description": "# Awards Awards 2025 – The Audience Choice Award for installation RotoMotoMuzik @ Festival of the First 2025. – The Main prize of the Festival for installation Objects and Connotations @ Festival of the First 2025. – Relentless Freedom Penguin Award @ DORS/CLUC 2025 – Croatian Linux Users’ Conference. 2016 – Synthomir synthesizer – special mention in […] Awards 2025 – The Audience Choice Award for installation RotoMotoMuzik @ Festival of the First 2025. – The Main prize of the Festival for installation Objects and Connotations @ Festival of the First 2025. – Relentless Freedom Penguin Award @ DORS/CLUC 2025 – Cro"
+    },
+    {
+      "title": "EU Projects",
+      "url": "https://radiona.org/eu-projects/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2334-eu-projects.md",
+      "description": "# EU Projects Erasmus+ My Sporting Heritage – (2024-26) Web: https://my-sporting-heritage.eu/ Creative Europe: – Rewilding Cultures – (2022-2026) Web: https://rewildingcultures.net/ PAST PROJECTS Erasmus+ – iNTANGIBLE: Digitizing Intangible Cultural Heritage amidst the digital shift – (2022-2024) Web: https://intangible-project.eu/ – 4C’S – Creativity, Critical Thinking, Collaboration & Communication for Schools – (2021-2023) Web: https://chesterbeatty.ie/learning/european-funded-projects/the-4-cs-project-erasmus-2021-2023/ – CreMa – CREative MAking for […] Erasmus+ My Sporting Heritage – (2024-26) Web: https://m"
+    },
+    {
+      "title": "Creative Museum",
+      "url": "https://radiona.org/eu-projects/creative-museum/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2344-creative-museum.md",
+      "description": "# Creative Museum ERASMUS+ EU-funded project [No 2014-1-FR01-KA202-008678] The Creative Museum 2014-2017 About the project The Creative Museum is a new project funded by the EU under the Erasmus + programme. The Creative Museum Project seeks to explore and inform the connections between our cultural organisations and their communities by capitalizing on the emergence of new and democratizing […] ERASMUS+ EU-funded project [No 2014-1-FR01-KA202-008678] The Creative Museum 2014-2017 About the project The Creative Museum is a new project funded by the EU under the Erasmus + programme. The Creative Museum Project see"
+    },
+    {
+      "title": "Open Source Curating",
+      "url": "https://radiona.org/activities/open-source-curating/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2380-open-source-curating.md",
+      "description": "# Open Source Curating More info soonish! For now on please visit https://radiona.org/eu-projects/creative-museum/ More info soonish! For now on please visit https://radiona.org/eu-projects/creative-museum/"
+    },
+    {
+      "title": "Hybrid Sound Festival",
+      "url": "https://radiona.org/activities/hybrid-sound-festival/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2598-hybrid-sound-festival.md",
+      "description": "# Hybrid Sound Festival Hybrid Sound Festival 2017 Hybrid Sound Festival 2015 https://radiona.org/hybrid-sound-festival/ Hybrid Sound Festival 2017 Hybrid Sound Festival 2015 https://radiona.org/hybrid-sound-festival/"
+    },
+    {
+      "title": "MMessy Oscillators",
+      "url": "https://radiona.org/activities/mmessy-oscillators/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-2772-mmessy-oscillators.md",
+      "description": "# MMessy Oscillators MMessy Oscillators (MMO) is a band that performs experimental electronic and electro-acoustic music. The band so far had a number of well-received appearances at music and art festivals, concert venues and art galleries in Croatia and abroad, always in different line-ups because of numerous members involved. Photo Damir Žižić (c), Izlog suvremenog zvuka / Showroom […] MMessy Oscillators (MMO) is a band that performs experimental electronic and electro-acoustic music. The band so far had a number of well-received appe arances at music and art festivals, concert venues and art galleries in Croa"
+    },
+    {
+      "title": "FAQ",
+      "url": "https://radiona.org/faq/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-3067-faq.md",
+      "description": "# FAQ DIY = eng. do-it-yourself – uradi sam DIWO = eng. do-it-with-others – uradi s drugima DITO = eng. do-it-together – uradi zajedno STEM = Science – Technology – Engineering – Mathematics = Znanost, Tehnologija, Inženjerstvo, Matematik STEAM – Science – Technology – Engineering – Art – Mathematics = Znanost, Tehnologija, Inženjerstvo, Umjetnost, Matematika HACKERSPACE – […] DIY = eng. do-it-yourself – uradi sam DIWO = eng. do-it-with-others – uradi s drugima DITO = eng. do-it-together – uradi zajedno STEM = Science – Technology – Engineering – Mathematics = Znanost, Tehnologija, Inženjerstvo, Matematik STEAM –"
+    },
+    {
+      "title": "2017",
+      "url": "https://radiona.org/activities/research/2017-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-3868-2017.md",
+      "description": "# 2017 BIOoptički sintisajzeri i zvučne kutije // BIOoptic synthesizers and sound boxes 01.01.2017.-31.12.2017. BIOoptički sintisajzeri i zvučne kutije // BIOoptic synthesizers and sound boxes 01.01.2017.-31.12.2017."
+    },
+    {
+      "title": "About",
+      "url": "https://radiona.org/about/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-6-about.md",
+      "description": "# About Radiona.org je nezavisni art-tech laboratorij i community makerspace koji istražuje sjecišta umjetnosti, elektronike, otvorenog hardvera i suradničke kulture. Radiona.org is an independent art-tech lab and community makerspace exploring the intersections of art, electronics, open hardware, and collaborative culture. (scroll down please for more about organisation in English). >< >< >< >< >< >< >< ><>< >< >< >< >< >< >< ><>< >< >< >< >< […] Radiona.org je nezavisni art-tech laboratorij i community makerspace koji istražuje sjecišta umjetnosti, elektronike, otvorenog hardvera i suradničke kulture. Radiona.o"
+    },
+    {
+      "title": "Radiona Repair Café",
+      "url": "https://radiona.org/education/radiona-repair-cafe/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-7250-radiona-repair-café.md",
+      "description": "# Radiona Repair Café Radiona Repair Café sessions: Radiona Repair Café: World Domination, February, 2022: https://radiona.org/radiona-repair-cafe-world-domination/ Radiona Repair Café: Cold solder, January, 2022: https://radiona.org/radiona-repair-cafe-hladni-lem/ Radiona Repair Café: Burned component – https://radiona.org/radiona-repair-cafe-skurena-komponenta/ Repair caffee night – Repair your electro-box @ Radiona.org, November 2021 – https://radiona.org/repair-cafe-vecer-popravi-svoju-elektro-skatulju-br-4/ Hardware Freedoom, Drugo more, Rijeka https://radiona.org/workshopologija-rijeka/ Elektro-furda, Rijek"
+    },
+    {
+      "title": "Workshops",
+      "url": "https://radiona.org/education/workshops/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-919-workshops.md",
+      "description": "# Workshops Soon in our lab Tara Pattenden, Rony Galić, Tomislav Cvetanović, Zvonimir Domazet, Paula Bučar… 🙂 Stay tuned! 2026 International Workshop Series: 6) Rob Canning (Ireland/Slovenia): Oscilla – Workshop on Animated Graphic Audio Scores @ Radiona.org, May, 2026 5) Sandra Lisi (France/USA): Imprint as Process – a Linocut and Experimental Printmaking Workshop @ Radiona.org, May, 2026 […] Soon in our lab Tara Pattenden, Rony Galić, Tomislav Cvetanović, Zvonimir Domazet, Paula Bučar… 🙂 Stay tuned! 2026 International Workshop Series: 6) Rob Canning (Ireland/Slovenia): Oscilla – Workshop on Animated Graphic Aud"
+    },
+    {
+      "title": "Activities",
+      "url": "https://radiona.org/activities/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-93-activities.md",
+      "description": "# Activities Odjeli / Departments: – Radiona Creative Tech Labs – AssistLAB² – Community Lab – InkluLAB – DigitalLAB Sekcije / Sections: – Mikrokontroleri i hands-on elektronika // Microcontrollers and hands-on electronics – DIY protetika / DIY Prosthetics – Robotika i hakiranje // Robotics and hacking – BIOsekcija // BIOsection – Audio sekcija // Audio section – […] Odjeli / Departments: – Radiona Creative Tech Labs – AssistLAB² – Community Lab – InkluLAB – DigitalLAB Sekcije / Sections: – Mikrokontroleri i hands-on elektronika // Microcontrollers and hands-on electronics – DIY protetika / DIY Prosthetics – Robo"
+    },
+    {
+      "title": "Education",
+      "url": "https://radiona.org/education/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-940-education.md",
+      "description": "# Education STRATEGY: Supports: ((( S T E A M = Science – Technology – Engineering – Art – Mathematics ))) Based on: ((( ART + CULTURE + SCIENCE + TECHNOLOGY ))) // Shareable & Collaborative Cultures via Workshops // Creative and Affordable Opportunities for Everyone // DIY & DIWO Practices including High-Low Tech Integration // Innovative […] STRATEGY: Supports: ((( S T E A M = Science – Technology – Engineering – Art – Mathematics ))) Based on: ((( ART + CULTURE + SCIENCE + TECHNOLOGY ))) // Shareable & Collaborative Cultures via Workshops // Creative and Affordable Opportunities for Everyone // DIY & DIWO Prac"
+    },
+    {
+      "title": "Exhibitions",
+      "url": "https://radiona.org/activities/exhibitions/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-944-exhibitions.md",
+      "description": "# Exhibitions Exhibition Catalog of electro-entities K/3 @ Gallery Koprivnica, City Museum Koprivnica, February – March, 2026 Exhibition Resonant Structures @ Gallery Razvid, Zaprešić, January 2026 P(e)C(e)B(e) – An Alternative History of Electronics @ Technical Museum Nikola Tesla, Zagreb, December, 2025 – January, 2026 Festival of the First 2025, Studio Artless: Short Circuit – Technology and Visions […] Exhibition Catalog of electro-entities K/3 @ Gallery Koprivnica, City Museum Koprivnica, February – March, 2026 Exhibition Resonant Structures @ Gallery Razvid, Zaprešić, January 2026 P(e)C(e)B(e) – An Alternat"
+    },
+    {
+      "title": "Performances",
+      "url": "https://radiona.org/activities/performances/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-962-performances.md",
+      "description": "# Performances The Dirty Electronic Ensemble @ MM Center, organized by Radiona.org Music Showroom SC, Zagreb, November, 2014. MMessy Oscillators: Perforations Festival – The Night of the Performance, June, 2014, Zagreb Sound Art Incubator in Gallery Mocvara, June, 2014, Zagreb Izlog suvremenog zvuka (Showcase of Contemporary Sound), MM – SC, Zagreb, May, 2014 Galley Klović – Exhibition […] The Dirty Electronic Ensemble @ MM Center, organized by Radiona.org Music Showroom SC, Zagreb, November, 2014. MMessy Oscillators: Perforations Festival – The Night of the Performance , June, 2014, Zagreb Sound Art Incubator in"
+    },
+    {
+      "title": "Research",
+      "url": "https://radiona.org/activities/research/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/page-964-research.md",
+      "description": "# Research BIOoptički sintisajzeri i zvučne kutije // BIOoptic synthesizers and sound boxes 01.01.2017.-31.12.2017. Ivan Marušić Klif: Modularni video sintisajzeri // Modular Video Synthesizers – 01.01.2015.-31.12.2015. Aplitude slike i zvuka // Amplitude of Image and Sound – 01.01.2014. – 31.12.2014. https://radiona.org/tag/amplitude/ BIOoptički sintisajzeri i zvučne kutije // BIOoptic synthesizers and sound boxes 01.01.2017.-31.12.2017. Ivan Marušić Klif: Modularni video sintisajzeri // Modular Video Synthesizers – 01.01.2015.-31.12.2015. Aplitude slike i zvuka // Amplitude of Image and Sound – 01.01.2014. – 31"
+    },
+    {
+      "title": "“Škripajući štakor” sint / Squeaking Rat Synth – radionica/workshop",
+      "url": "https://radiona.org/skripajuci-stakor-sint-squeaking-rat-synth-radionica-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10703-škripajući-štakor-sint-squeaking-rat-synth-radionica-workshop.md",
+      "description": "# “Škripajući štakor” sint / Squeaking Rat Synth – radionica/workshop RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Na radionici pod vodstvom njemačkog umjetnika Alwina Webera gradimo sintesajzer „Škripajući štakor“ koja se održava u četvrtak, 29. svibnja 2025. od 18h u Radioni. „Škripajući štakor“ je samostalni sintisajzer temeljen na dobrom starom CMOS 4093 NAND gate čipu. Uređaj ima četiri oscilatora oscilatora, od toga dva rade kao modulatori, […] RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Na radionici pod vodstvom njemačkog umjetnika Alwina Webera gradimo sintesajzer „Škripajući štakor“ koja se održav"
+    },
+    {
+      "title": "Radionica/Workshop: Circuit Bending + PCB Potpourri",
+      "url": "https://radiona.org/radionica-workshop-circuit-bending-pcb-potpourri/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10710-radionica-workshop-circuit-bending-pcb-potpourri.md",
+      "description": "# Radionica/Workshop: Circuit Bending + PCB Potpourri RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Circuit Bending + PCB Potpourri Alwina Webera održat će se u petak, 30. svibnja 2025. od 18h u Radioni. Na radionici imate mogućnost modificirati igračku, zvučni uređaj ili druge postojeće sklopove kako biste postali neobičan “Izvanzemaljski instrument”. Tehnika se naziva circuit bending i zabavan je način za početak […] RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Circuit Bending + PCB Potpourri Alwina Webera održat će se u petak, 30. svibnja 2025. od 18h u Radioni. Na radionici imate mogu"
+    },
+    {
+      "title": "Artist-in-Residence: Constanza Piña – THE HEART IS AN OSCILLATOR",
+      "url": "https://radiona.org/artist-in-residence-constanza-pina-the-heart-is-an-oscillator/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10717-artist-in-residence-constanza-piña-the-heart-is-an-oscillator.md",
+      "description": "# Artist-in-Residence: Constanza Piña – THE HEART IS AN OSCILLATOR Chilean artist based in Berlin, Constanza Piña is partaking artist-in-residence program in Radiona during May/June 2025. Her residence title is THE HEART IS AN OSCILLATOR | DIY love synths and electronic anarchy. The Heart is an Oscillator” is a Corazón de Robota residency at Radiona focused on collecting and documenting recent electronic experiments. The goal is to open the heart […] Chilean artist based in Berlin, Constanza Piña is partaking artist-in-residence program in Radiona during May/June 2025. Her residence title is THE HEART IS AN OSCIL"
+    },
+    {
+      "title": "Ruksak pun kulture 2025. – Radiona Theremin Postcard",
+      "url": "https://radiona.org/ruksak-pun-kulture-2025-radiona-theremin-postcard/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10724-ruksak-pun-kulture-2025-radiona-theremin-postcard.md",
+      "description": "# Ruksak pun kulture 2025. – Radiona Theremin Postcard Radiona.org sudjeluje u programu Ruksak pun kulture za 2025. Ministarstva kulture i medija Republike Hrvatske održavajući radionice tijekom godine u Osnovna škola Mahično i Centru za odgoj i obrazovanje djece i mladeži u Karlovcu. U sklopu programa realiziramo radionice Radiona Theremin Postcard koje smo namijenili za tu priliku za tinejdžere – osmi razredi osnovne škole […] Radiona.org sudjeluje u programu Ruksak pun kulture za 2025. Ministarstva kulture i medija Republike Hrvatske održavajući radionice tijekom godine u Osnovna škola Mahično i Centru za odgo"
+    },
+    {
+      "title": "Rewilding Cultures Mobility Conversation 2025 selections made",
+      "url": "https://radiona.org/rewilding-cultures-mobility-conversation-2025-selections-made/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10729-rewilding-cultures-mobility-conversation-2025-selections-made.md",
+      "description": "# Rewilding Cultures Mobility Conversation 2025 selections made We want to thank everyone who applied for the Rewilding Cultures Mobility Conversation 2025. The selection panel, made up of representatives from Rewilding Cultures partner organisations, have now reviewed all of the applications and collectively made a decision on who to award the eight available grants to. From the over 80 application received via the […] We want to thank everyone who applied for the Rewilding Cultures Mobility Conversation 2025. The selection panel, made up of representatives from Rewilding Cultures partner organisations, have now"
+    },
+    {
+      "title": "Corazón de Robota: Radionica – Srčani sint / Heart Synth Workshop",
+      "url": "https://radiona.org/corazon-de-robota-radionica-srcani-sint-heart-synth-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10737-corazón-de-robota-radionica-srčani-sint-heart-synth-workshop.md",
+      "description": "# Corazón de Robota: Radionica – Srčani sint / Heart Synth Workshop Čileanska umjetnica Constanza Piña poznata pod umjetničkim pseudonimom Corazón de Robota poziva na svoju dvodnevnu radionicu pod nazivom Srčani sint – Uzmi još jedan mali komadić mog srca koja će se održati u četvrtak i petak, 5. i 6. lipnja 2025. od 18h u Radioni. Nakon bezbrojnih sati popravljanja slomljenih srca tijekom svojih sesija terapije lemljenjem […] Čileanska umjetnica Constanza Piña poznata pod umjetničkim pseudonimom Corazón de Robota poziva na svoju dvodnevnu radionicu pod nazivom Srčani sint – Uzmi još jedan mali komadić mog srca k"
+    },
+    {
+      "title": "Radionica Radiona DIY Synth u sklopu izložbe SANISINT u TMNT",
+      "url": "https://radiona.org/10751-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10751-radionica-radiona-diy-synth-u-sklopu-izložbe-sanisint-u-tmnt.md",
+      "description": "# Radionica Radiona DIY Synth u sklopu izložbe SANISINT u TMNT Prijavite se na besplatnu radionicu izrade sintesajzera koja će se održati u Tehničkom muzeju Nikola Tesla ovu subotu, 7. lipnja od 11 do 14 sati u organizaciji Radione. Broj polaznika je ograničen, a prijave se primaju na blok@blok.hr. Radionica se održava u sklopu izložbe “SANISINT / Fragmenti kreativnog svemira Saniboja Žugića, trešnjevačkog glazbenika i elektroničara” […] Prijavite se na besplatnu radionicu izrade sintesajzera koja će se održati u Tehničkom muzeju Nikola Tesla ovu subotu, 7. lipnja od 11 do 14 sati u organizaciji Radione. Broj pol"
+    },
+    {
+      "title": "DailyLab 11 – otvoreni dani/open days",
+      "url": "https://radiona.org/dailylab-11-otvoreni-dani-open-days/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10757-dailylab-11-otvoreni-dani-open-days.md",
+      "description": "# DailyLab 11 – otvoreni dani/open days Na DailyLab 11 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje, a upravo vam se otvorila mogućnost da to napravite tijekom dana. Tome služi DailyLab. DailyLab najavljuje se nekoliko dana prije održavanja i […] Na DailyLab 11 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje"
+    },
+    {
+      "title": "Mindfulness školica gerilskog heklanja by Mogut / Mindfulness guerrilla crocheting school by Mogut",
+      "url": "https://radiona.org/mindfulness-skolica-gerilskog-heklanja-by-mogut-mindfulness-guerrilla-crocheting-school-by-mogut/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10760-mindfulness-školica-gerilskog-heklanja-by-mogut-mindfulness-guerrilla-crocheting-school-by.md",
+      "description": "# Mindfulness školica gerilskog heklanja by Mogut / Mindfulness guerrilla crocheting school by Mogut Tijekom lipnja i srpnja 2025. kao dodatak redovnim aktivnostima sekcija Radione, organiziramo Mindfulness školicu gerilskog heklanja pod vodstvom Tajane Vidojević poznatije pod umjetničkim imenom Mogut – Guardian of Heritage. Foto: Elton John, David Bowie, Freddie Mercury – Feita e Mano (c) Grupa okuplja hardver hakere, programere, makere, dizajnere, ilustratore i sve koji se žele izraziti iglom […] Tijekom lipnja i srpnja 2025. kao dodatak redovnim aktivnostima sekcija Radione, organiziramo Mindfulness školicu ge"
+    },
+    {
+      "title": "NOVO!/NEW! – Permaračunarstvo / Permacomputing @ Radiona.org",
+      "url": "https://radiona.org/novo-new-permaracunarstvo-permacomputing-radiona-org/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10771-novo-new-permaračunarstvo-permacomputing-radiona-org.md",
+      "description": "# NOVO!/NEW! – Permaračunarstvo / Permacomputing @ Radiona.org Permaračunarstvo je način razmišljanja i praksi u računalstvu koji se temelji na ekološkom promišljanju, dugoročnoj otpornosti i stvaralačkim ograničenjima. Radi se o stvaranju i održavanju digitalnih sustava koji rastu poput vrtova — sporo, prilagodljivo, popravljivo i s radošću u svojim ograničenjima. Za Radionu, permaračunarstvo znači ponovno osmišljavanje tehnološke kulture kroz kompostnu perspektivu: hakiranje zastarjelih uređaja, […] Permaračunarstvo je način razmišljanja i praksi u računalstvu koji se temelji na ekološkom promišljanju, dugoročn"
+    },
+    {
+      "title": "1. Meetup SkloPivo / 1st FoldBeer Meetup @ Radiona.org",
+      "url": "https://radiona.org/1-meetup-sklopivo-1st-foldbeer-meetup-radiona-org/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10774-1-meetup-sklopivo-1st-foldbeer-meetup-radiona-org.md",
+      "description": "# 1. Meetup SkloPivo / 1st FoldBeer Meetup @ Radiona.org SkloPivo je prvo neformalno druženje vlasnika i entuzijasta sklopivih bicikala u Zagrebu! Primijetili smo da nas ima puno po gradu – pa ajmo se upoznati. Prvo druženje 1. srpnja 2025. od 19:30h u Radioni (Nova cesta 186) je simbolično – datum kad se godina “preklapa”, a i dan će vrlo vjerojatno biti i vruć – […] SkloPivo je prvo neformalno druženje vlasnika i entuzijasta sklopivih bicikala u Zagrebu! Primijetili smo da nas ima puno po gradu – pa ajmo se upoznati. Prvo druženje 1. srpnja 2025. od 19:30h u Radioni (Nova cesta 186) je simbolično – datum kad se"
+    },
+    {
+      "title": "Radionica „Kako snimati kao profesionalac“, br. 2",
+      "url": "https://radiona.org/radionica-kako-snimati-kao-profesionalac-br-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10799-radionica-kako-snimati-kao-profesionalac-br-2.md",
+      "description": "# Radionica „Kako snimati kao profesionalac“, br. 2 Radionica „Kako snimati kao profesionalac“, br. 2 pod vodstvom Branka Vilusa održava se u utorak i srijedu, 24. i 25. lipnja 2025. od 18:00-21:00h u Radioni. Prvi dan radionice sastoji se od teoretskog djela – ponavljanja osnovnih tehničkih preduvjeta za snimanje idealne video slike te nakon toga snimanja vježbe. Vježba je individualno snimanje materijala (netona) […] Radionica „Kako snimati kao profesionalac“, br. 2 pod vodstvom Branka Vilusa održava se u utorak i srijedu, 24. i 25. lipnja 2025. od 18:00-21:00h u Radioni. Prvi dan radionice sastoji se od teoret"
+    },
+    {
+      "title": "EW2025 Women Stipendium winner: Jena Jang (KOR/CZ)",
+      "url": "https://radiona.org/ew2025-women-stipendium-winner-jena-jang-kor-de/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10805-ew2025-women-stipendium-winner-jena-jang-kor-cz.md",
+      "description": "# EW2025 Women Stipendium winner: Jena Jang (KOR/CZ) We are happy to announce that the winner of Electric Wonderland 2025 Women Stipendium is Jena Jang – a South Korean audiovisual artist based in Prague, Czechia, actively working across Europe and Asia. Jena Jang (c) Their work focuses on trauma healing through sound, using elements such as harsh noise, power electronics, drone, chanting, and […] We are happy to announce that the winner of Electric Wonderland 2025 Women Stipendium is Jena Jang – a South Korean audiovisual artist based in Prague, Czechia, actively working across Europe and Asia. Jena Jang (c) The"
+    },
+    {
+      "title": "Radiona Repair Café:  Neo-Retro",
+      "url": "https://radiona.org/radiona-repair-cafe-neo-retro/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10811-radiona-repair-café-neo-retro.md",
+      "description": "# Radiona Repair Café: Neo-Retro U subotu, 28. lipnja 2025. od 13-18h u Radioni se održava program Radiona Repair Café: Neo-Retro s ciljem popravljanja i slaganja novih retro konzoli koje udruga ima u svojoj kolekciji, a koje uključuje rad s DIY Galaksija kitom, Picade konzolom i dr. novim uređajima te nastavak popravljanja Amiga 2000 računala. On Saturday, June 28, 2025, […] U subotu, 28. lipnja 2025. od 13-18h u Radioni se održava program Radiona Repair Café: Neo-Retro s ciljem popravljanja i slaganja novih retro konzoli koje udruga ima u svojoj kolekciji, a koje uključuje rad s DIY Galaksija kitom, Picade konz"
+    },
+    {
+      "title": "Robotički Bootcamp za mlade",
+      "url": "https://radiona.org/roboticki-bootcamp-za-mlade/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10815-robotički-bootcamp-za-mlade.md",
+      "description": "# Robotički Bootcamp za mlade U petak, 27. lipnja 2025. od 17h u Radioni se održava Robotički Bootcamp koji okuplja mlade STEM snage iz Prigorja Brdovečkog koji su u zadnje tri godine sudjelovali na robotičkim natjecanjima u Hrvatskoj, Europi i Sjedinjenim Državama. Voditelj bootcampa je Ronald Galić. Cilj bootcampa je pripremiti grupu mladih polaznika u području robotike za buduća natjecanja tijekom […] U petak, 27. lipnja 2025. od 17h u Radioni se održava Robotički Bootcamp koji okuplja mlade STEM snage iz Prigorja Brdovečkog koji su u zadnje tri godine sudjelovali na robotičkim natjecanjima u Hrvatskoj, Europi"
+    },
+    {
+      "title": "Radionica „Kako snimati kao profesionalac“, br. 3",
+      "url": "https://radiona.org/radionica-kako-snimati-kao-profesionalac-br-3/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10819-radionica-kako-snimati-kao-profesionalac-br-3.md",
+      "description": "# Radionica „Kako snimati kao profesionalac“, br. 3 Radionica „Kako snimati kao profesionalac“, br. 3 pod vodstvom Branka Vilusa održava se u četvrtak, 10. lsrpnja 2025. od 18:00-21:00h u Radioni. Radionica je nastavak prethodne dvije radionice na kojoj ćemo se baviti procesima montaže filmskog i video materijala. Filmska montaža postupak je odabiranja i povezivanja kadrova, spajanja nastalih sekvenci i naposljetku stvaranja cjelovitog filma. […] Radionica „Kako snimati kao profesionalac“, br. 3 pod vodstvom Branka Vilusa održava se u četvrtak, 10. lsrpnja 2025. od 18:00-21:00h u Radioni. Radionica je nastavak pr"
+    },
+    {
+      "title": "Monika Pocrnjić – artist-in-residence",
+      "url": "https://radiona.org/monika-pocrnjic-artist-in-residence/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10822-monika-pocrnjić-artist-in-residence.md",
+      "description": "# Monika Pocrnjić – artist-in-residence During July Monika Pocrnjić (SI) will partake our artist-in-residence program at Radiona working on her current hacking and hybrid arts projects. Monika Pocrnjić is a graduate of art education and an intermedia artist. She works in the fields of do-it-yourself (DIY) electronics, drawing and puppet theatre. In her work, she focuses on concepts such as […] During July Monika Pocrnjić (SI) will partake our artist-in-residence program at Radiona working on her current hacking and hybrid arts projects. Monika Pocrnjić is a graduate of art education and an intermedia artist. She "
+    },
+    {
+      "title": "DIY Lutkotronik radionica / DIY Puppet-tronics Workshop",
+      "url": "https://radiona.org/diy-lutkotronik-radionica-diy-puppet-tronics-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10831-diy-lutkotronik-radionica-diy-puppet-tronics-workshop.md",
+      "description": "# DIY Lutkotronik radionica / DIY Puppet-tronics Workshop Radionica pod nazivom DIY Lutkotronik / DIY Puppet-tronics slovenske umjetnice Monike Pocrnjić održat će se u četvrtak, 17. srpnja 2025. od 18h u Radioni. puppet-tro Lutkotronik je razigrana i praktična eksperimentalna radionica u kojoj se susreću obrt i strujni krugovi. Sudionici će izraditi vlastite lutke za prste koristeći tekstil, konac i maštu, a zatim će […] Radionica pod nazivom DIY Lutkotronik / DIY Puppet-tronics slovenske umjetnice Monike Pocrnjić održat će se u četvrtak, 17. srpnja 2025. od 18h u Radioni. puppet-tro Lutkotronik je razigrana i pr"
+    },
+    {
+      "title": "Electric Wonderland 2025 line-up online!",
+      "url": "https://radiona.org/electric-wonderland-2025-line-up-online/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10836-electric-wonderland-2025-line-up-online.md",
+      "description": "# Electric Wonderland 2025 line-up online! The line-up of international hacker/macker camp for hybrid arts Electric Wonderland 2025 has been finalised. The program of is still updating. More info soon! In its seventh itineration of the camp, EW2025 takes a form combined with projects artists/hackers/makers are bringing to camp and workshops. The new website of Electric Wonderland 2025 – EW2025 is […] The line-up of international hacker/macker camp for hybrid arts Electric Wonderland 2025 has been finalised. The program of is still updating. More info soon! In its seventh itineration of the camp, EW2025 takes a fo"
+    },
+    {
+      "title": "Electric Wonderland – T H A N K Y O U ! Rewilding Cultures",
+      "url": "https://radiona.org/electric-wonderland-t-h-a-n-k-y-o-u-rewilding-cultures/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10850-electric-wonderland-t-h-a-n-k-y-o-u-rewilding-cultures.md",
+      "description": "# Electric Wonderland – T H A N K Y O U ! Rewilding Cultures With EW2025 we are finishing a 4-year cycle of Electric Wonderland camp under Rewilding Cultures international project. We would like to take this opportunity to T H A N K all participants, guests, collaborators and partners of the camps held in the 2022-25 cycle. Photo: Branko Vilus (cc), Electric Wonderland, Radiona.org Also, a big T […] With EW2025 we are finishing a 4-year cycle of Electric Wonderland camp under Rewilding Cultures international project. We would like to take this opportunity to T H A N K all participants, guests, collaborators and p"
+    },
+    {
+      "title": "Rewilding Cultures project meeting during Ars Electronica 2025",
+      "url": "https://radiona.org/rewilding-cultures-project-meeting-during-ars-electronica-2025/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10872-rewilding-cultures-project-meeting-during-ars-electronica-2025.md",
+      "description": "# Rewilding Cultures project meeting during Ars Electronica 2025 Rewilding Cultures project Consortium and Feral Labs Network partners are having a meeting and study visit during Ars Electronica 2025 in Linz. The meetings are set to take place on 5th and 6th of September. The Rewilding Cultures (RC) project is centred around exploring innovative approaches to production, inclusivity, and environmental considerations at the intersection […] Rewilding Cultures project Consortium and Feral Labs Network partners are having a meeting and study visit during Ars Electronica 2025 in Linz. The meetings are set to take pla"
+    },
+    {
+      "title": "InkluLAB5: Inovativne senzoričke tehnologije, suvremeni ples i kohezivni edukativni pristupi",
+      "url": "https://radiona.org/inklulab5-inovativne-senzoricke-tehnologije-suvremeni-ples-i-kohezivni-edukativni-pristupi/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10875-inklulab5-inovativne-senzoričke-tehnologije-suvremeni-ples-i-kohezivni-edukativni-pristupi.md",
+      "description": "# InkluLAB5: Inovativne senzoričke tehnologije, suvremeni ples i kohezivni edukativni pristupi Projekt InkluLAB5: Inovativne senzoričke tehnologije, suvremeni ples i kohezivni edukativni pristupi dobio je podršku Ministarstva kulture i medija Republike Hrvatske za realizaciju nastavka projekta koji će se realizirati u 2025. i 2026. godini. InkluLAB5 uključuje sljedeće partnere: Udruga za podršku osobama s intelektualnim oštećenjima Grada Zagreba & Klub Vjeverica, Osnovna škola Nad lipom, UPSET – […] Projekt InkluLAB5: Inovativne senzoričke tehnologije, suvremeni ples i kohezivni edukativni pristupi dobio je podrš"
+    },
+    {
+      "title": "DailyLab 12 – otvoreni dani/open days",
+      "url": "https://radiona.org/dailylab-12-otvoreni-dani-open-days/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10879-dailylab-12-otvoreni-dani-open-days.md",
+      "description": "# DailyLab 12 – otvoreni dani/open days Na DailyLab 12 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje, a upravo vam se otvorila mogućnost da to napravite tijekom dana. Tome služi DailyLab. DailyLab najavljuje se nekoliko dana prije održavanja i […] Na DailyLab 12 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje"
+    },
+    {
+      "title": "DailyLab 13 – otvoreni dani/open days",
+      "url": "https://radiona.org/dailylab-13-otvoreni-dani-open-days/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10886-dailylab-13-otvoreni-dani-open-days.md",
+      "description": "# DailyLab 13 – otvoreni dani/open days Na DailyLab 13 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje, a upravo vam se otvorila mogućnost da to napravite tijekom dana. Tome služi DailyLab. DailyLab najavljuje se nekoliko dana prije održavanja i […] Na DailyLab 13 možete doći raditi na svojem projektu, trebate nešto sami popraviti, a nemate prostor ili uređaj poput osciloskopa, pa možete samo skoknuti negdje gdje to možete napraviti. Zanima vas pojedino područje"
+    },
+    {
+      "title": "Goran Mahovlić to present ULX5M @ BalCCon2k25",
+      "url": "https://radiona.org/goran-mahovlic-to-present-ulx5m-balccon2k25/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10893-goran-mahovlić-to-present-ulx5m-balccon2k25.md",
+      "description": "# Goran Mahovlić to present ULX5M @ BalCCon2k25 Our member Goran Mahovlić will give a talk about the new FPGA board ULX5M at BalCCon2k25 -Balkan Computer Congress on September 19, 2025 in Novi Sad. The title of his talk is openCologne and the birth of new ULX (ULX5M). Talk about collaborative project that had a goal of creating series of extension boards for […] Our member Goran Mahovlić will give a talk about the new FPGA board ULX5M at BalCCon2k25 -Balkan Computer Congress on September 19, 2025 in Novi Sad. The title of his talk is openCologne and the birth of new ULX (ULX5M). Talk about collaborative project t"
+    },
+    {
+      "title": "2. Meetup SkloPivo / 2nd FoldBeer Meetup @ Radiona.org",
+      "url": "https://radiona.org/2-meetup-sklopivo-2nd-foldbeer-meetup-radiona-org/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10899-2-meetup-sklopivo-2nd-foldbeer-meetup-radiona-org.md",
+      "description": "# 2. Meetup SkloPivo / 2nd FoldBeer Meetup @ Radiona.org SkloPivo je neformalno druženje vlasnika i entuzijasta sklopivih bicikala u Zagrebu! Primijetili smo da nas ima puno po gradu – pa ajmo se družiti. Drugi meetup je u ponedjeljak, 22. rujna 2025. od 20:00h u Radioni (Nova cesta 186). Nalazimo se zbog popravaka i razgovora oko budućih aktivnosti. For English, please scroll down. Da se […] SkloPivo je neformalno druženje vlasnika i entuzijasta sklopivih bicikala u Zagrebu! Primijetili smo da nas ima puno po gradu – pa ajmo se družiti. Drugi meetup je u ponedjeljak, 22. rujna 2025. od 20:00h u Radioni (Nova ces"
+    },
+    {
+      "title": "FPGA ULX5M presented @ CERN",
+      "url": "https://radiona.org/fpga-ulx5m-presented-cern/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10907-fpga-ulx5m-presented-cern.md",
+      "description": "# FPGA ULX5M presented @ CERN FPGA board ULX5M developed by Radiona.org and Intergalaktik Ltd. was presented at CERN – The European Organization for Nuclear Research on Tuesday, 23rd September 2025. The presentation was part of the lecture by Patrick Urban (Cologne Chip AG) titled GateMate: A European 28nm FPGA with an Open-Source Toolchain and Radiation Qualification Results within the FPGA […] FPGA board ULX5M developed by Radiona.org and Intergalaktik Ltd. was presented at CERN – The European Organization for Nuclear Research on Tuesday, 23rd September 2025. The presentation was part of the lecture by Patrick "
+    },
+    {
+      "title": "Goran Mahovlić presented ZigZag e-Badge on BSides Zadar 2025",
+      "url": "https://radiona.org/goran-mahovlic-presented-zigzag-e-badge-on-bsides-zadar-2025/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10911-goran-mahovlić-presented-zigzag-e-badge-on-bsides-zadar-2025.md",
+      "description": "# Goran Mahovlić presented ZigZag e-Badge on BSides Zadar 2025 Our member Goran Mahovlić gave a lecture on development of the ZigZag e-Badge on BSides Zadar 2025 International Conference on 12th September in Zadar. The title of his talk was ZigZag: Your Personal Security Badge. About the e-badge ZigZag: As we are often visiting security conferences we have created a Radiona ZigZag badge. We wanted […] Our member Goran Mahovlić gave a lecture on development of the ZigZag e-Badge on BSides Zadar 2025 International Conference on 12th September in Zadar. The title of his talk was ZigZag: Your Personal Security Badge."
+    },
+    {
+      "title": "Theremin Postcard radionica @ Kulturvator u Zadru",
+      "url": "https://radiona.org/theremin-postcard-radionica-kulturvator-u-zadru/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10924-theremin-postcard-radionica-kulturvator-u-zadru.md",
+      "description": "# Theremin Postcard radionica @ Kulturvator u Zadru Koncertni ured Zadar poziva na radionicu Theremin Postcard u sklopu svojeg kulturnog programa Kulturvator, koja će se održati u utorak, 14. listopada 2025. u Multimedijska dvorana Kneževe palače. Novi program projekta Kulturvator radionica je pod nazivom Theremin Postcard voditeljice Deborah Hustić. Riječ je o radionici na kojoj će sudionici naučiti kako napraviti DIY teremin čije […] Koncertni ured Zadar poziva na radionicu Theremin Postcard u sklopu svojeg kulturnog programa Kulturvator, koja će se održati u utorak, 14. listopada 2025. u Multimedijska dvorana "
+    },
+    {
+      "title": "Radiona.org eBadgeLAB and Neo-retro Corner II @ Deep Conference 2025",
+      "url": "https://radiona.org/radiona-org-ebadgelab-and-neo-retro-corner-ii-deep-conference-2025/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10928-radiona-org-ebadgelab-and-neo-retro-corner-ii-deep-conference-2025.md",
+      "description": "# Radiona.org eBadgeLAB and Neo-retro Corner II @ Deep Conference 2025 Radiona will host eBadge Workshop LAB and Neo-retro Corner II during the international Deep Conference 2025 which will took place from 22 to 23 October 2025 in Petrčane near Zadar in the coastal part of Croatia. Goran Mahovlić, Tomislava Borić and Deborah Hustić will be in charge for Radiona activities during the program. Goran Mahovlić designed a special […] Radiona will host eBadge Workshop LAB and Neo-retro Corner II during the international Deep Conference 2025 which will took place from 22 to 23 October 2025 in Petrčane near Zadar in the "
+    },
+    {
+      "title": "My Sporting Heritage – Pedagogical Tools: Escape and Geocaching games",
+      "url": "https://radiona.org/my-sporting-heritage-pedagogical-tools-escape-and-geocaching-games/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10934-my-sporting-heritage-pedagogical-tools-escape-and-geocaching-games.md",
+      "description": "# My Sporting Heritage – Pedagogical Tools: Escape and Geocaching games We have created two games as a part of the Erasmus+ My Sporting Heritage project. Escape game – The Rift and Geocaching Game – The Sport Heritage Trails. More here: https://my-sporting-heritage.eu/pedagogical-tools We will explore more in the following months the connections between sport, heritage, gamification, creativity and innovation. The Escape game in this phase was […] We have created two games as a part of the Erasmus+ My Sporting Heritage project. Escape game – The Rift and Geocaching Game – The Sport Heritage Trails. More here: htt"
+    },
+    {
+      "title": "International Repair Day 2025 @ Radiona",
+      "url": "https://radiona.org/international-repair-day-2025-radiona/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10937-international-repair-day-2025-radiona.md",
+      "description": "# International Repair Day 2025 @ Radiona We will mark International Repair Day on Saturday, 18th October from 2pm ongoing in Radiona. We are planning repairing some of the retro devices from our collection, such as computers, cassette players, robots and similar devices. It is an open day for visitors. We will mark International Repair Day on Saturday, 18th October from 2pm ongoing in Radiona. We are planning repairing some of the retro devices from our collection, such as computers, cassette players, robots and similar devices. It is an open day for visitors."
+    },
+    {
+      "title": "Radiona.org @ Festival prvih 2025.: Kratki spoj – Tehnologija i vizije budućnosti",
+      "url": "https://radiona.org/radiona-org-festival-prvih-2025-kratki-spoj-tehnologija-i-vizije-buducnosti/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10942-radiona-org-festival-prvih-2025-kratki-spoj-tehnologija-i-vizije-budućnosti.md",
+      "description": "# Radiona.org @ Festival prvih 2025.: Kratki spoj – Tehnologija i vizije budućnosti Radiona.org sudjeluje u sklopu programa Festivala prvih 2025. koji se održava pod temom Kratki spoj – Tehnologija i vizije budućnosti od 3. do 11. studenoga 2025. u KIC-u i KNAP-u. Radiona.org sudjeluje radovima svojih članova koji su se u nekom segmentu prvi puta izrazili kroz određene vrstu tehnologije, instalaciju ili u sklopu programa udruge. U […] Radiona.org sudjeluje u sklopu programa Festivala prvih 2025. koji se održava pod temom Kratki spoj – Tehnologija i vizije budućnosti od 3. do 11. studenoga 2025. u KIC-u i KNAP-u. "
+    },
+    {
+      "title": "Izložba „Automata – surogat strojevi“ @ Galerija Filodrammatica, Drugo more",
+      "url": "https://radiona.org/izlozba-automata-surogat-strojevi-galerija-filodrammatica-drugo-more/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10952-izložba-automata-surogat-strojevi-galerija-filodrammatica-drugo-more.md",
+      "description": "# Izložba „Automata – surogat strojevi“ @ Galerija Filodrammatica, Drugo more U petak, 14. studenoga 2025. s početkom u 19h otvara se Radionina izložba „Automata – surogat strojevi“ u Galeriji Filodrammatica, Drugo more – Rijeka. Izložba ostaje otvorena do 5. prosinca 2025. i dio je serije Signali, bitovi i surogati kojom se Radiona.org bavi tijekom ove godine. A machine is more blameless, more sinless even than any […] U petak, 14. studenoga 2025. s početkom u 19h otvara se Radionina izložba „Automata – surogat strojevi“ u Galeriji Filodrammatica, Drugo more – Rijeka. Izložba ostaje otvorena do 5. prosinca 2025."
+    },
+    {
+      "title": "Radiona nagrađena! / Radiona awarded!",
+      "url": "https://radiona.org/nagrade-festivala-prvih-2025-radioninim-radovima/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10958-radiona-nagrađena-radiona-awarded.md",
+      "description": "# Radiona nagrađena! / Radiona awarded! Na ovogodišnjem Festivalu prvih 2025. sudjelovale su Radionine članice Sandra Maglov i Lea Kune u svojstvu su-autorica radova na kojima su po prvi puta sudjelovale u nekom izlagačkom radu našeg kolektiva. Sretni smo što su Sandra i Lea te dva rada Radione nagrađeni na Festivalu prvih 2025. Stručni festivalski žiri glavnu je nagradu Festivala dodijelio […] Na ovogodišnjem Festivalu prvih 2025. sudjelovale su Radionine članice Sandra Maglov i Lea Kune u svojstvu su-autorica radova na kojima su po prvi puta sudjelovale u nekom izlagačkom radu našeg kolektiva. Sretni smo što su"
+    },
+    {
+      "title": "Relentless Freedom Penguin Award @dorscluc conference for Radiona",
+      "url": "https://radiona.org/relentless-freedom-penguin-award-dorscluc-conference-for-radiona/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10964-relentless-freedom-penguin-award-dorscluc-conference-for-radiona.md",
+      "description": "# Relentless Freedom Penguin Award @dorscluc conference for Radiona Radiona has won Relentless Freedom Penguin Award on this edition of DORS/CLUC 2025 – Croatian Linux Users’ Conference which is the oldest and biggest regional conference that covers free and open source software, open standards, and the Linux operating system. For the last 30 years, DORS/CLUC has brought together many prominent individuals and companies from […] Radiona has won Relentless Freedom Penguin Award on this edition of DORS/CLUC 2025 – Croatian Linux Users’ Conference which is the oldest and biggest regional conference that covers free "
+    },
+    {
+      "title": "Radiona.org nominirana za nagradu Ambasador",
+      "url": "https://radiona.org/radiona-org-nominirana-za-nagradu-ambasador/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10982-radiona-org-nominirana-za-nagradu-ambasador.md",
+      "description": "# Radiona.org nominirana za nagradu Ambasador Radiona.org bila je nominirana godine za nagradu Ambasador u kategoriji za poseban doprinos sceni. Ambasador je godišnja nagrada za vrhunska dostignuća u elektroničkoj glazbi u Hrvatskoj i regiji, koju dodjeljuje portal Klubska scena te je prva i jedina nezavisna glazbena nagrada tog tipa. Ponosni smo što je njihov stručni žiri prepoznao dugogodišnje djelovanje naše organizacije te nas predložio […] Radiona.org bila je nominirana godine za nagradu Ambasador u kategoriji za poseban doprinos sceni. Ambasador je godišnja nagrada za vrhunska dostignuća u elektroničkoj gla"
+    },
+    {
+      "title": "Izložba: P(e)C(e)B(e) – alternativna povijest elektronike",
+      "url": "https://radiona.org/izlozba-povijest-elektronike-pecebe-tmnt/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-10986-izložba-p-e-c-e-b-e-alternativna-povijest-elektronike.md",
+      "description": "# Izložba: P(e)C(e)B(e) – alternativna povijest elektronike Radiona.org i Tehnički muzej Nikola Tesla pozivaju na otvorenje izložbe „P(e)C(e)B(e) – alternativna povijest elektronike“ u petak, 12. prosinca 2025. s početkom u 19h u Tehničkom muzeju Nikola Tesla. Izložba ostaje otvorena do 2. siječnja 2026. Strojevi me vrlo često iznenađuju. – Alan Turing Elektronika je danas svakodnevna, nevidljiva i podrazumijevana. No njena je povijest […] Radiona.org i Tehnički muzej Nikola Tesla pozivaju na otvorenje izložbe „P(e)C(e)B(e) – alternativna povijest elektronike“ u petak, 12. prosinca 2025. s početkom u 19h u Tehnič"
+    },
+    {
+      "title": "Radiona.org @ Fightbotics 2025",
+      "url": "https://radiona.org/radiona-org-fightbotics-2025/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11033-radiona-org-fightbotics-2025.md",
+      "description": "# Radiona.org @ Fightbotics 2025 Radiona.org sudjeluje s istoimenim timom i robotom pod nazivom Flip and Go na ovogodišnjim borbama robota pod nazivom Fightbotics 2025 ARCTIC STEEL koje će se održati u subotu 13. prosinca 2025. od 15:00 sati u Primarijus craft pivovari u Zagrebu. Radiona.org is participating with the team of the same name and a robot called Flip and […] Radiona.org sudjeluje s istoimenim timom i robotom pod nazivom Flip and Go na ovogodišnjim borbama robota pod nazivom Fightbotics 2025 ARCTIC STEEL koje će se održati u subotu 13. prosinca 2025. od 15:00 sati u Primarijus craft pivovari u Zagrebu."
+    },
+    {
+      "title": "3. Meetup SkloPivo / 3rd FoldBeer Meetup @ Radiona.org",
+      "url": "https://radiona.org/3-meetup-sklopivo-3rd-foldbeer-meetup-radiona-org/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11040-3-meetup-sklopivo-3rd-foldbeer-meetup-radiona-org.md",
+      "description": "# 3. Meetup SkloPivo / 3rd FoldBeer Meetup @ Radiona.org U ponedjeljak, 15. prosinca 2025. od 19h imamo 3. Meetup SkloPivo za ljubitelje sklopivih bicikala. Imamo različite teme na rasporedu od popravljanja sklopivih bicikala, budućih tema radionica do potencijalno DIY projekta izrade Timegraphera. Vidimo se! Da se znamo orijentirati, pls, najavite da dolazite preko Google forme ovdje: https://forms.gle/AD5WrK6mGXhFQ1bZA Podržala Zaklada Kultura Nova //////////////////////////////////////////////// On Monday, […] U ponedjeljak, 15. prosinca 2025. od 19h imamo 3. Meetup SkloPivo za ljubitelje sklopivih bicikala. I"
+    },
+    {
+      "title": "Sretni blagdani! / Happy Holidays!",
+      "url": "https://radiona.org/sretni-blagdani-happy-holidays-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11058-sretni-blagdani-happy-holidays.md",
+      "description": "# Sretni blagdani! / Happy Holidays! Radiona.org želi vam sretne i ugodne blagdane te uspješnu 2026. godinu! /// Radiona.org wishes you happy and pleasant holidays and a successful 2026! Radiona.org želi vam sretne i ugodne blagdane te uspješnu 2026. godinu! /// Radiona.org wishes you happy and pleasant holidays and a successful 2026!"
+    },
+    {
+      "title": "Izložba „Rezonantne strukture“ u Galeriji Razvid",
+      "url": "https://radiona.org/izlozba-rezonantne-strukture-u-galeriji-razvid/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11082-izložba-rezonantne-strukture-u-galeriji-razvid.md",
+      "description": "# Izložba „Rezonantne strukture“ u Galeriji Razvid Radionina izložba „Rezonantne strukture“ otvara se u utorak, 13. siječnja 2026., 18:00h, u Galeriji Razvid u Zaprešiću. Izložba predstavlja svojevrsni retrospektivni presjek recentnih radova nastalih kroz dugogodišnje izložbene linije Radione te je prva u seriji izložbi u sklopu projekta „Elektroni, frekvencije i druge čestice koje smo sreli po putu“, koji se provodi tijekom 2026. godine. […] Radionina izložba „Rezonantne strukture“ otvara se u utorak, 13. siječnja 2026., 18:00h, u Galeriji Razvid u Zaprešiću. Izložba predstavlja svojevrsni retrospektivni presjek"
+    },
+    {
+      "title": "Radionica šivanja: Ispod deke u jaknu / Sewing Workshop: From under the Blanket into a Jacket",
+      "url": "https://radiona.org/radionica-sivanja-ispod-deke-u-jaknu-sewing-workshop-from-under-the-blanket-into-a-jacket/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11088-radionica-šivanja-ispod-deke-u-jaknu-sewing-workshop-from-under-the-blanket-into-a-jacket.md",
+      "description": "# Radionica šivanja: Ispod deke u jaknu / Sewing Workshop: From under the Blanket into a Jacket RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica šivanja „Ispod deke u jaknu“ pod vodstvom modnog šljakera Vasca održava se u njegovom studiju na Trešnjevci u ponedjeljak i utorak, 26. i 27. siječnja 2026. od 18 sati. Foto: vasco.gram (cc) U svijetu koji proizvodi brže nego što može misliti, upcycling se pojavljuje kao tiha, ali odlučna […] RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica šivanja „Ispod deke u jaknu“ pod vodstvom modnog šljakera Vasca održava se u njegovom studiju na Trešnjevci u pone"
+    },
+    {
+      "title": "Ableton sesije s Paulom / Ableton Sessions with Paul @ Radiona",
+      "url": "https://radiona.org/ableton-sesije-s-paulom-ableton-sessions-with-paul-radiona/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11101-ableton-sesije-s-paulom-ableton-sessions-with-paul-radiona.md",
+      "description": "# Ableton sesije s Paulom / Ableton Sessions with Paul @ Radiona Paul Grandjean poziva sve zainteresirane za glazbenu produkciju na svoje sesije u Radioni. Ove su sesije namijenjene istraživanju načinima na koji želite stvarati glazbu, bilo da je to techno, ambient, eksperimentalna mjuza ili nešto drugo. Ableton je samo alat — pravi fokus sesija ste vi i vaš zvuk. Photo by Erwi on Unsplash (cc) Za […] Paul Grandjean poziva sve zainteresirane za glazbenu produkciju na svoje sesije u Radioni. Ove su sesije namijenjene istraživanju načinima na koji želite stvarati glazbu, bilo da je to techno, ambient, eksperimental"
+    },
+    {
+      "title": "Radionica Synthomir / Workshop",
+      "url": "https://radiona.org/radionica-synthomir-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11107-radionica-synthomir-workshop.md",
+      "description": "# Radionica Synthomir / Workshop U sklopu obilježavanja dvanaest godina od nastanka prvog Radioninog sintesajzera – Synthomira, održat će se istoimena radionica pod vodstvom Igora Brkića, u subotu 24. siječnja 2026. godine, od 15:00 do 19:00 sati u prostoru Radione. For English please scroll down. Synthomir GIF: Damir Prizmić , Radiona.org (cc) Synthomir je 8-bitni DIY sintesajzer temeljen na ATmega […] U sklopu obilježavanja dvanaest godina od nastanka prvog Radioninog sintesajzera – Synthomira, održat će se istoimena radionica pod vodstvom Igora Brkića, u subotu 24. siječnja 2026. godine, od 15:00 do 19:00 sati"
+    },
+    {
+      "title": "Radionica Theremin Postcard u Čepinu",
+      "url": "https://radiona.org/radionica-theremin-postcard-u-cepinu/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11138-radionica-theremin-postcard-u-čepinu.md",
+      "description": "# Radionica Theremin Postcard u Čepinu U sklopu projekta Djelujem lokalno za bolje globalno udruge STEAM centar iz Osijeka radionica Theremin Postcard održava se u Lovačkom domu Čepin u utorak, 27. siječnja 2026. s početkom u 17 sati za učenike srednjih škola. Teremin je glazbeni instrument koji se svira pokretom. Izumljen 1928. godine te je od tada strašno zanimljiv svim eksperimentatorima […] U sklopu projekta Djelujem lokalno za bolje globalno udruge STEAM centar iz Osijeka radionica Theremin Postcard održava se u Lovačkom domu Čepin u utorak, 27. siječnja 2026. s početkom u 17 sati za učenike srednjih škola. "
+    },
+    {
+      "title": "Radionica šivanja: Ispod deke u jaknu, br. 2 / Sewing Workshop: From under the Blanket into a Jacket, no. 2",
+      "url": "https://radiona.org/radionica-sivanja-ispod-deke-u-jaknu-br-2-sewing-workshop-from-under-the-blanket-into-a-jacket-no-2/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11144-radionica-šivanja-ispod-deke-u-jaknu-br-2-sewing-workshop-from-under-the-blanket-into-a-ja.md",
+      "description": "# Radionica šivanja: Ispod deke u jaknu, br. 2 / Sewing Workshop: From under the Blanket into a Jacket, no. 2 Radionica šivanja „Ispod deke u jaknu, br. 2“ pod vodstvom modnog šljakera Vasca održava se u njegovom studiju na Trešnjevci u petak i subotu, 30. i 31. siječnja 2026. od 18 sati. U svijetu koji proizvodi brže nego što može misliti, upcycling se pojavljuje kao tiha, ali odlučna gesta otpora. Umjesto nove tkanine, biramo već […] Radionica šivanja „Ispod deke u jaknu, br. 2“ pod vodstvom modnog šljakera Vasca održava se u njegovom studiju na Trešnjevci u petak i subotu, 30. i 31. siječnja 2026. od 18 sati. "
+    },
+    {
+      "title": "Izložba Rezonantne strukture i radionica Theremin Postcard na Noći muzeja 2026.",
+      "url": "https://radiona.org/radionica-theremin-postcard-na-noci-muzeja-2026/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11147-izložba-rezonantne-strukture-i-radionica-theremin-postcard-na-noći-muzeja-2026.md",
+      "description": "# Izložba Rezonantne strukture i radionica Theremin Postcard na Noći muzeja 2026. U sklopu Radionine izložbe „Rezonantne strukture“ u Galeriji Razvid te kao dio programa Noći muzeja ’26 – NM26 Pučkog otvorenog učilišta Zaprešić, održava se radionica Theremin Postcard. 𝟭𝟵:𝟬𝟬 – 𝟮𝟭:𝟬𝟬𝗵 – Namijenjeno djeci i odraslima – Sudjelovanje je besplatno – Obavezna prijava: 𝗿𝗮𝘇𝘃𝗶𝗱@𝗽𝗼𝘂𝘇.𝗵𝗿 Za više detalja obratite se ovdje U sklopu Radionine izložbe „ Rezonantne strukture “ u Galeriji Razvid te kao dio programa Noći muzeja ’26 – NM26 Pučkog otvorenog učilišta Zaprešić, održava se radionica Theremin Postcard. 𝟭𝟵:𝟬𝟬 – 𝟮𝟭:𝟬𝟬𝗵 – N"
+    },
+    {
+      "title": "Izložba „Katalog elektro-entiteta K/3”",
+      "url": "https://radiona.org/izlozba-katalog-elektro-entiteta-k-3/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11176-izložba-katalog-elektro-entiteta-k-3.md",
+      "description": "# Izložba „Katalog elektro-entiteta K/3” Radiona.org poziva na izložbu „Katalog elektro-entiteta K/3” koja se otvara u petak, 6. veljače 2026. u 18h u Galeriji Koprivnica pri Muzeju grada Koprivnice. Izložba je otvorena do 5. ožujka 2026. Tehnološki objekt mora se razumjeti kroz svoj proces nastajanja, a ne kao gotova stvar. – Gilbert Simondon* Izložba okuplja radove nastale unutar kolektivne prakse […] Radiona.org poziva na izložbu „ Katalog elektro-entiteta K/3 ” koja se otvara u petak, 6. veljače 2026. u 18h u Galeriji Koprivnica pri Muzeju grada Koprivnice. Izložba je otvorena do 5. ožujka 2026. Tehnološki ob"
+    },
+    {
+      "title": "Meetup TickTockTalk – rastavljamo satove, popravljamo vrijeme",
+      "url": "https://radiona.org/meetup-ticktocktalk-rastavljamo-satove-popravljamo-vrijeme/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11192-meetup-ticktocktalk-rastavljamo-satove-popravljamo-vrijeme.md",
+      "description": "# Meetup TickTockTalk – rastavljamo satove, popravljamo vrijeme TickTockTalk je neformalni, otvoreni meetup za satove, urarstvo i vrijeme. Rastavljamo satove, popravljamo vrijeme, učimo jedni od drugih i razmjenjujemo alate, znanje i priče. Prvi TickTockTalk održat će se u ponedjeljak, 16. veljače 2026. s početkom u 19h. Kratke preze za pon, 16.02.2026.: – Casio MQ-24 – lakoća i minimalizam – Deborah Hustić – Kratka […] TickTockTalk je neformalni, otvoreni meetup za satove, urarstvo i vrijeme. Rastavljamo satove, popravljamo vrijeme, učimo jedni od drugih i razmjenjujemo alate, znanje i priče. Prvi TickTockTalk o"
+    },
+    {
+      "title": "Francesco Zedde: Radionica/Workshop Radio Hacking",
+      "url": "https://radiona.org/francesco-zedde-radionica-workshop-radio-hacking/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11204-francesco-zedde-radionica-workshop-radio-hacking.md",
+      "description": "# Francesco Zedde: Radionica/Workshop Radio Hacking RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Radio Hacking pod vodstvom Francesco Zeddea (IT/NL) održava se u srijedu, 18. veljače 2026. od 18h u Radioni. Foto: Francesco Zedde (c) For English, pls, scroll down. Želite hakirati radio i pretvoriti ga u sintisajzer? Ako je odgovor da, pridružite nam se i saznat ćemo kako od njega […] RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Radio Hacking pod vodstvom Francesco Zeddea (IT/NL) održava se u srijedu, 18. veljače 2026. od 18h u Radioni. Foto: Francesco Zedde (c) For English, pls, scroll do"
+    },
+    {
+      "title": "Zoe Romano: Radionica izrade mekih senzora / Crafting Soft Sensors Workshop",
+      "url": "https://radiona.org/zoe-romano-radionica-izrade-mekih-senzora-crafting-soft-sensors-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11219-zoe-romano-radionica-izrade-mekih-senzora-crafting-soft-sensors-workshop.md",
+      "description": "# Zoe Romano: Radionica izrade mekih senzora / Crafting Soft Sensors Workshop Radionica eTekstila pod nazivom Izrada mekih senzora talijanske umjetnice i hacktivistice Zoe Romano održava se u petak, 27. veljače u 18:00-21:00 i u subotu, 28. veljače 2026. od 15.30-18-30h. For English please scroll down. Foto: Zoe Romano (cc) O radionici: Pametni tekstili su tkanine razvijene kako bi omogućile besprijekornu integraciju s elektroničkim elementima poput mikrokontrolera, […] Radionica eTekstila pod nazivom Izrada mekih senzora talijanske umjetnice i hacktivistice Zoe Romano održava se u petak, 27. veljače u 18:00-21:0"
+    },
+    {
+      "title": "FPGA ULX4M-LM to be part of Exploring Every Way to Build Lattice ECP5 FPGAs workshop",
+      "url": "https://radiona.org/fpga-ulx4m-lm/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11231-fpga-ulx4m-lm-to-be-part-of-exploring-every-way-to-build-lattice-ecp5-fpgas-workshop.md",
+      "description": "# FPGA ULX4M-LM to be part of Exploring Every Way to Build Lattice ECP5 FPGAs workshop The ULX4M FPGA board, developed by Intergalaktik Ltd. as a continuation of the successful series of FPGA boards created within the Radiona.org – Zagreb Makerspace, and shaped through long-term open-hardware work and community collaboration, is featured as part of the online talk and workshop “Exploring Every Way to Build Lattice ECP5 FPGAs” by Andrew Elbert […] The ULX4M FPGA board, developed by Intergalaktik Ltd. as a continuation of the successful series of FPGA boards created within the Radiona.org – Zagreb Makerspace, and s"
+    },
+    {
+      "title": "Radionice Elektro-diorama i Theremin Postcard u Muzeju grada Koprivnice",
+      "url": "https://radiona.org/radionice-elektro-diorama-i-theremin-postcard-u-muzeju-grada-koprivnice/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11242-radionice-elektro-diorama-i-theremin-postcard-u-muzeju-grada-koprivnice.md",
+      "description": "# Radionice Elektro-diorama i Theremin Postcard u Muzeju grada Koprivnice Povodom završetka naše izložbe „Katalog elektro-entiteta K/3” u Muzeju grada Koprivnice u petak 6. ožujka 2026. s početkom u 11h održat ćemo dvije radionice za djecu. Za prijave molimo kontaktirati muzej. Radionica Elektro-diorama, 12+ Voditeljica: Paula Bučar Na radionici će polaznici izrađivati svjetlosne objekte – diorame koje će osvijetliti LED diodama. Diorame će se izrađivati od papira […] Povodom završetka naše izložbe „Katalog elektro-entiteta K/3” u Muzeju grada Koprivnice u petak 6. ožujka 2026. s početkom u 11h održat ćemo dvije "
+    },
+    {
+      "title": "eBadge ZigZag i NeoRetro Corner @ BSides Zagreb 2026",
+      "url": "https://radiona.org/ebadge-zigzag-i-neoretro-corner-bsides-zagreb-2026/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11247-ebadge-zigzag-i-neoretro-corner-bsides-zagreb-2026.md",
+      "description": "# eBadge ZigZag i NeoRetro Corner @ BSides Zagreb 2026 Radionin program eBadge ZigZag i NeoRetro Corner sudjeluje u programu međunarodne BSides Zagreb 2026 konferencije u Zagrebu koja se održava 6. ožujka 2026. Radionu će predstavljati Goran Mahovlić, Emard, Vlado Vince i dr. ZigZag eBadge razvili Goran Mahovlić (hardware) i Damir Prizmić (dizajn). NeoRetro Corner izložbena je selekcija neo i retro tehnologija iz Radionine kolekcije […] Radionin program eBadge ZigZag i NeoRetro Corne r sudjeluje u programu međunarodne BSides Zagreb 2026 konferencije u Zagrebu koja se održava 6. ožujka 2026. Radionu će predstavlja"
+    },
+    {
+      "title": "Mindfulness sesija gerilskog heklanja by Mogut / Mindfulness guerrilla crocheting session by Mogut",
+      "url": "https://radiona.org/mindfulness-sesija-gerilskog-heklanja-by-mogut-mindfulness-guerrilla-crocheting-session-by-mogut/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11251-mindfulness-sesija-gerilskog-heklanja-by-mogut-mindfulness-guerrilla-crocheting-session-by.md",
+      "description": "# Mindfulness sesija gerilskog heklanja by Mogut / Mindfulness guerrilla crocheting session by Mogut U ponedjeljak, 3. ožujka 2026. s početkom u 19h nastavljamo sa Mindfulness sesijom gerilskog heklanja pod vodstvom Tajane Vidojević poznatije pod umjetničkim imenom Mogut – Guardian of Heritage. For English please scroll down. Ako do sada niste sudjelovali, a htjeli bi doći, šibnite na e-mail na radiona.org@gmail.com Grupa okuplja hardver hakere, programere, makere, dizajnere, ilustratore i […] U ponedjeljak, 3. ožujka 2026. s početkom u 19h nastavljamo sa Mindfulness sesijom gerilskog heklanja pod vodstvom Tajane"
+    },
+    {
+      "title": "Radionica FM sinteze: Od kultnih zvukova 80-ih do ozbiljnog dizajna zvuka",
+      "url": "https://radiona.org/radionica-fm-sinteze-od-kultnih-zvukova-80-ih-do-ozbiljnog-dizajna-zvuka/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11272-radionica-fm-sinteze-od-kultnih-zvukova-80-ih-do-ozbiljnog-dizajna-zvuka.md",
+      "description": "# Radionica FM sinteze: Od kultnih zvukova 80-ih do ozbiljnog dizajna zvuka RADIONICA JE POPUNJENA! Radionica FM sinteze: Od kultnih zvukova 80-ih do ozbiljnog dizajna zvuka pod vodstvom Saše Rajkovića Zarkoffa održat će se u utorak i srijedu, 17. i 18. ožujka 2026. od 18.00 do 21.00h u Radioni. (For English please scroll down) FM sinteza često ima reputaciju jedne od najkompleksnijih metoda sinteze zvuka. Na ovoj […] RADIONICA JE POPUNJENA! Radionica FM sinteze: Od kultnih zvukova 80-ih do ozbiljnog dizajna zvuka pod vodstvom Saše Rajkovića Zarkoffa održat će se u utorak i srijedu, 17. i 18. ožujka 2026. od 18.0"
+    },
+    {
+      "title": "Radionica: Kompozicija za slučajne zvukove i preparirani magnetofon",
+      "url": "https://radiona.org/radionica-kompozicija-za-slucajne-zvukove-i-preparirani-magnetofon/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11286-radionica-kompozicija-za-slučajne-zvukove-i-preparirani-magnetofon.md",
+      "description": "# Radionica: Kompozicija za slučajne zvukove i preparirani magnetofon RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Dubravka Kuhte pod nazivom „Kompozicija za slučajne zvukove i preparirani magnetofon” održava se u srijedu i četvrtak, 25. i 26. ožujka 2026. od 18 sati u Radioni. Radionica je svojevrsni hommage domaćoj elektroakustičkoj muzici 60tih i 70tih godina XX stoljeća. Foto: Chris Randall (c) Na radionici ćemo pokušati […] RADIONICA JE POPUNJENA! HVALA NA RAZUMIJEVANJU! Radionica Dubravka Kuhte pod nazivom „Kompozicija za slučajne zvukove i preparirani magnetofon” održava se u srijedu i četvrta"
+    },
+    {
+      "title": "Radiona.org na Danima karijera 2026. Sveučilišta Algebra Bernays",
+      "url": "https://radiona.org/radiona-org-na-danima-karijera-2026-sveucilista-algebra-bernays/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11296-radiona-org-na-danima-karijera-2026-sveučilišta-algebra-bernays.md",
+      "description": "# Radiona.org na Danima karijera 2026. Sveučilišta Algebra Bernays Radiona.org predstavlja NeoRetro Corner u ponedjeljak, 23. ožujka 2026., na Danima karijera 2026. Sveučilišta Algebra Bernays, uz brojne druge priznate izlagače iz područja ICT tehnologija i dizajna. Na događanju Radionu predstavljaju Goran Mahovlić i Deborah Hustić. NeoRetro Corner dio je Radioninog izložbenog i edukativnog programa koji predstavlja selekciju neo i retro tehnologija iz bogate kolekcije […] Radiona.org predstavlja NeoRetro Corner u ponedjeljak, 23. ožujka 2026., na Danima karijera 2026. Sveučilišta Algebra Bernays, uz brojne druge"
+    },
+    {
+      "title": "Međunarodni webinar: Dizajn edukativnih igara – sport, kultura i igra u pokretu [ENG]",
+      "url": "https://radiona.org/medunarodni-webinar-dizajn-edukativnih-igara-sport-kultura-i-igra-u-pokretu-eng/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11306-međunarodni-webinar-dizajn-edukativnih-igara-sport-kultura-i-igra-u-pokretu-eng.md",
+      "description": "# Međunarodni webinar: Dizajn edukativnih igara – sport, kultura i igra u pokretu [ENG] Predstavljamo edukativne igre razvijene u sklopu projekta My Sporting Heritage. Pridružite nam se na webinaru na kojem ćemo kroz praktične primjere pokazati kako spojiti sport, kulturu i igru kroz kretanje i istraživanje. Kroz ovaj webinar predstavit ćemo konkretne alate i pristupe koje smo razvijali – digitalne escape igre i geocaching iskustva inspirirana europskom sportskom baštinom. […] Predstavljamo edukativne igre razvijene u sklopu projekta My Sporting Heritage . Pridružite nam se na webinaru na kojem ćemo kroz praktičn"
+    },
+    {
+      "title": "Radionica daljinski upravljanih pokretnih objekata",
+      "url": "https://radiona.org/radionica-daljinski-upravljanih-pokretnih-objekata/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11311-radionica-daljinski-upravljanih-pokretnih-objekata.md",
+      "description": "# Radionica daljinski upravljanih pokretnih objekata Radionica daljinski upravljanih pokretnih objekata pod vodstvom Frana Masnjaka održava se u srijedu i četvrtak, 1. i 2. travnja 2026. od 18h u Radioni. Radionica je posvećena prenamjeni dijelova hoverboarda u izradu funkcionalnih DIY vozila i platformi na daljinsko upravljanje. Foto: Niklas Fauth (cc) Kroz praktičan rad prolazimo cijeli proces – od odbačenog hoverboarda do […] Radionica daljinski upravljanih pokretnih objekata pod vodstvom Frana Masnjaka održava se u srijedu i četvrtak, 1. i 2. travnja 2026. od 18h u Radioni. Radionica je posvećena prenamjeni d"
+    },
+    {
+      "title": "Glazbena radionica DUGMETARA REVISITED",
+      "url": "https://radiona.org/glazbena-radionica-dugmetara-revisited/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11320-glazbena-radionica-dugmetara-revisited.md",
+      "description": "# Glazbena radionica DUGMETARA REVISITED U travnju nam [BLOK] – Lokalna baza za osvježavanje kulture donosi radionicu iz svojeg projekta “Trešnja trešti! Crtice iz glazbene povijesti i sadašnjosti kvarta”. Glazbena radionica DUGMETARA REVISITED pod vodstvom Ane Horvat održat će se ponedjeljcima 13., 20. i 27. travnja 2026., od 18 do 20 sati u Radioni. Na tri radionička susreta uranjamo u nasljeđe […] U travnju nam [BLOK] – Lokalna baza za osvježavanje kulture donosi radionicu iz svojeg projekta “Trešnja trešti! Crtice iz glazbene povijesti i sadašnjosti kvarta”. Glazbena radionica DUGMETARA REVISITED pod vodstvom"
+    },
+    {
+      "title": "Radiona.org @ CUC CARNET 2026",
+      "url": "https://radiona.org/radiona-na-cuc-carnet-2026/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11334-radiona-org-cuc-carnet-2026.md",
+      "description": "# Radiona.org @ CUC CARNET 2026 CUC CARNET konferencija najveće je nacionalno okupljanje obrazovne i istraživačke zajednice u području primjene digitalnih tehnologija. Konferencija svake godine okuplja nastavnike, edukatore, istraživače i stručnjake iz ICT sektora s ciljem razmjene znanja, iskustava i primjera dobre prakse u digitalnom obrazovanju. Radiona će sudjelovati na ovogodišnjem izdanju konferencije koje se održava od 14. do 17. travnja […] CUC CARNET konferencija najveće je nacionalno okupljanje obrazovne i istraživačke zajednice u području primjene digitalnih tehnologija. Konferencija svake godine okupl"
+    },
+    {
+      "title": "Radionica: Fragmenti sjećanja – zine kao osobni arhiv u nastajanju",
+      "url": "https://radiona.org/radionica-fragmenti-sjecanja-zine-kao-osobni-arhiv-u-nastajanju/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11340-radionica-fragmenti-sjećanja-zine-kao-osobni-arhiv-u-nastajanju.md",
+      "description": "# Radionica: Fragmenti sjećanja – zine kao osobni arhiv u nastajanju U vremenu beskonačnih galerija i cloud servisa, naše svakodnevne slike rijetko prelaze granicu ekrana. Što znači prevesti ih iz digitalnog zapisa u fizički trag? I što se događa kada krenemo svjesno birati, rezati i slagati vlastite arhive? Sve to možete saznati radeći zajedno s Lanom Peričić (HR/UK), voditeljicom radionice Fragmenti sjećanja – zine kao osobni […] U vremenu beskonačnih galerija i cloud servisa, naše svakodnevne slike rijetko prelaze granicu ekrana. Što znači prevesti ih iz digitalnog zapisa u fizički trag? I što se događa kada k"
+    },
+    {
+      "title": "Radionica japanskog minimalističkog namještaja: KAK kolektiv (1950-e)",
+      "url": "https://radiona.org/radionica-japanskog-minimalistickog-namjestaja-kak-kolektiv-1950-e/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11365-radionica-japanskog-minimalističkog-namještaja-kak-kolektiv-1950-e.md",
+      "description": "# Radionica japanskog minimalističkog namještaja: KAK kolektiv (1950-e) RADIONICA POPUNJENA DO DALJNJEG! HVALA NA RAZUMIJEVANJU! Radionica japanskog minimalističkog namještaja: KAK kolektiv (1950-e) pod vodstvom produkt dizajnerice Sandre Maglov održava se u subotu i/ili nedjelju, 9. i 10. svibnja 2026. od 15:00 do 20:00 sati u Radioni. Kako izgleda dizajn koji možeš napraviti sam – bez industrije, bez luksuza, samo s dobrim nacrtom i […] RADIONICA POPUNJENA DO DALJNJEG! HVALA NA RAZUMIJEVANJU! Radionica japanskog minimalističkog namještaja: KAK kolektiv (1950-e) pod vodstvom produkt dizajnerice Sandre Maglov odr"
+    },
+    {
+      "title": "Radiona @ BSides Varaždin",
+      "url": "https://radiona.org/radiona-bsides-varazdin/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11376-radiona-bsides-varaždin.md",
+      "description": "# Radiona @ BSides Varaždin Radiona.org sudjeluje na ovogodišnjem izdanju konferencije BSides Varaždin, nezavisnog događanja posvećenog informacijskoj sigurnosti, hakiranju i razmjeni znanja unutar zajednice. BSides Varaždin održava se u četvrtak, 7. svibnja 2026. For English please scroll down. Konferencija okuplja istraživače, developere, umjetnike i entuzijaste koji djeluju na sjecištu tehnologije i sigurnosti, s naglaskom na otvoreni pristup, eksperiment i dijeljenje […] Radiona.org sudjeluje na ovogodišnjem izdanju konferencije BSides Varaždin , nezavisnog događanja posvećenog informacijskoj sigurnosti, haki"
+    },
+    {
+      "title": "Radiona.org: Radionica Robots in the Wild / Roboti u divljini za program PANDA 9",
+      "url": "https://radiona.org/radiona-org-radionica-robots-in-the-wild-roboti-u-divljini-za-program-panda-9/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11385-radiona-org-radionica-robots-in-the-wild-roboti-u-divljini-za-program-panda-9.md",
+      "description": "# Radiona.org: Radionica Robots in the Wild / Roboti u divljini za program PANDA 9 Radionica Robots in the Wild / Roboti u divljini održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica se održava u srijedu od 18:00 do 19:30 u Radioni pod vodstvom Deborah Hustić. Radionica uvodi sudionike u svijet jednostavne robotike kroz izradu i eksperimentiranje s DIY i prilagođenim robotima. […] Radionica Robots in the Wild / Roboti u divljini održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica se održava u srije"
+    },
+    {
+      "title": "Radiona održala Theremin Postcard radionicu u sklopu STeam programa",
+      "url": "https://radiona.org/radiona-odrzala-theremin-postcard-radionicu-u-sklopu-steam-programa/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11392-radiona-održala-theremin-postcard-radionicu-u-sklopu-steam-programa.md",
+      "description": "# Radiona održala Theremin Postcard radionicu u sklopu STeam programa Radiona je sudjelovala u STeam programu koji provode Institut za društvena istraživanja u Zagrebu i A1 Hrvatska, gdje je održala radionicu Theremin Postcard za nastavnike osnovnih škola iz Splita. Radionica je održana u Tuhelju, u sklopu edukacijskog događanja programa STeam, a bila je usmjerena na upoznavanje nastavnika s osnovama elektronike kroz izradu interaktivnih storytelling iskustava […] Radiona je sudjelovala u STeam programu koji provode Institut za društvena istraživanja u Zagrebu i A1 Hrvatska , gdje je održala radionicu Theremin Po"
+    },
+    {
+      "title": "Synth olovka – nova radionica u programu Ruksak pun kulture 2026",
+      "url": "https://radiona.org/synth-olovka-nova-radionica-u-programu-ruksak-pun-kulture-2026/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11398-synth-olovka-nova-radionica-u-programu-ruksak-pun-kulture-2026.md",
+      "description": "# Synth olovka – nova radionica u programu Ruksak pun kulture 2026 Za 2026. godinu razvili smo novu radionicu Synth olovka, koja će prvi put biti predstavljena u sklopu nacionalnog programa Ruksak pun kulture. Kroz program ćemo ove godine posjetiti Osnovnu školu „Braća Bobetko“ u Sisku, Srednju školu „Ivan Seljanec“ u Križevcima te Češku osnovnu školu Josipa Ružičke u Končanici. Synth olovka je edukativna radionica koja na […] Za 2026. godinu razvili smo novu radionicu Synth olovka , koja će prvi put biti predstavljena u sklopu nacionalnog programa Ruksak pun kulture. Kroz program ćemo ove godine posjetiti Osnovn"
+    },
+    {
+      "title": "Radionica: “krassfade” – DIY mini DJ setup i lo-fi sampler",
+      "url": "https://radiona.org/radionica-krassfade-diy-mini-dj-setup-i-lo-fi-sampler/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11405-radionica-krassfade-diy-mini-dj-setup-i-lo-fi-sampler.md",
+      "description": "# Radionica: “krassfade” – DIY mini DJ setup i lo-fi sampler U ovoj praktičnoj radionici, “krassfade” – DIY mini DJ setup i lo-fi sampler, koja će se održati u četvrtak, 14. svibnja 2026. od 18 sati u Radioni, pod vodstvom Olivera Jaeggia iz Švicarske, sudionici će izraditi modul za crossfade između dva audio izvora pomoću jednog potenciometra – slično kao na DJ mikseru. For English scroll […] U ovoj praktičnoj radionici, “krassfade” – DIY mini DJ setup i lo-fi sampler , koja će se održati u četvrtak, 14. svibnja 2026. od 18 sati u Radioni, pod vodstvom Olivera Jaeggia iz Švicarske , sudionici će izraditi modul z"
+    },
+    {
+      "title": "Otisak kao proces: radionica linoreza i eksperimentalne grafike",
+      "url": "https://radiona.org/otisak-kao-proces-radionica-linoreza-i-eksperimentalne-grafike/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11419-otisak-kao-proces-radionica-linoreza-i-eksperimentalne-grafike.md",
+      "description": "# Otisak kao proces: radionica linoreza i eksperimentalne grafike U subotu, 16. svibnja 2026. od 15 sati u Radioni održat će se radionica linoreza i eksperimentalne grafike pod vodstvom Sandre Lisi, nagrađivane francuske grafičarke koja djeluje u Kaliforniji. For English please scroll down. Sandra Lisi (c) Kroz praktičan rad sudionici će proći cijeli proces izrade linoreza – od skiciranja i prijenosa motiva na linoleum […] U subotu, 16. svibnja 2026. od 15 sati u Radioni održat će se radionica linoreza i eksperimentalne grafike pod vodstvom Sandre Lisi, nagrađivane francuske grafičarke koja djeluje u Kaliforniji."
+    },
+    {
+      "title": "Radiona International FPGA & FreeStyleGeekery Meet-up",
+      "url": "https://radiona.org/radiona-international-fpga-freestylegeekery-meet-up/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11435-radiona-international-fpga-freestylegeekery-meet-up.md",
+      "description": "# Radiona International FPGA & FreeStyleGeekery Meet-up Radiona International FPGA and FreeStyleGeekery Meet-up is set to take place on Friday, May 15th, 2025 from 18:00 to 21:00h CET in Radiona. The event is officially in English language due to international participants and visitors. Free entry! Program: – EMARD (Croatia): TBA – Jim Scarletta (USA): TBA – Goran Mahovlić (Croatia): TBA – Vlatko […] Radiona International FPGA and FreeStyleGeekery Meet-up is set to take place on Friday, May 15th, 2025 from 18:00 to 21:00h CET in Radiona. The event is officially in English language due to international participant"
+    },
+    {
+      "title": "Feral Labs Node Book #3: Fa Fa Futures Published",
+      "url": "https://radiona.org/feral-labs-node-book-3-fa-fa-futures-published/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11453-feral-labs-node-book-3-fa-fa-futures-published.md",
+      "description": "# Feral Labs Node Book #3: Fa Fa Futures Published We are happy to announce the release of Feral Labs Node Book #3: Fa Fa Futures, the newest publication in the Feral Labs series developed within the Rewilding Cultures project. The book brings together artists, researchers, theorists and practitioners exploring ecological futures, decolonial methodologies, feminist technoscience, more-than-human relations, artistic research, and experimental community practices. Structured […] We are happy to announce the release of Feral Labs Node Book #3: Fa Fa Futures , the newest publication in the Feral Labs series developed"
+    },
+    {
+      "title": "Oscilla – radionica animiranih grafičkih audio partitura // Workshop on Animated Graphic Audio Scores",
+      "url": "https://radiona.org/oscilla-radionica-animiranih-grafickih-audio-partitura-workshop-on-animated-graphic-audio-scores/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11463-oscilla-radionica-animiranih-grafičkih-audio-partitura-workshop-on-animated-graphic-audio.md",
+      "description": "# Oscilla – radionica animiranih grafičkih audio partitura // Workshop on Animated Graphic Audio Scores Radionica animiranih grafičkih audio partitura – Oscilla pod vodstvom skladatelja i intermedijskog umjetnika Roba Canninga održat će se u četvrtak i petak, 28. i 29. svibnja 2026. od 18 sati u Radioni. For English please scroll down. Ilustracija: Radiona.org (cc) Oscilla je open source sustav za animirane, umrežene grafičke partiture koji radi unutar web preglednika. […] Radionica animiranih grafičkih audio partitura – Oscilla pod vodstvom skladatelja i intermedijskog umjetnika Roba Canninga održat će se u četv"
+    },
+    {
+      "title": "Radiona.org @ Festival društvenih igara – 4. FDI",
+      "url": "https://radiona.org/radiona-org-festival-drustvenih-igara-4-fdi/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11479-radiona-org-festival-društvenih-igara-4-fdi.md",
+      "description": "# Radiona.org @ Festival društvenih igara – 4. FDI Radiona.org sudjeluje u programu četvrtog izdanja Festivala društvenih igara 2026. – 4. FDI koji se održava 23. i 24. travnja 2026. u Centru za kulturu Trešnjevka. Radiona sudjeluje s programom pod nazivom NeoRetro gaming prezentirajući DIT gaming konzole i rješenja uz poneku vintage Pong konzolu. Četvrto izdanje Festivala društvenih igara organiziraju Centar za kulturu Trešnjevka i Terrible Creations d.o.o., […] Radiona.org sudjeluje u programu četvrtog izdanja Festivala društvenih igara 2026. – 4. FDI koji se održava 23. i 24. travnja 2026. u Centru za kulturu "
+    },
+    {
+      "title": "Artist in Residence: Rob Canning",
+      "url": "https://radiona.org/artist-in-residence-rob-canning/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11482-artist-in-residence-rob-canning.md",
+      "description": "# Artist in Residence: Rob Canning During his residency at Radiona, Rob Canning will explore intersections of composition, DIY electronics, intermedia practices, and hybrid approaches to sound art and experimental music. He will stay at Radiona the end of May 2026. His residency research will focus on open source tools, performative systems, graphic notation, networked sound, and experimental approaches to composition […] During his residency at Radiona, Rob Canning will explore intersections of composition, DIY electronics, intermedia practices, and hybrid approaches to sound art and experimental music. He will "
+    },
+    {
+      "title": "Gijs Gieskes – artist-in-residence @ Radiona.org",
+      "url": "https://radiona.org/gijs-gieskes-artist-in-residence-radiona-org/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11496-gijs-gieskes-artist-in-residence-radiona-org.md",
+      "description": "# Gijs Gieskes – artist-in-residence @ Radiona.org Gijs Gieskes is an artist in residence at Radiona.org during the first part of June 2026 in Zagreb, Croatia. During the residency, he is developing experimental DIY electronics, sound objects, solar-powered instruments, and playful kinetic systems that explore the intersections of sound, movement and open hardware culture. Photo: @ditwfestival & @deperifeer (cc) Gijs Gieskes (born 1977) is […] Gijs Gieskes is an artist in residence at Radiona.org during the first part of June 2026 in Zagreb, Croatia. During the residency, he is developing experimental DIY electro"
+    },
+    {
+      "title": "Gijs Gieskes: Radionica solarnih instrumenata i kinetičkih objekata / Solar Powered Instruments and Kinetic Objects Workshop",
+      "url": "https://radiona.org/gijs-gieskes-radionica-solarnih-instrumenata-i-kinetickih-objekata-solar-powered-instruments-and-kinetic-objects-workshop/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11504-gijs-gieskes-radionica-solarnih-instrumenata-i-kinetičkih-objekata-solar-powered-instrumen.md",
+      "description": "# Gijs Gieskes: Radionica solarnih instrumenata i kinetičkih objekata / Solar Powered Instruments and Kinetic Objects Workshop RADIONICA JE POPUNJENA. HVALA NA RAZUMIJEVANJU! U subotu, 6. lipnja 2026. od 10:00 sati na dalje u Radioni će se održati radionica solarnih instrumenata i kinetičkih objekata pod vodstvom nizozemskog umjetnika, glazbenika, dizajnera i izumitelja elektroničkih instrumenata Gijsa Gieskesa. Radionica se održava u sklopu njegove umjetničke rezidencije u Radioni, a otvorena je svim zainteresiranima bez […] RADIONICA JE POPUNJENA. HVALA NA RAZUMIJEVANJU! U subotu, 6. lipnja 2026. od 10:00 sati "
+    },
+    {
+      "title": "Robotarium: Čudna stvorenja za program PANDA 9",
+      "url": "https://radiona.org/robotarium-cudna-stvorenja/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11517-robotarium-čudna-stvorenja-za-program-panda-9.md",
+      "description": "# Robotarium: Čudna stvorenja za program PANDA 9 Radionica Robotarium: Čudna stvorenja održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica će se održati u ponedjeljak, 1. lipnja 2026. godine od 18:00 do 19:30 sati u Radioni, pod vodstvom Deborah Hustić. Na radionici će sudionici izrađivati i eksperimentirati s neobičnim robotskim bićima nastalim kombiniranjem jednostavne elektronike, […] Radionica Robotarium: Čudna stvorenja održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica će se održati u ponedje"
+    },
+    {
+      "title": "BotoPark: mehanički stanovnici",
+      "url": "https://radiona.org/botopark-mehanicki-stanovnici/",
+      "sourceFamily": "radiona",
+      "path": "Sources/Raw/radiona/post-11526-botopark-mehanički-stanovnici.md",
+      "description": "# BotoPark: mehanički stanovnici Radionica BotoPark: mehanički stanovnici održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica će se održati u utorak, 2. lipnja 2026. godine od 18:00 do 19:30 sati u Radioni, pod vodstvom Deborah Hustić. Na radionici će sudionici izrađivati i eksperimentirati s neobičnim robotskim bićima nastalim kombiniranjem jednostavne elektronike, […] Radionica BotoPark: mehanički stanovnici održava se u sklopu višegodišnjeg programa PANDA 9 za nadarene učenike koji provodi udruga Bioteka. Radionica će se održati u utorak, 2. lipnja 2026"
+    },
+    {
       "title": "AI@SGMK",
       "url": "https://wiki.sgmk-ssam.ch/wiki/AI%40SGMK",
       "sourceFamily": "sgmk",
@@ -1161,7 +2292,7 @@
       "title": "Bitwäsching se Fjutscher",
       "url": "https://wiki.sgmk-ssam.ch/wiki/Bitw%C3%A4sching_se_Fjutscher",
       "sourceFamily": "sgmk",
-      "path": "Sources/Raw/sgmk/bitwäsching-se-fjutscher.md",
+      "path": "Sources/Raw/sgmk/bitwäsching-se-fjutscher.md",
       "description": "# Bitwäsching se Fjutscher SAVE THE DATE: 01.02.2020 (auch als Samstag 1ter Februar bekannt) Contents 1 Location | L200 - Zürich 2 Programme 3 Preps 3.1 To Do 4 Lightning Talks 5 Ausstellung/Workshops 5.1 Special BitBadge edition? 5.2 01.02.2020@L200 ||#|| \"Bitwäsching se Fjutscher\" - Call for Helpers! Ab 16:00, L200 , geselliger Abend mit gemeinsamem Znacht. Darum Geht's Diesen Frühling entsteht eine neue Hackerspace Gemeinschaft im Herzen von Zürich (ZWZ), als kollektives Unterfangen im Zusammenschluss der SGMK , CCCzh , DigiGes und LUGS . In dieser Aussicht organisieren wir einen gemütlichen Abend und laden Eu"
     },
     {
@@ -1182,7 +2313,7 @@
       "title": "Documents Bitwäscherei",
       "url": "https://wiki.sgmk-ssam.ch/wiki/Documents_Bitw%C3%A4scherei",
       "sourceFamily": "sgmk",
-      "path": "Sources/Raw/sgmk/documents-bitwäscherei.md",
+      "path": "Sources/Raw/sgmk/documents-bitwäscherei.md",
       "description": "# Documents Bitwäscherei Gründungsprotokoll und Statuten Verein Bitwäscherei http://wiki.sgmk-ssam.ch/wiki/File:Bitw%C3%A4scherei_Gr%C3%BCndungsprotokoll.pdf Schutzkonzept: File:Bitwaescherei Schutzkonzept okt2020.pdf Other notes on the move MechArtLab goes Bitwäscherei - Join the Fun And our first joint-event Bitwäsching se Fjutscher"
     },
     {
@@ -1196,7 +2327,7 @@
       "title": "Festival der Mechatronischen Künste",
       "url": "https://wiki.sgmk-ssam.ch/wiki/Festival_der_Mechatronischen_K%C3%BCnste",
       "sourceFamily": "sgmk",
-      "path": "Sources/Raw/sgmk/festival-der-mechatronischen-künste.md",
+      "path": "Sources/Raw/sgmk/festival-der-mechatronischen-künste.md",
       "description": "# Festival der Mechatronischen Künste Contents 1 Documentation 2 Abstract 2.1 10 Jahre SGMK 2.2 Überblick 2.3 Überblick Programm 3 Curation 3.1 OK-Team 3.2 Festival Team 4 Ziele 5 Programm 5.1 19:00 - 24:00 Freitag 5.1.1 19:00 Eröffnung Ausstellung 5.1.2 21:00 Performances / Konzerte 5.1.3 22:30 Live acts 5.2 16:00 - 01:00 Samstag 5.2.1 Ab 16 Uhr Workshops 5.2.2 18:00 Demstrationen Podiumsdiskussionen Open-Jam und Demo-Peformances 5.2.3 Ab 19:00 Roman's Festival Küche 5.2.4 21:00 Konzerte / Performances 5.2.5 23:30 DJs und Party 5.3 13:00 - 18:00 Sonntag 5.3.1 Ab 13 Uhr Workshops 6 Ausstellung 6.1 Community Beitr"
     },
     {
