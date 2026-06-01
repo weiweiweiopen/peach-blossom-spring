@@ -2586,6 +2586,24 @@ function App() {
       personas.map((persona, index) => [persona.id, index + 1]),
     );
     const occupied = new Set<string>();
+    const preferSeat = (agentId: number, origin: { col: number; row: number }): string | null => {
+      const ch = officeState.characters.get(agentId);
+      if (ch?.seatId) {
+        const currentSeat = officeState.seats.get(ch.seatId);
+        if (currentSeat) currentSeat.assigned = false;
+        ch.seatId = null;
+      }
+      let best: { seatId: string; dist: number } | null = null;
+      for (const [seatId, seat] of officeState.seats) {
+        if (seat.assigned) continue;
+        const dist = Math.abs(seat.seatCol - origin.col) + Math.abs(seat.seatRow - origin.row);
+        if (!best || dist < best.dist) best = { seatId, dist };
+      }
+      if (!best) return null;
+      officeState.reassignSeat(agentId, best.seatId);
+      return best.seatId;
+    };
+
     for (const placement of placements) {
       const agentId = personaById.get(placement.personaId);
       if (!agentId) continue;
@@ -2599,6 +2617,27 @@ function App() {
       const appearance = getPersonaNpcAppearance(placement.personaId, agentId - 1);
       ch.palette = appearance.palette;
       ch.hueShift = appearance.hueShift;
+      ch.path = [];
+      ch.moveProgress = 0;
+      ch.wanderTimer = 2 + (agentId % 5);
+      ch.seatTimer = 1_000_000;
+      ch.isActive = false;
+
+      const seatId = preferSeat(agentId, { col: placement.col, row: placement.row });
+      if (seatId) {
+        const seat = officeState.seats.get(seatId);
+        if (!seat) continue;
+        occupied.add(`${seat.seatCol},${seat.seatRow}`);
+        ch.tileCol = seat.seatCol;
+        ch.tileRow = seat.seatRow;
+        ch.x = seat.seatCol * TILE_SIZE + TILE_SIZE / 2;
+        ch.y = seat.seatRow * TILE_SIZE + TILE_SIZE / 2;
+        ch.dir = seat.facingDir;
+        ch.state = CharacterState.TYPE;
+        ch.seatTimer = 1_000_000;
+        continue;
+      }
+
       const resolvedPlacement =
         findRandomApproachableTile(officeState, occupied) ??
         findNearestApproachableTile(
@@ -2612,10 +2651,8 @@ function App() {
       ch.tileRow = resolvedPlacement.row;
       ch.x = resolvedPlacement.col * TILE_SIZE + TILE_SIZE / 2;
       ch.y = resolvedPlacement.row * TILE_SIZE + TILE_SIZE / 2;
-      ch.path = [];
-      ch.moveProgress = 0;
-      ch.wanderTimer = 2 + (agentId % 5);
       ch.seatId = null;
+      ch.state = CharacterState.IDLE;
     }
   }, [appMode, editorEntryEnabled, layoutReady, officeState]);
 
