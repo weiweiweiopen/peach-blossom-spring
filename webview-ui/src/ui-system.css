@@ -741,3 +741,141 @@
   line-height: inherit !important;
   white-space: nowrap !important;
 }
+
+/* Screenshot pass 3: computer/campfire dialogue is rendered on .rpg-dialogue-panel[data-language];
+   do not depend on ancestor root variables. Also force the thinking line to body size. */
+.rpg-dialogue-panel[data-language] {
+  --ui-font: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif;
+  --ui-dialogue-title-font: clamp(19px, 4.9vw, 25px);
+  --ui-dialogue-subtitle-font: clamp(15px, 3.95vw, 20px);
+  --ui-dialogue-body-font: clamp(16px, 4.25vw, 19px);
+  --ui-dialogue-body-line: 1.36;
+}
+
+.rpg-dialogue-panel[data-language="zh-TW"] {
+  --ui-font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --ui-dialogue-title-font: clamp(20px, 5.15vw, 26px);
+  --ui-dialogue-subtitle-font: clamp(16px, 4.15vw, 21px);
+  --ui-dialogue-body-font: clamp(17px, 4.35vw, 20px);
+  --ui-dialogue-body-line: 1.36;
+}
+
+.rpg-dialogue-panel[data-language="ja"] {
+  --ui-font: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --ui-dialogue-title-font: clamp(19px, 4.95vw, 25px);
+  --ui-dialogue-body-font: clamp(16px, 4.15vw, 19px);
+  --ui-dialogue-body-line: 1.38;
+}
+
+.rpg-dialogue-panel[data-language="th"] {
+  --ui-font: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif;
+  --ui-dialogue-title-font: clamp(18px, 4.75vw, 24px);
+  --ui-dialogue-body-font: clamp(15px, 4vw, 18px);
+  --ui-dialogue-body-line: 1.46;
+}
+
+.rpg-dialogue-panel[data-language="id"] {
+  --ui-font: "Noto Sans", "Inter", system-ui, sans-serif;
+}
+
+.rpg-dialogue-panel[data-language] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input, .rpg-dialogue-chip, .rpg-dialogue-more) {
+  font-family: var(--ui-font) !important;
+  letter-spacing: 0 !important;
+  text-size-adjust: 100% !important;
+  -webkit-text-size-adjust: 100% !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-header {
+  flex: 0 0 auto !important;
+  align-items: flex-start !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-title {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-title > div:last-child {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-name {
+  display: -webkit-box !important;
+  margin: 0 !important;
+  max-height: calc(var(--ui-dialogue-title-font) * 1.08 * 3) !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  font-size: var(--ui-dialogue-title-font) !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-role {
+  display: -webkit-box !important;
+  margin: 2px 0 0 !important;
+  max-height: calc(var(--ui-dialogue-subtitle-font) * 1.12 * 2) !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  font-size: var(--ui-dialogue-subtitle-font) !important;
+  line-height: 1.12 !important;
+  font-weight: 800 !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-kicker {
+  margin: 0 0 2px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: clamp(10px, 2.55vw, 13px) !important;
+  line-height: 1.1 !important;
+  font-weight: 700 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-log,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-message p,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking {
+  font-size: var(--ui-dialogue-body-font) !important;
+  line-height: var(--ui-dialogue-body-line) !important;
+  font-weight: 700 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-thinking {
+  margin: 0 !important;
+  opacity: 0.72 !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] {
+    width: calc(100vw - 18px) !important;
+    min-width: 0 !important;
+    height: min(82dvh, 640px) !important;
+    padding: 10px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-header {
+    gap: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-main {
+    margin-bottom: 8px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-log {
+    padding: 10px 12px !important;
+  }
+}
