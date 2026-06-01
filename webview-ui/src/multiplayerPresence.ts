@@ -6,6 +6,7 @@ export interface MultiplayerConfig {
 }
 
 const DEFAULT_MULTIPLAYER_ENDPOINT = "https://peach-blossom-spring-multiplayer.dontmarryme.workers.dev";
+const PUBLIC_GARDEN_ROOM = "1";
 
 export interface MultiplayerPresence {
   playerId: string;
@@ -52,11 +53,10 @@ interface IncomingMessage {
 
 export function readMultiplayerConfig(): MultiplayerConfig | null {
   const params = new URLSearchParams(window.location.search);
-  const room = params.get("room")?.trim();
-  if (!room) return null;
+  const room = params.get("room")?.trim() || PUBLIC_GARDEN_ROOM;
 
-  // Keep old long links working (?room=...&mp=...), but make the public link short:
-  // https://weiweiweiopen.github.io/peach-blossom-spring/?room=1
+  // Public GitHub Pages entry now opens the shared garden by default.
+  // Explicit ?room=... still chooses a separate room, and old ?room=...&mp=... links keep working.
   const endpoint = params.get("mp")?.trim() || DEFAULT_MULTIPLAYER_ENDPOINT;
 
   try {
