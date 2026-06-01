@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap");
+
 /* Spec-kit 006 UI System Contract.
    Loaded after legacy CSS so protected runtime UI uses one manageable contract. */
 
@@ -33,11 +35,11 @@
 }
 
 .pbs-interaction-root[data-language="ja"] {
-  --ui-font: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  --ui-font: "Noto Sans JP", sans-serif;
 }
 
 .pbs-interaction-root[data-language="th"] {
-  --ui-font: "Thonburi", "Noto Sans Thai", "Tahoma", system-ui, sans-serif;
+  --ui-font: "Noto Sans Thai", sans-serif;
 }
 
 .pbs-interaction-root[data-language="id"],
@@ -303,13 +305,13 @@
 /* Safe multilingual type pass: typography only. Do not alter layout, box size, position, padding, display, transform, width, or height. */
 .pbs-interaction-root[data-language="ja"] :is(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .npc-name-tag, .abao-speech-bubble),
 .rpg-dialogue-panel[data-language="ja"] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input) {
-  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+  font-family: "Noto Sans JP", sans-serif !important;
   font-weight: 500 !important;
 }
 
 .pbs-interaction-root[data-language="th"] :is(.rpg-dialogue-panel, .rpg-dialogue-panel *, .mobile-talk-prompt, .mobile-talk-prompt *, .npc-name-tag, .abao-speech-bubble),
 .rpg-dialogue-panel[data-language="th"] :is(.rpg-dialogue-name, .rpg-dialogue-role, .rpg-dialogue-kicker, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-message p, .rpg-dialogue-thinking, .rpg-dialogue-input) {
-  font-family: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif !important;
+  font-family: "Noto Sans Thai", sans-serif !important;
   font-weight: 500 !important;
 }
 
@@ -356,7 +358,7 @@
   .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer :where(p, span, button, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large),
   .pbs-interaction-root[data-language="ja"] .question-status-panel,
   .pbs-interaction-root[data-language="ja"] .question-status-panel :where(p, span, button, .text-sm, .text-base, .type-label, .type-caption, .type-body, .type-body-large) {
-    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+    font-family: "Noto Sans JP", sans-serif !important;
     font-size: clamp(13px, 3.35vw, 16px) !important;
     line-height: 1.24 !important;
     font-weight: 500 !important;
@@ -365,7 +367,7 @@
 
   .pbs-interaction-root[data-language="ja"] .mobile-rules-drawer h2,
   .pbs-interaction-root[data-language="ja"] .question-status-panel :where(h2, h3, .text-lg, .type-heading) {
-    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+    font-family: "Noto Sans JP", sans-serif !important;
     font-size: clamp(17px, 4.25vw, 21px) !important;
     line-height: 1.16 !important;
     font-weight: 500 !important;
@@ -466,12 +468,12 @@
 }
 
 .pbs-interaction-root[data-language="ja"] .question-status-panel :where(.question-status-title, .question-status-title span, .question-lint-card, .question-lint-card *, .pet-terrain-state, .pet-terrain-state *, .question-status-compact, .question-status-compact *) {
-  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif !important;
+  font-family: "Noto Sans JP", sans-serif !important;
   font-weight: 500 !important;
 }
 
 .pbs-interaction-root[data-language="th"] .question-status-panel :where(.question-status-title, .question-status-title span, .question-lint-card, .question-lint-card *, .pet-terrain-state, .pet-terrain-state *, .question-status-compact, .question-status-compact *) {
-  font-family: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif !important;
+  font-family: "Noto Sans Thai", sans-serif !important;
   font-weight: 500 !important;
 }
 
@@ -517,4 +519,20 @@
   .question-status-panel .question-lint-card {
     margin-top: 4px !important;
   }
+}
+
+
+/* Hard single-font language isolation: no fallback font mixing inside Japanese/Thai HUD, zines, thought-gap lists. */
+.pbs-interaction-root[data-language="ja"] :where(.question-status-panel, .question-status-panel *, .pet-gap-inbox, .pet-gap-inbox *, .world-split-panel, .world-split-panel *, .world-resonance-notice, .mobile-stats-bar, .mobile-stats-bar *) {
+  font-family: "Noto Sans JP", sans-serif !important;
+  font-size-adjust: none !important;
+  font-synthesis: none !important;
+  font-weight: 500 !important;
+}
+
+.pbs-interaction-root[data-language="th"] :where(.question-status-panel, .question-status-panel *, .pet-gap-inbox, .pet-gap-inbox *, .world-split-panel, .world-split-panel *, .world-resonance-notice, .mobile-stats-bar, .mobile-stats-bar *) {
+  font-family: "Noto Sans Thai", sans-serif !important;
+  font-size-adjust: none !important;
+  font-synthesis: none !important;
+  font-weight: 500 !important;
 }
