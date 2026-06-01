@@ -8791,28 +8791,3 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     padding: 12px 18px !important;
   }
 }
-
-/* Tighten mobile NPC talk prompt: keep the larger text, remove the forced wide bubble. */
-@media (max-width: 700px), (pointer: coarse) {
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt,
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact {
-    display: inline-flex !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: max-content !important;
-    min-height: 0 !important;
-    padding: 8px 18px 9px !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-
-  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt.mobile-talk-prompt--compact p {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: max-content !important;
-    white-space: nowrap !important;
-    text-align: center !important;
-  }
-}
