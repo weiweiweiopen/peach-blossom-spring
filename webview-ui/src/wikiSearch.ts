@@ -209,6 +209,8 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
   const wantsHackteriaKitchen = /kitchen|廚房|厨房|料理|food|meal|hosting|餐|cook|ferment|kombucha|nata|tofu|biohack|bioart|生物藝術|濕實驗室|實驗室/i.test(query);
   const wantsBodyTextile = /穿戴|織品|電子織品|布|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|body|embod|somatic|skin|gesture|failure|documentation|document/i.test(query);
+  const wantsJonathanCommunity = /jonathan|minchin|green fab lab|valldaura/i.test(query);
+  const wantsModernBodyCommunity = /stelio|manousakis|stephanie|pan|modern body|modernbodyfestival/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
@@ -218,7 +220,8 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
       const hackteriaKitchenBoost = wantsHackteriaKitchen && family === 'Hackteria' ? 34 : 0;
       const bodyTextileText = `${card.title} ${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`.toLowerCase();
       const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want|fabricademy/i.test(bodyTextileText) ? 42 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const communityBoost = (wantsJonathanCommunity && /valldaura|green fab lab/i.test(bodyTextileText)) || (wantsModernBodyCommunity && /modernbodyfestival|modern body festival|modern body/i.test(bodyTextileText)) ? 72 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

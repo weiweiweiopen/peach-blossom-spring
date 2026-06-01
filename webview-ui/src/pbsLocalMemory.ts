@@ -72,8 +72,9 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
   const campEducationBoost = /camp|營|alternative|education|替代教育|獨立藝術營|independent art/i.test(joinedQuery) && /camp|hackterialab|workshop|summer school|field|community|education|unconference|commons|colabs/i.test(haystack) ? 22 : 0;
   const networkBoost = /ngm|hackteria|sgmk|kobakant|fabricademy|textile academy|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|fabricademy|textile academy|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
   const fabricademyBoost = /fabricademy|textile academy|e-?textile|wearable|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
-  const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
-  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost;
+  const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation|jonathan|minchin|stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
+  const personaCommunityBoost = ((/jonathan|minchin/i.test(joinedQuery) && /valldaura|green fab lab/i.test(haystack)) || (/stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /modernbody|modern body festival|modern body/i.test(haystack))) ? 64 : 0;
+  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {
