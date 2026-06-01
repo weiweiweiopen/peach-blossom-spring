@@ -17,7 +17,7 @@ const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarr
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 120000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 300000;
 const ZINE_SECTION_COUNT = 7;
-const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes|SourceNotes|NotebookLM bridge|primarySourcePacket|notebookSourcePack)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes|SourceNotes|NotebookLM bridge|primarySourcePacket|notebookSourcePack)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:bridge-writer-system-prompt:v2";
 
@@ -1216,7 +1216,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、SourceNotes、NotebookLM bridge、primarySourcePacket、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、prompt、source trail、SourceNotes、NotebookLM bridge、primarySourcePacket、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1269,7 +1269,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     let item: any;
     try {
       item = await requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
         JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
         900,
       ) as any;
