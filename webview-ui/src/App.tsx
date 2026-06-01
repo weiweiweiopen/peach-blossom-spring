@@ -52,6 +52,7 @@ import {
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, canUseLocalMemoryServer, type DialogueHistoryTurn } from "./localMemoryApi.js";
+import { generateBrowserAssociationZine } from "./association/browserAssociationGenerator.js";
 import { askDeepSeekPbsComputer, askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
 import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
@@ -1367,17 +1368,12 @@ function waitForNextPaint(): Promise<void> {
   });
 }
 
-async function importAssociationGenerator() {
-  try {
-    return await import("./association/browserAssociationGenerator.js");
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error ?? "");
-    if (/Importing a module script failed|Failed to fetch dynamically imported module|Loading chunk/i.test(message)) {
-      await new Promise((resolve) => window.setTimeout(resolve, 800));
-      return import("./association/browserAssociationGenerator.js");
-    }
-    throw error;
-  }
+function importAssociationGenerator() {
+  // Keep the zine generator in the main app bundle instead of a lazy chunk.
+  // On GitHub Pages, users often keep the game tab open while a new deploy deletes
+  // the old lazy chunk; then dynamic import fails with “Importing a module script failed”
+  // after the expensive generation flow. Static bundling avoids that empty failure state.
+  return Promise.resolve({ generateBrowserAssociationZine });
 }
 
 function attachZineIframeControls(iframe: HTMLIFrameElement): void {
