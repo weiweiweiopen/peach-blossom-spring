@@ -95,6 +95,7 @@ function sourceFamily(card: Partial<SourceCard>): string {
   if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (text.includes('fabricademy')) return 'Fabricademy';
   if (text.includes('textiltronics') || text.includes('attempts-failures-trials-and-errors')) return 'Textiltronics';
+  if (text.includes('tttlabs') || text.includes('ttt-labs') || text.includes('bioferal') || text.includes('terrabytes') || text.includes('ionio')) return 'TTTlabs / BioFeral BeachCamp';
   if (text.includes('modernbodyfestival') || text.includes('modern body')) return 'Modern Body Festival';
   if (text.includes('valldaura')) return 'Valldaura / Green Fab Lab';
   if (text.includes('okiwonderlab') || text.includes('oki wonder lab') || text.includes('ryuoyama')) return 'Oki Wonder Lab';
@@ -115,7 +116,7 @@ function personaSourceHint(personaId?: string): string {
     case 'ryu-oyama':
       return 'Oki Wonder Lab Okiwonderlab Ryu Oyama Okinawa fieldwork island';
     case 'tincuta-heinzel':
-      return 'Textiltronics Attempts Failures Trials Errors e-textile failure curatorial textile electronics';
+      return 'Textiltronics Attempts Failures Trials Errors e-textile failure curatorial textile electronics TTTlabs BioFeral BeachCamp';
     default:
       return '';
   }
@@ -135,7 +136,7 @@ function personaAllowedSource(result: WikiSearchResult, personaId?: string): boo
     case 'ryu-oyama':
       return /oki wonder|okiwonderlab|ryuoyama|okinawa|island/.test(haystack);
     case 'tincuta-heinzel':
-      return /textiltronics|attempts|failures|trials|errors|e-textile|textile/.test(haystack);
+      return /textiltronics|attempts|failures|trials|errors|e-textile|textile|tttlabs|ttt-labs|bioferal|terrabytes|ionio/.test(haystack);
     default:
       return true;
   }
@@ -148,6 +149,7 @@ function familyPenalty(result: WikiSearchResult, personaId?: string): number {
   if (personaId === 'ted-hung' && /kubu|npc wiki/.test(family)) return 700;
   if (personaId === 'jonathan-minchin' && /green fab|valldaura|npc wiki/.test(family)) return 900;
   if ((personaId === 'stelio-manousakis' || personaId === 'stephanie-pan') && /modern body|npc wiki/.test(family)) return 900;
+  if (personaId === 'tincuta-heinzel' && /textiltronics|tttlabs|bioferal|npc wiki/.test(family)) return 800;
   return 0;
 }
 
@@ -175,7 +177,7 @@ function expandQuery(query: string): string {
     expansions.push('diy electronics', 'synth', 'synthesizer', 'oscillator', 'sound circuit', 'speaker', 'ATtiny sound', 'Nandsynth', 'SolarpunkSynth', 'starvation synth', 'HOW TO GET WHAT YOU WANT', 'Kobakant', 'Hackteria');
   }
   if (/穿戴|織品|電子織品|布|身體|體感|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|soft|body|embod|somatic|failure|documentation|document/i.test(query)) {
-    expansions.push('wearable', 'e-textile', 'textile', 'fabric', 'soft circuit', 'stretch sensor', 'body', 'embodied knowledge', 'body interface', 'skin', 'touch', 'gesture', 'sensing', 'failure notes', 'trials and errors', 'documentation', 're-readable documentation', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'Fabricademy', 'BadLab', 'Open Source Body', 'MedTech-DIY');
+    expansions.push('wearable', 'e-textile', 'textile', 'fabric', 'soft circuit', 'stretch sensor', 'body', 'embodied knowledge', 'body interface', 'skin', 'touch', 'gesture', 'sensing', 'failure notes', 'trials and errors', 'documentation', 're-readable documentation', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
   if (/紅茶菌|康普茶|kombucha|ferment|fermentation|發酵|菌膜|茶菌/i.test(query)) {
     expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
@@ -269,10 +271,11 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
       const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
       const hackteriaKitchenBoost = wantsHackteriaKitchen && family === 'Hackteria' ? 34 : 0;
       const bodyTextileText = `${card.title} ${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`.toLowerCase();
-      const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want|fabricademy/i.test(bodyTextileText) ? 42 : 0;
+      const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want/i.test(bodyTextileText) ? 42 : 0;
       const communityBoost = (wantsJonathanCommunity && /valldaura|green fab lab/i.test(bodyTextileText)) || (wantsModernBodyCommunity && /modernbodyfestival|modern body festival|modern body/i.test(bodyTextileText)) ? 72 : 0;
       const tedBoost = wantsTedCommunity && /kubu|björkboda|discord|membership|member|ledger|account|community/i.test(bodyTextileText) ? 96 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const genericFabricademyPenalty = family === 'Fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(query) ? -220 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + genericFabricademyPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))

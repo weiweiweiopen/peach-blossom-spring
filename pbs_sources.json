@@ -69,6 +69,11 @@
       "kind": "cargo",
       "main": "https://cargocollective.com/ryuoyama/Okiwonderlab",
       "out": "Sources/Raw/okiwonderlab"
+    },
+    "tttlabs": {
+      "kind": "static",
+      "main": "https://avarts.ionio.gr/ttt-labs/2024b/en/news/31407/",
+      "out": "Sources/Raw/tttlabs"
     }
   }
 }

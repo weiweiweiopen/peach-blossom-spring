@@ -1,7 +1,7 @@
 {
   "version": "source-first-2026-05-31",
   "name": "PBS local memory source-first index",
-  "count": 340,
+  "count": 341,
   "sourceUrls": [
     "https://www.hackteria.org/wiki/Main_Page",
     "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
@@ -14,7 +14,8 @@
     "https://textiltronics.com/curatorials/attempts-failures-trials-and-errors/",
     "https://modernbodyfestival.org/now/",
     "https://valldaura.net/green-fab-lab/",
-    "https://cargocollective.com/ryuoyama/Okiwonderlab"
+    "https://cargocollective.com/ryuoyama/Okiwonderlab",
+    "https://avarts.ionio.gr/ttt-labs/2024b/en/news/31407/"
   ],
   "items": [
     {
@@ -2389,6 +2390,13 @@
       "sourceFamily": "textiltronics",
       "path": "Sources/Raw/textiltronics/attempts-failures-trials-and-errors.md",
       "description": "# ATTEMPTS, FAILURES, TRIALS AND ERRORS | TEXTILTRONICS ATTEMPTS, FAILURES, TRIALS AND ERRORS | TEXTILTRONICS Textiltronics.com ABOUT CURATORIAL PROJECTS UTOPIAN CITIES, PROGRAMMED SOCIETIES ATTEMPTS, FAILURES, TRIALS AND ERRORS DESIGNATURES – ECONOMIES OF DESIGN, POLITICS OF PARTICIPATION HAPTOSONICS REPERTORIES OF (in)DISCREETNESS LIQUID SPACES – DYNAMIC MODELS OF SPACE IN ART AND TECHNOLOGY ARTISTS IN INDUSTRY. THE ROLE OF DESIGN IN THE DIGITAL ERA THIERRY KUNTZEL : ETE – AUTOMNE Exhibitions ART & DESIGN PROJECTS DESIGNANO – AESTHETICS OF IMPERCEPTIBILITY (on going) SOFT CIRCUITRY AN INTERNET OF SOFT THINGS SE"
+    },
+    {
+      "title": "TTTlabs BFBC NR-FO NH-BB | Terrabytes Glitch Lab Unveils TTTLab Official VR World in Collaboration with TTTlabs BioFeral.BeachCamp Fall 2024",
+      "url": "https://avarts.ionio.gr/ttt-labs/2024b/en/news/31407/",
+      "sourceFamily": "tttlabs",
+      "path": "Sources/Raw/tttlabs/tttlab-official-vr-world-bioferal-beachcamp-fall-2024.md",
+      "description": "# TTTlabs BFBC NR-FO NH-BB | Terrabytes Glitch Lab Unveils TTTLab Official VR World in Collaboration with TTTlabs BioFeral.BeachCamp Fall 2024 ﻿ TTTlabs BFBC NR-FO NH-BB | Terrabytes Glitch Lab Unveils TTTLab Official VR World in Collaboration with TTTlabs BioFeral.BeachCamp Fall 2024 Department of Audio and Visual Arts • Ionian University 2024B 2024B 2024A 2023 Call Proof of Concept Application Disclaimer About Us Team Location Schedule Participants News Media Contact Us Call Proof of Concept Application Disclaimer About Us Team Location Schedule Participants News Media Contact Us Terrabytes Glitch Lab Unveils T"
     },
     {
       "title": "Green Fab Lab – Valldaura",

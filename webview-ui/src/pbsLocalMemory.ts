@@ -36,7 +36,7 @@ function expandQuery(query: string): string {
     expansions.push('fermentation', 'microbe', 'yeast', 'fungus', 'Sato', 'culture');
   }
   if (/織品|電子織品|textile|e-?textile|wearable|sensor|感測|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(query)) {
-    expansions.push('textile', 'e-textile', 'sensor', 'soft circuit', 'wearable', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'Fabricademy', 'body', 'embodied knowledge', 'skin', 'touch', 'gesture', 'stretch sensor', 'failure notes', 'trials and errors', 'documentation', 'BadLab', 'Open Source Body', 'MedTech-DIY');
+    expansions.push('textile', 'e-textile', 'sensor', 'soft circuit', 'wearable', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'body', 'embodied knowledge', 'skin', 'touch', 'gesture', 'stretch sensor', 'failure notes', 'trials and errors', 'documentation', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
   if (/open|開源|hardware|硬體|lab|實驗室|temporary|臨時|公共|基礎設施|commons/i.test(query)) {
     expansions.push('open science', 'open hardware', 'temporary lab', 'community lab', 'workshop', 'commons', 'documentation');
@@ -65,16 +65,17 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
     if (!haystack.includes(token)) return sum;
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
-  const familyBoost = /htgwyw|hackteria|sgmk|fabricademy|textiltronics|modernbody|valldaura|okiwonderlab/i.test(item.sourceFamily) ? 1 : 0;
+  const familyBoost = /htgwyw|hackteria|sgmk|textiltronics|modernbody|valldaura|okiwonderlab|tttlabs/i.test(item.sourceFamily) ? 1 : 0;
   const joinedQuery = queryTokens.join(' ');
-  const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(joinedQuery) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|fabricademy|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
+  const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(joinedQuery) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
   const soundDiyBoost = /diy|自製|自造|合成器|synth|sound|聲音|音樂|樂器/i.test(joinedQuery) && /sgmk|synth|sound|music|instrument|speaker|8bit|nandsynth|gnusbuino|mechartlab|home made|diy electronics|handmade electronics/i.test(haystack) ? 28 : 0;
   const campEducationBoost = /camp|營|alternative|education|替代教育|獨立藝術營|independent art/i.test(joinedQuery) && /camp|hackterialab|workshop|summer school|field|community|education|unconference|commons|colabs/i.test(haystack) ? 22 : 0;
   const networkBoost = /ngm|hackteria|sgmk|kobakant|fabricademy|textile academy|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|fabricademy|textile academy|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
-  const fabricademyBoost = /fabricademy|textile academy|e-?textile|wearable|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
-  const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation|jonathan|minchin|stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
+  const fabricademyBoost = /fabricademy|textile academy|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
+  const genericFabricademyPenalty = item.sourceFamily === 'fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(joinedQuery) ? -120 : 0;
+  const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation|jonathan|minchin|stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|tttlabs|ttt-labs|bioferal|terrabytes|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
   const personaCommunityBoost = ((/jonathan|minchin/i.test(joinedQuery) && /valldaura|green fab lab/i.test(haystack)) || (/stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /modernbody|modern body festival|modern body/i.test(haystack))) ? 64 : 0;
-  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost;
+  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost + genericFabricademyPenalty;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {
