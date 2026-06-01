@@ -382,12 +382,12 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันมองหาความไว้วางใจระหว่างคนก่อนความเชื่อมโยงระหว่างแล็บ อยากรู้ไหมว่าสมาชิกภาพเป็นได้มากกว่ารายชื่อ?',
     },
     questions: {
-      'zh-TW': ['為什麼人跟人的連結比實驗室連線重要？', '透明帳本如何幫小社群互相信任？', 'Fablab 的會員制度可以怎麼支持而不是控制社群？'],
-      en: ['Why are person-to-person links more important than lab-to-lab links?', 'How can transparent ledgers help small communities trust each other?', 'How can FabLab membership support a community instead of controlling it?'],
-      id: ['Mengapa hubungan antarorang lebih penting daripada koneksi antarlab?', 'Bagaimana buku besar transparan membantu komunitas kecil saling percaya?', 'Bagaimana keanggotaan FabLab mendukung komunitas, bukan mengontrolnya?'],
-      de: ['Warum sind Verbindungen zwischen Menschen wichtiger als Laborverbindungen?', 'Wie helfen transparente Bücher kleinen Communities beim Vertrauen?', 'Wie kann FabLab-Mitgliedschaft eine Community stützen statt kontrollieren?'],
-      ja: ['なぜ人と人のつながりはラボ同士の接続より重要ですか？', '透明な台帳は小さなコミュニティの信頼をどう助けますか？', 'FabLab のメンバーシップはコミュニティを支配せずどう支えますか？'],
-      th: ['ทำไมความสัมพันธ์ระหว่างคนจึงสำคัญกว่าการเชื่อมแล็บ?', 'บัญชีโปร่งใสช่วยชุมชนเล็กให้ไว้ใจกันอย่างไร?', 'สมาชิกภาพของ FabLab สนับสนุนชุมชนแทนการควบคุมได้อย่างไร?'],
+      'zh-TW': ['為什麼人跟人的連結比實驗室連線重要？', 'Fablab Taipei 可以怎麼用透明帳本幫會員和小社群互相信任？', 'Fablab 的會員制度可以怎麼支持而不是控制社群？'],
+      en: ['Why are person-to-person links more important than lab-to-lab links?', 'How can Fablab Taipei use transparent ledgers to help members and small communities trust each other?', 'How can FabLab membership support a community instead of controlling it?'],
+      id: ['Mengapa hubungan antarorang lebih penting daripada koneksi antarlab?', 'Bagaimana Fablab Taipei memakai buku besar transparan agar anggota dan komunitas kecil saling percaya?', 'Bagaimana keanggotaan FabLab mendukung komunitas, bukan mengontrolnya?'],
+      de: ['Warum sind Verbindungen zwischen Menschen wichtiger als Laborverbindungen?', 'Wie kann Fablab Taipei transparente Bücher nutzen, damit Mitglieder und kleine Communities einander vertrauen?', 'Wie kann FabLab-Mitgliedschaft eine Community stützen statt kontrollieren?'],
+      ja: ['なぜ人と人のつながりはラボ同士の接続より重要ですか？', 'Fablab Taipei は透明な台帳でメンバーと小さなコミュニティの信頼をどう助けられますか？', 'FabLab のメンバーシップはコミュニティを支配せずどう支えますか？'],
+      th: ['ทำไมความสัมพันธ์ระหว่างคนจึงสำคัญกว่าการเชื่อมแล็บ?', 'Fablab Taipei ใช้บัญชีโปร่งใสช่วยให้สมาชิกและชุมชนเล็ก ๆ ไว้ใจกันได้อย่างไร?', 'สมาชิกภาพของ FabLab สนับสนุนชุมชนแทนการควบคุมได้อย่างไร?'],
     },
   },
   'tincuta-heinzel': {

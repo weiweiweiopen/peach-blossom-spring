@@ -6,7 +6,7 @@
   "groupType": "animation",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 6,
+  "backgroundTiles": 5,
   "members": [
     {
       "type": "asset",
@@ -14,7 +14,7 @@
       "file": "MULTI_MIND_CAMPFIRE_1.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 0
     },
@@ -24,7 +24,7 @@
       "file": "MULTI_MIND_CAMPFIRE_2.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 1
     },
@@ -34,7 +34,7 @@
       "file": "MULTI_MIND_CAMPFIRE_3.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 2
     },
@@ -44,7 +44,7 @@
       "file": "MULTI_MIND_CAMPFIRE_4.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 3
     },
@@ -54,7 +54,7 @@
       "file": "MULTI_MIND_CAMPFIRE_5.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 4
     },
@@ -64,7 +64,7 @@
       "file": "MULTI_MIND_CAMPFIRE_6.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 5
     },
@@ -74,7 +74,7 @@
       "file": "MULTI_MIND_CAMPFIRE_7.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 6
     },
@@ -84,7 +84,7 @@
       "file": "MULTI_MIND_CAMPFIRE_8.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 7
     },
@@ -94,7 +94,7 @@
       "file": "MULTI_MIND_CAMPFIRE_9.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 8
     },
@@ -104,7 +104,7 @@
       "file": "MULTI_MIND_CAMPFIRE_10.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 9
     },
@@ -114,7 +114,7 @@
       "file": "MULTI_MIND_CAMPFIRE_11.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 10
     },
@@ -124,7 +124,7 @@
       "file": "MULTI_MIND_CAMPFIRE_12.png",
       "width": 128,
       "height": 128,
-      "footprintW": 8,
+      "footprintW": 4,
       "footprintH": 8,
       "frame": 11
     }

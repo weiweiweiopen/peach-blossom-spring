@@ -165,7 +165,7 @@ const CENTRAL_COMPUTER_TILE = {
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
 const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
-const CAMPFIRE_FOOTPRINT = { w: 8, h: 8, stoneRows: 2 };
+const CAMPFIRE_FOOTPRINT = { w: 4, h: 8, stoneRows: 3 };
 // English canonical name: The Multi-Minds Self Campfire.
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",

@@ -102,6 +102,55 @@ function sourceFamily(card: Partial<SourceCard>): string {
   return card.source || 'Wiki';
 }
 
+
+function personaSourceHint(personaId?: string): string {
+  switch (personaId) {
+    case 'ted-hung':
+      return 'KUBU Kulturhus Björkboda membership ledger Discord transparency trust community governance open accounting Fablab';
+    case 'jonathan-minchin':
+      return 'Jonathan Minchin Valldaura Green Fab Lab GreenFabLab forest agriculture open source beehives drones community conservation';
+    case 'stelio-manousakis':
+    case 'stephanie-pan':
+      return 'Modern Body Festival modernbodyfestival performance body technology sound lab workshop festival';
+    case 'ryu-oyama':
+      return 'Oki Wonder Lab Okiwonderlab Ryu Oyama Okinawa fieldwork island';
+    case 'tincuta-heinzel':
+      return 'Textiltronics Attempts Failures Trials Errors e-textile failure curatorial textile electronics';
+    default:
+      return '';
+  }
+}
+
+function personaAllowedSource(result: WikiSearchResult, personaId?: string): boolean {
+  if (!personaId) return true;
+  const haystack = `${result.title} ${result.description} ${result.sourceFamily} ${result.url}`.toLowerCase();
+  switch (personaId) {
+    case 'ted-hung':
+      return /kubu|björkboda|bjoerkboda|discord|membership|member|ledger|account|透明|帳本|fablab/.test(haystack);
+    case 'jonathan-minchin':
+      return /green fab lab|greenfablab|valldaura|beehive|drone|forest|conservation/.test(haystack);
+    case 'stelio-manousakis':
+    case 'stephanie-pan':
+      return /modern body|modernbodyfestival|performance|festival|body|sound/.test(haystack);
+    case 'ryu-oyama':
+      return /oki wonder|okiwonderlab|ryuoyama|okinawa|island/.test(haystack);
+    case 'tincuta-heinzel':
+      return /textiltronics|attempts|failures|trials|errors|e-textile|textile/.test(haystack);
+    default:
+      return true;
+  }
+}
+
+function familyPenalty(result: WikiSearchResult, personaId?: string): number {
+  if (!personaId) return 0;
+  const family = result.sourceFamily.toLowerCase();
+  if (personaId === 'ted-hung' && /fabricademy/.test(family)) return -1200;
+  if (personaId === 'ted-hung' && /kubu|npc wiki/.test(family)) return 700;
+  if (personaId === 'jonathan-minchin' && /green fab|valldaura|npc wiki/.test(family)) return 900;
+  if ((personaId === 'stelio-manousakis' || personaId === 'stephanie-pan') && /modern body|npc wiki/.test(family)) return 900;
+  return 0;
+}
+
 function expandQuery(query: string): string {
   const expansions: string[] = [];
   if (/觸控|觸摸|touch|介面|界面|interface|互動|interaction/i.test(query)) {
@@ -203,7 +252,7 @@ function linkToResult(link: WikiLink, score: number): WikiSearchResult | null {
 }
 
 function collectWikiSearchResults(query: string, personaId?: string, limit = 8): WikiSearchResult[] {
-  const queryTokens = tokens(query);
+  const queryTokens = tokens(`${query} ${personaSourceHint(personaId)}`);
   if (queryTokens.length === 0) return [];
   const wantsSgmk = /\bsgmk\b|ssam|wiki\.sgmk-ssam\.ch|mechartlab|home made|8bit|gnusbuino/i.test(query);
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
@@ -211,6 +260,7 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
   const wantsBodyTextile = /穿戴|織品|電子織品|布|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|body|embod|somatic|skin|gesture|failure|documentation|document/i.test(query);
   const wantsJonathanCommunity = /jonathan|minchin|green fab lab|valldaura/i.test(query);
   const wantsModernBodyCommunity = /stelio|manousakis|stephanie|pan|modern body|modernbodyfestival/i.test(query);
+  const wantsTedCommunity = /ted|hung|透明帳本|帳本|ledger|membership|member|discord|kubu|björkboda|bjoerkboda/i.test(query);
   const corpusResults = daydreamCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
@@ -221,21 +271,24 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
       const bodyTextileText = `${card.title} ${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`.toLowerCase();
       const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want|fabricademy/i.test(bodyTextileText) ? 42 : 0;
       const communityBoost = (wantsJonathanCommunity && /valldaura|green fab lab/i.test(bodyTextileText)) || (wantsModernBodyCommunity && /modernbodyfestival|modern body festival|modern body/i.test(bodyTextileText)) ? 72 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const tedBoost = wantsTedCommunity && /kubu|björkboda|discord|membership|member|ledger|account|community/i.test(bodyTextileText) ? 96 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))
     .filter((item): item is WikiSearchResult => Boolean(item));
   const personaResults = personaId
     ? getWikiLinksForInterviewee(personaId).links
-        .map((link) => ({ link, score: scoreText(queryTokens, link.title, link.description) + 1 }))
+        .map((link) => ({ link, score: scoreText(queryTokens, link.title, link.description) + 80 }))
         .filter((item) => item.score > 1)
         .map((item) => linkToResult(item.link, item.score))
         .filter((item): item is WikiSearchResult => Boolean(item))
     : [];
   const localMemoryResults = searchPbsLocalMemory(query, limit);
   const byUrl = new Map<string, WikiSearchResult>();
-  for (const result of [...localMemoryResults, ...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
+  for (const result of [...localMemoryResults, ...personaResults, ...corpusResults]
+    .filter((result) => personaAllowedSource(result, personaId))
+    .sort((a, b) => (b.score + familyPenalty(b, personaId)) - (a.score + familyPenalty(a, personaId)))) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
   return Array.from(byUrl.values());
