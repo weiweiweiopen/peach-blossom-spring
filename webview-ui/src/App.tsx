@@ -1874,7 +1874,7 @@ function App() {
   const [multiplayerConfig] = useState<MultiplayerConfig | null>(() =>
     readMultiplayerConfig(),
   );
-  const [multiplayerStatus, setMultiplayerStatus] = useState("idle");
+  const [, setMultiplayerStatus] = useState("idle");
   const [remotePresences, setRemotePresences] = useState<
     Map<string, MultiplayerPresence>
   >(() => new Map());
@@ -4449,13 +4449,13 @@ function App() {
               onClick={() => setMobileRulesOpen(true)}
               data-no-mobile-drag="true"
             >
-              <span>🐣 {PET_HUD_COPY[selectedLanguage].agent}</span>
-              <span>{t(selectedLanguage, "hud.tick")} {simSnapshot?.tick ?? 0}</span>
-              {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
-                <span key={label}>{label} {value.toFixed(0)}</span>
+              <span>🐣 pet</span>
+              <span>t{simSnapshot?.tick ?? 0}</span>
+              {questionLintScoreEntries(questionLintHud, selectedLanguage).slice(0, 3).map(([label, value], index) => (
+                <span key={label}>{index === 0 ? "S" : index === 1 ? "E" : "X"}{value.toFixed(0)}</span>
               ))}
-              {terrainState && <span>{terrainCopy.evidence} {terrainState.evidence}</span>}
-              <span>{petLintGapTitle(selectedLanguage)} {localizedPetLintGapInbox.length}</span>
+              {terrainState && <span>Ev{terrainState.evidence}</span>}
+              <span>Q{localizedPetLintGapInbox.length}</span>
             </button>
           )}
 
@@ -4700,11 +4700,6 @@ function App() {
         </Modal>
       )}
 
-      {playerProfile && multiplayerConfig && (
-        <div className="multiplayer-status-pill" data-status={multiplayerStatus}>
-          MP {multiplayerStatus} · {multiplayerConfig.room}
-        </div>
-      )}
 
       {playerProfile && multiplayerConfig && encounterPanel && (
         <div className="pbs-encounter-panel" role="dialog" aria-modal="false" aria-labelledby="pbs-encounter-title">

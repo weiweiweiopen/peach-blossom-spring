@@ -437,3 +437,32 @@
     font-family: "Noto Sans Thai", "Thonburi", "Tahoma", system-ui, sans-serif !important;
   }
 }
+
+/* Final mobile HUD minimization: hide MP status pill; make pet HUD English-like and tiny. */
+@media (max-width: 700px), (pointer: coarse) {
+  .mobile-stats-bar {
+    font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
+    font-size: clamp(8px, 2.05vw, 10px) !important;
+    line-height: 1 !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.02em !important;
+    white-space: nowrap !important;
+  }
+
+  .mobile-stats-bar :where(span, strong, b, em) {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+  }
+
+  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar,
+  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar,
+  .pbs-interaction-root[data-language="th"] .mobile-stats-bar {
+    font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
+    font-size: clamp(8px, 2.05vw, 10px) !important;
+    line-height: 1 !important;
+    font-weight: 400 !important;
+  }
+}
