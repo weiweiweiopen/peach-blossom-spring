@@ -195,14 +195,36 @@ function campfireBoundsFromLayout(layout: OfficeLayout) {
   };
 }
 
-function campfireStoneBoundsFromLayout(layout: OfficeLayout) {
+const CAMPFIRE_STONE_TILE_OFFSETS = [
+  { dc: 0, dr: 4 },
+  { dc: 3, dr: 4 },
+  { dc: 0, dr: 5 },
+  { dc: 1, dr: 5 },
+  { dc: 2, dr: 5 },
+  { dc: 3, dr: 5 },
+  { dc: 1, dr: 6 },
+  { dc: 2, dr: 6 },
+];
+
+function campfireStoneTilesFromLayout(layout: OfficeLayout) {
   const bounds = campfireBoundsFromLayout(layout);
-  return {
-    col: bounds.col,
-    row: bounds.row + bounds.h - CAMPFIRE_FOOTPRINT.stoneRows,
-    w: bounds.w,
-    h: CAMPFIRE_FOOTPRINT.stoneRows,
-  };
+  return CAMPFIRE_STONE_TILE_OFFSETS.map(({ dc, dr }) => ({ col: bounds.col + dc, row: bounds.row + dr }));
+}
+
+function campfireStoneTilesForEditorEntry() {
+  return CAMPFIRE_STONE_TILE_OFFSETS.map(({ dc, dr }) => ({
+    col: COMPACT_EDITOR_CAMPFIRE_TILE.col + dc,
+    row: COMPACT_EDITOR_CAMPFIRE_TILE.row + dr,
+  }));
+}
+
+function campfireStoneCenter(tiles: Array<{ col: number; row: number }>) {
+  const sum = tiles.reduce((acc, tile) => ({ col: acc.col + tile.col, row: acc.row + tile.row }), { col: 0, row: 0 });
+  return { col: sum.col / tiles.length, row: sum.row / tiles.length };
+}
+
+function nearestDistanceToTiles(col: number, row: number, tiles: Array<{ col: number; row: number }>) {
+  return tiles.reduce((nearest, tile) => Math.min(nearest, Math.abs(col - tile.col) + Math.abs(row - tile.row)), Number.POSITIVE_INFINITY);
 }
 const MULTIPLAYER_PROXIMITY_DISTANCE_TILES = 3;
 const MULTIPLAYER_REENCOUNTER_RESET_TILES = 3;
@@ -2278,25 +2300,18 @@ function App() {
   const isPlayerNearCentralComputer = useCallback((): boolean => {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
-    const bounds = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
-      : campfireStoneBoundsFromLayout(officeState.getLayout());
-    const nearestCol = Math.max(bounds.col, Math.min(bounds.col + bounds.w - 1, player.tileCol));
-    const nearestRow = Math.max(bounds.row, Math.min(bounds.row + bounds.h - 1, player.tileRow));
-    const dist = Math.abs(player.tileCol - nearestCol) + Math.abs(player.tileRow - nearestRow);
+    const stoneTiles = editorEntryEnabled
+      ? campfireStoneTilesForEditorEntry()
+      : campfireStoneTilesFromLayout(officeState.getLayout());
+    const dist = nearestDistanceToTiles(player.tileCol, player.tileRow, stoneTiles);
     return dist <= CAMPFIRE_INTERACTION_RADIUS_TILES;
   }, [editorEntryEnabled, officeState]);
 
   const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
-    const bounds = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
-      : campfireStoneBoundsFromLayout(officeState.getLayout());
-    return (
-      col >= bounds.col &&
-      col < bounds.col + bounds.w &&
-      row >= bounds.row &&
-      row < bounds.row + bounds.h
-    );
+    const stoneTiles = editorEntryEnabled
+      ? campfireStoneTilesForEditorEntry()
+      : campfireStoneTilesFromLayout(officeState.getLayout());
+    return stoneTiles.some((tile) => tile.col === col && tile.row === row);
   }, [editorEntryEnabled, officeState]);
 
   const getPlayerDistanceFromCharacter = useCallback(
@@ -3120,13 +3135,14 @@ function App() {
             .filter((ch) => ch.id !== PLAYER_ID)
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
-        const computerTile = editorEntryEnabled
-          ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
-          : campfireStoneBoundsFromLayout(officeState.getLayout());
+        const campfireStoneTiles = editorEntryEnabled
+          ? campfireStoneTilesForEditorEntry()
+          : campfireStoneTilesFromLayout(officeState.getLayout());
+        const stoneCenter = campfireStoneCenter(campfireStoneTiles);
         const approachTile = findNearestApproachableTile(
           officeState,
-          computerTile.col + Math.floor(computerTile.w / 2),
-          computerTile.row + computerTile.h,
+          Math.round(stoneCenter.col),
+          Math.round(stoneCenter.row) + 1,
           occupied,
         );
         const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
@@ -3385,12 +3401,13 @@ function App() {
 
   const computerPromptPosition = (() => {
     if (!isNearCentralComputer || !containerRef.current) return null;
-    const computerTile = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
-      : campfireStoneBoundsFromLayout(officeState.getLayout());
+    const campfireStoneTiles = editorEntryEnabled
+      ? campfireStoneTilesForEditorEntry()
+      : campfireStoneTilesFromLayout(officeState.getLayout());
+    const computerTile = campfireStoneCenter(campfireStoneTiles);
     if (!overlayMetrics) return null;
     return {
-      left: overlayMetrics.offsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * overlayMetrics.scale,
+      left: overlayMetrics.offsetX + (computerTile.col * TILE_SIZE) * overlayMetrics.scale,
       top: overlayMetrics.offsetY + (computerTile.row * TILE_SIZE - 18) * overlayMetrics.scale,
     };
   })();
