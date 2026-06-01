@@ -6,127 +6,139 @@
   "groupType": "animation",
   "canPlaceOnWalls": false,
   "canPlaceOnSurfaces": false,
-  "backgroundTiles": 5,
+  "backgroundTiles": 3,
   "members": [
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_1",
       "file": "MULTI_MIND_CAMPFIRE_1.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 0
+      "footprintH": 4,
+      "frame": 0,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_2",
       "file": "MULTI_MIND_CAMPFIRE_2.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 1
+      "footprintH": 4,
+      "frame": 1,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_3",
       "file": "MULTI_MIND_CAMPFIRE_3.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 2
+      "footprintH": 4,
+      "frame": 2,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_4",
       "file": "MULTI_MIND_CAMPFIRE_4.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 3
+      "footprintH": 4,
+      "frame": 3,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_5",
       "file": "MULTI_MIND_CAMPFIRE_5.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 4
+      "footprintH": 4,
+      "frame": 4,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_6",
       "file": "MULTI_MIND_CAMPFIRE_6.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 5
+      "footprintH": 4,
+      "frame": 5,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_7",
       "file": "MULTI_MIND_CAMPFIRE_7.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 6
+      "footprintH": 4,
+      "frame": 6,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_8",
       "file": "MULTI_MIND_CAMPFIRE_8.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 7
+      "footprintH": 4,
+      "frame": 7,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_9",
       "file": "MULTI_MIND_CAMPFIRE_9.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 8
+      "footprintH": 4,
+      "frame": 8,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_10",
       "file": "MULTI_MIND_CAMPFIRE_10.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 9
+      "footprintH": 4,
+      "frame": 9,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_11",
       "file": "MULTI_MIND_CAMPFIRE_11.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 10
+      "footprintH": 4,
+      "frame": 10,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
       "id": "MULTI_MIND_CAMPFIRE_12",
       "file": "MULTI_MIND_CAMPFIRE_12.png",
-      "width": 128,
-      "height": 128,
+      "width": 64,
+      "height": 64,
       "footprintW": 4,
-      "footprintH": 8,
-      "frame": 11
+      "footprintH": 4,
+      "frame": 11,
+      "backgroundTiles": 3
     }
   ]
 }

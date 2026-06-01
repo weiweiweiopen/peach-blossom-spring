@@ -22,14 +22,12 @@ const GROUND_DECOR_TYPES = new Set([
 
 const CAMPFIRE_FURNITURE_PREFIX = 'MULTI_MIND_CAMPFIRE';
 const CAMPFIRE_STONE_COLLISION_OFFSETS = [
-  { dc: 0, dr: 4 },
-  { dc: 3, dr: 4 },
-  { dc: 0, dr: 5 },
-  { dc: 1, dr: 5 },
-  { dc: 2, dr: 5 },
-  { dc: 3, dr: 5 },
-  { dc: 1, dr: 6 },
-  { dc: 2, dr: 6 },
+  { dc: 0, dr: 2 },
+  { dc: 3, dr: 2 },
+  { dc: 0, dr: 3 },
+  { dc: 1, dr: 3 },
+  { dc: 2, dr: 3 },
+  { dc: 3, dr: 3 },
 ];
 
 function isGroundDecorType(type: string): boolean {
