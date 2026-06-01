@@ -4449,13 +4449,27 @@ function App() {
               onClick={() => setMobileRulesOpen(true)}
               data-no-mobile-drag="true"
             >
-              <span>🐣 pet</span>
-              <span>t{simSnapshot?.tick ?? 0}</span>
-              {questionLintScoreEntries(questionLintHud, selectedLanguage).slice(0, 3).map(([label, value], index) => (
-                <span key={label}>{index === 0 ? "S" : index === 1 ? "E" : "X"}{value.toFixed(0)}</span>
-              ))}
-              {terrainState && <span>Ev{terrainState.evidence}</span>}
-              <span>Q{localizedPetLintGapInbox.length}</span>
+              {(["zh-TW", "ja", "th"] as LanguageCode[]).includes(selectedLanguage) ? (
+                <>
+                  <span>🐣 pet</span>
+                  <span>t{simSnapshot?.tick ?? 0}</span>
+                  {questionLintScoreEntries(questionLintHud, selectedLanguage).slice(0, 3).map(([label, value], index) => (
+                    <span key={label}>{index === 0 ? "S" : index === 1 ? "E" : "X"}{value.toFixed(0)}</span>
+                  ))}
+                  {terrainState && <span>Ev{terrainState.evidence}</span>}
+                  <span>Q{localizedPetLintGapInbox.length}</span>
+                </>
+              ) : (
+                <>
+                  <span>🐣 {PET_HUD_COPY[selectedLanguage].agent}</span>
+                  <span>{t(selectedLanguage, "hud.tick")} {simSnapshot?.tick ?? 0}</span>
+                  {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                    <span key={label}>{label} {value.toFixed(0)}</span>
+                  ))}
+                  {terrainState && <span>{terrainCopy.evidence} {terrainState.evidence}</span>}
+                  <span>{petLintGapTitle(selectedLanguage)} {localizedPetLintGapInbox.length}</span>
+                </>
+              )}
             </button>
           )}
 

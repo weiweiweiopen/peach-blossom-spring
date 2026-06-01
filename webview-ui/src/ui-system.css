@@ -438,9 +438,12 @@
   }
 }
 
-/* Final mobile HUD minimization: hide MP status pill; make pet HUD English-like and tiny. */
+
+/* CJK/Thai mobile pet HUD only: keep en/de/id original copy and original sizing. */
 @media (max-width: 700px), (pointer: coarse) {
-  .mobile-stats-bar {
+  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar,
+  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar,
+  .pbs-interaction-root[data-language="th"] .mobile-stats-bar {
     font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
     font-size: clamp(8px, 2.05vw, 10px) !important;
     line-height: 1 !important;
@@ -449,20 +452,13 @@
     white-space: nowrap !important;
   }
 
-  .mobile-stats-bar :where(span, strong, b, em) {
+  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar :where(span, strong, b, em),
+  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar :where(span, strong, b, em),
+  .pbs-interaction-root[data-language="th"] .mobile-stats-bar :where(span, strong, b, em) {
     font-family: inherit !important;
     font-size: inherit !important;
     line-height: inherit !important;
     font-weight: inherit !important;
     letter-spacing: inherit !important;
-  }
-
-  .pbs-interaction-root[data-language="zh-TW"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="ja"] .mobile-stats-bar,
-  .pbs-interaction-root[data-language="th"] .mobile-stats-bar {
-    font-family: "FS Pixel Sans", "Noto Sans", system-ui, sans-serif !important;
-    font-size: clamp(8px, 2.05vw, 10px) !important;
-    line-height: 1 !important;
-    font-weight: 400 !important;
   }
 }
