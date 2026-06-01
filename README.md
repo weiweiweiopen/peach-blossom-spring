@@ -30,6 +30,8 @@ Operational metaphor:
 The game reads a static memory export; the editable knowledge land stays in local Markdown, SQLite indexes, and review notes.
 ```
 
+Important boundary: **shared memory only becomes editable/operational after you download or clone PBS to a local machine**. The online GitHub Pages version is a read-only playable export; it can show the current public memory snapshot, but it cannot maintain the living shared memory, SQLite search index, review drafts, or promoted wiki notes by itself.
+
 ## Local Memory Module
 
 The source-first memory engine lives at the repository root, matching `pbs-local-memory`:
