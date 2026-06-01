@@ -8,6 +8,8 @@ The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasell
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 
+<img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
+
 ## What this garden is
 
 PBS turns NGM into a small explorable world:
@@ -20,6 +22,8 @@ PBS turns NGM into a small explorable world:
 
 The tone is playful, but the archive logic is serious: the garden should help people remember fragile community knowledge without flattening it into a report or dashboard.
 
+<img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
+
 ## How to play
 
 1. Open the public site and enter Peach Blossom Spring.
@@ -30,6 +34,8 @@ The tone is playful, but the archive logic is serious: the garden should help pe
 6. Open the NGM ebook, map, and source links when you want to leave the fable and check the research material.
 
 NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context.
+
+<img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
 ## LLM wiki / shared memory
 
@@ -44,6 +50,8 @@ Current public source fields include:
 - selected public source pages connected to NGM people, workshops, tools, camps, and communities.
 
 Important boundary: **the online GitHub Pages version is a read-only exhibition export**. The shared memory only works as living, editable memory after you download or clone PBS to a local machine. Local PBS can keep indexes, review drafts, promoted wiki notes, and git history; the online version can only display the current public snapshot.
+
+<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
 
 ## Current status
 
