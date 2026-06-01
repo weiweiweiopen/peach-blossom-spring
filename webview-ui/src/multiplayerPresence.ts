@@ -5,6 +5,8 @@ export interface MultiplayerConfig {
   endpoint: string;
 }
 
+const DEFAULT_MULTIPLAYER_ENDPOINT = "https://peach-blossom-spring-multiplayer.dontmarryme.workers.dev";
+
 export interface MultiplayerPresence {
   playerId: string;
   displayName: string;
@@ -51,8 +53,11 @@ interface IncomingMessage {
 export function readMultiplayerConfig(): MultiplayerConfig | null {
   const params = new URLSearchParams(window.location.search);
   const room = params.get("room")?.trim();
-  const endpoint = params.get("mp")?.trim();
-  if (!room || !endpoint) return null;
+  if (!room) return null;
+
+  // Keep old long links working (?room=...&mp=...), but make the public link short:
+  // https://weiweiweiopen.github.io/peach-blossom-spring/?room=1
+  const endpoint = params.get("mp")?.trim() || DEFAULT_MULTIPLAYER_ENDPOINT;
 
   try {
     const url = new URL(endpoint);
