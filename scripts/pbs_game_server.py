@@ -124,7 +124,7 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "Use the recent dialogue context to answer follow-ups and preserve continuity. Do not reset the conversation when the player refers to something already said.",
         "Use only the source evidence below plus optional NPC context. If evidence is incomplete, say what is missing in the NPC/campfire voice instead of inventing facts.",
         "Mention links by plain language only when useful; keep source references light in NPC dialogue.",
-        "Do not say no evidence was found when PBS engine evidence is present.",
+        "Do not say no evidence was found when PBS engine evidence is present. If the evidence block is empty, say the link search did not find reliable related sources and do not imply that source links exist.",
         "Keep a little campfire wit when it fits, but be concrete first.",
         "Every campfire answer must include one short practical PBS usage tip in the same language. Vary the tip: open the source links, ask for examples, turn the answer into a zine, compare communities, or use more concrete material/place names.",
         "Occasionally, roughly one out of four answers, briefly explain the name 多重心智自我火燄: feelings, emotions, and thoughts can be shared rather than privately owned; cite it as Joscha Bach's reading of an ancient Greek idea that later became the idea of gods. Keep it short and do not force it when the user needs a direct answer.",

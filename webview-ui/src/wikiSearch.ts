@@ -17,6 +17,52 @@ function compact(text: string, max = 220): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
+const LINK_STOPWORDS = new Set([
+  'what', 'want', 'with', 'from', 'about', 'this', 'that', 'there', 'their', 'have', 'will', 'would', 'could', 'should', 'how', 'why', 'the', 'and',
+  '什麼', '這個', '那個', '知道', '請問', '如何', '為什麼', '可以', '不是', '是否', '有關', '相關', '連結', '來源', '問題', '東西', '類似', '玩類',
+]);
+
+function strictTokens(text: string): string[] {
+  const normalized = text.toLowerCase();
+  const latinTokens = normalized
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((token) => token.length >= 3 && !/[\u3400-\u9fff]/u.test(token) && !LINK_STOPWORDS.has(token));
+  const cjkRuns = normalized.match(/[\u3400-\u9fff]{2,}/gu) ?? [];
+  const cjkTokens = cjkRuns.flatMap((run) => {
+    const out: string[] = [];
+    for (const size of [2, 3, 4]) {
+      for (let index = 0; index <= run.length - size; index += 1) {
+        const token = run.slice(index, index + size);
+        if (!LINK_STOPWORDS.has(token)) out.push(token);
+      }
+    }
+    return out;
+  });
+  return Array.from(new Set([...latinTokens, ...cjkTokens]));
+}
+
+function strictLinkScore(queryTokens: string[], result: WikiSearchResult): { score: number; matches: number } {
+  if (queryTokens.length === 0) return { score: 0, matches: 0 };
+  const title = result.title.toLowerCase();
+  const haystack = `${result.title} ${result.description} ${result.sourceFamily} ${result.url}`.toLowerCase();
+  return queryTokens.reduce((acc, token) => {
+    if (!haystack.includes(token)) return acc;
+    return { score: acc.score + (title.includes(token) ? 3 : 1), matches: acc.matches + 1 };
+  }, { score: 0, matches: 0 });
+}
+
+function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: number): WikiSearchResult[] {
+  const originalTokens = strictTokens(query);
+  if (originalTokens.length === 0) return [];
+  const minimumMatches = originalTokens.length >= 2 ? 2 : 1;
+  return results
+    .map((result) => ({ result, strict: strictLinkScore(originalTokens, result) }))
+    .filter(({ strict }) => strict.matches >= minimumMatches)
+    .sort((a, b) => (b.strict.matches - a.strict.matches) || (b.strict.score - a.strict.score) || (b.result.score - a.result.score))
+    .slice(0, limit)
+    .map(({ result, strict }) => ({ ...result, score: result.score + strict.score * 1000 }));
+}
+
 function sourceFamily(card: Partial<SourceCard>): string {
   const source = String(card.source ?? '').toLowerCase();
   const text = `${card.title ?? ''} ${card.path ?? ''} ${card.url ?? ''}`.toLowerCase();
@@ -160,5 +206,5 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   for (const result of [...localMemoryResults, ...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
-  return Array.from(byUrl.values()).slice(0, limit);
+  return filterRelevantLinks(query, Array.from(byUrl.values()), limit);
 }

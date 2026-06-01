@@ -1269,19 +1269,17 @@ function CentralComputerDialogue({
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.links && (
+                {message.links && message.links.length > 0 && (
                   <details className="rpg-dialogue-source-links" aria-label={copy.sourceTitle}>
                     <summary>{copy.sourceLinks} ({message.links.length})</summary>
-                    {message.links.length > 0 ? (
-                      <div className="rpg-dialogue-source-link-list">
-                        {message.links.slice(0, 8).map((link, linkIndex) => (
-                          <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                            <span>[{linkIndex + 1}] {link.title}</span>
-                            <em>{link.sourceFamily}</em>
-                          </a>
-                        ))}
-                      </div>
-                    ) : <p className="m-0 text-text-muted">{copy.noLinks}</p>}
+                    <div className="rpg-dialogue-source-link-list">
+                      {message.links.map((link, linkIndex) => (
+                        <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
+                          <span>[{linkIndex + 1}] {link.title}</span>
+                          <em>{link.sourceFamily}</em>
+                        </a>
+                      ))}
+                    </div>
                   </details>
                 )}
               </div>

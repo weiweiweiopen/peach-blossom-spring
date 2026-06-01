@@ -311,6 +311,54 @@ def iter_memory_docs(family: str | None = None) -> list[dict]:
     return docs
 
 
+
+LINK_STOPWORDS = {
+    "what", "want", "with", "from", "about", "this", "that", "there", "their", "have", "will", "would", "could", "should", "how", "why", "the", "and",
+    "什麼", "這個", "那個", "知道", "請問", "如何", "為什麼", "可以", "不是", "是否", "有關", "相關", "連結", "來源", "問題", "東西", "類似", "玩類",
+}
+
+
+def strict_link_tokens(text: str) -> list[str]:
+    normalized = text.lower()
+    latin = [term for term in re.split(r"[^\w]+", normalized, flags=re.UNICODE) if len(term) >= 3 and not re.search(r"[\u3400-\u9fff]", term) and term not in LINK_STOPWORDS]
+    cjk_tokens: list[str] = []
+    for run in re.findall(r"[\u3400-\u9fff]{2,}", normalized):
+        for size in (2, 3, 4):
+            for index in range(0, len(run) - size + 1):
+                token = run[index:index + size]
+                if token not in LINK_STOPWORDS:
+                    cjk_tokens.append(token)
+    return list(dict.fromkeys([*latin, *cjk_tokens]))
+
+
+def strict_link_score(query_tokens: list[str], result: dict) -> tuple[int, int]:
+    haystack = " ".join(str(result.get(key) or "") for key in ("title", "description", "sourceFamily", "url", "path")).lower()
+    title = str(result.get("title") or "").lower()
+    score = 0
+    matches = 0
+    for token in query_tokens:
+        if token in haystack:
+            matches += 1
+            score += 3 if token in title else 1
+    return score, matches
+
+
+def filter_relevant_links(query: str, results: list[dict], limit: int) -> list[dict]:
+    query_tokens = strict_link_tokens(query)
+    if not query_tokens:
+        return []
+    minimum_matches = 2 if len(query_tokens) >= 2 else 1
+    ranked = []
+    for result in results:
+        score, matches = strict_link_score(query_tokens, result)
+        if matches >= minimum_matches:
+            item = dict(result)
+            item["strictLinkScore"] = score
+            item["strictLinkMatches"] = matches
+            ranked.append(item)
+    ranked.sort(key=lambda item: (-int(item.get("strictLinkMatches") or 0), -int(item.get("strictLinkScore") or 0), float(item.get("score") or 0)))
+    return ranked[:limit]
+
 def _fts_query(query: str) -> str:
     terms = re.findall(r"[\w\u3400-\u9fff-]+", query.lower(), flags=re.UNICODE)
     terms = [term for term in terms if len(term) >= 2]
@@ -378,7 +426,7 @@ def memory_search(query: str, limit: int = 8, family: str | None = None) -> list
         return memory_search(query, limit, family)
     finally:
         conn.close()
-    return [{
+    results = [{
         "title": row["title"],
         "path": row["path"],
         "sourceFamily": row["source_family"],
@@ -386,6 +434,7 @@ def memory_search(query: str, limit: int = 8, family: str | None = None) -> list
         "score": float(row["score"]),
         "description": re.sub(r"\s+", " ", strip_frontmatter(row["snippet"] or "")).strip(),
     } for row in rows]
+    return filter_relevant_links(query, results, limit)
 
 
 def build_evidence_packet(results: list[dict]) -> list[dict]:

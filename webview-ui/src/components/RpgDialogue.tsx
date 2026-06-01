@@ -594,7 +594,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
                     <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
                     <div className="rpg-dialogue-source-link-list">
-                      {message.links.slice(0, 8).map((link, linkIndex) => (
+                      {message.links.map((link, linkIndex) => (
                         <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
                           <span>[{linkIndex + 1}] {link.title}</span>
                           <em>{link.sourceFamily}</em>
