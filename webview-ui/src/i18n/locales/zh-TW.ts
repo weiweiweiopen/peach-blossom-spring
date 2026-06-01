@@ -67,7 +67,7 @@ const zhTW = {
     title: "對話",
     askQuestion: "問我一個問題",
     askNpc: "問 {name} 一個問題",
-    inputPlaceholder: "{name} - 你想問什麼？",
+    inputPlaceholder: "問我任何東西、一個關鍵字或是一句玩笑！",
     talkButton: "交談",
     closeButton: "關閉",
     openWiki: "開啟 Wiki",

@@ -76,7 +76,7 @@ export const NEXT_ROOM_GRID_SIZE = 25;
 export const NEXT_ROOM_MAP_SIZE = 50;
 export const NEXT_ROOM_MAP_PADDING = Math.floor((NEXT_ROOM_MAP_SIZE - NEXT_ROOM_GRID_SIZE) / 2);
 export const COMPACT_EDITOR_MAP_SIZE = 40;
-export const COMPACT_EDITOR_CAMPFIRE_TILE = { col: 20, row: 25 } as const;
+export const COMPACT_EDITOR_CAMPFIRE_TILE = { col: 18, row: 22 } as const;
 
 function fillRect(
   tiles: TileTypeVal[],

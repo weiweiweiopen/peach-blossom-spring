@@ -1,7 +1,7 @@
 {
   "version": "source-first-2026-05-31",
   "name": "PBS local memory source-first index",
-  "count": 336,
+  "count": 340,
   "sourceUrls": [
     "https://www.hackteria.org/wiki/Main_Page",
     "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
@@ -10,7 +10,11 @@
     "https://kubu.fi",
     "https://radiona.org",
     "https://greenfablab.org/projects/",
-    "http://wiki.textile-academy.org/"
+    "http://wiki.textile-academy.org/",
+    "https://textiltronics.com/curatorials/attempts-failures-trials-and-errors/",
+    "https://modernbodyfestival.org/now/",
+    "https://valldaura.net/green-fab-lab/",
+    "https://cargocollective.com/ryuoyama/Okiwonderlab"
   ],
   "items": [
     {
@@ -1442,6 +1446,20 @@
       "description": "# Hybrid Conversations KUBU HYBRID CONVERSATIONSProfessor Teresa Dillon, University of Southampton,Winchester School of Art,Social Practice Lab What’s softest in the world rushes and runs over what’s hardest in the world. Water and Stone.– Ursula Le Guin, Tao Te Ching, (1997, p.43) The Social Practice Lab at Winchester School of Art, in partnership with KUBU, culture house in Kemiönsaari, Finland, […] [et_pb_section fb_built=”1″ _builder_version=”4.27.4″ _module_preset=”default” background_color=”#000000″ custom_padding=”0px|||||” saved_tabs=”all” global_colors_info=”{}”][et_pb_row _builder_version=”4.16.1″ _modu"
     },
     {
+      "title": "MODERN BODY FESTIVAL – intermedia platform at the convergence of art and technology",
+      "url": "https://modernbodyfestival.org/now/",
+      "sourceFamily": "modernbody",
+      "path": "Sources/Raw/modernbody/modern-body-now.md",
+      "description": "# MODERN BODY FESTIVAL – intermedia platform at the convergence of art and technology MODERN BODY FESTIVAL – intermedia platform at the convergence of art and technology Skip to content MODERN BODY FESTIVAL intermedia platform at the convergence of art and technology Expand the primary sidebar Expand the secondary sidebar Poppup the search form Toggle to the secondary sidebar Close the primary sidebar Home News Past events expand child menu Modern Body Laboratory #3: PORTALS Sensing Sound Exhibition @ Musical Utopias #2 MBF2018: ALIEN BODIES MBL#2: Intelligent Artifacts & Breathing Spaces MBL#1: Alan Turing: Arti"
+    },
+    {
+      "title": "Okiwonderlab - ryuoyama",
+      "url": "https://cargocollective.com/ryuoyama/Okiwonderlab",
+      "sourceFamily": "okiwonderlab",
+      "path": "Sources/Raw/okiwonderlab/okiwonderlab.md",
+      "description": "# Okiwonderlab - ryuoyama Okiwonderlab - ryuoyama Running on Cargo Feed Index News CV/en CV/jp Following (3) Oki Wonder Lab 2020 HackteriaLab ferments isolation in Okinawa ハクテリア 合宿 – Oki Wonder Lab was a concentrated gathering of people working transdisciplinary who are interested in creative biological fields and any other areas which intrigue the critical interaction across art and science. Held in Spring 2020 as a local and globally connected series of events, co-organized by Hackteria, dusjagr, Toru Ryu Oyama, Andreas Siagian and many other friends and collaborators. The theme of Oki Wonder Lab 2020 is “isola"
+    },
+    {
       "title": "Radiona mini lab teških industrija",
       "url": "https://radiona.org/radiona-mini-lab-teskih-industrija/",
       "sourceFamily": "radiona",
@@ -2364,6 +2382,20 @@
       "sourceFamily": "sgmk",
       "path": "Sources/Raw/sgmk/main-page.md",
       "description": "# Main Page Welcome to the Swiss Mechatronic Art Society Wiki! Everyone is welcome to register and contribute to the wiki! Let's make it big! To register or edit you need the code: transist0r Topics [ edit ] Bitwäscherei - unser Hackerspace beim Bhf Hardbrücke [ edit ] MechArtLab at Bitwäscherei Festivals and Events [ edit ] HOME MADE 2026 - DIY Forschungs- und Arbeitswoche Xmas Umtrunk 2025 Xmas Umtrunk 2024 HOME MADE 2025 - DIY Forschungs- und Arbeitswoche HOME MADE 2024 - DIY Forschungs- und Arbeitswoche Archipelago - Art and Science Investigations in Times of Unstable Knowledge HOME MADE 2023 - DIY Forschungs"
+    },
+    {
+      "title": "ATTEMPTS, FAILURES, TRIALS AND ERRORS | TEXTILTRONICS",
+      "url": "https://textiltronics.com/curatorials/attempts-failures-trials-and-errors/",
+      "sourceFamily": "textiltronics",
+      "path": "Sources/Raw/textiltronics/attempts-failures-trials-and-errors.md",
+      "description": "# ATTEMPTS, FAILURES, TRIALS AND ERRORS | TEXTILTRONICS ATTEMPTS, FAILURES, TRIALS AND ERRORS | TEXTILTRONICS Textiltronics.com ABOUT CURATORIAL PROJECTS UTOPIAN CITIES, PROGRAMMED SOCIETIES ATTEMPTS, FAILURES, TRIALS AND ERRORS DESIGNATURES – ECONOMIES OF DESIGN, POLITICS OF PARTICIPATION HAPTOSONICS REPERTORIES OF (in)DISCREETNESS LIQUID SPACES – DYNAMIC MODELS OF SPACE IN ART AND TECHNOLOGY ARTISTS IN INDUSTRY. THE ROLE OF DESIGN IN THE DIGITAL ERA THIERRY KUNTZEL : ETE – AUTOMNE Exhibitions ART & DESIGN PROJECTS DESIGNANO – AESTHETICS OF IMPERCEPTIBILITY (on going) SOFT CIRCUITRY AN INTERNET OF SOFT THINGS SE"
+    },
+    {
+      "title": "Green Fab Lab – Valldaura",
+      "url": "https://valldaura.net/green-fab-lab/",
+      "sourceFamily": "valldaura",
+      "path": "Sources/Raw/valldaura/green-fab-lab-valldaura.md",
+      "description": "# Green Fab Lab – Valldaura Green Fab Lab – Valldaura Menu About History Collserola Location How to find us Research, Development & Innovation Circular Bioeconomy & Natural Materials Innovation Decentralized Energy Systems & Circular Water Systems Ecological Technology & Carbon Sequestration Regenerative Forestry & Sustainable Food Production Publications & Exhibitions Self-Sufficient Buildings Urban Ecology, Green Governance & Citizen Engagement MAEBB 02 Thesis Made Off Waste Education MAEBB – Master in Ecological Buildings & Biocities Facilities Vision Principles Labs Newsletter Green Fab Lab A project promoted"
     }
   ]
 }

@@ -1713,12 +1713,21 @@ function findShortNpcStep(
   startRow: number,
   occupied: Set<string>,
 ): { col: number; row: number } | null {
-  return findRandomApproachableTile(
-    officeState,
-    occupied,
-    { col: startCol, row: startRow },
-    7,
-  );
+  const candidates: Array<{ col: number; row: number; score: number }> = [];
+  for (let dRow = -6; dRow <= 6; dRow++) {
+    for (let dCol = -6; dCol <= 6; dCol++) {
+      const distance = Math.abs(dCol) + Math.abs(dRow);
+      if (distance < 3 || distance > 6) continue;
+      const tile = findNearestApproachableTile(officeState, startCol + dCol, startRow + dRow, occupied);
+      const key = `${tile.col},${tile.row}`;
+      if (occupied.has(key)) continue;
+      const actualDistance = Math.abs(tile.col - startCol) + Math.abs(tile.row - startRow);
+      if (actualDistance < 3 || actualDistance > 6) continue;
+      candidates.push({ ...tile, score: Math.random() });
+    }
+  }
+  candidates.sort((a, b) => a.score - b.score);
+  return candidates[0] ?? null;
 }
 function configuredWorkerChatApiUrl(): string {
   return document
@@ -1909,6 +1918,7 @@ function App() {
   const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
   const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
   const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
+  const [pendingNpcDialogueId, setPendingNpcDialogueId] = useState<number | null>(null);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
   const [terrainEditorEnabled, setTerrainEditorEnabled] = useState(editorEntryEnabled);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
@@ -2076,6 +2086,10 @@ function App() {
       if (appMode === "interactive" && persona) {
         const player = officeState.characters.get(PLAYER_ID);
         const npc = officeState.characters.get(agentId);
+        if (npc) {
+          npc.path = [];
+          npc.moveProgress = 0;
+        }
         const distance = player && npc
           ? Math.abs(npc.tileCol - player.tileCol) + Math.abs(npc.tileRow - player.tileRow)
           : Number.POSITIVE_INFINITY;
@@ -2092,6 +2106,7 @@ function App() {
             officeState.selectedAgentId = null;
             officeState.cameraFollowId = PLAYER_ID;
             officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
+            setPendingNpcDialogueId(agentId);
             setPlayerMoveTick((tick) => tick + 1);
           }
           return;
@@ -2099,6 +2114,7 @@ function App() {
         setSelectedPet(null);
         setSelectedDispatchPet(null);
         setSelectedNpcInfo(null);
+        setPendingNpcDialogueId(null);
         setActiveDialogueId(agentId);
         return;
       }
@@ -2611,7 +2627,7 @@ function App() {
         const ch = officeState.characters.get(id);
         if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
           continue;
-        if (nearbyNpcIdRef.current === id) continue;
+        if (nearbyNpcIdRef.current === id || pendingNpcDialogueIdRef.current === id) continue;
         const target = findShortNpcStep(
           officeState,
           ch.tileCol,
@@ -2623,7 +2639,7 @@ function App() {
           occupied.add(`${target.col},${target.row}`);
         }
       }
-    }, 1800);
+    }, 6500);
     return () => window.clearInterval(interval);
   }, [appMode, layoutReady, officeState, playerProfile]);
 
@@ -2820,6 +2836,16 @@ function App() {
         setIsComputerDialogueOpen(true);
       }
 
+      const pendingNpcId = pendingNpcDialogueIdRef.current;
+      if (pendingNpcId !== null && activeDialogueIdRef.current === null) {
+        const distance = getPlayerDistanceFromCharacter(pendingNpcId);
+        if (distance <= CONVERSATION_CLOSE_DISTANCE_TILES) {
+          setPendingNpcDialogueId(null);
+          officeState.selectedAgentId = pendingNpcId;
+          setActiveDialogueId(pendingNpcId);
+        }
+      }
+
       if (!dismissedAutoComputer && !pendingComputerOpen && !computerDialogueOpenRef.current && activeDialogueIdRef.current === null && !splitPanel && !videoEncounter && !encounterPanel && isPlayerNearCentralComputer()) {
         setIsComputerDialogueOpen(true);
       }
@@ -2858,6 +2884,7 @@ function App() {
 
   const nearbyNpcIdRef = useRef<number | null>(null);
   const activeDialogueIdRef = useRef<number | null>(null);
+  const pendingNpcDialogueIdRef = useRef<number | null>(null);
   const computerDialogueOpenRef = useRef(false);
   const latestA2ANoticeIdRef = useRef<string | null>(null);
   const worldNoticeTimerRef = useRef<number | null>(null);
@@ -2867,6 +2894,9 @@ function App() {
   useEffect(() => {
     activeDialogueIdRef.current = activeDialogueId;
   }, [activeDialogueId]);
+  useEffect(() => {
+    pendingNpcDialogueIdRef.current = pendingNpcDialogueId;
+  }, [pendingNpcDialogueId]);
   useEffect(() => {
     computerDialogueOpenRef.current = isComputerDialogueOpen;
   }, [isComputerDialogueOpen]);
@@ -3008,6 +3038,7 @@ function App() {
       if (event.key === "Escape") {
         if (computerDialogueOpenRef.current) setDismissedAutoComputer(true);
         setActiveDialogueId(null);
+        setPendingNpcDialogueId(null);
         setIsComputerDialogueOpen(false);
         setPendingComputerOpen(false);
         return;
@@ -3108,6 +3139,7 @@ function App() {
         return;
       }
       setPendingComputerOpen(false);
+      setPendingNpcDialogueId(null);
       officeState.cameraFollowId = PLAYER_ID;
       const moved = officeState.walkToTile(PLAYER_ID, col, row);
       if (moved) {
@@ -3169,6 +3201,13 @@ function App() {
       setAppMode(mode);
       setPlayMode("camp");
       setSelectedDispatchPet(null);
+      const celebrationEmoji = ["🎉", "💖", "✨", "🌸", "🔥", "🫶"][Math.floor(Math.random() * 6)] ?? "🎉";
+      setWorldNotice(`${profile.name || "ID"} 剛剛進入PBS世界！ ${celebrationEmoji}`);
+      if (worldNoticeTimerRef.current !== null) window.clearTimeout(worldNoticeTimerRef.current);
+      worldNoticeTimerRef.current = window.setTimeout(() => {
+        setWorldNotice(null);
+        worldNoticeTimerRef.current = null;
+      }, 5200);
 
       try {
         localStorage.setItem("peach_player_profile", JSON.stringify(profile));
@@ -4155,7 +4194,7 @@ function App() {
           )}
 
           {worldNotice && (
-            <div className={`world-resonance-notice ${/思想缺口|THOUGHT GAP/i.test(worldNotice) ? "world-resonance-notice--thought-gap" : ""}`}>{worldNotice}</div>
+            <div className={`world-resonance-notice ${/思想缺口|THOUGHT GAP/i.test(worldNotice) ? "world-resonance-notice--thought-gap" : ""} ${/剛剛進入PBS世界/.test(worldNotice) ? "world-resonance-notice--join" : ""}`}>{worldNotice}</div>
           )}
 
           {simSnapshot &&

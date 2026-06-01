@@ -9426,3 +9426,14 @@ body[data-language="ja"],
   object-fit: contain !important;
   object-position: center center !important;
 }
+
+.world-resonance-notice--join {
+  color: #111 !important;
+  background:
+    linear-gradient(90deg, #FCF46B 0 24%, #FFD4FF 24% 48%, #69C3AA 48% 72%, #BAC3D9 72% 100%) !important;
+  border: 4px solid #111 !important;
+  box-shadow: 5px 5px 0 #111, 10px 10px 0 #FFD4FF !important;
+  font-size: clamp(19px, 2vw, 26px) !important;
+  font-weight: 1000 !important;
+  letter-spacing: 0.02em !important;
+}

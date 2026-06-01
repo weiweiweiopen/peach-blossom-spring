@@ -65,14 +65,15 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
     if (!haystack.includes(token)) return sum;
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
-  const familyBoost = /htgwyw|hackteria|sgmk|fabricademy/i.test(item.sourceFamily) ? 1 : 0;
+  const familyBoost = /htgwyw|hackteria|sgmk|fabricademy|textiltronics|modernbody|valldaura|okiwonderlab/i.test(item.sourceFamily) ? 1 : 0;
   const joinedQuery = queryTokens.join(' ');
   const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(joinedQuery) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|fabricademy|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
   const soundDiyBoost = /diy|自製|自造|合成器|synth|sound|聲音|音樂|樂器/i.test(joinedQuery) && /sgmk|synth|sound|music|instrument|speaker|8bit|nandsynth|gnusbuino|mechartlab|home made|diy electronics|handmade electronics/i.test(haystack) ? 28 : 0;
   const campEducationBoost = /camp|營|alternative|education|替代教育|獨立藝術營|independent art/i.test(joinedQuery) && /camp|hackterialab|workshop|summer school|field|community|education|unconference|commons|colabs/i.test(haystack) ? 22 : 0;
   const networkBoost = /ngm|hackteria|sgmk|kobakant|fabricademy|textile academy|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|fabricademy|textile academy|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
   const fabricademyBoost = /fabricademy|textile academy|e-?textile|wearable|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
-  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost;
+  const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
+  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {

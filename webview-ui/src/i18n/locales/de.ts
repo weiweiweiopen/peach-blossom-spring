@@ -69,7 +69,7 @@ const de: typeof zhTW = {
     title: "Dialog",
     askQuestion: "Stell mir eine Frage",
     askNpc: "Stell {name} eine Frage",
-    inputPlaceholder: "{name} - Was möchtest du fragen?",
+    inputPlaceholder: "Frag irgendetwas, ein Stichwort oder einen Witz!",
     talkButton: "Sprechen",
     closeButton: "Schließen",
     openWiki: "Wiki öffnen",

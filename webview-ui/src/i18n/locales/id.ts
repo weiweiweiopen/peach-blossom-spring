@@ -69,7 +69,7 @@ const id: typeof zhTW = {
     title: "Dialog",
     askQuestion: "Ajukan pertanyaan kepadaku",
     askNpc: "Ajukan pertanyaan kepada {name}",
-    inputPlaceholder: "{name} - Apa yang ingin kamu tanyakan?",
+    inputPlaceholder: "Tanya apa saja, satu kata kunci, atau satu lelucon!",
     talkButton: "Bicara",
     closeButton: "Tutup",
     openWiki: "Buka Wiki",

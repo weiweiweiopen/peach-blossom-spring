@@ -49,6 +49,26 @@
       "kind": "dokuwiki",
       "main": "http://wiki.textile-academy.org/",
       "out": "Sources/Raw/fabricademy"
+    },
+    "textiltronics": {
+      "kind": "static",
+      "main": "https://textiltronics.com/curatorials/attempts-failures-trials-and-errors/",
+      "out": "Sources/Raw/textiltronics"
+    },
+    "modernbody": {
+      "kind": "wordpress",
+      "main": "https://modernbodyfestival.org/now/",
+      "out": "Sources/Raw/modernbody"
+    },
+    "valldaura": {
+      "kind": "static",
+      "main": "https://valldaura.net/green-fab-lab/",
+      "out": "Sources/Raw/valldaura"
+    },
+    "okiwonderlab": {
+      "kind": "cargo",
+      "main": "https://cargocollective.com/ryuoyama/Okiwonderlab",
+      "out": "Sources/Raw/okiwonderlab"
     }
   }
 }
