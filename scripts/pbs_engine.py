@@ -43,6 +43,27 @@ MEDIAWIKI_API = {
     "sgmk": "https://wiki.sgmk-ssam.ch/api.php",
 }
 
+FABRICADEMY_SEED_PAGES = [
+    "/start",
+    "/fabricademy2017",
+    "/fabricademy2017/classes/start",
+    "/fabricademy2017/classes/intro",
+    "/fabricademy2017/classes/wearables1",
+    "/fabricademy2017/classes/wearables2",
+    "/fabricademy2017/classes/skinelectronics",
+    "/fabricademy2017/classes/softrobotics",
+    "/fabricademy2017/classes/textilescaffold",
+    "/fabricademy2017/classes/biodyes",
+    "/fabricademy2017/classes/circularfashion",
+    "/fabricademy2017/classes/computational",
+    "/fabricademy2017/classes/digitalbodies",
+    "/fabricademy2017/classes/opensourcehardware",
+    "/fabricademy2017/nodes",
+    "/fabricademy2017/students",
+    "/fabrikipedia",
+    "/bibliography",
+]
+
 HIGH_VALUE_TERMS = {
     "8bit", "bio", "biology", "biomod", "camera", "camp", "chemistry", "circuit", "commons", "community",
     "diy", "electron", "festival", "hardware", "homemade", "lab", "laser", "machine", "microscope", "microscopy",
@@ -221,6 +242,8 @@ def source_family_for(path: Path) -> str:
         return "htgwyw"
     if "sgmk" in parts or "sgmk full" in lowered:
         return "sgmk"
+    if "fabricademy" in parts or "textile-academy" in lowered:
+        return "fabricademy"
     return "unknown"
 
 
@@ -271,6 +294,8 @@ def memory_source_family(path: Path, text: str = "") -> str:
         return "hackteria"
     if "sgmk" in lowered:
         return "sgmk"
+    if "fabricademy" in lowered or "textile-academy" in lowered:
+        return "fabricademy"
     if "kobakant" in lowered or "how-to-get-what-you-want" in lowered or "how to get what you want" in lowered or "htgwyw" in lowered:
         return "htgwyw"
     if "/wiki/" in lowered:
@@ -1301,16 +1326,16 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     registry = sub.add_parser("build-registry")
     registry.add_argument("--limit", type=int)
-    registry.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    registry.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
     registry.set_defaults(func=command_build_registry)
     passages = sub.add_parser("extract-passages")
     passages.add_argument("--limit", type=int)
-    passages.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    passages.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
     passages.add_argument("--max-per-source", type=int, default=8)
     passages.set_defaults(func=command_extract_passages)
     claims = sub.add_parser("extract-claims")
     claims.add_argument("--limit", type=int)
-    claims.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    claims.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk", "fabricademy"])
     claims.add_argument("--max-per-source", type=int, default=8)
     claims.set_defaults(func=command_extract_claims)
     hydrate = sub.add_parser("hydrate-mediawiki")
@@ -1329,22 +1354,22 @@ def main() -> int:
     hydrate_old.add_argument("--force", action="store_true")
     hydrate_old.set_defaults(func=lambda args: command_hydrate_mediawiki(argparse.Namespace(**vars(args), family="hackteria")))
     index = sub.add_parser("index")
-    index.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
+    index.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy", "wiki", "schema"], default="all")
     index.set_defaults(func=command_index)
     search = sub.add_parser("search")
     search.add_argument("query")
-    search.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
+    search.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy", "wiki", "schema"], default="all")
     search.add_argument("--limit", type=int, default=8)
     search.set_defaults(func=command_search)
     sub.add_parser("status").set_defaults(func=command_status)
     query = sub.add_parser("query")
     query.add_argument("--query", required=True)
-    query.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk"], default="all")
+    query.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy"], default="all")
     query.add_argument("--limit", type=int, default=12)
     query.set_defaults(func=command_query)
     draft = sub.add_parser("draft-note")
     draft.add_argument("--query", required=True)
-    draft.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk"], default="all")
+    draft.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "fabricademy"], default="all")
     draft.add_argument("--category", choices=["Concepts", "Methods", "Materials", "Theories", "SocialForms", "Projects", "Comparisons", "Syntheses"], default="Projects")
     draft.add_argument("--limit", type=int, default=12)
     draft.set_defaults(func=command_draft_note)

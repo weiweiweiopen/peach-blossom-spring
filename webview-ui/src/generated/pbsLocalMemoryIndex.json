@@ -1,8 +1,140 @@
 {
   "version": "source-first-2026-05-31",
   "name": "PBS local memory source-first index",
-  "count": 52,
+  "count": 70,
+  "sourceUrls": [
+    "https://www.hackteria.org/wiki/Main_Page",
+    "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
+    "https://howtogetwhatyouwant.at",
+    "http://wiki.textile-academy.org/"
+  ],
   "items": [
+    {
+      "title": "bibliography",
+      "url": "http://wiki.textile-academy.org/bibliography",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/bibliography.md",
+      "description": "# bibliography bibliography # BIBLIOGRAPHY https://www.amazon.com/Out-Hand-Materializing-Ron-Labaco/dp/1908966238 https://www.amazon.com/Postdigital-Artisans-Craftsmanship-Aesthetic-Architecture/dp/9491727613 https://www.amazon.com/Sustainable-Materials-Processes-Production-Manufacturing/dp/0500290717/ref=pd_sim_14_3?ie=UTF8&refRID=0QNDS39ZGTBJ4Y6X39Y8 https://www.amazon.com/Modelling-Behaviour-Design-Symposium-2015-ebook/dp/B017X7H6CM/ref=sr_1_cc_1?s=aps&ie=UTF8&qid=1476470447&sr=1-1-catcorr&keywords=Mette+Ramsgaard+Thomsen https://www.amazon.com/gp/product/147252375X/ref=pd_sim_14_36?ie=UTF8&psc=1&refRID=J7664J"
+    },
+    {
+      "title": "fabricademy2017",
+      "url": "http://wiki.textile-academy.org/fabricademy2017",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017.md",
+      "description": "# fabricademy2017 fabricademy2017 # Fabricademy 2017 # Lectures All lectures run on Tuesdays from 9AM to 11AM Boston time. This is 01:00PM GMT, check the World Clock if you are not sure. # State of the art, Project Management and Documentation # Tuesday, September 26th 2017 This class will introduce you to the Fabricademy topics and background and provide all the details on why and how document your work. Class notes | Video # Digital Bodies # Tuesday, October 3rd 2017 This class introduces new digital tools that complement hand tools in order to design, represent, make and modify the human figure that can then b"
+    },
+    {
+      "title": "fabricademy2017:classes:biodyes",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/biodyes",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesbiodyes.md",
+      "description": "# fabricademy2017:classes:biodyes fabricademy2017 classes biodyes # BioFabricating Dyes & Materials 17-10-2017 Cecilia Raspanti The textile industry is one of the most polluting in the world, in which one the most environmentally disastrous processes is the dyeing of fibers and textiles of the clothes we wear. Chemicals are released daily in rivers and nature destroying the environment around us to satisfy the colour demands that we create as designers, industry and consumers. Very few options are being explored in this fast changing fashion, clothing and textile industry, and the list of chemical treatments is o"
+    },
+    {
+      "title": "fabricademy2017:classes:circularfashion",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/circularfashion",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classescircularfashion.md",
+      "description": "# fabricademy2017:classes:circularfashion fabricademy2017 classes circularfashion # Fabricademy 2017 # Circular Open Source Fashion Zoe Romano In this class the lecture will outline the systems behind fashion and the textile industry, focusing on alternative systems such as circular fashion, agile fashion, open value chains. The focus will be on creating modular elements, structures and connections that allow the user to change the shape of a garment, resize it or replace certain elements. Students will publish their creations on open source platforms and learn how to monitor and promote their creations in a dist"
+    },
+    {
+      "title": "fabricademy2017:classes:computational",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/computational",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classescomputational.md",
+      "description": "# fabricademy2017:classes:computational fabricademy2017 classes computational # Table of Contents Computational Couture Libraries for Grasshopper3d Software Assignment Lecture notes # Fabricademy 2017 # Computational Couture Aldo Sollazzo # Brief Disciplines as programming and electronics become highly interconnected, blurring old boundaries and merging different fields of knowledge. Fashion has been already affected by this radical change. Therefore, clothes, shoes and other accessories can now incorporate elements of hardware and software, generating a peculiar mix between fashion and computation that is incred"
+    },
+    {
+      "title": "fabricademy2017:classes:digitalbodies",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/digitalbodies",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesdigitalbodies.md",
+      "description": "# fabricademy2017:classes:digitalbodies fabricademy2017 classes digitalbodies # Fabricademy 2017 # Week 2: Digital Bodies Anastasia Pistofidou Throughout our history we observe that the human body and its representation are of high importance in arts, sciences, medicine, psychology, etc. A fashion designer uses the human figure as his white paper to produce his masterpiece. In the same way authors were using pencil and paper, then typewriter, keyboard and currently voice dictation, the tools of the fashion designer evolved through time. On the way of enabling mass customization, the fashion industry is claiming f"
+    },
+    {
+      "title": "fabricademy2017:classes:intro",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/intro",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesintro.md",
+      "description": "# fabricademy2017:classes:intro fabricademy2017 classes intro # Table of Contents 1. State of the art, Project Management and Documentation Lecture notes Documenting your work How to document Where to document Editing your student page How to upload an image # 1. State of the art, Project Management and Documentation September 26 2017 # Lecture notes What is Fabricademy State of the art Classes Why sharing How to document # Documenting your work # How to document Documentation is an important part of Fabricademy. You should document your work for your own, and for anybody who would like to replicate your work. Yo"
+    },
+    {
+      "title": "fabricademy2017:classes:opensourcehardware",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/opensourcehardware",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesopensourcehardware.md",
+      "description": "# fabricademy2017:classes:opensourcehardware fabricademy2017 classes opensourcehardware # Fabricademy 2017 # Open Source Hardware: From fibers to fabric Global Instructors: Mar Canet & Varvara Guljajeva The class explores the open source hardware field in general and focuses on its potential in the area of textile. How to update obsolete machines for producing textile? How to take advantage of digital fabrication and open source technology to come up with an open source machine for knitting, weaving and invent new techniques. This class focuses on the importance of the techniques, tools and machines that create t"
+    },
+    {
+      "title": "fabricademy2017:classes:skinelectronics",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/skinelectronics",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesskinelectronics.md",
+      "description": "# fabricademy2017:classes:skinelectronics fabricademy2017 classes skinelectronics # Fabricademy 2017 # Skins Electronics Global Instructor: Katia Vega In the same way that the wearables industry is integrating fashion practices in their development, we envision new partnerships between the biotech/tech companies and skin professionals such as makeup artists, prosthesis experts and tattooists in order to embrace the idea of human-device symbiosis. FX e-makeup made use of special effects makeup for hiding electronic components that sense facial muscle movements, acting as a second skin. Components: Option 1: Skin M"
+    },
+    {
+      "title": "fabricademy2017:classes:softrobotics",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/softrobotics",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classessoftrobotics.md",
+      "description": "# fabricademy2017:classes:softrobotics fabricademy2017 classes softrobotics # Fabricademy 2017 # Soft Robotics Global Instructor Lily Chambers Program Outline This class will focus in the study of a specific field in robotics, the soft robotics. Unlike rigid robots we are mostly used to, soft bodied robots have similarities and performance characteristics similar to living organisms or the human body. Soft-robotics are based in Bio-inspired design or biomimicry and have applications in wearables, rehabilitation prosthetics, surgical robots, rescuing and others. We will focus on the fabrication of soft actuators, "
+    },
+    {
+      "title": "fabricademy2017:classes:start",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/start",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classesstart.md",
+      "description": "# fabricademy2017:classes:start fabricademy2017 classes # Fabricademy 2017 Classes State of the art, Project Management and Documentation Digital Bodies Circular Fashion E-Textiles and Wearables 1 Computational Couture Textile as Scaffold Open Source Hardware: from fibers to fabric E-Textiles and Wearables 2 Soft Robotics Skin Electronics Final Projects Except where otherwise noted, content on this wiki is licensed under the following license: CC Attribution-Share Alike 4.0 International"
+    },
+    {
+      "title": "fabricademy2017:classes:textilescaffold",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/textilescaffold",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classestextilescaffold.md",
+      "description": "# fabricademy2017:classes:textilescaffold fabricademy2017 classes textilescaffold Fabricademy 2017 # Textile as Scaffold Global instructor: Anastasia Pistofidou Technical textiles have various applications, among which agrotech, building, clothes, geotech, sports. In this class we will use textiles for composites, polymerisation, solidification, fabric formwork, crystallization, composites and biocomposites, agglomerates. This class focuses on exploring techniques and applications of technical textiles in the industry. It introduces the concept of designing custom processes that require the design of a set of too"
+    },
+    {
+      "title": "fabricademy2017:classes:wearables1",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/wearables1",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classeswearables1.md",
+      "description": "# fabricademy2017:classes:wearables1 fabricademy2017 classes wearables1 # Table of Contents Introduction to Electricity Meet the Materials Soft Circuit Techniques Textile Sensors Assignment 1: LED Circuit Microcontrollers, ATtiny Programming Assignment 2: ATtiny Circuit Hannah Pierre Wilson and Mika Satomi are KOBAKANT and teach the class of e-textiles and wearables. You can find the documentation of the class agenda here and on their webpage In this week’s course, students will be introduced to an overview of the field of electronic textiles, example works in the field as well as materials and technical developm"
+    },
+    {
+      "title": "fabricademy2017:classes:wearables2",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/classes/wearables2",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017classeswearables2.md",
+      "description": "# fabricademy2017:classes:wearables2 fabricademy2017 classes wearables2 Global Instructor : Becky Stewart More about Becky on her Queen Mary University of London page and theleadingzero.com . Slides from other presentations and workshops on similar topics can be found on speakerdeck . This second class on the topic of wearables and e-textiles will focus on incorporating computation into soft circuits by using microcontrollers and single-board computers. Prep for Class Install the Arduino software (IDE) on your computer or test that you can use the new Web Editor for Arduino. Upload the Blink sketch. See this tuto"
+    },
+    {
+      "title": "fabricademy2017:nodes",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/nodes",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017nodes.md",
+      "description": "# fabricademy2017:nodes fabricademy2017 nodes # Fabricademy 2017 …Work in progress… # Official Nodes # Europe # Spain FabTextiles / Barcelona Fab Lab Barcelona Institute for Advanced Architecture of Catalonia Contact: Anastasia Pistofidou FabLab Leon Spain Contact: Nuria Robles Tinkerers Fab Lab Casteldefells, Barcelona, Spain Contact: Milena Orlandini # Netherlands Amsterdam Waag Society Contact: Cecilia Raspanti # Germany FabLab Kamp-Lintfort Rhine-Waal University of Applied Sciences Contact: Adriana Cabrera # France Fab Lab Digiscope Contact: Romain Di Vozzo Artilect Toulouse, France Contact: Lingchih Yang # I"
+    },
+    {
+      "title": "fabricademy2017:students",
+      "url": "http://wiki.textile-academy.org/fabricademy2017/students",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabricademy2017students.md",
+      "description": "# fabricademy2017:students fabricademy2017 students # Fabricademy 2017 Work in progress: if you don't see your name on this list, please contact us!! . # Students Textile Lab, Amsterdam Fanny Trivero Sofia Guridi Pauline Bianchi Julia van Zilt Brigitte Kock Fab Textiles, Barcelona Laura Civetti Carolin Vogler Clara Davis Zoe Powell Tinkerers Fab Lab, Castelldefels * Misha Orlandini Fab Lab Kamp Lintfort Newton Laura Thormeyer Natalia-Elisabeth Disimino Melissa Isabell Akhibi Sophie Woldeyesus Arsiema Ver Pia de-Toledo-Motta NaiadeLara Cheung Wei-Ying Giwa Philippa Ronga Elisa Hoxha Gerantina Liane Sayuri Honda Ay"
+    },
+    {
+      "title": "fabrikipedia",
+      "url": "http://wiki.textile-academy.org/fabrikipedia",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/fabrikipedia.md",
+      "description": "# fabrikipedia fabrikipedia # Fabrikipedia A curated collection of resources about new and existing materials * Materials index # Recent changes 10/3/2017 : Added Cotton Except where otherwise noted, content on this wiki is licensed under the following license: CC Attribution-Share Alike 4.0 International"
+    },
+    {
+      "title": "start",
+      "url": "http://wiki.textile-academy.org/start",
+      "sourceFamily": "fabricademy",
+      "path": "Sources/Raw/fabricademy/start.md",
+      "description": "# start # Fabricademy - Textile and technology academy 2017-18 # Quick links Classes Nodes Students Handbook Videos Recitations # Software, Materials and Equipment Wiki Tutorials Bluejeans Video Conferencing Software Machines Bill of Materials Bibliography # Social Instagram Vimeo # 7-11 May @ WeMake Milan Bootcamp information Program Remote participation Videos # 11-15 Sep @ Villette Markerz by Woma Bootcamp information Program Remote participation Videos # 20-24 Feb @ FabLab Bcn Bootcamp information Lectures Hands-on Activities Sites Program Remote participation Videos # NEW: Fabrikipedia About Fabrikipedia Mat"
+    },
     {
       "title": "Abao in GaudiLabs micro-Residency",
       "url": "https://www.hackteria.org/wiki/Abao_in_GaudiLabs_micro-Residency",

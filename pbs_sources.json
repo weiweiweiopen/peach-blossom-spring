@@ -17,6 +17,11 @@
       "api": "https://www.kobakant.at/DIY/?rest_route=/wp/v2/posts",
       "main": "https://howtogetwhatyouwant.at",
       "out": "Sources/Raw/htgwyw"
+    },
+    "fabricademy": {
+      "kind": "dokuwiki",
+      "main": "http://wiki.textile-academy.org/",
+      "out": "Sources/Raw/fabricademy"
     }
   }
 }
