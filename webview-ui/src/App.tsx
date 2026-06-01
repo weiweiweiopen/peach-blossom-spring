@@ -4450,13 +4450,15 @@ function App() {
               data-no-mobile-drag="true"
             >
               {simSnapshot?.thronglets[0] && (
-                <QuestionPetPreview
-                  question={simSnapshot.thronglets[0].question.text}
-                  appearance={simSnapshot.thronglets[0].appearance}
-                  size={1}
-                  socialSignals={simSnapshot.thronglets[0].state}
-                  currentAction={simSnapshot.thronglets[0].currentAction}
-                />
+                <span className="mobile-stats-pet-icon" aria-hidden="true">
+                  <QuestionPetPreview
+                    question={simSnapshot.thronglets[0].question.text}
+                    appearance={simSnapshot.thronglets[0].appearance}
+                    size={1}
+                    socialSignals={simSnapshot.thronglets[0].state}
+                    currentAction={simSnapshot.thronglets[0].currentAction}
+                  />
+                </span>
               )}
               <span className="mobile-stats-marquee" aria-label="Question pet status">
                 <span className="mobile-stats-marquee-track">
