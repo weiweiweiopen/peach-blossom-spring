@@ -29,3 +29,12 @@ obsidian-vault/Knowledge/*.sqlite
 obsidian-vault/Knowledge/*.sqlite-*
 obsidian-vault/Knowledge/*.db
 **/__pycache__/
+
+# Generated PBS knowledge indexes; rebuild with scripts/pbs_engine.py, runtime uses webview-ui/src/generated/*.json
+Knowledge/*.jsonl
+Knowledge/*.sqlite
+Knowledge/*.sqlite-*
+Knowledge/*.db
+Knowledge/*.db-*
+PBS_CONTEXT.md
+webview-ui/public/og-image 2.*
