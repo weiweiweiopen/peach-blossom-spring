@@ -8,7 +8,10 @@ export interface MemoryChatResponse {
   links: WikiSearchResult[];
 }
 
+const PBS_ENGINE_URL = (import.meta.env.VITE_PBS_ENGINE_URL as string | undefined)?.replace(/\/$/, '') ?? '';
+
 export function canUseLocalMemoryServer(): boolean {
+  if (PBS_ENGINE_URL) return true;
   if (typeof window === 'undefined') return false;
   const host = window.location.hostname;
   return host === 'localhost' || host === '127.0.0.1' || host === '::1';
@@ -16,11 +19,12 @@ export function canUseLocalMemoryServer(): boolean {
 
 async function postJson<T>(path: string, payload: unknown): Promise<T> {
   if (!canUseLocalMemoryServer()) {
-    throw new Error('PBS local memory server is only available on localhost. Cloud pages use the bundled source index fallback.');
+    throw new Error('PBS memory server is unavailable. Configure VITE_PBS_ENGINE_URL for Cloudflare or use localhost.');
   }
+  const endpoint = PBS_ENGINE_URL ? `${PBS_ENGINE_URL}${path}` : path;
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

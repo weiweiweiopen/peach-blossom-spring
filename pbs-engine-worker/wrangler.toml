@@ -1,0 +1,11 @@
+name = "pbs-engine"
+main = "src/index.ts"
+compatibility_date = "2026-06-02"
+
+# Create once before deploy:
+#   npx wrangler d1 create pbs-engine-db
+# Then paste the database_id here.
+[[d1_databases]]
+binding = "PBS_DB"
+database_name = "pbs-engine-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
