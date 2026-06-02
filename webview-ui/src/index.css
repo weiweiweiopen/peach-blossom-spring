@@ -9599,3 +9599,12 @@ body[data-language="ja"],
     font-size: 13px !important;
   }
 }
+
+/* PBS NPC name-bubble language override: scoped only to the small character-name bubble.
+   Do not include mobile talk prompts, dialogue panels, HUD, or question panels. */
+.pbs-interaction-root[data-language="zh-TW"] .npc-name-tag:not(.mobile-talk-prompt),
+.pbs-interaction-root[data-language="en"] .npc-name-tag:not(.mobile-talk-prompt),
+.pbs-interaction-root[data-language="de"] .npc-name-tag:not(.mobile-talk-prompt) {
+  font-size: clamp(18px, 1.55vw, 24px) !important;
+  line-height: 1.12 !important;
+}

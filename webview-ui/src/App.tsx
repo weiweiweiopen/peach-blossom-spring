@@ -54,7 +54,7 @@ import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, canUseLocalMemoryServer, type DialogueHistoryTurn } from "./localMemoryApi.js";
 import { generateBrowserAssociationZine } from "./association/browserAssociationGenerator.js";
 import { askDeepSeekPbsComputer, askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
-import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
+import { buildStaticLocalMemoryAnswer, searchPbsLocalMemory } from "./pbsLocalMemory.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -1016,7 +1016,7 @@ interface PetLintGapItem {
   text: string;
   language: LanguageCode;
   createdAt: string;
-  source: "thought-gap-broadcast" | "zine-feedback";
+  source: "thought-gap-broadcast" | "zine-feedback" | "question-lint";
 }
 
 function readPetLintGapInbox(): PetLintGapItem[] {
@@ -1088,13 +1088,33 @@ function questionLintCopy(language: LanguageCode) {
 }
 
 function questionLintSignals(question: string) {
-  const length = question.trim().length;
-  const specificity = Math.min(100, Math.max(15, length * 2));
-  const evidence = /where|when|which|誰|哪|何|如何|怎麼|材料|組織|社群|method|material|organization|community|wiki|source/i.test(question) ? 72 : 38;
-  const bridge = /and|between|compare|relation|關係|比較|連結|之間|跨|กับ|และ|und|zwischen|と|比較/i.test(question) ? 78 : 44;
-  return { specificity, evidence, bridge };
+  const normalized = question.trim();
+  const length = normalized.length;
+  const hasField = /where|when|which|誰|哪|何|如何|怎麼|材料|組織|社群|場域|地方|方法|工作坊|method|material|organization|community|workshop|site|place|wiki|source/i.test(normalized);
+  const hasCrossDomain = /and|between|compare|relation|關係|比較|連結|之間|跨|與|和|科技|藝術|身體|照護|女性|女性主義|生殖|正義|材料|生物|社群|feminist|technology|art|body|care|reproductive|justice|bio|material|community|กับ|และ|und|zwischen|と|比較/i.test(normalized);
+  const evidenceHits = searchPbsLocalMemory(normalized, 6).length;
+  const specificity = clampPercent(Math.max(15, length * 2) + (hasField ? 10 : 0));
+  const evidence = clampPercent((hasField ? 54 : 30) + Math.min(36, evidenceHits * 8));
+  const bridge = clampPercent((hasCrossDomain ? 62 : 34) + Math.min(24, evidenceHits * 4));
+  return { specificity, evidence, bridge, evidenceHits, hasCrossDomain };
 }
 
+function lintAdviceFromQuestions(question: string, language: LanguageCode): string {
+  const results = searchPbsLocalMemory(question, 4);
+  const titles = results.map((item) => item.title).filter(Boolean).slice(0, 2);
+  const hasCrossDomain = questionLintSignals(question).hasCrossDomain;
+  if (!titles.length) return questionLintCopy(language).revise;
+  const joined = titles.join(" / ");
+  const copy: Record<LanguageCode, string> = {
+    "zh-TW": `${hasCrossDomain ? "跨知識領域線索" : "證據線索"}：先用 ${joined} 檢查問題，缺的場域/材料/社群會累積進 HUD。`,
+    en: `${hasCrossDomain ? "Cross-domain clue" : "Evidence clue"}: start with ${joined}; missing place/material/community nodes accumulate in the HUD.`,
+    id: `Petunjuk bukti: mulai dari ${joined}; node tempat/material/komunitas yang hilang masuk ke HUD.`,
+    de: `Evidenzspur: zuerst ${joined}; fehlende Ort-/Material-/Community-Knoten sammeln sich im HUD.`,
+    ja: `証拠の手がかり：まず ${joined}。足りない場所・素材・共同体ノードは HUD に蓄積されます。`,
+    th: `เบาะแสหลักฐาน: เริ่มจาก ${joined}; node สถานที่/วัสดุ/ชุมชนที่ขาดจะสะสมใน HUD`,
+  };
+  return copy[language];
+}
 
 function questionLintForSnapshot(snapshot: SimSnapshot | null, language: LanguageCode) {
   const questions = snapshot?.thronglets.map((pet) => pet.question.text).filter(Boolean) ?? [];
@@ -1111,7 +1131,7 @@ function questionLintForSnapshot(snapshot: SimSnapshot | null, language: Languag
     specificity: avg("specificity", 15),
     evidence: avg("evidence", 38),
     bridge: avg("bridge", 44),
-    next: joined ? copy.revise : copy.revise,
+    next: joined ? lintAdviceFromQuestions(joined, language) : copy.revise,
   };
 }
 
@@ -1123,7 +1143,7 @@ function questionLintForPet(question: string, language: LanguageCode) {
     specificity: lint.specificity,
     evidence: lint.evidence,
     bridge: lint.bridge,
-    next: copy.revise,
+    next: lintAdviceFromQuestions(question, language),
   };
 }
 
@@ -1684,19 +1704,6 @@ function findNearestApproachableTile(
   );
 }
 
-function findRandomApproachableTile(
-  officeState: OfficeState,
-  occupied = new Set<string>(),
-  origin?: { col: number; row: number },
-  minDistance = 0,
-): { col: number; row: number } | null {
-  const candidates = officeState.walkableTiles
-    .filter((tile) => !occupied.has(`${tile.col},${tile.row}`))
-    .filter((tile) => !origin || Math.abs(tile.col - origin.col) + Math.abs(tile.row - origin.row) >= minDistance);
-  if (!candidates.length) return null;
-  return candidates[Math.floor(Math.random() * candidates.length)] ?? null;
-}
-
 function findNearestNpcApproachTile(
   officeState: OfficeState,
   playerCol: number,
@@ -1723,28 +1730,6 @@ function findNearestNpcApproachTile(
   return candidates[0] ? { col: candidates[0].col, row: candidates[0].row } : null;
 }
 
-function findShortNpcStep(
-  officeState: OfficeState,
-  startCol: number,
-  startRow: number,
-  occupied: Set<string>,
-): { col: number; row: number } | null {
-  const candidates: Array<{ col: number; row: number; score: number }> = [];
-  for (let dRow = -6; dRow <= 6; dRow++) {
-    for (let dCol = -6; dCol <= 6; dCol++) {
-      const distance = Math.abs(dCol) + Math.abs(dRow);
-      if (distance < 3 || distance > 6) continue;
-      const tile = findNearestApproachableTile(officeState, startCol + dCol, startRow + dRow, occupied);
-      const key = `${tile.col},${tile.row}`;
-      if (occupied.has(key)) continue;
-      const actualDistance = Math.abs(tile.col - startCol) + Math.abs(tile.row - startRow);
-      if (actualDistance < 3 || actualDistance > 6) continue;
-      candidates.push({ ...tile, score: Math.random() });
-    }
-  }
-  candidates.sort((a, b) => a.score - b.score);
-  return candidates[0] ?? null;
-}
 function configuredWorkerChatApiUrl(): string {
   return document
     .querySelector('meta[name="pbs-chat-api"], meta[name="sow-chat-api"]')
@@ -2105,6 +2090,9 @@ function App() {
         if (npc) {
           npc.path = [];
           npc.moveProgress = 0;
+          npc.isActive = true;
+          npc.state = CharacterState.TYPE;
+          npc.wanderTimer = 1_000_000;
         }
         const distance = player && npc
           ? Math.abs(npc.tileCol - player.tileCol) + Math.abs(npc.tileRow - player.tileRow)
@@ -2157,6 +2145,19 @@ function App() {
   const activeDialogueCharacter = activeDialogueId
     ? (officeState.characters.get(activeDialogueId) ?? null)
     : null;
+
+  useEffect(() => {
+    if (!activeDialogueId) return;
+    const ch = officeState.characters.get(activeDialogueId);
+    if (!ch) return;
+    ch.path = [];
+    ch.moveProgress = 0;
+    ch.isActive = true;
+    ch.state = CharacterState.TYPE;
+    ch.wanderTimer = 1_000_000;
+    setPlayerMoveTick((tick) => tick + 1);
+  }, [activeDialogueId, officeState]);
+
   const abaoAgentId =
     personas.findIndex((persona) => persona.id === "abao") + 1;
   const isNearAbao = nearbyNpcId === abaoAgentId;
@@ -2638,14 +2639,12 @@ function App() {
         continue;
       }
 
-      const resolvedPlacement =
-        findRandomApproachableTile(officeState, occupied) ??
-        findNearestApproachableTile(
-          officeState,
-          placement.col,
-          placement.row,
-          occupied,
-        );
+      const resolvedPlacement = findNearestApproachableTile(
+        officeState,
+        placement.col,
+        placement.row,
+        occupied,
+      );
       occupied.add(`${resolvedPlacement.col},${resolvedPlacement.row}`);
       ch.tileCol = resolvedPlacement.col;
       ch.tileRow = resolvedPlacement.row;
@@ -2658,36 +2657,10 @@ function App() {
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
-    const interval = window.setInterval(() => {
-      if (activeDialogueIdRef.current !== null) return;
-      const occupied = new Set<string>();
-      for (const ch of officeState.characters.values()) {
-        if (ch.path.length === 0) occupied.add(`${ch.tileCol},${ch.tileRow}`);
-      }
-      const shuffled = personas
-        .map((_persona, index) => index + 1)
-        .filter((id) => officeState.characters.has(id))
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 6);
-      for (const id of shuffled) {
-        const ch = officeState.characters.get(id);
-        if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
-          continue;
-        if (nearbyNpcIdRef.current === id || pendingNpcDialogueIdRef.current === id) continue;
-        const target = findShortNpcStep(
-          officeState,
-          ch.tileCol,
-          ch.tileRow,
-          occupied,
-        );
-        if (target && officeState.walkToTile(id, target.col, target.row)) {
-          occupied.delete(`${ch.tileCol},${ch.tileRow}`);
-          occupied.add(`${target.col},${target.row}`);
-        }
-      }
-    }, 6500);
-    return () => window.clearInterval(interval);
-  }, [appMode, layoutReady, officeState, playerProfile]);
+    // NPC placement must stay deterministic after game restart; do not run the old
+    // random ambient redistribution loop. NPCs only move when explicitly approached.
+    return undefined;
+  }, [appMode, layoutReady, playerProfile]);
 
   useEffect(() => {
     if (
@@ -2975,6 +2948,31 @@ function App() {
       worldNoticeTimerRef.current = null;
     }, 5200);
   }, [appMode, officeState, simSnapshot]);
+
+  useEffect(() => {
+    if (!simSnapshot || appMode !== "interactive") return;
+    const questions = simSnapshot.thronglets.map((pet) => pet.question.text).filter(Boolean);
+    if (!questions.length) return;
+    setPetLintGapInbox((current) => {
+      let next = current;
+      for (const question of questions) {
+        const lint = questionLintSignals(question);
+        if (lint.evidence >= 78 && lint.bridge >= 78) continue;
+        const text = `Question lint: ${lint.hasCrossDomain ? "跨知識領域待查" : "證據節點待查"} · ${question}`;
+        if (next.some((item) => item.text === text)) continue;
+        next = [{
+          id: `question-lint-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+          text,
+          language: selectedLanguage,
+          createdAt: new Date().toISOString(),
+          source: "question-lint" as const,
+        }, ...next].slice(0, 24);
+      }
+      if (next === current) return current;
+      writePetLintGapInbox(next);
+      return next;
+    });
+  }, [appMode, selectedLanguage, simSnapshot]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -4045,8 +4043,17 @@ function App() {
                     handleClick(tag.id);
                     return;
                   }
-                  if (isNearbyTalkTarget) {
+                  if (!tag.isQuestionPet && tag.id !== abaoAgentId) {
+                    const npc = officeState.characters.get(tag.id);
+                    if (npc) {
+                      npc.path = [];
+                      npc.moveProgress = 0;
+                      npc.isActive = true;
+                      npc.state = CharacterState.TYPE;
+                      npc.wanderTimer = 1_000_000;
+                    }
                     officeState.selectedAgentId = tag.id;
+                    setPendingNpcDialogueId(null);
                     setActiveDialogueId(tag.id);
                     return;
                   }

@@ -11,7 +11,20 @@ interface PbsLocalMemoryItem {
   description: string;
 }
 
-const localMemoryItems = (pbsLocalMemoryIndex as { items?: PbsLocalMemoryItem[] }).items ?? [];
+const curatedLocalMemoryItems: PbsLocalMemoryItem[] = [
+  {
+    title: 'Giulia Tomasello / ALMA Futura — Xenopia reproductive justice residency',
+    url: 'https://almafutura.org/',
+    sourceFamily: 'sgmk/hackteria curated',
+    path: 'Sources/Raw/sgmk/hacker-in-residence-programme.md',
+    description: 'Giulia Tomasello / ALMA Futura collaborated with GaudiLabs and Hackteria ZET on participatory community research around reproductive justice, DIY pregnancy tests, Beta Hcg testing, female healthcare, Xenopia, Future Flora, biotechnology, interactive wearables, feminist technology workshops, access to abortion, and body autonomy. Related public links: https://hackteria.org/wiki/Xenopia https://gitomasello.com/ https://almafutura.org/',
+  },
+];
+
+const localMemoryItems = [
+  ...curatedLocalMemoryItems,
+  ...((pbsLocalMemoryIndex as { items?: PbsLocalMemoryItem[] }).items ?? []),
+];
 
 function compact(text: string, max = 260): string {
   const normalized = text.replace(/\s+/g, ' ').trim();
@@ -38,8 +51,17 @@ function expandQuery(query: string): string {
   if (/織品|電子織品|textile|e-?textile|wearable|sensor|感測|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(query)) {
     expansions.push('textile', 'e-textile', 'sensor', 'soft circuit', 'wearable', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'body', 'embodied knowledge', 'skin', 'touch', 'gesture', 'stretch sensor', 'failure notes', 'trials and errors', 'documentation', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
-  if (/open|開源|hardware|硬體|lab|實驗室|temporary|臨時|公共|基礎設施|commons/i.test(query)) {
-    expansions.push('open science', 'open hardware', 'temporary lab', 'community lab', 'workshop', 'commons', 'documentation');
+  if (/女性主義|女性|女權|生殖|月經|懷孕|照護|身體自主|femini|cyberfem|reproductive|menstrual|pregnancy|abortion|healthcare|care|alma|giulia|xenopia|flora/i.test(query)) {
+    expansions.push('feminist technology', 'feminist technoscience', 'reproductive justice', 'female healthcare', 'menstrual care', 'pregnancy test', 'DIY pregnancy tests', 'body autonomy', 'care protocols', 'Giulia Tomasello', 'ALMA Futura', 'Xenopia', 'Future Flora', 'Kobakant', 'wearables', 'biotechnology');
+  }
+  if (/open|開源|開放|開放科學|hardware|硬體|lab|實驗室|temporary|臨時|公共|基礎設施|commons/i.test(query)) {
+    expansions.push('open science', 'open hardware', 'open knowledge', 'temporary lab', 'community lab', 'workshop', 'commons', 'documentation');
+  }
+  if (/印尼|印度尼西亞|indonesia|indonesian|jakarta|yogyakarta|jogja|bandung|surabaya/i.test(query)) {
+    expansions.push('Indonesia', 'Indonesian', 'Yogyakarta', 'Jogja', 'Jakarta', 'Bandung', 'Surabaya', 'Lifepatch', 'ISI Yogyakarta');
+  }
+  if (/城市|都市|urban|city|cities/i.test(query)) {
+    expansions.push('urban', 'city', 'cities', 'local', 'neighborhood', 'civic');
   }
   return [query, ...expansions].join(' ');
 }
@@ -60,22 +82,28 @@ function tokens(text: string): string[] {
 
 function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
   const title = item.title.toLowerCase();
-  const haystack = `${item.title} ${item.sourceFamily} ${item.description}`.toLowerCase();
-  const score = queryTokens.reduce((sum, token) => {
+  const haystack = `${item.title} ${item.sourceFamily} ${item.description} ${item.url} ${item.path}`.toLowerCase();
+  const directScore = queryTokens.reduce((sum, token) => {
     if (!haystack.includes(token)) return sum;
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
-  const familyBoost = /htgwyw|hackteria|sgmk|textiltronics|modernbody|valldaura|okiwonderlab|tttlabs/i.test(item.sourceFamily) ? 1 : 0;
+  const familyBoost = 0;
   const joinedQuery = queryTokens.join(' ');
+  const wantsIndonesia = /印尼|印度尼西亞|indonesia|indonesian|yogyakarta|jogja|jakarta|bandung|surabaya|lifepatch|isi/.test(joinedQuery);
+  const indonesiaBoost = wantsIndonesia ? (/indonesia|indonesian|yogyakarta|jogja|jakarta|bandung|surabaya|lifepatch|isi\s*,?\s*yogyakarta/i.test(haystack) ? 56 : -18) : 0;
   const bodyTextileBoost = /織品|電子織品|穿戴|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|textile|e-?textile|wearable|body|embod|somatic|skin|touch|gesture|failure|documentation|document/i.test(joinedQuery) && /textile|e-?textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|touch|gesture|failure|trials|errors|documentation|kobakant|how to get what you want|badlab|open source body|medtech/i.test(haystack) ? 24 : 0;
   const soundDiyBoost = /diy|自製|自造|合成器|synth|sound|聲音|音樂|樂器/i.test(joinedQuery) && /sgmk|synth|sound|music|instrument|speaker|8bit|nandsynth|gnusbuino|mechartlab|home made|diy electronics|handmade electronics/i.test(haystack) ? 28 : 0;
   const campEducationBoost = /camp|營|alternative|education|替代教育|獨立藝術營|independent art/i.test(joinedQuery) && /camp|hackterialab|workshop|summer school|field|community|education|unconference|commons|colabs/i.test(haystack) ? 22 : 0;
   const networkBoost = /ngm|hackteria|sgmk|kobakant|fabricademy|textile academy|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|fabricademy|textile academy|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
+  const feministTechBoost = /女性主義|女性|女權|生殖|月經|懷孕|照護|身體自主|femini|cyberfem|reproductive|menstrual|pregnancy|abortion|healthcare|care|alma|giulia|xenopia|flora/i.test(joinedQuery) && /giulia tomasello|alma futura|xenopia|future flora|reproductive justice|female.?s healthcare|pregnancy test|beta hcg|abortion|menstrual|feminist|cyberfem|feminist technoscience|biomenstrual|wearable|body|care/i.test(haystack) ? 72 : 0;
   const fabricademyBoost = /fabricademy|textile academy|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
   const genericFabricademyPenalty = item.sourceFamily === 'fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(joinedQuery) ? -120 : 0;
+  const commonIrrelevantPenalty = !/gaudilabs|micro.?residency|ai|qwen|install party|abao|shih|惟捷|hackteria|sgmk/i.test(joinedQuery) && /abao in gaudilabs micro-residency|ai@sgmk/i.test(haystack) ? -200 : 0;
   const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation|jonathan|minchin|stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|tttlabs|ttt-labs|bioferal|terrabytes|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
   const personaCommunityBoost = ((/jonathan|minchin/i.test(joinedQuery) && /valldaura|green fab lab/i.test(haystack)) || (/stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /modernbody|modern body festival|modern body/i.test(haystack))) ? 64 : 0;
-  return score + familyBoost + bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost + genericFabricademyPenalty;
+  const topicalBoost = bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + feministTechBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost;
+  if (directScore <= 0 && topicalBoost <= 0) return 0;
+  return directScore + familyBoost + topicalBoost + indonesiaBoost + genericFabricademyPenalty + commonIrrelevantPenalty;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {
