@@ -9204,7 +9204,7 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 /* 2026-06-01 correction: restore character bubble anchors and unify dialogue thumbnails. */
 .pbs-interaction-root .npc-name-tag {
   translate: none !important;
-  transform: translate(-50%, -100%) scale(var(--npc-tag-scale, 1)) !important;
+  transform: translate(calc(-50% + var(--npc-tag-offset-x, 0px)), calc(-100% + var(--npc-tag-offset-y, 0px))) scale(var(--npc-tag-scale, 1)) !important;
   transform-origin: center bottom !important;
 }
 
@@ -9542,11 +9542,10 @@ body[data-language="ja"],
   }
 }
 
-/* PBS NPC name-bubble language override: scoped only to the small character-name bubble.
-   Do not include mobile talk prompts, dialogue panels, HUD, or question panels. */
+/* PBS NPC name bubbles: keep compact; actual visual size follows --npc-tag-scale. */
 .pbs-interaction-root[data-language="zh-TW"] .npc-name-tag:not(.mobile-talk-prompt),
 .pbs-interaction-root[data-language="en"] .npc-name-tag:not(.mobile-talk-prompt),
 .pbs-interaction-root[data-language="de"] .npc-name-tag:not(.mobile-talk-prompt) {
-  font-size: clamp(18px, 1.55vw, 24px) !important;
+  font-size: clamp(12px, 1vw, 16px) !important;
   line-height: 1.12 !important;
 }

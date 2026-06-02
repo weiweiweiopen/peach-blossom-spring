@@ -3462,9 +3462,11 @@ function App() {
         top: number;
         isQuestionPet: boolean;
         zoomScale: number;
+        offsetX?: number;
+        offsetY?: number;
       }>;
     if (!overlayMetrics) return [];
-    return Array.from(officeState.characters.values())
+    const rawTags = Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
       .map((ch) => {
         const spriteRows =
@@ -3480,8 +3482,37 @@ function App() {
           left: overlayMetrics.offsetX + ch.x * overlayMetrics.scale,
           top: overlayMetrics.offsetY + (ch.y + sittingOffset - spriteVisualHeight - 4) * overlayMetrics.scale,
           isQuestionPet: Boolean(ch.isQuestionPet),
-          zoomScale: Math.max(0.16, Math.min(1, editor.zoom / ZOOM_DEFAULT)),
+          zoomScale: Math.max(0.12, Math.min(0.62, (editor.zoom / ZOOM_DEFAULT) * 0.58)),
         };
+      });
+    const placed: Array<{ x: number; y: number; w: number; h: number }> = [];
+    const gap = 4;
+    const estimateWidth = (name: string, scale: number) => Math.min(220, Math.max(54, name.length * 9 + 30)) * scale;
+    const estimateHeight = (scale: number) => 30 * scale;
+    return rawTags
+      .sort((a, b) => a.top - b.top || a.left - b.left)
+      .map((tag) => {
+        const w = estimateWidth(tag.name, tag.zoomScale);
+        const h = estimateHeight(tag.zoomScale);
+        const lanes = [
+          { x: 0, y: 0 },
+          { x: 0, y: -(h + gap) },
+          { x: 0, y: h + gap },
+          { x: -(w * 0.58 + gap), y: 0 },
+          { x: w * 0.58 + gap, y: 0 },
+          { x: -(w * 0.58 + gap), y: -(h + gap) },
+          { x: w * 0.58 + gap, y: -(h + gap) },
+          { x: -(w * 0.58 + gap), y: h + gap },
+          { x: w * 0.58 + gap, y: h + gap },
+          { x: 0, y: -2 * (h + gap) },
+          { x: 0, y: 2 * (h + gap) },
+        ];
+        const pick = lanes.find((lane) => {
+          const rect = { x: tag.left + lane.x - w / 2, y: tag.top + lane.y - h, w, h };
+          return !placed.some((other) => rect.x < other.x + other.w + gap && rect.x + rect.w + gap > other.x && rect.y < other.y + other.h + gap && rect.y + rect.h + gap > other.y);
+        }) ?? lanes[lanes.length - 1];
+        placed.push({ x: tag.left + pick.x - w / 2, y: tag.top + pick.y - h, w, h });
+        return { ...tag, offsetX: pick.x, offsetY: pick.y };
       });
   })();
 
@@ -4042,6 +4073,8 @@ function App() {
               style={{
                 left: tag.left,
                 top: tag.top,
+                "--npc-tag-offset-x": `${tag.offsetX ?? 0}px`,
+                "--npc-tag-offset-y": `${tag.offsetY ?? 0}px`,
                 "--npc-tag-scale": tag.zoomScale,
               } as CSSProperties}
               onClick={
