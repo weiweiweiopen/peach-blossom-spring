@@ -1314,7 +1314,7 @@ function CentralComputerDialogue({
 
   return (
     <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
-      <section className="rpg-dialogue-panel rpg-dialogue-panel--campfire pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
+      <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
@@ -1356,11 +1356,15 @@ function CentralComputerDialogue({
           </div>
         </div>
         {showSuggestedQuestions && (
-          <div className="rpg-dialogue-actions rpg-dialogue-question-drawer flex flex-wrap items-start gap-3 mb-5">
-            <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
-            {suggestedQuestions.map((question) => (
-              <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
-            ))}
+          <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
+            <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
+              <p className="w-full m-0 mb-3 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
+              <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-0">
+                {suggestedQuestions.map((question) => (
+                  <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
         <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
