@@ -1314,7 +1314,7 @@ function CentralComputerDialogue({
 
   return (
     <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
-      <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
+      <section className="rpg-dialogue-panel rpg-dialogue-panel--campfire pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
