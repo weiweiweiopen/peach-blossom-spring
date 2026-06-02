@@ -74,6 +74,11 @@
       "kind": "static",
       "main": "https://avarts.ionio.gr/ttt-labs/2024b/en/news/31407/",
       "out": "Sources/Raw/tttlabs"
+    },
+    "alma": {
+      "kind": "static",
+      "main": "https://al-ma.org/ALMA-connects-FLORA",
+      "out": "Sources/Raw/alma"
     }
   }
 }

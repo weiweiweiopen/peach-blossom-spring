@@ -241,6 +241,8 @@ def source_family_for(path: Path) -> str:
         return "greenfablab"
     if "sgmk" in parts or "sgmk full" in lowered:
         return "sgmk"
+    if "alma" in parts or "al-ma.org" in lowered:
+        return "alma"
     return "unknown"
 
 

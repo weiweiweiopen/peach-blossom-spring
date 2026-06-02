@@ -91,6 +91,7 @@ function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: 
 function sourceFamily(card: Partial<SourceCard>): string {
   const source = String(card.source ?? '').toLowerCase();
   const text = `${card.title ?? ''} ${card.path ?? ''} ${card.url ?? ''}`.toLowerCase();
+  if (source === 'alma' || text.includes('al-ma.org') || text.includes('/alma/')) return 'ALMA';
   if (source === 'sgmk' || text.includes('sgmk')) return 'SGMK';
   if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (text.includes('fabricademy')) return 'Fabricademy';
@@ -117,6 +118,8 @@ function personaSourceHint(personaId?: string): string {
       return 'Oki Wonder Lab Okiwonderlab Ryu Oyama Okinawa fieldwork island';
     case 'tincuta-heinzel':
       return 'Textiltronics Attempts Failures Trials Errors e-textile failure curatorial textile electronics TTTlabs BioFeral BeachCamp';
+    case 'giulia-tomasello':
+      return 'Giulia Tomasello ALMA ALMA connects FLORA ALMA ATLAS Re-FREAM Xenopia Future Flora feminist technology intimate female health reproductive justice care consent telemedicine literacy';
     default:
       return '';
   }
@@ -137,6 +140,8 @@ function personaAllowedSource(result: WikiSearchResult, personaId?: string): boo
       return /oki wonder|okiwonderlab|ryuoyama|okinawa|island/.test(haystack);
     case 'tincuta-heinzel':
       return /textiltronics|attempts|failures|trials|errors|e-textile|textile|tttlabs|ttt-labs|bioferal|terrabytes|ionio/.test(haystack);
+    case 'giulia-tomasello':
+      return /giulia|tomasello|al-ma\.org|\balma\b|re-fream|xenopia|future flora|flora|female|feminist|reproductive|intimate|health|care|telemedicine|literacy|consent/.test(haystack);
     default:
       return true;
   }
@@ -150,6 +155,8 @@ function familyPenalty(result: WikiSearchResult, personaId?: string): number {
   if (personaId === 'jonathan-minchin' && /green fab|valldaura|npc wiki/.test(family)) return 900;
   if ((personaId === 'stelio-manousakis' || personaId === 'stephanie-pan') && /modern body|npc wiki/.test(family)) return 900;
   if (personaId === 'tincuta-heinzel' && /textiltronics|tttlabs|bioferal|npc wiki/.test(family)) return 800;
+  if (personaId === 'giulia-tomasello' && /npc wiki|alma|re-fream/.test(family)) return 1200;
+  if (personaId === 'giulia-tomasello' && /hackteria|sgmk/.test(family)) return -2000;
   return 0;
 }
 
