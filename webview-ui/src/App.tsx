@@ -803,14 +803,14 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
     <div className="flex flex-col items-center gap-2">
       <div
         className="bg-bg/80 border border-border p-2"
-        style={{ width: 54, height: 84, boxSizing: "border-box", display: "grid", placeItems: "center" }}
+        style={{ width: 54, height: 102, boxSizing: "border-box", display: "grid", placeItems: "center", overflow: "hidden" }}
         aria-label={label}
       >
         <img
           src={src}
           alt=""
-          className="block object-contain"
-          style={{ imageRendering: "pixelated", width: 36, height: 66, maxWidth: 36, maxHeight: 66, objectFit: "contain" }}
+          className="block"
+          style={{ imageRendering: "pixelated", width: 78, height: 116, maxWidth: "none", maxHeight: "none", objectFit: "cover" }}
         />
       </div>
       <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
