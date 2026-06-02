@@ -810,7 +810,7 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
           src={src}
           alt=""
           className="block"
-          style={{ imageRendering: "pixelated", width: 96, height: 136, maxWidth: "none", maxHeight: "none", objectFit: "cover", objectPosition: "center center", transform: "translateY(-4px)" }}
+          style={{ imageRendering: "pixelated", width: 96, height: 136, maxWidth: "none", maxHeight: "none", objectFit: "cover", objectPosition: "center center", transform: "translate(-24px, -4px)" }}
         />
       </div>
       <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
