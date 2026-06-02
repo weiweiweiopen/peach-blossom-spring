@@ -494,6 +494,51 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
 }
 
 
+
+function idealPbsKeywords(question: string, answer = ''): string[] {
+  const text = `${question} ${answer}`.toLowerCase();
+  const keywords: string[] = [];
+  const add = (...items: string[]) => {
+    for (const item of items) if (!keywords.includes(item)) keywords.push(item);
+  };
+  if (/共居|共同居住|多物種|其他物種|cohab|multi-?species|more-than-human|habitat|architecture|建築/.test(text)) {
+    add('共居創作', '多物種共居', '臨時社群', 'habitat design', 'more-than-human cohabitation');
+  }
+  if (/獨立藝術營|藝術營|營隊|camp|temporary|臨時|社群|community|collective|workshop|工作坊/.test(text)) {
+    add('臨時社群', '共居創作', 'temporary commons', 'camp as method', 'workshop documentation');
+  }
+  if (/女性主義|女性|生殖|照護|同意|femini|reproductive|care|consent|alma|flora/.test(text)) {
+    add('女性主義科技', '照護基礎設施', '同意與資料邊界', 'ALMA connects FLORA', 'reproductive justice');
+  }
+  if (/聲音|合成器|synth|sound|speaker|oscillator|diy/.test(text)) {
+    add('DIY synth', '聲音電路', '臨時聲音社群', 'workshop score', 'shared instrument');
+  }
+  if (/電子織品|織品|穿戴|感測|textile|wearable|sensor|soft circuit/.test(text)) {
+    add('電子織品', '身體介面', 'soft circuit', 'failure notes', 'repairable documentation');
+  }
+  return keywords.slice(0, 6);
+}
+
+function keywordRouteText(language: LanguageCode, keywords: string[]): string {
+  if (!keywords.length) return '';
+  const joined = keywords.slice(0, 3).map((item) => `「${item}」`).join('、');
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': `我會直接用 ${joined} 這條路線替你讀連結，不要你再重查一次。`,
+    en: `I will use ${joined} as the reading route, instead of asking you to search again.`,
+    id: `Aku memakai ${joined} sebagai rute baca, bukan menyuruhmu mencari ulang.`,
+    de: `Ich nutze ${joined} als Leseroute, statt dich noch einmal suchen zu lassen.`,
+    ja: `${joined} を読む道筋として使い、もう一度検索しろとは言いません。`,
+    th: `ฉันจะใช้ ${joined} เป็นเส้นทางอ่าน ไม่ใช่ให้คุณค้นใหม่อีกครั้ง`,
+  };
+  return copy[language];
+}
+
+function appendKeywordRoute(answer: string, language: LanguageCode, keywords: string[]): string {
+  const route = keywordRouteText(language, keywords);
+  if (!route || answer.includes(keywords[0] ?? '')) return answer;
+  return `${answer} ${route}`;
+}
+
 function sourceLinksLabel(language: LanguageCode): string {
   const copy: Record<LanguageCode, string> = {
     'zh-TW': '相關連結',
@@ -681,6 +726,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
     setError('');
     setIsLoading(true);
     const dialogueHistory = recentDialogueHistory(messages);
+    const idealKeywords = idealPbsKeywords(trimmed);
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
@@ -693,9 +739,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         dialogueKnowledge.name,
       );
       const transcriptEvidence = rankEvidence(`${trimmed}
-${topic}`, transcriptCandidates, 4);
+${topic}
+${idealKeywords.join(' ')}`, transcriptCandidates, 4);
       const npcEvidence = retrieveNpcEvidence({
-        message: trimmed,
+        message: `${trimmed}
+${idealKeywords.join(' ')}`,
         retrievalContext: topic,
         knowledge: dialogueKnowledge,
       });
@@ -714,8 +762,9 @@ ${item.text}`).join('\n\n');
           preferredLanguage: language,
           dialogueHistory,
         });
-        const resolvedLinks = answer.links.length ? answer.links : searchWikiPagesWithHints(trimmed, answer.answer, persona.id, 8);
-        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: resolvedLinks }]);
+        const answerKeywords = idealPbsKeywords(trimmed, answer.answer);
+        const resolvedLinks = searchWikiPagesWithHints(trimmed, `${answer.answer} ${answerKeywords.join(' ')}`, persona.id, 8);
+        setMessages((prev) => [...prev, { speaker: persona.name, text: appendKeywordRoute(answer.answer, language, answerKeywords), evidence: answer.evidence, links: resolvedLinks.length ? resolvedLinks : answer.links }]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -726,11 +775,15 @@ ${item.text}`).join('\n\n');
             evidence: mergedEvidence,
             dialogueHistory,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
+          const answerKeywords = idealPbsKeywords(trimmed, answer);
+          const resolvedLinks = searchWikiPagesWithHints(trimmed, `${answer} ${answerKeywords.join(' ')}`, persona.id, 8);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: appendKeywordRoute(answer, language, answerKeywords), evidence: mergedEvidence, links: resolvedLinks.length ? resolvedLinks : links }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, fallbackText, persona.id, 8) }]);
+          const answerKeywords = idealPbsKeywords(trimmed, fallbackText);
+          const resolvedLinks = searchWikiPagesWithHints(trimmed, `${fallbackText} ${answerKeywords.join(' ')}`, persona.id, 8);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: appendKeywordRoute(fallbackText, language, answerKeywords), links: resolvedLinks.length ? resolvedLinks : links }]);
         }
       }
     } catch (err) {

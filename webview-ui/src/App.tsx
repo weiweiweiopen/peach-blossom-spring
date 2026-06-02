@@ -28,7 +28,7 @@ import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
-import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
+import { ZOOM_DEFAULT, ZOOM_MAX, ZOOM_MIN } from "./constants.js";
 import { useEditorActions } from "./hooks/useEditorActions.js";
 import { useEditorKeyboard } from "./hooks/useEditorKeyboard.js";
 import { useExtensionMessages } from "./hooks/useExtensionMessages.js";
@@ -3480,7 +3480,7 @@ function App() {
           left: overlayMetrics.offsetX + ch.x * overlayMetrics.scale,
           top: overlayMetrics.offsetY + (ch.y + sittingOffset - spriteVisualHeight - 4) * overlayMetrics.scale,
           isQuestionPet: Boolean(ch.isQuestionPet),
-          zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
+          zoomScale: Math.max(0.16, Math.min(1, editor.zoom / ZOOM_DEFAULT)),
         };
       });
   })();
@@ -3524,7 +3524,7 @@ function App() {
     return {
       left: overlayMetrics.offsetX + player.x * overlayMetrics.scale,
       top: overlayMetrics.offsetY + (player.y - 34) * overlayMetrics.scale,
-      zoomScale: Math.max(0.42, Math.min(0.72, editor.zoom / 7)),
+      zoomScale: Math.max(0.16, Math.min(0.72, editor.zoom / ZOOM_DEFAULT)),
     };
   })();
 
