@@ -806,7 +806,7 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
           src={src}
           alt=""
           className="block object-contain"
-          style={{ imageRendering: "pixelated", width: "100%", height: "100%", maxWidth: "100%", maxHeight: "100%" }}
+          style={{ imageRendering: "pixelated", width: 36, height: 36, maxWidth: 36, maxHeight: 36, objectFit: "contain" }}
         />
       </div>
       <span className="dialogue-avatar-label">{label}</span>

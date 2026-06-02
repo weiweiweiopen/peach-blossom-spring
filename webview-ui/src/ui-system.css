@@ -198,20 +198,9 @@
   place-items: center !important;
 }
 
-.pbs-interaction-root .rpg-dialogue-avatar-frame--campfire {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
 
-.pbs-interaction-root .rpg-dialogue-avatar-frame--campfire img {
-  width: 184px !important;
-  height: 184px !important;
-  max-width: none !important;
-  max-height: none !important;
-  flex: 0 0 auto !important;
-  transform: translateY(8px) !important;
-}
+
+
 
 .pbs-interaction-root .mobile-talk-prompt.mobile-talk-prompt--compact {
   width: auto !important;
