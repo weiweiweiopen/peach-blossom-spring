@@ -1358,7 +1358,7 @@ function CentralComputerDialogue({
         {showSuggestedQuestions && (
           <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
             <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
-              <p className="w-full m-0 mb-3 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
+              {isSuggestingQuestions && <p className="w-full m-0 mb-3 text-base text-text-muted" data-ui-part="caption">{QUESTION_SUGGESTION_LOADING_COPY[language]}</p>}
               <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-0">
                 {suggestedQuestions.map((question) => (
                   <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
