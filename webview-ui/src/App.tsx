@@ -754,9 +754,9 @@ function AssociationLowRelevancePage({ language, query, onRetry }: { language: L
 
 function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: string }) {
   return (
-    <div className="dialogue-avatar-wrap">
+    <div className="flex flex-col items-center gap-2">
       <div
-        className="dialogue-pixel-avatar-frame"
+        className="bg-bg/80 border border-border p-2"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
@@ -773,7 +773,7 @@ function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: str
           )),
         )}
       </div>
-      <span className="dialogue-avatar-label">{label}</span>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
     </div>
   );
 }
@@ -800,16 +800,20 @@ function shuffleCopy<T>(items: T[]): T[] {
 function ComputerDialogueAvatar({ label }: { label: string }) {
   const src = `${import.meta.env.BASE_URL}assets/campfire.gif`;
   return (
-    <div className="dialogue-avatar-wrap">
-      <div className="dialogue-pixel-avatar-frame" aria-hidden="true">
+    <div className="flex flex-col items-center gap-2">
+      <div
+        className="bg-bg/80 border border-border p-2"
+        style={{ width: 54, height: 84, boxSizing: "border-box", display: "grid", placeItems: "center" }}
+        aria-label={label}
+      >
         <img
           src={src}
           alt=""
           className="block object-contain"
-          style={{ imageRendering: "pixelated", width: 36, height: 36, maxWidth: 36, maxHeight: 36, objectFit: "contain" }}
+          style={{ imageRendering: "pixelated", width: 36, height: 66, maxWidth: 36, maxHeight: 66, objectFit: "contain" }}
         />
       </div>
-      <span className="dialogue-avatar-label">{label}</span>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
     </div>
   );
 }
@@ -820,7 +824,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "LLM WIKI 營火",
     subtitle: "聯想 / 共享火光終端",
     playerSpeaker: "你",
-    intro: "我是多重心智的火燄。圍著火問社群、方法、材料或組織問題，我會短答、列出可點頁面，並每次給你一個使用 PBS 的小 tip。",
+    intro: "我是 PBS 營火。你可以把我當成會陪你找路的嚮導：告訴我你想追的社群、方法、材料或人物，我會先幫你整理方向，再把能繼續閱讀的真實連結列出來。",
     fail: "LLM 回答暫時失敗；先列出本地 wiki 搜尋結果，你可以直接點開查閱。",
     failError: "營火暫時無法回答。",
     needQuestion: "請先輸入一個想探索的桃花源社群問題。",
@@ -838,7 +842,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "LLM Wiki Campfire",
     subtitle: "Association / shared-fire terminal",
     playerSpeaker: "You",
-    intro: "I am the Flame of Many Minds. Ask around the fire about a community, method, material, or organization; I answer briefly, list real pages below, and give one small PBS tip each time.",
+    intro: "I am the PBS campfire guide. Tell me the community, method, material, person, or question you want to follow; I will help you choose a path, answer in plain language, and list real pages you can keep reading.",
     fail: "The LLM answer failed for now; here are the local wiki search results you can open directly.",
     failError: "The campfire failed to answer.",
     needQuestion: "Enter a Peach Blossom Spring community question first.",
@@ -856,7 +860,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "Api Unggun Wiki LLM",
     subtitle: "Asosiasi / terminal api bersama",
     playerSpeaker: "Kamu",
-    intro: "Saya Api Banyak Pikiran. Bertanyalah di sekitar api tentang komunitas, metode, material, atau organisasi; saya menjawab singkat dari memori bersama dan menampilkan halaman nyata di bawah.",
+    intro: "Aku pemandu api unggun PBS. Ceritakan komunitas, metode, material, tokoh, atau pertanyaan yang ingin kamu ikuti; aku akan membantu memilih jalur, menjawab dengan bahasa sederhana, dan menampilkan halaman nyata untuk dibaca lanjut.",
     fail: "Jawaban LLM sementara gagal; ini hasil pencarian wiki lokal yang bisa dibuka langsung.",
     failError: "Api unggun gagal menjawab.",
     needQuestion: "Masukkan dulu pertanyaan komunitas Peach Blossom Spring.",
@@ -874,7 +878,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "LLM-Wiki-Lagerfeuer",
     subtitle: "Assoziations- / geteiltes-Feuer-Terminal",
     playerSpeaker: "Du",
-    intro: "Ich bin die Flamme vieler Geister. Frag am Feuer nach Community, Methode, Material oder Organisation; ich antworte kurz aus dem geteilten Gedaechtnis und liste echte Seiten unten auf.",
+    intro: "Ich bin der PBS-Lagerfeuer-Guide. Nenne mir eine Community, Methode, ein Material, eine Person oder eine Frage; ich helfe dir, eine Spur zu wählen, antworte verständlich und liste echte Seiten zum Weiterlesen.",
     fail: "Die LLM-Antwort ist gerade fehlgeschlagen; hier sind lokale Wiki-Suchergebnisse zum Öffnen.",
     failError: "Das Lagerfeuer konnte nicht antworten.",
     needQuestion: "Gib zuerst eine Frage zur Peach-Blossom-Spring-Community ein.",
@@ -892,7 +896,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "LLM Wiki の火",
     subtitle: "連想 / 共有の火の端末",
     playerSpeaker: "あなた",
-    intro: "私は多重の心の火です。火を囲んでコミュニティ、方法、素材、組織について質問してください。共有記憶から短く答え、下に実在するページを並べます。",
+    intro: "私は PBS の焚き火ガイドです。追いかけたいコミュニティ、方法、素材、人物、問いを教えてください。道筋を一緒に選び、わかりやすく答え、続けて読める実在ページを並べます。",
     fail: "LLM の回答に失敗しました。まず開けるローカル wiki 検索結果を表示します。",
     failError: "火は回答できませんでした。",
     needQuestion: "先に Peach Blossom Spring のコミュニティ質問を入力してください。",
@@ -910,7 +914,7 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
     kicker: "กองไฟ Wiki ของ LLM",
     subtitle: "การเชื่อมโยง / ปลายทางไฟร่วม",
     playerSpeaker: "คุณ",
-    intro: "ฉันคือเปลวไฟแห่งหลายจิตใจ ถามรอบกองไฟเรื่องชุมชน วิธี วัสดุ หรือองค์กรได้ ฉันจะตอบสั้นจากความทรงจำร่วมและแสดงหน้าจริงด้านล่าง",
+    intro: "ฉันคือไกด์กองไฟของ PBS บอกฉันได้ว่าคุณอยากตามชุมชน วิธี วัสดุ บุคคล หรือคำถามไหน ฉันจะช่วยเลือกเส้นทาง ตอบให้อ่านง่าย และแสดงหน้าจริงให้อ่านต่อ",
     fail: "คำตอบจาก LLM ล้มเหลวชั่วคราว ต่อไปนี้คือผลค้นหา wiki ในเครื่องที่เปิดดูได้ทันที",
     failError: "กองไฟตอบไม่ได้ในตอนนี้",
     needQuestion: "กรุณาใส่คำถามเกี่ยวกับชุมชน Peach Blossom Spring ก่อน",
@@ -1213,7 +1217,12 @@ function CentralComputerDialogue({
   const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
   const [isSuggestingQuestions, setIsSuggestingQuestions] = useState(false);
-  const [messages, setMessages] = useState<ComputerMessage[]>(() => []);
+  const [messages, setMessages] = useState<ComputerMessage[]>(() => [
+    {
+      speaker: copy.name,
+      text: copy.intro,
+    },
+  ]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
