@@ -9646,7 +9646,7 @@ body[data-language="ja"],
     object-fit: contain !important;
   }
 
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars--campfire span {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars--campfire .dialogue-avatar-label {
     display: none !important;
   }
 }
