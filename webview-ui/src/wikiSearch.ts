@@ -29,6 +29,10 @@ const KEYWORD_HINT_PATTERNS = [
 
 function strictTokens(text: string): string[] {
   const normalized = text.toLowerCase();
+  const aliases: string[] = [];
+  if (/多物種|其他物種|共同居住|共居|共同生活|建築|棲地|棲居|人跟|人與/u.test(text)) {
+    aliases.push('multispecies', 'cohabitation', 'architecture', 'habitat', 'dwelling', 'more-than-human', 'interspecies', 'ecology');
+  }
   const latinTokens = normalized
     .split(/[^\p{L}\p{N}]+/u)
     .filter((token) => token.length >= 3 && !/[\u3400-\u9fff]/u.test(token) && !LINK_STOPWORDS.has(token));
@@ -43,7 +47,15 @@ function strictTokens(text: string): string[] {
     }
     return out;
   });
-  return Array.from(new Set([...latinTokens, ...cjkTokens]));
+  return Array.from(new Set([...latinTokens, ...cjkTokens, ...aliases]));
+}
+
+function globallyBlockedResult(result: WikiSearchResult, query = ''): boolean {
+  const haystack = `${result.title} ${result.url}`.toLowerCase();
+  if (/abao[_\s-]+in[_\s-]+gaudilabs[_\s-]+micro[_\s-]+residency|abao[_\s-]+nano[_\s-]+doctor[_\s-]+blade[_\s-]+hacker[_\s-]+residency|ai%40sgmk|ai@sgmk/.test(haystack)) {
+    return !/abao|gaudilabs|micro.?residency|nano doctor|doctor blade|ai@sgmk|ai%40sgmk|qwen|install party/i.test(query);
+  }
+  return false;
 }
 
 function strictLinkScore(queryTokens: string[], result: WikiSearchResult): { score: number; matches: number } {
@@ -68,10 +80,11 @@ function keywordHintQueries(text: string): string[] {
 }
 
 function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: number): WikiSearchResult[] {
+  const safeResults = results.filter((result) => !globallyBlockedResult(result, query));
   const originalTokens = strictTokens(query);
   if (originalTokens.length === 0) return [];
   const minimumMatches = originalTokens.length >= 4 ? 2 : 1;
-  const strictMatches = results
+  const strictMatches = safeResults
     .map((result) => ({ result, strict: strictLinkScore(originalTokens, result) }))
     .filter(({ strict }) => strict.matches >= minimumMatches)
     .sort((a, b) => (b.strict.matches - a.strict.matches) || (b.strict.score - a.strict.score) || (b.result.score - a.result.score))
@@ -82,7 +95,7 @@ function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: 
   // The answer generator can correctly use expanded/retrieved context even when the literal
   // user sentence is broad or translated. Do not hide all source links in that case: show the
   // strongest bundled-memory hits as a transparent reading trail instead of an empty UI.
-  return results
+  return safeResults
     .filter((result) => result.score > 0 && result.url)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
@@ -192,6 +205,9 @@ function expandQuery(query: string): string {
   if (/kitchen|廚房|厨房|料理|food|meal|hosting|host|餐|cook|cooking|ครัว|キッチン/i.test(query)) {
     expansions.push('Hackteria', 'community kitchen', 'MobileKitchenLab', 'kitchenlab', 'gasigaso kitchen', 'food lab', 'collective meals', 'hosting', 'fermentation', 'kombucha', 'Nata de Coco', 'tofu', 'cuisine', 'SCOBY', 'biofilm', 'bacterial cellulose', 'wetlab', 'biohack');
   }
+  if (/多物種|其他物種|共同居住|共居|共同生活|建築|棲地|棲居|人跟|人與|multispecies|multi-species|cohabitation|co-habitation|co.?living|architecture|habitat|dwelling/i.test(query)) {
+    expansions.push('multispecies', 'multi-species', 'cohabitation', 'co-living', 'architecture', 'habitat', 'dwelling', 'more-than-human', 'interspecies', 'ecology', 'living lab', 'environmental design');
+  }
   if (/care|照護|照料|maintenance|repair|維護|維修|保養|ดูแล|ケア|修理/i.test(query)) {
     expansions.push('care', 'maintenance', 'repair', 'failure notes', 'documentation', 'reuse', 'stewardship', 'protocol');
   }
@@ -282,7 +298,8 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
       const communityBoost = (wantsJonathanCommunity && /valldaura|green fab lab/i.test(bodyTextileText)) || (wantsModernBodyCommunity && /modernbodyfestival|modern body festival|modern body/i.test(bodyTextileText)) ? 72 : 0;
       const tedBoost = wantsTedCommunity && /kubu|björkboda|discord|membership|member|ledger|account|community/i.test(bodyTextileText) ? 96 : 0;
       const genericFabricademyPenalty = family === 'Fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(query) ? -220 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + genericFabricademyPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      const blockedPenalty = globallyBlockedResult(cardToResult(card, 1) ?? { title: card.title, url: card.url ?? '', description: '', sourceFamily: family, score: 0 }, query) ? -10000 : 0;
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + genericFabricademyPenalty + blockedPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))
@@ -297,6 +314,7 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
   const localMemoryResults = searchPbsLocalMemory(query, limit);
   const byUrl = new Map<string, WikiSearchResult>();
   for (const result of [...localMemoryResults, ...personaResults, ...corpusResults]
+    .filter((result) => !globallyBlockedResult(result, query))
     .filter((result) => personaAllowedSource(result, personaId))
     .sort((a, b) => (b.score + familyPenalty(b, personaId)) - (a.score + familyPenalty(a, personaId)))) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
@@ -325,5 +343,5 @@ export function searchWikiPagesWithHints(query: string, hintText = '', personaId
   );
   const merged = dedupeResults([...primary, ...hintedResults]).slice(0, limit);
   if (merged.length > 0) return merged;
-  return collectWikiSearchResults(`${query} ${hintText}`, personaId, limit).slice(0, limit);
+  return filterRelevantLinks(query, collectWikiSearchResults(`${query} ${hintText}`, personaId, limit), limit);
 }
