@@ -9650,3 +9650,59 @@ body[data-language="ja"],
     display: none !important;
   }
 }
+
+/* 2026-06-02 campfire avatar final guard: keep fire thumbnail inside the left
+   avatar column, never floating over the title. */
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars.rpg-dialogue-avatars--campfire {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    flex: 0 0 58px !important;
+    gap: 4px !important;
+    overflow: visible !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars.rpg-dialogue-avatars--campfire .dialogue-avatar-wrap {
+    width: 52px !important;
+    min-width: 52px !important;
+    max-width: 52px !important;
+    gap: 0 !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars.rpg-dialogue-avatars--campfire .rpg-dialogue-avatar-frame--campfire {
+    position: static !important;
+    transform: none !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+    padding: 2px !important;
+    overflow: hidden !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars.rpg-dialogue-avatars--campfire .rpg-dialogue-avatar-frame--campfire img {
+    position: static !important;
+    transform: none !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+  }
+}
