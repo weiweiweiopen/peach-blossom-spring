@@ -929,6 +929,44 @@ const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; su
   },
 };
 
+function campfireRouteKeywords(question: string, answer = ""): string[] {
+  const text = `${question} ${answer}`.toLowerCase();
+  const keywords: string[] = [];
+  const add = (...items: string[]) => {
+    for (const item of items) if (!keywords.includes(item)) keywords.push(item);
+  };
+  if (/共居|共同居住|多物種|其他物種|cohab|multi-?species|more-than-human|habitat|architecture|建築/.test(text)) {
+    add("共居創作", "多物種共居", "臨時社群", "habitat design", "more-than-human cohabitation");
+  }
+  if (/臨時|社群|營隊|工作坊|camp|temporary|community|collective|workshop/.test(text)) {
+    add("臨時社群", "temporary commons", "camp as method", "workshop documentation");
+  }
+  if (/女性主義|女性|生殖|照護|同意|femini|reproductive|care|consent|alma|flora/.test(text)) {
+    add("女性主義科技", "照護基礎設施", "同意與資料邊界", "ALMA connects FLORA", "reproductive justice");
+  }
+  if (/聲音|合成器|synth|sound|speaker|oscillator|diy/.test(text)) {
+    add("DIY synth", "聲音電路", "臨時聲音社群", "workshop score", "shared instrument");
+  }
+  if (/電子織品|織品|穿戴|感測|textile|wearable|sensor|soft circuit/.test(text)) {
+    add("電子織品", "身體介面", "soft circuit", "failure notes", "repairable documentation");
+  }
+  return keywords.slice(0, 6);
+}
+
+function appendCampfireRoute(answer: string, language: LanguageCode, keywords: string[]): string {
+  if (!keywords.length || answer.includes(keywords[0] ?? "")) return answer;
+  const joined = keywords.slice(0, 3).map((item) => `「${item}」`).join("、");
+  const copy: Record<LanguageCode, string> = {
+    "zh-TW": `我會直接用 ${joined} 這條路線替你讀下方連結，不要你再自己重查。`,
+    en: `I will use ${joined} as the route for the links below, instead of asking you to search again.`,
+    id: `Aku memakai ${joined} sebagai rute tautan di bawah, bukan menyuruhmu mencari ulang.`,
+    de: `Ich nutze ${joined} als Route für die Links unten, statt dich noch einmal suchen zu lassen.`,
+    ja: `${joined} を下のリンクの読む道筋として使い、もう一度検索しろとは言いません。`,
+    th: `ฉันจะใช้ ${joined} เป็นเส้นทางของลิงก์ด้านล่าง ไม่ใช่ให้คุณค้นใหม่อีกครั้ง`,
+  };
+  return `${answer} ${copy[language]}`;
+}
+
 const PET_HUD_COPY: Record<LanguageCode, { agent: string; note: string; recent: string; action: Record<string, string>; score: Record<string, string> }> = {
   "zh-TW": { agent: "pet agent", note: "「PBS pet agent」在桃花源裡閃了一下，像剛學會聽人的小生物。", recent: "最近問題紀錄", action: { wander: "閒晃", visitRiver: "去河邊", joinThrong: "加入群聚", reflect: "反思", hibernate: "休眠" }, score: { interaction: "互動", wisdom: "智慧", community: "社群", resource: "資源", skill: "技能", care: "照護" } },
   en: { agent: "pet agent", note: "The PBS pet agent flickers through Peach Blossom Spring like a small creature learning to listen.", recent: "recent question history", action: { wander: "wander", visitRiver: "visit river", joinThrong: "join throng", reflect: "reflect", hibernate: "hibernate" }, score: { interaction: "interaction", wisdom: "wisdom", community: "community", resource: "resource", skill: "skill", care: "care" } },
@@ -1273,28 +1311,34 @@ function CentralComputerDialogue({
     const dialogueHistory = recentCampfireHistory(messages);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     try {
-      const { searchWikiPages, searchWikiPagesWithHints } = await import("./wikiSearch.js");
-      const links = searchWikiPages(trimmed, undefined, 8);
+      const { searchWikiPagesWithHints } = await import("./wikiSearch.js");
+      const routeKeywords = campfireRouteKeywords(trimmed);
+      const routeHint = routeKeywords.join(" ");
+      const links = searchWikiPagesWithHints(trimmed, routeHint, undefined, 8);
       if (canUseLocalMemoryServer()) {
-        const reply = await askCampfire(trimmed, language, dialogueHistory);
-        const resolvedLinks = reply.links.length ? reply.links : searchWikiPagesWithHints(trimmed, reply.answer, undefined, 8);
-        setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: resolvedLinks }]);
+        const reply = await askCampfire(`${trimmed}\n${routeHint}`, language, dialogueHistory);
+        const answerKeywords = campfireRouteKeywords(trimmed, reply.answer);
+        const resolvedLinks = searchWikiPagesWithHints(trimmed, `${reply.answer} ${routeHint} ${answerKeywords.join(" ")}`, undefined, 8);
+        setMessages((current) => [...current, { speaker: copy.name, text: appendCampfireRoute(reply.answer, language, answerKeywords.length ? answerKeywords : routeKeywords), links: resolvedLinks.length ? resolvedLinks : reply.links }]);
       } else {
         const sharedMemoryContext = links.map((link, index) => [
           `[${index + 1}] ${link.title}`,
           link.description || "",
           link.url,
         ].filter(Boolean).join("\n")).join("\n\n");
-        const answer = await askDeepSeekPbsComputer({ question: trimmed, preferredLanguage: language, sharedMemoryContext });
-        setMessages((current) => [...current, { speaker: copy.name, text: answer, links }]);
+        const answer = await askDeepSeekPbsComputer({ question: `${trimmed}\nRoute keywords: ${routeHint}`, preferredLanguage: language, sharedMemoryContext });
+        const answerKeywords = campfireRouteKeywords(trimmed, answer);
+        const resolvedLinks = searchWikiPagesWithHints(trimmed, `${answer} ${routeHint} ${answerKeywords.join(" ")}`, undefined, 8);
+        setMessages((current) => [...current, { speaker: copy.name, text: appendCampfireRoute(answer, language, answerKeywords.length ? answerKeywords : routeKeywords), links: resolvedLinks.length ? resolvedLinks : links }]);
       }
     } catch {
       setError("");
-      const { searchWikiPages } = await import("./wikiSearch.js");
-      const links = searchWikiPages(trimmed, undefined, 8);
+      const { searchWikiPagesWithHints } = await import("./wikiSearch.js");
+      const routeKeywords = campfireRouteKeywords(trimmed);
+      const links = searchWikiPagesWithHints(trimmed, routeKeywords.join(" "), undefined, 8);
       setMessages((current) => [...current, {
         speaker: copy.name,
-        text: buildStaticLocalMemoryAnswer(trimmed, links, language),
+        text: appendCampfireRoute(buildStaticLocalMemoryAnswer(trimmed, links, language), language, routeKeywords),
         links,
       }]);
     } finally {
