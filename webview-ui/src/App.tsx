@@ -801,7 +801,7 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
   const src = `${import.meta.env.BASE_URL}assets/campfire.gif`;
   return (
     <div className="dialogue-avatar-wrap">
-      <div className="dialogue-pixel-avatar-frame rpg-dialogue-avatar-frame--campfire" aria-hidden="true">
+      <div className="dialogue-pixel-avatar-frame" aria-hidden="true">
         <img
           src={src}
           alt=""
@@ -1213,12 +1213,7 @@ function CentralComputerDialogue({
   const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
   const [isSuggestingQuestions, setIsSuggestingQuestions] = useState(false);
-  const [messages, setMessages] = useState<ComputerMessage[]>(() => [
-    {
-      speaker: copy.name,
-      text: copy.intro,
-    },
-  ]);
+  const [messages, setMessages] = useState<ComputerMessage[]>(() => []);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -1317,7 +1312,7 @@ function CentralComputerDialogue({
       <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
-            <div className="rpg-dialogue-avatars rpg-dialogue-avatars--campfire flex gap-4">
+            <div className="rpg-dialogue-avatars flex gap-4">
               <PlayerDialogueAvatar palette={playerPalette} label={playerName} />
               <ComputerDialogueAvatar label={copy.name} />
             </div>
