@@ -50,18 +50,16 @@ function strictTokens(text: string): string[] {
   return Array.from(new Set([...latinTokens, ...cjkTokens, ...aliases]));
 }
 
-function globallyBlockedResult(result: WikiSearchResult, query = ''): boolean {
-  const haystack = `${result.title} ${result.url}`.toLowerCase();
-  if (/abao[_\s-]+in[_\s-]+gaudilabs[_\s-]+micro[_\s-]+residency|abao[_\s-]+nano[_\s-]+doctor[_\s-]+blade[_\s-]+hacker[_\s-]+residency|ai%40sgmk|ai@sgmk/.test(haystack)) {
-    return !/abao|gaudilabs|micro.?residency|nano doctor|doctor blade|ai@sgmk|ai%40sgmk|qwen|install party/i.test(query);
-  }
-  return false;
+function explicitEntityQuery(text: string): boolean {
+  return /\b[A-Z][A-Za-z0-9]*(?:[ -][A-Z][A-Za-z0-9]*)+\b|https?:\/\/|@|[「『"]/u.test(text);
 }
 
 function strictLinkScore(queryTokens: string[], result: WikiSearchResult): { score: number; matches: number } {
   if (queryTokens.length === 0) return { score: 0, matches: 0 };
   const title = result.title.toLowerCase();
-  const haystack = `${result.title} ${result.description} ${result.sourceFamily} ${result.url}`.toLowerCase();
+  // Relevance must be proven by the page title/description shown to the player.
+  // Source family, URL, and path are metadata only; they must never pull a page into results.
+  const haystack = `${result.title} ${result.description}`.toLowerCase();
   return queryTokens.reduce((acc, token) => {
     if (!haystack.includes(token)) return acc;
     return { score: acc.score + (title.includes(token) ? 3 : 1), matches: acc.matches + 1 };
@@ -80,25 +78,15 @@ function keywordHintQueries(text: string): string[] {
 }
 
 function filterRelevantLinks(query: string, results: WikiSearchResult[], limit: number): WikiSearchResult[] {
-  const safeResults = results.filter((result) => !globallyBlockedResult(result, query));
   const originalTokens = strictTokens(query);
   if (originalTokens.length === 0) return [];
-  const minimumMatches = originalTokens.length >= 4 ? 2 : 1;
-  const strictMatches = safeResults
+  const minimumMatches = explicitEntityQuery(query) ? 1 : Math.min(3, Math.max(2, Math.ceil(originalTokens.length / 5)));
+  return results
     .map((result) => ({ result, strict: strictLinkScore(originalTokens, result) }))
     .filter(({ strict }) => strict.matches >= minimumMatches)
     .sort((a, b) => (b.strict.matches - a.strict.matches) || (b.strict.score - a.strict.score) || (b.result.score - a.result.score))
     .slice(0, limit)
     .map(({ result, strict }) => ({ ...result, score: result.score + strict.score * 1000 }));
-  if (strictMatches.length > 0) return strictMatches;
-
-  // The answer generator can correctly use expanded/retrieved context even when the literal
-  // user sentence is broad or translated. Do not hide all source links in that case: show the
-  // strongest bundled-memory hits as a transparent reading trail instead of an empty UI.
-  return safeResults
-    .filter((result) => result.score > 0 && result.url)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
 }
 
 function sourceFamily(card: Partial<SourceCard>): string {
@@ -298,8 +286,7 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
       const communityBoost = (wantsJonathanCommunity && /valldaura|green fab lab/i.test(bodyTextileText)) || (wantsModernBodyCommunity && /modernbodyfestival|modern body festival|modern body/i.test(bodyTextileText)) ? 72 : 0;
       const tedBoost = wantsTedCommunity && /kubu|björkboda|discord|membership|member|ledger|account|community/i.test(bodyTextileText) ? 96 : 0;
       const genericFabricademyPenalty = family === 'Fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(query) ? -220 : 0;
-      const blockedPenalty = globallyBlockedResult(cardToResult(card, 1) ?? { title: card.title, url: card.url ?? '', description: '', sourceFamily: family, score: 0 }, query) ? -10000 : 0;
-      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + genericFabricademyPenalty + blockedPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
+      return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + communityBoost + tedBoost + genericFabricademyPenalty + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)
     .map((item) => cardToResult(item.card, item.score))
@@ -314,7 +301,6 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
   const localMemoryResults = searchPbsLocalMemory(query, limit);
   const byUrl = new Map<string, WikiSearchResult>();
   for (const result of [...localMemoryResults, ...personaResults, ...corpusResults]
-    .filter((result) => !globallyBlockedResult(result, query))
     .filter((result) => personaAllowedSource(result, personaId))
     .sort((a, b) => (b.score + familyPenalty(b, personaId)) - (a.score + familyPenalty(a, personaId)))) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
