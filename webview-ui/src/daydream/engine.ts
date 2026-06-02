@@ -133,6 +133,8 @@ const GENERIC_TERMS = new Set([
   "art",
   "project",
   "workshop",
+  "participants",
+  "pedagogy",
   "bio",
   "audio",
   "music",
@@ -159,9 +161,13 @@ const CHINESE_KEYWORD_ALIASES: Array<[RegExp, string[]]> = [
   [/生物藝術/u, ["bioart", "bio", "biology", "art", "hackteria"]],
   [/藝術|專案|創作/u, ["art", "project"]],
   [/基因|轉殖|改造|合成生物|生物科技/u, ["gene", "genetic", "synthetic", "biology", "bio"]],
-  [/技術|實驗|實驗性|原型/u, ["experiment", "experimental", "lab", "protocol", "tool", "biohack", "wetlab"]],
-  [/穿戴|衣服|服裝|紡織|布料|織物/u, ["wearable", "textile", "textiles", "fabric", "clothing"]],
+  [/科技|技術|實驗|實驗性|原型/u, ["technology", "experiment", "experimental", "lab", "protocol", "tool"]],
+  [/女性主義|女性|女權|生殖|月經|照護|身體自主/u, ["feminist", "feminist technology", "feminist technoscience", "reproductive justice", "female healthcare", "menstrual", "care", "body autonomy", "Giulia Tomasello", "ALMA Futura", "Xenopia", "Future Flora"]],
+  [/穿戴|衣服|服裝|紡織|布料|織物|電子織品|電子紡織/u, ["wearable", "textile", "textiles", "e-textile", "fabric", "clothing", "soft circuit"]],
   [/廚房|厨房|料理|食物|餐|發酵|紅茶菌|康普茶/u, ["kitchen", "kitchen", "kitchenlab", "mobilekitchenlab", "food", "cuisine", "hosting", "fermentation", "kombucha", "nata", "coco", "tofu", "wetlab", "biohack", "hackteria"]],
+  [/開放科學|開放|開源/u, ["open science", "open", "science", "open knowledge", "open hardware", "documentation"]],
+  [/印尼|印度尼西亞/u, ["Indonesia", "Indonesian", "Yogyakarta", "Jogja", "Jakarta", "Bandung", "Surabaya", "Lifepatch", "ISI Yogyakarta"]],
+  [/城市|都市/u, ["urban", "city", "cities", "local", "neighborhood", "civic"]],
   [/公共|基礎設施|基盤|共同|共用/u, ["public", "infrastructure", "commons", "commons", "shared", "open", "documentation", "maintenance", "community"]],
   [/照護|照料|維護|維修|保養/u, ["care", "care", "maintenance", "repair", "documentation", "reuse", "stewardship", "protocol"]],
   [/工作坊/u, ["workshop", "workshop", "pedagogy", "participants"]],
@@ -214,8 +220,8 @@ export function generateDaydreamReport(seed: string, corpus: DaydreamCorpus): Da
   const keywords = parseSeedKeywords(seed);
   const matchedCards = rankCards(corpus.cards, keywords).slice(0, 8).map((item) => item.card);
   const expandedCards = expandViaGraph(matchedCards, corpus).slice(0, 8);
-  const linkedCards = expandViaLinkedSources(matchedCards, corpus, { maxDepth: 2, maxPerCard: 8 });
-  const reseedLinkedCards = collectThinPageSecondarySeedExpansions(matchedCards, linkedCards, corpus, {
+  const linkedCards = expandViaLinkedSources(matchedCards, corpus, keywords, { maxDepth: 2, maxPerCard: 8 });
+  const reseedLinkedCards = collectThinPageSecondarySeedExpansions(matchedCards, linkedCards, corpus, keywords, {
     maxPerCard: 4,
     maxTotal: 16,
   });
@@ -225,7 +231,7 @@ export function generateDaydreamReport(seed: string, corpus: DaydreamCorpus): Da
     ...linkedEvidenceCards.map((trail) => trail.card),
     ...expandedCards,
   ]);
-  const deepReadCards = collectNextLayerText(firstPassEvidence, corpus, { maxPerCard: 6, maxTotal: 12 });
+  const deepReadCards = collectNextLayerText(firstPassEvidence, corpus, keywords, { maxPerCard: 6, maxTotal: 12 });
   const deepReadKeywords = extractDeepReadKeywords(deepReadCards, 14);
   const evidenceCards = dedupeCards([
     ...firstPassEvidence,
@@ -281,11 +287,20 @@ function scoreCard(card: SourceCard, keywords: string[]): number {
 function sourceIntentBoost(card: SourceCard, keywords: string[]): number {
   const source = String(card.source ?? "").toLowerCase();
   const keywordSet = new Set(keywords.map((keyword) => keyword.toLowerCase()));
+  const cardText = evidenceTextForHygiene(card).toLowerCase();
+  const wantsIndonesia = ["indonesia", "indonesian", "yogyakarta", "jogja", "jakarta", "bandung", "surabaya", "lifepatch", "isi yogyakarta"].some((keyword) => keywordSet.has(keyword));
+  const hasIndonesiaEvidence = /indonesia|indonesian|yogyakarta|jogja|jakarta|bandung|surabaya|lifepatch|isi\s*,?\s*yogyakarta/i.test(cardText);
+  const indonesiaBoost = wantsIndonesia ? (hasIndonesiaEvidence ? 72 : -80) : 0;
   const wantsHackteria = keywordSet.has("hackteria") || keywordSet.has("biohack") || keywordSet.has("wetlab") || keywordSet.has("kitchen") || keywordSet.has("kitchenlab") || keywordSet.has("mobilekitchenlab") || keywordSet.has("fermentation") || keywordSet.has("food") || keywordSet.has("cuisine") || keywordSet.has("kombucha") || keywordSet.has("nata") || keywordSet.has("coco") || keywordSet.has("tofu");
-  const wantsTextiles = keywordSet.has("textile") || keywordSet.has("textiles") || keywordSet.has("wearable") || keywordSet.has("fabric") || keywordSet.has("sensor") || keywordSet.has("sensors");
-  if (wantsHackteria && source === "hackteria") return 42;
-  if (wantsHackteria && source === "htgwyw" && !wantsTextiles) return -8;
-  return 0;
+  const wantsTextiles = keywordSet.has("textile") || keywordSet.has("textiles") || keywordSet.has("e-textile") || keywordSet.has("wearable") || keywordSet.has("fabric") || keywordSet.has("sensor") || keywordSet.has("sensors") || keywordSet.has("soft circuit");
+  const wantsFeministTech = keywordSet.has("feminist") || keywordSet.has("feminist technology") || keywordSet.has("feminist technoscience") || keywordSet.has("reproductive justice") || keywordSet.has("alma futura") || keywordSet.has("xenopia");
+  const hasFeministEvidence = /giulia tomasello|alma futura|xenopia|future flora|reproductive justice|female.?s healthcare|pregnancy|menstrual|feminist|cyberfem|care|body autonomy/i.test(cardText);
+  const feministBoost = wantsFeministTech ? (hasFeministEvidence ? 80 : -26) : 0;
+  const textileBoost = wantsTextiles && /textile|e-textile|wearable|soft circuit|sensor|fabric|kobakant|how to get what you want/i.test(cardText) ? 28 : 0;
+  const commonIrrelevantPenalty = !/(gaudilabs|micro.?residency|ai|qwen|install party|abao|shih|惟捷)/i.test(keywords.join(" ")) && /abao in gaudilabs micro-residency|ai@sgmk/i.test(cardText) ? -220 : 0;
+  if (wantsHackteria && source === "hackteria") return indonesiaBoost + feministBoost + textileBoost + commonIrrelevantPenalty + 24;
+  if (wantsHackteria && source === "htgwyw" && !wantsTextiles) return indonesiaBoost + feministBoost + commonIrrelevantPenalty - 8;
+  return indonesiaBoost + feministBoost + textileBoost + commonIrrelevantPenalty;
 }
 
 function initialEvidenceQuality(card: SourceCard): number {
@@ -334,6 +349,7 @@ interface LinkExpansionOptions {
 function expandViaLinkedSources(
   seedCards: SourceCard[],
   corpus: DaydreamCorpus,
+  keywords: string[],
   options: LinkExpansionOptions,
 ): LinkedEvidenceTrail[] {
   if (seedCards.length === 0) return [];
@@ -361,7 +377,8 @@ function expandViaLinkedSources(
         ...resolveOutgoingEdgeTargets(item.card, corpus),
       ])
         .filter((card) => !visited.has(card.id))
-        .sort((a, b) => textThicknessScore(b) - textThicknessScore(a) || a.title.localeCompare(b.title))
+        .filter((card) => isQueryRelevantExpansion(card, keywords))
+        .sort((a, b) => scoreCard(b, keywords) + textThicknessScore(b) - (scoreCard(a, keywords) + textThicknessScore(a)) || a.title.localeCompare(b.title))
         .slice(0, options.maxPerCard);
 
       for (const card of linked) {
@@ -383,6 +400,7 @@ function collectThinPageSecondarySeedExpansions(
   matchedCards: SourceCard[],
   linkedCards: LinkedEvidenceTrail[],
   corpus: DaydreamCorpus,
+  keywords: string[],
   options: { maxPerCard: number; maxTotal: number },
 ): LinkedEvidenceTrail[] {
   const alreadyLinkedFrom = new Set(linkedCards.flatMap((trail) => trail.via.map((item) => item.id)));
@@ -404,6 +422,7 @@ function collectThinPageSecondarySeedExpansions(
       .map((item) => item.card)
       .filter((candidate) => candidate.id !== card.id && !usedTargets.has(candidate.id))
       .filter((candidate) => !isBoilerplateThinMatch(candidate))
+      .filter((candidate) => isQueryRelevantExpansion(candidate, keywords))
       .slice(0, options.maxPerCard);
 
     for (const candidate of candidates) {
@@ -551,6 +570,7 @@ interface NextLayerTextOptions {
 function collectNextLayerText(
   evidenceCards: SourceCard[],
   corpus: DaydreamCorpus,
+  keywords: string[],
   options: NextLayerTextOptions,
 ): SourceCard[] {
   if (evidenceCards.length === 0) return [];
@@ -572,7 +592,8 @@ function collectNextLayerText(
       ...resolveOutgoingEdgeTargets(card, corpus),
     ])
       .filter((candidate) => !evidenceIds.has(candidate.id))
-      .sort((a, b) => textThicknessScore(b) - textThicknessScore(a) || a.title.localeCompare(b.title))
+      .filter((candidate) => isQueryRelevantExpansion(candidate, keywords))
+      .sort((a, b) => scoreCard(b, keywords) + textThicknessScore(b) - (scoreCard(a, keywords) + textThicknessScore(a)) || a.title.localeCompare(b.title))
       .slice(0, options.maxPerCard);
     for (const candidate of linked) {
       const current = linkedCandidates.get(candidate.id);
@@ -581,14 +602,14 @@ function collectNextLayerText(
     }
   }
 
-  const directEdgeTargets = collectDirectEdgeTargets(evidenceCards, corpus, evidenceIds, options.maxPerCard);
+  const directEdgeTargets = collectDirectEdgeTargets(evidenceCards, corpus, evidenceIds, keywords, options.maxPerCard);
   for (const item of directEdgeTargets) {
     const current = linkedCandidates.get(item.card.id);
     const score = item.score + textThicknessScore(item.card);
     if (!current || score > current.score) linkedCandidates.set(item.card.id, { card: item.card, score });
   }
 
-  const graphCandidates = collectGraphNeighborText(evidenceCards, corpus, evidenceIds, options.maxPerCard);
+  const graphCandidates = collectGraphNeighborText(evidenceCards, corpus, evidenceIds, keywords, options.maxPerCard);
   for (const item of graphCandidates) {
     const current = linkedCandidates.get(item.card.id);
     const score = item.score + textThicknessScore(item.card);
@@ -605,6 +626,7 @@ function collectDirectEdgeTargets(
   evidenceCards: SourceCard[],
   corpus: DaydreamCorpus,
   evidenceIds: Set<string>,
+  keywords: string[],
   maxPerCard: number,
 ): Array<{ card: SourceCard; score: number }> {
   const cardById = new Map(corpus.cards.map((card) => [card.id, card]));
@@ -620,7 +642,7 @@ function collectDirectEdgeTargets(
   for (const edge of corpus.edges) {
     if (!evidenceIdSet.has(edge.source) || evidenceIds.has(edge.target)) continue;
     const target = cardById.get(edge.target);
-    if (!target) continue;
+    if (!target || !isQueryRelevantExpansion(target, keywords)) continue;
     const boost = relationWeight[edge.relation] ?? 4;
     related.set(edge.target, (related.get(edge.target) ?? 0) + boost * (edge.weight ?? 1));
   }
@@ -629,13 +651,15 @@ function collectDirectEdgeTargets(
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .slice(0, evidenceCards.length * maxPerCard)
     .map(([id, score]) => ({ card: cardById.get(id), score }))
-    .filter((item): item is { card: SourceCard; score: number } => Boolean(item.card));
+    .filter((item): item is { card: SourceCard; score: number } => Boolean(item.card))
+    .filter((item) => isQueryRelevantExpansion(item.card, keywords));
 }
 
 function collectGraphNeighborText(
   evidenceCards: SourceCard[],
   corpus: DaydreamCorpus,
   evidenceIds: Set<string>,
+  keywords: string[],
   maxPerCard: number,
 ): Array<{ card: SourceCard; score: number }> {
   const cardById = new Map(corpus.cards.map((card) => [card.id, card]));
@@ -658,7 +682,15 @@ function collectGraphNeighborText(
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .slice(0, evidenceCards.length * maxPerCard)
     .map(([id, score]) => ({ card: cardById.get(id), score }))
-    .filter((item): item is { card: SourceCard; score: number } => Boolean(item.card));
+    .filter((item): item is { card: SourceCard; score: number } => Boolean(item.card))
+    .filter((item) => isQueryRelevantExpansion(item.card, keywords));
+}
+
+function isQueryRelevantExpansion(card: SourceCard, keywords: string[]): boolean {
+  const nonGeneric = keywords.filter((keyword) => !GENERIC_TERMS.has(keyword.toLowerCase()));
+  if (nonGeneric.length === 0) return scoreCard(card, keywords) > 0;
+  const text = evidenceTextForHygiene(card).toLowerCase();
+  return nonGeneric.some((keyword) => text.includes(keyword.toLowerCase())) || scoreCard(card, keywords) >= 4;
 }
 
 function textThicknessScore(card: SourceCard): number {
@@ -773,11 +805,11 @@ function buildFutures(
   const confidence = depthMetrics.depthScore >= 70 ? "high" : depthMetrics.depthScore >= 45 ? "medium" : "low";
   const caveat = depthMetrics.warnings.length > 0 ? depthMetrics.warnings.join(" ") : undefined;
   const frames = [
-    "哲辯軸：先把來源中的技術承諾、治理問題與身體隱喻拆開，再討論誰有權把生命或身體資料變成設計材料",
-    "反命題：如果證據只停在摘要，產物必須暴露自己的無知，改生成閱讀路線、爭點表與待查連結，而不是假裝完成",
-    "實作軸：只允許非活體、可關閉、可維修、可追溯的 prototype；把危險知識轉譯成倫理介面與展示結構",
-    "社群軸：檢查這個作品是回饋 wiki/commoning，還是抽取 DIY bio 與 e-textile 社群的酷感",
-    "形式軸：小誌版面必須讓 source trails 可見，讀者能沿著連結繼續深讀，而不是只消費漂亮結論",
+    "證據路線：先列出哪些頁面直接回答玩家問題，哪些只提供旁支背景",
+    "限制路線：如果來源只支持局部方法，輸出必須說明不能推論到哪裡",
+    "比較路線：只比較當次證據中實際出現的材料、場域、組織或方法",
+    "查證路線：把缺少的關鍵節點變成下一步搜尋問題，而不是補成結論",
+    "使用路線：把可用來源轉成可重讀、可修改、可追溯的閱讀或工作步驟",
   ];
 
   return Array.from({ length: count }, (_, index) => {

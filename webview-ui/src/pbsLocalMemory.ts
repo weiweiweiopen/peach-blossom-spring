@@ -82,11 +82,14 @@ function tokens(text: string): string[] {
 
 function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
   const title = item.title.toLowerCase();
-  const haystack = `${item.title} ${item.sourceFamily} ${item.description} ${item.url} ${item.path}`.toLowerCase();
+  const primaryText = `${item.title} ${item.description}`.toLowerCase();
+  const metadataText = `${item.sourceFamily} ${item.url} ${item.path}`.toLowerCase();
   const directScore = queryTokens.reduce((sum, token) => {
-    if (!haystack.includes(token)) return sum;
+    if (!primaryText.includes(token)) return sum;
     return sum + (title.includes(token) ? 8 : 2);
   }, 0);
+  const metadataTieBreak = directScore > 0 ? queryTokens.reduce((sum, token) => sum + (metadataText.includes(token) ? 0.25 : 0), 0) : 0;
+  const haystack = primaryText;
   const familyBoost = 0;
   const joinedQuery = queryTokens.join(' ');
   const wantsIndonesia = /印尼|印度尼西亞|indonesia|indonesian|yogyakarta|jogja|jakarta|bandung|surabaya|lifepatch|isi/.test(joinedQuery);
@@ -97,13 +100,13 @@ function scoreItem(queryTokens: string[], item: PbsLocalMemoryItem): number {
   const networkBoost = /ngm|hackteria|sgmk|kobakant|fabricademy|textile academy|network|國際|社群/i.test(joinedQuery) && /hackteria|sgmk|kobakant|fabricademy|textile academy|how to get what you want|network|community|colabs|flick the world/i.test(haystack) ? 18 : 0;
   const feministTechBoost = /女性主義|女性|女權|生殖|月經|懷孕|照護|身體自主|femini|cyberfem|reproductive|menstrual|pregnancy|abortion|healthcare|care|alma|giulia|xenopia|flora/i.test(joinedQuery) && /giulia tomasello|alma futura|xenopia|future flora|reproductive justice|female.?s healthcare|pregnancy test|beta hcg|abortion|menstrual|feminist|cyberfem|feminist technoscience|biomenstrual|wearable|body|care/i.test(haystack) ? 72 : 0;
   const fabricademyBoost = /fabricademy|textile academy|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(joinedQuery) && /fabricademy|textile academy|wearables|soft circuit|skin electronics|soft robotics|textile scaffold|bio.?dyes|circular fashion/i.test(haystack) ? 34 : 0;
-  const genericFabricademyPenalty = item.sourceFamily === 'fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(joinedQuery) ? -120 : 0;
+  const genericFabricademyPenalty = item.sourceFamily.toLowerCase() === 'fabricademy' && !/fabricademy|textile academy|skin electronics|soft robotics|bio.?dyes|circular fashion|computational couture|digital bodies/i.test(joinedQuery) ? -120 : 0;
   const commonIrrelevantPenalty = !/gaudilabs|micro.?residency|ai|qwen|install party|abao|shih|惟捷|hackteria|sgmk/i.test(joinedQuery) && /abao in gaudilabs micro-residency|ai@sgmk/i.test(haystack) ? -200 : 0;
   const newSourceBoost = /attempts|failures|trials|errors|textiltronics|modern body|vortex|valldaura|green fab lab|oki wonder lab|okiwonderlab|okinawa|isolation|jonathan|minchin|stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /textiltronics|attempts|failures|trials|errors|tttlabs|ttt-labs|bioferal|terrabytes|modernbody|modern body|vortex|valldaura|green fab lab|okiwonderlab|oki wonder lab|okinawa|isolation/i.test(haystack) ? 36 : 0;
   const personaCommunityBoost = ((/jonathan|minchin/i.test(joinedQuery) && /valldaura|green fab lab/i.test(haystack)) || (/stelio|manousakis|stephanie|pan/i.test(joinedQuery) && /modernbody|modern body festival|modern body/i.test(haystack))) ? 64 : 0;
   const topicalBoost = bodyTextileBoost + soundDiyBoost + campEducationBoost + networkBoost + feministTechBoost + fabricademyBoost + newSourceBoost + personaCommunityBoost;
   if (directScore <= 0 && topicalBoost <= 0) return 0;
-  return directScore + familyBoost + topicalBoost + indonesiaBoost + genericFabricademyPenalty + commonIrrelevantPenalty;
+  return directScore + metadataTieBreak + familyBoost + topicalBoost + indonesiaBoost + genericFabricademyPenalty + commonIrrelevantPenalty;
 }
 
 export function searchPbsLocalMemory(query: string, limit = 6): WikiSearchResult[] {
