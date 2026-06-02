@@ -321,14 +321,25 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   return filterRelevantLinks(query, collectWikiSearchResults(query, personaId, limit), limit);
 }
 
+function routeHintQueries(hintText: string): string[] {
+  const chunks = hintText
+    .split(/[\n/;；,，、|]+/)
+    .map((item) => item.trim())
+    .filter((item) => item.length >= 2 && item.length <= 80);
+  return Array.from(new Set([...keywordHintQueries(hintText), ...chunks])).slice(0, 10);
+}
+
 export function searchWikiPagesWithHints(query: string, hintText = '', personaId?: string, limit = 6): WikiSearchResult[] {
   const primary = searchWikiPages(query, personaId, limit);
-  const hintQueries = keywordHintQueries(hintText);
-  const hintedResults = hintQueries.flatMap((hint) =>
-    filterRelevantLinks(hint, collectWikiSearchResults(hint, personaId, limit), limit)
+  const routeQuery = [query, hintText].filter(Boolean).join(' ');
+  const routeResults = hintText.trim()
+    ? filterRelevantLinks(routeQuery, collectWikiSearchResults(routeQuery, personaId, Math.max(limit * 2, 12)), limit)
+        .map((result) => ({ ...result, score: result.score + 350 }))
+    : [];
+  const hintedResults = routeHintQueries(hintText).flatMap((hint) =>
+    filterRelevantLinks(hint, collectWikiSearchResults(hint, personaId, Math.max(limit * 2, 12)), limit)
       .map((result) => ({ ...result, score: result.score + 500 })),
   );
-  const merged = dedupeResults([...primary, ...hintedResults]).slice(0, limit);
-  if (merged.length > 0) return merged;
-  return filterRelevantLinks(query, collectWikiSearchResults(`${query} ${hintText}`, personaId, limit), limit);
+  const merged = dedupeResults([...primary, ...routeResults, ...hintedResults]).slice(0, limit);
+  return merged;
 }

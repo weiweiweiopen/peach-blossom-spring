@@ -1,5 +1,5 @@
 import type { SourceCard } from './daydream/engine.js';
-import pbsLocalMemoryIndex from './generated/pbsLocalMemoryIndex.json';
+import pbsLocalMemoryIndex from './generated/pbsLocalMemory.json';
 import type { ChatEvidence } from './localChatbot.js';
 import type { WikiSearchResult } from './wikiSearch.js';
 
