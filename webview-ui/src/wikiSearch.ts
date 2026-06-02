@@ -297,11 +297,12 @@ function collectWikiSearchResults(query: string, personaId?: string, limit = 8):
         .filter((item) => item.score > 1)
         .map((item) => linkToResult(item.link, item.score))
         .filter((item): item is WikiSearchResult => Boolean(item))
+        .filter((result) => personaAllowedSource(result, personaId))
     : [];
   const localMemoryResults = searchPbsLocalMemory(query, limit);
+  const globalResults = [...localMemoryResults, ...corpusResults];
   const byUrl = new Map<string, WikiSearchResult>();
-  for (const result of [...localMemoryResults, ...personaResults, ...corpusResults]
-    .filter((result) => personaAllowedSource(result, personaId))
+  for (const result of [...personaResults, ...globalResults]
     .sort((a, b) => (b.score + familyPenalty(b, personaId)) - (a.score + familyPenalty(a, personaId)))) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
