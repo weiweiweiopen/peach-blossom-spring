@@ -2048,8 +2048,7 @@ html[data-language="th"],
 .rpg-dialogue-role,
 .rpg-dialogue-thinking,
 .rpg-dialogue-wiki p,
-.rpg-dialogue-x,
-.rpg-dialogue-avatars span {
+.rpg-dialogue-x {
   color: color-mix(
     in srgb,
     var(--palette-ink) 68%,
@@ -8658,7 +8657,7 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   font-size: var(--dialogue-control-size) !important;
 }
 
-/* Mobile dialogue avatars: keep campfire thumbnail intact instead of cropped vertical strip. */
+/* Mobile dialogue avatars keep the same frame contract as desktop/NPC dialogue. */
 @media (max-width: 700px), (pointer: coarse) {
   .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars {
     max-width: 118px !important;
@@ -8671,26 +8670,12 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     margin-right: 0 !important;
     margin-bottom: 0 !important;
   }
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire {
-    width: 92px !important;
-    height: 174px !important;
-    min-width: 92px !important;
-    min-height: 174px !important;
-    padding: 2px !important;
-    overflow: hidden !important;
-  }
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire img {
-    width: 184px !important;
-    height: 184px !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: cover !important;
-    transform: translateY(8px) !important;
-  }
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars span {
-    max-width: 54px !important;
-    font-size: 10px !important;
-    line-height: 1.1 !important;
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-sprite {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    min-height: 54px !important;
+    overflow: visible !important;
   }
 }
 

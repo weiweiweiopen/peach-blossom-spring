@@ -62,26 +62,24 @@ function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string 
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div
-        className="bg-bg/80 border border-border p-2"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
-          gridAutoRows: '3px',
-        }}
-        aria-label={label}
-      >
-        {sprite.flatMap((row, rowIndex) =>
-          row.map((color, colIndex) => (
-            <span
-              key={`${rowIndex.toString()}-${colIndex.toString()}`}
-              style={{ backgroundColor: color || 'transparent' }}
-            />
-          )),
-        )}
-      </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
+        <div
+          className="rpg-dialogue-avatar-pixels"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 2px)`,
+            gridAutoRows: '2px',
+          }}
+        >
+          {sprite.flatMap((row, rowIndex) =>
+            row.map((color, colIndex) => (
+              <span
+                key={`${rowIndex.toString()}-${colIndex.toString()}`}
+                style={{ backgroundColor: color || 'transparent' }}
+              />
+            )),
+          )}
+        </div>
     </div>
   );
 }
@@ -611,13 +609,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
               <PixelAvatar avatar={{ palette: player.palette, hueShift: 0 }} label={player.name} />
               <PixelAvatar avatar={npcAvatar} label={persona.name} />
             </div>
-            <div>
-              <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
-                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
-                {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
-              </div>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{persona.name}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{persona.role}</p>
+            <div className="rpg-dialogue-heading-line min-w-0 flex flex-nowrap items-center gap-3 overflow-visible">
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0 shrink-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none m-0 shrink-0" data-ui-part="title">{persona.name}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted m-0 truncate" data-ui-part="subtitle">{persona.role}</p>
+              {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>

@@ -731,26 +731,24 @@ function AssociationLowRelevancePage({ language, query, onRetry }: { language: L
 
 function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div
-        className="bg-bg/80 border border-border p-2"
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
-          gridAutoRows: "3px",
-        }}
-        aria-label={label}
-      >
-        {sprite.flatMap((row, rowIndex) =>
-          row.map((color, colIndex) => (
-            <span
-              key={`${rowIndex.toString()}-${colIndex.toString()}`}
-              style={{ backgroundColor: color || "transparent" }}
-            />
-          )),
-        )}
-      </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
+        <div
+          className="rpg-dialogue-avatar-pixels"
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 2px)`,
+            gridAutoRows: "2px",
+          }}
+        >
+          {sprite.flatMap((row, rowIndex) =>
+            row.map((color, colIndex) => (
+              <span
+                key={`${rowIndex.toString()}-${colIndex.toString()}`}
+                style={{ backgroundColor: color || "transparent" }}
+              />
+            )),
+          )}
+        </div>
     </div>
   );
 }
@@ -782,16 +780,13 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
   }, []);
   const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="rpg-dialogue-avatar-frame rpg-dialogue-avatar-frame--campfire border border-border bg-bg/80 p-2 flex items-center justify-center overflow-hidden" aria-hidden="true">
-        <img
-          src={src}
-          alt=""
-          className="block max-w-none object-contain"
-          style={{ imageRendering: "pixelated", width: 184, height: 184 }}
-        />
-      </div>
-      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
+      <img
+        src={src}
+        alt=""
+        className="block h-auto max-h-full w-auto object-contain object-center"
+        style={{ imageRendering: "pixelated" }}
+      />
     </div>
   );
 }
@@ -1238,12 +1233,10 @@ function CentralComputerDialogue({
               <PlayerDialogueAvatar palette={playerPalette} label={playerName} />
               <ComputerDialogueAvatar label={copy.name} />
             </div>
-            <div>
-              <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
-                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{copy.kicker}</p>
-              </div>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{copy.name}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{copy.subtitle}</p>
+            <div className="rpg-dialogue-heading-line min-w-0 flex flex-nowrap items-center gap-3 overflow-visible">
+              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0 shrink-0" data-ui-part="caption">{copy.kicker}</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none m-0 shrink-0" data-ui-part="title">{copy.name}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted m-0 truncate" data-ui-part="subtitle">{copy.subtitle}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>X</button>
