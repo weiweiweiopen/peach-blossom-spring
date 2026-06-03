@@ -53,7 +53,6 @@ import {
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, searchMemory } from "./localMemoryApi.js";
-import { askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -236,16 +235,16 @@ const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi companion";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
-    "Hackteria 的 BioElectronics and BioMaterials Workshop 有哪些藝術、生物倫理和開放硬體案例？",
-    "HOME MADE 2016 和 I.N.S.E.C.T. Summercamp 可以怎麼解釋獨立藝術營和替代教育？",
-    "為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？",
-    "有沒有電子織品、soft circuit 或 wearable electronics 從教學走向產品/作品的案例？",
-    "HOME MADE 2016、Archive HOME MADE 和 I.N.S.E.C.T. Summercamp 裡有哪些工作坊、聲音工具或 DIY synth？",
-    "為什麼 camp 可以作為替代教育形式，而不只是短期活動？",
-    "Hackteria、Fabricademy 和 KOBAKANT 有哪些材料清單、教學步驟或 failure notes 可以重用？",
-    "低成本工具、DIY 顯微鏡、手作電子和生物實驗如何支持藝術與科學之間的合作？",
-    "如果完全不認識 Hackteria、SGMK、KOBAKANT，PBS 可以怎麼帶我看懂它們的關係？",
+    "BioElectronics and BioMaterials Workshop, ISI Yogyakarta 2019 是什麼活動？它和 Hackteria 的 DIY biology、bioart 與 open hardware 社群有什麼關係？",
+    "Hackteria Main Page 和 About 頁面如何介紹 Hackteria 的 DIY biology、bioart 與開源藝術社群？",
+    "HOME MADE 2016、Archive HOME MADE 和 I.N.S.E.C.T. Summercamp 各自記錄了哪些活動形式、參與者和工作坊安排？",
+    "Archive HOME MADE 和 Radionica krassfade 裡有哪些聲音工具、Klangmaschinen 或 DIY synth 工作坊？",
     "Fabricademy wearables、Playing with electronic textiles 和 Tone of the Things 有哪些可分享的電子織品教學文件？",
+    "KOBAKANT、Fluffy MIDI 和 Tone of the Things 如何把布料、感測器或 soft circuit 變成聲音介面？",
+    "導電線、導電布、壓力感測器和 soft circuit 可以在 KOBAKANT 或 Fabricademy 文件裡做出哪些作品？",
+    "CNX OpenLab 和 CoLabs Chiang Mai 頁面記錄了哪些 bioart、DIY biology 或 DIWO 社群活動？",
+    "SGMK 的 Main Page 和 HOME MADE 2016 如何呈現瑞士機電藝術社群的 DIY 工作方式？",
+    "Green Fab Lab Valldaura、FarmBot 和 precision farming 有哪些開放硬體農業案例？",
   ],
   en: [
     "I want cases where artistic expression meets bioethics; which community wiki paths can PBS start from?",
@@ -1096,7 +1095,7 @@ function CampfireDialogue({
   const copy = CAMPFIRE_DIALOGUE_COPY[language];
   const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
-  const [isSuggestingQuestions, setIsSuggestingQuestions] = useState(false);
+  const [isSuggestingQuestions] = useState(false);
   const [messages, setMessages] = useState<CampfireMessage[]>(() => [
     {
       speaker: copy.name,
@@ -1118,25 +1117,6 @@ function CampfireDialogue({
   useEffect(() => {
     setSuggestedQuestions(fallbackSuggestedQuestions);
   }, [fallbackSuggestedQuestions]);
-
-  useEffect(() => {
-    if (!showSuggestedQuestions) return;
-    let cancelled = false;
-    setIsSuggestingQuestions(true);
-    void askDeepSeekPbsQuestionSuggestions({
-      preferredLanguage: language,
-      seedQuestions: fallbackSuggestedQuestions,
-    }).then((questions) => {
-      if (!cancelled && questions.length) setSuggestedQuestions(questions.slice(0, 9));
-    }).catch(() => {
-      if (!cancelled) setSuggestedQuestions(fallbackSuggestedQuestions);
-    }).finally(() => {
-      if (!cancelled) setIsSuggestingQuestions(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [fallbackSuggestedQuestions, language, showSuggestedQuestions]);
 
   useEffect(() => {
     const log = logRef.current;

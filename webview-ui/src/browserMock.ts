@@ -270,6 +270,10 @@ export async function initBrowserMock(): Promise<void> {
   const editorPreview = wantsEditorAssets;
   const layoutPath = 'pbs-map.json';
 
+  const layoutPromise = editorPreview
+    ? null
+    : fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
+
   const [assetIndex, catalog] = await Promise.all([
     fetch(`${base}assets/asset-index.json`).then((r) => r.json()) as Promise<AssetIndex>,
     fetch(`${base}assets/furniture-catalog.json`).then((r) => r.json()) as Promise<CatalogEntry[]>,
@@ -294,7 +298,7 @@ export async function initBrowserMock(): Promise<void> {
     : compactEditorLayout;
   const layout = editorPreview
     ? editorLayout
-    : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
+    : await layoutPromise!;
 
   const runtimeAssetIndex = wantsEditorAssets ? assetIndex : filterAssetIndexForLayout(assetIndex, layout);
   const runtimeCatalog = wantsEditorAssets ? catalog : filterCatalogForLayout(catalog, layout);

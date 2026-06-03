@@ -4,7 +4,7 @@
   font-family: "FS Pixel Sans";
   font-style: normal;
   font-weight: 400;
-  font-display: block;
+  font-display: swap;
   src: url("/fonts/FSPixelSansUnicode-Regular.ttf") format("truetype");
 }
 
@@ -1992,6 +1992,7 @@ html[data-language="th"],
   margin-top: 14px;
   font-size: 0.82em;
   line-height: 1.48;
+  min-width: 0;
 }
 
 .rpg-dialogue-sources-title,
@@ -2001,13 +2002,19 @@ html[data-language="th"],
 }
 
 .rpg-dialogue-source-line {
+  display: block;
   margin: 5px 0 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .rpg-dialogue-source-line a {
+  display: inline;
   color: var(--palette-blue);
   text-decoration: underline;
   text-underline-offset: 3px;
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
@@ -2016,7 +2023,37 @@ html[data-language="th"],
 }
 
 .rpg-dialogue-source-body {
+  display: inline;
   color: color-mix(in srgb, var(--palette-ink) 76%, var(--palette-silver) 24%);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-sources {
+    font-size: 0.78em;
+    line-height: 1.42;
+  }
+
+  .rpg-dialogue-source-line {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.35em;
+    row-gap: 1px;
+    margin-top: 8px;
+  }
+
+  .rpg-dialogue-source-line a,
+  .rpg-dialogue-source-body {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .rpg-dialogue-source-body {
+    grid-column: 2;
+    font-size: 0.86em;
+    line-height: 1.35;
+  }
 }
 
 .rpg-dialogue-followup-list {

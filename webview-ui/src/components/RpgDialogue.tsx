@@ -102,7 +102,7 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    'Green Fab Lab Valldaura 有哪些農業機器人或 precision farming 的案例？',
+    'Green Fab Lab Valldaura 有哪些開放硬體、生態科技或無人機工作坊案例？',
     'Green Fab Lab 是什麼地方？',
     'FarmBot、Green Fab Lab 或 Valldaura 有哪些開放硬體農業案例？',
   ],
@@ -116,13 +116,13 @@ const personaQuestionSeeds: Record<string, string[]> = {
     '有沒有柔性電路和電子合成器合作的例子？',
     '什麼是多點觸控介面？它和電子織品有什麼關係？',
     'KOBAKANT 的 Fluffy MIDI 是怎麼把布料變成聲音介面的？',
-    'Tone of the Things 裡的織物感測器可以怎麼控制聲音？',
-    '導電線、導電布和壓力感測器可以做出哪些作品？',
+    'Fluffy MIDI 和 Woolly Noise 分別如何把導電材料、Teensy 或 Arduino 變成聲音介面？',
+    '導電線、導電布、壓力感測器和 soft circuit 可以在 KOBAKANT 或 Fabricademy 文件裡做出哪些作品？',
     'Fabricademy 的 wearables 課程教哪些電子織品技術？',
   ],
   'tincuta-heinzel': [
     'HOME MADE 2016 和 I.N.S.E.C.T. Summercamp 可以怎麼解釋獨立藝術營？',
-    'HOME MADE 2016 裡有哪些工作坊、聲音工具或 DIY synth？',
+    'Archive HOME MADE 和 Radionica krassfade 裡有哪些聲音工具、Klangmaschinen 或 DIY synth 工作坊？',
     'I.N.S.E.C.T. Summercamp 和 Open Call 頁面可以看出哪些營隊知識？',
   ],
 };
@@ -130,8 +130,8 @@ const personaQuestionSeeds: Record<string, string[]> = {
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `Hackteria、SGMK 和 KOBAKANT 各自有哪些適合新手先讀的頁面？`,
-    `Hackteria BioElectronics Workshop 和 CoLabs Chiang Mai 有哪些 open hardware 教學案例？`,
+    `Hackteria Main Page 和 About 頁面如何介紹 Hackteria 的 DIY biology、bioart 與開源藝術社群？`,
+    `CoLabs Chiang Mai 是什麼？它和 Hackteria、SGMK、bioart wet-workshop 有哪些關係？`,
     `為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？`,
     `有哪些電子織品、柔性電路或穿戴電子可以變成作品、產品或教學套件？`,
     `什麼是獨立藝術營？它和替代教育有什麼關係？`,
