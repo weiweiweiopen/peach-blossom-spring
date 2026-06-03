@@ -236,16 +236,16 @@ const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi companion";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
-    "我想找藝術表現和生物倫理議題結合的案例，PBS 可以從哪些社群維基開始找？",
-    "我要在哪裡找到這些獨立科技藝術營和社群？",
+    "Hackteria 的 BioElectronics and BioMaterials Workshop 有哪些藝術、生物倫理和開放硬體案例？",
+    "HOME MADE 2016 和 I.N.S.E.C.T. Summercamp 可以怎麼解釋獨立藝術營和替代教育？",
     "為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？",
     "有沒有電子織品、soft circuit 或 wearable electronics 從教學走向產品/作品的案例？",
-    "什麼是獨立藝術營，它和一般展覽、學校課程或科技工作坊有什麼不同？",
+    "HOME MADE 2016、Archive HOME MADE 和 I.N.S.E.C.T. Summercamp 裡有哪些工作坊、聲音工具或 DIY synth？",
     "為什麼 camp 可以作為替代教育形式，而不只是短期活動？",
-    "NGM 連到的社群如何把失敗筆記、材料清單和教學步驟變成可重用的公共知識？",
+    "Hackteria、Fabricademy 和 KOBAKANT 有哪些材料清單、教學步驟或 failure notes 可以重用？",
     "低成本工具、DIY 顯微鏡、手作電子和生物實驗如何支持藝術與科學之間的合作？",
     "如果完全不認識 Hackteria、SGMK、KOBAKANT，PBS 可以怎麼帶我看懂它們的關係？",
-    "我想做一份給新手看的小誌：哪些維基頁能介紹 NGM 的國際網絡、材料實驗和社群背景？",
+    "Fabricademy wearables、Playing with electronic textiles 和 Tone of the Things 有哪些可分享的電子織品教學文件？",
   ],
   en: [
     "I want cases where artistic expression meets bioethics; which community wiki paths can PBS start from?",
@@ -3568,14 +3568,11 @@ function App() {
 
   const handleBootStart = useCallback(() => {
     setHasStarted(true);
-    setIsPostBootLoading(true);
     if (postBootLoadingTimerRef.current !== null) {
       window.clearTimeout(postBootLoadingTimerRef.current);
-    }
-    postBootLoadingTimerRef.current = window.setTimeout(() => {
-      setIsPostBootLoading(false);
       postBootLoadingTimerRef.current = null;
-    }, 900);
+    }
+    setIsPostBootLoading(false);
   }, []);
 
   useEffect(() => {

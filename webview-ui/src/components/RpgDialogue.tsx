@@ -102,14 +102,14 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    '我想知道農業機器人可以用來幹嘛？',
+    'Green Fab Lab Valldaura 有哪些農業機器人或 precision farming 的案例？',
     'Green Fab Lab 是什麼地方？',
-    '為什麼農場會需要數位製造？',
+    'FarmBot、Green Fab Lab 或 Valldaura 有哪些開放硬體農業案例？',
   ],
   'marc-dusseiller': [
     'Hackteria 是什麼？',
     'DIY biology 是什麼？',
-    '為什麼有人會用低成本工具做科學和藝術？',
+    'Hackteria 的 DIY microscopy 和 BioArt workshop 如何連到藝術和生物倫理？',
   ],
   'mika-satomi': [
     '什麼是電子織品？',
@@ -121,9 +121,9 @@ const personaQuestionSeeds: Record<string, string[]> = {
     'Fabricademy 的 wearables 課程教哪些電子織品技術？',
   ],
   'tincuta-heinzel': [
-    '藝術科技營隊通常在做什麼？',
-    '為什麼營隊會和策展有關？',
-    '參加營隊的人會一起留下哪些知識？',
+    'HOME MADE 2016 和 I.N.S.E.C.T. Summercamp 可以怎麼解釋獨立藝術營？',
+    'HOME MADE 2016 裡有哪些工作坊、聲音工具或 DIY synth？',
+    'I.N.S.E.C.T. Summercamp 和 Open Call 頁面可以看出哪些營隊知識？',
   ],
 };
 
@@ -131,11 +131,11 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
     `Hackteria、SGMK 和 KOBAKANT 各自有哪些適合新手先讀的頁面？`,
-    `有沒有把藝術表現、開放硬體和社群教學連在一起的案例？`,
+    `Hackteria BioElectronics Workshop 和 CoLabs Chiang Mai 有哪些 open hardware 教學案例？`,
     `為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？`,
     `有哪些電子織品、柔性電路或穿戴電子可以變成作品、產品或教學套件？`,
     `什麼是獨立藝術營？它和替代教育有什麼關係？`,
-    `有哪些案例把材料實驗變成可分享的教學文件？`,
+    `Fabricademy wearables、Playing with electronic textiles 和 Tone of the Things 如何把材料實驗變成教學文件？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
