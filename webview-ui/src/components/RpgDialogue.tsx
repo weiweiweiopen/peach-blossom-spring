@@ -104,43 +104,43 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    '玩家想做一個照護農地與蜂群的開源工具時，哪些 source pages 可以幫他從感測器走到社群維護？',
-    'Green Fab Lab 的農業機器人和生態日曆，能怎麼變成玩家可實作的小任務？請找可查頁面。',
-    '如果設備不是重點，玩家應該先查哪些在地關係、維護方法或共同工作場景？',
+    '我想做一個照護農地與蜂群的小工具，先讀哪三個公開案例才不會只停在感測器？',
+    'Green Fab Lab 的農業機器人和生態日曆，可以怎麼變成我在 PBS 裡能試的一個小任務？',
+    '如果設備不是重點，我應該先理解哪些在地關係、維護方法或共同工作場景？',
   ],
   'marc-dusseiller': [
-    '玩家只有很少預算時，哪些 Hackteria source pages 可以幫他把低成本工具變成可分享任務？',
-    '把失敗、料理、焊接和友誼變成可傳遞方法時，玩家應該先查哪三個 source 線索？',
-    '如果 science-art box 不能被打開、弄髒、重做，玩家可以用哪些頁面理解這對 shared memory 的問題？',
+    '我只有很少預算，哪些 Hackteria 公開案例能幫我把低成本工具變成可分享任務？',
+    '如果我要把失敗、料理、焊接和友誼變成可傳遞的方法，先看哪三個案例？',
+    '如果 science-art box 不能被打開、弄髒、重做，這對共同記憶會造成什麼問題？',
   ],
   'tincuta-heinzel': [
-    '玩家如何把 ATTEMPTS, FAILURES, TRIALS AND ERRORS 變成保存失敗與再試知識的公開來源順序？',
-    '如果一個地方回應一直變動，玩家該查哪些頁面來把它整理成可保存的研究問題？',
-    '營隊什麼時候可以被設計成策展工具，而不只是教學活動？這對社群記憶有什麼實際用途？',
+    '我可以怎麼把失敗、再試和錯誤保存成別人也能繼續用的知識？',
+    '如果一個地方的回應一直變動，我該怎麼把它整理成可以保存的研究問題？',
+    '營隊什麼時候不只是教學活動，而能變成策展和共同記憶的工具？',
   ],
 };
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `如果玩家想在 PBS 裡做一個小型獨立社群，${persona.name} 這個入口可以帶我查哪些公開來源？`,
-    `用 ${persona.name} 當入口，哪三個公開 sources 最能幫玩家理解「工具如何變成社群方法」？`,
-    `我想把一個模糊靈感變成可查證小誌，應該先找哪個材料、場地或公開案例？`,
-    `哪個 Hackteria、SGMK 或 KOBAKANT 頁面最適合把 ${persona.name} 的主題變成可實作任務？`,
-    `如果玩家只問「這跟我有什麼關係」，${persona.name} 可以用哪些 source 說明它對獨立創作者有什麼幫助？`,
-    `請幫我把 ${persona.name} 這個入口改寫成一個更成熟、更可查證、也更好玩的問題。`,
+    `我在 PBS 裡想做一個小型獨立社群，先從材料、場地、工具還是人開始比較好？`,
+    `我想理解「工具怎麼變成社群方法」，哪三個公開案例最適合先讀？`,
+    `我只有一個模糊靈感，要變成可查證小誌，第一步該找材料、場地還是反例？`,
+    `Hackteria、SGMK 或 KOBAKANT 裡，有哪個案例最適合變成我可以試的小任務？`,
+    `如果我只想知道「這跟我有什麼關係」，你會帶我看哪個獨立創作者用得到的案例？`,
+    `我想把這個想法變成遊戲裡的一步行動，該怎麼問才會查得到、也做得出來？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `Which public pages should I read first if I want to turn ${persona.name}'s entry point into a playable community task?`,
-    `What material, tool, workshop, or place would make this question more useful to a player?`,
-    `How can this become a more mature, checkable zine question instead of a vague idea?`,
-    `Which Hackteria, SGMK, or KOBAKANT page best turns this topic into something a player can try?`,
-    `Why does this matter in practice for independent makers, not only as an interview theme?`,
-    `What source, example, or counterexample is missing before this question is ready?`,
+    `I want to build a small independent community in PBS. Should I start with materials, a place, a tool, or people?`,
+    `I want to understand how a tool becomes a community method. Which public examples should I read first?`,
+    `I only have a vague idea. What material, place, or counterexample should I look for first?`,
+    `Which Hackteria, SGMK, or KOBAKANT example could become a small task I can try?`,
+    `If I ask why this matters to me, which example would help an independent maker right now?`,
+    `How can I turn this idea into one action in the game that is both checkable and doable?`,
   ];
   return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
@@ -153,27 +153,27 @@ function makeFollowUpQuestions(language: LanguageCode, question: string, evidenc
   if (language === 'zh-TW') {
     if (asksForScene) {
       return [
-        `把這個任務縮小成玩家三分鐘內能試的一步：需要哪個材料、工具或地點？`,
-        `這一步能幫玩家理解哪種社群本質：共享、維修、互助、教學，還是共同保存知識？`,
+        `把這個任務縮小成三分鐘內能試的一步：需要哪個材料、工具或地點？`,
+        `這一步能讓我理解哪種社群本質：共享、維修、互助、教學，還是共同保存知識？`,
         `要讓它變成可查證小誌，還需要哪個公開來源或反例來支撐？`,
       ];
     }
     if (asksForUse) {
       return [
-        `玩家可以怎麼實際使用這些社群資源：先讀、先做、先聯絡，還是先比較？`,
-        `請把 ${sourceHint} 轉成一條清楚的閱讀順序，讓玩家不必自己猜。`,
+        `我可以怎麼實際使用這些社群資源：先讀、先做、先聯絡，還是先比較？`,
+        `請把 ${sourceHint} 排成一條清楚的閱讀順序，讓我知道下一步先看哪裡。`,
         `這個問題下一步要變成熟，最該補的是案例、工具細節、場域脈絡還是反例？`,
       ];
     }
     return [
-      `這題可以怎麼變成玩家真的想嘗試的一個小任務？`,
-      `哪些公開來源最能幫玩家理解社群如何共享資源、維修知識或互相啟發？`,
-      `請把這題改寫成更成熟的可查證小誌題目，並指出還缺什麼證據。`,
+      `這題可以怎麼變成我真的能嘗試的一個小任務？`,
+      `哪些公開案例最能說清楚共享資源、維修知識或互相啟發？`,
+      `要把這題變成可查證小誌，我還需要補哪個案例、工具細節或反例？`,
     ];
   }
   return [
     `How can this become one small task a player can actually try?`,
-    `Which public sources help the player understand shared resources, repair, mutual aid, or community knowledge?`,
+    `Which examples help explain shared resources, repair, mutual aid, or community knowledge?`,
     `How should this become a more mature checkable zine question, and what evidence is still missing?`,
   ];
 }
@@ -450,6 +450,8 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const [error, setError] = useState('');
   const [areSuggestionsOpen, setAreSuggestionsOpen] = useState(false);
   const messageLogRef = useRef<HTMLDivElement>(null);
+  const messageItemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const pendingAnswerScrollIndexRef = useRef<number | null>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
@@ -482,8 +484,24 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
   useEffect(() => {
     const log = messageLogRef.current;
     if (!log) return;
-    log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+    const answerIndex = pendingAnswerScrollIndexRef.current;
+    if (answerIndex !== null) {
+      pendingAnswerScrollIndexRef.current = null;
+      const target = messageItemRefs.current[answerIndex];
+      if (target) {
+        log.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+        return;
+      }
+    }
+    if (isLoading) log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
   }, [isLoading, messages]);
+
+  function appendNpcAnswer(message: DialogueMessage): void {
+    setMessages((prev) => {
+      pendingAnswerScrollIndexRef.current = prev.length;
+      return [...prev, message];
+    });
+  }
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -542,10 +560,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           transcript,
           preferredLanguage: language,
         });
-        setMessages((prev) => [
-          ...prev,
-          { speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence) },
-        ]);
+        appendNpcAnswer({ speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence) });
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -555,17 +570,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             preferredLanguage: language,
             evidence: transcriptEvidence,
           });
-          setMessages((prev) => [
-            ...prev,
-            { speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) },
-          ]);
+          appendNpcAnswer({ speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) });
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [
-            ...prev,
-            { speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) },
-          ]);
+          appendNpcAnswer({ speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) });
         }
       }
     } catch (err) {
@@ -624,7 +633,14 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
           <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
-              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
+              <div
+                key={`${message.speaker}-${index.toString()}`}
+                ref={(node) => {
+                  messageItemRefs.current[index] = node;
+                }}
+                className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0"
+                data-ui-part="body"
+              >
                 <p className="m-0">
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}

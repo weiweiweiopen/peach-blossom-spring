@@ -181,8 +181,8 @@
 }
 
 .pbs-interaction-root .rpg-dialogue-panel[data-language] .rpg-dialogue-input[data-ui-part="field"] {
-  font-size: var(--ui-type-body) !important;
-  line-height: var(--ui-line-body) !important;
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
 }
 
 .pbs-interaction-root .rpg-dialogue-avatar-sprite {
@@ -228,6 +228,23 @@
   white-space: nowrap !important;
 }
 
+.pbs-interaction-root .rpg-dialogue-panel :where(
+  [data-ui-part="title"],
+  [data-ui-part="subtitle"],
+  [data-ui-part="body"],
+  [data-ui-part="caption"],
+  [data-ui-part="button-label"],
+  [data-ui-part="field"]
+) {
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
+}
+
+.pbs-interaction-root .rpg-dialogue-panel :where([data-ui-control="text-button"]) {
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
+}
+
 .pbs-interaction-root .mobile-talk-prompt.mobile-talk-prompt--compact {
   width: auto !important;
   max-width: min(220px, calc(100vw - 28px)) !important;
@@ -251,16 +268,16 @@
 }
 
 .pbs-interaction-root .rpg-dialogue-log {
-  font-size: var(--ui-type-body) !important;
-  line-height: var(--ui-line-body) !important;
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
 }
 
 .pbs-interaction-root .rpg-dialogue-message,
 .pbs-interaction-root .rpg-dialogue-message p,
 .pbs-interaction-root .rpg-dialogue-message span,
 .pbs-interaction-root .rpg-dialogue-thinking {
-  font-size: var(--ui-type-body) !important;
-  line-height: var(--ui-line-body) !important;
+  font-size: var(--ui-type-field) !important;
+  line-height: var(--ui-line-field) !important;
 }
 
 .pbs-interaction-root :where(.pbs-computer-source-panel, .pbs-computer-source-panel *) {
