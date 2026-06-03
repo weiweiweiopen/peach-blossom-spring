@@ -36,12 +36,6 @@ export interface ChatEvidence {
 }
 
 
-const associationKnowledgeText = '聯想功能是 PBS-2026.2 裡把玩家問題接到 public source packet 與已提升 wiki memory 的生成小誌工具。它用當次公開材料包產生有結構的小誌與可讀 trace，再把結果、lint 與人工回饋送進 review/promotion 流程，讓缺少的索引、概念頁、來源橋與新問題逐步長出來。';
-
-function isAssociationQuestion(message: string): boolean {
-  return /聯想功能|association|wiki|維基|小誌|node vector|wiki query|查詢脈絡/i.test(message);
-}
-
 export interface LocalChatReply {
   reply: string;
   evidence: ChatEvidence[];
@@ -87,31 +81,6 @@ const forbiddenReplyPatterns = [
   /\bRetrieved\s*:/i,
   /\bEvidence\s*\d+\s*:/i,
   /\bSource type\s*:/i,
-];
-
-const corpusSeeds: Array<Omit<ChatEvidence, 'score'>> = [
-  {
-    id: 'corpus-how-to-get-what-you-want',
-    label: 'How To Get What You Want / wearable electronics practice',
-    sourceLabel: 'How To Get What You Want seed note',
-    sourceType: 'seed-corpus',
-    source: 'corpus',
-    personaAffinity: ['mika-satomi', 'hannah-perner-wilson', 'giulia-tomasello', 'christian-dils'],
-    tags: ['Kobakant', 'Mika Satomi', 'Hannah Perner-Wilson', 'wearable technology', 'e-textiles', 'soft circuits', 'DIY electronics', 'documentation'],
-    url: 'https://www.kobakant.at/DIY/',
-    text: 'How To Get What You Want is a compact DIY wearable electronics and e-textiles knowledge source associated with Kobakant, Mika Satomi, and Hannah Perner-Wilson. It treats soft circuits, textile sensors, small wearable prototypes, and documentation as practice: start with one touchable circuit, make the wiring visible, write down what failed, and share enough for another person to remake it.',
-  },
-  {
-    id: 'corpus-hackteria',
-    label: 'Hackteria / open hardware workshop practice',
-    sourceLabel: 'Hackteria seed note',
-    sourceType: 'seed-corpus',
-    source: 'corpus',
-    personaAffinity: ['marc-dusseiller', 'andreas-siagian', 'ryu-oyama', 'jonathan-minchin'],
-    tags: ['Hackteria', 'Marc Dusseiller', 'DIY biology', 'open hardware', 'nomadic science', 'workshops', 'community lab', 'art/science collaboration', 'low-cost tools'],
-    url: 'https://hackteria.org',
-    text: 'Hackteria is a community and wiki-shaped practice around DIY biology, open hardware, nomadic science, low-cost tools, and art/science workshops. It values small labs in backpacks, community labs, documentation, shared protocols, playful failure, and sustainable creative work that grows through workshop invitations and community exchange rather than a single centralized funding machine.',
-  },
 ];
 
 const intentExpansions: Array<{ match: RegExp; terms: string[] }> = [
@@ -230,25 +199,10 @@ function wikiCandidates(knowledge: LocalChatKnowledgeBase): Array<Omit<ChatEvide
   });
 }
 
-function seedCorpusCandidates(knowledge: LocalChatKnowledgeBase): Array<Omit<ChatEvidence, 'score'>> {
-  return corpusSeeds.filter((item) => !item.personaAffinity?.length || item.personaAffinity.includes(knowledge.id));
-}
-
-export function buildSeedCorpusCandidates(personaId?: string): Array<Omit<ChatEvidence, 'score'>> {
-  return corpusSeeds.filter((item) => !personaId || !item.personaAffinity?.length || item.personaAffinity.includes(personaId));
-}
-
 export function buildKnowledgeBaseEvidenceCandidates(knowledge: LocalChatKnowledgeBase): Array<Omit<ChatEvidence, 'score'>> {
   return [
-    ...Object.entries(knowledge.responses).map(([key, value]) => ({
-      id: `${knowledge.id}-response-${key}`,
-      label: `${knowledge.name} / ${key}`,
-      text: value,
-      source: 'persona' as const,
-    })),
     ...buildTranscriptEvidenceChunks(`${knowledge.transcript_zh}\n${knowledge.transcript_en}`, knowledge.id, knowledge.name),
     ...wikiCandidates(knowledge),
-    ...seedCorpusCandidates(knowledge),
   ];
 }
 
@@ -292,9 +246,6 @@ export function buildLocalGroundedAnswerDraft(args: {
   evidence: ChatEvidence[];
 }): string {
   const { message, knowledge, evidence } = args;
-  if (isAssociationQuestion(message)) {
-    return `${knowledge.name}: ${associationKnowledgeText}`;
-  }
   if (evidence.length === 0) {
     return `${knowledge.name}: 離線模式目前沒有找到足夠的 transcript 或 source 片段來回答「${naturalUserMessage(message)}」。`;
   }
@@ -342,25 +293,6 @@ export function retrieveNpcEvidence(args: {
   const { message, retrievalContext = '', knowledge } = args;
   const retrievalQuery = expandRetrievalQuery(message, retrievalContext);
   const candidates: Array<Omit<ChatEvidence, 'score'>> = [
-    {
-      id: `${knowledge.id}-persona`,
-      label: `${knowledge.name} persona`,
-      text: compact(`${knowledge.role}. ${knowledge.intro}`),
-      source: 'persona' as const,
-    },
-    ...Object.entries(knowledge.responses).map(([key, value]) => ({
-      id: `${knowledge.id}-response-${key}`,
-      label: key,
-      text: compact(value),
-      source: 'persona' as const,
-    })),
-    {
-      id: `${knowledge.id}-association-memory`,
-      label: 'association memory / wiki traversal',
-      text: associationKnowledgeText,
-      source: 'persona' as const,
-    },
-    ...seedCorpusCandidates(knowledge),
     ...buildTranscriptEvidenceChunks(`${knowledge.transcript_zh}\n${knowledge.transcript_en}`, knowledge.id, knowledge.name),
     ...wikiCandidates(knowledge),
   ];

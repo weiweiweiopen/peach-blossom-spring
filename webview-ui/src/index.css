@@ -1478,10 +1478,17 @@ html[data-language="th"],
   }
 
   .rpg-dialogue-chip,
+  .rpg-dialogue-followup-chip,
   .rpg-dialogue-submit,
   .rpg-dialogue-question-toggle {
     min-height: 48px !important;
     font-size: clamp(16px, 4.8vw, 20px) !important;
+  }
+
+  .rpg-dialogue-evidence,
+  .rpg-dialogue-followups {
+    padding: 10px !important;
+    font-size: 0.82em !important;
   }
 
   .retro-title-card {
@@ -1520,12 +1527,14 @@ html[data-language="th"],
     margin-bottom: 4px;
   }
   .rpg-dialogue-chip,
+  .rpg-dialogue-followup-chip,
   .rpg-dialogue-more,
   .rpg-dialogue-input,
   .rpg-dialogue-submit {
     font-size: 17px;
   }
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
+  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-followup-chip,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
@@ -1977,6 +1986,55 @@ html[data-language="th"],
   color: var(--palette-ink) !important;
   background: var(--palette-yellow) !important;
   border-color: var(--palette-blue) !important;
+}
+
+.rpg-dialogue-evidence,
+.rpg-dialogue-followups {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--palette-blue);
+  background: color-mix(in srgb, var(--palette-cream) 88%, var(--palette-yellow) 12%);
+  font-size: 0.76em;
+  line-height: 1.42;
+}
+
+.rpg-dialogue-evidence-title,
+.rpg-dialogue-followups-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rpg-dialogue-evidence-item {
+  margin-top: 8px;
+}
+
+.rpg-dialogue-evidence-item a {
+  color: var(--palette-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  word-break: break-word;
+}
+
+.rpg-dialogue-evidence-item p {
+  margin: 4px 0 0;
+}
+
+.rpg-dialogue-evidence-index {
+  font-weight: 700;
+}
+
+.rpg-dialogue-followup-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rpg-dialogue-followup-chip {
+  max-width: min(100%, 560px);
+  white-space: normal;
+  text-align: left;
 }
 
 .rpg-dialogue-kicker,

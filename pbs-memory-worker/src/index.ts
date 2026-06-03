@@ -269,7 +269,7 @@ async function answerWithMemory(env: Env, question: string, preferredLanguage: s
   const systemPrompt = [
     languageInstruction(preferredLanguage),
     'You answer inside Peach Blossom Spring using PBS public source evidence.',
-    'Use ONLY the numbered PBS memory evidence below plus optional NPC context. The evidence is the source of truth.',
+    'Use ONLY the numbered PBS memory evidence below for factual claims. Optional NPC context is voice framing only, not evidence.',
     'Every concrete project, workshop, material, tool, claim, or source-family claim must include a citation like [1] or [2] that points to the numbered evidence item that directly supports it.',
     'Never infer that a source family has a workshop or product just because that family appears in related links. If an SGMK item does not explicitly mention e-textile, soft circuit, wearable electronics, kit, product, sensor, or circuit, do not describe it as an SGMK soft-circuit case.',
     'Do not invent details such as Arduino LilyPad, brooches, kits, failure notes, productization, or reusable kits unless those exact ideas appear in the evidence text.',
@@ -277,9 +277,9 @@ async function answerWithMemory(env: Env, question: string, preferredLanguage: s
     'Do not say no evidence was found when PBS evidence is present.',
     'Keep the answer readable for a game dialogue.',
     '',
-    '--- optional NPC context ---',
+    '--- optional NPC voice context, not evidence ---',
     npcContext.slice(0, 5000),
-    '--- end optional NPC context ---',
+    '--- end optional NPC voice context ---',
     '',
     '--- PBS memory evidence ---',
     evidenceBlock || '(no PBS memory evidence)',
@@ -354,7 +354,12 @@ export default {
       const question = String(payload.question ?? '');
       const preferredLanguage = String(payload.preferredLanguage ?? 'zh-TW');
       const npcName = String(payload.npcName ?? 'NPC');
-      const npcContext = [`NPC: ${npcName}`, JSON.stringify(payload.persona ?? {}), String(payload.transcript ?? '')].join('\n');
+      const persona = typeof payload.persona === 'object' && payload.persona !== null ? payload.persona as Record<string, unknown> : {};
+      const npcContext = [
+        `NPC: ${npcName}`,
+        `Role: ${String(persona.role ?? '')}`,
+        `Intro: ${String(persona.intro ?? '')}`,
+      ].join('\n');
       return jsonResponse(request, env, await answerWithMemory(env, question, preferredLanguage, npcContext));
     }
     if (url.pathname === '/api/memory/draft') {

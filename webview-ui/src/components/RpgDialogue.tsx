@@ -34,6 +34,7 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
+  followUps?: string[];
 }
 
 interface RpgDialogueProps {
@@ -109,19 +110,19 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    'Open Source Beehives 如何把感測器、蜂群與農地照護連成一種可共享的田野知識？',
-    'Green Fab Lab 的農業機器人與生態日曆，怎麼改變 fab lab 只做工具展示的想像？',
-    'Jonathan 的訪談裡，什麼樣的在地關係比實驗室設備更能讓技術留下來？',
+    '用 source pages 說明 Open Source Beehives 如何把感測器、蜂群與農地照護變成可共享的社群知識？',
+    'Green Fab Lab 的農業機器人與生態日曆，對獨立社群維持技術有什麼實際幫助？可以查哪些頁面？',
+    'Jonathan 的訪談裡，哪些在地關係比設備更重要？請指出 PBS source 裡可繼續閱讀的線索。',
   ],
   'marc-dusseiller': [
-    'Marc 說的 Hackteria 精神裡，為什麼便宜、可拆、好笑會比正式實驗室更重要？',
-    '在 Marc 的工作坊經驗裡，失敗、料理、焊接和友誼怎麼一起變成教學方法？',
-    '如果一個 science-art box 不能被打開、污染、重做，Marc 會怎麼批評它？',
+    '用 Hackteria source pages 說明 Marc 的低成本、可拆解工作坊為什麼對獨立社群重要？',
+    'Marc 的工作坊如何把失敗、料理、焊接和友誼變成可傳遞方法？請列出可查 source 線索。',
+    '如果 science-art box 不能被打開、污染、重做，這對 PBS 的 shared memory 有什麼問題？可以查哪些頁面？',
   ],
   'tincuta-heinzel': [
-    '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？',
-    'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
-    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具，而不是教學活動？',
+    'ATTEMPTS, FAILURES, TRIALS AND ERRORS 是什麼？它如何幫獨立社群保存失敗與再試的知識？請連到 source。',
+    'Tincuta 如何把失敗、策展與在地回應轉成可保存的研究問題？PBS source 裡可查哪些線索？',
+    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具而不是教學活動？這對社群記憶有什麼用？',
   ],
 };
 
@@ -170,6 +171,71 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transc
     `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
   ];
   return shuffleCopy([...generated, ...englishSourceBridge]).slice(0, 9);
+}
+
+function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = []): string[] {
+  const sourceLabels = Array.from(new Set(evidence.map((item) => item.sourceLabel || item.label).filter(Boolean))).slice(0, 3);
+  const sourceHint = sourceLabels.length ? sourceLabels.join('、') : '剛才找到的 source pages';
+  if (language === 'zh-TW') {
+    return [
+      `剛才答案裡最可靠的 source 是哪些？請用 ${sourceHint} 幫我整理閱讀路徑。`,
+      `這個問題「${cleanQuestionPart(question, 32)}」對獨立社群或 PBS shared memory 有什麼實際用途？`,
+      `如果我要把這題做成 Wiki 小誌，下一個應該查的材料、人物或工具是什麼？`,
+    ];
+  }
+  return [
+    `Which source pages best support that answer, and what should I read first?`,
+    `Why does this matter for independent communities or PBS shared memory?`,
+    `What material, person, or tool should become the next wiki-zine question?`,
+  ];
+}
+
+function evidenceUrl(item: ChatEvidence): string {
+  return item.url || '';
+}
+
+function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
+  const visible = (evidence ?? []).filter((item) => item.label || item.text || item.url).slice(0, 4);
+  if (!visible.length) return null;
+  return (
+    <div className="rpg-dialogue-evidence" data-ui-part="caption">
+      <p className="rpg-dialogue-evidence-title">Source route</p>
+      {visible.map((item, index) => {
+        const url = evidenceUrl(item);
+        const label = item.sourceLabel || item.label || `Source ${index + 1}`;
+        const body = shorten(item.text || item.label || '', 150);
+        return (
+          <div key={`${item.id}-${index.toString()}`} className="rpg-dialogue-evidence-item">
+            <span className="rpg-dialogue-evidence-index">[{index + 1}]</span>{' '}
+            {url ? (
+              <a href={url} target="_blank" rel="noreferrer">
+                {label}
+              </a>
+            ) : (
+              <span>{label}</span>
+            )}
+            {body && <p>{body}</p>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DialogueFollowUps({ questions, onSelect }: { questions?: string[]; onSelect: (question: string) => void }) {
+  if (!questions?.length) return null;
+  return (
+    <div className="rpg-dialogue-followups" data-ui-part="caption">
+      <p className="rpg-dialogue-followups-title">下一步可以問</p>
+      <div className="rpg-dialogue-followup-list">
+        {questions.slice(0, 3).map((item) => (
+          <button key={item} className="rpg-dialogue-followup-chip pbs-game-button" data-ui-control="text-button" type="button" onClick={() => onSelect(item)}>
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function zineLabel(language: LanguageCode): string {
@@ -488,7 +554,10 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           transcript,
           preferredLanguage: language,
         });
-        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence }]);
+        setMessages((prev) => [
+          ...prev,
+          { speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence) },
+        ]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -498,11 +567,17 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             preferredLanguage: language,
             evidence: transcriptEvidence,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence }]);
+          setMessages((prev) => [
+            ...prev,
+            { speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) },
+          ]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, evidence: transcriptEvidence }]);
+          setMessages((prev) => [
+            ...prev,
+            { speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) },
+          ]);
         }
       }
     } catch (err) {
@@ -522,6 +597,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
   function handleSuggestedPrompt(prompt: string): void {
     setAreSuggestionsOpen(false);
     setQuestion(prompt);
+  }
+
+  function handleFollowUpPrompt(prompt: string): void {
+    setQuestion('');
+    void submitPrompt(prompt);
   }
 
   async function handleOpenZine(): Promise<void> {
@@ -563,6 +643,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
+                {message.speaker === persona.name && <DialogueEvidence evidence={message.evidence} />}
+                {message.speaker === persona.name && <DialogueFollowUps questions={message.followUps} onSelect={handleFollowUpPrompt} />}
               </div>
             ))}
             {isLoading && (

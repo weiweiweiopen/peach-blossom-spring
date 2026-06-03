@@ -15,9 +15,6 @@ import type { LanguageCode } from './i18n.js';
 import type { ChatEvidence } from './localChatbot.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
-
-const associationKnowledgeText = '聯想功能是 PBS-2026.2 裡把玩家問題接到 public source packet 與已提升 wiki memory 的生成小誌工具。它用當次公開材料包產生有結構的小誌與可讀 trace，再把結果、lint 與人工回饋送進 review/promotion 流程，讓缺少的索引、概念頁、來源橋與新問題逐步長出來。';
-
 export interface KnowledgeBase {
   id: string;
   name: string;
@@ -356,7 +353,7 @@ function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, trans
     transcript_en,
     transcript_zh,
     wikiLinks: getWikiLinksForInterviewee(persona.id).links,
-    responses: { ...persona.responses, association: associationKnowledgeText },
+    responses: persona.responses,
   };
 }
 
@@ -410,7 +407,6 @@ export async function askDeepSeekPersona({
     sourceNotes || '(no source notes available)',
     '--- end compact source notes ---',
     '',
-    `Reference topic answers (canned fallback if transcript is silent): ${JSON.stringify(knowledge.responses)}`,
     `Related wiki links: ${JSON.stringify(knowledge.wikiLinks)}`,
   ];
   const prompt = trimMessage(promptParts.join('\n'));

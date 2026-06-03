@@ -32,6 +32,7 @@ const bridgeWriterPrompt = readFileSync(join(root, "prompts", "pbs-bridge-writer
 const pbsEngine = readFileSync(join(root, "..", "scripts", "pbs_engine.py"), "utf8");
 const projectReadme = readFileSync(join(root, "..", "README.md"), "utf8");
 const localMemoryGame = readFileSync(join(root, "..", "LOCAL_MEMORY_GAME.md"), "utf8");
+const suggestedPromptHandler = rpgDialogue.match(/function handleSuggestedPrompt\(prompt: string\): void \{[\s\S]*?\n  \}/)?.[0] ?? "";
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -118,7 +119,7 @@ const checks = [
   ["Low relevance zines show pet panel instead of debug error", /LowRelevanceZineError/.test(generator) && /world-association-low-relevance/.test(app + css) && /AssociationLowRelevancePage/.test(app)],
   ["NPC zines receive transcript writing style", /onOpenAssociationZine\?: \(query: string, writingStyle: string\)/.test(rpgDialogue) && /function npcWritingStylePrompt/.test(rpgDialogue) && /writingStyle: activeDialoguePersona\.name|writingStyle,/.test(app)],
   ["Dialogue suggestions show safer source questions", /COMMUNITY_QUERY_PROMPTS:\s*Record<LanguageCode, string\[]>/.test(app) && /Hackteria, SGMK, or KOBAKANT/.test(app) && /sourceBridgeQuestions[\s\S]*可查證小誌/.test(rpgDialogue) && /englishSourceBridge[\s\S]*checkable zine/.test(rpgDialogue)],
-  ["NPC suggested prompts fill input before action", /function handleSuggestedPrompt[\s\S]*setAreSuggestionsOpen\(false\);[\s\S]*setQuestion\(prompt\);/.test(rpgDialogue) && !/function handleSuggestedPrompt[\s\S]*submitPrompt\(prompt\)/.test(rpgDialogue)],
+  ["NPC suggested prompts fill input before action", /setAreSuggestionsOpen\(false\);/.test(suggestedPromptHandler) && /setQuestion\(prompt\);/.test(suggestedPromptHandler) && !/submitPrompt\(prompt\)/.test(suggestedPromptHandler)],
   ["Zine request retries compact packet when too long", /function compactRequestUser/.test(generator) && /Message content is too long/.test(generator) && /retrying once with compact evidence packet/.test(generator)],
   ["Thought-gap broadcasts use colorful notice", /THOUGHT_GAP_BROADCASTS/.test(app) && /world-resonance-notice--thought-gap/.test(app + css)],
   ["Zine panel does not inject regenerate controls", !/world-split-zine-regenerate/.test(app + uiSystem)],
