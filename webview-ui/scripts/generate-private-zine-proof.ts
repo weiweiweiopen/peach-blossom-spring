@@ -2,14 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { assertCleanPublicArtifact, extractPublicArtifactText } from '../src/daydream/artifactGuard.js';
-import { renderAssociationFeedbackSection } from '../src/daydream/associationFeedback.js';
-import { daydreamCorpus } from '../src/daydream/corpus.js';
-import type { DaydreamCorpus, SourceCard } from '../src/daydream/engine.js';
-import { parseSeedKeywords, generateDaydreamReport } from '../src/daydream/engine.js';
-import { runDaydreamWorkflow } from '../src/daydream/daydreamWorkflow.js';
-import { renderOfficialTemplateArtifactHtml } from '../src/daydream/officialTemplateRenderer.js';
-import type { DaydreamPublicArtifactContent } from '../src/daydream/publicArtifactContent.js';
+import { assertCleanPublicArtifact, extractPublicArtifactText } from '../src/association/artifactGuard.js';
+import { renderAssociationFeedbackSection } from '../src/association/associationFeedback.js';
+import { associationCorpus } from '../src/association/corpus.js';
+import type { AssociationCorpus, SourceCard } from '../src/association/engine.js';
+import { parseSeedKeywords, generateAssociationReport } from '../src/association/engine.js';
+import { runAssociationWorkflow } from '../src/association/associationWorkflow.js';
+import { renderOfficialTemplateArtifactHtml } from '../src/association/officialTemplateRenderer.js';
+import type { AssociationPublicArtifactContent } from '../src/association/publicArtifactContent.js';
 
 type AllowedFamily = 'SGMK' | 'Fabricademy' | 'HOW TO GET WHAT YOU WANT / KOBAKANT';
 
@@ -107,7 +107,7 @@ function cleanPublicText(value: unknown): string {
     .trim();
 }
 
-function normalizeArticle(data: any): DaydreamPublicArtifactContent {
+function normalizeArticle(data: any): AssociationPublicArtifactContent {
   const sections = Array.isArray(data.sections) ? data.sections.slice(0, 4) : [];
   const protocol = Array.isArray(data.protocol) ? data.protocol.slice(0, 4) : [];
   if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < 4 || protocol.length < 4) {
@@ -260,12 +260,12 @@ async function callDeepSeekArticle(editorialPrompt: string, pages: typeof deepRe
 }
 
 const seedKeywords = expandedSeedKeywords(seedSentence);
-const allowedCards = daydreamCorpus.cards.filter(allowed);
+const allowedCards = associationCorpus.cards.filter(allowed);
 const allowedIds = new Set(allowedCards.map((card) => card.id));
-const allowedCorpus: DaydreamCorpus = {
+const allowedCorpus: AssociationCorpus = {
   cards: allowedCards,
-  edges: daydreamCorpus.edges.filter((edge) => allowedIds.has(edge.source) && allowedIds.has(edge.target)),
-  manifest: { schemaVersion: daydreamCorpus.manifest.schemaVersion, generatedAt: daydreamCorpus.manifest.generatedAt, counts: { sourceCards: allowedCards.length, graphEdges: 0 } },
+  edges: associationCorpus.edges.filter((edge) => allowedIds.has(edge.source) && allowedIds.has(edge.target)),
+  manifest: { schemaVersion: associationCorpus.manifest.schemaVersion, generatedAt: associationCorpus.manifest.generatedAt, counts: { sourceCards: allowedCards.length, graphEdges: 0 } },
 };
 const ranked = allowedCards
   .map((card) => ({ card, ...scoreCard(card, seedKeywords) }))
@@ -274,8 +274,8 @@ const ranked = allowedCards
 const familyPicks = enabledSourceFamilies.flatMap((family) => ranked.filter((item) => sourceFamily(item.card) === family).slice(0, family === 'Fabricademy' ? 2 : 4));
 const matchedRanked = [...new Map([...familyPicks, ...ranked.slice(0, 12)].map((item) => [item.card.id, item])).values()].slice(0, 12);
 const matchedCards = matchedRanked.map((item) => item.card);
-const workflow = runDaydreamWorkflow(`${seedSentence}\n${seedKeywords.join(' ')}`, allowedCorpus);
-const report = generateDaydreamReport(`${seedSentence}\n${seedKeywords.join(' ')}`, allowedCorpus);
+const workflow = runAssociationWorkflow(`${seedSentence}\n${seedKeywords.join(' ')}`, allowedCorpus);
+const report = generateAssociationReport(`${seedSentence}\n${seedKeywords.join(' ')}`, allowedCorpus);
 report.keywords = seedKeywords;
 report.matchedCards = matchedCards;
 const evidenceCards = [...new Map([...matchedCards, ...report.deepReadCards, ...report.expandedCards].filter(allowed).map((card) => [card.id, card])).values()].slice(0, 16);
@@ -350,7 +350,7 @@ if (!article) {
     seedKeywords,
     enabledSourceFamilies,
     hackteriaExcluded: true,
-    corpusCounts: { allowedCards: allowedCards.length, hackteriaCardsExcluded: daydreamCorpus.cards.filter((card) => sourceFamily(card) === 'Hackteria').length },
+    corpusCounts: { allowedCards: allowedCards.length, hackteriaCardsExcluded: associationCorpus.cards.filter((card) => sourceFamily(card) === 'Hackteria').length },
     matchedPages,
     linkedOrRelatedPagesVisited: relatedPages,
     newSeedsOrResearchTopics: researchTopics.map((topic) => ({ title: topic.title, researchQuestion: topic.researchQuestion, relationPattern: topic.relationPattern, maturityScore: topic.maturityScore, firstReadingRoute: topic.firstReadingRoute })),

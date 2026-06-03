@@ -1,6 +1,3 @@
-import { retrievePbsLocalMemoryEvidence } from './pbsLocalMemory.js';
-import type { A2AExchange, Thronglet, ThrongletMemoryEvent } from './simulation/types.js';
-
 interface LocalWikiLink {
   title: string;
   url: string;
@@ -29,7 +26,7 @@ export interface ChatEvidence {
   id: string;
   label: string;
   text: string;
-  source: 'persona' | 'transcript' | 'wiki' | 'corpus' | 'pet-memory' | 'pet-source' | 'a2a';
+  source: 'persona' | 'transcript' | 'wiki' | 'corpus' | 'a2a';
   sourceLabel?: string;
   sourceType?: string;
   personaAffinity?: string[];
@@ -48,7 +45,6 @@ function isAssociationQuestion(message: string): boolean {
 export interface LocalChatReply {
   reply: string;
   evidence: ChatEvidence[];
-  memoryEvent?: ThrongletMemoryEvent;
 }
 
 function tokens(text: string): string[] {
@@ -369,86 +365,10 @@ export function retrieveNpcEvidence(args: {
     ...wikiCandidates(knowledge),
   ];
   const evidence = rankEvidence(retrievalQuery, candidates, 3);
-  const localMemoryEvidence = retrievePbsLocalMemoryEvidence(retrievalQuery, 2);
-  for (const item of localMemoryEvidence) {
-    if (!evidence.some((existing) => existing.id === item.id)) {
-      evidence.splice(Math.max(0, evidence.length - 1), evidence.length >= 3 ? 1 : 0, item);
-    }
-  }
   const websiteCandidates = candidates.filter((item) => item.source === 'wiki');
   const websiteEvidence = rankEvidence(retrievalQuery, websiteCandidates, 1)[0] ?? (websiteCandidates[0] ? { ...websiteCandidates[0], score: 0 } : undefined);
   if (evidence.length > 0 && websiteEvidence && !evidence.some((item) => item.id === websiteEvidence.id)) {
     evidence.splice(Math.max(0, evidence.length - 1), evidence.length >= 3 ? 1 : 0, websiteEvidence);
   }
   return evidence;
-}
-
-export function localPetChat(args: {
-  message: string;
-  pet: Thronglet;
-  exchanges?: A2AExchange[];
-  tick?: number;
-}): LocalChatReply {
-  const { message, pet, exchanges = [], tick = 0 } = args;
-  const petExchanges = exchanges.filter((exchange) => exchange.petId === pet.id).slice(0, 5);
-  const candidates: Array<Omit<ChatEvidence, 'score'>> = [
-    {
-      id: `${pet.id}-question`,
-      label: 'Original question',
-      text: compact(pet.question.text),
-      source: 'pet-source' as const,
-    },
-    {
-      id: `${pet.id}-source`,
-      label: 'Fed material',
-      text: compact(`${pet.knowledgeJson?.sourceText ?? ''} ${pet.knowledgeJson?.skillText ?? ''}`),
-      source: 'pet-source' as const,
-    },
-    ...(pet.memory ?? []).map((memory) => ({
-      id: memory.id,
-      label: `Memory tick ${memory.tick}`,
-      text: compact(memory.text),
-      source: 'pet-memory' as const,
-    })),
-    ...petExchanges.flatMap((exchange) => [
-      {
-        id: `${exchange.id}-summary`,
-        label: `${exchange.targetLabel} exchange`,
-        text: compact(exchange.summary),
-        source: 'a2a' as const,
-      },
-      ...(exchange.nutrientSources ?? []).slice(0, 2).map((source, index) => ({
-        id: `${exchange.id}-source-${index}`,
-        label: source.title,
-        text: compact(source.extractedText),
-        source: 'a2a' as const,
-        url: source.url,
-      })),
-    ]),
-  ].filter((item) => item.text.length > 0);
-  const evidence = rankEvidence(message, candidates, 3);
-  const localMemoryEvidence = retrievePbsLocalMemoryEvidence(`${message}\n${pet.question.text}`, 2);
-  for (const item of localMemoryEvidence) {
-    if (!evidence.some((existing) => existing.id === item.id)) {
-      evidence.splice(Math.max(0, evidence.length - 1), evidence.length >= 3 ? 1 : 0, item);
-    }
-  }
-  const memoryEvent: ThrongletMemoryEvent = {
-    id: `${pet.id}-local-chat-${tick}-${Date.now().toString(36)}`,
-    tick,
-    text: `Player asked: ${compact(message, 120)}${evidence[0] ? ` | Retrieved: ${evidence[0].label}` : ''}`,
-    significance: evidence.length ? 62 : 35,
-  };
-  if (evidence.length === 0) {
-    return {
-      reply: `${pet.displayName}: 啾。我還缺材料。下一步小實驗：給我一個場景、一個工具，或一個失敗版本；我會帶去問下一位 NPC。`,
-      evidence,
-      memoryEvent,
-    };
-  }
-  return {
-    reply: `${pet.displayName}: 啾，我先不把材料名稱當答案。下一步小實驗：把問題縮成 24 小時內可做的小交換；若對方只說很酷，我就再拆小。`,
-    evidence,
-    memoryEvent,
-  };
 }

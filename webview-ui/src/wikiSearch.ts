@@ -1,7 +1,6 @@
-import { daydreamCorpus } from './daydream/corpus.js';
-import type { SourceCard } from './daydream/engine.js';
-import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './daydream/evidenceHygiene.js';
-import { searchPbsLocalMemory } from './pbsLocalMemory.js';
+import { associationCorpus } from './association/corpus.js';
+import type { SourceCard } from './association/engine.js';
+import { evidenceHygienePenalty, evidenceTextForHygiene, isSpamEvidence, isThinOrEmptyEvidence } from './association/evidenceHygiene.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
 
 export interface WikiSearchResult {
@@ -134,7 +133,7 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   const wantsSoundDiy = /diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|sound|speaker|聲音|音樂|樂器/i.test(query);
   const wantsHackteriaKitchen = /kitchen|廚房|厨房|料理|food|meal|hosting|餐|cook|ferment|kombucha|nata|tofu|biohack|bioart|生物藝術|濕實驗室|實驗室/i.test(query);
   const wantsBodyTextile = /穿戴|織品|電子織品|布|身體|體感|皮膚|觸摸|手勢|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|body|embod|somatic|skin|gesture|failure|documentation|document/i.test(query);
-  const corpusResults = daydreamCorpus.cards
+  const corpusResults = associationCorpus.cards
     .map((card) => {
       const family = sourceFamily(card);
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
@@ -155,9 +154,8 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
         .map((item) => linkToResult(item.link, item.score))
         .filter((item): item is WikiSearchResult => Boolean(item))
     : [];
-  const localMemoryResults = searchPbsLocalMemory(query, limit);
   const byUrl = new Map<string, WikiSearchResult>();
-  for (const result of [...localMemoryResults, ...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
+  for (const result of [...personaResults, ...corpusResults].sort((a, b) => b.score - a.score)) {
     if (!byUrl.has(result.url)) byUrl.set(result.url, result);
   }
   return Array.from(byUrl.values()).slice(0, limit);

@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildSemanticVectorContext, generateConnectedPapersMarkdown } from "../src/daydream/connectedPapers.js";
-import { daydreamCorpus } from "../src/daydream/corpus.js";
+import { buildSemanticVectorContext, generateConnectedPapersMarkdown } from "../src/association/connectedPapers.js";
+import { associationCorpus } from "../src/association/corpus.js";
 
 test("connected-paper report is grounded in exported source cards", () => {
-  const markdown = generateConnectedPapersMarkdown(daydreamCorpus);
+  const markdown = generateConnectedPapersMarkdown(associationCorpus);
 
   assert.match(markdown, /## 1\. Related Articles/);
   assert.match(markdown, /## 2\. Missing Bridges/);
@@ -18,10 +18,10 @@ test("connected-paper report is grounded in exported source cards", () => {
 });
 
 test("connected-paper semantic context acts as a grounded vector layer", () => {
-  const anchors = daydreamCorpus.cards
+  const anchors = associationCorpus.cards
     .filter((card) => card.source === "htgwyw" && /wearable sound/i.test(card.title))
     .slice(0, 2);
-  const context = buildSemanticVectorContext(daydreamCorpus, anchors);
+  const context = buildSemanticVectorContext(associationCorpus, anchors);
 
   assert.ok(context.anchorCards.length > 0);
   assert.ok(context.relatedCards.length > 0);

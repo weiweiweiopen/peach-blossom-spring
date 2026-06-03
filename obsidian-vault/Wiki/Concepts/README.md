@@ -1,3 +1,10 @@
+---
+type: wiki-folder
+status: active
+sourceRefs:
+  - obsidian-vault/Schema/frontmatter-schema.md
+---
+
 # Concepts
 
-Reviewed durable notes for Concepts. This category starts empty.
+Concept Pages are semantic terrain nodes. They require sourceRefs and evidence before being treated as factual.

@@ -1,24 +1,24 @@
 import { getInitialDeepSeekApiKey } from "../apiKeyStorage.js";
-import { assertCleanPublicArtifact, extractPublicArtifactText } from "../daydream/artifactGuard.js";
-import { renderAssociationFeedbackSection } from "../daydream/associationFeedback.js";
-import { daydreamCorpus } from "../daydream/corpus.js";
-import { runDaydreamWorkflow } from "../daydream/daydreamWorkflow.js";
-import { evidenceHygienePenalty, evidenceTextForHygiene, isUsableEvidenceText } from "../daydream/evidenceHygiene.js";
-import { renderOfficialTemplateArtifactHtml } from "../daydream/officialTemplateRenderer.js";
-import { findUnsupportedBioDetailTerms } from "../daydream/publicValidation.js";
-import type { DaydreamCorpus, SourceCard } from "../daydream/engine.js";
-import type { DaydreamPublicArtifactContent } from "../daydream/publicArtifactContent.js";
-import type { DaydreamHtmlLayoutVariant } from "../daydream/publicArtifactHtml.js";
+import { assertCleanPublicArtifact, extractPublicArtifactText } from "./artifactGuard.js";
+import { renderAssociationFeedbackSection } from "./associationFeedback.js";
+import { associationCorpus } from "./corpus.js";
+import { runAssociationWorkflow } from "./associationWorkflow.js";
+import { evidenceHygienePenalty, evidenceTextForHygiene, isUsableEvidenceText } from "./evidenceHygiene.js";
+import { renderOfficialTemplateArtifactHtml } from "./officialTemplateRenderer.js";
+import { findUnsupportedBioDetailTerms } from "./publicValidation.js";
+import type { AssociationCorpus, SourceCard } from "./engine.js";
+import type { AssociationPublicArtifactContent } from "./publicArtifactContent.js";
+import type { AssociationHtmlLayoutVariant } from "./publicArtifactHtml.js";
 // @ts-ignore Vite raw prompt import from project-level editable prompt file.
 import bridgeWriterSystemPrompt from "../../prompts/pbs-bridge-writer-system.md?raw";
 // @ts-ignore Vite raw official HTML template import.
-import pbsResetTitleTemplate from "../daydream/templates/official-html/01-pbs-reset-title-kinetic.html?raw";
+import pbsResetTitleTemplate from "./templates/official-html/01-pbs-reset-title-kinetic.html?raw";
 
 const DEFAULT_DEEPSEEK_PROXY_URL = "https://solar-oracle-deepseek-proxy.dontmarryme.workers.dev/chat";
 const DEEPSEEK_REQUEST_TIMEOUT_MS = 120000;
 const EDITORIAL_WRITER_TIMEOUT_MS = 300000;
 const ZINE_SECTION_COUNT = 7;
-const PUBLIC_FORBIDDEN = /\b(Daydream|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes|SourceNotes|NotebookLM bridge|primarySourcePacket|notebookSourcePack)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
+const PUBLIC_FORBIDDEN = /\b(Association\s+workflow|privateTrace|sourceTrail|relationPaths|maturityScore|workflow|debug|sourceCards|categoryGraph|corpusManifest|selectedTopic|researchTopics|outputPlan|depthScore|POTENTIAL TOPIC|source\s*trail|source\s*graph|relation\s*paths?|backend|traversal|internal process|prompt|system language|generated question|PUBLIC ZINE|READING SCORE|local proof|reading export|guiding question|public note|template status|PBS bridge notes|compiled notes|compiled Wiki notes|bridge\/index notes|SourceNotes|NotebookLM bridge|primarySourcePacket|notebookSourcePack)\b|來源卡|來源圖|來源圖譜|檢索|遍歷|後台|內部流程|提示詞|提示|系統語言|工作流|偵錯|深度門檻|關係場|生成流程|研究草圖|プロンプト|システム言語|バックエンド|トラバーサル|graf sumber|bahasa sistem|proses internal|quellgraph|systemsprache|interner prozess|แบ็กเอนด์|พรอมป์ต์|ภาษาระบบ/i;
 const RAW_ENGLISH_EXCERPT = /[A-Za-z][A-Za-z,;:'’()"\-\s]{140,}[.!?]/;
 const EDITORIAL_PROMPT_STORAGE_KEY = "pbs:association-writer-system-prompt:v1";
 
@@ -26,7 +26,7 @@ export interface BrowserAssociationResult {
   title: string;
   html: string;
   visibleText: string;
-  variant: DaydreamHtmlLayoutVariant;
+  variant: AssociationHtmlLayoutVariant;
   requestId?: string;
   traceKey?: string;
 }
@@ -42,7 +42,7 @@ export type AssociationProgressCallback = (message: string) => void;
 
 export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th";
 
-type Workflow = ReturnType<typeof runDaydreamWorkflow>;
+type Workflow = ReturnType<typeof runAssociationWorkflow>;
 type Card = ReturnType<typeof sourceCards>[number];
 type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
@@ -366,13 +366,13 @@ function extractEntryTerms(text: string): string[] {
     .slice(0, 80);
 }
 
-function allowedUiCorpus(): DaydreamCorpus {
-  const cards = [...entryNoteCards(), ...daydreamCorpus.cards.filter(isAllowedZineCard)];
+function allowedUiCorpus(): AssociationCorpus {
+  const cards = [...entryNoteCards(), ...associationCorpus.cards.filter(isAllowedZineCard)];
   const ids = new Set(cards.map((card) => card.id));
   return {
     cards,
-    edges: daydreamCorpus.edges.filter((edge) => ids.has(edge.source) && ids.has(edge.target)),
-    manifest: daydreamCorpus.manifest,
+    edges: associationCorpus.edges.filter((edge) => ids.has(edge.source) && ids.has(edge.target)),
+    manifest: associationCorpus.manifest,
   };
 }
 
@@ -719,9 +719,9 @@ function cleanLLMText(value: unknown): string {
     .replace(/system\s+language/gi, "house style")
     .replace(/prompts?/gi, "questions")
     .replace(/workflows?/gi, "rhythms")
-    .replace(/PBS\s+Daydream\s+corpus/gi, "Peach Blossom Spring shared memory")
-    .replace(/Daydream\s+corpus/gi, "shared memory collection")
-    .replace(/\bDaydream\b/gi, "shared memory")
+    .replace(/PBS\s+Association\s+corpus/gi, "Peach Blossom Spring shared memory")
+    .replace(/Association\s+corpus/gi, "shared memory collection")
+    .replace(/\bAssociation\b/gi, "shared memory")
     .replace(/PBS\s+Semantic\s+Layers\s*\/\s*Tools/gi, "community notes on tools")
     .replace(/Semantic\s+Layers\s*\/\s*Tools/gi, "tool notes")
     .replace(/PBS\s+Semantic\s+Layers/gi, "community theme notes")
@@ -819,7 +819,7 @@ function sectionMaterialFocus(parsedUser: any, index: number): Record<string, un
   };
 }
 
-function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
+function normalizeLLMArtifact(data: any): AssociationPublicArtifactContent {
   const sections = Array.isArray(data.sections) ? data.sections.slice(0, ZINE_SECTION_COUNT) : [];
   const protocol = Array.isArray(data.protocol) ? data.protocol.slice(0, 4) : [];
   if (!data.title || !data.subtitle || !data.opening || !data.proposition || sections.length < ZINE_SECTION_COUNT || protocol.length < 4) {
@@ -827,7 +827,7 @@ function normalizeLLMArtifact(data: any): DaydreamPublicArtifactContent {
   }
   const missingSection = sections.find((section: any) => !String(section?.id ?? "").trim() || !String(section?.title ?? "").trim() || !String(section?.body ?? "").trim());
   if (missingSection) throw new Error("LLM JSON missing required section id/title/body fields.");
-  const artifact: DaydreamPublicArtifactContent = {
+  const artifact: AssociationPublicArtifactContent = {
     schemaVersion: "association-public-document-v1",
     title: cleanLLMText(data.title),
     subtitle: cleanLLMText(data.subtitle),
@@ -1215,7 +1215,7 @@ function sanitizeZineSubtitle(subtitle: string, query: string, language: Associa
   return cleaned;
 }
 
-async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[], onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<DaydreamPublicArtifactContent> {
+async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, language: AssociationZineLanguage, compiledNotes: CompiledWikiNote[], onProgress?: AssociationProgressCallback, options: BrowserAssociationOptions = {}): Promise<AssociationPublicArtifactContent> {
   const messages = buildEditorialMessages(query, workflow, language, compiledNotes);
   const system = messages.system;
   const user = withWritingStyle(messages.user, options);
@@ -1239,12 +1239,12 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
   const opening = String(outline.opening ?? "");
   const proposition = String(outline.proposition ?? "");
   const parsedUser = JSON.parse(user);
-  const sections: DaydreamPublicArtifactContent["sections"] = [];
+  const sections: AssociationPublicArtifactContent["sections"] = [];
   for (let index = 0; index < ZINE_SECTION_COUNT; index += 1) {
     onProgress?.(progress.sections[index] ?? progress.materialClues);
     const previousSections: Array<{ title: string; body: string }> = sections.map(({ title, body }) => ({ title, body: body.slice(0, 180) }));
     const requestSection = (rewrite = false): Promise<any> => requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail、SourceNotes、NotebookLM bridge、primarySourcePacket、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1}/${ZINE_SECTION_COUNT} 章 JSON：{"id":"","title":"","body":"","pullQuote":""}。這一章必須完成 sectionFocus.sectionJob，優先使用 sectionFocus.primaryPages 與 sectionFocus.relationTrail，不要平均重複其他章。必須至少使用一個實際頁名、作品名、事件、概念、社群實踐或方法，並明確說它能如何幫助或限制 query；若材料不足，這章要寫成閱讀路徑、缺口或查證問題，不要幻想新事實或堆抽象詞。除非 wantsMakingTutorial=true，不要寫成工具製作、教學步驟、BOM 或工作坊流程。這是 PBS wiki 導讀段落，不是檢索報告也不是硬湊的論文：要寫出判斷、場景、矛盾、缺口或下一步，而不是列出索引。後半段必須延續閱讀路徑或論證，處理反證、限制、比較或未來研究方向，不要突然轉成材料清單、造句式結尾或小誌生成方法說明。不要寫系統/流程語，不要寫任何人名。不要輸出 Association、corpus、workflow、debug、prompt、source trail、SourceNotes、NotebookLM bridge、primarySourcePacket、compiled notes；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。${rewrite ? "上一版和前文太像，請換用不同頁名、不同用途、不同句型重寫；不要保留相同開頭或相同結論。" : ""}`,
       JSON.stringify({
         query,
         title,
@@ -1297,7 +1297,7 @@ async function callDeepSeekEditorialWriter(query: string, workflow: Workflow, la
     let item: any;
     try {
       item = await requestDeepSeekJsonWithRetry(
-        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Daydream、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
+        `${languageInstruction(language)}\n${articleLength}\n只生成第 ${index + 1} 個 protocol JSON，不要陣列：{"title":"","body":""}。預設寫成一個具體研討會下一步：證據檢查、反例搜尋、比較問題、未來研究問題或點開頁面後能確認的事；只有 wantsMakingTutorial=true 才能寫製作/實作步驟。不要寫系統/流程語，不要寫任何人名。不要輸出 Association、corpus、workflow、debug、prompt、source trail；面向讀者時改稱共享記憶、主題筆記、實體筆記、閱讀路徑。`,
         JSON.stringify({ query, title, proposition, wantsMakingTutorial: parsedUser.wantsMakingTutorial, protocolIndex: index + 1, sections: sections.map(({ title, body }) => ({ title, body: body.slice(0, 160) })) }, null, 2),
         900,
       ) as any;
@@ -1605,7 +1605,7 @@ function renderWorkflowTraceSection(trace: Record<string, unknown>, language: As
   </section>`;
 }
 
-function articleCharacterCount(artifact: DaydreamPublicArtifactContent): number {
+function articleCharacterCount(artifact: AssociationPublicArtifactContent): number {
   return [artifact.title, artifact.subtitle, artifact.opening, artifact.proposition, ...artifact.sections.map((section) => section.body), ...artifact.protocol.map((item) => item.body), artifact.quietCaveat ?? ""].join("\n").length;
 }
 
@@ -1625,7 +1625,7 @@ function buildClickTrace(params: {
   query: string;
   language: AssociationZineLanguage;
   workflow: Workflow;
-  artifact?: DaydreamPublicArtifactContent;
+  artifact?: AssociationPublicArtifactContent;
   visibleText?: string;
   html?: string;
   errorClass?: string;
@@ -1747,16 +1747,16 @@ function createBrowserWorkflow(query: string): Workflow {
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
   const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
   try {
-    const workflow = runDaydreamWorkflow(query, corpus);
+    const workflow = runAssociationWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;
-    return runDaydreamWorkflow(expandedQuery, corpus);
+    return runAssociationWorkflow(expandedQuery, corpus);
   } catch (error) {
     console.warn("Association workflow needed a public-safe query fallback.", error);
     try {
-      return runDaydreamWorkflow(expandedQuery, corpus);
+      return runAssociationWorkflow(expandedQuery, corpus);
     } catch (fallbackError) {
       console.warn("Association workflow fallback needed neutral query.", fallbackError);
-      return runDaydreamWorkflow(query, corpus);
+      return runAssociationWorkflow(query, corpus);
     }
   }
 }
@@ -1792,8 +1792,8 @@ export async function generateBrowserAssociationZine(query: string, language: As
     persistClickTrace(buildClickTrace({ requestId, query, language, workflow, errorClass: errorClass(error, "low_relevance_zine"), errorMessage: errorMessage(error) }));
     throw error;
   }
-  const variant: DaydreamHtmlLayoutVariant = "pbs-reset-title";
-  let artifact: DaydreamPublicArtifactContent;
+  const variant: AssociationHtmlLayoutVariant = "pbs-reset-title";
+  let artifact: AssociationPublicArtifactContent;
   try {
     artifact = await withBrowserTimeout(
       callDeepSeekEditorialWriter(query, workflow, language, compiledNotes, onProgress, options),

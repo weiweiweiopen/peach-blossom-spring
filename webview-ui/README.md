@@ -2,9 +2,12 @@
 
 This Vite/React app is the playable surface for **PBS-2026.2.255**.
 
-The web UI does not read the old generated source-note corpus or NotebookLM bridge at runtime. It consumes the static export generated from the root `Sources/Raw/` corpus by `scripts/pbs_engine.py`.
+The web UI no longer uses browser-only fake memory snapshots as the runtime memory engine. PBS memory is served in two explicit modes:
 
-The canonical knowledge layer is the local PBS Markdown/wiki memory that can be opened, diffed, forked, backed up, reviewed, and moved outside a cloud product.
+- Cloud mode: browser -> `pbs-memory-worker` -> Cloudflare D1 SQLite/FTS source index -> DeepSeek proxy.
+- Local full-memory mode: browser -> `scripts/pbs_game_server.py` -> `scripts/pbs_engine.py` -> SQLite / Sources / Wiki / Schema -> DeepSeek.
+
+The canonical editable knowledge layer remains the local PBS Markdown/wiki memory that can be opened, diffed, forked, backed up, reviewed, and moved outside a cloud product.
 
 ## Runtime Roles
 
@@ -30,12 +33,26 @@ Do not commit or send to external services:
 ## Expected Source Flow
 
 ```text
-Sources/Raw
-→ scripts/pbs_engine.py export-game-index
-→ webview-ui/src/generated/pbsLocalMemoryIndex.json
-→ zine / dialogue writer
-→ optional review queue
-→ promoted wiki memory
+Cloud public game:
+scripts/pbs_engine.py export-d1-sql
+→ Cloudflare D1 `peach-blossom-spring-memory-db`
+→ Cloudflare PBS memory Worker
+→ game UI
+
+Local full-memory game:
+game UI
+→ scripts/pbs_game_server.py
+→ scripts/pbs_engine.py index/search/draft
+→ obsidian-vault/Review/compiled-note-drafts/
+```
+
+Removed old runtime snapshot paths:
+
+```text
+webview-ui/src/pbsLocalMemory.ts
+webview-ui/src/generated/pbsLocalMemoryIndex.json
+webview-ui/public/assets/pbs-local-memory-index.json
+webview-ui/public/assets/pbs-wiki-index.json
 ```
 
 Promotion is cumulative and auditable: reviewed traces can create or update Markdown pages, add backlinks, keep contradictions visible, and leave git-readable history.
@@ -45,6 +62,12 @@ Promotion is cumulative and auditable: reviewed traces can create or update Mark
 ```bash
 npm --prefix webview-ui install
 npm --prefix webview-ui run dev
+```
+
+Local full-memory game:
+
+```bash
+./scripts/run_pbs_local_game.sh
 ```
 
 Validation:

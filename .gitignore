@@ -1,6 +1,14 @@
 dist/
+webview-ui/dist/
 node_modules/
+webview-ui/node_modules/
+pbs-memory-worker/node_modules/
 .DS_Store
+
+# Local/offloaded cloud artifacts that must not live inside the repo
+/dist 2/
+webview-ui-node_modules.offloaded-*/
+obsidian-vault/
 .env
 .env.local
 .env.*.local
@@ -8,6 +16,7 @@ webview-ui/.env
 webview-ui/.env.local
 webview-ui/.env.*.local
 multiplayer-worker/.wrangler/
+pbs-memory-worker/.wrangler/
 webview-ui/test/output/
 webview-ui/test-results/
 webview-ui/public/assets/furniture/CRAFTPIX_EXTERIOR_[0-9]*/
@@ -22,3 +31,13 @@ obsidian-vault/Knowledge/*.sqlite
 obsidian-vault/Knowledge/*.sqlite-*
 obsidian-vault/Knowledge/*.db
 **/__pycache__/
+
+# Generated PBS knowledge indexes; rebuild with scripts/pbs_engine.py.
+Knowledge/*.jsonl
+Knowledge/*.md
+Knowledge/*.sqlite
+Knowledge/*.sqlite-*
+Knowledge/*.db
+Knowledge/*.db-*
+PBS_CONTEXT.md
+webview-ui/public/og-image 2.*

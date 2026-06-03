@@ -20,16 +20,18 @@ const campfireManifest = readFileSync(join(root, "public", "assets", "furniture"
 const furnitureCatalog = readFileSync(join(root, "src", "office", "layout", "furnitureCatalog.ts"), "utf8");
 const layoutSerializer = readFileSync(join(root, "src", "office", "layout", "layoutSerializer.ts"), "utf8");
 const uiSystemContract = readFileSync(join(root, "src", "ui-system.css"), "utf8");
-const feedback = readFileSync(join(root, "src", "daydream", "associationFeedback.ts"), "utf8");
-const generator = readFileSync(join(root, "src", "daydream", "browserAssociationGenerator.ts"), "utf8");
-const evidenceHygiene = readFileSync(join(root, "src", "daydream", "evidenceHygiene.ts"), "utf8");
-const engine = readFileSync(join(root, "src", "daydream", "engine.ts"), "utf8");
-const template = readFileSync(join(root, "src", "daydream", "officialTemplateRenderer.ts"), "utf8");
+const feedback = readFileSync(join(root, "src", "association", "associationFeedback.ts"), "utf8");
+const generator = readFileSync(join(root, "src", "association", "browserAssociationGenerator.ts"), "utf8");
+const evidenceHygiene = readFileSync(join(root, "src", "association", "evidenceHygiene.ts"), "utf8");
+const engine = readFileSync(join(root, "src", "association", "engine.ts"), "utf8");
+const template = readFileSync(join(root, "src", "association", "officialTemplateRenderer.ts"), "utf8");
 const wikiSearch = readFileSync(join(root, "src", "wikiSearch.ts"), "utf8");
 const rpgDialogue = readFileSync(join(root, "src", "components", "RpgDialogue.tsx"), "utf8");
 const retroBoot = readFileSync(join(root, "src", "components", "RetroBootScreen.tsx"), "utf8");
 const bridgeWriterPrompt = readFileSync(join(root, "prompts", "pbs-bridge-writer-system.md"), "utf8");
 const pbsEngine = readFileSync(join(root, "..", "scripts", "pbs_engine.py"), "utf8");
+const projectReadme = readFileSync(join(root, "..", "README.md"), "utf8");
+const localMemoryGame = readFileSync(join(root, "..", "LOCAL_MEMORY_GAME.md"), "utf8");
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -77,16 +79,16 @@ const checks = [
   ["Schema current flow avoids obsolete Why wording", !/玩家以 Why\?|current game flow[^`]*Why\?/i.test(app)],
   ["UI system uses per-language font stacks", /data-language="zh-TW"[\s\S]*PingFang TC[\s\S]*data-language="ja"[\s\S]*Hiragino Sans[\s\S]*data-language="th"[\s\S]*Noto Sans Thai/.test(uiSystem)],
   ["Dialogue field height is fixed to icon buttons", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*height:\s*var\(--ui-icon-button-size\)[\s\S]*max-height:\s*var\(--ui-icon-button-size\)/.test(uiSystem)],
-  ["Question Pet exposes lint maturity", /function questionLintSignals[\s\S]*question-lint-card/.test(app)],
-  ["Zine prompt uses route-first wiki mode", /route-first PBS wiki zine/.test(generator) && /route-first wiki zine/.test(bridgeWriterPrompt) && /reading route/.test(generator + bridgeWriterPrompt) && /support.*counter-evidence|反例/.test(bridgeWriterPrompt + generator)],
+  ["Question lint uses shared memory traversal", /evaluateSharedMemoryLint[\s\S]*scoreQuestionTraversal/.test(app) && /questionLintForQuality[\s\S]*questionQuality/.test(app) && !new RegExp(`function ${"question"}LintSignals[\\s\\S]*${"question"}-lint-card`).test(app)],
+  ["Zine prompt uses route-first wiki mode", /route-first PBS wiki zine/.test(generator) && /reading route/.test(generator) && /support|counter-evidence|limits|gap|反例/.test(generator)],
   ["Zine generation avoids page-count padding", /articleLengthInstruction[\s\S]*exactly seven main sections[\s\S]*Do not pad with filler/.test(generator) && !/ZINE_PRINT_PAGE_MULTIPLE|ZINE_TARGET_PRINT_PAGES|PRINT BINDING TARGET/.test(generator)],
   ["Zine print script only hides feedback", /function zinePrintCalibrationScript[\s\S]*beforeprint[\s\S]*setPrintMode\(true\)/.test(generator) && !/data-pbs-materials-mode|targetPages|calibrated-pages/.test(generator)],
   ["Zine section prose is route-readable", /Each section body should be 110-190 words/.test(generator) && /visible text thin:/.test(generator) && !/body 必須符合/.test(generator)],
   ["Zine renderer keeps coherent seven-section article", /sections = artifact\.sections\.slice\(0, 7\)/.test(template) && /ZINE_SECTION_COUNT = 7/.test(generator) && /for \(let index = 0; index < ZINE_SECTION_COUNT; index \+= 1\)/.test(generator)],
   ["Evidence hygiene blocks SEO spam across retrieval", /SEO_SPAM_EVIDENCE[\s\S]*dissertation writing services/.test(evidenceHygiene) && /isSpamEvidence\(evidenceTextForHygiene\(card\)\)/.test(wikiSearch) && /evidenceHygienePenalty\(text\)/.test(generator)],
   ["Kitchen bioart queries prefer Hackteria over generic workshops", /sourceIntentBoost/.test(engine) && /wantsHackteria[\s\S]*source === "hackteria"/.test(engine) && /廚房\|厨房\|料理\|食物\|餐\|發酵/.test(engine) && !/廚房\|厨房\|料理\|食物\|餐\|發酵[^\n]+workshop/.test(engine) && /wantsHackteriaKitchenBioQuery/.test(generator + wikiSearch)],
-  ["PBS 2026.2 uses source-first local memory", /export-game-index/.test(pbsEngine) && /PBS-2026\.2\.255/.test(retroBoot) && /LOCAL MEMORY/.test(retroBoot) && /PBS bridge writer/.test(bridgeWriterPrompt) && /public source packet/.test(bridgeWriterPrompt) && !/notebookSourcePack \/ compiled source notes/.test(bridgeWriterPrompt)],
-  ["PBS 2026.2 preserves local wiki knowledge sovereignty", /canonical memory \/ source-of-ownership/.test(bridgeWriterPrompt) && /Source-first local memory 是 land/.test(bridgeWriterPrompt) && /raw sources 是 source of truth/.test(bridgeWriterPrompt) && /git 審計/.test(bridgeWriterPrompt)],
+  ["PBS 2026.2 uses Cloud D1 source memory online", /export-d1-sql/.test(pbsEngine) && /Cloud mode:[\s\S]*Cloudflare PBS memory Worker backed by D1 SQLite\/FTS/.test(projectReadme) && /\/api\/memory\/draft[\s\S]*stored`?\s*(?:is|:)\s*`?false/.test(localMemoryGame)],
+  ["PBS 2026.2 keeps local full-memory source-first", /export-game-index/.test(pbsEngine) && /Runtime search is source-first/.test(pbsEngine) && /Local full-memory mode/.test(projectReadme + localMemoryGame) && /Sources\/Raw canonical sources/.test(pbsEngine)],
   ["Analytical concepts use evidence clusters", /supportEvidence\?: RegExp/.test(generator) && /minimumSupportHits\?: number/.test(generator) && /community\|collective\|shared\|open source\|documentation\|workshop\|maintenance/.test(generator) && /conceptualQueryHints/.test(generator + wikiSearch)],
   ["Zine print avoids fake fixed-height pages", !/height:\s*257mm/.test(generator) && !/page-break-after:\s*always/.test(generator) && /\.page \{ break-after: auto !important; page-break-after: auto !important/.test(generator)],
   ["Zine print no longer page-calibrates", !/let bestUnder = null|targetPages|calibrate\(\)/.test(generator)],
@@ -98,10 +100,10 @@ const checks = [
   ["Talk prompt uses compact name-tag scale", /mobile-talk-prompt--compact/.test(app) && /mobile-talk-prompt\.mobile-talk-prompt--compact[\s\S]*border-radius:\s*999px/.test(uiSystemContract)],
   ["Dialogue avatars share one frame size", /rpg-dialogue-avatar-frame/.test(app) && /rpg-dialogue-avatar-frame[\s\S]*width:\s*92px[\s\S]*height:\s*174px/.test(uiSystemContract)],
   ["Dialogue input matches body size", /rpg-dialogue-input\[data-ui-part="field"\][\s\S]*font-size:\s*var\(--ui-type-body\)/.test(uiSystemContract)],
-  ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*get\("editor"\) === "1"/.test(app) && /\{editorEntryEnabled && \([\s\S]*<BottomToolbar/.test(app)],
+  ["Layout editor entry is URL gated", /function readEditorModeParam\(\)[\s\S]*import\.meta\.env\.DEV[\s\S]*get\("editor"\) === "1"/.test(app) && /terrainEditorEnabled && \([\s\S]*<BottomToolbar/.test(app)],
   ["Layout editor uses original toolbar handlers", /<BottomToolbar[\s\S]*isEditMode=\{editor\.isEditMode\}[\s\S]*editor\.handleToggleEditMode\(\)[\s\S]*workspaceFolders=\{workspaceFolders\}/.test(app)],
   ["Layout editor toolbar floats above game HUD", /pbs-editor-toolbar/.test(bottomToolbar) && /\.pbs-editor-toolbar[\s\S]*position:\s*fixed[\s\S]*z-index:\s*10000/.test(css)],
-  ["Editor mode suppresses PBS HUDs", /playerProfile && !editorEntryEnabled && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !isEncounterUiOpen[\s\S]*nameTags\.map/.test(app) && /appMode === "interactive" &&[\s\S]*!editorEntryEnabled &&[\s\S]*!isSplitOpen/.test(app) && /PET_WINDOWS_ENABLED && !editorEntryEnabled && selectedPet/.test(app)],
+  ["Editor mode suppresses PBS HUDs", /playerProfile && !\(terrainEditorEnabled && editor\.isEditMode\) && <div className="floating-ui-layer"/.test(app) && /!editorEntryEnabled && !\(terrainEditorEnabled && editor\.isEditMode\)[\s\S]*nameTags\.map/.test(app) && /PET_WINDOWS_ENABLED &&[\s\S]*!editorEntryEnabled &&[\s\S]*!\(terrainEditorEnabled && editor\.isEditMode\)[\s\S]*question-status-panel/.test(app)],
   ["Editor mode uses compact 40x40 layout", /COMPACT_EDITOR_MAP_SIZE = 40/.test(peachWorld) && /function createCompactEditorLayout[\s\S]*const cols = COMPACT_EDITOR_MAP_SIZE[\s\S]*const rows = COMPACT_EDITOR_MAP_SIZE/.test(peachWorld) && /params\.get\('editor'\) === '1'[\s\S]*createCompactEditorLayout\(\)/.test(browserMock)],
   ["Editor compact room keeps only house and campfire furniture", /addFurniture\(furniture, 'CRAFTPIX_EXTERIOR_TEMPLE_HOUSE'/.test(peachWorld) && /addFurniture\(furniture, 'MULTI_MIND_CAMPFIRE_1', COMPACT_EDITOR_CAMPFIRE_TILE\.col/.test(peachWorld) && !/function createCompactEditorLayout[\s\S]*CRAFTPIX_INTERIOR_21/.test(peachWorld)],
   ["Campfire is animated collidable 4x4 wiki entry", /MULTI_MIND_CAMPFIRE_6/.test(campfireManifest) && /"footprintW": 4/.test(campfireManifest) && /"footprintH": 4/.test(campfireManifest) && /PBS_COMPUTER_COPY[\s\S]*name:\s*"多重心智自我火燄"/.test(app) && /interactiveFurnitureTypes/.test(officeCanvas) && /getAnimationFrames\(item\.type\)/.test(officeState)],
@@ -110,12 +112,12 @@ const checks = [
   ["Trees keep full collision footprint", /function normalizedBackgroundTiles[\s\S]*tree[\s\S]*return 0/.test(furnitureCatalog)],
   ["SGMK query boosts SGMK cards", /const wantsSgmk/.test(wikiSearch) && /family === 'SGMK' \? 60 : 0/.test(wikiSearch)],
   ["Keyboard movement uses smooth repeat and reduced sprint", /PLAYER_SPRINT_SPEED_MULTIPLIER = 2\.17/.test(app) && /const targetMaxQueue = 1/.test(app) && /isSprint \? 24 : 70/.test(app)],
-  ["LLM wiki corpus is lazy-loaded after boot", !/import \{ generateBrowserAssociationZine \}/.test(app) && !/import \{ searchWikiPages/.test(app) && /await import\("\.\/daydream\/browserAssociationGenerator\.js"\)/.test(app) && /await import\("\.\/wikiSearch\.js"\)/.test(app)],
+  ["LLM wiki corpus is lazy-loaded after boot", !/import \{ generateBrowserAssociationZine \}/.test(app) && !/import \{ searchWikiPages/.test(app) && /async function importAssociationGenerator\(\)[\s\S]*await import\("\.\/association\/browserAssociationGenerator\.js"\)/.test(app)],
   ["Zine repeated sections warn instead of aborting", /Association zine repeated section warning/.test(generator) && !/LLM repeated section body after rewrite/.test(generator)],
   ["Malformed section JSON retries and falls back", /DeepSeek JSON response was malformed; retrying once with stricter JSON instructions/.test(generator) && /function fallbackSection/.test(generator) && /malformed after retry; using evidence fallback section/.test(generator)],
   ["Low relevance zines show pet panel instead of debug error", /LowRelevanceZineError/.test(generator) && /world-association-low-relevance/.test(app + css) && /AssociationLowRelevancePage/.test(app)],
   ["NPC zines receive transcript writing style", /onOpenAssociationZine\?: \(query: string, writingStyle: string\)/.test(rpgDialogue) && /function npcWritingStylePrompt/.test(rpgDialogue) && /writingStyle: activeDialoguePersona\.name|writingStyle,/.test(app)],
-  ["Dialogue suggestions show three safer questions", /return COMMUNITY_QUERY_PROMPTS\[language\]\.slice\(0, 3\)/.test(app) && /community kitchens, material care, and technical experiments/.test(app) && /return \[attemptsQuestion, fallback\[language\], method\[language\]\]/.test(rpgDialogue) && /checkable method of knowledge preservation/.test(rpgDialogue)],
+  ["Dialogue suggestions show safer source questions", /COMMUNITY_QUERY_PROMPTS:\s*Record<LanguageCode, string\[]>/.test(app) && /Hackteria, SGMK, or KOBAKANT/.test(app) && /sourceBridgeQuestions[\s\S]*可查證小誌/.test(rpgDialogue) && /englishSourceBridge[\s\S]*checkable zine/.test(rpgDialogue)],
   ["NPC suggested prompts fill input before action", /function handleSuggestedPrompt[\s\S]*setAreSuggestionsOpen\(false\);[\s\S]*setQuestion\(prompt\);/.test(rpgDialogue) && !/function handleSuggestedPrompt[\s\S]*submitPrompt\(prompt\)/.test(rpgDialogue)],
   ["Zine request retries compact packet when too long", /function compactRequestUser/.test(generator) && /Message content is too long/.test(generator) && /retrying once with compact evidence packet/.test(generator)],
   ["Thought-gap broadcasts use colorful notice", /THOUGHT_GAP_BROADCASTS/.test(app) && /world-resonance-notice--thought-gap/.test(app + css)],
@@ -125,9 +127,7 @@ const checks = [
   ["DeepSeek zine timeout allows slow first response", /DEEPSEEK_REQUEST_TIMEOUT_MS\s*=\s*120000/.test(generator) && /EDITORIAL_WRITER_TIMEOUT_MS\s*=\s*300000/.test(generator)],
   ["Boot and zine loading dots are colorful", /\.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)[\s\S]*22px 0 0 var\(--palette-pink\)[\s\S]*44px 0 0 var\(--palette-yellow\)/.test(css) && /\.world-association-loading \.boot-loading-dots[\s\S]*background:\s*var\(--palette-blue\)/.test(css)],
   ["Boot loading title uses stable pixel font size", /@font-face[\s\S]*font-display:\s*block/.test(css) && /\.boot-loading-title[\s\S]*font-family:\s*var\(--font-pixel\) !important[\s\S]*font-size:\s*clamp\(26px,\s*4\.2vw,\s*42px\)/.test(css)],
-  ["Schema exposes editable local bridge writer prompt", /pbs-bridge-writer-system\.md\?raw/.test(app + generator) && /schema-editorial-prompt-editor/.test(app + css) && /pbs:bridge-writer-system-prompt:v2/.test(app + generator) && /currentEditorialSystemPrompt/.test(generator)],
   ["Campfire header copy is multilingual", /PBS_COMPUTER_COPY[\s\S]*"zh-TW":[\s\S]*name:\s*"多重心智自我火燄"[\s\S]*en:[\s\S]*name:\s*"The Multi-Minds Self Campfire"[\s\S]*id:[\s\S]*de:[\s\S]*ja:[\s\S]*th:/.test(app) && /<h2[\s\S]*>\{copy\.name\}<\/h2>/.test(app) && !/Association \/ 聯想 shared-fire terminal/.test(app)],
-  ["Editor mode exposes safe Map Size control", /showMapSize=\{editorEntryEnabled\}/.test(app) && /Map Size/.test(editorToolbar) && /onResizeMap/.test(editorToolbar) && /function resizeLayout[\s\S]*Resize would cut off/.test(editorActions) && /handleResizeLayout[\s\S]*os\.characters\.values/.test(useEditorActions)],
   ["Editor mode bypasses player setup", /useState\(qaUi\.enabled \|\| editorEntryEnabled\)/.test(app) && /qaUi\.enabled \|\| editorEntryEnabled \? qaPlayerProfile/.test(app)],
 ];
 

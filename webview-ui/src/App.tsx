@@ -51,9 +51,8 @@ import {
   readMultiplayerConfig,
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
-import { askCampfire, canUseLocalMemoryServer } from "./localMemoryApi.js";
-import { askDeepSeekPbsComputer, askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
-import { buildStaticLocalMemoryAnswer } from "./pbsLocalMemory.js";
+import { askCampfire, searchMemory } from "./localMemoryApi.js";
+import { askDeepSeekPbsQuestionSuggestions } from "./deepseekClient.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -88,6 +87,11 @@ import type { SimSnapshot, Thronglet } from "./simulation/types.js";
 import { vscode } from "./vscodeApi.js";
 import { getWikiLinksForInterviewee } from "./wikiLinks.js";
 import type { WikiSearchResult } from "./wikiSearch.js";
+import {
+  emptyQuestionQuality,
+  scoreQuestionTraversal,
+  type QuestionQuality,
+} from "./traversal/questionQuality.js";
 import {
   COMPACT_EDITOR_CAMPFIRE_TILE,
   compactEditorNpcPlacements,
@@ -229,7 +233,7 @@ const COMMUNITY_MAP_URL =
 const WUKIR_BANDCAMP_ALBUM_URL =
   "https://wukirsuryadi.bandcamp.com/album/institutionalized-ritual";
 const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
-const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi agent";
+const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi companion";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
     "我想找藝術表現和生物倫理議題結合的案例，PBS 可以從哪些社群維基開始找？",
@@ -400,7 +404,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "小型文化組織與獨立藝術網絡依賴關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作；知識散落在訪談、wiki、雲端文件、展覽紀錄、工作坊材料、社群媒體與口述經驗中，平台或合作一斷裂，脈絡就容易消失。",
       "Non-Governmental Matters 已把電子織品、Hackteria、跨國科技藝術營隊、獨立教育、資金模式與文化差異整理成第一層田野材料。桃花源把這些材料轉成 AI 時代的知識保存問題：文化組織需要能保存、分類、召回、比較、修正與再使用知識的認知系統。",
-      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把 public source packet 與已提升 wiki memory 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。Question Pet 會把玩家問題轉成 lint/maturity 訊號，提示問題如何長大。",
+      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把 public source packet 與已提升 wiki memory 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。問題 lint 由 shared memory traversal 產生，提示問題目前有多少具體度、證據準備與跨系統潛力。",
     ],
     contributionTitle: "預期貢獻",
     contributions: [
@@ -421,7 +425,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "Small cultural organizations and independent art networks often run on key people, short grants, temporary workshops, informal communication, and personal memory. Their knowledge is scattered across interviews, wikis, cloud folders, grant files, exhibition records, workshop materials, social media, and oral accounts; when platforms, people, or funding disappear, context disappears with them.",
       "Non-Governmental Matters already turns electronic textiles, Hackteria, transnational art-tech camps, independent education, funding models, and cultural difference into first-layer field material. Peach Blossom Spring reframes those materials as an AI-era knowledge-preservation problem: these organizations need a cognitive system for preserving, classifying, recalling, comparing, correcting, and reusing knowledge.",
-      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines from a public source packet plus promoted wiki memory. Question Pet turns player questions into lint and maturity signals, showing how a question can grow.",
+      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines from a public source packet plus promoted wiki memory. Question lint is produced by shared memory traversal, showing specificity, evidence readiness, and cross-system potential.",
     ],
     contributionTitle: "Expected contributions",
     contributions: ["AI as cultural emulator: a ghost machine or loop that compresses past language, images, styles, data, and traces of labor into something callable.", "LLM Wiki as memory infrastructure for small cultural organizations.", "Cultural ghosts and media archaeology become practical AI knowledge-preservation problems.", "Public source packets, LLMs, and wiki promotion become a human-machine governance framework for cultural memory."],
@@ -434,7 +438,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   id: {
     title: "Memori bersama PBS",
     introTitle: "Peach Blossom Spring sebagai infrastruktur memori",
-    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question Pet mengubah pertanyaan menjadi sinyal lint dan kematangan."],
+    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question lint berasal dari traversal shared memory: seberapa spesifik pertanyaan, seberapa siap buktinya, dan seberapa besar potensi lintas sistemnya."],
     contributionTitle: "Kontribusi yang diharapkan",
     contributions: ["AI sebagai emulator budaya: mesin hantu atau loop yang memadatkan bahasa, gambar, gaya, data, dan jejak kerja masa lalu.", "LLM Wiki sebagai infrastruktur memori untuk organisasi budaya kecil.", "Hantu budaya dan arkeologi media menjadi masalah praktik pelestarian pengetahuan AI.", "Public source packet, LLM, dan wiki promotion menjadi kerangka tata kelola memori budaya manusia-mesin."],
     controlsTitle: "Prototipe kontrol retrieval dalam game",
@@ -446,7 +450,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   de: {
     title: "LLM-Wiki Kontrollraum",
     introTitle: "Peach Blossom Spring als Gedächtnis-Infrastruktur",
-    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines aus public source packet und promoted wiki memory erzeugen. Question Pet übersetzt Fragen in Lint- und Reifesignale."],
+    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines aus public source packet und promoted wiki memory erzeugen. Question lint entsteht aus Shared-Memory-Traversal: Spezifik, Evidenzbereitschaft und systemübergreifendes Potenzial."],
     contributionTitle: "Erwartete Beiträge",
     contributions: ["KI als kultureller Emulator: eine Geistermaschine oder Schleife, die vergangene Sprache, Bilder, Stile, Daten und Arbeitsspuren aufrufbar verdichtet.", "LLM Wiki als Gedächtnis-Infrastruktur für kleine Kulturorganisationen.", "Kulturelle Geister und Medienarchäologie werden praktische KI-Wissensbewahrungsfragen.", "Public source packet, LLMs und wiki promotion bilden ein Mensch-Maschine-Governance-Framework für kulturelles Gedächtnis."],
     controlsTitle: "In-game Retrieval-Kontrollprototyp",
@@ -458,7 +462,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   ja: {
     title: "PBS 共有記憶",
     introTitle: "記憶基盤としての桃花源",
-    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question Pet は問いを lint と成熟度のシグナルに変える。"],
+    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question lint は shared memory traversal から生まれ、具体性・証拠準備・横断可能性を示す。"],
     contributionTitle: "期待される貢献",
     contributions: ["AI を文化エミュレーター、過去の言語・画像・様式・データ・労働痕跡を呼び出せる幽霊機械またはループとして捉える。", "小さな文化組織の記憶基盤として LLM Wiki を提案する。", "文化の幽霊とメディア考古学を AI 知識保存の実践問題に変える。", "public source packet、LLM、wiki promotion による人間機械協働の文化記憶ガバナンスを示す。"],
     controlsTitle: "ゲーム内検索コントロール試作",
@@ -470,7 +474,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   th: {
     title: "ความจำร่วม PBS",
     introTitle: "Peach Blossom Spring ในฐานะโครงสร้างความจำ",
-    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน Question Pet แปลงคำถามเป็นสัญญาณ lint และ maturity"],
+    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน question lint มาจาก shared memory traversal และบอกความเฉพาะ ความพร้อมของหลักฐาน และศักยภาพข้ามระบบ"],
     contributionTitle: "ผลงานที่คาดหวัง",
     contributions: ["AI เป็น emulator ทางวัฒนธรรม: เครื่องผีหรือ loop ที่บีบอัดภาษา ภาพ สไตล์ ข้อมูล และร่องรอยแรงงานในอดีตให้เรียกใช้ได้", "LLM Wiki เป็นโครงสร้างความจำสำหรับองค์กรวัฒนธรรมขนาดเล็ก", "ผีทางวัฒนธรรมและโบราณคดีสื่อกลายเป็นโจทย์ปฏิบัติของการเก็บรักษาความรู้ด้วย AI", "public source packets, LLM และ wiki เป็นกรอบ governance ความทรงจำวัฒนธรรมแบบคน-เครื่อง"],
     controlsTitle: "ต้นแบบควบคุม retrieval ในเกม",
@@ -1030,63 +1034,46 @@ function petActionLabel(language: LanguageCode, action: string): string {
 
 function questionLintCopy(language: LanguageCode) {
   const copy: Record<LanguageCode, { title: string; specificity: string; evidence: string; bridge: string; next: string; revise: string }> = {
-    "zh-TW": { title: "問題 lint / 成熟度", specificity: "具體度", evidence: "證據準備", bridge: "跨系統潛力", next: "下一步", revise: "把問題補上一個場域、材料或比較對象，電子雞會長得更穩。" },
-    en: { title: "Question lint / maturity", specificity: "specificity", evidence: "evidence readiness", bridge: "cross-system potential", next: "next", revise: "Add a place, material, or comparison target so the pet can grow a stronger question." },
-    id: { title: "Lint pertanyaan / maturitas", specificity: "spesifik", evidence: "kesiapan bukti", bridge: "potensi lintas sistem", next: "lanjut", revise: "Tambahkan tempat, material, atau pembanding agar pet menumbuhkan pertanyaan yang lebih kuat." },
-    de: { title: "Fragen-Lint / Reife", specificity: "Spezifik", evidence: "Evidenz bereit", bridge: "System-Bruecke", next: "weiter", revise: "Ergaenze Ort, Material oder Vergleich, damit das Pet eine staerkere Frage wachsen laesst." },
-    ja: { title: "問い lint / 成熟度", specificity: "具体性", evidence: "証拠準備", bridge: "横断可能性", next: "次", revise: "場所・素材・比較対象を足すと、ペットの問いがより強く育ちます。" },
-    th: { title: "lint คำถาม / maturity", specificity: "ความเฉพาะ", evidence: "หลักฐาน", bridge: "ข้ามระบบ", next: "ถัดไป", revise: "เพิ่มสถานที่ วัสดุ หรือสิ่งเปรียบเทียบ เพื่อให้ pet เติบโตเป็นคำถามที่แข็งแรงขึ้น" },
+    "zh-TW": { title: "問題 lint / traversal 品質", specificity: "具體度", evidence: "證據準備", bridge: "跨系統潛力", next: "下一步", revise: "等待 shared memory traversal。" },
+    en: { title: "Question lint / traversal quality", specificity: "specificity", evidence: "evidence readiness", bridge: "cross-system potential", next: "next", revise: "Waiting for shared memory traversal." },
+    id: { title: "Lint pertanyaan / kualitas traversal", specificity: "spesifik", evidence: "kesiapan bukti", bridge: "potensi lintas sistem", next: "lanjut", revise: "Menunggu traversal shared memory." },
+    de: { title: "Fragen-Lint / Traversal-Qualitaet", specificity: "Spezifik", evidence: "Evidenz bereit", bridge: "System-Bruecke", next: "weiter", revise: "Warte auf Shared-Memory-Traversal." },
+    ja: { title: "問い lint / traversal 品質", specificity: "具体性", evidence: "証拠準備", bridge: "横断可能性", next: "次", revise: "shared memory traversal を待っています。" },
+    th: { title: "lint คำถาม / traversal quality", specificity: "ความเฉพาะ", evidence: "หลักฐาน", bridge: "ข้ามระบบ", next: "ถัดไป", revise: "กำลังรอ shared memory traversal" },
   };
   return copy[language];
 }
 
-function questionLintSignals(question: string) {
-  const length = question.trim().length;
-  const specificity = Math.min(100, Math.max(15, length * 2));
-  const evidence = /where|when|which|誰|哪|何|如何|怎麼|材料|組織|社群|method|material|organization|community|wiki|source/i.test(question) ? 72 : 38;
-  const bridge = /and|between|compare|relation|關係|比較|連結|之間|跨|กับ|และ|und|zwischen|と|比較/i.test(question) ? 78 : 44;
-  return { specificity, evidence, bridge };
-}
-
-
-function questionLintForSnapshot(snapshot: SimSnapshot | null, language: LanguageCode) {
-  const questions = snapshot?.thronglets.map((pet) => pet.question.text).filter(Boolean) ?? [];
-  const joined = questions.join(" / ") || "";
-  const lints = questions.map(questionLintSignals);
-  const avg = (key: "specificity" | "evidence" | "bridge", fallback: number) => {
-    if (!lints.length) return clampPercent(fallback);
-    const values = lints.map((lint) => lint[key]);
-    return clampPercent(values.reduce((sum, value) => sum + value, 0) / values.length);
-  };
+function questionLintForQuality(quality: QuestionQuality, language: LanguageCode) {
   const copy = questionLintCopy(language);
   return {
     title: copy.title,
-    specificity: avg("specificity", 15),
-    evidence: avg("evidence", 38),
-    bridge: avg("bridge", 44),
-    next: joined ? copy.revise : copy.revise,
+    specificity: quality.specificity,
+    evidence: quality.evidenceReadiness,
+    bridge: quality.crossSystemPotential,
+    next: quality.caveats[0] ?? copy.revise,
   };
 }
 
-function questionLintForPet(question: string, language: LanguageCode) {
-  const lint = questionLintSignals(question);
-  const copy = questionLintCopy(language);
-  return {
-    title: copy.title,
-    specificity: lint.specificity,
-    evidence: lint.evidence,
-    bridge: lint.bridge,
-    next: copy.revise,
-  };
-}
-
-function questionLintScoreEntries(lint: ReturnType<typeof questionLintForSnapshot> | ReturnType<typeof questionLintForPet>, language: LanguageCode) {
+function questionLintScoreEntries(lint: ReturnType<typeof questionLintForQuality>, language: LanguageCode) {
   const copy = questionLintCopy(language);
   return [
     [copy.specificity, lint.specificity],
     [copy.evidence, lint.evidence],
     [copy.bridge, lint.bridge],
   ] as const;
+}
+
+function traversalMonitorCopy(language: LanguageCode) {
+  const copy: Record<LanguageCode, { title: string; idle: string; status: string; pages: string; families: string; topPages: string; caveat: string; question: string }> = {
+    "zh-TW": { title: "玩家問題 traversal 健檢", idle: "尚未檢查玩家問題。請先向營火、NPC 或小誌提出問題。", status: "狀態", pages: "命中頁面", families: "來源系統", topPages: "可讀路徑", caveat: "健檢提示", question: "目前問題" },
+    en: { title: "Player-question traversal monitor", idle: "No player question checked yet. Ask the campfire, an NPC, or a zine first.", status: "status", pages: "pages", families: "source systems", topPages: "reading route", caveat: "monitor note", question: "current question" },
+    id: { title: "Monitor traversal pertanyaan", idle: "Belum ada pertanyaan pemain yang diperiksa.", status: "status", pages: "halaman", families: "sistem sumber", topPages: "rute baca", caveat: "catatan", question: "pertanyaan" },
+    de: { title: "Traversal-Monitor fuer Spielerfragen", idle: "Noch keine Spielerfrage geprueft.", status: "Status", pages: "Seiten", families: "Quellsysteme", topPages: "Leseroute", caveat: "Hinweis", question: "aktuelle Frage" },
+    ja: { title: "プレイヤー質問 traversal monitor", idle: "まだ質問を検査していません。", status: "状態", pages: "ページ", families: "ソース系", topPages: "読む経路", caveat: "メモ", question: "現在の問い" },
+    th: { title: "monitor traversal คำถามผู้เล่น", idle: "ยังไม่ได้ตรวจคำถามผู้เล่น", status: "สถานะ", pages: "หน้า", families: "ระบบแหล่งที่มา", topPages: "เส้นทางอ่าน", caveat: "หมายเหตุ", question: "คำถามปัจจุบัน" },
+  };
+  return copy[language];
 }
 
 function petTerrainStateCopy(language: LanguageCode) {
@@ -1105,14 +1092,12 @@ function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
-function petTerrainIndicators(snapshot: SimSnapshot, inbox: PetLintGapItem[]) {
-  const lints = snapshot.thronglets.map((pet) => questionLintSignals(pet.question.text));
-  const average = (values: number[], fallback: number) => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : fallback;
+function petTerrainIndicators(snapshot: SimSnapshot, inbox: PetLintGapItem[], quality: QuestionQuality) {
   const inboxText = inbox.map((item) => item.text).join("\n");
   const contradictionHits = (inboxText.match(/矛盾|反證|猜想|誤導|unsupported|misleading|hypoth|contradict|failure|失敗/gi) ?? []).length;
   const missingHits = (inboxText.match(/缺|不足|需要|missing|gap|lack|node|節點/gi) ?? []).length;
-  const evidence = clampPercent(average(lints.map((lint) => lint.evidence), 42) + Math.min(18, snapshot.a2aExchanges.length * 3));
-  const relation = clampPercent(average(lints.map((lint) => lint.bridge), 38) + Math.min(24, snapshot.throngs.length * 6 + snapshot.a2aExchanges.length * 4));
+  const evidence = clampPercent(quality.evidenceReadiness + Math.min(8, snapshot.a2aExchanges.length));
+  const relation = clampPercent(quality.crossSystemPotential + Math.min(8, snapshot.throngs.length * 2));
   const contradiction = clampPercent(contradictionHits * 18 + snapshot.events.filter((event) => /contradict|fail|lint|gap|矛盾|失敗|缺/i.test(event.text ?? "")).length * 8);
   const missingNode = clampPercent(inbox.length * 11 + missingHits * 8);
   return { evidence, relation, contradiction, missingNode };
@@ -1124,12 +1109,14 @@ function CentralComputerDialogue({
   playerPalette,
   onClose,
   onOpenAssociationZine,
+  onQuestionSubmitted,
 }: {
   language: LanguageCode;
   playerName: string;
   playerPalette: number;
   onClose: () => void;
   onOpenAssociationZine: (query?: string) => void;
+  onQuestionSubmitted?: (query: string) => void;
 }) {
   type ComputerMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
   const [draft, setDraft] = useState("");
@@ -1195,29 +1182,16 @@ function CentralComputerDialogue({
     setError("");
     setIsThinking(true);
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
+    onQuestionSubmitted?.(trimmed);
     try {
-      const { searchWikiPages } = await import("./wikiSearch.js");
-      const links = searchWikiPages(trimmed, undefined, 8);
-      if (canUseLocalMemoryServer()) {
-        const reply = await askCampfire(trimmed, language);
-        setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links.length ? reply.links : links }]);
-      } else {
-        const sharedMemoryContext = links.map((link, index) => [
-          `[${index + 1}] ${link.title}`,
-          link.description || "",
-          link.url,
-        ].filter(Boolean).join("\n")).join("\n\n");
-        const answer = await askDeepSeekPbsComputer({ question: trimmed, preferredLanguage: language, sharedMemoryContext });
-        setMessages((current) => [...current, { speaker: copy.name, text: answer, links }]);
-      }
-    } catch {
-      setError("");
-      const { searchWikiPages } = await import("./wikiSearch.js");
-      const links = searchWikiPages(trimmed, undefined, 8);
+      const reply = await askCampfire(trimmed, language);
+      setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links }]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "PBS memory API is unavailable.");
       setMessages((current) => [...current, {
         speaker: copy.name,
-        text: buildStaticLocalMemoryAnswer(trimmed, links, language),
-        links,
+        text: "PBS memory API is unavailable. Cloud mode needs the PBS memory Worker URL; local full-memory mode needs scripts/pbs_game_server.py. Static snapshot fallback is disabled so the game will not pretend missing evidence is real memory.",
+        links: [],
       }]);
     } finally {
       setIsThinking(false);
@@ -1235,6 +1209,7 @@ function CentralComputerDialogue({
       setError(copy.needQuestion);
       return;
     }
+    onQuestionSubmitted?.(query);
     onOpenAssociationZine(query);
   }
 
@@ -1357,8 +1332,8 @@ function attachZineIframeControls(iframe: HTMLIFrameElement): void {
     style.id = "pbs-mobile-zine-readable";
     style.textContent = `
       html, body { margin: 0 !important; width: 100% !important; overflow-x: hidden !important; }
-      .daydream-html { width: 100% !important; max-width: none !important; min-width: 0 !important; padding: 16px !important; box-sizing: border-box !important; }
-      .daydream-html--pbs-reset, .daydream-html--soft-commons, .daydream-html--aino-grid, .dd-reset-hero, .dd-reset-sections, .dd-reset-protocol, .dd-soft-body, .dd-aino-grid, .dd-aino-footer { display: block !important; grid-template-columns: none !important; }
+      .association-html { width: 100% !important; max-width: none !important; min-width: 0 !important; padding: 16px !important; box-sizing: border-box !important; }
+      .association-html--pbs-reset, .association-html--soft-commons, .association-html--aino-grid, .dd-reset-hero, .dd-reset-sections, .dd-reset-protocol, .dd-soft-body, .dd-aino-grid, .dd-aino-footer { display: block !important; grid-template-columns: none !important; }
       .dd-reset-card, .dd-reset-opening, .dd-reset-protocol, .dd-soft-card, .dd-aino-card, section, article { margin: 0 0 10px !important; padding: 12px !important; max-width: none !important; box-sizing: border-box !important; }
       h1 { font-size: 34px !important; line-height: 1.04 !important; }
       h2 { font-size: 22px !important; line-height: 1.12 !important; }
@@ -1894,6 +1869,7 @@ function App() {
   const [petBoardResponses, setPetBoardResponses] = useState<
     PetBoardResponse[]
   >([]);
+  const [questionQuality, setQuestionQuality] = useState<QuestionQuality>(emptyQuestionQuality);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [splitPanel, setSplitPanel] = useState<SplitPanel | null>(null);
   const [associationProgress, setAssociationProgress] = useState("Loading...");
@@ -1910,6 +1886,7 @@ function App() {
   const wikiGenerationInFlightRef = useRef(false);
   const wikiGenerationRequestRef = useRef<string | null>(null);
   const finalDocumentObjectUrlsRef = useRef<Set<string>>(new Set());
+  const questionQualityRequestRef = useRef(0);
 
   const activeDispatchPets = useMemo(
     () => dispatchedPets.filter((pet) => pet.status === "active"),
@@ -2118,6 +2095,34 @@ function App() {
     },
     [petResponse, playerProfile?.name, selectedPet?.id],
   );
+
+  const evaluateSharedMemoryLint = useCallback(async (question: string) => {
+    const trimmed = question.trim();
+    if (!trimmed) return;
+    const requestId = questionQualityRequestRef.current + 1;
+    questionQualityRequestRef.current = requestId;
+    setQuestionQuality({
+      ...emptyQuestionQuality,
+      question: trimmed,
+      evaluatedAt: Date.now(),
+      status: 'estimating',
+      caveats: ['shared memory traversal 檢查中。'],
+    });
+    try {
+      const results = await searchMemory(trimmed, 12);
+      if (questionQualityRequestRef.current !== requestId) return;
+      setQuestionQuality(scoreQuestionTraversal(trimmed, results));
+    } catch (error) {
+      if (questionQualityRequestRef.current !== requestId) return;
+      setQuestionQuality({
+        ...emptyQuestionQuality,
+        question: trimmed,
+        evaluatedAt: Date.now(),
+        status: 'error',
+        caveats: [error instanceof Error ? error.message : 'shared memory lint unavailable.'],
+      });
+    }
+  }, []);
 
   useEffect(() => {
     writeStoredLanguage(selectedLanguage);
@@ -3403,6 +3408,7 @@ function App() {
     const requestKey = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const loadingTitle = "Association";
     const query = request.query || request.seed || "";
+    if (query.trim()) void evaluateSharedMemoryLint(query);
     if (splitPanel?.kind === "finalDocument" && splitPanel.url) {
       URL.revokeObjectURL(splitPanel.url);
       finalDocumentObjectUrlsRef.current.delete(splitPanel.url);
@@ -3593,10 +3599,10 @@ function App() {
   const localMultiplayerPlayerId = multiplayerConfig ? getOrCreatePlayerId() : "";
   const isEncounterUiOpen = Boolean(videoEncounter || encounterPanel);
   const localizedPetLintGapInbox = petLintGapInbox.filter((item) => item.language === selectedLanguage);
-  const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, localizedPetLintGapInbox) : null;
+  const terrainState = simSnapshot ? petTerrainIndicators(simSnapshot, localizedPetLintGapInbox, questionQuality) : null;
   const terrainCopy = petTerrainStateCopy(selectedLanguage);
   const petLintGapCopy = PET_LINT_GAP_COPY[selectedLanguage];
-  const questionLintHud = questionLintForSnapshot(simSnapshot, selectedLanguage);
+  const questionLintHud = questionLintForQuality(questionQuality, selectedLanguage);
 
   return (
     <div
@@ -4008,6 +4014,7 @@ function App() {
                       : undefined
                   }
                   onSimEvent={(prompt) => {
+                    void evaluateSharedMemoryLint(prompt);
                     const personaText = `${activeDialoguePersona.role} ${activeDialoguePersona.intro} ${Object.values(activeDialoguePersona.responses).join(" ")}`;
                     const resonance = scorePromptResonance(
                       TAMAGOTCHI_AGENT_PROMPT,
@@ -4056,6 +4063,7 @@ function App() {
                   language: selectedLanguage,
                 });
               }}
+              onQuestionSubmitted={(query) => void evaluateSharedMemoryLint(query)}
             />
           )}
 
@@ -4134,7 +4142,7 @@ function App() {
                         >
                           <div className="flex gap-4 items-center">
                             <QuestionPetPreview
-                              question={pet.question.text}
+                              question={PET_HUD_COPY[selectedLanguage].agent}
                               appearance={pet.appearance}
                               size={4}
                               socialSignals={pet.state}
@@ -4145,20 +4153,6 @@ function App() {
                             </span>
                           </div>
                           <p className="text-sm mt-3">{petActionLabel(selectedLanguage, pet.currentAction)}</p>
-                          {(() => {
-                            const lint = questionLintForPet(pet.question.text, selectedLanguage);
-                            return (
-                              <div className="question-lint-card">
-                                <strong>{lint.title}</strong>
-                                <div className="question-lint-grid">
-                                  {questionLintScoreEntries(lint, selectedLanguage).map(([label, value]) => (
-                                    <span key={label}>{label}: {value.toFixed(0)}</span>
-                                  ))}
-                                </div>
-                                <p>{questionLintCopy(selectedLanguage).next}: {lint.next}</p>
-                              </div>
-                            );
-                          })()}
                         </button>
                       ))}
                     {terrainState && (
@@ -4187,6 +4181,48 @@ function App() {
                         </div>
                       </div>
                     )}
+                    <article className="traversal-monitor-card" aria-label={traversalMonitorCopy(selectedLanguage).title} data-status={questionQuality.status}>
+                      {(() => {
+                        const monitor = traversalMonitorCopy(selectedLanguage);
+                        return (
+                          <>
+                            <div className="traversal-monitor-header">
+                              <strong>{monitor.title}</strong>
+                              <span>{monitor.status}: {questionQuality.status}</span>
+                            </div>
+                            {questionQuality.question ? (
+                              <>
+                                <p className="traversal-monitor-question"><span>{monitor.question}</span>{questionQuality.question}</p>
+                                <div className="question-lint-grid traversal-monitor-scores">
+                                  {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
+                                    <span key={label}>{label}: {value.toFixed(0)}</span>
+                                  ))}
+                                </div>
+                                <div className="traversal-monitor-meta">
+                                  <span>{monitor.pages}: {questionQuality.pageCount}</span>
+                                  <span>{monitor.families}: {questionQuality.sourceFamilies.length ? questionQuality.sourceFamilies.join(" / ") : "—"}</span>
+                                </div>
+                                {questionQuality.topPages.length > 0 && (
+                                  <div className="traversal-monitor-route">
+                                    <strong>{monitor.topPages}</strong>
+                                    {questionQuality.topPages.slice(0, 3).map((page, index) => (
+                                      page.url ? (
+                                        <a key={`${page.title}-${index.toString()}`} href={page.url} target="_blank" rel="noreferrer">[{index + 1}] {page.title}</a>
+                                      ) : (
+                                        <span key={`${page.title}-${index.toString()}`}>[{index + 1}] {page.title}</span>
+                                      )
+                                    ))}
+                                  </div>
+                                )}
+                                <p className="traversal-monitor-caveat"><span>{monitor.caveat}</span>{questionQuality.caveats[0] ?? questionLintHud.next}</p>
+                              </>
+                            ) : (
+                              <p className="traversal-monitor-caveat">{monitor.idle}</p>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </article>
                     <div className="pet-gap-inbox" aria-label={petLintGapTitle(selectedLanguage)}>
                       <div className="pet-gap-inbox-header">
                         <strong>{petLintGapTitle(selectedLanguage)}</strong>
@@ -4203,15 +4239,6 @@ function App() {
                         ))
                       )}
                     </div>
-                    <article className="question-lint-card">
-                      <strong>{questionLintHud.title}</strong>
-                      <div className="question-lint-grid">
-                        {questionLintScoreEntries(questionLintHud, selectedLanguage).map(([label, value]) => (
-                          <span key={label}>{label}: {value.toFixed(0)}</span>
-                        ))}
-                      </div>
-                      <p>{questionLintCopy(selectedLanguage).next}: {questionLintHud.next}</p>
-                    </article>
                     {petDialogueHistory.length > 0 && (
                       <div className="text-sm leading-snug border-t border-[var(--palette-blue)] pt-3 mt-3">
                         <strong>🐣 {PET_HUD_COPY[selectedLanguage].recent}</strong>

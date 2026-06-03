@@ -7,7 +7,6 @@ import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
-import { searchWikiPages, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -35,7 +34,6 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
-  links?: WikiSearchResult[];
 }
 
 interface RpgDialogueProps {
@@ -172,18 +170,6 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transc
     `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
   ];
   return shuffleCopy([...generated, ...englishSourceBridge]).slice(0, 9);
-}
-
-function sourceLinksLabel(language: LanguageCode): string {
-  const copy: Record<LanguageCode, string> = {
-    'zh-TW': '相關連結',
-    en: 'Source links',
-    id: 'Tautan sumber',
-    de: 'Quellenlinks',
-    ja: '関連リンク',
-    th: 'ลิงก์แหล่งที่มา',
-  };
-  return copy[language];
 }
 
 function zineLabel(language: LanguageCode): string {
@@ -494,7 +480,6 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
       );
       const transcriptEvidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
       const transcript = transcriptEvidence.map((item) => `${item.label}\n${item.text}`).join('\n\n');
-      const links = searchWikiPages(trimmed, persona.id, 8);
       if (canUseLocalMemoryServer()) {
         const answer = await askNpc({
           question: trimmed,
@@ -503,7 +488,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           transcript,
           preferredLanguage: language,
         });
-        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: answer.links.length ? answer.links : links }]);
+        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence }]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -513,11 +498,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             preferredLanguage: language,
             evidence: transcriptEvidence,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence, links }]);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: transcriptEvidence }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links }]);
+          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, evidence: transcriptEvidence }]);
         }
       }
     } catch (err) {
@@ -578,19 +563,6 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.links && message.links.length > 0 && (
-                  <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
-                    <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
-                    <div className="rpg-dialogue-source-link-list">
-                      {message.links.slice(0, 8).map((link, linkIndex) => (
-                        <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                          <span>[{linkIndex + 1}] {link.title}</span>
-                          <em>{link.sourceFamily}</em>
-                        </a>
-                      ))}
-                    </div>
-                  </details>
-                )}
               </div>
             ))}
             {isLoading && (

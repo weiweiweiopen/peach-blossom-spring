@@ -84,9 +84,7 @@
   .world-split-content,
   .world-wiki-content,
   .schema-control-room,
-  .schema-control-room *,
-  .question-lint-card,
-  .question-lint-card *
+  .schema-control-room *
 ) {
   font-family: var(--ui-font) !important;
 }

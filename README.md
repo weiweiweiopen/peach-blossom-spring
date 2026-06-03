@@ -1,125 +1,82 @@
 # Peach Blossom Spring / PBS
 
-**PBS-2026.2.255** is Peach Blossom Spring rebuilt around the `pbs-local-memory` source-first workspace plus the existing playable game layer.
+Peach Blossom Spring is a digital exhibition garden for **NGM / Non-Governmental Matters**.
+
+NGM is a research interview project by **Shih Wei Chieh** about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge without becoming institutions too quickly.
+
+The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Mika Satomi, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel, and Abao / Shih Wei Chieh.
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 
-## Core Idea
+<img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
 
-PBS no longer treats a cloud notebook or a giant dirty working corpus as canonical memory.
+## What this garden is
 
-The new loop is:
+PBS turns NGM into a small explorable world:
 
-1. Ask a public-source question.
-2. Search `Sources/Raw/` through the source-first memory engine.
-3. Export a static game index into `webview-ui/src/generated/pbsLocalMemoryIndex.json`.
-4. Let NPCs, the question pet, the campfire, zines, and the map read through the browser adapter.
-5. Draft uncertain syntheses into `obsidian-vault/Review/`.
-6. Promote only reviewed notes into `obsidian-vault/Wiki/`.
+- interview memories become NPCs you can talk to;
+- the campfire is a shared question place for the whole archive;
+- the zine tool turns one question into a short source-grounded booklet;
+- the map, ebook, and source links show where the project came from;
+- the Question Pet is an experimental tamagotchi-like system tied to question linting and question maturation.
 
-Short version:
+The tone is playful, but the archive logic is serious: the garden should help people remember fragile community knowledge without flattening it into a report or dashboard.
 
-```text
-Sources + obsidian-vault = source-first public corpus + review-first wiki
-PBS game = playable interface over the local/community memory commons
-```
+<img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
 
-Operational metaphor:
+## How to play
 
-```text
-The game reads a static memory export; the editable knowledge land stays in local Markdown, SQLite indexes, and review notes.
-```
+1. Open the public site and enter Peach Blossom Spring.
+2. Walk with arrow keys / WASD. On mobile, use the thumb control.
+3. Move near an NPC and click / tap / press Space to open a conversation.
+4. Go to the central campfire / computer to ask broader questions about NGM, communities, tools, camps, and sources.
+5. Use the zine function from a question to generate a small wiki booklet.
+6. Open the NGM ebook, map, and source links when you want to leave the fable and check the research material.
 
-## Local Memory Module
+NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context.
 
-The source-first memory engine lives at the repository root, matching `pbs-local-memory`:
+<img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
-- `Sources/Raw/`: public raw-ish source pages.
-- `scripts/pbs_engine.py`: crawl, index, search, draft, promote, and export commands.
-- `obsidian-vault/Review/`: generated drafts awaiting review.
-- `obsidian-vault/Wiki/`: reviewed durable shared memory.
-- `webview-ui/src/pbsLocalMemory.ts`: browser adapter used by campfire, NPC evidence, pet chat, and zine source cards.
+## LLM wiki / shared memory
 
-Refresh the game-facing index from the repository root:
+PBS is also a Karpathy-like LLM wiki experiment: instead of asking an AI to re-read a messy pile every time, the project grows a curated memory layer that can be searched, reviewed, repaired, and exported back into the game.
 
-```bash
-python3 scripts/pbs_engine.py export-game-index \
-  --target "$PWD/webview-ui/src/generated/pbsLocalMemoryIndex.json"
-```
+Current public source fields include:
 
-## Karpathy-Style Wiki Memory
+- NGM interview transcripts and persona notes;
+- HOW TO GET WHAT YOU WANT / KOBAKANT;
+- Hackteria Wiki;
+- SGMK Wiki;
+- Fabricademy / Textile Academy Wiki;
+- Design+Posthumanism;
+- KUBU / Kulturhus Björkboda;
+- Radiona makerspace;
+- Green Fab Lab project pages;
+- selected public source pages connected to NGM people, workshops, tools, camps, and communities.
 
-PBS keeps a markdown memory bank under `obsidian-vault/Wiki/`, but that memory should grow through promotion, not startup bulk preprocessing.
+Important boundary: **the online version and the local version use different memory runtimes**.
 
-This layer is the canonical memory and source-of-ownership for PBS. Search results and zines are not durable knowledge until reviewed. A useful answer should become a review draft first; after review, it can create or update wiki pages, repair contradictions, add backlinks, record uncertainty, or spawn a new question.
+- Cloud mode: the public game calls a Cloudflare PBS memory Worker backed by D1 SQLite/FTS. It can search the deployed source index and call DeepSeek, but it cannot write files into your local Obsidian vault.
+- Local full-memory mode: a downloaded/cloned repo runs `scripts/pbs_game_server.py`, which calls `scripts/pbs_engine.py`, SQLite, Markdown sources, `obsidian-vault/Wiki`, and `obsidian-vault/Schema`. This mode can write Review drafts.
 
-Promotion path:
-
-```text
-source-first search result
-→ Review draft
-→ promoted source snapshot / question / zine / concept / method / material / social-form note
-→ playable memory used by NPCs, pet, map, and campfire
-```
-
-Generated `Wiki/SourceNotes/` are disabled in PBS-2026.2. The wiki index should contain curated and promoted notes, not thousands of generated source-note anchors.
-
-Promotion should be cumulative and auditable:
-
-- preserve raw source references instead of overwriting sources
-- write reviewed observations into Markdown notes
-- update old wiki pages when new evidence changes them
-- keep contradictions and unresolved questions visible
-- use git history as the audit trail for knowledge changes
-- prefer portable files over account-bound cloud artifacts
-
-## Privacy Boundary
-
-The browser game reads a static public-memory export. Do not commit `.env` files, API keys, cookies, Google auth state, unpublished interviews, sensitive community data, or private player memory.
-
-SQLite indexes under `obsidian-vault/Knowledge/` are local generated files and are ignored by git. Regenerate them with `python3 scripts/pbs_engine.py index` when needed.
-
-## How To Play
-
-Open the public site and press start.
-
-- Walk through the garden.
-- Talk to NPCs by moving near them and clicking or pressing Space.
-- Use the PBS computer / question interface to ask research questions.
-- Generate zines from source-grounded traces.
-- Let the question pet mark weak evidence, missing links, and promotion candidates.
-- Treat zines as artifacts that can be repaired, saved, and promoted.
-
-## Local Development
-
-Install and run the web UI:
-
-```bash
-npm --prefix webview-ui install
-npm --prefix webview-ui run dev
-```
-
-Validate before deploying:
-
-```bash
-npm --prefix webview-ui run check:secrets
-npm --prefix webview-ui run check:visual-layout
-npm --prefix webview-ui run build
-```
-
-Useful local tools:
-
-```bash
-python3 scripts/pbs_engine.py --help
-python3 scripts/pbs_engine.py search "e-textile sensor workshop" --limit 8
-```
-
-## Project Status
-
-PBS is part digital garden, part LLM wiki, part zine machine, part virtual camp. The 2026.2 direction is:
+See `LOCAL_MEMORY_GAME.md` for launch commands and deployment boundaries.
 
 ```text
-source-first local memory, playable knowledge commons
+Cloud: game UI -> PBS memory Worker -> D1 SQLite / FTS source index -> DeepSeek -> answer
+Local: game UI -> local server -> pbs_engine.py -> SQLite / Sources / Wiki / Schema -> DeepSeek -> answer -> Review draft
 ```
 
-The point is not to finish the garden. The point is to keep it alive while preserving who asked, what was cited, what remained uncertain, and what the community chose to remember.
+<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
+
+## Current status
+
+PBS is currently a working prototype:
+
+- the public game is playable online;
+- NPC and campfire conversations can use recent dialogue context;
+- source links are filtered so the game should not force unrelated links when no reliable source is found;
+- zine generation, map/archive entry points, and the local wiki-memory workflow are still being refined;
+- the Question Pet / lint system is meant to help questions mature, but its user scenario is still unclear and remains under development;
+- the next work is to keep simplifying the public explanation, improve source coverage, clarify the Question Pet use case, and make the local shared-memory workflow easier for non-technical users.
+
+The goal is not to finish a perfect archive. The goal is to keep a living garden where small community knowledge can be asked, cited, repaired, and passed on.

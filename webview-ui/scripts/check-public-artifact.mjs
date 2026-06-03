@@ -34,7 +34,7 @@ const bannedPatterns = [
   /\bsourceCards\b/i,
   /\bcategoryGraph\b/i,
   /\bcorpusManifest\b/i,
-  /\bDaydream\s+workflow\b/i,
+  /\bAssociation\s+workflow\b/i,
   /\bconnected[-\s]?paper/i,
   /\bsemantic\s+vector\b/i,
   /\bdepth\s+gate\b/i,

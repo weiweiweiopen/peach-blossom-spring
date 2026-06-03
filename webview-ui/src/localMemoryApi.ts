@@ -6,27 +6,42 @@ export interface MemoryChatResponse {
   answer: string;
   evidence: ChatEvidence[];
   links: WikiSearchResult[];
+  draft?: { path?: string; markdown?: string; stored?: boolean };
 }
 
-export function canUseLocalMemoryServer(): boolean {
+function isLocalHost(): boolean {
   if (typeof window === 'undefined') return false;
   const host = window.location.hostname;
   return host === 'localhost' || host === '127.0.0.1' || host === '::1';
 }
 
+function configuredMemoryApiBaseUrl(): string {
+  if (typeof document === 'undefined') return '';
+  return document.querySelector('meta[name="pbs-memory-api"]')?.getAttribute('content')?.trim().replace(/\/$/, '') ?? '';
+}
+
+export function canUseLocalMemoryServer(): boolean {
+  return isLocalHost() || configuredMemoryApiBaseUrl().length > 0;
+}
+
+function endpoint(path: string): string {
+  const base = configuredMemoryApiBaseUrl();
+  return base ? `${base}${path}` : path;
+}
+
 async function postJson<T>(path: string, payload: unknown): Promise<T> {
-  if (!canUseLocalMemoryServer()) {
-    throw new Error('PBS local memory server is only available on localhost. Cloud pages use the bundled source index fallback.');
+  if (!isLocalHost() && !configuredMemoryApiBaseUrl()) {
+    throw new Error('PBS memory API is not configured. Add a pbs-memory-api meta tag for cloud mode, or start scripts/pbs_game_server.py for local full-memory mode.');
   }
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(endpoint(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
   } catch {
-    throw new Error('PBS local memory server is unavailable. Start scripts/pbs_game_server.py and open the local URL.');
+    throw new Error('PBS memory API is unavailable. Check the cloud Worker URL or start scripts/pbs_game_server.py locally.');
   }
   if (!response.ok) {
     const details = await response.text();

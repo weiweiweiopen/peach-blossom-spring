@@ -1174,6 +1174,50 @@ def command_export_game_index(args: argparse.Namespace) -> int:
     print(f"items={len(results)}")
     return 0
 
+
+def sql_quote(value: object) -> str:
+    if value is None:
+        return "NULL"
+    text = str(value)
+    return "'" + text.replace("'", "''") + "'"
+
+
+def command_export_d1_sql(args: argparse.Namespace) -> int:
+    docs = iter_memory_docs(None)
+    out = Path(args.target)
+    if not out.is_absolute():
+        out = ROOT / out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "DROP TABLE IF EXISTS source_chunks;",
+        "DROP TABLE IF EXISTS source_chunks_fts;",
+        "CREATE TABLE source_chunks (",
+        "  id INTEGER PRIMARY KEY,",
+        "  title TEXT NOT NULL,",
+        "  url TEXT,",
+        "  source_family TEXT NOT NULL,",
+        "  path TEXT NOT NULL UNIQUE,",
+        "  body TEXT NOT NULL,",
+        "  description TEXT NOT NULL",
+        ");",
+        "CREATE VIRTUAL TABLE source_chunks_fts USING fts5(title, body, path UNINDEXED, source_family UNINDEXED, url UNINDEXED);",
+    ]
+    for index, row in enumerate(docs, start=1):
+        body = re.sub(r"\s+", " ", row["body"]).strip()
+        description = body[:900]
+        values = [index, row["title"], row["url"], row["sourceFamily"], row["path"], body, description]
+        lines.append("INSERT INTO source_chunks(id, title, url, source_family, path, body, description) VALUES (" + ", ".join(sql_quote(value) if not isinstance(value, int) else str(value) for value in values) + ");")
+        fts_values = [row["title"], body, row["path"], row["sourceFamily"], row["url"]]
+        lines.append("INSERT INTO source_chunks_fts(title, body, path, source_family, url) VALUES (" + ", ".join(sql_quote(value) for value in fts_values) + ");")
+    lines.extend([
+        "CREATE INDEX IF NOT EXISTS idx_source_chunks_family ON source_chunks(source_family);",
+    ])
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"exported={rel(out)}")
+    print(f"items={len(docs)}")
+    return 0
+
+
 def command_lint(_args: argparse.Namespace) -> int:
     ensure_store()
     registry = read_jsonl(REGISTRY_PATH)
@@ -1276,6 +1320,9 @@ def main() -> int:
     export_game = sub.add_parser("export-game-index")
     export_game.add_argument("--target", required=True)
     export_game.set_defaults(func=command_export_game_index)
+    export_d1 = sub.add_parser("export-d1-sql")
+    export_d1.add_argument("--target", required=True)
+    export_d1.set_defaults(func=command_export_d1_sql)
     sub.add_parser("lint").set_defaults(func=command_lint)
     args = parser.parse_args()
     return args.func(args)

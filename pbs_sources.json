@@ -17,6 +17,63 @@
       "api": "https://www.kobakant.at/DIY/?rest_route=/wp/v2/posts",
       "main": "https://howtogetwhatyouwant.at",
       "out": "Sources/Raw/htgwyw"
+    },
+    "designposthumanism": {
+      "kind": "wordpress",
+      "api": "https://designandposthumanism.org/wp-json/wp/v2/post",
+      "pagesApi": "https://designandposthumanism.org/wp-json/wp/v2/page",
+      "main": "https://designandposthumanism.org/",
+      "out": "Sources/Raw/designposthumanism"
+    },
+    "kubu": {
+      "kind": "wordpress",
+      "api": "https://kubu.fi/wp-json/wp/v2/pages",
+      "main": "https://kubu.fi",
+      "out": "Sources/Raw/kubu"
+    },
+    "radiona": {
+      "kind": "wordpress",
+      "api": "https://radiona.org/wp-json/wp/v2/posts",
+      "pagesApi": "https://radiona.org/wp-json/wp/v2/pages",
+      "main": "https://radiona.org",
+      "out": "Sources/Raw/radiona"
+    },
+    "greenfablab": {
+      "kind": "wordpress",
+      "api": "https://greenfablab.org/wp-json/wp/v2/posts",
+      "pagesApi": "https://greenfablab.org/wp-json/wp/v2/pages",
+      "main": "https://greenfablab.org/projects/",
+      "out": "Sources/Raw/greenfablab"
+    },
+    "fabricademy": {
+      "kind": "dokuwiki",
+      "main": "http://wiki.textile-academy.org/",
+      "out": "Sources/Raw/fabricademy"
+    },
+    "textiltronics": {
+      "kind": "static",
+      "main": "https://textiltronics.com/curatorials/attempts-failures-trials-and-errors/",
+      "out": "Sources/Raw/textiltronics"
+    },
+    "modernbody": {
+      "kind": "wordpress",
+      "main": "https://modernbodyfestival.org/now/",
+      "out": "Sources/Raw/modernbody"
+    },
+    "valldaura": {
+      "kind": "static",
+      "main": "https://valldaura.net/green-fab-lab/",
+      "out": "Sources/Raw/valldaura"
+    },
+    "okiwonderlab": {
+      "kind": "cargo",
+      "main": "https://cargocollective.com/ryuoyama/Okiwonderlab",
+      "out": "Sources/Raw/okiwonderlab"
+    },
+    "tttlabs": {
+      "kind": "static",
+      "main": "https://avarts.ionio.gr/ttt-labs/2024b/en/news/31407/",
+      "out": "Sources/Raw/tttlabs"
     }
   }
 }
