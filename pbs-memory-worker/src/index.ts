@@ -190,19 +190,19 @@ function languageInstruction(preferredLanguage: string): string {
 }
 
 function fallbackAnswer(evidence: EvidenceItem[], error: string): string {
-  if (!evidence.length) return `目前沒有找到足夠的公開來源可以回答。請換成更具體的材料、工具、社群、地點或案例再問一次。DeepSeek error: ${error}`;
+  void error;
+  if (!evidence.length) return '我現在還抓不到足夠線索。你可以把問題改成一個更具體的材料、工具、社群、地點或作品名稱，我就比較能接著說。';
   return [
-    '我先把可查到的公開來源列出來；完整自然語句暫時無法生成。',
+    '我先把可查到的公開來源列出來；等你挑一個材料或頁名，我可以再接著說。',
     '可繼續讀的來源：',
     ...evidence.map((item, index) => `${index + 1}. ${item.label}: ${item.text} ${item.url}`.trim()),
-    `DeepSeek error: ${error}`,
   ].join('\n');
 }
 
 function deterministicGroundedAnswer(question: string, evidence: EvidenceItem[], preferredLanguage: string, reason = ''): string {
   if (!evidence.length) {
     return preferredLanguage === 'zh-TW'
-      ? '目前沒有找到足夠的公開來源可以回答。請換成更具體的材料、工具、社群、地點或案例再問一次。'
+      ? '我現在還抓不到足夠線索。你可以把問題改成一個更具體的材料、工具、社群、地點或作品名稱，我就比較能接著說。'
       : 'I could not find enough public source material for this question. Try a more specific material, tool, community, place, or case.';
   }
   if (preferredLanguage !== 'zh-TW') {
@@ -353,10 +353,10 @@ export default {
     if (url.pathname === '/api/chat/npc') {
       const question = String(payload.question ?? '');
       const preferredLanguage = String(payload.preferredLanguage ?? 'zh-TW');
-      const npcName = String(payload.npcName ?? 'NPC');
+      const npcName = String(payload.npcName ?? 'conversation partner');
       const persona = typeof payload.persona === 'object' && payload.persona !== null ? payload.persona as Record<string, unknown> : {};
       const npcContext = [
-        `NPC: ${npcName}`,
+        `Conversation partner: ${npcName}`,
         `Role: ${String(persona.role ?? '')}`,
         `Intro: ${String(persona.intro ?? '')}`,
       ].join('\n');

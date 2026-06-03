@@ -57,6 +57,40 @@ function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
 
+function cleanEvidenceLabel(text: string, max = 42): string {
+  return shorten(text.replace(/^\[[0-9]+\]\s*/g, '').replace(/\s+/g, ' ').trim(), max);
+}
+
+function evidenceAnchor(evidence: ChatEvidence[], fallback: string): string {
+  const labels = Array.from(new Set(evidence.map((item) => item.sourceLabel || item.label).filter(Boolean).map((label) => cleanEvidenceLabel(label)))).filter(Boolean);
+  return labels[0] || fallback;
+}
+
+function evidenceKeyword(evidence: ChatEvidence[], question: string): string {
+  const text = `${question}\n${evidence.map((item) => `${item.label} ${item.text}`).join('\n')}`;
+  const keywordPatterns = [
+    /e-?textile|electronic textiles?|電子織品|電子紡織/i,
+    /conductive fabric|導電織物|導電布/i,
+    /conductive thread|導電線/i,
+    /pressure sensor|壓力感測器/i,
+    /stretch sensor|拉伸感測器/i,
+    /wearable|wearables?|穿戴/i,
+    /soft circuit|軟電路/i,
+    /microcontroller|微控制器|arduino/i,
+    /KOBAKANT/i,
+    /Fabricademy/i,
+    /Green Fab Lab/i,
+    /agricultural robot|農業機器人/i,
+    /Hackteria/i,
+    /SGMK/i,
+  ];
+  for (const pattern of keywordPatterns) {
+    const match = text.match(pattern);
+    if (match?.[0]) return match[0];
+  }
+  return evidenceAnchor(evidence, cleanQuestionPart(question, 24));
+}
+
 function shuffleCopy<T>(items: T[]): T[] {
   const copy = [...items];
   for (let index = copy.length - 1; index > 0; index -= 1) {
@@ -92,58 +126,42 @@ const personaQuestionSeeds: Record<string, string[]> = {
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `我第一次認識這個人，應該先理解哪個核心概念？`,
-    `這段談話裡最能說明社群本質的是工具、場地、朋友，還是共同維護？`,
-    `這個 NPC 提到的做法，對小型獨立社群有什麼實際幫助？`,
-    `我可以從這段談話得到什麼靈感，再把它變成可查證的小誌問題？`,
-    `如果我想使用這個社群的資源，第一步應該先理解哪個詞或例子？`,
-    `這段談話裡有哪個問題值得我繼續追問？`,
+    `你剛剛談到的核心概念，可以先用新手聽得懂的方式說明嗎？`,
+    `你覺得這裡最重要的是工具、場地、朋友，還是共同維護？`,
+    `你提到的做法，對小型獨立社群有什麼實際幫助？`,
+    `如果我想從你的經驗得到一個靈感，應該先看哪個例子？`,
+    `如果我想使用這個社群的資源，第一步應該先理解哪個詞或做法？`,
+    `你覺得我下一個最值得追問的問題是什麼？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `I am new to this person. What core idea should I understand first?`,
-    `In this conversation, what best explains the community: tools, places, friends, or maintenance?`,
+    `Could you explain the core idea in a way a newcomer can understand?`,
+    `For you, what matters most here: tools, places, friends, or maintenance?`,
     `How could this practice help a small independent community?`,
-    `What inspiration could become a checkable zine question?`,
-    `If I want to use this community resource, what word or example should I understand first?`,
-    `Which question from this conversation is worth asking next?`,
+    `If I want one useful inspiration from your experience, which example should I look at first?`,
+    `If I want to use this community resource, what word or practice should I understand first?`,
+    `What question do you think I should ask you next?`,
   ];
   return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
 
 function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = []): string[] {
-  const sourceLabels = Array.from(new Set(evidence.map((item) => item.sourceLabel || item.label).filter(Boolean))).slice(0, 3);
-  const sourceHint = sourceLabels.length ? sourceLabels.join('、') : '更具體的材料、地點或社群來源';
-  const asksForScene = /場景|任務|人物|材料|可玩|playable|scene|task/i.test(question);
-  const asksForUse = /幫助|用途|使用|資源|社群|community|resource|help/i.test(question);
+  const anchor = evidenceAnchor(evidence, '你剛剛提到的例子');
+  const keyword = evidenceKeyword(evidence, question);
   if (language === 'zh-TW') {
-    if (asksForScene) {
-      return [
-        `把這個任務縮小成三分鐘內能試的一步：需要哪個材料、工具或地點？`,
-        `這一步能讓我理解哪種社群本質：共享、維修、互助、教學，還是共同保存知識？`,
-        `要讓它變成可查證小誌，還需要哪個公開來源或反例來支撐？`,
-      ];
-    }
-    if (asksForUse) {
-      return [
-        `我可以怎麼實際使用這些社群資源：先讀、先做、先聯絡，還是先比較？`,
-        `請把 ${sourceHint} 排成一條清楚的閱讀順序，讓我知道下一步先看哪裡。`,
-        `這個問題下一步要變成熟，最該補的是案例、工具細節、場域脈絡還是反例？`,
-      ];
-    }
     return [
-      `這題可以怎麼變成我真的能嘗試的一個小任務？`,
-      `哪些公開案例最能說清楚共享資源、維修知識或互相啟發？`,
-      `要把這題變成可查證小誌，我還需要補哪個案例、工具細節或反例？`,
+      `你可以用「${keyword}」再多舉一個具體作品或材料例子嗎？`,
+      `如果我接著讀「${anchor}」，應該注意哪個做法或關鍵詞？`,
+      `除了「${anchor}」，還有哪個和「${keyword}」相關的社群案例可以比較？`,
     ];
   }
   return [
-    `How can this become one small task a player can actually try?`,
-    `Which examples help explain shared resources, repair, mutual aid, or community knowledge?`,
-    `How should this become a more mature checkable zine question, and what evidence is still missing?`,
+    `Could you give one more concrete work or material example about ${keyword}?`,
+    `If I read ${anchor} next, what practice or keyword should I pay attention to?`,
+    `Besides ${anchor}, which community case related to ${keyword} should I compare it with?`,
   ];
 }
 
