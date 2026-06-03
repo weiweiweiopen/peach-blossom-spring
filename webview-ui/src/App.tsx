@@ -292,7 +292,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "NGM に関わるコミュニティは失敗記録、素材リスト、教える手順をどう公共知に変える？",
     "低コスト工具、DIY 顕微鏡、手作り電子工作、wet experiment は芸術と科学の協働をどう支える？",
     "Hackteria、SGMK、KOBAKANT を知らない人に、PBS はそれぞれの関係をどう説明できる？",
-    "NGM の国際ネットワーク、素材実験、コミュニティ背景を新手向け zine にするならどの wiki ページがよい？",
+    "NGM の国際ネットワーク、素材実験、コミュニティ背景を初心者向け zine にするならどの wiki ページがよい？",
   ],
   th: [
     "ฉันอยากหาเคสที่ศิลปะเชื่อมกับ bioethics; PBS ควรเริ่มจากเส้นทาง wiki ชุมชนไหน?",
@@ -852,7 +852,7 @@ const CAMPFIRE_DIALOGUE_COPY: Record<LanguageCode, { name: string; kicker: strin
     suggestions: "NGM、素材実験、camp、国際コミュニティネットワークを知るための入口質問を選んでください：",
     placeholder: "芸術/生命倫理、DIY シンセ、電子テキスタイル、独立アートキャンプ、代替教育について聞く…",
     suggest: "質問を提案",
-    zine: "Wiki 小誌",
+    zine: "Wiki zine",
     thinking: "火が共有記憶を聞いています...",
   },
   th: {
@@ -907,7 +907,7 @@ const CAMPFIRE_BROADCASTS: Record<LanguageCode, string[]> = {
   ],
   ja: [
     "あなたの怒り、喜び、好奇心は、他の心にも燃えているかもしれない。",
-    "多重心智の自己は、人々のあいだで同期する共有パターンです。",
+    "多重の心の自己は、人々のあいだで同期する共有パターンです。",
     "PBS は複数のインタビューの心を囲む、質問できる火のインデックスを作ります。",
   ],
   th: [

@@ -141,15 +141,61 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
-  const englishSourceBridge = [
-    `Which Hackteria, SGMK, and KOBAKANT pages should a newcomer read first?`,
-    `Are there cases connecting artistic expression, open hardware, and community teaching?`,
-    `Why do hacker camps or independent art camps often include DIY synths and sound tools?`,
-    `Are there e-textile, soft-circuit, or wearable-electronics examples that became works, products, or teaching kits?`,
-    `What is an independent art camp, and how does it relate to alternative education?`,
-    `Which cases turn material experiments into shareable teaching documentation?`,
-  ];
-  return shuffleCopy([...englishSourceBridge]).slice(0, 9);
+  const bridgeByLanguage: Record<Exclude<LanguageCode, 'zh-TW'>, string[]> = {
+    en: [
+      `How do the Hackteria Main Page and About page introduce DIY biology, bioart, and open art communities?`,
+      `What is CoLabs Chiang Mai, and how does it connect Hackteria, SGMK, and bioart wet-workshops?`,
+      `Why do hacker camps or independent art camps often include DIY synths and sound tools?`,
+      `Are there e-textile, soft-circuit, or wearable-electronics examples that became works, products, or teaching kits?`,
+      `What is an independent art camp, and how does it relate to alternative education?`,
+      `How do Fabricademy wearables, Playing with electronic textiles, and Tone of the Things turn material experiments into teaching documents?`,
+    ],
+    id: [
+      `Bagaimana halaman Hackteria Main Page dan About memperkenalkan DIY biology, bioart, dan komunitas seni terbuka?`,
+      `Apa itu CoLabs Chiang Mai, dan bagaimana hubungannya dengan Hackteria, SGMK, serta bioart wet-workshop?`,
+      `Mengapa camp hacker atau camp seni independen sering berisi synth DIY dan alat suara?`,
+      `Adakah contoh e-textile, soft circuit, atau wearable electronics yang menjadi karya, produk, atau kit belajar?`,
+      `Apa itu camp seni independen, dan bagaimana hubungannya dengan pendidikan alternatif?`,
+      `Bagaimana Fabricademy wearables, Playing with electronic textiles, dan Tone of the Things mengubah eksperimen material menjadi dokumen ajar?`,
+    ],
+    de: [
+      `Wie stellen die Hackteria Main Page und die About-Seite DIY Biology, Bioart und offene Kunst-Communities vor?`,
+      `Was ist CoLabs Chiang Mai, und wie verbindet es Hackteria, SGMK und Bioart-Wet-Workshops?`,
+      `Warum enthalten Hacker-Camps oder unabhängige Kunst-Camps oft DIY-Synths und Klangwerkzeuge?`,
+      `Gibt es E-Textile-, Soft-Circuit- oder Wearable-Electronics-Beispiele, die zu Werken, Produkten oder Lernkits wurden?`,
+      `Was ist ein unabhängiges Kunst-Camp, und wie hängt es mit alternativer Bildung zusammen?`,
+      `Wie machen Fabricademy wearables, Playing with electronic textiles und Tone of the Things Materialexperimente zu Lehrdokumenten?`,
+    ],
+    ja: [
+      `Hackteria の Main Page と About は、DIY biology、bioart、開かれたアート・コミュニティをどう紹介している？`,
+      `CoLabs Chiang Mai とは何で、Hackteria、SGMK、bioart wet-workshop とどう関係している？`,
+      `ハッカーキャンプや独立アートキャンプに DIY synth や音の道具がよく出てくるのはなぜ？`,
+      `電子テキスタイル、soft circuit、wearable electronics が作品、製品、教材キットになる例はある？`,
+      `独立アートキャンプとは何で、代替教育とどう関係している？`,
+      `Fabricademy wearables、Playing with electronic textiles、Tone of the Things は、材料実験をどう教材化している？`,
+    ],
+    th: [
+      `หน้า Hackteria Main Page และ About แนะนำ DIY biology, bioart และชุมชนศิลปะแบบเปิดอย่างไร?`,
+      `CoLabs Chiang Mai คืออะไร และเกี่ยวข้องกับ Hackteria, SGMK และ bioart wet-workshop อย่างไร?`,
+      `ทำไม hacker camp หรือ independent art camp มักมี DIY synth และเครื่องมือเสียง?`,
+      `มีตัวอย่าง e-textile, soft circuit หรือ wearable electronics ที่กลายเป็นงาน ผลิตภัณฑ์ หรือชุดเรียนรู้ไหม?`,
+      `independent art camp คืออะไร และเกี่ยวข้องกับ alternative education อย่างไร?`,
+      `Fabricademy wearables, Playing with electronic textiles และ Tone of the Things เปลี่ยนการทดลองวัสดุเป็นเอกสารสอนอย่างไร?`,
+    ],
+  };
+  return shuffleCopy(bridgeByLanguage[language]).slice(0, 9);
+}
+
+function dialogueCopy(language: LanguageCode): { sourcesTitle: string; followUpsTitle: string; sourceFallback: string; zine: string; fallbackAnchor: string } {
+  const copy: Record<LanguageCode, { sourcesTitle: string; followUpsTitle: string; sourceFallback: string; zine: string; fallbackAnchor: string }> = {
+    'zh-TW': { sourcesTitle: '可繼續讀的來源：', followUpsTitle: '下一步可以問', sourceFallback: '頁面', zine: 'Wiki 小誌', fallbackAnchor: '你剛剛提到的例子' },
+    en: { sourcesTitle: 'Pages to keep reading:', followUpsTitle: 'Next questions', sourceFallback: 'Page', zine: 'Wiki zine', fallbackAnchor: 'the example just mentioned' },
+    id: { sourcesTitle: 'Halaman untuk dibaca lanjut:', followUpsTitle: 'Pertanyaan lanjutan', sourceFallback: 'Halaman', zine: 'Zine wiki', fallbackAnchor: 'contoh yang baru disebut' },
+    de: { sourcesTitle: 'Weiterlesen auf diesen Seiten:', followUpsTitle: 'Nächste Fragen', sourceFallback: 'Seite', zine: 'Wiki-Zine', fallbackAnchor: 'das gerade genannte Beispiel' },
+    ja: { sourcesTitle: '続けて読めるページ：', followUpsTitle: '次に聞けること', sourceFallback: 'ページ', zine: 'Wiki zine', fallbackAnchor: 'いま出た例' },
+    th: { sourcesTitle: 'หน้าที่อ่านต่อได้:', followUpsTitle: 'คำถามถัดไป', sourceFallback: 'หน้า', zine: 'ซีน wiki', fallbackAnchor: 'ตัวอย่างที่เพิ่งพูดถึง' },
+  };
+  return copy[language];
 }
 
 function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = [], persona?: Persona): string[] {
@@ -157,7 +203,8 @@ function makeFollowUpQuestions(language: LanguageCode, question: string, evidenc
     const fallback = persona ? makeSuggestedQuestions(language, persona).filter((item) => item !== question) : [];
     if (fallback.length >= 3) return fallback.slice(0, 3);
   }
-  const anchor = evidenceAnchor(evidence, '你剛剛提到的例子');
+  const copy = dialogueCopy(language);
+  const anchor = evidenceAnchor(evidence, copy.fallbackAnchor);
   const keyword = evidenceKeyword(evidence, question);
   if (language === 'zh-TW') {
     return [
@@ -177,15 +224,16 @@ function evidenceUrl(item: ChatEvidence): string {
   return item.url || '';
 }
 
-function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
+function DialogueEvidence({ evidence, language }: { evidence?: ChatEvidence[]; language: LanguageCode }) {
   const visible = (evidence ?? []).filter((item) => item.label || item.text || item.url).slice(0, 4);
   if (!visible.length) return null;
+  const copy = dialogueCopy(language);
   return (
     <div className="rpg-dialogue-sources" data-ui-part="body">
-      <p className="rpg-dialogue-sources-title">可繼續讀的來源：</p>
+      <p className="rpg-dialogue-sources-title">{copy.sourcesTitle}</p>
       {visible.map((item, index) => {
         const url = evidenceUrl(item);
-        const label = item.sourceLabel || item.label || `Source ${index + 1}`;
+        const label = item.sourceLabel || item.label || `${copy.sourceFallback} ${index + 1}`;
         const body = shorten(item.text || item.label || '', 150);
         return (
           <p key={`${item.id}-${index.toString()}`} className="rpg-dialogue-source-line">
@@ -205,11 +253,12 @@ function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
   );
 }
 
-function DialogueFollowUps({ questions, onSelect }: { questions?: string[]; onSelect: (question: string) => void }) {
+function DialogueFollowUps({ questions, language, onSelect }: { questions?: string[]; language: LanguageCode; onSelect: (question: string) => void }) {
   if (!questions?.length) return null;
+  const copy = dialogueCopy(language);
   return (
     <div className="rpg-dialogue-followups" data-ui-part="body">
-      <p className="rpg-dialogue-followups-title">下一步可以問</p>
+      <p className="rpg-dialogue-followups-title">{copy.followUpsTitle}</p>
       <div className="rpg-dialogue-followup-list">
         {questions.slice(0, 3).map((item) => (
           <button key={item} className="rpg-dialogue-followup-chip pbs-game-button" data-ui-control="text-button" type="button" onClick={() => onSelect(item)}>
@@ -222,15 +271,7 @@ function DialogueFollowUps({ questions, onSelect }: { questions?: string[]; onSe
 }
 
 function zineLabel(language: LanguageCode): string {
-  const copy: Record<LanguageCode, string> = {
-    'zh-TW': 'Wiki 小誌',
-    en: 'Wiki zine',
-    id: 'Zine wiki',
-    de: 'Wiki-Zine',
-    ja: 'Wiki 小誌',
-    th: 'ซีน wiki',
-  };
-  return copy[language];
+  return dialogueCopy(language).zine;
 }
 
 function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
@@ -644,8 +685,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                <DialogueEvidence evidence={message.evidence} />
-                <DialogueFollowUps questions={message.followUps} onSelect={handleFollowUpPrompt} />
+                <DialogueEvidence evidence={message.evidence} language={language} />
+                <DialogueFollowUps questions={message.followUps} language={language} onSelect={handleFollowUpPrompt} />
               </div>
             ))}
             {isLoading && (
