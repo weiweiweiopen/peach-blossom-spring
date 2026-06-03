@@ -103,47 +103,47 @@ function shuffleCopy<T>(items: T[]): T[] {
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
     '我想知道農業機器人可以用來幹嘛？',
-    'Green Fab Lab 為什麼會把數位製造和農地照護放在一起？',
-    '如果機器不是重點，Jonathan 的談話想讓我先理解哪些人和土地的關係？',
+    'Green Fab Lab 是什麼地方？',
+    '為什麼農場會需要數位製造？',
   ],
   'marc-dusseiller': [
-    'Marc 說的 Hackteria，和一般實驗室有什麼不一樣？',
-    '為什麼失敗、料理、焊接和朋友會變成一種學習方法？',
-    '低成本工具怎麼幫助一群人一起做科學和藝術？',
+    'Hackteria 是什麼？',
+    'DIY biology 是什麼？',
+    '為什麼有人會用低成本工具做科學和藝術？',
   ],
   'mika-satomi': [
     '什麼是電子織品？',
-    'Mika 為什麼重視把做法寫下來、分享出來？',
-    'KOBAKANT 的願望牆想讓我理解哪種共同工作方式？',
+    'KOBAKANT 是什麼？跟電子織品有什麼關係？',
+    '導電線和布料怎麼變成電路？',
   ],
   'tincuta-heinzel': [
-    'Tincuta 為什麼把失敗、再試和錯誤看成重要知識？',
-    '營隊什麼時候不只是教學活動，而會變成共同記憶？',
-    '如果一個地方的回應一直變動，我可以怎麼理解它的脈絡？',
+    '藝術科技營隊通常在做什麼？',
+    '為什麼營隊會和策展有關？',
+    '參加營隊的人會一起留下哪些知識？',
   ],
 };
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `你剛剛談到的核心概念，可以先用新手聽得懂的方式說明嗎？`,
-    `你覺得這裡最重要的是工具、場地、朋友，還是共同維護？`,
-    `你提到的做法，對小型獨立社群有什麼實際幫助？`,
-    `如果我想從你的經驗得到一個靈感，應該先看哪個例子？`,
-    `如果我想使用這個社群的資源，第一步應該先理解哪個詞或做法？`,
-    `你覺得我下一個最值得追問的問題是什麼？`,
+    `你是誰？你主要在做什麼？`,
+    `我完全不懂你的領域，可以先從哪三個詞開始？`,
+    `你的工作和小型獨立社群有什麼關係？`,
+    `如果我想先看一個例子，應該看哪個作品或活動？`,
+    `這個領域有哪些材料、工具或社群名稱值得先認識？`,
+    `我可以問你哪個最基本的問題？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `Could you explain the core idea in a way a newcomer can understand?`,
-    `For you, what matters most here: tools, places, friends, or maintenance?`,
-    `How could this practice help a small independent community?`,
-    `If I want one useful inspiration from your experience, which example should I look at first?`,
-    `If I want to use this community resource, what word or practice should I understand first?`,
-    `What question do you think I should ask you next?`,
+    `Who are you, and what do you mainly work on?`,
+    `I know nothing about your field. Which three words should I learn first?`,
+    `How does your work relate to small independent communities?`,
+    `If I should start with one example, which work or activity should I look at?`,
+    `Which materials, tools, or community names should I learn first?`,
+    `What is the most basic question I can ask you?`,
   ];
   return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
