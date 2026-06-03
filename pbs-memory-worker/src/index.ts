@@ -190,10 +190,10 @@ function languageInstruction(preferredLanguage: string): string {
 }
 
 function fallbackAnswer(evidence: EvidenceItem[], error: string): string {
-  if (!evidence.length) return `PBS memory Worker did not find source evidence. DeepSeek error: ${error}`;
+  if (!evidence.length) return `目前沒有找到足夠的公開來源可以回答。請換成更具體的材料、工具、社群、地點或案例再問一次。DeepSeek error: ${error}`;
   return [
-    'PBS memory Worker found source evidence, but DeepSeek is unavailable right now.',
-    'Evidence fallback:',
+    '我先把可查到的公開來源列出來；完整自然語句暫時無法生成。',
+    '可繼續讀的來源：',
     ...evidence.map((item, index) => `${index + 1}. ${item.label}: ${item.text} ${item.url}`.trim()),
     `DeepSeek error: ${error}`,
   ].join('\n');
@@ -202,19 +202,19 @@ function fallbackAnswer(evidence: EvidenceItem[], error: string): string {
 function deterministicGroundedAnswer(question: string, evidence: EvidenceItem[], preferredLanguage: string, reason = ''): string {
   if (!evidence.length) {
     return preferredLanguage === 'zh-TW'
-      ? '目前 PBS source index 沒有找到足夠證據。請換更具體的材料、工具、場域或社群名稱再問一次。'
-      : 'PBS source index did not find enough evidence for this question.';
+      ? '目前沒有找到足夠的公開來源可以回答。請換成更具體的材料、工具、社群、地點或案例再問一次。'
+      : 'I could not find enough public source material for this question. Try a more specific material, tool, community, place, or case.';
   }
   if (preferredLanguage !== 'zh-TW') {
     return [
-      reason || 'Grounding note: using source-index evidence only.',
+      reason || 'Using the public sources found for this question.',
       `Question: ${question}`,
       ...evidence.slice(0, 6).map((item, index) => `[${index + 1}] ${item.label}: ${item.text} ${item.url}`.trim()),
       'No unsupported project or workshop is added beyond these source snippets.',
     ].join('\n\n');
   }
   return [
-    reason || '我先把火光收窄到下方來源真正支持的範圍：以下只整理 PBS source index 實際回傳的頁面，不補不存在的工作坊或產品案例。',
+    reason || '我先只整理下方公開來源真正支持的內容，不補不存在的工作坊或產品案例。',
     `問題：${question}`,
     '',
     ...evidence.slice(0, 6).map((item, index) => `- [${index + 1}] ${item.label}：${item.text} ${item.url}`.trim()),
@@ -290,7 +290,7 @@ async function answerWithMemory(env: Env, question: string, preferredLanguage: s
     return {
       answer: answerLooksGrounded(answer, evidence)
         ? answer
-        : deterministicGroundedAnswer(question, evidence, preferredLanguage, '我先把火光收窄到下方來源真正支持的範圍：剛才可用的材料不足以證明某些延伸說法，所以這裡只列出能直接對應的來源。'),
+        : deterministicGroundedAnswer(question, evidence, preferredLanguage, '剛才可用的材料不足以支持某些延伸說法，所以這裡只列出能直接對應的公開來源。'),
       evidence,
       links,
     };

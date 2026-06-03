@@ -34,6 +34,8 @@ const projectReadme = readFileSync(join(root, "..", "README.md"), "utf8");
 const localMemoryGame = readFileSync(join(root, "..", "LOCAL_MEMORY_GAME.md"), "utf8");
 const suggestedPromptHandler = rpgDialogue.match(/function handleSuggestedPrompt\(prompt: string\): void \{[\s\S]*?\n  \}/)?.[0] ?? "";
 const suggestedQuestionBlock = rpgDialogue.match(/const personaQuestionSeeds[\s\S]*?function makeFollowUpQuestions/)?.[0] ?? "";
+const npcIntroBlock = rpgDialogue.match(/function makeIntroMessage[\s\S]*?function npcWritingStylePrompt/)?.[0] ?? "";
+const npcVisiblePromptSurface = `${suggestedQuestionBlock}\n${npcIntroBlock}`;
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -121,11 +123,14 @@ const checks = [
   ["NPC zines receive transcript writing style", /onOpenAssociationZine\?: \(query: string, writingStyle: string\)/.test(rpgDialogue) && /function npcWritingStylePrompt/.test(rpgDialogue) && /writingStyle: activeDialoguePersona\.name|writingStyle,/.test(app)],
   ["Dialogue suggestions show safer source questions", /COMMUNITY_QUERY_PROMPTS:\s*Record<LanguageCode, string\[]>/.test(app) && /Hackteria, SGMK, or KOBAKANT/.test(app) && /sourceBridgeQuestions[\s\S]*可查證小誌/.test(rpgDialogue) && /englishSourceBridge[\s\S]*checkable zine/.test(rpgDialogue)],
   ["NPC suggestions avoid transcript sentence prompts", !/function transcriptQuestionSeed/.test(rpgDialogue) && !/responseQuestions/.test(rpgDialogue) && !/訪談記憶/.test(rpgDialogue) && /玩家想在 PBS 裡做一個小型獨立社群/.test(rpgDialogue)],
-  ["NPC suggestions are player-facing source tasks", /玩家想做一個照護農地與蜂群的開源工具/.test(suggestedQuestionBlock) && /source case/.test(suggestedQuestionBlock) && !/訪談/.test(suggestedQuestionBlock) && !/工作坊經驗/.test(suggestedQuestionBlock)],
+  ["NPC suggestions are player-facing source tasks", /玩家想做一個照護農地與蜂群的開源工具/.test(suggestedQuestionBlock) && /公開案例/.test(suggestedQuestionBlock) && !/訪談/.test(suggestedQuestionBlock) && !/工作坊經驗/.test(suggestedQuestionBlock)],
+  ["PBS prompts are player-helpful experiences", /理解/.test(npcVisiblePromptSurface) && /公開資源|公開來源/.test(npcVisiblePromptSurface) && /靈感|啟發|成熟|可查證/.test(npcVisiblePromptSurface) && /社群/.test(npcVisiblePromptSurface)],
+  ["NPC visible prompts avoid system language", !/人格|source index|syntax|markdown|路線|工作方法自述/.test(npcVisiblePromptSurface)],
   ["NPC suggested prompts fill input before action", /setAreSuggestionsOpen\(false\);/.test(suggestedPromptHandler) && /setQuestion\(prompt\);/.test(suggestedPromptHandler) && !/submitPrompt\(prompt\)/.test(suggestedPromptHandler)],
   ["NPC name bubbles keep collision offsets", /offsetX\?: number/.test(app) && /--npc-tag-offset-x/.test(app + css) && /calc\(-50% \+ var\(--npc-tag-offset-x/.test(css)],
   ["Overlay coordinates use uncapped device pixel ratio", !/Math\.min\(window\.devicePixelRatio \|\| 1, 1\.5\)/.test(app) && /const dpr = window\.devicePixelRatio \|\| 1;/.test(app)],
   ["Campfire sources render inline", /function CampfireInlineLinks/.test(app) && !/<details className="rpg-dialogue-source-links"/.test(app)],
+  ["Campfire and NPC dialogue share panel layout", /w-\[min\(1320px,84vw\)\] h-\[80vh\] min-w-\[min\(860px,calc\(100vw-24px\)\)\]/.test(app) && /w-\[min\(1320px,84vw\)\] h-\[80vh\] min-w-\[min\(860px,calc\(100vw-24px\)\)\]/.test(rpgDialogue) && /rpg-dialogue-kicker-row flex items-center gap-3 mb-2/.test(app) && /rpg-dialogue-kicker-row flex items-center gap-3 mb-2/.test(rpgDialogue) && /rpg-dialogue-question-drawer w-full border border-border bg-bg\/70 px-4 py-4/.test(app) && /rpg-dialogue-question-drawer w-full border border-border bg-bg\/70 px-4 py-4/.test(rpgDialogue)],
   ["Mobile campfire keeps enlarged avatar", /rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*184px/.test(css) && !/rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*52px/.test(css)],
   ["Zine request retries compact packet when too long", /function compactRequestUser/.test(generator) && /Message content is too long/.test(generator) && /retrying once with compact evidence packet/.test(generator)],
   ["Thought-gap broadcasts use colorful notice", /THOUGHT_GAP_BROADCASTS/.test(app) && /world-resonance-notice--thought-gap/.test(app + css)],

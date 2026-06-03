@@ -1231,7 +1231,7 @@ function CentralComputerDialogue({
 
   return (
     <div className="rpg-dialogue-overlay absolute inset-0 z-50 flex items-center justify-center bg-black/35 px-8 py-8 pointer-events-none" data-no-mobile-drag="true">
-      <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1040px,84vw)] h-[72vh] min-w-[min(720px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
+      <section className="rpg-dialogue-panel pbs-frame F2 pbs-frame-f2 pixel-panel pointer-events-auto w-[min(1320px,84vw)] h-[80vh] min-w-[min(860px,calc(100vw-24px))] px-14 py-12 text-text shadow-pixel flex flex-col" data-language={language}>
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
@@ -1239,8 +1239,10 @@ function CentralComputerDialogue({
               <ComputerDialogueAvatar label={copy.name} />
             </div>
             <div>
-              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{copy.kicker}</p>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none mt-2" data-ui-part="title">{copy.name}</h2>
+              <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
+                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{copy.kicker}</p>
+              </div>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{copy.name}</h2>
               <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{copy.subtitle}</p>
             </div>
           </div>
@@ -1261,11 +1263,15 @@ function CentralComputerDialogue({
           </div>
         </div>
         {showSuggestedQuestions && (
-          <div className="rpg-dialogue-actions rpg-dialogue-question-drawer flex flex-wrap items-start gap-3 mb-5">
-            <p className="w-full m-0 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
-            {suggestedQuestions.map((question) => (
-              <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
-            ))}
+          <div className="rpg-dialogue-actions flex flex-wrap items-start gap-3 mb-5">
+            <div className="rpg-dialogue-question-drawer w-full border border-border bg-bg/70 px-4 py-4">
+              <p className="w-full m-0 mb-3 text-base text-text-muted" data-ui-part="caption">{copy.suggestions}{isSuggestingQuestions ? QUESTION_SUGGESTION_LOADING_COPY[language] : ""}</p>
+              <div className="rpg-dialogue-fixed flex flex-wrap gap-3 mb-3">
+                {suggestedQuestions.map((question) => (
+                  <button key={question} className="rpg-dialogue-chip pbs-game-button" data-ui-control="text-button" data-ui-part="button-label" type="button" onClick={() => { setDraft(question); setShowSuggestedQuestions(false); }}>{question}</button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
         <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
@@ -1275,6 +1281,12 @@ function CentralComputerDialogue({
             data-ui-part="field"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                event.preventDefault();
+                void askComputer(draft);
+              }
+            }}
             name="pbs-campfire-question"
             inputMode="text"
             enterKeyHint="send"
@@ -1838,6 +1850,7 @@ function App() {
   const [chatMessages, setChatMessages] = useState<MultiplayerChatMessage[]>([]);
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
+  const [pendingDialogueId, setPendingDialogueId] = useState<number | null>(null);
   const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
   const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
   const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
@@ -2026,10 +2039,12 @@ function App() {
             officeState.selectedAgentId = null;
             officeState.cameraFollowId = PLAYER_ID;
             officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
+            setPendingDialogueId(agentId);
             setPlayerMoveTick((tick) => tick + 1);
           }
           return;
         }
+        setPendingDialogueId(null);
         setSelectedPet(null);
         setSelectedDispatchPet(null);
         setSelectedNpcInfo(null);
@@ -2063,6 +2078,26 @@ function App() {
     personas.findIndex((persona) => persona.id === "abao") + 1;
   const isNearAbao = nearbyNpcId === abaoAgentId;
   const isSplitOpen = splitPanel !== null;
+
+  useEffect(() => {
+    if (!pendingDialogueId || appMode !== "interactive") return;
+    const intervalId = window.setInterval(() => {
+      const player = officeState.characters.get(PLAYER_ID);
+      const npc = officeState.characters.get(pendingDialogueId);
+      if (!player || !npc) return;
+      const distance = Math.abs(npc.tileCol - player.tileCol) + Math.abs(npc.tileRow - player.tileRow);
+      if (distance <= CONVERSATION_CLOSE_DISTANCE_TILES) {
+        setPendingDialogueId(null);
+        setSelectedPet(null);
+        setSelectedDispatchPet(null);
+        setSelectedNpcInfo(null);
+        officeState.faceCharacterToward(PLAYER_ID, npc.tileCol, npc.tileRow);
+        officeState.faceCharacterToward(pendingDialogueId, player.tileCol, player.tileRow);
+        setActiveDialogueId(pendingDialogueId);
+      }
+    }, 120);
+    return () => window.clearInterval(intervalId);
+  }, [appMode, officeState, pendingDialogueId]);
 
   const selectedPetBoardId = selectedDispatchPet?.id ?? selectedPet?.id ?? null;
 
@@ -2572,6 +2607,14 @@ function App() {
         if (!ch || ch.path.length > 0 || ch.matrixEffect || ch.isPlayer)
           continue;
         if (nearbyNpcIdRef.current === id) continue;
+        if (!ch.seatId && Math.random() < 0.28) {
+          const freeSeats = Array.from(officeState.seats.entries()).filter(([, seat]) => !seat.assigned);
+          const picked = freeSeats[Math.floor(Math.random() * freeSeats.length)]?.[0];
+          if (picked) {
+            officeState.reassignSeat(id, picked);
+            continue;
+          }
+        }
         if (Math.random() > 0.58) continue;
         const target = findShortNpcStep(
           officeState,
@@ -3909,7 +3952,7 @@ function App() {
                     setActiveDialogueId(tag.id);
                     return;
                   }
-                  officeState.selectedAgentId = tag.id;
+                  handleClick(tag.id);
                 }
               }
             >

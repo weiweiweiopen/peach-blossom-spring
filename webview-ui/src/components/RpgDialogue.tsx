@@ -116,7 +116,7 @@ const personaQuestionSeeds: Record<string, string[]> = {
     '如果 science-art box 不能被打開、弄髒、重做，玩家可以用哪些頁面理解這對 shared memory 的問題？',
   ],
   'tincuta-heinzel': [
-    '玩家如何把 ATTEMPTS, FAILURES, TRIALS AND ERRORS 變成保存失敗與再試知識的 source route？',
+    '玩家如何把 ATTEMPTS, FAILURES, TRIALS AND ERRORS 變成保存失敗與再試知識的公開來源順序？',
     '如果一個地方回應一直變動，玩家該查哪些頁面來把它整理成可保存的研究問題？',
     '營隊什麼時候可以被設計成策展工具，而不只是教學活動？這對社群記憶有什麼實際用途？',
   ],
@@ -125,19 +125,19 @@ const personaQuestionSeeds: Record<string, string[]> = {
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `如果玩家想在 PBS 裡做一個小型獨立社群，${persona.name} 這條線可以帶我查哪些 source pages？`,
+    `如果玩家想在 PBS 裡做一個小型獨立社群，${persona.name} 這個入口可以帶我查哪些公開來源？`,
     `用 ${persona.name} 當入口，哪三個公開 sources 最能幫玩家理解「工具如何變成社群方法」？`,
-    `我想把一個模糊靈感變成可查證小誌，這條路線應該先找哪個材料、場地或 source case？`,
+    `我想把一個模糊靈感變成可查證小誌，應該先找哪個材料、場地或公開案例？`,
     `哪個 Hackteria、SGMK 或 KOBAKANT 頁面最適合把 ${persona.name} 的主題變成可實作任務？`,
     `如果玩家只問「這跟我有什麼關係」，${persona.name} 可以用哪些 source 說明它對獨立創作者有什麼幫助？`,
-    `請幫我把 ${persona.name} 這條路線改寫成一個更成熟、更可查證、也更好玩的問題。`,
+    `請幫我把 ${persona.name} 這個入口改寫成一個更成熟、更可查證、也更好玩的問題。`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `Which source pages should I read first if I want to turn ${persona.name}'s route into a playable community task?`,
+    `Which public pages should I read first if I want to turn ${persona.name}'s entry point into a playable community task?`,
     `What material, tool, workshop, or place would make this question more useful to a player?`,
     `How can this become a more mature, checkable zine question instead of a vague idea?`,
     `Which Hackteria, SGMK, or KOBAKANT page best turns this topic into something a player can try?`,
@@ -149,18 +149,34 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
 
 function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = []): string[] {
   const sourceLabels = Array.from(new Set(evidence.map((item) => item.sourceLabel || item.label).filter(Boolean))).slice(0, 3);
-  const sourceHint = sourceLabels.length ? sourceLabels.join('、') : '剛才找到的 source pages';
+  const sourceHint = sourceLabels.length ? sourceLabels.join('、') : '更具體的材料、地點或社群來源';
+  const asksForScene = /場景|任務|人物|材料|可玩|playable|scene|task/i.test(question);
+  const asksForUse = /幫助|用途|使用|資源|社群|community|resource|help/i.test(question);
   if (language === 'zh-TW') {
+    if (asksForScene) {
+      return [
+        `把這個任務縮小成玩家三分鐘內能試的一步：需要哪個材料、工具或地點？`,
+        `這一步能幫玩家理解哪種社群本質：共享、維修、互助、教學，還是共同保存知識？`,
+        `要讓它變成可查證小誌，還需要哪個公開來源或反例來支撐？`,
+      ];
+    }
+    if (asksForUse) {
+      return [
+        `玩家可以怎麼實際使用這些社群資源：先讀、先做、先聯絡，還是先比較？`,
+        `請把 ${sourceHint} 轉成一條清楚的閱讀順序，讓玩家不必自己猜。`,
+        `這個問題下一步要變成熟，最該補的是案例、工具細節、場域脈絡還是反例？`,
+      ];
+    }
     return [
-      `如果我想把「${cleanQuestionPart(question, 28)}」變成遊戲裡更有畫面的任務，應該先走向哪個人物、材料或場景？`,
-      `請用 ${sourceHint} 解釋這題對獨立社群有什麼實際幫助，而不只是概念上好聽。`,
-      `把這題成熟化成一個可查證的 Wiki 小誌題目：我還缺哪個 source、案例或反例？`,
+      `這題可以怎麼變成玩家真的想嘗試的一個小任務？`,
+      `哪些公開來源最能幫玩家理解社群如何共享資源、維修知識或互相啟發？`,
+      `請把這題改寫成更成熟的可查證小誌題目，並指出還缺什麼證據。`,
     ];
   }
   return [
-    `How can this question become a more playable scene, character, material, or task?`,
-    `Using ${sourceHint}, why does this matter in practice for independent communities?`,
-    `How should I mature this into a checkable wiki-zine question, and what source or counterexample is missing?`,
+    `How can this become one small task a player can actually try?`,
+    `Which public sources help the player understand shared resources, repair, mutual aid, or community knowledge?`,
+    `How should this become a more mature checkable zine question, and what evidence is still missing?`,
   ];
 }
 
@@ -402,16 +418,16 @@ const localizedPersonaIntros: Record<string, Record<LanguageCode, string>> = {
     th: 'บุคลิกของ Tincuta มองแคมป์เป็นเครื่องมือภัณฑารักษ์ที่สร้างคำถามเชิงจริยธรรม การตอบสนองเฉพาะถิ่น และเวอร์ชันต่าง ๆ มากกว่าผลงานตายตัว',
   },
 };
+void localizedPersonaIntros;
 
 function makeIntroMessage(persona: Persona, language: LanguageCode): string {
-  const intro = localizedPersonaIntros[persona.id]?.[language] ?? persona.intro;
   const messages: Record<LanguageCode, string> = {
-    'zh-TW': `${intro} 歡迎來到桃花源，你想問我什麼？`,
-    en: `${intro} Welcome to Peach Blossom Spring. What would you like to ask?`,
-    id: `${intro} Selamat datang di Peach Blossom Spring. Apa yang ingin kamu tanyakan?`,
-    de: `${intro} Willkommen in Peach Blossom Spring. Was möchtest du fragen?`,
-    ja: `${intro} 桃花源へようこそ。何を聞きたいですか？`,
-    th: `${intro} ยินดีต้อนรับสู่ Peach Blossom Spring คุณอยากถามอะไร?`,
+    'zh-TW': `我是 ${persona.name}。你可以問我：這個社群能幫你理解什麼、可以使用哪些公開資源、或怎麼把靈感變成可查證的小誌問題。`,
+    en: `I am ${persona.name}. Ask what this community helps you understand, which public resources you can use, or how to turn an idea into a checkable zine question.`,
+    id: `Saya ${persona.name}. Tanyakan apa yang bisa dipahami dari komunitas ini, sumber publik apa yang bisa dipakai, atau cara mengubah ide menjadi pertanyaan zine yang bisa dicek.`,
+    de: `Ich bin ${persona.name}. Frag, was diese Community verständlich macht, welche öffentlichen Ressourcen nutzbar sind, oder wie eine Idee zu einer prüfbaren Zine-Frage wird.`,
+    ja: `${persona.name} です。このコミュニティから何を理解できるか、どの公開資料を使えるか、着想を確認できる小誌の問いにするにはどうするかを聞いてください。`,
+    th: `ฉันคือ ${persona.name} ถามได้ว่าชุมชนนี้ช่วยให้เข้าใจอะไร ใช้แหล่งข้อมูลสาธารณะใดได้ หรือเปลี่ยนไอเดียให้เป็นคำถามซีนที่ตรวจสอบได้อย่างไร`,
   };
   return messages[language];
 }
@@ -657,6 +673,14 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             data-ui-part="field"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
+                event.preventDefault();
+                const trimmed = question.trim();
+                setQuestion('');
+                void submitPrompt(trimmed);
+              }
+            }}
             name={`pbs-dialogue-${persona.id}`}
             inputMode="text"
             enterKeyHint="send"
