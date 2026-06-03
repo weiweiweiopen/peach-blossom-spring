@@ -481,12 +481,16 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
     if (!log) return;
     const answerIndex = pendingAnswerScrollIndexRef.current;
     if (answerIndex !== null) {
-      pendingAnswerScrollIndexRef.current = null;
-      const target = messageItemRefs.current[answerIndex];
-      if (target) {
-        log.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
-        return;
-      }
+      const frame = window.requestAnimationFrame(() => {
+        const target = messageItemRefs.current[answerIndex];
+        if (!target) return;
+        pendingAnswerScrollIndexRef.current = null;
+        const logRect = log.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const top = targetRect.top - logRect.top + log.scrollTop;
+        log.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      });
+      return () => window.cancelAnimationFrame(frame);
     }
     if (isLoading) log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
   }, [isLoading, messages]);
