@@ -20,8 +20,34 @@ const GROUND_DECOR_TYPES = new Set([
   'CRAFTPIX_EXTERIOR_44',
 ]);
 
+const CAMPFIRE_FURNITURE_PREFIX = 'MULTI_MIND_CAMPFIRE';
+const CAMPFIRE_STONE_COLLISION_OFFSETS = [
+  { dc: 0, dr: 2 },
+  { dc: 3, dr: 2 },
+  { dc: 0, dr: 3 },
+  { dc: 1, dr: 3 },
+  { dc: 2, dr: 3 },
+  { dc: 3, dr: 3 },
+];
+
 function isGroundDecorType(type: string): boolean {
   return GROUND_DECOR_TYPES.has(type);
+}
+
+function isCampfireType(type: string): boolean {
+  return type.startsWith(CAMPFIRE_FURNITURE_PREFIX);
+}
+
+function addCampfireStoneCollisionTiles(
+  tiles: Set<string>,
+  item: PlacedFurniture,
+  excludeTiles?: Set<string>,
+): void {
+  for (const { dc, dr } of CAMPFIRE_STONE_COLLISION_OFFSETS) {
+    const key = `${item.col + dc},${item.row + dr}`;
+    if (excludeTiles && excludeTiles.has(key)) continue;
+    tiles.add(key);
+  }
 }
 
 /** Convert flat tile array from layout into 2D grid */
@@ -108,7 +134,7 @@ export function layoutToFurnitureInstances(furniture: PlacedFurniture[]): Furnit
       }
     }
 
-    instances.push({ sprite, x, y, zY, ...(mirrored ? { mirrored: true } : {}) });
+    instances.push({ sprite, type: item.type, x, y, zY, ...(mirrored ? { mirrored: true } : {}) });
   }
   return instances;
 }
@@ -123,6 +149,10 @@ export function getBlockedTiles(
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
     if (isGroundDecorType(item.type)) continue;
+    if (isCampfireType(item.type)) {
+      addCampfireStoneCollisionTiles(tiles, item, excludeTiles);
+      continue;
+    }
     const bgRows = entry.backgroundTiles ?? 0;
     for (let dr = bgRows; dr < entry.footprintH; dr++) {
       for (let dc = 0; dc < entry.footprintW; dc++) {
@@ -145,6 +175,10 @@ export function getPlacementBlockedTiles(
     if (item.uid === excludeUid) continue;
     const entry = getCatalogEntry(item.type);
     if (!entry) continue;
+    if (isCampfireType(item.type)) {
+      addCampfireStoneCollisionTiles(tiles, item);
+      continue;
+    }
     for (let dr = 0; dr < entry.footprintH; dr++) {
       for (let dc = 0; dc < entry.footprintW; dc++) {
         tiles.add(`${item.col + dc},${item.row + dr}`);

@@ -563,10 +563,11 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
   const wantsHackteriaKitchenBio = wantsHackteriaKitchenBioQuery(query);
   const sourcePriority = (card: Partial<SourceCard>) => {
     const family = sourceFamily(card);
-    if (wantsSgmk && family === "SGMK") return 40;
-    if (wantsHackteriaKitchenBio && family === "Hackteria") return 72;
-    if (wantsSoundDiy && family === "HOW TO GET WHAT YOU WANT / KOBAKANT") return 32;
-    if (wantsSoundDiy && family === "Hackteria") return 28;
+    const text = evidenceText(card);
+    if (wantsSgmk && family === "SGMK" && /sgmk|ssam|mechartlab|home made|8bit|gnusbuino|sound|synth/i.test(text)) return 10;
+    if (wantsHackteriaKitchenBio && family === "Hackteria" && /kitchen|food|ferment|biohack|bioart|wetlab|kombucha|nata|tofu/i.test(text)) return 12;
+    if (wantsSoundDiy && family === "HOW TO GET WHAT YOU WANT / KOBAKANT" && /sound|synth|speaker|music|instrument|noise|electronics|soft circuit/i.test(text)) return 10;
+    if (wantsSoundDiy && family === "Hackteria" && /sound|synth|speaker|music|instrument|noise|electronics/i.test(text)) return 8;
     return 0;
   };
   const rankForPrompt = <T extends Card>(items: T[]) => [...items]
@@ -1745,7 +1746,7 @@ function createBrowserWorkflow(query: string): Workflow {
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
-  const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Source-family hints: Hackteria, SGMK, Fabricademy, HOW TO GET WHAT YOU WANT / KOBAKANT${textileHints}${sensorHints}${sgmkHints}.`;
+  const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Topic hints:${textileHints}${sensorHints}${sgmkHints || " none"}. Do not retrieve a page merely because it belongs to Hackteria, SGMK, Fabricademy, or HOW TO GET WHAT YOU WANT / KOBAKANT; retrieve it only when page text matches the player query.`;
   try {
     const workflow = runAssociationWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;

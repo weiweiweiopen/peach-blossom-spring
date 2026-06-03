@@ -58,6 +58,8 @@ export interface Seat {
 
 export interface FurnitureInstance {
   sprite: SpriteData;
+  /** Asset type ID used for render-specific overlays. */
+  type?: string;
   /** Pixel x (top-left) */
   x: number;
   /** Pixel y (top-left) */

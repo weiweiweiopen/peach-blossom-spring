@@ -219,8 +219,30 @@ def source_family_for(path: Path) -> str:
         return "hackteria"
     if "htgwyw" in parts or "kobakant" in lowered or "how to get what you want" in lowered:
         return "htgwyw"
+    if "designposthumanism" in parts or "designandposthumanism" in lowered or "design+posthumanism" in lowered:
+        return "designposthumanism"
+    if "fabricademy" in parts or "textile-academy" in lowered or "textile academy" in lowered:
+        return "fabricademy"
+    if "textiltronics" in parts or "trials-and-errors" in lowered or "attempts-failures" in lowered:
+        return "textiltronics"
+    if "tttlabs" in parts or "ttt-labs" in lowered or "bioferal" in lowered or "terrabytes" in lowered or "ionio" in lowered:
+        return "tttlabs"
+    if "modernbody" in parts or "modernbodyfestival" in lowered or "modern body" in lowered:
+        return "modernbody"
+    if "valldaura" in parts or "valldaura.net" in lowered:
+        return "valldaura"
+    if "okiwonderlab" in parts or "okiwonderlab" in lowered or "oki wonder lab" in lowered or "ryuoyama" in lowered:
+        return "okiwonderlab"
+    if "kubu" in parts or "kubu.fi" in lowered or "kulturhus björkboda" in lowered:
+        return "kubu"
+    if "radiona" in parts or "radiona.org" in lowered:
+        return "radiona"
+    if "greenfablab" in parts or "greenfablab.org" in lowered or "green fab lab" in lowered:
+        return "greenfablab"
     if "sgmk" in parts or "sgmk full" in lowered:
         return "sgmk"
+    if "alma" in parts or "al-ma.org" in lowered:
+        return "alma"
     return "unknown"
 
 
@@ -1265,16 +1287,16 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     registry = sub.add_parser("build-registry")
     registry.add_argument("--limit", type=int)
-    registry.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    registry.add_argument("--family", choices=["designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk"])
     registry.set_defaults(func=command_build_registry)
     passages = sub.add_parser("extract-passages")
     passages.add_argument("--limit", type=int)
-    passages.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    passages.add_argument("--family", choices=["designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk"])
     passages.add_argument("--max-per-source", type=int, default=8)
     passages.set_defaults(func=command_extract_passages)
     claims = sub.add_parser("extract-claims")
     claims.add_argument("--limit", type=int)
-    claims.add_argument("--family", choices=["hackteria", "htgwyw", "sgmk"])
+    claims.add_argument("--family", choices=["designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk"])
     claims.add_argument("--max-per-source", type=int, default=8)
     claims.set_defaults(func=command_extract_claims)
     hydrate = sub.add_parser("hydrate-mediawiki")
@@ -1293,22 +1315,22 @@ def main() -> int:
     hydrate_old.add_argument("--force", action="store_true")
     hydrate_old.set_defaults(func=lambda args: command_hydrate_mediawiki(argparse.Namespace(**vars(args), family="hackteria")))
     index = sub.add_parser("index")
-    index.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
+    index.add_argument("--family", choices=["all", "designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk", "wiki", "schema"], default="all")
     index.set_defaults(func=command_index)
     search = sub.add_parser("search")
     search.add_argument("query")
-    search.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk", "wiki", "schema"], default="all")
+    search.add_argument("--family", choices=["all", "designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk", "wiki", "schema"], default="all")
     search.add_argument("--limit", type=int, default=8)
     search.set_defaults(func=command_search)
     sub.add_parser("status").set_defaults(func=command_status)
     query = sub.add_parser("query")
     query.add_argument("--query", required=True)
-    query.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk"], default="all")
+    query.add_argument("--family", choices=["all", "designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk"], default="all")
     query.add_argument("--limit", type=int, default=12)
     query.set_defaults(func=command_query)
     draft = sub.add_parser("draft-note")
     draft.add_argument("--query", required=True)
-    draft.add_argument("--family", choices=["all", "hackteria", "htgwyw", "sgmk"], default="all")
+    draft.add_argument("--family", choices=["all", "designposthumanism", "fabricademy", "greenfablab", "modernbody", "okiwonderlab", "textiltronics", "tttlabs", "valldaura", "hackteria", "htgwyw", "kubu", "radiona", "sgmk"], default="all")
     draft.add_argument("--category", choices=["Concepts", "Methods", "Materials", "Theories", "SocialForms", "Projects", "Comparisons", "Syntheses"], default="Projects")
     draft.add_argument("--limit", type=int, default=12)
     draft.set_defaults(func=command_draft_note)

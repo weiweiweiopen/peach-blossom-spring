@@ -37,15 +37,15 @@ function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
       <div className="retro-boot-overlay" role="dialog" aria-label="Retro boot screen" data-language={language}>
       <div className="retro-boot-stage pbs-frame F1 pbs-frame-f1">
         <div className="retro-sticker-bar">
-          <span>PBS-2026</span>
-          <span className="retro-version-stack"><span>PBS-2026.2.255</span><span>LOCAL MEMORY</span></span>
+          <span>PBS-2026.6.1</span>
+          <span className="retro-version-stack"><span>LOCAL MEMORY</span></span>
         </div>
 
         <div className="retro-screen">
           <div className="retro-title-card" data-language={language}>
             <p className="retro-kicker">Non-Governmental Matters</p>
             <h1>{t(language, "home.title")}</h1>
-            <p>Dispatching source-first local memory into the PBS game world</p>
+            <p>A LLM WIKI FOR SCIENCE ART COMMUNITY</p>
             <button className="retro-start-button" type="button" onClick={onStart} onKeyDown={handleKeyDown} autoFocus>
               PRESS START
             </button>

@@ -38,8 +38,14 @@ interface AskPersonaArgs {
   preferredLanguage: LanguageCode;
 }
 
+export interface DialogueHistoryTurn {
+  speaker: string;
+  text: string;
+}
+
 interface AskPersonaWithEvidenceArgs extends AskPersonaArgs {
   evidence: ChatEvidence[];
+  dialogueHistory?: DialogueHistoryTurn[];
 }
 
 interface AskPbsComputerArgs {
@@ -241,6 +247,12 @@ function evidenceGroundingBlock(evidence: ChatEvidence[]): string {
     : '(no retrieved source fragments)';
 }
 
+function dialogueHistoryBlock(history: DialogueHistoryTurn[] = []): string {
+  return history.length
+    ? history.slice(-8).map((turn) => `${turn.speaker}: ${turn.text}`).join('\n')
+    : '(no prior dialogue in this window)';
+}
+
 function transcriptForReasoning(knowledge: KnowledgeBase, preferredLanguage: LanguageCode): string {
   const primary = preferredLanguage === 'zh-TW'
     ? knowledge.transcript_zh || knowledge.transcript_en
@@ -255,26 +267,33 @@ export async function askDeepSeekGroundedAnswer({
   knowledge,
   preferredLanguage,
   evidence,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs): Promise<string> {
   const transcript = transcriptForReasoning(knowledge, preferredLanguage);
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
-    'You are the first reasoning pass for an NPC answer. Read the persona JSON/profile and the NGM interview transcript first, then use source fragments only as secondary context.',
-    'Do actual reasoning from the transcript: identify what the interviewee appears to care about, what tensions they name, and what they would likely question in the player prompt.',
+    'You are the first reasoning pass for an NPC answer. First use the retrieved source fragments and related website/wiki links as evidence for factual or recent-activity questions; use the persona JSON/profile and NGM interview transcript to shape voice and interpretation.',
+    'Do actual source-grounded reasoning: if the player asks what is recent, current, where, who, event, activity, page, link, or source, answer from the retrieved fragments instead of saying you are not a search engine.',
+    'Never refuse by saying you are not a search engine. If retrieved fragments are thin, state the best source-backed clue and suggest a sharper query, but still answer what the evidence says.',
     'Do not write system self-description. Never say phrases like "X 的人格", "X\'s persona", "offline mode", "retrieval", or "I will answer from interview memory".',
     'Do not imitate a template. Do not produce stock advice. Do not include source labels, URLs, citations, role tags, or retrieval metadata.',
     'If the prompt is playful, absurd, or under-specified, treat that as part of the player intent rather than matching it with a hard-coded joke.',
+    'Use the recent dialogue context to preserve continuity and answer follow-ups. Do not reset the conversation when the player says \"that\", \"you said\", \"continue\", or asks a short follow-up.',
     'Return a compact reasoning draft for the second pass: 3 to 6 sentences, concrete, conversational, and specific to this question.',
     '',
     `NPC context: ${knowledge.name}, ${knowledge.role}. ${knowledge.intro}`,
+    '',
+    '--- Recent dialogue context ---',
+    dialogueHistoryBlock(dialogueHistory),
+    '--- end recent dialogue context ---',
     '',
     '--- NGM transcript to reason from ---',
     transcript || '(no transcript available)',
     '--- end NGM transcript ---',
     '',
-    '--- Secondary source fragments, if relevant ---',
+    '--- Retrieved source fragments and related pages; use these first for factual/recent/source questions ---',
     evidenceGroundingBlock(evidence),
-    '--- end secondary source fragments ---',
+    '--- end retrieved source fragments ---',
   ].join('\n'));
   const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}`, 900);
   return normalizeTraditionalChinese(reply, preferredLanguage);
@@ -286,6 +305,7 @@ export async function askDeepSeekPersonaRewrite({
   knowledge,
   preferredLanguage,
   groundedDraft,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs & { groundedDraft: string }): Promise<string> {
   const systemPrompt = trimMessage([
     knowledge.systemPrompt,
@@ -297,10 +317,15 @@ export async function askDeepSeekPersonaRewrite({
     'No visible Markdown/syntax language in the dialogue: no **bold**, no backticks, no headings, no bullet report voice.',
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
-    'If the transcript does not support a confident answer, be honest without collapsing into boilerplate.',
+    'If the transcript does not support a confident answer, use the retrieved source fragments. Never say you are not a search engine; translate source-backed findings into the NPC voice.',
+    'Use recent dialogue context for pronouns and follow-ups, but do not summarize the whole history unless asked.',
     'Keep the final reply concise: 3 to 6 sentences.',
     '',
     `NPC: ${knowledge.name} (${knowledge.role})`,
+    '',
+    '--- Recent dialogue context ---',
+    dialogueHistoryBlock(dialogueHistory),
+    '--- end recent dialogue context ---',
     `Intro: ${knowledge.intro}`,
     'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report. A small amount of dry humor is welcome when it fits the NPC.'
   ].join('\n'));
@@ -438,9 +463,10 @@ export async function askDeepSeekPersonaWithEvidence({
   knowledge,
   preferredLanguage,
   evidence,
+  dialogueHistory = [],
 }: AskPersonaWithEvidenceArgs): Promise<string> {
-  const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence });
-  return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, groundedDraft });
+  const groundedDraft = await askDeepSeekGroundedAnswer({ playerName, question, knowledge, preferredLanguage, evidence, dialogueHistory });
+  return askDeepSeekPersonaRewrite({ playerName, question, knowledge, preferredLanguage, evidence, dialogueHistory, groundedDraft });
 }
 
 
@@ -508,7 +534,8 @@ export async function askDeepSeekPbsComputer({ question, preferredLanguage, shar
       ? 'Hard language rule: answer in English only. Do not include Chinese sentences, Chinese PBS tips, or Chinese sensory openings. Translate the campfire name as The Multi-Minds Self Campfire when needed.'
       : 'Reply in the preferred language. If the preferred language is zh-TW, use Traditional Chinese; if Indonesian, German, Japanese, or Thai is requested, use that language except for source names.',
     'Start with exactly one short sensory fire sentence, then answer as the campfire in first person. Do not sound like a generic wiki search assistant.',
-    'Every answer must include one short PBS usage tip in the same language as the reply. Make it practical and varied: try another keyword, open the source links below, ask for examples, turn the answer into a zine, compare communities, or use more concrete material/place names.',
+    'When a useful route keyword is implied by the question (for example 共居創作, 臨時社群, 多物種共居, feminist technology, DIY synth, temporary commons), use that keyword directly to answer and to choose links. Do not tell the player to search again; act as the guide who already follows that route for them.',
+    'If you include a PBS usage tip, make it about what PBS is doing now: reading the source links below, comparing the linked cases, or turning this answer into a zine. Do not say merely try another keyword unless the evidence is empty.',
     preferredLanguage === 'en'
       ? 'Occasionally, roughly one out of four answers, briefly explain your name in English: The Multi-Minds Self Campfire points to Joscha Bach’s reading of an ancient Greek idea where feelings, emotions, and thoughts can be shared rather than privately owned; such shared mental forces later became understood as gods.'
       : 'Occasionally, roughly one out of four answers, briefly explain your name: 多重心智自我火燄 means feelings, emotions, and thoughts can be shared rather than privately owned. Mention this as Joscha Bach’s reading of an ancient Greek idea, where such shared mental forces later became understood as gods. Keep this aside short and do not force it when the user needs a direct answer.',

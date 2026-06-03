@@ -5,6 +5,9 @@ export interface MultiplayerConfig {
   endpoint: string;
 }
 
+const DEFAULT_MULTIPLAYER_ENDPOINT = "https://peach-blossom-spring-multiplayer.dontmarryme.workers.dev";
+const PUBLIC_GARDEN_ROOM = "1";
+
 export interface MultiplayerPresence {
   playerId: string;
   displayName: string;
@@ -50,9 +53,11 @@ interface IncomingMessage {
 
 export function readMultiplayerConfig(): MultiplayerConfig | null {
   const params = new URLSearchParams(window.location.search);
-  const room = params.get("room")?.trim();
-  const endpoint = params.get("mp")?.trim();
-  if (!room || !endpoint) return null;
+  const room = params.get("room")?.trim() || PUBLIC_GARDEN_ROOM;
+
+  // Public GitHub Pages entry now opens the shared garden by default.
+  // Explicit ?room=... still chooses a separate room, and old ?room=...&mp=... links keep working.
+  const endpoint = params.get("mp")?.trim() || DEFAULT_MULTIPLAYER_ENDPOINT;
 
   try {
     const url = new URL(endpoint);

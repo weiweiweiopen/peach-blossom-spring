@@ -20,7 +20,6 @@ export const PUBLIC_ARTIFACT_BANNED_PATTERNS: RegExp[] = [
   /\bworkflow run\b/i,
   /\bstep\s*[1-4]\b/i,
   /\bphase\s*[1-4]\b/i,
-  /\bdebug\b/i,
   /\bprovenance\b/i,
   /\bsource\s*trail\b/i,
   /\bsource\s*graph\b/i,

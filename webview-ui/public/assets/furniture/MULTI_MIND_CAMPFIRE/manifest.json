@@ -16,8 +16,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 0
+      "frame": 0,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -27,8 +27,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 1
+      "frame": 1,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -38,8 +38,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 2
+      "frame": 2,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -49,8 +49,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 3
+      "frame": 3,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -60,8 +60,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 4
+      "frame": 4,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -71,8 +71,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 5
+      "frame": 5,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -82,8 +82,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 6
+      "frame": 6,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -93,8 +93,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 7
+      "frame": 7,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -104,8 +104,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 8
+      "frame": 8,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -115,8 +115,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 9
+      "frame": 9,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -126,8 +126,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 10
+      "frame": 10,
+      "backgroundTiles": 3
     },
     {
       "type": "asset",
@@ -137,8 +137,8 @@
       "height": 64,
       "footprintW": 4,
       "footprintH": 4,
-      "backgroundTiles": 3,
-      "frame": 11
+      "frame": 11,
+      "backgroundTiles": 3
     }
   ]
 }
