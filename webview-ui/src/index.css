@@ -3294,8 +3294,8 @@ html[data-language="th"],
 
 .npc-name-tag {
   z-index: var(--z-layer-bubbles);
-  translate: -50% -100%;
-  transform: scale(var(--npc-tag-scale, 1)) !important;
+  translate: none !important;
+  transform: translate(calc(-50% + var(--npc-tag-offset-x, 0px)), calc(-100% + var(--npc-tag-offset-y, 0px))) scale(var(--npc-tag-scale, 1)) !important;
   transform-origin: center bottom;
 }
 
@@ -8672,19 +8672,20 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
     margin-bottom: 0 !important;
   }
   .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire {
-    width: 52px !important;
-    height: 52px !important;
-    min-width: 52px !important;
-    min-height: 52px !important;
+    width: 92px !important;
+    height: 174px !important;
+    min-width: 92px !important;
+    min-height: 174px !important;
     padding: 2px !important;
     overflow: hidden !important;
   }
   .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire img {
-    width: 52px !important;
-    height: 52px !important;
-    max-width: 52px !important;
-    max-height: 52px !important;
-    object-fit: contain !important;
+    width: 184px !important;
+    height: 184px !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    transform: translateY(8px) !important;
   }
   .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars span {
     max-width: 54px !important;

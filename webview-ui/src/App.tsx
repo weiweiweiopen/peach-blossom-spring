@@ -3333,6 +3333,8 @@ function App() {
         top: number;
         isQuestionPet: boolean;
         zoomScale: number;
+        offsetX?: number;
+        offsetY?: number;
       }>;
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -3345,7 +3347,7 @@ function App() {
       Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY =
       Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
-    return Array.from(officeState.characters.values())
+    const rawTags = Array.from(officeState.characters.values())
       .filter((ch) => ch.folderName)
       .map((ch) => ({
         id: ch.id,
@@ -3353,8 +3355,37 @@ function App() {
         left: (deviceOffsetX + ch.x * editor.zoom) / dpr,
         top: (deviceOffsetY + (ch.y - 34) * editor.zoom) / dpr,
         isQuestionPet: Boolean(ch.isQuestionPet),
-        zoomScale: Math.max(0.48, Math.min(1, editor.zoom / 5)),
+        zoomScale: Math.max(0.12, Math.min(0.62, (editor.zoom / 5) * 0.58)),
       }));
+    const placed: Array<{ x: number; y: number; w: number; h: number }> = [];
+    const gap = 4;
+    const estimateWidth = (name: string, scale: number) => Math.min(220, Math.max(54, name.length * 9 + 30)) * scale;
+    const estimateHeight = (scale: number) => 30 * scale;
+    return rawTags
+      .sort((a, b) => a.top - b.top || a.left - b.left)
+      .map((tag) => {
+        const w = estimateWidth(tag.name, tag.zoomScale);
+        const h = estimateHeight(tag.zoomScale);
+        const lanes = [
+          { x: 0, y: 0 },
+          { x: 0, y: -(h + gap) },
+          { x: 0, y: h + gap },
+          { x: -(w * 0.58 + gap), y: 0 },
+          { x: w * 0.58 + gap, y: 0 },
+          { x: -(w * 0.58 + gap), y: -(h + gap) },
+          { x: w * 0.58 + gap, y: -(h + gap) },
+          { x: -(w * 0.58 + gap), y: h + gap },
+          { x: w * 0.58 + gap, y: h + gap },
+          { x: 0, y: -2 * (h + gap) },
+          { x: 0, y: 2 * (h + gap) },
+        ];
+        const pick = lanes.find((lane) => {
+          const rect = { x: tag.left + lane.x - w / 2, y: tag.top + lane.y - h, w, h };
+          return !placed.some((other) => rect.x < other.x + other.w + gap && rect.x + rect.w + gap > other.x && rect.y < other.y + other.h + gap && rect.y + rect.h + gap > other.y);
+        }) ?? lanes[lanes.length - 1];
+        placed.push({ x: tag.left + pick.x - w / 2, y: tag.top + pick.y - h, w, h });
+        return { ...tag, offsetX: pick.x, offsetY: pick.y };
+      });
   })();
 
   // Show "Press R to rotate" hint when a rotatable item is selected or being placed
@@ -3860,6 +3891,8 @@ function App() {
               style={{
                 left: tag.left,
                 top: tag.top,
+                "--npc-tag-offset-x": `${tag.offsetX ?? 0}px`,
+                "--npc-tag-offset-y": `${tag.offsetY ?? 0}px`,
                 "--npc-tag-scale": tag.zoomScale,
               } as CSSProperties}
               onClick={

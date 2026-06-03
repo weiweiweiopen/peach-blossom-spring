@@ -91,10 +91,6 @@ function shorten(text: string, max: number): string {
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
 }
 
-function normalizeWhitespace(text: string): string {
-  return text.replace(/\s+/g, ' ').trim();
-}
-
 function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
 }
@@ -112,7 +108,7 @@ const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
     '用 source pages 說明 Open Source Beehives 如何把感測器、蜂群與農地照護變成可共享的社群知識？',
     'Green Fab Lab 的農業機器人與生態日曆，對獨立社群維持技術有什麼實際幫助？可以查哪些頁面？',
-    'Jonathan 的訪談裡，哪些在地關係比設備更重要？請指出 PBS source 裡可繼續閱讀的線索。',
+    'Jonathan 這條路線裡，哪些在地關係比設備更重要？請指出 PBS source 裡可繼續閱讀的線索。',
   ],
   'marc-dusseiller': [
     '用 Hackteria source pages 說明 Marc 的低成本、可拆解工作坊為什麼對獨立社群重要？',
@@ -126,51 +122,29 @@ const personaQuestionSeeds: Record<string, string[]> = {
   ],
 };
 
-function transcriptQuestionSeed(persona: Persona, transcript: string): string[] {
-  const text = transcript || Object.values(persona.responses).join(' ');
-  const sentences = normalizeWhitespace(text)
-    .split(/(?<=[。！？.!?])\s+|\n+/)
-    .map((line) => normalizeWhitespace(line))
-    .filter((line) => line.length > 36 && line.length < 180 && !/^https?:/i.test(line))
-    .slice(0, 6);
-  return sentences.slice(0, 3).map((line) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(line, 48)}」可以怎麼理解？`);
-}
-
-function makeSuggestedQuestions(language: LanguageCode, persona: Persona, transcript = ''): string[] {
+function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
-  const transcriptSeeds = transcriptQuestionSeed(persona, transcript);
-  const responseEntries = Object.entries(persona.responses).slice(0, 9);
   const sourceBridgeQuestions = [
-    `${persona.name} 的 NGM 訪談如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
-    `${persona.name} 會怎麼把訪談裡的工作坊經驗整理成一份可查證小誌？`,
-    `從 ${persona.name} 的觀點看，三個 sources 裡哪些材料最適合回答「社群如何保存知識」？`,
-    `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
-    `${persona.name} 的訪談可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
-    `${persona.name} 的訪談和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
+    `如果玩家想在 PBS 裡做一個小型獨立社群，${persona.name} 這條線可以帶我查哪些 source pages？`,
+    `用 ${persona.name} 當入口，哪三個公開 sources 最能幫玩家理解「工具如何變成社群方法」？`,
+    `我想把一個模糊靈感變成可查證小誌，${persona.name} 會建議先找哪個材料、場地或工作坊案例？`,
+    `哪個 Hackteria、SGMK 或 KOBAKANT 頁面最適合把 ${persona.name} 的主題變成可實作任務？`,
+    `如果玩家只問「這跟我有什麼關係」，${persona.name} 可以用哪些 source 說明它對獨立創作者有什麼幫助？`,
+    `請幫我把 ${persona.name} 這條路線改寫成一個更成熟、更可查證、也更好玩的問題。`,
   ];
   if (language === 'zh-TW') {
-    const responseQuestions = responseEntries.map(([, response]) => `在 ${persona.name} 的訪談裡，「${cleanQuestionPart(response, 48)}」如何連到三個 wiki sources 的可檢查材料？`);
-    return shuffleCopy([...fixed, ...transcriptSeeds, ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
+    return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
-  const templates: Record<LanguageCode, (response: string) => string> = {
-    'zh-TW': (response) => `在 ${persona.name} 的訪談記憶裡，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
-    en: (response) => `In ${persona.name}'s interview memory, how does “${cleanQuestionPart(response, 50)}” connect to their practice?`,
-    id: (response) => `Dalam memori wawancara ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan praktiknya?`,
-    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ in ${persona.name}s Interview-Erinnerung mit der Praxis?`,
-    ja: (response) => `${persona.name} のインタビュー記憶では、「${cleanQuestionPart(response, 50)}」は実践とどうつながりますか？`,
-    th: (response) => `ในความทรงจำสัมภาษณ์ของ ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับการปฏิบัติอย่างไร?`,
-  };
-  const generated = responseEntries.map(([, response]) => templates[language](response));
   const englishSourceBridge = [
-    `How does ${persona.name}'s NGM interview connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
-    `Which source pages would help turn ${persona.name}'s workshop memory into a checkable zine?`,
-    `How would ${persona.name} compare transcript memory with public workshop documentation?`,
-    `What material, tool, or community practice from the three sources best matches ${persona.name}'s concerns?`,
-    `How can ${persona.name}'s interview become a makeable, checkable, teachable zine question?`,
-    `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
+    `Which source pages should I read first if I want to turn ${persona.name}'s route into a playable community task?`,
+    `What material, tool, workshop, or place would make this question more useful to a player?`,
+    `How can this become a more mature, checkable zine question instead of a vague idea?`,
+    `Which Hackteria, SGMK, or KOBAKANT page best turns this topic into something a player can try?`,
+    `Why does this matter in practice for independent makers, not only as an interview theme?`,
+    `What source, example, or counterexample is missing before this question is ready?`,
   ];
-  return shuffleCopy([...generated, ...englishSourceBridge]).slice(0, 9);
+  return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
 
 function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = []): string[] {
