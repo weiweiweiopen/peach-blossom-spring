@@ -31,8 +31,8 @@ pbs-memory-worker/
 Cloud D1 seed source:
 
 ```text
-python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/seed.sql
-npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/seed.sql
+python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/source-index.sql
+npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/source-index.sql
 ```
 
 Deploy target:
@@ -50,9 +50,9 @@ The web UI reads this URL from:
 Deploy/update cloud mode:
 
 ```bash
-python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/seed.sql
+python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/source-index.sql
 cd pbs-memory-worker
-npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/seed.sql
+npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/source-index.sql
 npx wrangler deploy
 cd ..
 npm --prefix webview-ui run build
