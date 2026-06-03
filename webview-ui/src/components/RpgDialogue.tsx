@@ -113,8 +113,12 @@ const personaQuestionSeeds: Record<string, string[]> = {
   ],
   'mika-satomi': [
     '什麼是電子織品？',
-    'KOBAKANT 是什麼？跟電子織品有什麼關係？',
-    '導電線和布料怎麼變成電路？',
+    '有沒有柔性電路和電子合成器合作的例子？',
+    '什麼是多點觸控介面？它和電子織品有什麼關係？',
+    'KOBAKANT 的 Fluffy MIDI 是怎麼把布料變成聲音介面的？',
+    'Tone of the Things 裡的織物感測器可以怎麼控制聲音？',
+    '導電線、導電布和壓力感測器可以做出哪些作品？',
+    'Fabricademy 的 wearables 課程教哪些電子織品技術？',
   ],
   'tincuta-heinzel': [
     '藝術科技營隊通常在做什麼？',
@@ -126,29 +130,33 @@ const personaQuestionSeeds: Record<string, string[]> = {
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `你是誰？你主要在做什麼？`,
-    `我完全不懂你的領域，可以先從哪三個詞開始？`,
-    `你的工作和小型獨立社群有什麼關係？`,
-    `如果我想先看一個例子，應該看哪個作品或活動？`,
-    `這個領域有哪些材料、工具或社群名稱值得先認識？`,
-    `我可以問你哪個最基本的問題？`,
+    `Hackteria、SGMK 和 KOBAKANT 各自有哪些適合新手先讀的頁面？`,
+    `有沒有把藝術表現、開放硬體和社群教學連在一起的案例？`,
+    `為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？`,
+    `有哪些電子織品、柔性電路或穿戴電子可以變成作品、產品或教學套件？`,
+    `什麼是獨立藝術營？它和替代教育有什麼關係？`,
+    `有哪些案例把材料實驗變成可分享的教學文件？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `Who are you, and what do you mainly work on?`,
-    `I know nothing about your field. Which three words should I learn first?`,
-    `How does your work relate to small independent communities?`,
-    `If I should start with one example, which work or activity should I look at?`,
-    `Which materials, tools, or community names should I learn first?`,
-    `What is the most basic question I can ask you?`,
+    `Which Hackteria, SGMK, and KOBAKANT pages should a newcomer read first?`,
+    `Are there cases connecting artistic expression, open hardware, and community teaching?`,
+    `Why do hacker camps or independent art camps often include DIY synths and sound tools?`,
+    `Are there e-textile, soft-circuit, or wearable-electronics examples that became works, products, or teaching kits?`,
+    `What is an independent art camp, and how does it relate to alternative education?`,
+    `Which cases turn material experiments into shareable teaching documentation?`,
   ];
   return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
 
-function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = []): string[] {
+function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = [], persona?: Persona): string[] {
+  if (!evidence.length) {
+    const fallback = persona ? makeSuggestedQuestions(language, persona).filter((item) => item !== question) : [];
+    if (fallback.length >= 3) return fallback.slice(0, 3);
+  }
   const anchor = evidenceAnchor(evidence, '你剛剛提到的例子');
   const keyword = evidenceKeyword(evidence, question);
   if (language === 'zh-TW') {
@@ -547,7 +555,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           transcript,
           preferredLanguage: language,
         });
-        appendNpcAnswer({ speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence) });
+        appendNpcAnswer({ speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence, persona) });
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -557,11 +565,11 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             preferredLanguage: language,
             evidence: transcriptEvidence,
           });
-          appendNpcAnswer({ speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) });
+          appendNpcAnswer({ speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence, persona) });
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          appendNpcAnswer({ speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence) });
+          appendNpcAnswer({ speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence, persona) });
         }
       }
     } catch (err) {
