@@ -205,6 +205,29 @@
   height: auto !important;
 }
 
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root .rpg-dialogue-avatars {
+    max-width: 118px !important;
+    gap: 6px !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pbs-interaction-root .rpg-dialogue-avatars > div {
+    transform: none !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .pbs-interaction-root .rpg-dialogue-avatar-sprite {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    min-height: 54px !important;
+    overflow: visible !important;
+  }
+}
+
 .pbs-interaction-root .rpg-dialogue-header {
   align-items: center !important;
   margin-bottom: 12px !important;

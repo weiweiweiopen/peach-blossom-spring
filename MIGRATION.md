@@ -58,7 +58,7 @@ The game does not use the old browser-only JSON snapshot as runtime memory. Publ
 
 - Existing PBS game layer from `origin/main`.
 - NPC dialogue UI and hidden evidence behavior.
-- Campfire/PBS Computer answer surface.
+- Campfire answer surface.
 - Association zine generation path.
 - Question Pet visual layer, now connected to shared-memory traversal health monitoring.
 - Browser/Safari document generation fallback path.

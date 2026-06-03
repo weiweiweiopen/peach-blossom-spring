@@ -2,11 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
 import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
+import { CharacterDialogueAvatar } from './DialogueAvatarSprite.js';
 import { type LanguageCode, t } from '../i18n.js';
 import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
 import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
-import { getCharacterSprites } from '../office/sprites/spriteData.js';
-import { Direction, type SpriteData } from '../office/types.js';
 
 interface Persona {
   id: string;
@@ -49,41 +48,6 @@ interface RpgDialogueProps {
   onOpenAssociationZine?: (query: string, writingStyle: string) => void;
 }
 
-function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string }) {
-  const [frame, setFrame] = useState(0);
-  const sprite = useMemo<SpriteData>(() => {
-    const sprites = getCharacterSprites(avatar.palette, avatar.hueShift);
-    return sprites.walk[Direction.DOWN][frame % 4];
-  }, [avatar.hueShift, avatar.palette, frame]);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setFrame((current) => current + 1), 120);
-    return () => window.clearInterval(id);
-  }, []);
-
-  return (
-    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
-        <div
-          className="rpg-dialogue-avatar-pixels"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 2px)`,
-            gridAutoRows: '2px',
-          }}
-        >
-          {sprite.flatMap((row, rowIndex) =>
-            row.map((color, colIndex) => (
-              <span
-                key={`${rowIndex.toString()}-${colIndex.toString()}`}
-                style={{ backgroundColor: color || 'transparent' }}
-              />
-            )),
-          )}
-        </div>
-    </div>
-  );
-}
-
 function shorten(text: string, max: number): string {
   const normalized = text.replace(/\s+/g, ' ').trim();
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
@@ -104,43 +68,48 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    '我想做一個照護農地與蜂群的小工具，先讀哪三個公開案例才不會只停在感測器？',
-    'Green Fab Lab 的農業機器人和生態日曆，可以怎麼變成我在 PBS 裡能試的一個小任務？',
-    '如果設備不是重點，我應該先理解哪些在地關係、維護方法或共同工作場景？',
+    '我想知道農業機器人可以用來幹嘛？',
+    'Green Fab Lab 為什麼會把數位製造和農地照護放在一起？',
+    '如果機器不是重點，Jonathan 的談話想讓我先理解哪些人和土地的關係？',
   ],
   'marc-dusseiller': [
-    '我只有很少預算，哪些 Hackteria 公開案例能幫我把低成本工具變成可分享任務？',
-    '如果我要把失敗、料理、焊接和友誼變成可傳遞的方法，先看哪三個案例？',
-    '如果 science-art box 不能被打開、弄髒、重做，這對共同記憶會造成什麼問題？',
+    'Marc 說的 Hackteria，和一般實驗室有什麼不一樣？',
+    '為什麼失敗、料理、焊接和朋友會變成一種學習方法？',
+    '低成本工具怎麼幫助一群人一起做科學和藝術？',
+  ],
+  'mika-satomi': [
+    '什麼是電子織品？',
+    'Mika 為什麼重視把做法寫下來、分享出來？',
+    'KOBAKANT 的願望牆想讓我理解哪種共同工作方式？',
   ],
   'tincuta-heinzel': [
-    '我可以怎麼把失敗、再試和錯誤保存成別人也能繼續用的知識？',
-    '如果一個地方的回應一直變動，我該怎麼把它整理成可以保存的研究問題？',
-    '營隊什麼時候不只是教學活動，而能變成策展和共同記憶的工具？',
+    'Tincuta 為什麼把失敗、再試和錯誤看成重要知識？',
+    '營隊什麼時候不只是教學活動，而會變成共同記憶？',
+    '如果一個地方的回應一直變動，我可以怎麼理解它的脈絡？',
   ],
 };
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const sourceBridgeQuestions = [
-    `我在 PBS 裡想做一個小型獨立社群，先從材料、場地、工具還是人開始比較好？`,
-    `我想理解「工具怎麼變成社群方法」，哪三個公開案例最適合先讀？`,
-    `我只有一個模糊靈感，要變成可查證小誌，第一步該找材料、場地還是反例？`,
-    `Hackteria、SGMK 或 KOBAKANT 裡，有哪個案例最適合變成我可以試的小任務？`,
-    `如果我只想知道「這跟我有什麼關係」，你會帶我看哪個獨立創作者用得到的案例？`,
-    `我想把這個想法變成遊戲裡的一步行動，該怎麼問才會查得到、也做得出來？`,
+    `我第一次認識這個人，應該先理解哪個核心概念？`,
+    `這段談話裡最能說明社群本質的是工具、場地、朋友，還是共同維護？`,
+    `這個 NPC 提到的做法，對小型獨立社群有什麼實際幫助？`,
+    `我可以從這段談話得到什麼靈感，再把它變成可查證的小誌問題？`,
+    `如果我想使用這個社群的資源，第一步應該先理解哪個詞或例子？`,
+    `這段談話裡有哪個問題值得我繼續追問？`,
   ];
   if (language === 'zh-TW') {
     return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
   }
 
   const englishSourceBridge = [
-    `I want to build a small independent community in PBS. Should I start with materials, a place, a tool, or people?`,
-    `I want to understand how a tool becomes a community method. Which public examples should I read first?`,
-    `I only have a vague idea. What material, place, or counterexample should I look for first?`,
-    `Which Hackteria, SGMK, or KOBAKANT example could become a small task I can try?`,
-    `If I ask why this matters to me, which example would help an independent maker right now?`,
-    `How can I turn this idea into one action in the game that is both checkable and doable?`,
+    `I am new to this person. What core idea should I understand first?`,
+    `In this conversation, what best explains the community: tools, places, friends, or maintenance?`,
+    `How could this practice help a small independent community?`,
+    `What inspiration could become a checkable zine question?`,
+    `If I want to use this community resource, what word or example should I understand first?`,
+    `Which question from this conversation is worth asking next?`,
   ];
   return shuffleCopy([...englishSourceBridge]).slice(0, 9);
 }
@@ -615,8 +584,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
-              <PixelAvatar avatar={{ palette: player.palette, hueShift: 0 }} label={player.name} />
-              <PixelAvatar avatar={npcAvatar} label={persona.name} />
+              <CharacterDialogueAvatar palette={player.palette} label={player.name} />
+              <CharacterDialogueAvatar palette={npcAvatar.palette} hueShift={npcAvatar.hueShift} label={persona.name} />
             </div>
             <div className="rpg-dialogue-heading-line min-w-0 flex flex-nowrap items-center gap-3 overflow-visible">
               <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0 shrink-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>

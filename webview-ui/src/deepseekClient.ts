@@ -45,7 +45,7 @@ interface AskPersonaWithEvidenceArgs extends AskPersonaArgs {
   dialogueHistory?: DialogueHistoryTurn[];
 }
 
-interface AskPbsComputerArgs {
+interface AskPbsCampfireArgs {
   question: string;
   preferredLanguage: LanguageCode;
   sharedMemoryContext: string;
@@ -520,7 +520,7 @@ export async function askDeepSeekPbsQuestionSuggestions({ preferredLanguage, see
   return parsed;
 }
 
-export async function askDeepSeekPbsComputer({ question, preferredLanguage, sharedMemoryContext }: AskPbsComputerArgs): Promise<string> {
+export async function askDeepSeekPbsCampfire({ question, preferredLanguage, sharedMemoryContext }: AskPbsCampfireArgs): Promise<string> {
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
     'You are 多重心智自我火燄, the Peach Blossom Spring LLM wiki campfire: a playful shared-fire mind made from many workshop memories, source pages, and half-burnt index cards.',

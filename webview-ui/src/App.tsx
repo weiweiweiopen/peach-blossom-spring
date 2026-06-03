@@ -16,6 +16,7 @@ import personaData from "../../data/personas.json";
 import bridgeWriterSystemPrompt from "../prompts/pbs-bridge-writer-system.md?raw";
 import { BottomToolbar } from "./components/BottomToolbar.js";
 import { DebugView } from "./components/DebugView.js";
+import { CharacterDialogueAvatar, ImageDialogueAvatar } from "./components/DialogueAvatarSprite.js";
 import { EditActionBar } from "./components/EditActionBar.js";
 import { MigrationNotice } from "./components/MigrationNotice.js";
 import {
@@ -58,8 +59,7 @@ import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
 import { isRotatable } from "./office/layout/furnitureCatalog.js";
 import { findPath, isWalkable } from "./office/layout/tileMap.js";
-import { getCharacterSprites } from "./office/sprites/index.js";
-import { Direction, EditTool, type OfficeLayout, type SpriteData, TILE_SIZE } from "./office/types.js";
+import { EditTool, type OfficeLayout, TILE_SIZE } from "./office/types.js";
 import { getPersonaNpcAppearance } from "./personaNpcAppearance.js";
 import {
   appearanceToSpriteData,
@@ -163,11 +163,11 @@ const CONVERSATION_CLOSE_DISTANCE_TILES = 2;
 const CAMPFIRE_INTERACTION_RADIUS_TILES = 1;
 const PLAYER_SPRINT_SPEED_MULTIPLIER = 2.17;
 const PET_WINDOWS_ENABLED = true;
-const CENTRAL_COMPUTER_TILE = {
+const CAMPFIRE_TILE = {
   col: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
   row: NEXT_ROOM_MAP_PADDING + Math.floor(NEXT_ROOM_GRID_SIZE / 2),
 };
-const CENTRAL_COMPUTER_FOOTPRINT = { w: 4, h: 4 };
+const CAMPFIRE_FOOTPRINT = { w: 4, h: 4 };
 // English canonical name: The Multi-Minds Self Campfire.
 const CAMPFIRE_FURNITURE_TYPES = new Set([
   "MULTI_MIND_CAMPFIRE_1",
@@ -187,13 +187,13 @@ const CAMPFIRE_FURNITURE_TYPES = new Set([
 function campfireBoundsFromLayout(layout: OfficeLayout) {
   const campfire = layout.furniture.find((item) => CAMPFIRE_FURNITURE_TYPES.has(item.type));
   if (!campfire) {
-    return { ...CENTRAL_COMPUTER_TILE, ...CENTRAL_COMPUTER_FOOTPRINT };
+    return { ...CAMPFIRE_TILE, ...CAMPFIRE_FOOTPRINT };
   }
   return {
     col: campfire.col,
     row: campfire.row,
-    w: CENTRAL_COMPUTER_FOOTPRINT.w,
-    h: CENTRAL_COMPUTER_FOOTPRINT.h,
+    w: CAMPFIRE_FOOTPRINT.w,
+    h: CAMPFIRE_FOOTPRINT.h,
   };
 }
 
@@ -404,7 +404,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "小型文化組織與獨立藝術網絡依賴關鍵人物、短期補助、臨時工作坊、非正式通訊與個人記憶運作；知識散落在訪談、wiki、雲端文件、展覽紀錄、工作坊材料、社群媒體與口述經驗中，平台或合作一斷裂，脈絡就容易消失。",
       "Non-Governmental Matters 已把電子織品、Hackteria、跨國科技藝術營隊、獨立教育、資金模式與文化差異整理成第一層田野材料。桃花源把這些材料轉成 AI 時代的知識保存問題：文化組織需要能保存、分類、召回、比較、修正與再使用知識的認知系統。",
-      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向 PBS Computer 提出 LLM Wiki 問題，再把 public source packet 與已提升 wiki memory 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。問題 lint 由 shared memory traversal 產生，提示問題目前有多少具體度、證據準備與跨系統潛力。",
+      "目前的遊戲流程是：玩家在桃花源中探索，和 NPC 訪談記憶對話，向多重心智自我火燄提出 LLM Wiki 問題，再把 public source packet 與已提升 wiki memory 的閱讀路徑生成為可閱讀、可列印、可追溯的小誌。問題 lint 由 shared memory traversal 產生，提示問題目前有多少具體度、證據準備與跨系統潛力。",
     ],
     contributionTitle: "預期貢獻",
     contributions: [
@@ -425,7 +425,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
     intro: [
       "Small cultural organizations and independent art networks often run on key people, short grants, temporary workshops, informal communication, and personal memory. Their knowledge is scattered across interviews, wikis, cloud folders, grant files, exhibition records, workshop materials, social media, and oral accounts; when platforms, people, or funding disappear, context disappears with them.",
       "Non-Governmental Matters already turns electronic textiles, Hackteria, transnational art-tech camps, independent education, funding models, and cultural difference into first-layer field material. Peach Blossom Spring reframes those materials as an AI-era knowledge-preservation problem: these organizations need a cognitive system for preserving, classifying, recalling, comparing, correcting, and reusing knowledge.",
-      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask PBS Computer / LLM Wiki questions, and generate printable zines from a public source packet plus promoted wiki memory. Question lint is produced by shared memory traversal, showing specificity, evidence readiness, and cross-system potential.",
+      "The current game flow is: explore Peach Blossom Spring, speak with NPC interview memories, ask the Multi-Minds Self Campfire / LLM Wiki questions, and generate printable zines from a public source packet plus promoted wiki memory. Question lint is produced by shared memory traversal, showing specificity, evidence readiness, and cross-system potential.",
     ],
     contributionTitle: "Expected contributions",
     contributions: ["AI as cultural emulator: a ghost machine or loop that compresses past language, images, styles, data, and traces of labor into something callable.", "LLM Wiki as memory infrastructure for small cultural organizations.", "Cultural ghosts and media archaeology become practical AI knowledge-preservation problems.", "Public source packets, LLMs, and wiki promotion become a human-machine governance framework for cultural memory."],
@@ -438,7 +438,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   id: {
     title: "Memori bersama PBS",
     introTitle: "Peach Blossom Spring sebagai infrastruktur memori",
-    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke PBS Computer / LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question lint berasal dari traversal shared memory: seberapa spesifik pertanyaan, seberapa siap buktinya, dan seberapa besar potensi lintas sistemnya."],
+    intro: ["Organisasi budaya kecil dan jaringan seni independen sering bergantung pada orang kunci, hibah singkat, lokakarya sementara, komunikasi informal, dan memori pribadi. Pengetahuan tersebar di wawancara, wiki, folder cloud, dokumen hibah, arsip pameran, bahan lokakarya, media sosial, dan cerita lisan.", "Non-Governmental Matters telah menjadi bahan lapangan awal tentang tekstil elektronik, Hackteria, camp seni-teknologi lintas negara, pendidikan independen, model pendanaan, dan perbedaan budaya. Peach Blossom Spring mengubahnya menjadi persoalan pelestarian pengetahuan pada era AI.", "Alur sekarang: jelajahi Peach Blossom Spring, bicara dengan memori wawancara NPC, ajukan pertanyaan ke campfire LLM Wiki, lalu buat zine dari public source packet dan promoted wiki memory. Question lint berasal dari traversal shared memory: seberapa spesifik pertanyaan, seberapa siap buktinya, dan seberapa besar potensi lintas sistemnya."],
     contributionTitle: "Kontribusi yang diharapkan",
     contributions: ["AI sebagai emulator budaya: mesin hantu atau loop yang memadatkan bahasa, gambar, gaya, data, dan jejak kerja masa lalu.", "LLM Wiki sebagai infrastruktur memori untuk organisasi budaya kecil.", "Hantu budaya dan arkeologi media menjadi masalah praktik pelestarian pengetahuan AI.", "Public source packet, LLM, dan wiki promotion menjadi kerangka tata kelola memori budaya manusia-mesin."],
     controlsTitle: "Prototipe kontrol retrieval dalam game",
@@ -450,7 +450,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   de: {
     title: "LLM-Wiki Kontrollraum",
     introTitle: "Peach Blossom Spring als Gedächtnis-Infrastruktur",
-    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, PBS Computer / LLM Wiki befragen und Zines aus public source packet und promoted wiki memory erzeugen. Question lint entsteht aus Shared-Memory-Traversal: Spezifik, Evidenzbereitschaft und systemübergreifendes Potenzial."],
+    intro: ["Kleine Kulturorganisationen und unabhängige Kunstnetzwerke arbeiten oft über Schlüsselpersonen, kurze Förderungen, temporäre Workshops, informelle Kommunikation und persönliches Gedächtnis. Wissen liegt verstreut in Interviews, Wikis, Cloud-Ordnern, Förderakten, Ausstellungsdokumenten, Workshopmaterial, Social Media und mündlichen Erzählungen.", "Non-Governmental Matters bildet bereits Feldmaterial zu E-Textiles, Hackteria, transnationalen Kunst-Technik-Camps, unabhängiger Bildung, Finanzierungsmodellen und kulturellen Differenzen. Peach Blossom Spring macht daraus eine Frage von Wissensbewahrung im KI-Zeitalter.", "Aktueller Ablauf: Peach Blossom Spring erkunden, mit NPC-Interviewgedächtnissen sprechen, das Campfire LLM Wiki befragen und Zines aus public source packet und promoted wiki memory erzeugen. Question lint entsteht aus Shared-Memory-Traversal: Spezifik, Evidenzbereitschaft und systemübergreifendes Potenzial."],
     contributionTitle: "Erwartete Beiträge",
     contributions: ["KI als kultureller Emulator: eine Geistermaschine oder Schleife, die vergangene Sprache, Bilder, Stile, Daten und Arbeitsspuren aufrufbar verdichtet.", "LLM Wiki als Gedächtnis-Infrastruktur für kleine Kulturorganisationen.", "Kulturelle Geister und Medienarchäologie werden praktische KI-Wissensbewahrungsfragen.", "Public source packet, LLMs und wiki promotion bilden ein Mensch-Maschine-Governance-Framework für kulturelles Gedächtnis."],
     controlsTitle: "In-game Retrieval-Kontrollprototyp",
@@ -462,7 +462,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   ja: {
     title: "PBS 共有記憶",
     introTitle: "記憶基盤としての桃花源",
-    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、PBS Computer / LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question lint は shared memory traversal から生まれ、具体性・証拠準備・横断可能性を示す。"],
+    intro: ["小さな文化組織や独立したアートネットワークは、キーパーソン、短期助成、一時的なワークショップ、非公式な連絡、個人の記憶に支えられている。知識はインタビュー、wiki、クラウド、助成書類、展示記録、ワークショップ資料、SNS、口述経験に散らばる。", "Non-Governmental Matters は、電子テキスタイル、Hackteria、国際的なアート・テックキャンプ、独立教育、資金モデル、文化差を第一層のフィールド資料にしている。桃花源はそれを AI 時代の知識保存問題として扱う。", "現在の流れは、桃花源を探索し、NPC のインタビュー記憶と話し、campfire LLM Wiki に問いを投げ、public source packet と promoted wiki memory から小誌をつくること。Question lint は shared memory traversal から生まれ、具体性・証拠準備・横断可能性を示す。"],
     contributionTitle: "期待される貢献",
     contributions: ["AI を文化エミュレーター、過去の言語・画像・様式・データ・労働痕跡を呼び出せる幽霊機械またはループとして捉える。", "小さな文化組織の記憶基盤として LLM Wiki を提案する。", "文化の幽霊とメディア考古学を AI 知識保存の実践問題に変える。", "public source packet、LLM、wiki promotion による人間機械協働の文化記憶ガバナンスを示す。"],
     controlsTitle: "ゲーム内検索コントロール試作",
@@ -474,7 +474,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   th: {
     title: "ความจำร่วม PBS",
     introTitle: "Peach Blossom Spring ในฐานะโครงสร้างความจำ",
-    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม PBS Computer / LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน question lint มาจาก shared memory traversal และบอกความเฉพาะ ความพร้อมของหลักฐาน และศักยภาพข้ามระบบ"],
+    intro: ["องค์กรวัฒนธรรมขนาดเล็กและเครือข่ายศิลปะอิสระมักพึ่งคนสำคัญ ทุนระยะสั้น เวิร์กช็อปชั่วคราว การสื่อสารไม่เป็นทางการ และความทรงจำส่วนบุคคล ความรู้กระจายอยู่ในสัมภาษณ์ wiki โฟลเดอร์คลาวด์ เอกสารทุน บันทึกนิทรรศการ สื่อเวิร์กช็อป โซเชียลมีเดีย และประสบการณ์เล่าปากต่อปาก", "Non-Governmental Matters เป็นวัสดุภาคสนามชั้นแรกเกี่ยวกับ e-textiles, Hackteria, ค่ายศิลปะ-เทคโนโลยีข้ามชาติ การศึกษาอิสระ โมเดลทุน และความต่างทางวัฒนธรรม Peach Blossom Spring แปลงสิ่งเหล่านี้เป็นปัญหาการเก็บรักษาความรู้ในยุค AI", "ลูปปัจจุบันคือ สำรวจ Peach Blossom Spring คุยกับความทรงจำสัมภาษณ์ของ NPC ถาม campfire LLM Wiki แล้วสร้างซีนที่เปิดเส้นทางข้าม public source packet และ promoted wiki memory ส่วน question lint มาจาก shared memory traversal และบอกความเฉพาะ ความพร้อมของหลักฐาน และศักยภาพข้ามระบบ"],
     contributionTitle: "ผลงานที่คาดหวัง",
     contributions: ["AI เป็น emulator ทางวัฒนธรรม: เครื่องผีหรือ loop ที่บีบอัดภาษา ภาพ สไตล์ ข้อมูล และร่องรอยแรงงานในอดีตให้เรียกใช้ได้", "LLM Wiki เป็นโครงสร้างความจำสำหรับองค์กรวัฒนธรรมขนาดเล็ก", "ผีทางวัฒนธรรมและโบราณคดีสื่อกลายเป็นโจทย์ปฏิบัติของการเก็บรักษาความรู้ด้วย AI", "public source packets, LLM และ wiki เป็นกรอบ governance ความทรงจำวัฒนธรรมแบบคน-เครื่อง"],
     controlsTitle: "ต้นแบบควบคุม retrieval ในเกม",
@@ -729,40 +729,6 @@ function AssociationLowRelevancePage({ language, query, onRetry }: { language: L
   );
 }
 
-function DialoguePixelAvatar({ sprite, label }: { sprite: SpriteData; label: string }) {
-  return (
-    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
-        <div
-          className="rpg-dialogue-avatar-pixels"
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 2px)`,
-            gridAutoRows: "2px",
-          }}
-        >
-          {sprite.flatMap((row, rowIndex) =>
-            row.map((color, colIndex) => (
-              <span
-                key={`${rowIndex.toString()}-${colIndex.toString()}`}
-                style={{ backgroundColor: color || "transparent" }}
-              />
-            )),
-          )}
-        </div>
-    </div>
-  );
-}
-
-function PlayerDialogueAvatar({ palette, label }: { palette: number; label: string }) {
-  const [frame, setFrame] = useState(0);
-  const sprite = useMemo(() => getCharacterSprites(palette, 0).walk[Direction.DOWN][frame % 4], [frame, palette]);
-  useEffect(() => {
-    const id = window.setInterval(() => setFrame((current) => current + 1), 120);
-    return () => window.clearInterval(id);
-  }, []);
-  return <DialoguePixelAvatar sprite={sprite} label={label} />;
-}
-
 function shuffleCopy<T>(items: T[]): T[] {
   const copy = [...items];
   for (let index = copy.length - 1; index > 0; index -= 1) {
@@ -772,22 +738,14 @@ function shuffleCopy<T>(items: T[]): T[] {
   return copy;
 }
 
-function ComputerDialogueAvatar({ label }: { label: string }) {
-  const [frame, setFrame] = useState(0);
-  useEffect(() => {
-    const id = window.setInterval(() => setFrame((current) => current + 1), 90);
-    return () => window.clearInterval(id);
-  }, []);
-  const src = `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${(frame % 12) + 1}.png`;
+function CampfireDialogueAvatar({ label }: { label: string }) {
   return (
-    <div className="rpg-dialogue-avatar-sprite" aria-label={label}>
-      <img
-        src={src}
-        alt=""
-        className="block h-auto max-h-full w-auto object-contain object-center"
-        style={{ imageRendering: "pixelated" }}
-      />
-    </div>
+    <ImageDialogueAvatar
+      label={label}
+      frameCount={12}
+      intervalMs={90}
+      src={(frame) => `${import.meta.env.BASE_URL}assets/furniture/MULTI_MIND_CAMPFIRE/MULTI_MIND_CAMPFIRE_${frame + 1}.png`}
+    />
   );
 }
 
@@ -807,7 +765,7 @@ function CampfireInlineLinks({ links, copy }: { links: WikiSearchResult[]; copy:
   );
 }
 
-const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; sourceLinks: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
+const CAMPFIRE_DIALOGUE_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; sourceLinks: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
     name: "多重心智自我火燄",
     kicker: "LLM WIKI 營火",
@@ -1114,7 +1072,7 @@ function petTerrainIndicators(snapshot: SimSnapshot, inbox: PetLintGapItem[], qu
   return { evidence, relation, contradiction, missingNode };
 }
 
-function CentralComputerDialogue({
+function CampfireDialogue({
   language,
   playerName,
   playerPalette,
@@ -1129,17 +1087,17 @@ function CentralComputerDialogue({
   onOpenAssociationZine: (query?: string) => void;
   onQuestionSubmitted?: (query: string) => void;
 }) {
-  type ComputerMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
+  type CampfireMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
   const [draft, setDraft] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState("");
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
   const logRef = useRef<HTMLDivElement | null>(null);
-  const copy = PBS_COMPUTER_COPY[language];
+  const copy = CAMPFIRE_DIALOGUE_COPY[language];
   const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
   const [isSuggestingQuestions, setIsSuggestingQuestions] = useState(false);
-  const [messages, setMessages] = useState<ComputerMessage[]>(() => [
+  const [messages, setMessages] = useState<CampfireMessage[]>(() => [
     {
       speaker: copy.name,
       text: copy.intro,
@@ -1186,7 +1144,7 @@ function CentralComputerDialogue({
     log.scrollTop = log.scrollHeight;
   }, [isThinking, messages]);
 
-  async function askComputer(prompt: string): Promise<void> {
+  async function askCampfireQuestion(prompt: string): Promise<void> {
     const trimmed = prompt.trim();
     if (!trimmed || isThinking) return;
     setDraft("");
@@ -1211,7 +1169,7 @@ function CentralComputerDialogue({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void askComputer(draft);
+    void askCampfireQuestion(draft);
   }
 
   function handleOpenZine(): void {
@@ -1230,8 +1188,8 @@ function CentralComputerDialogue({
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
-              <PlayerDialogueAvatar palette={playerPalette} label={playerName} />
-              <ComputerDialogueAvatar label={copy.name} />
+              <CharacterDialogueAvatar palette={playerPalette} label={playerName} />
+              <CampfireDialogueAvatar label={copy.name} />
             </div>
             <div className="rpg-dialogue-heading-line min-w-0 flex flex-nowrap items-center gap-3 overflow-visible">
               <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0 shrink-0" data-ui-part="caption">{copy.kicker}</p>
@@ -1277,7 +1235,7 @@ function CentralComputerDialogue({
             onKeyDown={(event) => {
               if (event.key === "Enter" && !event.nativeEvent.isComposing) {
                 event.preventDefault();
-                void askComputer(draft);
+                void askCampfireQuestion(draft);
               }
             }}
             name="pbs-campfire-question"
@@ -1681,7 +1639,7 @@ async function createCloudPetPersona(profile: PlayerProfile): Promise<string | n
   const system = [
     "你是桃花源遊戲的 Tamagotchi agent 人格設計器。只輸出一段繁體中文 persona，不要 JSON，不要 markdown。",
     "人格必須像好奇、挑剔、會照看公共文字品質的小夥伴，但不要說出任何系統功能名稱。",
-    "不要把電子雞設定成玩家問題的解答器；PBS Computer 才是 LLM wiki query 入口。",
+    "不要把電子雞設定成玩家問題的解答器；多重心智自我火燄才是 LLM wiki query 入口。",
   ].join("\n");
   const user = `玩家名字：${profile.name}\n寵物類型：${role}\n請輸出 3 句以內的 Tamagotchi agent persona。`;
   const response = await fetch(url, {
@@ -1844,9 +1802,9 @@ function App() {
   const [chatDraft, setChatDraft] = useState("");
   const [activeDialogueId, setActiveDialogueId] = useState<number | null>(null);
   const [pendingDialogueId, setPendingDialogueId] = useState<number | null>(null);
-  const [isComputerDialogueOpen, setIsComputerDialogueOpen] = useState(false);
-  const [dismissedAutoComputer, setDismissedAutoComputer] = useState(false);
-  const [pendingComputerOpen, setPendingComputerOpen] = useState(false);
+  const [isCampfireDialogueOpen, setIsCampfireDialogueOpen] = useState(false);
+  const [dismissedAutoCampfire, setDismissedAutoCampfire] = useState(false);
+  const [pendingCampfireOpen, setPendingCampfireOpen] = useState(false);
   const [archiveMenuOpen, setArchiveMenuOpen] = useState(false);
   const [terrainEditorEnabled, setTerrainEditorEnabled] = useState(editorEntryEnabled);
   const [playerMoveTick, setPlayerMoveTick] = useState(0);
@@ -2194,16 +2152,16 @@ function App() {
     setSimSnapshot(snapshot);
     setSelectedPet(null);
     setSelectedDispatchPet(null);
-    setIsComputerDialogueOpen(false);
+    setIsCampfireDialogueOpen(false);
     setActiveDialogueId(null);
     setSplitPanel(null);
     setLanguageMenuOpen(false);
 
-    if (qaUi.panel === "computer") setIsComputerDialogueOpen(true);
+    if (qaUi.panel === "computer") setIsCampfireDialogueOpen(true);
     if (qaUi.panel === "npc") setActiveDialogueId(1);
     if (qaUi.panel === "pet") setSelectedPet(pet);
     if (qaUi.panel === "language") {
-      setIsComputerDialogueOpen(true);
+      setIsCampfireDialogueOpen(true);
       setLanguageMenuOpen(true);
     }
     if (qaUi.panel === "zine") {
@@ -2253,11 +2211,11 @@ function App() {
     return nearest?.id ?? null;
   }, [officeState]);
 
-  const isPlayerNearCentralComputer = useCallback((): boolean => {
+  const isPlayerNearCampfire = useCallback((): boolean => {
     const player = officeState.characters.get(PLAYER_ID);
     if (!player) return false;
     const bounds = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CAMPFIRE_FOOTPRINT.h - 1, w: CAMPFIRE_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     const nearestCol = Math.max(bounds.col, Math.min(bounds.col + bounds.w - 1, player.tileCol));
     const nearestRow = Math.max(bounds.row, Math.min(bounds.row + bounds.h - 1, player.tileRow));
@@ -2265,9 +2223,9 @@ function App() {
     return dist <= CAMPFIRE_INTERACTION_RADIUS_TILES;
   }, [editorEntryEnabled, officeState]);
 
-  const isCentralComputerTile = useCallback((col: number, row: number): boolean => {
+  const isCampfireTile = useCallback((col: number, row: number): boolean => {
     const bounds = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CAMPFIRE_FOOTPRINT.h - 1, w: CAMPFIRE_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     return (
       col >= bounds.col &&
@@ -2804,21 +2762,21 @@ function App() {
         }
       }
 
-      if (!qaUi.enabled && computerDialogueOpenRef.current && !isPlayerNearCentralComputer()) {
-        setIsComputerDialogueOpen(false);
+      if (!qaUi.enabled && campfireDialogueOpenRef.current && !isPlayerNearCampfire()) {
+        setIsCampfireDialogueOpen(false);
       }
 
-      if (dismissedAutoComputer && !isPlayerNearCentralComputer()) {
-        setDismissedAutoComputer(false);
+      if (dismissedAutoCampfire && !isPlayerNearCampfire()) {
+        setDismissedAutoCampfire(false);
       }
 
-      if (pendingComputerOpen && !computerDialogueOpenRef.current && isPlayerNearCentralComputer()) {
-        setPendingComputerOpen(false);
-        setIsComputerDialogueOpen(true);
+      if (pendingCampfireOpen && !campfireDialogueOpenRef.current && isPlayerNearCampfire()) {
+        setPendingCampfireOpen(false);
+        setIsCampfireDialogueOpen(true);
       }
 
-      if (!dismissedAutoComputer && !pendingComputerOpen && !computerDialogueOpenRef.current && activeDialogueIdRef.current === null && !splitPanel && !videoEncounter && !encounterPanel && isPlayerNearCentralComputer()) {
-        setIsComputerDialogueOpen(true);
+      if (!dismissedAutoCampfire && !pendingCampfireOpen && !campfireDialogueOpenRef.current && activeDialogueIdRef.current === null && !splitPanel && !videoEncounter && !encounterPanel && isPlayerNearCampfire()) {
+        setIsCampfireDialogueOpen(true);
       }
 
       setSplitPanel((current) => {
@@ -2839,12 +2797,12 @@ function App() {
     return () => window.clearInterval(interval);
   }, [
     appMode,
-    dismissedAutoComputer,
+    dismissedAutoCampfire,
     getPlayerDistanceFromCharacter,
-    isPlayerNearCentralComputer,
+    isPlayerNearCampfire,
     layoutReady,
     officeState,
-    pendingComputerOpen,
+    pendingCampfireOpen,
     playerProfile,
     qaUi.enabled,
     splitPanel,
@@ -2855,7 +2813,7 @@ function App() {
 
   const nearbyNpcIdRef = useRef<number | null>(null);
   const activeDialogueIdRef = useRef<number | null>(null);
-  const computerDialogueOpenRef = useRef(false);
+  const campfireDialogueOpenRef = useRef(false);
   const latestA2ANoticeIdRef = useRef<string | null>(null);
   const worldNoticeTimerRef = useRef<number | null>(null);
   useEffect(() => {
@@ -2865,8 +2823,8 @@ function App() {
     activeDialogueIdRef.current = activeDialogueId;
   }, [activeDialogueId]);
   useEffect(() => {
-    computerDialogueOpenRef.current = isComputerDialogueOpen;
-  }, [isComputerDialogueOpen]);
+    campfireDialogueOpenRef.current = isCampfireDialogueOpen;
+  }, [isCampfireDialogueOpen]);
 
   useEffect(() => {
     if (!simSnapshot || appMode !== "interactive") return;
@@ -2901,7 +2859,7 @@ function App() {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
     let index = 0;
     const interval = window.setInterval(() => {
-      if (isComputerDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
+      if (isCampfireDialogueOpen || activeDialogueIdRef.current !== null || splitPanel) return;
       const lines = CAMPFIRE_BROADCASTS[selectedLanguage] ?? CAMPFIRE_BROADCASTS.en;
       const thoughtLines = THOUGHT_GAP_BROADCASTS[selectedLanguage] ?? THOUGHT_GAP_BROADCASTS.en;
       const isThoughtGap = true;
@@ -2933,7 +2891,7 @@ function App() {
       }, 5000);
     }, 60000);
     return () => window.clearInterval(interval);
-  }, [appMode, isComputerDialogueOpen, layoutReady, playerProfile, selectedLanguage, splitPanel]);
+  }, [appMode, isCampfireDialogueOpen, layoutReady, playerProfile, selectedLanguage, splitPanel]);
 
   useEffect(() => {
     if (!layoutReady || !playerProfile || appMode !== "interactive") return;
@@ -3003,25 +2961,25 @@ function App() {
       }
 
       if (event.key === "Escape") {
-        if (computerDialogueOpenRef.current) setDismissedAutoComputer(true);
+        if (campfireDialogueOpenRef.current) setDismissedAutoCampfire(true);
         setActiveDialogueId(null);
-        setIsComputerDialogueOpen(false);
-        setPendingComputerOpen(false);
+        setIsCampfireDialogueOpen(false);
+        setPendingCampfireOpen(false);
         return;
       }
       if (event.code === "Space") {
         if (
           activeDialogueIdRef.current === null &&
-          !computerDialogueOpenRef.current &&
-          isPlayerNearCentralComputer()
+          !campfireDialogueOpenRef.current &&
+          isPlayerNearCampfire()
         ) {
           event.preventDefault();
-          setIsComputerDialogueOpen(true);
+          setIsCampfireDialogueOpen(true);
           return;
         }
         if (
           activeDialogueIdRef.current === null &&
-          !computerDialogueOpenRef.current &&
+          !campfireDialogueOpenRef.current &&
           nearbyNpcIdRef.current !== null
         ) {
           event.preventDefault();
@@ -3074,15 +3032,15 @@ function App() {
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onWindowBlur);
     };
-  }, [appMode, isPlayerNearCentralComputer, layoutReady, officeState, playerProfile]);
+  }, [appMode, isPlayerNearCampfire, layoutReady, officeState, playerProfile]);
 
   const handleMobileMapTap = useCallback(
     (col: number, row: number) => {
-      if (playerProfile && appMode === "interactive" && isCentralComputerTile(col, row)) {
+      if (playerProfile && appMode === "interactive" && isCampfireTile(col, row)) {
         officeState.cameraFollowId = PLAYER_ID;
-        if (isPlayerNearCentralComputer()) {
-          setPendingComputerOpen(false);
-          setIsComputerDialogueOpen(true);
+        if (isPlayerNearCampfire()) {
+          setPendingCampfireOpen(false);
+          setIsCampfireDialogueOpen(true);
           return;
         }
         const occupied = new Set(
@@ -3090,28 +3048,28 @@ function App() {
             .filter((ch) => ch.id !== PLAYER_ID)
             .map((ch) => `${ch.tileCol},${ch.tileRow}`),
         );
-        const computerTile = editorEntryEnabled
-          ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+        const campfireTile = editorEntryEnabled
+          ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CAMPFIRE_FOOTPRINT.h - 1, w: CAMPFIRE_FOOTPRINT.w, h: 1 }
           : campfireStoneBoundsFromLayout(officeState.getLayout());
         const approachTile = findNearestApproachableTile(
           officeState,
-          computerTile.col + Math.floor(computerTile.w / 2),
-          computerTile.row + computerTile.h,
+          campfireTile.col + Math.floor(campfireTile.w / 2),
+          campfireTile.row + campfireTile.h,
           occupied,
         );
         const moved = officeState.walkToTile(PLAYER_ID, approachTile.col, approachTile.row);
-        setPendingComputerOpen(true);
+        setPendingCampfireOpen(true);
         if (moved) setPlayerMoveTick((tick) => tick + 1);
         return;
       }
-      setPendingComputerOpen(false);
+      setPendingCampfireOpen(false);
       officeState.cameraFollowId = PLAYER_ID;
       const moved = officeState.walkToTile(PLAYER_ID, col, row);
       if (moved) {
         setPlayerMoveTick((tick) => tick + 1);
       }
     },
-    [appMode, editorEntryEnabled, isCentralComputerTile, isPlayerNearCentralComputer, officeState, playerProfile],
+    [appMode, editorEntryEnabled, isCampfireTile, isPlayerNearCampfire, officeState, playerProfile],
   );
 
   const handlePlayerStart = useCallback(
@@ -3302,7 +3260,7 @@ function App() {
     setActiveDialogueId(null);
     setSplitPanel(null);
     setIsSplitExpanded(false);
-    setPendingComputerOpen(false);
+    setPendingCampfireOpen(false);
     setSelectedPet(null);
     setSelectedDispatchPet(null);
     setSelectedNpcInfo(null);
@@ -3319,7 +3277,7 @@ function App() {
   // Force dependency on editorTickForKeyboard to propagate keyboard-triggered re-renders
   void editorTickForKeyboard;
 
-  const isNearCentralComputer = playerProfile && appMode === "interactive" ? isPlayerNearCentralComputer() : false;
+  const isNearCampfire = playerProfile && appMode === "interactive" ? isPlayerNearCampfire() : false;
 
   const promptPosition = (() => {
     if (!promptAnchor || !containerRef.current) return null;
@@ -3342,10 +3300,10 @@ function App() {
     };
   })();
 
-  const computerPromptPosition = (() => {
-    if (!isNearCentralComputer || !containerRef.current) return null;
-    const computerTile = editorEntryEnabled
-      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
+  const campfirePromptPosition = (() => {
+    if (!isNearCampfire || !containerRef.current) return null;
+    const campfireTile = editorEntryEnabled
+      ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CAMPFIRE_FOOTPRINT.h - 1, w: CAMPFIRE_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -3357,8 +3315,8 @@ function App() {
     const deviceOffsetX = Math.floor((canvasW - mapW) / 2) + Math.round(editor.panRef.current.x);
     const deviceOffsetY = Math.floor((canvasH - mapH) / 2) + Math.round(editor.panRef.current.y);
     return {
-      left: (deviceOffsetX + ((computerTile.col + computerTile.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
-      top: (deviceOffsetY + (computerTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
+      left: (deviceOffsetX + ((campfireTile.col + campfireTile.w / 2) * TILE_SIZE) * editor.zoom) / dpr,
+      top: (deviceOffsetY + (campfireTile.row * TILE_SIZE - 18) * editor.zoom) / dpr,
     };
   })();
 
@@ -3451,7 +3409,7 @@ function App() {
     appMode === "interactive" &&
     !isSplitOpen &&
     !activeDialoguePersona &&
-    !isComputerDialogueOpen &&
+    !isCampfireDialogueOpen &&
     !selectedDispatchPet &&
     !selectedPet &&
     !selectedNpcInfo &&
@@ -3895,26 +3853,26 @@ function App() {
 
           {appMode === "interactive" &&
             !editorEntryEnabled &&
-            isNearCentralComputer &&
-            computerPromptPosition &&
+            isNearCampfire &&
+            campfirePromptPosition &&
             !activeDialoguePersona &&
-            !isComputerDialogueOpen &&
+            !isCampfireDialogueOpen &&
             !isEncounterUiOpen && (
               <button
                 className="absolute z-44 -translate-x-1/2 -translate-y-full text-center pointer-events-auto npc-name-tag mobile-talk-prompt mobile-talk-prompt--compact"
                 style={{
-                  left: computerPromptPosition.left,
-                  top: computerPromptPosition.top,
+                  left: campfirePromptPosition.left,
+                  top: campfirePromptPosition.top,
                   background: "#fff",
                 }}
                 type="button"
-                onClick={() => setIsComputerDialogueOpen(true)}
+                onClick={() => setIsCampfireDialogueOpen(true)}
               >
                 <p>{t(selectedLanguage, "hud.pressToTalk")}</p>
               </button>
             )}
 
-          {!editorEntryEnabled && !(terrainEditorEnabled && editor.isEditMode) && !isEncounterUiOpen && !activeDialoguePersona && !isComputerDialogueOpen && !splitPanel && nameTags.map((tag) => {
+          {!editorEntryEnabled && !(terrainEditorEnabled && editor.isEditMode) && !isEncounterUiOpen && !activeDialoguePersona && !isCampfireDialogueOpen && !splitPanel && nameTags.map((tag) => {
             const isNearbyTalkTarget =
               appMode === "interactive" &&
               tag.id === nearbyNpcId &&
@@ -4115,15 +4073,15 @@ function App() {
               </Suspense>
             )}
 
-          {appMode === "interactive" && isComputerDialogueOpen && playerProfile && (
-            <CentralComputerDialogue
+          {appMode === "interactive" && isCampfireDialogueOpen && playerProfile && (
+            <CampfireDialogue
               language={selectedLanguage}
               playerName={playerProfile.name}
               playerPalette={playerProfile.palette}
               onClose={() => {
-                setDismissedAutoComputer(true);
-                setPendingComputerOpen(false);
-                setIsComputerDialogueOpen(false);
+                setDismissedAutoCampfire(true);
+                setPendingCampfireOpen(false);
+                setIsCampfireDialogueOpen(false);
               }}
               onOpenAssociationZine={(query) => {
                 const trimmed = query?.trim() ?? "";

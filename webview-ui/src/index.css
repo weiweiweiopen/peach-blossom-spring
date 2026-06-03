@@ -4076,7 +4076,7 @@ html[data-language="th"],
   }
 }
 
-/* PBS Computer zine output keeps the original half-and-half split: dialogue left, zine right. */
+/* Campfire zine output keeps the original half-and-half split: dialogue left, zine right. */
 .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel.world-split-panel--zine {
   top: max(18px, var(--safe-top)) !important;
   right: 18px !important;
@@ -7738,7 +7738,7 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   line-height: 1.48 !important;
 }
 
-/* Emergency hard cap: Japanese PBS Computer body text was missed by chip/title
+/* Emergency hard cap: Japanese campfire body text was missed by chip/title
    overrides and must never inherit the pixel display scale. */
 .pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-log,
 .pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-message,
@@ -8656,29 +8656,6 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
 .rpg-dialogue-panel[data-language] .rpg-dialogue-input::placeholder {
   font-size: var(--dialogue-control-size) !important;
 }
-
-/* Mobile dialogue avatars keep the same frame contract as desktop/NPC dialogue. */
-@media (max-width: 700px), (pointer: coarse) {
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars {
-    max-width: 118px !important;
-    gap: 6px !important;
-    overflow: visible !important;
-    flex-shrink: 0 !important;
-  }
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars > div {
-    transform: none !important;
-    margin-right: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-sprite {
-    width: 54px !important;
-    height: 54px !important;
-    min-width: 54px !important;
-    min-height: 54px !important;
-    overflow: visible !important;
-  }
-}
-
 
 /* 2026-05-31: Latin-script languages were too small. Raise EN/ID/DE globally by ~4px on desktop and mobile. */
 .pbs-interaction-root[data-language="en"],

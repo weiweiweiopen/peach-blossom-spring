@@ -11,11 +11,10 @@ The canonical editable knowledge layer remains the local PBS Markdown/wiki memor
 
 ## Runtime Roles
 
-- **PBS Computer**: query entrance for public source questions.
+- **Campfire**: shared source-question surface for public memory questions.
 - **Association zine**: turns source-grounded traces into printable public artifacts.
 - **Question pet**: traversal health monitor for the current player question.
 - **NPC dialogue**: uses persona context and sends player questions through shared-memory traversal lint.
-- **Campfire / PBS Computer**: shared source-question surface.
 - **Editor mode**: local/dev-only layout and world-building surface.
 
 ## How To Run
