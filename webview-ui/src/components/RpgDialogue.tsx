@@ -178,15 +178,15 @@ function makeFollowUpQuestions(language: LanguageCode, question: string, evidenc
   const sourceHint = sourceLabels.length ? sourceLabels.join('、') : '剛才找到的 source pages';
   if (language === 'zh-TW') {
     return [
-      `剛才答案裡最可靠的 source 是哪些？請用 ${sourceHint} 幫我整理閱讀路徑。`,
-      `這個問題「${cleanQuestionPart(question, 32)}」對獨立社群或 PBS shared memory 有什麼實際用途？`,
-      `如果我要把這題做成 Wiki 小誌，下一個應該查的材料、人物或工具是什麼？`,
+      `如果我想把「${cleanQuestionPart(question, 28)}」變成遊戲裡更有畫面的任務，應該先走向哪個人物、材料或場景？`,
+      `請用 ${sourceHint} 解釋這題對獨立社群有什麼實際幫助，而不只是概念上好聽。`,
+      `把這題成熟化成一個可查證的 Wiki 小誌題目：我還缺哪個 source、案例或反例？`,
     ];
   }
   return [
-    `Which source pages best support that answer, and what should I read first?`,
-    `Why does this matter for independent communities or PBS shared memory?`,
-    `What material, person, or tool should become the next wiki-zine question?`,
+    `How can this question become a more playable scene, character, material, or task?`,
+    `Using ${sourceHint}, why does this matter in practice for independent communities?`,
+    `How should I mature this into a checkable wiki-zine question, and what source or counterexample is missing?`,
   ];
 }
 
@@ -198,15 +198,15 @@ function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
   const visible = (evidence ?? []).filter((item) => item.label || item.text || item.url).slice(0, 4);
   if (!visible.length) return null;
   return (
-    <div className="rpg-dialogue-evidence" data-ui-part="caption">
-      <p className="rpg-dialogue-evidence-title">Source route</p>
+    <div className="rpg-dialogue-sources" data-ui-part="body">
+      <p className="rpg-dialogue-sources-title">可繼續讀的來源：</p>
       {visible.map((item, index) => {
         const url = evidenceUrl(item);
         const label = item.sourceLabel || item.label || `Source ${index + 1}`;
         const body = shorten(item.text || item.label || '', 150);
         return (
-          <div key={`${item.id}-${index.toString()}`} className="rpg-dialogue-evidence-item">
-            <span className="rpg-dialogue-evidence-index">[{index + 1}]</span>{' '}
+          <p key={`${item.id}-${index.toString()}`} className="rpg-dialogue-source-line">
+            <span className="rpg-dialogue-source-index">[{index + 1}]</span>{' '}
             {url ? (
               <a href={url} target="_blank" rel="noreferrer">
                 {label}
@@ -214,8 +214,8 @@ function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
             ) : (
               <span>{label}</span>
             )}
-            {body && <p>{body}</p>}
-          </div>
+            {body && <span className="rpg-dialogue-source-body">：{body}</span>}
+          </p>
         );
       })}
     </div>
@@ -225,7 +225,7 @@ function DialogueEvidence({ evidence }: { evidence?: ChatEvidence[] }) {
 function DialogueFollowUps({ questions, onSelect }: { questions?: string[]; onSelect: (question: string) => void }) {
   if (!questions?.length) return null;
   return (
-    <div className="rpg-dialogue-followups" data-ui-part="caption">
+    <div className="rpg-dialogue-followups" data-ui-part="body">
       <p className="rpg-dialogue-followups-title">下一步可以問</p>
       <div className="rpg-dialogue-followup-list">
         {questions.slice(0, 3).map((item) => (
@@ -643,8 +643,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.speaker === persona.name && <DialogueEvidence evidence={message.evidence} />}
-                {message.speaker === persona.name && <DialogueFollowUps questions={message.followUps} onSelect={handleFollowUpPrompt} />}
+                <DialogueEvidence evidence={message.evidence} />
+                <DialogueFollowUps questions={message.followUps} onSelect={handleFollowUpPrompt} />
               </div>
             ))}
             {isLoading && (

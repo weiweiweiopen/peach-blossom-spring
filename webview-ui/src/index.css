@@ -1485,10 +1485,9 @@ html[data-language="th"],
     font-size: clamp(16px, 4.8vw, 20px) !important;
   }
 
-  .rpg-dialogue-evidence,
+  .rpg-dialogue-sources,
   .rpg-dialogue-followups {
-    padding: 10px !important;
-    font-size: 0.82em !important;
+    font-size: 0.86em !important;
   }
 
   .retro-title-card {
@@ -1988,51 +1987,48 @@ html[data-language="th"],
   border-color: var(--palette-blue) !important;
 }
 
-.rpg-dialogue-evidence,
+.rpg-dialogue-sources,
 .rpg-dialogue-followups {
-  margin-top: 12px;
-  padding: 12px 14px;
-  border: 1px solid var(--palette-blue);
-  background: color-mix(in srgb, var(--palette-cream) 88%, var(--palette-yellow) 12%);
-  font-size: 0.76em;
-  line-height: 1.42;
+  margin-top: 14px;
+  font-size: 0.82em;
+  line-height: 1.48;
 }
 
-.rpg-dialogue-evidence-title,
+.rpg-dialogue-sources-title,
 .rpg-dialogue-followups-title {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
-.rpg-dialogue-evidence-item {
-  margin-top: 8px;
+.rpg-dialogue-source-line {
+  margin: 5px 0 0;
 }
 
-.rpg-dialogue-evidence-item a {
+.rpg-dialogue-source-line a {
   color: var(--palette-blue);
   text-decoration: underline;
   text-underline-offset: 3px;
   word-break: break-word;
 }
 
-.rpg-dialogue-evidence-item p {
-  margin: 4px 0 0;
+.rpg-dialogue-source-index {
+  font-weight: 700;
 }
 
-.rpg-dialogue-evidence-index {
-  font-weight: 700;
+.rpg-dialogue-source-body {
+  color: color-mix(in srgb, var(--palette-ink) 76%, var(--palette-silver) 24%);
 }
 
 .rpg-dialogue-followup-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
 }
 
 .rpg-dialogue-followup-chip {
-  max-width: min(100%, 560px);
+  width: 100%;
+  max-width: 100%;
   white-space: normal;
   text-align: left;
 }
@@ -5266,7 +5262,8 @@ html[data-language="th"],
 
 .rpg-dialogue-kicker,
 .rpg-dialogue-role,
-.rpg-dialogue-evidence {
+.rpg-dialogue-sources,
+.rpg-dialogue-followups {
   font-size: clamp(15px, 1.35vw, 19px) !important;
   line-height: 1.25 !important;
 }
@@ -5722,7 +5719,8 @@ html[data-language="th"],
 
   .rpg-dialogue-kicker,
   .rpg-dialogue-role,
-  .rpg-dialogue-evidence,
+  .rpg-dialogue-sources,
+  .rpg-dialogue-followups,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-kicker,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-role {
     font-size: var(--mobile-readable-label) !important;
