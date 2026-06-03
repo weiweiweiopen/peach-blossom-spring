@@ -106,19 +106,19 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    '用 source pages 說明 Open Source Beehives 如何把感測器、蜂群與農地照護變成可共享的社群知識？',
-    'Green Fab Lab 的農業機器人與生態日曆，對獨立社群維持技術有什麼實際幫助？可以查哪些頁面？',
-    'Jonathan 這條路線裡，哪些在地關係比設備更重要？請指出 PBS source 裡可繼續閱讀的線索。',
+    '玩家想做一個照護農地與蜂群的開源工具時，哪些 source pages 可以幫他從感測器走到社群維護？',
+    'Green Fab Lab 的農業機器人和生態日曆，能怎麼變成玩家可實作的小任務？請找可查頁面。',
+    '如果設備不是重點，玩家應該先查哪些在地關係、維護方法或共同工作場景？',
   ],
   'marc-dusseiller': [
-    '用 Hackteria source pages 說明 Marc 的低成本、可拆解工作坊為什麼對獨立社群重要？',
-    'Marc 的工作坊如何把失敗、料理、焊接和友誼變成可傳遞方法？請列出可查 source 線索。',
-    '如果 science-art box 不能被打開、污染、重做，這對 PBS 的 shared memory 有什麼問題？可以查哪些頁面？',
+    '玩家只有很少預算時，哪些 Hackteria source pages 可以幫他把低成本工具變成可分享任務？',
+    '把失敗、料理、焊接和友誼變成可傳遞方法時，玩家應該先查哪三個 source 線索？',
+    '如果 science-art box 不能被打開、弄髒、重做，玩家可以用哪些頁面理解這對 shared memory 的問題？',
   ],
   'tincuta-heinzel': [
-    'ATTEMPTS, FAILURES, TRIALS AND ERRORS 是什麼？它如何幫獨立社群保存失敗與再試的知識？請連到 source。',
-    'Tincuta 如何把失敗、策展與在地回應轉成可保存的研究問題？PBS source 裡可查哪些線索？',
-    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具而不是教學活動？這對社群記憶有什麼用？',
+    '玩家如何把 ATTEMPTS, FAILURES, TRIALS AND ERRORS 變成保存失敗與再試知識的 source route？',
+    '如果一個地方回應一直變動，玩家該查哪些頁面來把它整理成可保存的研究問題？',
+    '營隊什麼時候可以被設計成策展工具，而不只是教學活動？這對社群記憶有什麼實際用途？',
   ],
 };
 
@@ -127,7 +127,7 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
   const sourceBridgeQuestions = [
     `如果玩家想在 PBS 裡做一個小型獨立社群，${persona.name} 這條線可以帶我查哪些 source pages？`,
     `用 ${persona.name} 當入口，哪三個公開 sources 最能幫玩家理解「工具如何變成社群方法」？`,
-    `我想把一個模糊靈感變成可查證小誌，${persona.name} 會建議先找哪個材料、場地或工作坊案例？`,
+    `我想把一個模糊靈感變成可查證小誌，這條路線應該先找哪個材料、場地或 source case？`,
     `哪個 Hackteria、SGMK 或 KOBAKANT 頁面最適合把 ${persona.name} 的主題變成可實作任務？`,
     `如果玩家只問「這跟我有什麼關係」，${persona.name} 可以用哪些 source 說明它對獨立創作者有什麼幫助？`,
     `請幫我把 ${persona.name} 這條路線改寫成一個更成熟、更可查證、也更好玩的問題。`,

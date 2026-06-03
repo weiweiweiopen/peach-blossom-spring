@@ -796,6 +796,22 @@ function ComputerDialogueAvatar({ label }: { label: string }) {
   );
 }
 
+function CampfireInlineLinks({ links, copy }: { links: WikiSearchResult[]; copy: { sourceLinks: string; noLinks: string } }) {
+  if (!links.length) return <p className="rpg-dialogue-source-line">{copy.noLinks}</p>;
+  return (
+    <div className="rpg-dialogue-sources" data-ui-part="body">
+      <p className="rpg-dialogue-sources-title">{copy.sourceLinks}：</p>
+      {links.slice(0, 8).map((link, index) => (
+        <p key={`${link.url}-${index.toString()}`} className="rpg-dialogue-source-line">
+          <span className="rpg-dialogue-source-index">[{index + 1}]</span>{' '}
+          <a href={link.url} target="_blank" rel="noreferrer">{link.title}</a>
+          <span className="rpg-dialogue-source-body">：{link.sourceFamily}</span>
+        </p>
+      ))}
+    </div>
+  );
+}
+
 const PBS_COMPUTER_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; sourceLinks: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
     name: "多重心智自我火燄",
@@ -1238,21 +1254,7 @@ function CentralComputerDialogue({
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                {message.links && (
-                  <details className="rpg-dialogue-source-links" aria-label={copy.sourceTitle}>
-                    <summary>{copy.sourceLinks} ({message.links.length})</summary>
-                    {message.links.length > 0 ? (
-                      <div className="rpg-dialogue-source-link-list">
-                        {message.links.slice(0, 8).map((link, linkIndex) => (
-                          <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                            <span>[{linkIndex + 1}] {link.title}</span>
-                            <em>{link.sourceFamily}</em>
-                          </a>
-                        ))}
-                      </div>
-                    ) : <p className="m-0 text-text-muted">{copy.noLinks}</p>}
-                  </details>
-                )}
+                {message.links && <CampfireInlineLinks links={message.links} copy={copy} />}
               </div>
             ))}
             {isThinking && <p className="rpg-dialogue-thinking text-base text-text-muted" data-ui-part="body">{copy.thinking}</p>}
@@ -3288,7 +3290,7 @@ function App() {
     const npc = officeState.characters.get(promptAnchor.npcId);
     if (!npc) return null;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
@@ -3310,7 +3312,7 @@ function App() {
       ? { col: COMPACT_EDITOR_CAMPFIRE_TILE.col, row: COMPACT_EDITOR_CAMPFIRE_TILE.row + CENTRAL_COMPUTER_FOOTPRINT.h - 1, w: CENTRAL_COMPUTER_FOOTPRINT.w, h: 1 }
       : campfireStoneBoundsFromLayout(officeState.getLayout());
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;
@@ -3337,7 +3339,7 @@ function App() {
         offsetY?: number;
       }>;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.devicePixelRatio || 1;
     const layout = officeState.getLayout();
     const mapW = layout.cols * TILE_SIZE * editor.zoom;
     const mapH = layout.rows * TILE_SIZE * editor.zoom;

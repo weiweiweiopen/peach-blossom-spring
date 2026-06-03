@@ -33,6 +33,7 @@ const pbsEngine = readFileSync(join(root, "..", "scripts", "pbs_engine.py"), "ut
 const projectReadme = readFileSync(join(root, "..", "README.md"), "utf8");
 const localMemoryGame = readFileSync(join(root, "..", "LOCAL_MEMORY_GAME.md"), "utf8");
 const suggestedPromptHandler = rpgDialogue.match(/function handleSuggestedPrompt\(prompt: string\): void \{[\s\S]*?\n  \}/)?.[0] ?? "";
+const suggestedQuestionBlock = rpgDialogue.match(/const personaQuestionSeeds[\s\S]*?function makeFollowUpQuestions/)?.[0] ?? "";
 
 const checks = [
   ["Chinese print zine scale is language-scoped", /html\[lang="zh-Hant"\].*\.lead[\s\S]*font-size:\s*11pt/.test(generator)],
@@ -120,8 +121,11 @@ const checks = [
   ["NPC zines receive transcript writing style", /onOpenAssociationZine\?: \(query: string, writingStyle: string\)/.test(rpgDialogue) && /function npcWritingStylePrompt/.test(rpgDialogue) && /writingStyle: activeDialoguePersona\.name|writingStyle,/.test(app)],
   ["Dialogue suggestions show safer source questions", /COMMUNITY_QUERY_PROMPTS:\s*Record<LanguageCode, string\[]>/.test(app) && /Hackteria, SGMK, or KOBAKANT/.test(app) && /sourceBridgeQuestions[\s\S]*可查證小誌/.test(rpgDialogue) && /englishSourceBridge[\s\S]*checkable zine/.test(rpgDialogue)],
   ["NPC suggestions avoid transcript sentence prompts", !/function transcriptQuestionSeed/.test(rpgDialogue) && !/responseQuestions/.test(rpgDialogue) && !/訪談記憶/.test(rpgDialogue) && /玩家想在 PBS 裡做一個小型獨立社群/.test(rpgDialogue)],
+  ["NPC suggestions are player-facing source tasks", /玩家想做一個照護農地與蜂群的開源工具/.test(suggestedQuestionBlock) && /source case/.test(suggestedQuestionBlock) && !/訪談/.test(suggestedQuestionBlock) && !/工作坊經驗/.test(suggestedQuestionBlock)],
   ["NPC suggested prompts fill input before action", /setAreSuggestionsOpen\(false\);/.test(suggestedPromptHandler) && /setQuestion\(prompt\);/.test(suggestedPromptHandler) && !/submitPrompt\(prompt\)/.test(suggestedPromptHandler)],
   ["NPC name bubbles keep collision offsets", /offsetX\?: number/.test(app) && /--npc-tag-offset-x/.test(app + css) && /calc\(-50% \+ var\(--npc-tag-offset-x/.test(css)],
+  ["Overlay coordinates use uncapped device pixel ratio", !/Math\.min\(window\.devicePixelRatio \|\| 1, 1\.5\)/.test(app) && /const dpr = window\.devicePixelRatio \|\| 1;/.test(app)],
+  ["Campfire sources render inline", /function CampfireInlineLinks/.test(app) && !/<details className="rpg-dialogue-source-links"/.test(app)],
   ["Mobile campfire keeps enlarged avatar", /rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*184px/.test(css) && !/rpg-dialogue-avatar-frame--campfire img[\s\S]*width:\s*52px/.test(css)],
   ["Zine request retries compact packet when too long", /function compactRequestUser/.test(generator) && /Message content is too long/.test(generator) && /retrying once with compact evidence packet/.test(generator)],
   ["Thought-gap broadcasts use colorful notice", /THOUGHT_GAP_BROADCASTS/.test(app) && /world-resonance-notice--thought-gap/.test(app + css)],
