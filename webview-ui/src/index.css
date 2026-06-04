@@ -4,7 +4,7 @@
   font-family: "FS Pixel Sans";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url("/fonts/FSPixelSansUnicode-Regular.ttf") format("truetype");
 }
 
@@ -134,73 +134,26 @@
   box-shadow: 3px 3px 0 #111;
 }
 
+.question-lint-card {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 2px solid #111;
+  background: #fffdf6;
+  box-shadow: 2px 2px 0 #111;
+}
+
+.question-lint-card strong,
+.question-lint-card p,
+.question-lint-card span {
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+}
+
 .question-lint-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   margin-top: 6px;
-}
-
-.traversal-monitor-card {
-  margin-bottom: 16px;
-  padding: 12px;
-  color: #000;
-  background: color-mix(in srgb, var(--palette-blue) 18%, #fff 82%);
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0 #000;
-}
-
-.traversal-monitor-card[data-status="error"] {
-  background: color-mix(in srgb, var(--palette-pink) 34%, #fff 66%);
-}
-
-.traversal-monitor-header,
-.traversal-monitor-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.traversal-monitor-header span,
-.traversal-monitor-question span,
-.traversal-monitor-caveat span {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.traversal-monitor-question,
-.traversal-monitor-caveat {
-  display: grid;
-  gap: 4px;
-  margin: 10px 0 0;
-  line-height: 1.35;
-}
-
-.traversal-monitor-scores span,
-.traversal-monitor-meta span {
-  padding: 6px 7px;
-  background: transparent;
-  border: 2px solid #000;
-}
-
-.traversal-monitor-route {
-  display: grid;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-.traversal-monitor-route a,
-.traversal-monitor-route span {
-  color: inherit;
-  text-decoration: none;
-}
-
-.traversal-monitor-route a:hover {
-  text-decoration: underline;
 }
 
 /*
@@ -469,6 +422,16 @@ html[data-language="th"],
   }
 }
 
+
+/* Keep Japanese kana and kanji on the same CJK fallback face.
+   FS Pixel Sans contains some kana (for example の) but not all kanji,
+   which makes mixed labels such as 知識の穴 switch typefaces mid-word. */
+:lang(ja),
+[lang="ja"],
+[data-language="ja"],
+[data-language="ja"] * {
+  font-family: "CJK Pixel Match", "FS Pixel Sans", sans-serif !important;
+}
 
 .boot-loading-screen {
   display: grid;
@@ -1478,16 +1441,10 @@ html[data-language="th"],
   }
 
   .rpg-dialogue-chip,
-  .rpg-dialogue-followup-chip,
   .rpg-dialogue-submit,
   .rpg-dialogue-question-toggle {
     min-height: 48px !important;
     font-size: clamp(16px, 4.8vw, 20px) !important;
-  }
-
-  .rpg-dialogue-sources,
-  .rpg-dialogue-followups {
-    font-size: 0.86em !important;
   }
 
   .retro-title-card {
@@ -1526,14 +1483,12 @@ html[data-language="th"],
     margin-bottom: 4px;
   }
   .rpg-dialogue-chip,
-  .rpg-dialogue-followup-chip,
   .rpg-dialogue-more,
   .rpg-dialogue-input,
   .rpg-dialogue-submit {
     font-size: 17px;
   }
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-chip,
-  .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-followup-chip,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-more,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-input,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-submit {
@@ -1987,89 +1942,6 @@ html[data-language="th"],
   border-color: var(--palette-blue) !important;
 }
 
-.rpg-dialogue-sources,
-.rpg-dialogue-followups {
-  margin-top: 14px;
-  font-size: 0.82em;
-  line-height: 1.48;
-  min-width: 0;
-}
-
-.rpg-dialogue-sources-title,
-.rpg-dialogue-followups-title {
-  margin: 0 0 6px;
-  font-weight: 700;
-}
-
-.rpg-dialogue-source-line {
-  display: block;
-  margin: 5px 0 0;
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.rpg-dialogue-source-line a {
-  display: inline;
-  color: var(--palette-blue);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.rpg-dialogue-source-index {
-  font-weight: 700;
-}
-
-.rpg-dialogue-source-body {
-  display: inline;
-  color: color-mix(in srgb, var(--palette-ink) 76%, var(--palette-silver) 24%);
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-@media (max-width: 700px), (pointer: coarse) {
-  .rpg-dialogue-sources {
-    font-size: 0.78em;
-    line-height: 1.42;
-  }
-
-  .rpg-dialogue-source-line {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: 0.35em;
-    row-gap: 1px;
-    margin-top: 8px;
-  }
-
-  .rpg-dialogue-source-line a,
-  .rpg-dialogue-source-body {
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .rpg-dialogue-source-body {
-    grid-column: 2;
-    font-size: 0.86em;
-    line-height: 1.35;
-  }
-}
-
-.rpg-dialogue-followup-list {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 7px;
-}
-
-.rpg-dialogue-followup-chip {
-  width: 100%;
-  max-width: 100%;
-  white-space: normal;
-  text-align: left;
-}
-
 .rpg-dialogue-kicker,
 .rpg-dialogue-message span,
 .rpg-dialogue-more,
@@ -2085,7 +1957,8 @@ html[data-language="th"],
 .rpg-dialogue-role,
 .rpg-dialogue-thinking,
 .rpg-dialogue-wiki p,
-.rpg-dialogue-x {
+.rpg-dialogue-x,
+.rpg-dialogue-avatars span {
   color: color-mix(
     in srgb,
     var(--palette-ink) 68%,
@@ -3330,8 +3203,8 @@ html[data-language="th"],
 
 .npc-name-tag {
   z-index: var(--z-layer-bubbles);
-  translate: none !important;
-  transform: translate(calc(-50% + var(--npc-tag-offset-x, 0px)), calc(-100% + var(--npc-tag-offset-y, 0px))) scale(var(--npc-tag-scale, 1)) !important;
+  translate: -50% -100%;
+  transform: scale(var(--npc-tag-scale, 1)) !important;
   transform-origin: center bottom;
 }
 
@@ -4031,6 +3904,26 @@ html[data-language="th"],
 }
 
 @media (max-width: 900px), (pointer: coarse) {
+  .rpg-dialogue-title {
+    min-width: 0 !important;
+  }
+  .rpg-dialogue-title > div:last-child {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .rpg-dialogue-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .rpg-dialogue-role {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
   .player-setup-overlay {
     align-items: flex-start;
     padding-top: max(24px, env(safe-area-inset-top));
@@ -4113,7 +4006,7 @@ html[data-language="th"],
   }
 }
 
-/* Campfire zine output keeps the original half-and-half split: dialogue left, zine right. */
+/* PBS Computer zine output keeps the original half-and-half split: dialogue left, zine right. */
 .game-world-layer.world-split-active:not(.world-split-expanded) .world-split-panel.world-split-panel--zine {
   top: max(18px, var(--safe-top)) !important;
   right: 18px !important;
@@ -5298,8 +5191,7 @@ html[data-language="th"],
 
 .rpg-dialogue-kicker,
 .rpg-dialogue-role,
-.rpg-dialogue-sources,
-.rpg-dialogue-followups {
+.rpg-dialogue-evidence {
   font-size: clamp(15px, 1.35vw, 19px) !important;
   line-height: 1.25 !important;
 }
@@ -5755,8 +5647,7 @@ html[data-language="th"],
 
   .rpg-dialogue-kicker,
   .rpg-dialogue-role,
-  .rpg-dialogue-sources,
-  .rpg-dialogue-followups,
+  .rpg-dialogue-evidence,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-kicker,
   .rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-role {
     font-size: var(--mobile-readable-label) !important;
@@ -6310,7 +6201,7 @@ html[data-language="th"],
   overflow: hidden;
 }
 
-.association-html {
+.daydream-html {
   --dd-black: #070707;
   --dd-paper: #fffdf3;
   --dd-cream: #f7efd7;
@@ -6325,20 +6216,20 @@ html[data-language="th"],
   font-family: Aino, Inter, "Noto Sans TC", system-ui, sans-serif;
 }
 
-.association-html *,
-.association-html *::before,
-.association-html *::after { box-sizing: border-box; }
-.association-html h1,
-.association-html h2,
-.association-html h3,
-.association-html p,
-.association-html blockquote { margin: 0; }
-.association-html p { font-size: clamp(17px, 1.35vw, 28px); line-height: 1.52; letter-spacing: 0.01em; }
-.association-html h1 { font-size: clamp(48px, 9.5vw, 168px); line-height: 0.84; letter-spacing: -0.075em; text-transform: uppercase; }
-.association-html h2 { font-size: clamp(24px, 3.1vw, 54px); line-height: 0.95; letter-spacing: -0.045em; }
-.association-html .dd-kicker { font-size: clamp(13px, 1vw, 18px); line-height: 1; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 900; }
+.daydream-html *,
+.daydream-html *::before,
+.daydream-html *::after { box-sizing: border-box; }
+.daydream-html h1,
+.daydream-html h2,
+.daydream-html h3,
+.daydream-html p,
+.daydream-html blockquote { margin: 0; }
+.daydream-html p { font-size: clamp(17px, 1.35vw, 28px); line-height: 1.52; letter-spacing: 0.01em; }
+.daydream-html h1 { font-size: clamp(48px, 9.5vw, 168px); line-height: 0.84; letter-spacing: -0.075em; text-transform: uppercase; }
+.daydream-html h2 { font-size: clamp(24px, 3.1vw, 54px); line-height: 0.95; letter-spacing: -0.045em; }
+.daydream-html .dd-kicker { font-size: clamp(13px, 1vw, 18px); line-height: 1; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 900; }
 
-.association-html--pbs-reset {
+.daydream-html--pbs-reset {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
   gap: clamp(16px, 2vw, 34px);
@@ -6361,7 +6252,7 @@ html[data-language="th"],
 .dd-reset-protocol strong { font-size: 1.1em; }
 .dd-reset-protocol small { grid-column: 1 / -1; font-size: clamp(13px, 0.95vw, 18px); }
 
-.association-html--soft-commons {
+.daydream-html--soft-commons {
   display: grid;
   grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr) minmax(260px, 0.7fr);
   gap: clamp(14px, 2vw, 34px);
@@ -6383,7 +6274,7 @@ html[data-language="th"],
 .dd-soft-score p, .dd-soft-caveat { font-size: clamp(14px, 1vw, 20px); }
 .dd-soft-caveat { grid-column: 1 / -1; border-top: 4px solid var(--dd-black); padding-top: 12px; }
 
-.association-html--aino-grid {
+.daydream-html--aino-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-rows: min-content;
@@ -6408,9 +6299,9 @@ html[data-language="th"],
 .dd-aino-footer small { grid-column: 1 / -1; font-size: clamp(12px, 0.9vw, 17px); }
 
 @media (max-width: 1100px) {
-  .association-html--pbs-reset,
-  .association-html--soft-commons,
-  .association-html--aino-grid { display: grid; grid-template-columns: 1fr; }
+  .daydream-html--pbs-reset,
+  .daydream-html--soft-commons,
+  .daydream-html--aino-grid { display: grid; grid-template-columns: 1fr; }
   .dd-reset-hero, .dd-reset-hero h1, .dd-reset-hero .dd-subtitle,
   .dd-reset-opening, .dd-reset-protocol,
   .dd-soft-head, .dd-soft-body, .dd-soft-score, .dd-soft-caveat,
@@ -6424,10 +6315,10 @@ html[data-language="th"],
   .final-document-window.rpg-message-frame { inset: 4px !important; padding: 8px !important; }
   .final-document-window .final-document-panel { min-height: calc(100dvh - 32px); gap: 10px !important; }
   .final-document-html-shell { min-height: calc(100dvh - 90px); box-shadow: 4px 4px 0 #080808; }
-  .association-html { min-height: calc(100dvh - 90px); padding: 16px; }
-  .association-html h1 { font-size: clamp(42px, 15vw, 86px); line-height: 0.88; }
-  .association-html p { font-size: clamp(16px, 4.2vw, 21px); line-height: 1.48; }
-  .association-html h2 { font-size: clamp(24px, 7vw, 38px); }
+  .daydream-html { min-height: calc(100dvh - 90px); padding: 16px; }
+  .daydream-html h1 { font-size: clamp(42px, 15vw, 86px); line-height: 0.88; }
+  .daydream-html p { font-size: clamp(16px, 4.2vw, 21px); line-height: 1.48; }
+  .daydream-html h2 { font-size: clamp(24px, 7vw, 38px); }
   .dd-reset-sections, .dd-reset-protocol, .dd-soft-body, .dd-aino-grid, .dd-aino-footer { grid-template-columns: 1fr; }
   .dd-aino-protocol { columns: 1; }
   .dd-soft-note:nth-child(odd), .dd-soft-note:nth-child(even) { transform: none; }
@@ -6449,15 +6340,15 @@ html[data-language="th"],
   overflow: visible !important;
 }
 
-.association-html {
+.daydream-html {
   height: auto !important;
   min-height: calc(100dvh - 110px) !important;
   overflow: visible !important;
 }
 
-.association-html--pbs-reset,
-.association-html--soft-commons,
-.association-html--aino-grid {
+.daydream-html--pbs-reset,
+.daydream-html--soft-commons,
+.daydream-html--aino-grid {
   align-content: start;
 }
 
@@ -6468,22 +6359,22 @@ html[data-language="th"],
   }
 
   .final-document-html-shell,
-  .association-html {
+  .daydream-html {
     min-height: auto !important;
     overflow: visible !important;
   }
 
-  .association-html--pbs-reset,
-  .association-html--soft-commons,
-  .association-html--aino-grid {
+  .daydream-html--pbs-reset,
+  .daydream-html--soft-commons,
+  .daydream-html--aino-grid {
     display: block !important;
   }
 
-  .association-html :where(header, section, main, aside, footer, div) {
+  .daydream-html :where(header, section, main, aside, footer, div) {
     max-width: 100%;
   }
 
-  .association-html h1 {
+  .daydream-html h1 {
     overflow-wrap: anywhere;
     word-break: normal;
   }
@@ -6496,24 +6387,24 @@ html[data-language="th"],
     -webkit-overflow-scrolling: touch;
   }
 
-  .association-html {
+  .daydream-html {
     width: 960px;
     max-width: none;
     min-height: 1280px !important;
     padding: 34px !important;
   }
 
-  .association-html--pbs-reset {
+  .daydream-html--pbs-reset {
     display: grid !important;
     grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr) !important;
   }
 
-  .association-html--soft-commons {
+  .daydream-html--soft-commons {
     display: grid !important;
     grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr) minmax(260px, 0.7fr) !important;
   }
 
-  .association-html--aino-grid {
+  .daydream-html--aino-grid {
     display: grid !important;
     grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
   }
@@ -6537,9 +6428,9 @@ html[data-language="th"],
     grid-template-columns: 0.65fr 1.35fr !important;
   }
 
-  .association-html h1 { font-size: clamp(78px, 9vw, 132px) !important; }
-  .association-html h2 { font-size: clamp(30px, 3vw, 46px) !important; }
-  .association-html p { font-size: clamp(18px, 1.7vw, 25px) !important; }
+  .daydream-html h1 { font-size: clamp(78px, 9vw, 132px) !important; }
+  .daydream-html h2 { font-size: clamp(30px, 3vw, 46px) !important; }
+  .daydream-html p { font-size: clamp(18px, 1.7vw, 25px) !important; }
 }
 
 /* Final-document split view: let the standalone HTML iframe receive touch/scroll directly. */
@@ -7775,7 +7666,7 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   line-height: 1.48 !important;
 }
 
-/* Emergency hard cap: Japanese campfire body text was missed by chip/title
+/* Emergency hard cap: Japanese PBS Computer body text was missed by chip/title
    overrides and must never inherit the pixel display scale. */
 .pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-log,
 .pbs-interaction-root[data-language="ja"] .rpg-dialogue-panel .rpg-dialogue-message,
@@ -8279,18 +8170,6 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   box-shadow: none !important;
 }
 
-.question-status-panel-compact .question-status-compact-scoregrid span,
-.question-status-panel-compact .question-status-compact-scoregrid strong,
-.question-status-panel-minimized .question-status-compact-scoregrid span,
-.question-status-panel-minimized .question-status-compact-scoregrid strong {
-  display: inline !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
 .question-status-panel-minimized .question-status-compact-lint {
   flex: 1 1 160px;
   min-width: 0;
@@ -8694,6 +8573,42 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   font-size: var(--dialogue-control-size) !important;
 }
 
+/* Mobile dialogue avatars: keep campfire thumbnail intact instead of cropped vertical strip. */
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars {
+    max-width: 118px !important;
+    gap: 6px !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars > div {
+    transform: none !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    padding: 2px !important;
+    overflow: hidden !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatar-frame--campfire img {
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+    object-fit: contain !important;
+  }
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-avatars span {
+    max-width: 54px !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+}
+
+
 /* 2026-05-31: Latin-script languages were too small. Raise EN/ID/DE globally by ~4px on desktop and mobile. */
 .pbs-interaction-root[data-language="en"],
 .pbs-interaction-root[data-language="id"],
@@ -8779,5 +8694,928 @@ html[lang="th"] .question-response-panel:not(.final-document-window) .pet-detail
   .rpg-dialogue-panel[data-language="id"] .rpg-dialogue-name,
   .rpg-dialogue-panel[data-language="de"] .rpg-dialogue-name {
     font-size: var(--dialogue-title-size) !important;
+  }
+}
+
+
+/* 2026-06-01 dialogue source-link repair: compact readable link window.
+   Keep source links from inheriting oversized body/input typography, and wrap
+   URL/title text at safe boundaries instead of slicing one character per line. */
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links *,
+.pixel-panel .rpg-dialogue-source-links,
+.pixel-panel .rpg-dialogue-source-links * {
+  font-family: inherit !important;
+  font-size: clamp(14px, 2.9vw, 17px) !important;
+  line-height: 1.32 !important;
+  letter-spacing: 0 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-height: min(18dvh, 138px) !important;
+  overflow: auto !important;
+  padding: 8px 10px !important;
+  border: 2px solid #000 !important;
+  background: #fff !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links summary {
+  display: block !important;
+  margin-bottom: 6px !important;
+  font-weight: 700 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-link-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a,
+.pixel-panel .rpg-dialogue-source-links a {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  column-gap: 8px !important;
+  align-items: baseline !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  color: #2e7d65 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: underline !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a span {
+  min-width: 0 !important;
+  color: inherit !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-source-links em {
+  color: #2e7d65 !important;
+  font-style: normal !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links * {
+    font-size: clamp(15px, 3.8vw, 17px) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links a {
+    grid-template-columns: minmax(0, 1fr) !important;
+    row-gap: 1px !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-source-links em {
+    white-space: normal !important;
+  }
+}
+
+/* Keep nearby NPC "press to talk" bubble visually aligned with the campfire prompt. */
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact,
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact p {
+  font-size: clamp(18px, 1.65vw, 24px) !important;
+  line-height: 1.42 !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact,
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt--compact p {
+    font-size: 21px !important;
+    line-height: 1.35 !important;
+  }
+}
+/* 2026-06 unified interaction surface: CSS-space anchors, bubbles below windows, and pet-HUD type scale. */
+.pbs-interaction-root {
+  --z-layer-bubbles: 80;
+  --z-layer-hud: 300;
+  --z-layer-dialogue: 700;
+  --z-layer-dialogue-front: 760;
+  --pet-hud-title: clamp(17px, 1.25vw, 22px);
+  --pet-hud-body: clamp(13px, 0.95vw, 16px);
+  --pet-hud-small: clamp(11px, 0.78vw, 13px);
+}
+
+.pbs-interaction-root :is(.npc-name-tag, .mobile-talk-prompt, .abao-speech-bubble) {
+  z-index: var(--z-layer-bubbles) !important;
+}
+
+.pbs-interaction-root :is(.archive-tree-menu, .question-status-panel, .question-response-panel, .world-split-panel, .rpg-dialogue-overlay, .mobile-rules-drawer) {
+  z-index: var(--z-layer-dialogue) !important;
+}
+
+.pbs-interaction-root :is(.question-response-panel.info-card, .world-split-panel.is-expanded, .rpg-dialogue-overlay, .final-document-window) {
+  z-index: var(--z-layer-dialogue-front) !important;
+}
+
+.pbs-interaction-root .npc-name-tag {
+  translate: -50% -100%;
+  transform: scale(var(--npc-tag-scale, 1)) !important;
+  transform-origin: center bottom;
+}
+
+.pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt) {
+  padding: 7px 13px !important;
+  font-size: clamp(14px, 1.25vw, 18px) !important;
+  line-height: 1.16 !important;
+  max-width: min(220px, calc(100vw - 28px)) !important;
+  border-radius: 999px !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+  min-width: calc(min(220px, calc(100vw - 28px)) * 3) !important;
+  max-width: min(660px, calc(100vw - 28px)) !important;
+  min-height: 64px !important;
+  padding: 18px 28px !important;
+  border-radius: 999px !important;
+  font-size: clamp(22px, 2.6vw, 34px) !important;
+  line-height: 1.18 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root[data-language="ja"] .npc-name-tag.mobile-talk-prompt,
+.pbs-interaction-root[data-language="th"] .npc-name-tag.mobile-talk-prompt {
+  font-size: clamp(20px, 2.2vw, 30px) !important;
+}
+
+.question-status-panel.rpg-message-frame,
+.question-status-panel-compact {
+  font-size: var(--pet-hud-body) !important;
+  line-height: 1.28 !important;
+}
+
+.question-status-panel .question-status-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.question-status-panel :where(h2, h3, .text-lg, .type-heading, .pet-terrain-state-header strong, .pet-gap-inbox-header strong, .question-lint-card > strong) {
+  font-size: var(--pet-hud-title) !important;
+  line-height: 1.12 !important;
+}
+
+.question-status-panel :where(p, span, button, .text-sm, .text-base, .type-body, .type-label) {
+  font-size: var(--pet-hud-body) !important;
+  line-height: 1.3 !important;
+}
+
+.question-status-panel :where(time, .type-caption, .question-status-actions span) {
+  font-size: var(--pet-hud-small) !important;
+  line-height: 1.2 !important;
+}
+
+.question-status-pet-row {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+}
+
+.question-status-pet-row .question-pet-preview,
+.pet-detail-header .question-pet-preview,
+.question-hatch-screen .question-pet-preview,
+.pet-role-option .question-pet-preview {
+  aspect-ratio: 1 / 1 !important;
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  background: #fff !important;
+}
+
+.question-status-pet-agent {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 72px !important;
+  overflow: hidden !important;
+}
+
+.question-lint-card {
+  font-size: var(--pet-hud-body) !important;
+}
+
+.question-lint-grid--highlight {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+
+.question-lint-grid--highlight span {
+  display: grid !important;
+  place-items: center !important;
+  min-height: 34px !important;
+  padding: 5px 6px !important;
+  background: var(--palette-yellow) !important;
+  border: 3px solid #000 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+}
+
+.question-status-panel-minimized .question-status-compact,
+.question-status-panel-minimized .question-status-compact-lint p,
+.question-status-panel-minimized .question-status-compact-scoregrid {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.question-status-panel-minimized .question-status-compact-lint p {
+  display: block !important;
+  white-space: nowrap !important;
+  animation: pet-hud-marquee 12s linear infinite;
+}
+
+.pbs-interaction-root[data-language="ja"] .question-status-panel-minimized,
+.pbs-interaction-root[data-language="th"] .question-status-panel-minimized {
+  --pet-hud-title: clamp(15px, 1.05vw, 18px);
+  --pet-hud-body: clamp(11px, 0.82vw, 13px);
+  --pet-hud-small: clamp(10px, 0.72vw, 12px);
+}
+
+@keyframes pet-hud-marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.rpg-dialogue-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  min-height: 58px !important;
+  padding: 2px !important;
+  overflow: hidden !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 92px !important;
+  height: 92px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root {
+    --pet-hud-title: clamp(16px, 4vw, 19px);
+    --pet-hud-body: clamp(13px, 3.35vw, 16px);
+    --pet-hud-small: clamp(11px, 2.85vw, 13px);
+  }
+  .pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt) {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+  }
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+    min-width: min(420px, calc(100vw - 24px)) !important;
+    min-height: 72px !important;
+    font-size: 26px !important;
+    padding: 16px 24px !important;
+  }
+  .question-status-pet-row .question-pet-preview,
+  .pet-detail-header .question-pet-preview {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    min-height: 58px !important;
+  }
+  .question-status-pet-agent { min-height: 58px !important; }
+}
+
+/* 2026-06-01 request pass: unify pet lint tables, online HUD, player idea bulb. */
+.online-player-marquee {
+  position: fixed;
+  top: max(8px, var(--safe-top));
+  left: 50%;
+  z-index: calc(var(--z-layer-hud) + 80);
+  width: min(520px, calc(100vw - 24px));
+  height: 34px;
+  transform: translateX(-50%);
+  overflow: hidden;
+  border: 3px solid #000;
+  background: #fff;
+  color: #000;
+  box-shadow: 3px 3px 0 #000;
+  pointer-events: none;
+}
+
+.online-player-marquee-track {
+  display: inline-flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 28px;
+  height: 100%;
+  padding-inline: 12px;
+  font-family: var(--font-pixel, inherit);
+  font-size: clamp(12px, 1vw, 15px);
+  font-weight: 900;
+  white-space: nowrap;
+  animation: online-player-marquee-scroll 18s linear infinite;
+}
+
+@keyframes online-player-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.player-idea-bulb {
+  position: absolute;
+  z-index: calc(var(--z-layer-bubbles) + 8);
+  width: 42px;
+  height: 46px;
+  transform: translate(-50%, -100%) scale(var(--idea-bulb-scale, 1));
+  transform-origin: center bottom;
+  pointer-events: none;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.45));
+}
+
+.player-idea-bulb-light {
+  position: absolute;
+  left: 12px;
+  top: 6px;
+  width: 18px;
+  height: 26px;
+  background:
+    linear-gradient(#1b2830 0 0) 6px 0 / 6px 4px no-repeat,
+    linear-gradient(#1b2830 0 0) 0 6px / 5px 14px no-repeat,
+    linear-gradient(#1b2830 0 0) 13px 6px / 5px 14px no-repeat,
+    linear-gradient(#1b2830 0 0) 5px 22px / 8px 4px no-repeat,
+    linear-gradient(#ffd800 0 0) 5px 5px / 8px 16px no-repeat,
+    linear-gradient(#ffb800 0 0) 11px 5px / 4px 16px no-repeat,
+    linear-gradient(#6b6f78 0 0) 7px 26px / 5px 7px no-repeat,
+    linear-gradient(#1b2830 0 0) 4px 33px / 11px 4px no-repeat;
+  image-rendering: pixelated;
+  animation: player-idea-bulb-flicker 950ms steps(1, end) infinite;
+}
+
+.player-idea-bulb-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff26a;
+  box-shadow: 0 0 0 1px #000;
+  animation: player-idea-ray-twinkle 950ms steps(1, end) infinite;
+}
+
+.player-idea-bulb-dot--a { left: 4px; top: 9px; }
+.player-idea-bulb-dot--b { right: 3px; top: 10px; animation-delay: 160ms; }
+.player-idea-bulb-dot--c { left: 9px; top: 0; animation-delay: 320ms; }
+.player-idea-bulb-dot--d { right: 9px; top: 1px; animation-delay: 480ms; }
+
+@keyframes player-idea-bulb-flicker {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1.08); }
+  33% { filter: hue-rotate(42deg) brightness(1.35); }
+  66% { filter: hue-rotate(-24deg) brightness(0.92); }
+}
+
+@keyframes player-idea-ray-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); background: #fff26a; }
+  33% { opacity: 0.45; transform: scale(0.7); background: #8ff7ff; }
+  66% { opacity: 0.85; transform: scale(1.25); background: #ff93ea; }
+}
+
+.question-status-panel .question-lint-card > strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.question-status-panel .question-lint-grid--highlight {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 8px 0 !important;
+}
+
+.question-status-panel .question-lint-grid--highlight span {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 40px !important;
+  padding: 7px 10px !important;
+  background: #fff1fb !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+  font-size: var(--pet-hud-body) !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  text-align: left !important;
+}
+
+.question-status-panel .question-lint-card--summary {
+  display: none !important;
+}
+
+.question-status-pet-row .question-pet-preview,
+.pet-detail-header .question-pet-preview,
+.question-hatch-screen .question-pet-preview,
+.pet-role-option .question-pet-preview {
+  grid-template-columns: repeat(16, 2px) !important;
+  grid-template-rows: repeat(32, 2px) !important;
+  align-content: center !important;
+  justify-content: center !important;
+  place-content: center !important;
+}
+
+.question-status-panel-minimized {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: min(780px, calc(100vw - 24px)) !important;
+  max-width: calc(100vw - 24px) !important;
+  padding: 6px 10px !important;
+  overflow: hidden !important;
+}
+
+.question-status-panel-minimized .question-status-header {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.question-status-panel-minimized .question-status-header h2,
+.question-status-panel-minimized .question-status-actions span {
+  max-width: 168px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.question-status-panel-minimized .question-status-compact {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+.question-status-panel-minimized .question-status-compact-scoregrid {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  gap: 10px !important;
+}
+
+.question-status-panel-minimized .question-status-compact-scoregrid p,
+.question-status-panel-minimized .question-status-compact-lint p {
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.question-status-panel-minimized .question-status-compact-lint {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+
+.question-status-panel-minimized .question-status-compact-lint strong {
+  display: none !important;
+}
+
+.pbs-encounter-panel {
+  top: 56px;
+  right: 12px;
+  bottom: auto;
+  width: min(430px, calc(100vw - 24px));
+  height: min(46vh, 430px);
+  border-width: 3px;
+  background: color-mix(in srgb, var(--palette-cream) 92%, white 8%);
+  box-shadow: 4px 4px 0 var(--palette-blue);
+}
+
+.pbs-encounter-kicker {
+  display: none;
+}
+
+.pbs-encounter-panel h2,
+.pbs-chat-message,
+.pbs-chat-form input,
+.pbs-chat-form button {
+  font-size: var(--pet-hud-body) !important;
+  line-height: 1.3 !important;
+}
+
+.pbs-encounter-panel-header {
+  padding-bottom: 5px;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .online-player-marquee {
+    top: max(6px, var(--safe-top));
+    height: 30px;
+    width: min(420px, calc(100vw - 18px));
+  }
+
+  .player-idea-bulb {
+    width: 34px;
+    height: 38px;
+  }
+
+  .question-status-panel-minimized {
+    width: min(560px, calc(100vw - 12px)) !important;
+    gap: 7px !important;
+  }
+
+  .question-status-panel-minimized .question-status-header h2,
+  .question-status-panel-minimized .question-status-actions span {
+    max-width: 92px !important;
+  }
+
+  .question-status-panel-minimized .question-status-compact-scoregrid {
+    gap: 6px !important;
+  }
+}
+
+/* 2026-06-01 correction: restore character bubble anchors and unify dialogue thumbnails. */
+.pbs-interaction-root .npc-name-tag {
+  translate: none !important;
+  transform: translate(-50%, -100%) scale(var(--npc-tag-scale, 1)) !important;
+  transform-origin: center bottom !important;
+}
+
+.pbs-interaction-root .npc-name-tag:not(.mobile-talk-prompt),
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt {
+  min-width: auto !important;
+  max-width: min(220px, calc(100vw - 28px)) !important;
+  min-height: 0 !important;
+  padding: 7px 13px !important;
+  border-radius: 999px !important;
+  font-size: clamp(12px, 1vw, 16px) !important;
+  line-height: 1.12 !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
+.pbs-interaction-root .npc-name-tag.mobile-talk-prompt p {
+  margin: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.dialogue-avatar-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 90px !important;
+  min-width: 90px !important;
+}
+
+.dialogue-pixel-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-content: center !important;
+  overflow: hidden !important;
+  border: 1px solid var(--palette-blue) !important;
+  background: color-mix(in srgb, var(--palette-cream) 82%, white 18%) !important;
+}
+
+.dialogue-pixel-avatar-frame {
+  align-content: center !important;
+  justify-content: center !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 128px !important;
+  height: 128px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center 62% !important;
+}
+
+.dialogue-avatar-label {
+  max-width: 90px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+  color: var(--color-text-muted) !important;
+}
+
+.player-idea-bulb {
+  width: 18px !important;
+  height: 20px !important;
+  transform: translate(-50%, -100%) scale(var(--idea-bulb-scale, 1)) !important;
+  filter: none !important;
+}
+
+.player-idea-bulb-light {
+  left: 4px !important;
+  top: 3px !important;
+  width: 10px !important;
+  height: 14px !important;
+  background:
+    linear-gradient(#1b2830 0 0) 3px 0 / 4px 2px no-repeat,
+    linear-gradient(#1b2830 0 0) 0 3px / 2px 7px no-repeat,
+    linear-gradient(#1b2830 0 0) 8px 3px / 2px 7px no-repeat,
+    linear-gradient(#1b2830 0 0) 3px 10px / 5px 2px no-repeat,
+    linear-gradient(#ffd800 0 0) 2px 2px / 5px 8px no-repeat,
+    linear-gradient(#ffb800 0 0) 7px 3px / 2px 7px no-repeat,
+    linear-gradient(#6b6f78 0 0) 4px 12px / 3px 3px no-repeat,
+    linear-gradient(#1b2830 0 0) 3px 15px / 6px 2px no-repeat !important;
+}
+
+.player-idea-bulb-dot {
+  width: 2px !important;
+  height: 2px !important;
+  box-shadow: none !important;
+}
+
+.player-idea-bulb-dot--a { left: 0 !important; top: 5px !important; }
+.player-idea-bulb-dot--b { right: 0 !important; top: 5px !important; }
+.player-idea-bulb-dot--c { left: 4px !important; top: 0 !important; }
+.player-idea-bulb-dot--d { right: 4px !important; top: 0 !important; }
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt,
+  .pbs-interaction-root .npc-name-tag.mobile-talk-prompt p {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
+    padding: 7px 12px !important;
+  }
+}
+
+/* 2026-06-01 final visual corrections: single Japanese font, transparent pet cells, centered mini HUD, lower bulb, exact thumbnails. */
+html[data-language="ja"],
+body[data-language="ja"],
+[data-language="ja"],
+[data-language="ja"] :where(*, input, button, textarea, select),
+.player-setup-overlay[data-language="ja"],
+.player-setup-overlay[data-language="ja"] :where(*, input, button, textarea, select),
+.pbs-interaction-root[data-language="ja"],
+.pbs-interaction-root[data-language="ja"] :where(*, input, button, textarea, select),
+.rpg-dialogue-panel[data-language="ja"],
+.rpg-dialogue-panel[data-language="ja"] :where(*, input, button, textarea, select) {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif !important;
+  font-size-adjust: none !important;
+  letter-spacing: 0 !important;
+}
+
+.player-setup-overlay[data-language="ja"] :where(.player-setup-one-label, .pet-runner-bubble, .player-setup-action, .player-setup-field) {
+  font-size: clamp(18px, 2.1vw, 24px) !important;
+  line-height: 1.18 !important;
+  font-weight: 800 !important;
+}
+
+.player-setup-overlay[data-language="ja"] .player-setup-action {
+  font-size: clamp(22px, 2.6vw, 30px) !important;
+}
+
+.home-subtitle,
+.dd-reset-hero .dd-subtitle,
+.pbs-frame-subtitle[data-ui-part="subtitle"] {
+  text-transform: uppercase !important;
+}
+
+.question-pet-preview,
+.question-status-panel .question-pet-preview,
+.pet-runner-option .question-pet-preview,
+.pet-detail-header .question-pet-preview {
+  background-color: transparent !important;
+}
+
+.question-status-panel-minimized .question-status-pet-row,
+.question-status-panel-minimized .question-status-title {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.question-status-panel-minimized .question-status-title .question-pet-preview,
+.question-status-panel-minimized .question-status-pet-row .question-pet-preview {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  overflow: visible !important;
+  transform: translateY(-1px) !important;
+  align-content: center !important;
+  justify-content: center !important;
+  place-content: center !important;
+}
+
+.player-idea-bulb {
+  margin-top: 14px !important;
+}
+
+.dialogue-pixel-avatar-frame,
+.rpg-dialogue-avatar-frame--campfire {
+  width: 92px !important;
+  height: 92px !important;
+  min-width: 92px !important;
+  min-height: 92px !important;
+  background: transparent !important;
+}
+
+.dialogue-avatar-wrap {
+  width: 112px !important;
+  min-width: 112px !important;
+}
+
+.rpg-dialogue-avatar-frame--campfire img {
+  width: 92px !important;
+  height: 92px !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+.world-resonance-notice--join {
+  color: #111 !important;
+  background:
+    linear-gradient(90deg, #FCF46B 0 24%, #FFD4FF 24% 48%, #69C3AA 48% 72%, #BAC3D9 72% 100%) !important;
+  border: 4px solid #111 !important;
+  box-shadow: 5px 5px 0 #111, 10px 10px 0 #FFD4FF !important;
+  font-size: clamp(19px, 2vw, 26px) !important;
+  font-weight: 1000 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* 2026-06-02: player-to-player chat HUD unified with Question Pet/Tamagotchi HUD styling. */
+.pbs-encounter-panel {
+  top: auto !important;
+  right: auto !important;
+  left: max(12px, calc(var(--safe-left) + 12px)) !important;
+  bottom: max(12px, calc(var(--safe-bottom) + 12px)) !important;
+  width: min(430px, calc(100vw - 24px)) !important;
+  height: min(46dvh, 430px) !important;
+  max-height: min(46dvh, 430px) !important;
+  padding: 12px !important;
+  border: 4px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--palette-silver) 88%, var(--palette-cream) 12%) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: 5px 5px 0 var(--tama-ink, #111), 9px 9px 0 var(--palette-blue) !important;
+  image-rendering: pixelated;
+}
+
+.pbs-encounter-panel-header {
+  align-items: center !important;
+  min-height: 44px !important;
+  margin: 0 0 8px !important;
+  padding: 0 0 8px !important;
+  border-bottom: 3px solid var(--tama-ink, #111) !important;
+}
+
+.pbs-encounter-panel h2 {
+  font-size: var(--pet-hud-title, 18px) !important;
+  line-height: 1.05 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}
+
+.pbs-encounter-kicker {
+  display: block !important;
+  margin: 0 0 3px !important;
+  color: var(--palette-blue) !important;
+  font-size: var(--pet-hud-caption, 11px) !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+
+.pbs-encounter-close,
+.pbs-chat-form button {
+  border: 3px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: var(--palette-yellow) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: 3px 3px 0 var(--tama-ink, #111) !important;
+  font-weight: 1000 !important;
+}
+
+.pbs-encounter-close {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  font-size: 18px !important;
+}
+
+.pbs-chat-panel {
+  gap: 8px !important;
+}
+
+.pbs-chat-log {
+  border: 3px solid var(--tama-ink, #111) !important;
+  background: var(--lcd-screen, var(--palette-cream)) !important;
+  box-shadow: inset 3px 3px 0 color-mix(in srgb, var(--tama-ink, #111) 18%, transparent) !important;
+  padding: 9px !important;
+}
+
+.pbs-chat-empty,
+.pbs-chat-message,
+.pbs-chat-form input,
+.pbs-chat-form button {
+  font-size: var(--pet-hud-body, 14px) !important;
+  line-height: 1.25 !important;
+}
+
+.pbs-chat-message {
+  border: 2px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--palette-cream) 90%, white 10%) !important;
+  box-shadow: 2px 2px 0 var(--tama-ink, #111) !important;
+}
+
+.pbs-chat-message.is-local {
+  background: color-mix(in srgb, var(--palette-blue) 24%, var(--palette-cream) 76%) !important;
+}
+
+.pbs-chat-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+}
+
+.pbs-chat-form input {
+  min-height: 42px !important;
+  border: 3px solid var(--tama-ink, #111) !important;
+  border-radius: 0 !important;
+  background: var(--lcd-screen, var(--palette-cream)) !important;
+  color: var(--tama-ink, #111) !important;
+  box-shadow: inset 2px 2px 0 color-mix(in srgb, var(--tama-ink, #111) 15%, transparent) !important;
+}
+
+.pbs-chat-form button {
+  min-width: 62px !important;
+  min-height: 42px !important;
+  padding: 6px 10px !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .pbs-encounter-panel {
+    left: max(8px, var(--safe-left)) !important;
+    right: max(8px, var(--safe-right)) !important;
+    bottom: max(6px, var(--safe-bottom)) !important;
+    top: auto !important;
+    width: auto !important;
+    height: min(42dvh, 340px) !important;
+    max-height: min(42dvh, 340px) !important;
+    padding: 9px !important;
+    border-width: 3px !important;
+    box-shadow: 3px 3px 0 var(--tama-ink, #111) !important;
+  }
+
+  .pbs-encounter-panel-header {
+    min-height: 36px !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .pbs-encounter-panel h2 {
+    font-size: 14px !important;
+  }
+
+  .pbs-encounter-kicker {
+    display: none !important;
+  }
+
+  .pbs-chat-log {
+    padding: 7px !important;
+  }
+
+  .pbs-chat-message {
+    max-width: 88% !important;
+    margin-bottom: 6px !important;
+    padding: 7px 8px !important;
+  }
+
+  .pbs-chat-form {
+    grid-template-columns: minmax(0, 1fr) 54px !important;
+  }
+
+  .pbs-chat-form input,
+  .pbs-chat-form button {
+    min-height: 38px !important;
+    font-size: 13px !important;
   }
 }

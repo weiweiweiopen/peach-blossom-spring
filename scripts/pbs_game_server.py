@@ -28,14 +28,63 @@ def json_bytes(payload: object) -> bytes:
     return json.dumps(payload, ensure_ascii=False).encode("utf-8")
 
 
-def fallback_answer(question: str, evidence: list[dict], error: str = "") -> str:
+def _fallback_templates(language: str, name: str = "") -> dict:
+    no_evidence: dict[str, str] = {
+        "zh-TW": "這題火邊暫時沒有撿到可靠材料；換一個更具體的作品、材料或工作坊名稱，我再翻一次灰。",
+        "en": "The campfire has not found reliable material for this question yet. Try a more concrete work, material, or workshop name, and I will stir the ashes again.",
+        "id": "Api unggun belum menemukan materi yang andal untuk pertanyaan ini. Coba nama karya, bahan, atau bengkel yang lebih konkret.",
+        "de": "Das Lagerfeuer hat noch kein verlässliches Material zu dieser Frage gefunden. Versuche einen konkreteren Werk-, Material- oder Workshopnamen.",
+        "ja": "この質問に対して信頼できる材料はまだ見つかっていません。より具体的な作品、材料、ワークショップ名で試してみてください。",
+        "th": "กองไฟยังไม่พบวัสดุที่เชื่อถือได้สำหรับคำถามนี้ ลองใช้ชื่อผลงาน วัสดุ หรือเวิร์กช็อปที่เจาะจงมากขึ้น",
+    }
+    snippet_template: dict[str, str] = {
+        "zh-TW": "我先抓住「{label}」這根木柴：{snippet}\n\n這不是完整答案，只是火暫時把能檢查的材料推到你手邊；等外部腦袋醒來，我再把它烤成比較像話的回應。",
+        "en": "I grab '{label}' as the first piece of firewood: {snippet}\n\nThis is not a complete answer, just the campfire pushing checkable material into your hands. When the outer mind wakes up, I will bake it into a proper response.",
+        "id": "Saya ambil '{label}' sebagai kayu api pertama: {snippet}\n\nIni bukan jawaban lengkap, hanya api unggun yang mendorong bahan yang bisa diperiksa. Saat pikiran luar bangun, saya akan memanggangnya menjadi tanggapan yang layak.",
+        "de": "Ich nehme '{label}' als erstes Feuerholz: {snippet}\n\nDas ist keine vollständige Antwort, nur Material, das das Lagerfeuer an dich weitergibt. Wenn der äußere Geist erwacht, backe ich eine richtige Antwort daraus.",
+        "ja": "最初の薪として「{label}」を手に取ります：{snippet}\n\nこれは完全な答えではなく、火が確認できる材料をあなたの手に届けたものです。外の心が目覚めたら、きちんとした応答に焼き上げます。",
+        "th": "ฉันหยิบ '{label}' เป็นฟืนชิ้นแรก：{snippet}\n\nนี่ไม่ใช่คำตอบที่สมบูรณ์ แค่กองไฟผลักวัสดุที่ตรวจสอบได้มาให้คุณ เมื่อจิตใจภายนอกตื่นขึ้น ฉันจะปิ้งมันให้เป็นคำตอบที่เหมาะสม",
+    }
+    empty_npc: dict[str, str] = {
+        "zh-TW": f"{name} 現在先用自己記得的部分來回答你。",
+        "en": f"{name} is answering from what I remember.",
+        "id": f"{name} menjawab dari apa yang saya ingat.",
+        "de": f"{name} antworte aus dem, woran ich mich erinnere.",
+        "ja": f"{name} は覚えている範囲で答えます。",
+        "th": f"{name} กำลังตอบจากสิ่งที่ฉันจำได้",
+    }
+    return {"no_evidence": no_evidence, "snippet": snippet_template, "empty_npc": empty_npc}
+
+
+def _lang(language: str, templates: dict[str, str], default: str = "en") -> str:
+    return templates.get(language) or templates.get(default, "")
+
+
+def fallback_answer(question: str, evidence: list[dict], error: str = "", language: str = "zh-TW") -> str:
+    tpl = _fallback_templates(language)
     if not evidence:
-        return "這題火邊暫時沒有撿到可靠材料；換一個更具體的作品、材料或工作坊名稱，我再翻一次灰。"
+        return _lang(language, tpl["no_evidence"])
     first = evidence[0]
-    label = first.get("label") or first.get("sourceLabel") or "第一個來源"
+    label = first.get("label") or first.get("sourceLabel") or (_lang(language, {"zh-TW": "第一個來源", "en": "first source", "id": "sumber pertama", "de": "erste Quelle", "ja": "最初のソース", "th": "แหล่งแรก"}))
     text = str(first.get("text") or "").strip()
     snippet = text[:180].strip()
-    return f"我先抓住「{label}」這根木柴：{snippet}。這不是完整答案，只是火暫時把能檢查的材料推到你手邊；等外部腦袋醒來，我再把它烤成比較像話的回應。"
+    template = _lang(language, tpl["snippet"])
+    return template.format(label=label, snippet=snippet)
+
+
+def npc_fallback_answer(question: str, npc_name: str, evidence: list[dict], error: str = "", language: str = "zh-TW") -> str:
+    tpl = _fallback_templates(language, npc_name)
+    if evidence:
+        return fallback_answer(question, evidence, error, language)
+    no_evidence: dict[str, str] = {
+        "zh-TW": f"我現在先用自己記得的部分來回答。訪談裡提到的事我可以多說，但從公開來源還沒找到更多可以連結的材料。",
+        "en": f"I will answer from what I remember. I can tell you more about what I discussed in my interview, but I have not found additional linked material from public sources yet.",
+        "id": f"Saya akan menjawab dari apa yang saya ingat. Saya bisa menceritakan lebih banyak tentang wawancara saya, tetapi belum menemukan materi tambahan dari sumber publik.",
+        "de": f"Ich antworte aus dem, woran ich mich erinnere. Ich kann mehr über mein Interview erzählen, habe aber noch kein zusätzliches Material aus öffentlichen Quellen gefunden.",
+        "ja": f"覚えている範囲で答えます。インタビューで話したことはもっと詳しく話せますが、公開ソースからの追加資料はまだ見つかっていません。",
+        "th": f"ฉันจะตอบจากสิ่งที่ฉันจำได้ ฉันสามารถเล่าเพิ่มเติมเกี่ยวกับบทสัมภาษณ์ของฉันได้ แต่ยังไม่พบเนื้อหาเพิ่มเติมจากแหล่งสาธารณะ",
+    }
+    return _lang(language, no_evidence)
 
 
 def language_instruction(preferred_language: str) -> str:
@@ -105,6 +154,18 @@ def dialogue_history_context(turns: object, limit: int = 8) -> str:
     return "\n".join(cleaned)
 
 
+def _has_transcript_context(npc_context: str) -> bool:
+    stripped = npc_context.strip()
+    if not stripped:
+        return False
+    if "Persona JSON:" in stripped:
+        idx = stripped.find("Persona JSON:")
+        after_json = stripped[idx:].split("\n", 4)
+        if len(after_json) > 3 and after_json[3].strip() and after_json[3].strip() != "Relevant transcript excerpts:":
+            return True
+    return False
+
+
 def answer_with_memory(question: str, preferred_language: str, npc_context: str = "", dialogue_history: str = "") -> dict:
     links = memory_search(question, limit=8)
     evidence = build_evidence_packet(links)
@@ -126,8 +187,7 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
         "Mention links by plain language only when useful; keep source references light in NPC dialogue.",
         "Do not say no evidence was found when PBS engine evidence is present. If the evidence block is empty, say the link search did not find reliable related sources and do not imply that source links exist.",
         "Keep a little campfire wit when it fits, but be concrete first.",
-        "When a useful route keyword is implied by the question (for example 共居創作, 臨時社群, 多物種共居, feminist technology, DIY synth, temporary commons), use that keyword directly to answer and to choose links. Do not tell the player to search again; act as the guide who already follows that route for them.",
-        "If you include a PBS usage tip, make it about what PBS is doing now: reading the source links below, comparing the linked cases, or turning this answer into a zine. Do not say merely 'try another keyword' unless the evidence is empty.",
+        "Every campfire answer must include one short practical PBS usage tip in the same language. Vary the tip: open the source links, ask for examples, turn the answer into a zine, compare communities, or use more concrete material/place names.",
         "Occasionally, roughly one out of four answers, briefly explain the name 多重心智自我火燄: feelings, emotions, and thoughts can be shared rather than privately owned; cite it as Joscha Bach's reading of an ancient Greek idea that later became the idea of gods. Keep it short and do not force it when the user needs a direct answer.",
         "",
         "--- PBS schema context ---",
@@ -149,7 +209,63 @@ def answer_with_memory(question: str, preferred_language: str, npc_context: str 
     try:
         answer = call_deepseek(system_prompt, question)
     except (urllib.error.URLError, urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
-        answer = fallback_answer(question, evidence, str(error)) if evidence else f"Local PBS memory server is available, but no PBS engine evidence matched this question. DeepSeek error: {error}"
+        answer = fallback_answer(question, evidence, str(error), preferred_language)
+    resolved_links = links if links else memory_search_with_hints(question, answer, limit=8)
+    resolved_evidence = evidence if links else build_evidence_packet(resolved_links)
+    return {"answer": answer, "evidence": resolved_evidence, "links": resolved_links}
+
+
+def answer_with_npc_memory(question: str, preferred_language: str, npc_name: str, npc_context: str = "", transcript: str = "", dialogue_history: str = "") -> dict:
+    """NPC endpoint: persona/transcript first, source evidence second.
+    Never says 'not enough clues' when persona/transcript context exists.
+    """
+    links = memory_search(question, limit=8)
+    evidence = build_evidence_packet(links)
+    evidence_block = "\n\n".join(
+        f"[{index}] {item.get('label')}\n{item.get('text')}\n{item.get('url', '')}"
+        for index, item in enumerate(evidence, start=1)
+    )
+    has_persona = bool(npc_context.strip())
+    has_transcript = bool(transcript.strip())
+    system_prompt = "\n".join([
+        language_instruction(preferred_language),
+        "You answer inside a Peach Blossom Spring RPG dialogue as a specific NPC.",
+        "The interface language instruction is binding.",
+        "",
+        "--- PBS schema context ---",
+        schema_context()[:3000],
+        "--- end schema context ---",
+        "",
+        "--- NPC persona & transcript (PRIMARY context) ---",
+        "Answer FIRST from this persona/transcript. The transcript is the NPC's own NGM interview.",
+        "If the player asks about your interview, your community, your work, or your opinions,",
+        "use the persona JSON and transcript excerpts as your primary source.",
+        "Do NOT say 'not enough clues' or 'I cannot find evidence' when the persona/transcript is present.",
+        npc_context[:5000],
+        "--- end NPC persona & transcript ---",
+        "",
+        "--- PBS engine evidence (supplementary) ---",
+        evidence_block or "(no linked public source pages found for this question; answer from NPC memory)",
+        "--- end PBS engine evidence ---",
+        "",
+        "--- recent dialogue context ---",
+        dialogue_history[:5000] or "(no prior dialogue in this window)",
+        "--- end recent dialogue context ---",
+        "",
+        "CRITICAL RULES:",
+        "- Do NOT answer like a generic search assistant or wiki query engine.",
+        "- Do NOT say '抓不到足夠線索', 'not enough clues', or 'low evidence' when persona/transcript exists.",
+        "- Do NOT say you are a 'local-memory game server', 'retrieval', 'backend', or 'PBS memory'.",
+        "- Do NOT use source bracket citations like [1] in dialogue text.",
+        "- Do NOT write system self-description or mention your prompt.",
+        "- If the evidence block is empty, answer naturally from persona/transcript without commenting on the absence of evidence.",
+        "- Keep the reply concise, first-person, and grounded in the NPC's actual interview and community practice.",
+        "- The NPC voice should feel like a person talking, not a document summarizer.",
+    ])
+    try:
+        answer = call_deepseek(system_prompt, question)
+    except (urllib.error.URLError, urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
+        answer = npc_fallback_answer(question, npc_name, evidence, str(error), preferred_language)
     resolved_links = links if links else memory_search_with_hints(question, answer, limit=8)
     resolved_evidence = evidence if links else build_evidence_packet(resolved_links)
     return {"answer": answer, "evidence": resolved_evidence, "links": resolved_links}
@@ -244,7 +360,7 @@ class PbsGameHandler(SimpleHTTPRequestHandler):
                     transcript,
                     "Instruction: answer as this NPC, using the persona and transcript excerpts first as the voice/stance/cadence anchor; public PBS evidence is only checkable support. Do not answer like a generic search assistant.",
                 ])
-                self.send_json(answer_with_memory(question, preferred_language, npc_context=npc_context, dialogue_history=dialogue_history))
+                self.send_json(answer_with_npc_memory(question, preferred_language, npc_name, npc_context=npc_context, transcript=transcript, dialogue_history=dialogue_history))
                 return
             if self.path == "/api/memory/draft":
                 question = str(payload.get("question") or payload.get("query") or "")

@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
 import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
-import { CharacterDialogueAvatar } from './DialogueAvatarSprite.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { askNpc, canUseLocalMemoryServer } from '../localMemoryApi.js';
-import { buildTranscriptEvidenceChunks, type ChatEvidence, rankEvidence } from '../localChatbot.js';
+import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../localMemoryApi.js';
+import { buildTranscriptEvidenceChunks, retrieveNpcEvidence, type ChatEvidence, rankEvidence } from '../localChatbot.js';
+import { getCharacterSprites } from '../office/sprites/spriteData.js';
+import { Direction, type SpriteData } from '../office/types.js';
+import { searchWikiPages, searchWikiPagesWithHints, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
   id: string;
@@ -33,7 +35,16 @@ interface DialogueMessage {
   speaker: string;
   text: string;
   evidence?: ChatEvidence[];
-  followUps?: string[];
+  links?: WikiSearchResult[];
+}
+
+const DIALOGUE_CONTEXT_TURNS = 8;
+
+function recentDialogueHistory(messages: DialogueMessage[]): DialogueHistoryTurn[] {
+  return messages
+    .filter((message) => message.text.trim())
+    .slice(-DIALOGUE_CONTEXT_TURNS)
+    .map((message) => ({ speaker: message.speaker, text: message.text.trim() }));
 }
 
 interface RpgDialogueProps {
@@ -48,6 +59,43 @@ interface RpgDialogueProps {
   onOpenAssociationZine?: (query: string, writingStyle: string) => void;
 }
 
+function PixelAvatar({ avatar, label }: { avatar: DialogueAvatar; label: string }) {
+  const [frame, setFrame] = useState(0);
+  const sprite = useMemo<SpriteData>(() => {
+    const sprites = getCharacterSprites(avatar.palette, avatar.hueShift);
+    return sprites.walk[Direction.DOWN][frame % 4];
+  }, [avatar.hueShift, avatar.palette, frame]);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setFrame((current) => current + 1), 120);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div
+        className="bg-bg/80 border border-border p-2"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${(sprite[0]?.length ?? 1).toString()}, 3px)`,
+          gridAutoRows: '3px',
+        }}
+        aria-label={label}
+      >
+        {sprite.flatMap((row, rowIndex) =>
+          row.map((color, colIndex) => (
+            <span
+              key={`${rowIndex.toString()}-${colIndex.toString()}`}
+              style={{ backgroundColor: color || 'transparent' }}
+            />
+          )),
+        )}
+      </div>
+      <span className="max-w-[110px] truncate text-xs text-text-muted">{label}</span>
+    </div>
+  );
+}
+
 function shorten(text: string, max: number): string {
   const normalized = text.replace(/\s+/g, ' ').trim();
   return normalized.length > max ? `${normalized.slice(0, max).trim()}...` : normalized;
@@ -55,40 +103,6 @@ function shorten(text: string, max: number): string {
 
 function cleanQuestionPart(text: string, max = 54): string {
   return shorten(text.replace(/[。.!?？]+$/g, ''), max);
-}
-
-function cleanEvidenceLabel(text: string, max = 42): string {
-  return shorten(text.replace(/^\[[0-9]+\]\s*/g, '').replace(/\s+/g, ' ').trim(), max);
-}
-
-function evidenceAnchor(evidence: ChatEvidence[], fallback: string): string {
-  const labels = Array.from(new Set(evidence.map((item) => item.sourceLabel || item.label).filter(Boolean).map((label) => cleanEvidenceLabel(label)))).filter(Boolean);
-  return labels[0] || fallback;
-}
-
-function evidenceKeyword(evidence: ChatEvidence[], question: string): string {
-  const text = `${question}\n${evidence.map((item) => `${item.label} ${item.text}`).join('\n')}`;
-  const keywordPatterns = [
-    /e-?textile|electronic textiles?|電子織品|電子紡織/i,
-    /conductive fabric|導電織物|導電布/i,
-    /conductive thread|導電線/i,
-    /pressure sensor|壓力感測器/i,
-    /stretch sensor|拉伸感測器/i,
-    /wearable|wearables?|穿戴/i,
-    /soft circuit|軟電路/i,
-    /microcontroller|微控制器|arduino/i,
-    /KOBAKANT/i,
-    /Fabricademy/i,
-    /Green Fab Lab/i,
-    /agricultural robot|農業機器人/i,
-    /Hackteria/i,
-    /SGMK/i,
-  ];
-  for (const pattern of keywordPatterns) {
-    const match = text.match(pattern);
-    if (match?.[0]) return match[0];
-  }
-  return evidenceAnchor(evidence, cleanQuestionPart(question, 24));
 }
 
 function shuffleCopy<T>(items: T[]): T[] {
@@ -102,176 +116,406 @@ function shuffleCopy<T>(items: T[]): T[] {
 
 const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
-    'Green Fab Lab Valldaura 有哪些開放硬體、生態科技或無人機工作坊案例？',
-    'Green Fab Lab 是什麼地方？',
-    'FarmBot、Green Fab Lab 或 Valldaura 有哪些開放硬體農業案例？',
+    'Open Source Beehives 如何把感測器、蜂群與農地照護連成一種可共享的田野知識？',
+    'Green Fab Lab 的農業機器人與生態日曆，怎麼改變 fab lab 只做工具展示的想像？',
+    'Jonathan 的訪談裡，什麼樣的在地關係比實驗室設備更能讓技術留下來？',
   ],
   'marc-dusseiller': [
-    'Hackteria 是什麼？',
-    'DIY biology 是什麼？',
-    'Hackteria 的 DIY microscopy 和 BioArt workshop 如何連到藝術和生物倫理？',
-  ],
-  'mika-satomi': [
-    '什麼是電子織品？',
-    '有沒有柔性電路和電子合成器合作的例子？',
-    '什麼是多點觸控介面？它和電子織品有什麼關係？',
-    'KOBAKANT 的 Fluffy MIDI 是怎麼把布料變成聲音介面的？',
-    'Fluffy MIDI 和 Woolly Noise 分別如何把導電材料、Teensy 或 Arduino 變成聲音介面？',
-    '導電線、導電布、壓力感測器和 soft circuit 可以在 KOBAKANT 或 Fabricademy 文件裡做出哪些作品？',
-    'Fabricademy 的 wearables 課程教哪些電子織品技術？',
+    'Marc 說的 Hackteria 精神裡，為什麼便宜、可拆、好笑會比正式實驗室更重要？',
+    '在 Marc 的工作坊經驗裡，失敗、料理、焊接和友誼怎麼一起變成教學方法？',
+    '如果一個 science-art box 不能被打開、污染、重做，Marc 會怎麼批評它？',
   ],
   'tincuta-heinzel': [
-    'HOME MADE 2016 和 I.N.S.E.C.T. Summercamp 可以怎麼解釋獨立藝術營？',
-    'Archive HOME MADE 和 Radionica krassfade 裡有哪些聲音工具、Klangmaschinen 或 DIY synth 工作坊？',
-    'I.N.S.E.C.T. Summercamp 和 Open Call 頁面可以看出哪些營隊知識？',
+    '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？',
+    'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
+    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具，而不是教學活動？',
   ],
 };
 
-function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
-  const fixed = personaQuestionSeeds[persona.id] ?? [];
-  const sourceBridgeQuestions = [
-    `Hackteria Main Page 和 About 頁面如何介紹 Hackteria 的 DIY biology、bioart 與開源藝術社群？`,
-    `CoLabs Chiang Mai 是什麼？它和 Hackteria、SGMK、bioart wet-workshop 有哪些關係？`,
-    `為什麼黑客營或獨立藝術營裡常常出現 DIY synth、聲音工具和臨時工作坊？`,
-    `有哪些電子織品、柔性電路或穿戴電子可以變成作品、產品或教學套件？`,
-    `什麼是獨立藝術營？它和替代教育有什麼關係？`,
-    `Fabricademy wearables、Playing with electronic textiles 和 Tone of the Things 如何把材料實驗變成教學文件？`,
-  ];
-  if (language === 'zh-TW') {
-    return shuffleCopy([...fixed, ...sourceBridgeQuestions]).slice(0, 9);
-  }
+type NpcGuideProfile = {
+  opener: Record<LanguageCode, string>;
+  questions: Record<LanguageCode, string[]>;
+};
 
-  const bridgeByLanguage: Record<Exclude<LanguageCode, 'zh-TW'>, string[]> = {
-    en: [
-      `How do the Hackteria Main Page and About page introduce DIY biology, bioart, and open art communities?`,
-      `What is CoLabs Chiang Mai, and how does it connect Hackteria, SGMK, and bioart wet-workshops?`,
-      `Why do hacker camps or independent art camps often include DIY synths and sound tools?`,
-      `Are there e-textile, soft-circuit, or wearable-electronics examples that became works, products, or teaching kits?`,
-      `What is an independent art camp, and how does it relate to alternative education?`,
-      `How do Fabricademy wearables, Playing with electronic textiles, and Tone of the Things turn material experiments into teaching documents?`,
-    ],
-    id: [
-      `Bagaimana halaman Hackteria Main Page dan About memperkenalkan DIY biology, bioart, dan komunitas seni terbuka?`,
-      `Apa itu CoLabs Chiang Mai, dan bagaimana hubungannya dengan Hackteria, SGMK, serta bioart wet-workshop?`,
-      `Mengapa camp hacker atau camp seni independen sering berisi synth DIY dan alat suara?`,
-      `Adakah contoh e-textile, soft circuit, atau wearable electronics yang menjadi karya, produk, atau kit belajar?`,
-      `Apa itu camp seni independen, dan bagaimana hubungannya dengan pendidikan alternatif?`,
-      `Bagaimana Fabricademy wearables, Playing with electronic textiles, dan Tone of the Things mengubah eksperimen material menjadi dokumen ajar?`,
-    ],
-    de: [
-      `Wie stellen die Hackteria Main Page und die About-Seite DIY Biology, Bioart und offene Kunst-Communities vor?`,
-      `Was ist CoLabs Chiang Mai, und wie verbindet es Hackteria, SGMK und Bioart-Wet-Workshops?`,
-      `Warum enthalten Hacker-Camps oder unabhängige Kunst-Camps oft DIY-Synths und Klangwerkzeuge?`,
-      `Gibt es E-Textile-, Soft-Circuit- oder Wearable-Electronics-Beispiele, die zu Werken, Produkten oder Lernkits wurden?`,
-      `Was ist ein unabhängiges Kunst-Camp, und wie hängt es mit alternativer Bildung zusammen?`,
-      `Wie machen Fabricademy wearables, Playing with electronic textiles und Tone of the Things Materialexperimente zu Lehrdokumenten?`,
-    ],
-    ja: [
-      `Hackteria の Main Page と About は、DIY biology、bioart、開かれたアート・コミュニティをどう紹介している？`,
-      `CoLabs Chiang Mai とは何で、Hackteria、SGMK、bioart wet-workshop とどう関係している？`,
-      `ハッカーキャンプや独立アートキャンプに DIY synth や音の道具がよく出てくるのはなぜ？`,
-      `電子テキスタイル、soft circuit、wearable electronics が作品、製品、教材キットになる例はある？`,
-      `独立アートキャンプとは何で、代替教育とどう関係している？`,
-      `Fabricademy wearables、Playing with electronic textiles、Tone of the Things は、材料実験をどう教材化している？`,
-    ],
-    th: [
-      `หน้า Hackteria Main Page และ About แนะนำ DIY biology, bioart และชุมชนศิลปะแบบเปิดอย่างไร?`,
-      `CoLabs Chiang Mai คืออะไร และเกี่ยวข้องกับ Hackteria, SGMK และ bioart wet-workshop อย่างไร?`,
-      `ทำไม hacker camp หรือ independent art camp มักมี DIY synth และเครื่องมือเสียง?`,
-      `มีตัวอย่าง e-textile, soft circuit หรือ wearable electronics ที่กลายเป็นงาน ผลิตภัณฑ์ หรือชุดเรียนรู้ไหม?`,
-      `independent art camp คืออะไร และเกี่ยวข้องกับ alternative education อย่างไร?`,
-      `Fabricademy wearables, Playing with electronic textiles และ Tone of the Things เปลี่ยนการทดลองวัสดุเป็นเอกสารสอนอย่างไร?`,
-    ],
-  };
-  return shuffleCopy(bridgeByLanguage[language]).slice(0, 9);
+const npcGuideProfiles: Record<string, NpcGuideProfile> = {
+  abao: {
+    opener: {
+      'zh-TW': '我喜歡把太陽能、雷射、旅行和奇怪寓言混在一起。你想知道科學藝術怎麼變成一個故事嗎？',
+      en: 'I like mixing solar material, lasers, travel, and strange fables. Want to see how science art can become a story?',
+      id: 'Aku suka mencampur bahan surya, laser, perjalanan, dan dongeng aneh. Mau melihat seni-sains menjadi cerita?',
+      de: 'Ich mische gern Solarmaterial, Laser, Reisen und seltsame Fabeln. Willst du sehen, wie Science-Art zur Geschichte wird?',
+      ja: '太陽素材、レーザー、旅、変な寓話を混ぜるのが好きです。科学芸術が物語になるところを見たいですか？',
+      th: 'ฉันชอบผสมวัสดุพลังงานแสงอาทิตย์ เลเซอร์ การเดินทาง และนิทานแปลก ๆ อยากดูไหมว่าวิทยาศาสตร์ศิลป์กลายเป็นเรื่องเล่าได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你是一個什麼樣的藝術家嗎？', '你在 NGM 訪談裡主要聊了哪些事？', '如果我是第一次認識你的作品，應該先看什麼？'],
+      'en': ['Can you tell me what kind of artist you are?', 'What did you mainly talk about in your NGM interview?', 'If I am new to your work, what should I look at first?'],
+      'id': ['Bisa ceritakan kamu seniman seperti apa?', 'Apa hal utama yang kamu bicarakan dalam wawancara NGM?', 'Kalau saya baru mengenal karyamu, sebaiknya mulai dari apa?'],
+      'de': ['Kannst du mir erzählen, was für eine Künstlerin du bist?', 'Worüber hast du im NGM-Interview hauptsächlich gesprochen?', 'Wenn ich deine Arbeit zum ersten Mal kennenlerne, womit sollte ich anfangen?'],
+      'ja': ['あなたはどんなアーティストなのか教えてくれますか？', 'NGM のインタビューでは主に何を話しましたか？', '初めてあなたの作品を知るなら、何から見るとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าคุณเป็นศิลปินแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงเรื่องอะไรเป็นหลัก?', 'ถ้าฉันเพิ่งรู้จักงานของคุณ ควรเริ่มดูจากอะไร?'],
+    },
+  },
+  'andreas-siagian': {
+    opener: {
+      'zh-TW': '我在意的是鄰里裡真的有人會用、會修、會照顧的技術。你想知道實驗室怎麼長在日常生活裡嗎？',
+      en: 'I care about tools that neighbors can really use, repair, and care for. Want to know how a lab grows inside everyday life?',
+      id: 'Aku peduli pada alat yang benar-benar bisa dipakai, diperbaiki, dan dirawat tetangga. Mau tahu lab tumbuh dalam hidup sehari-hari?',
+      de: 'Mich interessieren Werkzeuge, die Nachbarinnen wirklich nutzen, reparieren und pflegen können. Willst du wissen, wie ein Labor im Alltag wächst?',
+      ja: '近所の人が本当に使い、直し、世話できる道具が大事です。ラボが日常の中で育つ様子を知りたいですか？',
+      th: 'ฉันสนใจเครื่องมือที่เพื่อนบ้านใช้ ซ่อม และดูแลได้จริง อยากรู้ไหมว่าแล็บเติบโตในชีวิตประจำวันอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Lifepatch 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談開放科學和日常生活？', '如果新手想理解你的社群實驗室，應該先問什麼？'],
+      'en': ['Can you tell me what kind of group Lifepatch is?', 'How did you talk about open science and everyday life in your NGM interview?', 'If a beginner wants to understand your community lab, what should they ask first?'],
+      'id': ['Bisa ceritakan Lifepatch itu kelompok seperti apa?', 'Bagaimana kamu membahas sains terbuka dan kehidupan sehari-hari dalam wawancara NGM?', 'Kalau pemula ingin memahami lab komunitasmu, pertanyaan apa yang sebaiknya diajukan dulu?'],
+      'de': ['Kannst du mir erzählen, was für eine Gruppe Lifepatch ist?', 'Wie hast du im NGM-Interview über offene Wissenschaft und Alltag gesprochen?', 'Wenn Anfänger dein Community-Labor verstehen wollen, was sollten sie zuerst fragen?'],
+      'ja': ['Lifepatch はどんな団体なのか教えてくれますか？', 'NGM のインタビューでオープンサイエンスと日常生活をどう話しましたか？', '初心者があなたのコミュニティ・ラボを理解したいなら、まず何を聞くとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Lifepatch เป็นกลุ่มแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงวิทยาศาสตร์เปิดกับชีวิตประจำวันอย่างไร?', 'ถ้ามือใหม่อยากเข้าใจแล็บชุมชนของคุณ ควรถามอะไรก่อน?'],
+    },
+  },
+  'anastassia-pistofidou': {
+    opener: {
+      'zh-TW': '我喜歡把課程拆成可以旅行、可以被別人改造的節點。你想知道學校怎麼變成一張國際互助網嗎？',
+      en: 'I like turning courses into traveling nodes that other people can remake. Want to see how a school becomes an international support network?',
+      id: 'Aku suka mengubah kursus menjadi simpul bergerak yang bisa dibuat ulang orang lain. Mau melihat sekolah menjadi jaringan bantuan internasional?',
+      de: 'Ich mache aus Kursen gern reisende Knoten, die andere neu bauen können. Willst du sehen, wie Schule zu einem internationalen Hilfsnetz wird?',
+      ja: '授業を旅するノードにして、他の人が作り替えられる形にするのが好きです。学校が国際的な支援網になるところを見たいですか？',
+      th: 'ฉันชอบเปลี่ยนหลักสูตรให้เป็นโหนดที่เดินทางและถูกดัดแปลงได้ อยากดูไหมว่าโรงเรียนกลายเป็นเครือข่ายช่วยเหลือนานาชาติอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Fabricademy 是一個什麼樣的學習網絡嗎？', '你在 NGM 訪談裡怎麼談電子織品和分散式教育？', '如果我第一次接觸 Fabricademy，應該先理解哪個核心想法？'],
+      'en': ['Can you tell me what kind of learning network Fabricademy is?', 'How did you talk about e-textiles and distributed education in your NGM interview?', 'If I am new to Fabricademy, what core idea should I understand first?'],
+      'id': ['Bisa ceritakan Fabricademy itu jaringan belajar seperti apa?', 'Bagaimana kamu membahas e-textiles dan pendidikan terdistribusi dalam wawancara NGM?', 'Kalau saya baru mengenal Fabricademy, gagasan inti apa yang perlu dipahami dulu?'],
+      'de': ['Kannst du mir erzählen, was für ein Lernnetzwerk Fabricademy ist?', 'Wie hast du im NGM-Interview über E-Textilien und verteilte Bildung gesprochen?', 'Wenn ich Fabricademy neu kennenlerne, welche Kernidee sollte ich zuerst verstehen?'],
+      'ja': ['Fabricademy はどんな学習ネットワークなのか教えてくれますか？', 'NGM のインタビューで電子テキスタイルと分散型教育をどう話しましたか？', '初めて Fabricademy に触れるなら、まずどの中心的な考えを理解するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Fabricademy เป็นเครือข่ายการเรียนรู้แบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึง e-textiles และการศึกษากระจายศูนย์อย่างไร?', 'ถ้าฉันเพิ่งรู้จัก Fabricademy ควรเข้าใจแนวคิดหลักอะไรเป็นอย่างแรก?'],
+    },
+  },
+  'christian-dils': {
+    opener: {
+      'zh-TW': '我會先問：這台機器壞了誰修？規則誰懂？你想知道一個技術公地怎麼不被用壞嗎？',
+      en: 'I first ask: who repairs this machine, and who understands the rules? Want to know how a technical commons avoids breaking down?',
+      id: 'Aku pertama bertanya: siapa memperbaiki mesin ini, dan siapa paham aturannya? Mau tahu commons teknis tidak cepat rusak?',
+      de: 'Ich frage zuerst: Wer repariert diese Maschine, und wer versteht die Regeln? Willst du wissen, wie technische Commons nicht zerfallen?',
+      ja: 'まず聞きます。この機械は誰が直し、誰がルールを理解していますか？技術コモンズが壊れない方法を知りたいですか？',
+      th: 'ฉันถามก่อนว่าเครื่องนี้เสียแล้วใครซ่อม และใครเข้าใจกติกา อยากรู้ไหมว่าคอมมอนส์ทางเทคนิคไม่พังได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你關心的是什麼樣的開放實驗室文化嗎？', '你在 NGM 訪談裡怎麼談維修、規則和社群照護？', '如果新手想加入開放實驗室，最容易忽略什麼？'],
+      'en': ['Can you tell me what kind of open-lab culture you care about?', 'How did you talk about repair, rules, and community care in your NGM interview?', 'If a beginner wants to join an open lab, what do they most often miss?'],
+      'id': ['Bisa ceritakan budaya open lab seperti apa yang kamu pedulikan?', 'Bagaimana kamu membahas perbaikan, aturan, dan perawatan komunitas dalam wawancara NGM?', 'Kalau pemula ingin ikut open lab, apa yang sering terlewat?'],
+      'de': ['Kannst du mir erzählen, welche Open-Lab-Kultur dir wichtig ist?', 'Wie hast du im NGM-Interview über Reparatur, Regeln und Community-Care gesprochen?', 'Wenn Anfänger in ein offenes Labor kommen, was übersehen sie oft?'],
+      'ja': ['あなたが大事にしているオープンラボ文化はどんなものですか？', 'NGM のインタビューで修理、ルール、コミュニティのケアをどう話しましたか？', '初心者がオープンラボに参加するとき、何を見落としがちですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าวัฒนธรรม open lab แบบไหนที่คุณให้ความสำคัญ?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงการซ่อม กฎ และการดูแลชุมชนอย่างไร?', 'ถ้ามือใหม่อยากเข้าร่วม open lab มักมองข้ามอะไร?'],
+    },
+  },
+  'giulia-tomasello': {
+    opener: {
+      'zh-TW': '我把感測器放到身體附近時，第一個問題永遠是同意和照護。你想知道電子織品怎麼不只是一件酷衣服嗎？',
+      en: 'When I put sensors near bodies, the first questions are consent and care. Want to know why electronic textiles are more than cool clothing?',
+      id: 'Saat sensor dekat tubuh, pertanyaan pertama adalah persetujuan dan perawatan. Mau tahu mengapa tekstil elektronik lebih dari pakaian keren?',
+      de: 'Wenn Sensoren nah an Körper kommen, frage ich zuerst nach Zustimmung und Care. Willst du wissen, warum elektronische Textilien mehr sind als coole Kleidung?',
+      ja: 'センサーを身体の近くに置く時、最初の問いは同意とケアです。電子テキスタイルが格好いい服以上のものだと知りたいですか？',
+      th: 'เมื่อวางเซนเซอร์ใกล้ร่างกาย คำถามแรกคือความยินยอมและการดูแล อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์ไม่ใช่แค่เสื้อผ้าเท่ ๆ?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你做的是什麼樣的女性主義科技實踐嗎？', '你在 NGM 訪談裡怎麼談身體、資料和照護？', '如果我第一次參加你的工作坊，應該帶著什麼問題來？'],
+      'en': ['Can you tell me what kind of feminist technology practice you do?', 'How did you talk about bodies, data, and care in your NGM interview?', 'If I join your workshop for the first time, what question should I bring?'],
+      'id': ['Bisa ceritakan praktik teknologi feminis seperti apa yang kamu lakukan?', 'Bagaimana kamu membahas tubuh, data, dan perawatan dalam wawancara NGM?', 'Kalau saya pertama kali ikut workshopmu, pertanyaan apa yang sebaiknya saya bawa?'],
+      'de': ['Kannst du mir erzählen, welche feministische Technologiepraxis du machst?', 'Wie hast du im NGM-Interview über Körper, Daten und Care gesprochen?', 'Wenn ich zum ersten Mal an deinem Workshop teilnehme, welche Frage sollte ich mitbringen?'],
+      'ja': ['あなたのフェミニスト・テクノロジー実践はどんなものですか？', 'NGM のインタビューで身体、データ、ケアをどう話しましたか？', '初めてあなたのワークショップに参加するなら、どんな問いを持っていくとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าคุณทำ feminist technology แบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงร่างกาย ข้อมูล และการดูแลอย่างไร?', 'ถ้าฉันเข้าร่วมเวิร์กช็อปของคุณครั้งแรก ควรพกคำถามอะไรไป?'],
+    },
+  },
+  'jonathan-minchin': {
+    opener: {
+      'zh-TW': '我喜歡把 Green Fab Lab、Valldaura 的森林、蜂箱、感測器和農地放在同一張桌上。你想知道製造實驗室怎麼照顧一片土地嗎？',
+      en: 'I like putting Green Fab Lab, Valldaura forests, beehives, sensors, and farmland on the same table. Want to know how a fab lab can care for land?',
+      id: 'Aku suka menaruh Green Fab Lab, hutan Valldaura, sarang lebah, sensor, dan lahan tani di meja yang sama. Mau tahu fab lab merawat tanah?',
+      de: 'Ich lege gern Green Fab Lab, Valldaura-Wälder, Bienenstöcke, Sensoren und Felder auf denselben Tisch. Willst du wissen, wie ein Fab Lab Land pflegt?',
+      ja: 'Green Fab Lab、Valldaura の森、蜂箱、センサー、農地を同じテーブルに置くのが好きです。ファブラボが土地を世話する方法を知りたいですか？',
+      th: 'ฉันชอบวาง Green Fab Lab ป่า Valldaura รังผึ้ง เซนเซอร์ และพื้นที่เกษตรไว้บนโต๊ะเดียวกัน อยากรู้ไหมว่าแฟ็บแล็บดูแลผืนดินได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Open Source Beehives 是一個什麼樣的計畫嗎？', '你在 NGM 訪談裡怎麼談蜜蜂、農地和開源硬體？', '如果我第一次認識 Green Fab Lab，應該先理解什麼？'],
+      'en': ['Can you tell me what kind of project Open Source Beehives is?', 'How did you talk about bees, farmland, and open hardware in your NGM interview?', 'If I am new to the Green Fab Lab, what should I understand first?'],
+      'id': ['Bisa ceritakan Open Source Beehives itu proyek seperti apa?', 'Bagaimana kamu membahas lebah, lahan pertanian, dan open hardware dalam wawancara NGM?', 'Kalau saya baru mengenal Green Fab Lab, apa yang perlu dipahami dulu?'],
+      'de': ['Kannst du mir erzählen, was für ein Projekt Open Source Beehives ist?', 'Wie hast du im NGM-Interview über Bienen, Landwirtschaft und Open Hardware gesprochen?', 'Wenn ich das Green Fab Lab neu kennenlerne, was sollte ich zuerst verstehen?'],
+      'ja': ['Open Source Beehives はどんなプロジェクトなのか教えてくれますか？', 'NGM のインタビューで蜂、農地、オープンハードウェアをどう話しましたか？', '初めて Green Fab Lab を知るなら、まず何を理解するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Open Source Beehives เป็นโครงการแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงผึ้ง พื้นที่เกษตร และ open hardware อย่างไร?', 'ถ้าฉันเพิ่งรู้จัก Green Fab Lab ควรเข้าใจอะไรก่อน?'],
+    },
+  },
+  'marc-dusseiller': {
+    opener: {
+      'zh-TW': '我最喜歡像專業旅行者那樣把實驗室塞進行李箱。你想用便宜的方法自己製造高科技實驗工具嗎？',
+      en: 'My favorite trick is traveling like a pro with a lab in the luggage. Want to build high-tech lab tools cheaply by yourself?',
+      id: 'Trik favoritku adalah bepergian seperti profesional dengan lab di koper. Mau membuat alat lab canggih secara murah?',
+      de: 'Mein Lieblingstrick ist Reisen wie ein Profi, mit einem Labor im Gepäck. Willst du Hightech-Laborwerkzeuge billig selbst bauen?',
+      ja: 'お気に入りは、実験室を荷物に入れてプロのように旅することです。安くハイテク実験道具を自作したいですか？',
+      th: 'เคล็ดลับโปรดของฉันคือเดินทางแบบมือโปรพร้อมแล็บในกระเป๋า อยากสร้างเครื่องมือแล็บไฮเทคราคาถูกเองไหม?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Hackteria 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談 DIY biology、bioart 和工作坊？', '如果新手想加入 Hackteria，應該先知道什麼？'],
+      'en': ['Can you tell me what kind of group Hackteria is?', 'How did you talk about DIY biology, bioart, and workshops in your NGM interview?', 'If a beginner wants to join Hackteria, what should they know first?'],
+      'id': ['Bisa ceritakan Hackteria itu kelompok seperti apa?', 'Bagaimana kamu membahas DIY biology, bioart, dan workshop dalam wawancara NGM?', 'Kalau pemula ingin ikut Hackteria, apa yang perlu diketahui dulu?'],
+      'de': ['Kannst du mir erzählen, was für eine Gruppe Hackteria ist?', 'Wie hast du im NGM-Interview über DIY Biology, Bioart und Workshops gesprochen?', 'Wenn Anfänger bei Hackteria mitmachen wollen, was sollten sie zuerst wissen?'],
+      'ja': ['Hackteria はどんな団体なのか教えてくれますか？', 'NGM のインタビューで DIY biology、bioart、ワークショップをどう話しましたか？', '初心者が Hackteria に参加したいなら、まず何を知るとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Hackteria เป็นกลุ่มแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึง DIY biology, bioart และเวิร์กช็อปอย่างไร?', 'ถ้ามือใหม่อยากเข้าร่วม Hackteria ควรรู้อะไรก่อน?'],
+    },
+  },
+  'mika-satomi': {
+    opener: {
+      'zh-TW': '我喜歡讓布、線、電路和人的願望一起工作。你想知道電子織品怎麼從小承諾開始長大嗎？',
+      en: 'I like making fabric, thread, circuits, and people’s wishes work together. Want to know how electronic textiles grow from small promises?',
+      id: 'Aku suka membuat kain, benang, rangkaian, dan harapan orang bekerja bersama. Mau tahu tekstil elektronik tumbuh dari janji kecil?',
+      de: 'Ich lasse gern Stoff, Faden, Schaltungen und Wünsche zusammenarbeiten. Willst du wissen, wie elektronische Textilien aus kleinen Versprechen wachsen?',
+      ja: '布、糸、回路、人の願いを一緒に働かせるのが好きです。電子テキスタイルが小さな約束から育つ様子を知りたいですか？',
+      th: 'ฉันชอบให้ผ้า ด้าย วงจร และความปรารถนาของผู้คนทำงานร่วมกัน อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์เติบโตจากคำมั่นเล็ก ๆ อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 KOBAKANT 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談電子織品、開源文件和願望？', '如果我第一次認識 soft circuits，應該從哪裡開始？'],
+      'en': ['Can you tell me what kind of group KOBAKANT is?', 'How did you talk about e-textiles, open documentation, and wishes in your NGM interview?', 'If I am new to soft circuits, where should I start?'],
+      'id': ['Bisa ceritakan KOBAKANT itu kelompok seperti apa?', 'Bagaimana kamu membahas e-textiles, dokumentasi terbuka, dan keinginan dalam wawancara NGM?', 'Kalau saya baru mengenal soft circuits, mulai dari mana?'],
+      'de': ['Kannst du mir erzählen, was für eine Gruppe KOBAKANT ist?', 'Wie hast du im NGM-Interview über E-Textilien, offene Dokumentation und Wünsche gesprochen?', 'Wenn ich Soft Circuits neu kennenlerne, womit sollte ich anfangen?'],
+      'ja': ['KOBAKANT はどんな団体なのか教えてくれますか？', 'NGM のインタビューで電子テキスタイル、オープンな記録、願いをどう話しましたか？', '初めて soft circuits を知るなら、どこから始めるとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า KOBAKANT เป็นกลุ่มแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึง e-textiles เอกสารเปิด และความปรารถนาอย่างไร?', 'ถ้าฉันเพิ่งรู้จัก soft circuits ควรเริ่มจากตรงไหน?'],
+    },
+  },
+  'rully-shabara': {
+    opener: {
+      'zh-TW': '我比較相信圍成一圈、一起吃飯、一起練習，而不是把營隊變成商品。你想知道聲音社群怎麼不被產業吞掉嗎？',
+      en: 'I trust circles, meals, and practice more than turning camps into products. Want to know how a voice community avoids being swallowed by industry?',
+      id: 'Aku lebih percaya lingkaran, makan bersama, dan latihan daripada mengubah kamp menjadi produk. Mau tahu komunitas suara tidak ditelan industri?',
+      de: 'Ich vertraue Kreisen, gemeinsamen Mahlzeiten und Übung mehr als Camps als Produkt. Willst du wissen, wie eine Stimm-Community nicht von Industrie geschluckt wird?',
+      ja: 'キャンプを商品にするより、輪、食事、練習を信じます。声のコミュニティが産業に飲み込まれない方法を知りたいですか？',
+      th: 'ฉันเชื่อวงล้อม อาหารร่วมกัน และการฝึก มากกว่าการเปลี่ยนแคมป์เป็นสินค้า อยากรู้ไหมว่าชุมชนเสียงไม่ถูกอุตสาหกรรมกลืนได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你的聲音實踐是什麼樣的嗎？', '你在 NGM 訪談裡怎麼談身體、聲音和社群？', '如果新手想理解你的表演方法，應該先聽什麼？'],
+      'en': ['Can you tell me what your vocal practice is like?', 'How did you talk about body, voice, and community in your NGM interview?', 'If a beginner wants to understand your performance method, what should they listen for first?'],
+      'id': ['Bisa ceritakan praktik vokalmu seperti apa?', 'Bagaimana kamu membahas tubuh, suara, dan komunitas dalam wawancara NGM?', 'Kalau pemula ingin memahami metode performansmu, apa yang sebaiknya didengar dulu?'],
+      'de': ['Kannst du mir erzählen, wie deine Stimmpraxis aussieht?', 'Wie hast du im NGM-Interview über Körper, Stimme und Community gesprochen?', 'Wenn Anfänger deine Performance-Methode verstehen wollen, worauf sollten sie zuerst hören?'],
+      'ja': ['あなたの声の実践はどんなものか教えてくれますか？', 'NGM のインタビューで身体、声、コミュニティをどう話しましたか？', '初心者があなたのパフォーマンス方法を理解したいなら、まず何を聴くとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าการปฏิบัติด้านเสียงของคุณเป็นแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงร่างกาย เสียง และชุมชนอย่างไร?', 'ถ้ามือใหม่อยากเข้าใจวิธีการแสดงของคุณ ควรฟังอะไรเป็นอย่างแรก?'],
+    },
+  },
+  'ryu-oyama': {
+    opener: {
+      'zh-TW': '我把島嶼的距離當成方法，不是麻煩。你想知道偏遠地方怎麼反而能保護活動的節奏嗎？',
+      en: 'I treat island distance as a method, not a problem. Want to know how remoteness can protect the rhythm of an event?',
+      id: 'Aku melihat jarak pulau sebagai metode, bukan masalah. Mau tahu tempat jauh bisa melindungi ritme acara?',
+      de: 'Ich behandle Inseldistanz als Methode, nicht als Problem. Willst du wissen, wie Abgelegenheit den Rhythmus einer Veranstaltung schützt?',
+      ja: '島の距離を問題ではなく方法として扱います。遠さが活動のリズムを守る方法を知りたいですか？',
+      th: 'ฉันมองระยะห่างของเกาะเป็นวิธี ไม่ใช่ปัญหา อยากรู้ไหมว่าความห่างไกลปกป้องจังหวะของกิจกรรมได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Oki Wonder Lab 是一個什麼樣的地方嗎？', '你在 NGM 訪談裡怎麼談島嶼、孤立和共同製作？', '如果我第一次到你的實驗室，應該先感受什麼？'],
+      'en': ['Can you tell me what kind of place Oki Wonder Lab is?', 'How did you talk about islands, isolation, and making together in your NGM interview?', 'If I visit your lab for the first time, what should I notice first?'],
+      'id': ['Bisa ceritakan Oki Wonder Lab itu tempat seperti apa?', 'Bagaimana kamu membahas pulau, isolasi, dan membuat bersama dalam wawancara NGM?', 'Kalau saya pertama kali datang ke labmu, apa yang perlu saya rasakan dulu?'],
+      'de': ['Kannst du mir erzählen, was für ein Ort Oki Wonder Lab ist?', 'Wie hast du im NGM-Interview über Inseln, Isolation und gemeinsames Machen gesprochen?', 'Wenn ich dein Labor zum ersten Mal besuche, was sollte ich zuerst wahrnehmen?'],
+      'ja': ['Oki Wonder Lab はどんな場所なのか教えてくれますか？', 'NGM のインタビューで島、孤立、一緒につくることをどう話しましたか？', '初めてあなたのラボを訪ねるなら、まず何を感じるとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Oki Wonder Lab เป็นสถานที่แบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงเกาะ ความโดดเดี่ยว และการทำร่วมกันอย่างไร?', 'ถ้าฉันไปเยี่ยมแล็บของคุณครั้งแรก ควรสังเกตอะไรก่อน?'],
+    },
+  },
+  'stephanie-pan': {
+    opener: {
+      'zh-TW': '我喜歡把 Modern Body Festival 變成大家都能加入的小實驗室。你想知道觀眾怎麼不只是看表演，而是一起主持嗎？',
+      en: 'I like turning Modern Body Festival into small laboratories that everyone can enter. Want to know how audiences can co-host instead of just watching?',
+      id: 'Aku suka mengubah Modern Body Festival menjadi laboratorium kecil yang bisa dimasuki semua orang. Mau tahu penonton ikut menjadi tuan rumah?',
+      de: 'Ich verwandle Modern Body Festival gern in kleine Labore, die alle betreten können. Willst du wissen, wie Publikum mitgastgibt statt nur zuzuschauen?',
+      ja: 'Modern Body Festival を誰でも入れる小さな実験室にするのが好きです。観客が見るだけでなく共同ホストになる方法を知りたいですか？',
+      th: 'ฉันชอบเปลี่ยน Modern Body Festival เป็นห้องทดลองเล็ก ๆ ที่ทุกคนเข้าได้ อยากรู้ไหมว่าผู้ชมเป็นเจ้าภาพร่วมแทนการดูเฉย ๆ ได้อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Modern Body Festival 是一個什麼樣的活動嗎？', '你在 NGM 訪談裡怎麼談身體、科技和觀眾？', '如果第一次看你的表演或策展，應該注意什麼？'],
+      'en': ['Can you tell me what kind of event Modern Body Festival is?', 'How did you talk about body, technology, and audience in your NGM interview?', 'If I encounter your performance or curating for the first time, what should I notice?'],
+      'id': ['Bisa ceritakan Modern Body Festival itu acara seperti apa?', 'Bagaimana kamu membahas tubuh, teknologi, dan penonton dalam wawancara NGM?', 'Kalau saya pertama kali melihat performans atau kurasimu, apa yang perlu diperhatikan?'],
+      'de': ['Kannst du mir erzählen, was für eine Veranstaltung Modern Body Festival ist?', 'Wie hast du im NGM-Interview über Körper, Technologie und Publikum gesprochen?', 'Wenn ich deine Performance oder kuratorische Arbeit neu kennenlerne, worauf sollte ich achten?'],
+      'ja': ['Modern Body Festival はどんなイベントなのか教えてくれますか？', 'NGM のインタビューで身体、テクノロジー、観客をどう話しましたか？', '初めてあなたのパフォーマンスやキュレーションを見るなら、何に注目するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Modern Body Festival เป็นงานแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงร่างกาย เทคโนโลยี และผู้ชมอย่างไร?', 'ถ้าฉันเพิ่งพบงานแสดงหรือการคิวเรตของคุณ ควรสังเกตอะไร?'],
+    },
+  },
+  'stelio-manousakis': {
+    opener: {
+      'zh-TW': '我會把 Modern Body Festival 的排練、行政、音場檢查都當成表演的一部分。你想知道聲音藝術社群怎麼靠日常規則運作嗎？',
+      en: 'I treat Modern Body Festival rehearsal, administration, and sound-checks as part of the performance. Want to know how a sound-art community runs on everyday rules?',
+      id: 'Aku melihat latihan, administrasi, dan cek suara Modern Body Festival sebagai bagian dari pertunjukan. Mau tahu komunitas seni suara berjalan lewat aturan harian?',
+      de: 'Ich behandle Probe, Verwaltung und Soundcheck von Modern Body Festival als Teil der Aufführung. Willst du wissen, wie eine Klangkunst-Community durch Alltagsregeln läuft?',
+      ja: 'Modern Body Festival のリハーサル、運営、サウンドチェックを上演の一部として扱います。音の芸術コミュニティが日常の規則で動く様子を知りたいですか？',
+      th: 'ฉันมองการซ้อม งานบริหาร และซาวด์เช็กของ Modern Body Festival เป็นส่วนหนึ่งของการแสดง อยากรู้ไหมว่าชุมชนศิลปะเสียงทำงานด้วยกติกาประจำวันอย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Modern Body Festival 背後是一個什麼樣的社群嗎？', '你在 NGM 訪談裡怎麼談聲音、表演和組織工作？', '如果新手想理解聲音藝術社群，應該先問什麼？'],
+      'en': ['Can you tell me what kind of community is behind Modern Body Festival?', 'How did you talk about sound, performance, and organizing in your NGM interview?', 'If a beginner wants to understand a sound-art community, what should they ask first?'],
+      'id': ['Bisa ceritakan komunitas seperti apa yang ada di balik Modern Body Festival?', 'Bagaimana kamu membahas suara, performans, dan kerja organisasi dalam wawancara NGM?', 'Kalau pemula ingin memahami komunitas seni suara, apa yang sebaiknya ditanyakan dulu?'],
+      'de': ['Kannst du mir erzählen, was für eine Community hinter Modern Body Festival steht?', 'Wie hast du im NGM-Interview über Klang, Performance und Organisationsarbeit gesprochen?', 'Wenn Anfänger eine Sound-Art-Community verstehen wollen, was sollten sie zuerst fragen?'],
+      'ja': ['Modern Body Festival の背後にはどんなコミュニティがありますか？', 'NGM のインタビューで音、パフォーマンス、運営をどう話しましたか？', '初心者がサウンドアートのコミュニティを理解したいなら、まず何を聞くとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าข้างหลัง Modern Body Festival เป็นชุมชนแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงเสียง การแสดง และงานจัดการอย่างไร?', 'ถ้ามือใหม่อยากเข้าใจชุมชน sound art ควรถามอะไรก่อน?'],
+    },
+  },
+  'svenja-keune': {
+    opener: {
+      'zh-TW': '我喜歡先和微生物、植物、身體一起待一會，再開始設計。你想知道為什麼身體八成是微生菌群嗎？',
+      en: 'I like staying for a while with microbes, plants, and bodies before designing. Want to know why so much of the body is microbial life?',
+      id: 'Aku suka tinggal sejenak bersama mikroba, tanaman, dan tubuh sebelum merancang. Mau tahu mengapa begitu banyak tubuh adalah kehidupan mikroba?',
+      de: 'Ich bleibe gern erst bei Mikroben, Pflanzen und Körpern, bevor ich entwerfe. Willst du wissen, warum so viel Körper mikrobielles Leben ist?',
+      ja: 'デザインの前に、微生物、植物、身体としばらく一緒にいるのが好きです。身体の多くが微生物の生命だと知りたいですか？',
+      th: 'ฉันชอบอยู่กับจุลินทรีย์ พืช และร่างกายสักพักก่อนออกแบบ อยากรู้ไหมว่าสถาปัตยกรรมที่มนุษย์อยู่ร่วมกับสปีชีส์อื่นคืออะไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你的人與其他物種共同居住實踐是什麼嗎？', '你在 NGM 訪談裡怎麼談植物、建築和穿戴科技？', '如果我第一次認識你的作品，應該先觀察什麼關係？'],
+      'en': ['Can you tell me what your practice of living with other species is about?', 'How did you talk about plants, architecture, and wearables in your NGM interview?', 'If I am new to your work, what relationship should I observe first?'],
+      'id': ['Bisa ceritakan praktik hidup bersama spesies lain yang kamu lakukan itu tentang apa?', 'Bagaimana kamu membahas tanaman, arsitektur, dan wearable dalam wawancara NGM?', 'Kalau saya baru mengenal karyamu, relasi apa yang perlu diamati dulu?'],
+      'de': ['Kannst du mir erzählen, worum es in deiner Praxis des Zusammenlebens mit anderen Arten geht?', 'Wie hast du im NGM-Interview über Pflanzen, Architektur und Wearables gesprochen?', 'Wenn ich deine Arbeit neu kennenlerne, welche Beziehung sollte ich zuerst beobachten?'],
+      'ja': ['他の種と共に住むあなたの実践はどんなものですか？', 'NGM のインタビューで植物、建築、ウェアラブルをどう話しましたか？', '初めてあなたの作品を知るなら、まずどんな関係を観察するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าการอยู่ร่วมกับสปีชีส์อื่นในงานของคุณคืออะไร?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงพืช สถาปัตยกรรม และ wearable อย่างไร?', 'ถ้าฉันเพิ่งรู้จักงานของคุณ ควรสังเกตความสัมพันธ์อะไรเป็นอย่างแรก?'],
+    },
+  },
+  'ted-hung': {
+    opener: {
+      'zh-TW': '我會先看人與人之間有沒有信任，再看實驗室之間有沒有連線。你想知道社群會員制度怎麼不只是名單嗎？',
+      en: 'I look for trust between people before I look for links between labs. Want to know how membership can be more than a list?',
+      id: 'Aku melihat kepercayaan antarorang sebelum melihat tautan antarlab. Mau tahu keanggotaan bisa lebih dari daftar nama?',
+      de: 'Ich suche zuerst Vertrauen zwischen Menschen, dann Verbindungen zwischen Laboren. Willst du wissen, wie Mitgliedschaft mehr als eine Liste sein kann?',
+      ja: 'ラボ同士の接続より先に、人と人の信頼を見ます。メンバーシップが名簿以上のものになる方法を知りたいですか？',
+      th: 'ฉันมองหาความไว้วางใจระหว่างคนก่อนความเชื่อมโยงระหว่างแล็บ อยากรู้ไหมว่าสมาชิกภาพเป็นได้มากกว่ารายชื่อ?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Fablab Taipei 是一個什麼樣的地方嗎？', '你在 NGM 訪談裡怎麼談會員、信任和透明帳本？', '如果新手想理解 fab lab 社群，應該先看哪個日常問題？'],
+      'en': ['Can you tell me what kind of place Fablab Taipei is?', 'How did you talk about membership, trust, and transparent ledgers in your NGM interview?', 'If a beginner wants to understand a fab lab community, which everyday question should they look at first?'],
+      'id': ['Bisa ceritakan Fablab Taipei itu tempat seperti apa?', 'Bagaimana kamu membahas keanggotaan, kepercayaan, dan buku kas transparan dalam wawancara NGM?', 'Kalau pemula ingin memahami komunitas fab lab, persoalan sehari-hari apa yang perlu dilihat dulu?'],
+      'de': ['Kannst du mir erzählen, was für ein Ort Fablab Taipei ist?', 'Wie hast du im NGM-Interview über Mitgliedschaft, Vertrauen und transparente Kassen gesprochen?', 'Wenn Anfänger eine Fab-Lab-Community verstehen wollen, welche Alltagsfrage sollten sie zuerst anschauen?'],
+      'ja': ['Fablab Taipei はどんな場所なのか教えてくれますか？', 'NGM のインタビューで会員制度、信頼、透明な帳簿をどう話しましたか？', '初心者が fab lab コミュニティを理解したいなら、まずどの日常的な問題を見るとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Fablab Taipei เป็นสถานที่แบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงสมาชิก ความไว้วางใจ และบัญชีที่โปร่งใสอย่างไร?', 'ถ้ามือใหม่อยากเข้าใจชุมชน fab lab ควรมองปัญหาประจำวันเรื่องไหนก่อน?'],
+    },
+  },
+  'tincuta-heinzel': {
+    opener: {
+      'zh-TW': '我喜歡把失敗、嘗試和地方回應收集起來，不急著做成成功故事。你想知道營隊怎麼變成策展工具嗎？',
+      en: 'I collect failures, trials, and local responses without rushing them into success stories. Want to know how a camp becomes a curatorial tool?',
+      id: 'Aku mengumpulkan kegagalan, percobaan, dan respons lokal tanpa buru-buru menjadikannya kisah sukses. Mau tahu kamp menjadi alat kuratorial?',
+      de: 'Ich sammle Scheitern, Versuche und lokale Antworten, ohne sie schnell zu Erfolgsgeschichten zu machen. Willst du wissen, wie ein Camp zum kuratorischen Werkzeug wird?',
+      ja: '失敗、試行、地域の応答を、成功物語に急がず集めます。キャンプがキュレーションの道具になる方法を知りたいですか？',
+      th: 'ฉันเก็บความล้มเหลว การทดลอง และการตอบสนองท้องถิ่น โดยไม่รีบทำให้เป็นเรื่องสำเร็จ อยากรู้ไหมว่าแคมป์กลายเป็นเครื่องมือภัณฑารักษ์อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我 Textiltronics 是一個什麼樣的計畫嗎？', '你在 NGM 訪談裡怎麼談失敗、策展和電子織品？', '如果第一次看 Attempts, Failures, Trials and Errors，應該怎麼理解它？'],
+      'en': ['Can you tell me what kind of project Textiltronics is?', 'How did you talk about failure, curating, and e-textiles in your NGM interview?', 'If I see Attempts, Failures, Trials and Errors for the first time, how should I understand it?'],
+      'id': ['Bisa ceritakan Textiltronics itu proyek seperti apa?', 'Bagaimana kamu membahas kegagalan, kurasi, dan e-textiles dalam wawancara NGM?', 'Kalau saya pertama kali melihat Attempts, Failures, Trials and Errors, bagaimana memahaminya?'],
+      'de': ['Kannst du mir erzählen, was für ein Projekt Textiltronics ist?', 'Wie hast du im NGM-Interview über Scheitern, Kuratieren und E-Textilien gesprochen?', 'Wenn ich Attempts, Failures, Trials and Errors zum ersten Mal sehe, wie sollte ich es verstehen?'],
+      'ja': ['Textiltronics はどんなプロジェクトなのか教えてくれますか？', 'NGM のインタビューで失敗、キュレーション、電子テキスタイルをどう話しましたか？', '初めて Attempts, Failures, Trials and Errors を見るなら、どう理解するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่า Textiltronics เป็นโครงการแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงความล้มเหลว การคิวเรต และ e-textiles อย่างไร?', 'ถ้าฉันเพิ่งเห็น Attempts, Failures, Trials and Errors ควรเข้าใจมันอย่างไร?'],
+    },
+  },
+  'wukir-suryadi': {
+    opener: {
+      'zh-TW': '我喜歡把竹子、弦、身體和電聲做成新的樂器。你想知道奇怪樂器怎麼帶出新的表演方式嗎？',
+      en: 'I like turning bamboo, strings, bodies, and electronics into new instruments. Want to know how strange instruments create new performance forms?',
+      id: 'Aku suka mengubah bambu, dawai, tubuh, dan elektronik menjadi instrumen baru. Mau tahu alat aneh melahirkan bentuk pertunjukan baru?',
+      de: 'Ich mache gern aus Bambus, Saiten, Körpern und Elektronik neue Instrumente. Willst du wissen, wie seltsame Instrumente neue Aufführungsformen erzeugen?',
+      ja: '竹、弦、身体、電子音を新しい楽器にするのが好きです。変な楽器が新しい上演形式を生む様子を知りたいですか？',
+      th: 'ฉันชอบเปลี่ยนไม้ไผ่ สาย ร่างกาย และอิเล็กทรอนิกส์ให้เป็นเครื่องดนตรีใหม่ อยากรู้ไหมว่าเครื่องดนตรีประหลาดสร้างรูปแบบการแสดงใหม่อย่างไร?',
+    },
+    questions: {
+      'zh-TW': ['可以告訴我你的竹製樂器和表演是什麼樣的嗎？', '你在 NGM 訪談裡怎麼談身體、竹子和聲音？', '如果第一次聽你的作品，應該先注意什麼？'],
+      'en': ['Can you tell me what your bamboo instruments and performances are like?', 'How did you talk about body, bamboo, and sound in your NGM interview?', 'If I hear your work for the first time, what should I notice first?'],
+      'id': ['Bisa ceritakan instrumen bambu dan performansmu seperti apa?', 'Bagaimana kamu membahas tubuh, bambu, dan suara dalam wawancara NGM?', 'Kalau saya pertama kali mendengar karyamu, apa yang perlu diperhatikan dulu?'],
+      'de': ['Kannst du mir erzählen, wie deine Bambusinstrumente und Performances sind?', 'Wie hast du im NGM-Interview über Körper, Bambus und Klang gesprochen?', 'Wenn ich deine Arbeit zum ersten Mal höre, worauf sollte ich zuerst achten?'],
+      'ja': ['あなたの竹の楽器とパフォーマンスはどんなものですか？', 'NGM のインタビューで身体、竹、音をどう話しましたか？', '初めてあなたの作品を聴くなら、まず何に注目するとよいですか？'],
+      'th': ['ช่วยเล่าได้ไหมว่าเครื่องดนตรีไม้ไผ่และการแสดงของคุณเป็นแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึงร่างกาย ไม้ไผ่ และเสียงอย่างไร?', 'ถ้าฉันฟังงานของคุณครั้งแรก ควรสังเกตอะไรก่อน?'],
+    },
+  },
+};
+
+
+function communityQuestionSeed(language: LanguageCode, persona: Persona): string[] {
+  const communityHint = cleanQuestionPart(Object.values(persona.responses).join(' '), 44);
+  if (language === 'ja') {
+    return [
+      `${persona.name} のコミュニティ経験から、桃花源の初心者はどの材料・方法・組織の問いから始めるとよいですか？`,
+      `${persona.name} は自分たちの実践を NGM、Hackteria、SGMK、KOBAKANT の公開資料とどうつなげますか？`,
+      `${persona.name} のコミュニティを小誌の問いで紹介するなら、どの道具・キャンプ・ケアの方法を比較しますか？`,
+      communityHint ? `${persona.name} が触れた「${communityHint}」は、どんな検証可能な桃花源の問いになりますか？` : `${persona.name} のコミュニティ記憶は、どんな検証可能な桃花源の問いになりますか？`,
+    ];
+  }
+  if (language === 'zh-TW') {
+    return [
+      `從 ${persona.name} 的社群經驗出發，桃花源新手可以先問哪個材料、方法或組織問題？`,
+      `${persona.name} 會怎麼把自己的社群實作連到 NGM、Hackteria、SGMK 或 KOBAKANT 的公開資料？`,
+      `如果只用一個小誌問題介紹 ${persona.name} 關心的社群，應該比較哪個工具、營隊或照護方法？`,
+      communityHint ? `${persona.name} 提到的「${communityHint}」可以變成什麼可查證的桃花源社群問題？` : `${persona.name} 的社群記憶可以怎麼變成一個可查證的桃花源問題？`,
+    ];
+  }
+  return [
+    `From ${persona.name}'s community experience, what material, method, or organization question should a Peach Blossom Spring beginner ask first?`,
+    `How would ${persona.name} connect their own community practice to NGM, Hackteria, SGMK, or KOBAKANT public sources?`,
+    `If one zine question introduced ${persona.name}'s community, which tool, camp, or care method should it compare?`,
+    communityHint ? `How can “${communityHint}” become a checkable Peach Blossom Spring community question for ${persona.name}?` : `How can ${persona.name}'s community memory become a checkable Peach Blossom Spring question?`,
+  ];
 }
 
-function dialogueCopy(language: LanguageCode): { sourcesTitle: string; followUpsTitle: string; sourceFallback: string; zine: string; fallbackAnchor: string } {
-  const copy: Record<LanguageCode, { sourcesTitle: string; followUpsTitle: string; sourceFallback: string; zine: string; fallbackAnchor: string }> = {
-    'zh-TW': { sourcesTitle: '可繼續讀的來源：', followUpsTitle: '下一步可以問', sourceFallback: '頁面', zine: 'Wiki 小誌', fallbackAnchor: '你剛剛提到的例子' },
-    en: { sourcesTitle: 'Pages to keep reading:', followUpsTitle: 'Next questions', sourceFallback: 'Page', zine: 'Wiki zine', fallbackAnchor: 'the example just mentioned' },
-    id: { sourcesTitle: 'Halaman untuk dibaca lanjut:', followUpsTitle: 'Pertanyaan lanjutan', sourceFallback: 'Halaman', zine: 'Zine wiki', fallbackAnchor: 'contoh yang baru disebut' },
-    de: { sourcesTitle: 'Weiterlesen auf diesen Seiten:', followUpsTitle: 'Nächste Fragen', sourceFallback: 'Seite', zine: 'Wiki-Zine', fallbackAnchor: 'das gerade genannte Beispiel' },
-    ja: { sourcesTitle: '続けて読めるページ：', followUpsTitle: '次に聞けること', sourceFallback: 'ページ', zine: 'Wiki zine', fallbackAnchor: 'いま出た例' },
-    th: { sourcesTitle: 'หน้าที่อ่านต่อได้:', followUpsTitle: 'คำถามถัดไป', sourceFallback: 'หน้า', zine: 'ซีน wiki', fallbackAnchor: 'ตัวอย่างที่เพิ่งพูดถึง' },
+function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
+  const guided = npcGuideProfiles[persona.id]?.questions[language];
+  if (guided?.length) return guided;
+  const fixed = personaQuestionSeeds[persona.id] ?? [];
+  const responseEntries = Object.entries(persona.responses).slice(0, 9);
+  const sourceBridgeQuestions = [
+    `${persona.name} 的社群實作如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
+    `${persona.name} 會怎麼把工作坊、材料或照護經驗整理成一份可查證小誌？`,
+    `從 ${persona.name} 的觀點看，哪些公開 source 最適合回答「社群如何保存知識」？`,
+    `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
+    `${persona.name} 的社群方法可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
+    `${persona.name} 和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
+  ];
+  if (language === 'zh-TW') {
+    const responseQuestions = responseEntries.map(([, response]) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 48)}」如何連到公開 wiki sources 的可檢查材料？`);
+    return shuffleCopy([...fixed, ...communityQuestionSeed(language, persona), ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
+  }
+
+  const templates: Record<LanguageCode, (response: string) => string> = {
+    'zh-TW': (response) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
+    en: (response) => `From ${persona.name}'s community practice, how does “${cleanQuestionPart(response, 50)}” connect to materials, methods, or care?`,
+    id: (response) => `Dari praktik komunitas ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan bahan, metode, atau perawatan?`,
+    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ aus ${persona.name}s Community-Praxis mit Material, Methode oder Sorgearbeit?`,
+    ja: (response) => `${persona.name} のコミュニティ実践から見ると、「${cleanQuestionPart(response, 50)}」は材料・方法・ケアとどうつながりますか？`,
+    th: (response) => `จากการปฏิบัติของชุมชน ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับวัสดุ วิธีการ หรือการดูแลอย่างไร?`,
+  };
+  const generated = responseEntries.map(([, response]) => templates[language](response));
+  const englishSourceBridge = [
+    `How does ${persona.name}'s community practice connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
+    `Which source pages would help turn ${persona.name}'s workshop memory into a checkable zine?`,
+    `How would ${persona.name} compare their community methods with public workshop documentation?`,
+    `What material, tool, or care practice from the three sources best matches ${persona.name}'s concerns?`,
+    `How can ${persona.name}'s community experience become a makeable, checkable, teachable zine question?`,
+    `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
+  ];
+  return shuffleCopy([...communityQuestionSeed(language, persona), ...generated, ...englishSourceBridge]).slice(0, 9);
+}
+
+
+function sourceLinksLabel(language: LanguageCode): string {
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': '相關連結',
+    en: 'Source links',
+    id: 'Tautan sumber',
+    de: 'Quellenlinks',
+    ja: '関連リンク',
+    th: 'ลิงก์แหล่งที่มา',
   };
   return copy[language];
 }
 
-function makeFollowUpQuestions(language: LanguageCode, question: string, evidence: ChatEvidence[] = [], persona?: Persona): string[] {
-  if (!evidence.length) {
-    const fallback = persona ? makeSuggestedQuestions(language, persona).filter((item) => item !== question) : [];
-    if (fallback.length >= 3) return fallback.slice(0, 3);
-  }
-  const copy = dialogueCopy(language);
-  const anchor = evidenceAnchor(evidence, copy.fallbackAnchor);
-  const keyword = evidenceKeyword(evidence, question);
-  if (language === 'zh-TW') {
-    return [
-      `你可以用「${keyword}」再多舉一個具體作品或材料例子嗎？`,
-      `如果我接著讀「${anchor}」，應該注意哪個做法或關鍵詞？`,
-      `除了「${anchor}」，還有哪個和「${keyword}」相關的社群案例可以比較？`,
-    ];
-  }
-  return [
-    `Could you give one more concrete work or material example about ${keyword}?`,
-    `If I read ${anchor} next, what practice or keyword should I pay attention to?`,
-    `Besides ${anchor}, which community case related to ${keyword} should I compare it with?`,
-  ];
-}
-
-function evidenceUrl(item: ChatEvidence): string {
-  return item.url || '';
-}
-
-function DialogueEvidence({ evidence, language }: { evidence?: ChatEvidence[]; language: LanguageCode }) {
-  const visible = (evidence ?? []).filter((item) => item.label || item.text || item.url).slice(0, 4);
-  if (!visible.length) return null;
-  const copy = dialogueCopy(language);
-  return (
-    <div className="rpg-dialogue-sources" data-ui-part="body">
-      <p className="rpg-dialogue-sources-title">{copy.sourcesTitle}</p>
-      {visible.map((item, index) => {
-        const url = evidenceUrl(item);
-        const label = item.sourceLabel || item.label || `${copy.sourceFallback} ${index + 1}`;
-        const body = shorten(item.text || item.label || '', 150);
-        return (
-          <p key={`${item.id}-${index.toString()}`} className="rpg-dialogue-source-line">
-            <span className="rpg-dialogue-source-index">[{index + 1}]</span>{' '}
-            {url ? (
-              <a href={url} target="_blank" rel="noreferrer">
-                {label}
-              </a>
-            ) : (
-              <span>{label}</span>
-            )}
-            {body && <span className="rpg-dialogue-source-body">：{body}</span>}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
-
-function DialogueFollowUps({ questions, language, onSelect }: { questions?: string[]; language: LanguageCode; onSelect: (question: string) => void }) {
-  if (!questions?.length) return null;
-  const copy = dialogueCopy(language);
-  return (
-    <div className="rpg-dialogue-followups" data-ui-part="body">
-      <p className="rpg-dialogue-followups-title">{copy.followUpsTitle}</p>
-      <div className="rpg-dialogue-followup-list">
-        {questions.slice(0, 3).map((item) => (
-          <button key={item} className="rpg-dialogue-followup-chip pbs-game-button" data-ui-control="text-button" type="button" onClick={() => onSelect(item)}>
-            {item}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function zineLabel(language: LanguageCode): string {
-  return dialogueCopy(language).zine;
+  const copy: Record<LanguageCode, string> = {
+    'zh-TW': 'Wiki 小誌',
+    en: 'Wiki zine',
+    id: 'Zine wiki',
+    de: 'Wiki-Zine',
+    ja: 'Wiki 小誌',
+    th: 'ซีน wiki',
+  };
+  return copy[language];
 }
 
 function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
@@ -330,140 +574,19 @@ function WukirMusicButton({ language, onOpenMusic }: { language: LanguageCode; o
 }
 
 
-const localizedPersonaIntros: Record<string, Record<LanguageCode, string>> = {
-  abao: {
-    'zh-TW': 'ABao 是一位說故事的人，持續漂移在太陽能材料、旅行、AI 身分、雷射與寓言世界之間。',
-    en: 'ABao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.',
-    id: 'ABao adalah pencerita yang terus bergerak di antara material surya, perjalanan, identitas AI, laser, dan dunia alegoris.',
-    de: 'ABao ist ein:e Geschichtenerzähler:in, der:die ständig zwischen Solarmaterialien, Reisen, KI-Identität, Lasern und allegorischen Welten driftet.',
-    ja: 'ABao は、太陽素材、旅、AI アイデンティティ、レーザー、寓話的な世界のあいだを漂い続ける語り手です。',
-    th: 'ABao เป็นนักเล่าเรื่องที่ล่องลอยอยู่ระหว่างวัสดุพลังงานแสงอาทิตย์ การเดินทาง อัตลักษณ์ AI เลเซอร์ และโลกเชิงอุปมา',
-  },
-  'andreas-siagian': {
-    'zh-TW': 'Andreas 將 Lifepatch 介紹為承載價值的生活空間，而不是擁有他全部身分的品牌。他的人格不斷回到鄰里尺度、可見的責任與扎根的協作。',
-    en: 'Andreas introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. His persona keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.',
-    id: 'Andreas memperkenalkan Lifepatch sebagai ruang hidup nilai-nilai, bukan merek yang memiliki seluruh identitasnya. Personanya terus kembali pada skala lingkungan, tanggung jawab yang terlihat, dan kolaborasi yang membumi.',
-    de: 'Andreas stellt Lifepatch als Lebensraum von Werten vor, nicht als Marke, die seine ganze Identität besitzt. Seine Persona kehrt immer wieder zu Nachbarschaftsmaßstab, sichtbarer Verantwortung und geerdeter Zusammenarbeit zurück.',
-    ja: 'Andreas は Lifepatch を、自分のアイデンティティ全体を所有するブランドではなく、価値が生きる生活空間として紹介します。彼のペルソナは、近隣のスケール、見える責任、地に足のついた協働へ戻り続けます。',
-    th: 'Andreas แนะนำ Lifepatch ในฐานะพื้นที่อยู่อาศัยของคุณค่า ไม่ใช่แบรนด์ที่ครอบครองตัวตนทั้งหมดของเขา บุคลิกของเขาวนกลับมาหาขนาดระดับละแวกบ้าน ความรับผิดชอบที่มองเห็นได้ และการร่วมมือที่ติดดินเสมอ',
-  },
-  'anastassia-pistofidou': {
-    'zh-TW': 'Anastassia 透過節點網絡、可攜式課程與同儕驗證來說話。她的人格把營隊轉化為分散式學習框架。',
-    en: 'Anastassia speaks through node networks, portable curriculum, and peer validation. Her persona turns camps into distributed learning frameworks.',
-    id: 'Anastassia berbicara melalui jaringan simpul, kurikulum portabel, dan validasi sejawat. Personanya mengubah kamp menjadi kerangka belajar terdistribusi.',
-    de: 'Anastassia spricht durch Knotennetzwerke, mobile Curricula und Peer-Validierung. Ihre Persona verwandelt Camps in verteilte Lernrahmen.',
-    ja: 'Anastassia はノード型ネットワーク、持ち運べるカリキュラム、ピア検証を通して語ります。彼女のペルソナはキャンプを分散型の学習フレームワークへ変えます。',
-    th: 'Anastassia พูดผ่านเครือข่ายโหนด หลักสูตรที่เคลื่อนย้ายได้ และการรับรองจากเพื่อนร่วมทาง บุคลิกของเธอเปลี่ยนแคมป์ให้เป็นกรอบการเรียนรู้แบบกระจายตัว',
-  },
-  'giulia-tomasello': {
-    'zh-TW': 'Giulia 的人格透過同意、女性主義實踐與作為基礎設施的照護來理解科技。',
-    en: "Giulia's persona frames technology through consent, feminist practice, and care as infrastructure.",
-    id: 'Persona Giulia memahami teknologi melalui persetujuan, praktik feminis, dan perawatan sebagai infrastruktur.',
-    de: 'Giulias Persona rahmt Technologie durch Einwilligung, feministische Praxis und Care als Infrastruktur.',
-    ja: 'Giulia のペルソナは、同意、フェミニストの実践、インフラとしてのケアを通してテクノロジーを捉えます。',
-    th: 'บุคลิกของ Giulia มองเทคโนโลยีผ่านความยินยอม ปฏิบัติการเฟมินิสต์ และการดูแลในฐานะโครงสร้างพื้นฐาน',
-  },
-  'christian-dils': {
-    'zh-TW': 'Christian 的人格從設備、維護、標準作業程序與健康的技術公地出發思考。',
-    en: "Christian's persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
-    id: 'Persona Christian berpikir dari peralatan, pemeliharaan, prosedur operasi standar, dan commons teknis yang sehat.',
-    de: 'Christians Persona denkt von Ausrüstung, Wartung, Standardarbeitsabläufen und gesunden technischen Commons her.',
-    ja: 'Christian のペルソナは、機材、保守、標準作業手順、健全な技術コモンズから考えます。',
-    th: 'บุคลิกของ Christian คิดจากอุปกรณ์ การบำรุงรักษา ขั้นตอนปฏิบัติมาตรฐาน และคอมมอนส์ทางเทคนิคที่แข็งแรง',
-  },
-  'jonathan-minchin': {
-    'zh-TW': 'Jonathan 的人格連結數位製造、農業、生態曆法與以田野為基礎的知識公地。',
-    en: "Jonathan's persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
-    id: 'Persona Jonathan menghubungkan fabrikasi digital, pertanian, kalender ekologis, dan commons pengetahuan berbasis lapangan.',
-    de: 'Jonathans Persona verbindet digitale Fabrikation, Landwirtschaft, ökologische Kalender und feldbasierte Wissens-Commons.',
-    ja: 'Jonathan のペルソナは、デジタルファブリケーション、農業、生態暦、現場に根ざした知識コモンズを結びます。',
-    th: 'บุคลิกของ Jonathan เชื่อมโยงการผลิตดิจิทัล เกษตรกรรม ปฏิทินนิเวศ และคอมมอนส์ความรู้ที่ตั้งอยู่บนภาคสนาม',
-  },
-  'marc-dusseiller': {
-    'zh-TW': 'Marc 的人格重視高密度即興、低成本開放硬體、友誼，以及把失敗當作教學法。',
-    en: "Marc's persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
-    id: 'Persona Marc menghargai improvisasi padat, perangkat keras terbuka berbiaya rendah, persahabatan, dan kegagalan sebagai pedagogi.',
-    de: 'Marcs Persona schätzt dichte Improvisation, kostengünstige offene Hardware, Freundschaft und Scheitern als Pädagogik.',
-    ja: 'Marc のペルソナは、濃密な即興、低コストのオープンハードウェア、友情、そして教育法としての失敗を大切にします。',
-    th: 'บุคลิกของ Marc ให้คุณค่ากับการด้นสดที่เข้มข้น ฮาร์ดแวร์เปิดราคาต่ำ มิตรภาพ และความล้มเหลวในฐานะวิธีสอน',
-  },
-  'mika-satomi': {
-    'zh-TW': 'Mika 的人格強調能存活的尺度、願望牆、電子織品知識分享與相互承諾。',
-    en: "Mika's persona emphasizes survivable scale, wish walls, e-textile knowledge sharing, and mutual promises.",
-    id: 'Persona Mika menekankan skala yang dapat bertahan, dinding harapan, berbagi pengetahuan e-textile, dan janji timbal balik.',
-    de: 'Mikas Persona betont überlebensfähige Maßstäbe, Wunsch-Wände, Wissensaustausch zu E-Textiles und gegenseitige Versprechen.',
-    ja: 'Mika のペルソナは、持続できるスケール、願いの壁、電子テキスタイルの知識共有、相互の約束を強調します。',
-    th: 'บุคลิกของ Mika เน้นขนาดที่อยู่รอดได้ กำแพงความปรารถนา การแบ่งปันความรู้ e-textile และคำมั่นต่อกัน',
-  },
-  'rully-shabara': {
-    'zh-TW': 'Rully 的人格警告不要把營隊變成產業。他重視圓圈、餐食、練習，以及能自己發聲的社群。',
-    en: "Rully's persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
-    id: 'Persona Rully memperingatkan agar kamp tidak diubah menjadi industri. Ia mengutamakan lingkaran, makan bersama, latihan, dan komunitas yang berbicara dengan suaranya sendiri.',
-    de: 'Rullys Persona warnt davor, Camps in Industrien zu verwandeln. Er bevorzugt Kreise, Mahlzeiten, Übungen und Communities, die für sich selbst sprechen.',
-    ja: 'Rully のペルソナは、キャンプを産業に変えることへ警鐘を鳴らします。彼は輪、食事、練習、自ら語るコミュニティを重んじます。',
-    th: 'บุคลิกของ Rully เตือนว่าอย่าเปลี่ยนแคมป์ให้กลายเป็นอุตสาหกรรม เขาให้ความสำคัญกับวงล้อม มื้ออาหาร แบบฝึกหัด และชุมชนที่พูดด้วยเสียงของตนเอง',
-  },
-  'ryu-oyama': {
-    'zh-TW': 'Ryu 的人格把孤立視為方法與資源，運用島嶼節奏來讓活動在時間與空間中去中心化。',
-    en: "Ryu's persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
-    id: 'Persona Ryu memperlakukan isolasi sebagai metode dan sumber daya, memakai ritme pulau untuk mendesentralisasi aktivitas dalam waktu dan ruang.',
-    de: 'Ryus Persona behandelt Isolation als Methode und Ressource und nutzt Inselrhythmen, um Aktivität in Zeit und Raum zu dezentrieren.',
-    ja: 'Ryu のペルソナは孤立を方法であり資源として扱い、島のリズムによって活動を時間と空間の中で脱中心化します。',
-    th: 'บุคลิกของ Ryu มองความโดดเดี่ยวเป็นทั้งวิธีการและทรัพยากร โดยใช้จังหวะของเกาะเพื่อลดศูนย์กลางของกิจกรรมในเวลาและพื้นที่',
-  },
-  'stephanie-pan': {
-    'zh-TW': 'Stephanie 的人格把節慶轉化為微型實驗室，帶著照護條款、觀眾共同主持與持續的小規模生成。',
-    en: "Stephanie's persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
-    id: 'Persona Stephanie mengubah festival menjadi laboratorium mikro dengan klausul perawatan, ko-hosting bersama audiens, dan pembentukan kecil yang berkelanjutan.',
-    de: 'Stephanies Persona verwandelt Festivals in Mikrolabore mit Care-Klauseln, Co-Hosting durch das Publikum und fortlaufender kleiner Generierung.',
-    ja: 'Stephanie のペルソナは、フェスティバルをケア条項、観客との共同ホスト、継続的な小さな生成を備えたマイクロラボへ変えます。',
-    th: 'บุคลิกของ Stephanie เปลี่ยนเทศกาลให้เป็นไมโครแล็บที่มีข้อตกลงเรื่องการดูแล การร่วมเป็นเจ้าภาพกับผู้ชม และการก่อรูปเล็ก ๆ อย่างต่อเนื่อง',
-  },
-  'stelio-manousakis': {
-    'zh-TW': 'Stelio 的人格融合行政與表演，把 sound-check 當成治理檢查。',
-    en: "Stelio's persona fuses administration and performance, treating sound-checks as governance checks.",
-    id: 'Persona Stelio memadukan administrasi dan pertunjukan, memperlakukan sound-check sebagai pemeriksaan tata kelola.',
-    de: 'Stelios Persona verschmilzt Verwaltung und Performance und behandelt Soundchecks als Governance-Prüfungen.',
-    ja: 'Stelio のペルソナは運営とパフォーマンスを融合させ、サウンドチェックをガバナンスの点検として扱います。',
-    th: 'บุคลิกของ Stelio ผสานงานบริหารกับการแสดง และมองการซาวด์เช็กเป็นการตรวจสอบธรรมาภิบาล',
-  },
-  'svenja-keune': {
-    'zh-TW': 'Svenja 的人格以生態節奏思考，先共處再共同設計，也把停頓視為協作的一部分。',
-    en: "Svenja's persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
-    id: 'Persona Svenja berpikir dalam ritme ekologis: berada-bersama sebelum merancang-bersama, dan jeda sebagai bagian dari kolaborasi.',
-    de: 'Svenjas Persona denkt in ökologischen Rhythmen: Mit-Sein vor Mit-Entwerfen und Pausen als Teil der Zusammenarbeit.',
-    ja: 'Svenja のペルソナは生態的なリズムで考え、共にデザインする前に共に在ること、そして協働の一部としての間を大切にします。',
-    th: 'บุคลิกของ Svenja คิดเป็นจังหวะนิเวศ อยู่-ด้วยกันก่อนออกแบบ-ด้วยกัน และมองการหยุดพักเป็นส่วนหนึ่งของความร่วมมือ',
-  },
-  'ted-hung': {
-    'zh-TW': 'Ted 的人格說，人與人之間的連結比實驗室之間的連結更重要。他偏好以人為本的會員關係與透明帳本。',
-    en: "Ted's persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
-    id: 'Persona Ted mengatakan bahwa hubungan antarorang lebih penting daripada hubungan antarlab. Ia menyukai keanggotaan berbasis orang dan buku besar yang transparan.',
-    de: 'Teds Persona sagt, Verbindungen zwischen Menschen seien wichtiger als Verbindungen zwischen Laboren. Er bevorzugt personenbezogene Mitgliedschaft und transparente Bücher.',
-    ja: 'Ted のペルソナは、ラボ同士のつながりより人と人のつながりの方が重要だと言います。彼は人を基盤にしたメンバーシップと透明な台帳を好みます。',
-    th: 'บุคลิกของ Ted บอกว่าความเชื่อมโยงระหว่างผู้คนสำคัญกว่าความเชื่อมโยงระหว่างแล็บ เขาชอบสมาชิกภาพที่ตั้งอยู่บนตัวบุคคลและบัญชีที่โปร่งใส',
-  },
-  'tincuta-heinzel': {
-    'zh-TW': 'Tincuta 的人格把營隊視為策展工具，產生倫理問題、在地回應與版本，而不是固定成果。',
-    en: "Tincuta's persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
-    id: 'Persona Tincuta memperlakukan kamp sebagai alat kuratorial yang menghasilkan pertanyaan etis, respons lokal, dan versi, bukan keluaran yang tetap.',
-    de: 'Tincutas Persona behandelt Camps als kuratorische Werkzeuge, die ethische Fragen, lokale Antworten und Versionen erzeugen statt fester Ergebnisse.',
-    ja: 'Tincuta のペルソナは、キャンプを固定された成果物ではなく、倫理的な問い、地域の応答、複数のバージョンを生み出すキュレーションの道具として扱います。',
-    th: 'บุคลิกของ Tincuta มองแคมป์เป็นเครื่องมือภัณฑารักษ์ที่สร้างคำถามเชิงจริยธรรม การตอบสนองเฉพาะถิ่น และเวอร์ชันต่าง ๆ มากกว่าผลงานตายตัว',
-  },
-};
-void localizedPersonaIntros;
-
 function makeIntroMessage(persona: Persona, language: LanguageCode): string {
-  const messages: Record<LanguageCode, string> = {
-    'zh-TW': `我是 ${persona.name}。你可以問我：這個社群能幫你理解什麼、可以使用哪些公開資源、或怎麼把靈感變成可查證的小誌問題。`,
-    en: `I am ${persona.name}. Ask what this community helps you understand, which public resources you can use, or how to turn an idea into a checkable zine question.`,
-    id: `Saya ${persona.name}. Tanyakan apa yang bisa dipahami dari komunitas ini, sumber publik apa yang bisa dipakai, atau cara mengubah ide menjadi pertanyaan zine yang bisa dicek.`,
-    de: `Ich bin ${persona.name}. Frag, was diese Community verständlich macht, welche öffentlichen Ressourcen nutzbar sind, oder wie eine Idee zu einer prüfbaren Zine-Frage wird.`,
-    ja: `${persona.name} です。このコミュニティから何を理解できるか、どの公開資料を使えるか、着想を確認できる小誌の問いにするにはどうするかを聞いてください。`,
-    th: `ฉันคือ ${persona.name} ถามได้ว่าชุมชนนี้ช่วยให้เข้าใจอะไร ใช้แหล่งข้อมูลสาธารณะใดได้ หรือเปลี่ยนไอเดียให้เป็นคำถามซีนที่ตรวจสอบได้อย่างไร`,
+  const guided = npcGuideProfiles[persona.id]?.opener[language];
+  if (guided) return guided;
+  const questions = makeSuggestedQuestions(language, persona).slice(0, 2).join(' ');
+  const fallback: Record<LanguageCode, string> = {
+    'zh-TW': `我會從工作坊、材料和社群照護開始回答。${questions}`,
+    en: `I can start from workshops, materials, and community care. ${questions}`,
+    id: `Aku bisa mulai dari lokakarya, bahan, dan perawatan komunitas. ${questions}`,
+    de: `Ich kann mit Workshops, Materialien und Community-Care anfangen. ${questions}`,
+    ja: `ワークショップ、材料、コミュニティのケアから答えられます。${questions}`,
+    th: `ฉันเริ่มตอบได้จากเวิร์กช็อป วัสดุ และการดูแลชุมชน ${questions}`,
   };
-  return messages[language];
+  return fallback[language];
 }
 
 function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null, query: string): string {
@@ -486,8 +609,6 @@ export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language,
   const [error, setError] = useState('');
   const [areSuggestionsOpen, setAreSuggestionsOpen] = useState(false);
   const messageLogRef = useRef<HTMLDivElement>(null);
-  const messageItemRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const pendingAnswerScrollIndexRef = useRef<number | null>(null);
 
   const orderedTopics = useMemo(() => Object.keys(topicLabels), [topicLabels]);
   const [loadedKnowledge, setLoadedKnowledge] = useState<KnowledgeBase | null>(null);
@@ -520,28 +641,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
   useEffect(() => {
     const log = messageLogRef.current;
     if (!log) return;
-    const answerIndex = pendingAnswerScrollIndexRef.current;
-    if (answerIndex !== null) {
-      const frame = window.requestAnimationFrame(() => {
-        const target = messageItemRefs.current[answerIndex];
-        if (!target) return;
-        pendingAnswerScrollIndexRef.current = null;
-        const logRect = log.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-        const top = targetRect.top - logRect.top + log.scrollTop;
-        log.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-      });
-      return () => window.cancelAnimationFrame(frame);
-    }
-    if (isLoading) log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+    log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
   }, [isLoading, messages]);
-
-  function appendNpcAnswer(message: DialogueMessage): void {
-    setMessages((prev) => {
-      pendingAnswerScrollIndexRef.current = prev.length;
-      return [...prev, message];
-    });
-  }
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -579,6 +680,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
 
     setError('');
     setIsLoading(true);
+    const dialogueHistory = recentDialogueHistory(messages);
     setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
@@ -590,8 +692,19 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         dialogueKnowledge.id,
         dialogueKnowledge.name,
       );
-      const transcriptEvidence = rankEvidence(`${trimmed}\n${topic}`, transcriptCandidates, 4);
-      const transcript = transcriptEvidence.map((item) => `${item.label}\n${item.text}`).join('\n\n');
+      const transcriptEvidence = rankEvidence(`${trimmed}
+${topic}`, transcriptCandidates, 4);
+      const npcEvidence = retrieveNpcEvidence({
+        message: trimmed,
+        retrievalContext: topic,
+        knowledge: dialogueKnowledge,
+      });
+      const mergedEvidence = [...npcEvidence, ...transcriptEvidence]
+        .filter((item, index, array) => array.findIndex((other) => other.id === item.id) === index)
+        .slice(0, 6);
+      const transcript = mergedEvidence.map((item) => `${item.label}
+${item.text}`).join('\n\n');
+      const links = searchWikiPages(trimmed, persona.id, 8);
       if (canUseLocalMemoryServer()) {
         const answer = await askNpc({
           question: trimmed,
@@ -599,8 +712,10 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
           transcript,
           preferredLanguage: language,
+          dialogueHistory,
         });
-        appendNpcAnswer({ speaker: persona.name, text: answer.answer, evidence: answer.evidence, followUps: makeFollowUpQuestions(language, trimmed, answer.evidence, persona) });
+        const resolvedLinks = answer.links.length ? answer.links : searchWikiPagesWithHints(trimmed, answer.answer, persona.id, 8);
+        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: resolvedLinks }]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -608,17 +723,19 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             question: trimmed,
             knowledge: dialogueKnowledge,
             preferredLanguage: language,
-            evidence: transcriptEvidence,
+            evidence: mergedEvidence,
+            dialogueHistory,
           });
-          appendNpcAnswer({ speaker: persona.name, text: answer, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence, persona) });
+          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          appendNpcAnswer({ speaker: persona.name, text: fallbackText, evidence: transcriptEvidence, followUps: makeFollowUpQuestions(language, trimmed, transcriptEvidence, persona) });
+          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, fallbackText, persona.id, 8) }]);
         }
       }
     } catch (err) {
-      setError(err instanceof Error && canUseLocalMemoryServer() ? err.message : t(language, 'dialogue.requestFailed'));
+      console.warn('NPC dialogue error:', err);
+      setError(t(language, 'dialogue.requestFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -636,11 +753,6 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
     setQuestion(prompt);
   }
 
-  function handleFollowUpPrompt(prompt: string): void {
-    setQuestion('');
-    void submitPrompt(prompt);
-  }
-
   async function handleOpenZine(): Promise<void> {
     const trimmed = question.trim();
     if (!trimmed || isLoading || !onOpenAssociationZine) return;
@@ -655,14 +767,16 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         <div className="rpg-dialogue-header flex items-start justify-between gap-8 mb-5">
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
-              <CharacterDialogueAvatar palette={player.palette} label={player.name} />
-              <CharacterDialogueAvatar palette={npcAvatar.palette} hueShift={npcAvatar.hueShift} label={persona.name} />
+              <PixelAvatar avatar={{ palette: player.palette, hueShift: 0 }} label={player.name} />
+              <PixelAvatar avatar={npcAvatar} label={persona.name} />
             </div>
-            <div className="rpg-dialogue-heading-line min-w-0 flex flex-nowrap items-center gap-3 overflow-visible">
-              <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0 shrink-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none m-0 shrink-0" data-ui-part="title">{persona.name}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted m-0 truncate" data-ui-part="subtitle">{persona.role}</p>
-              {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
+            <div>
+              <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
+                <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
+                {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
+              </div>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{persona.name}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{persona.role}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>
@@ -673,20 +787,24 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
           <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
-              <div
-                key={`${message.speaker}-${index.toString()}`}
-                ref={(node) => {
-                  messageItemRefs.current[index] = node;
-                }}
-                className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0"
-                data-ui-part="body"
-              >
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
                 <p className="m-0">
                   <span className="text-accent-bright">{message.speaker}: </span>
                   {message.text}
                 </p>
-                <DialogueEvidence evidence={message.evidence} language={language} />
-                <DialogueFollowUps questions={message.followUps} language={language} onSelect={handleFollowUpPrompt} />
+                {message.links && message.links.length > 0 && (
+                  <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
+                    <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
+                    <div className="rpg-dialogue-source-link-list">
+                      {message.links.map((link, linkIndex) => (
+                        <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
+                          <span>[{linkIndex + 1}] {link.title}</span>
+                          <em>{link.sourceFamily}</em>
+                        </a>
+                      ))}
+                    </div>
+                  </details>
+                )}
               </div>
             ))}
             {isLoading && (
@@ -725,14 +843,6 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
             data-ui-part="field"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
-                event.preventDefault();
-                const trimmed = question.trim();
-                setQuestion('');
-                void submitPrompt(trimmed);
-              }
-            }}
             name={`pbs-dialogue-${persona.id}`}
             inputMode="text"
             enterKeyHint="send"
