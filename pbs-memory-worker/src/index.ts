@@ -13,6 +13,14 @@ interface SearchResult {
   path: string;
   description: string;
   score: number;
+  body?: string;
+}
+
+interface SearchOptions {
+  npcName?: string;
+  personaId?: string;
+  personaText?: string;
+  mode?: 'campfire' | 'npc';
 }
 
 interface EvidenceItem {
@@ -51,6 +59,55 @@ function tokens(text: string): string[] {
   return Array.from(new Set(text.toLowerCase().split(/[^\p{L}\p{N}-]+/u).filter((word) => word.length >= 2)));
 }
 
+const NPC_RETRIEVAL_STOP_TERMS = new Set([
+  'ngm', 'non-governmental', 'non', 'governmental', 'matters', 'booklet', 'interview', 'interviews', '訪談', '採訪', '談', '裡', '里面', '裏', '你在', '怎麼談',
+]);
+
+const CROSS_NPC_NOISE: Array<{ match: RegExp; unless: RegExp }> = [
+  { match: /abao|shih wei|shih wei-chieh|施惟捷|doctor blade|nano doctor blade|hlabx|hacker residency/i, unless: /abao|shih wei|施惟捷|doctor blade|hlabx/i },
+  { match: /marc dusseiller/i, unless: /marc|dusseiller|hackteria/i },
+  { match: /jonathan minchin|open source beehives|green fab lab|valldaura/i, unless: /jonathan|minchin|bee|beehive|蜂|green fab|valldaura|farm|農/i },
+];
+
+function retrievalTokens(query: string, options: SearchOptions = {}): string[] {
+  const raw = expandedTokens(query);
+  if (options.mode !== 'npc') return raw;
+  return raw.filter((term) => !NPC_RETRIEVAL_STOP_TERMS.has(term.toLowerCase()));
+}
+
+function personaAnchorTerms(options: SearchOptions = {}): string[] {
+  const text = `${options.personaId ?? ''} ${options.npcName ?? ''} ${options.personaText ?? ''}`.toLowerCase();
+  if (/jonathan|minchin|green fab|valldaura|beehive|bee|farmbot/.test(text)) {
+    return ['Jonathan Minchin', 'Open Source Beehives', 'Green Fab Lab', 'Valldaura', 'bee', 'beehive', 'sensor', 'agriculture', 'farm', 'open hardware'];
+  }
+  if (/marc|dusseiller|hackteria/.test(text)) return ['Marc Dusseiller', 'Hackteria', 'DIY biology', 'bioart', 'workshopology', 'open science'];
+  if (/mika|kobakant|how to get what you want/.test(text)) return ['KOBAKANT', 'How To Get What You Want', 'e-textile', 'soft circuit', 'wearable'];
+  if (/andreas|lifepatch/.test(text)) return ['Lifepatch', 'citizen science', 'open science', 'Yogyakarta', 'community lab'];
+  return [];
+}
+
+function topicalAnchorTerms(query: string): string[] {
+  const anchors: string[] = [];
+  if (/蜂|蜜蜂|bee|beehive|hive|農|農地|農業|farm|agricultur|open hardware|開源硬體|sensor|感測/i.test(query)) {
+    anchors.push('Open Source Beehives', 'Green Fab Lab', 'Valldaura', 'bee', 'beehive', 'sensor', 'agriculture', 'farm', 'open hardware');
+  }
+  if (/hackteria|diy biology|bioart|生物藝術|開源.*藝術|open.*art/i.test(query)) {
+    anchors.push('Hackteria', 'DIY biology', 'bioart', 'open science', 'workshopology');
+  }
+  return anchors;
+}
+
+function crossNpcPenalty(result: SearchResult, query: string, options: SearchOptions = {}): number {
+  if (options.mode !== 'npc') return 0;
+  const haystack = `${result.title} ${result.path} ${result.description} ${result.body ?? ''}`;
+  const guardText = `${query} ${options.npcName ?? ''} ${options.personaId ?? ''} ${options.personaText ?? ''}`;
+  let penalty = 0;
+  for (const rule of CROSS_NPC_NOISE) {
+    if (rule.match.test(haystack) && !rule.unless.test(guardText)) penalty -= 90;
+  }
+  return penalty;
+}
+
 const DOMAIN_ALIASES: Array<[RegExp, string[]]> = [
   [/獨立|independent|artist-run|artist run/i, ['independent', 'artist-run', 'self-organized', 'community-driven']],
   [/藝術|art|artist/i, ['art', 'artist', 'artistic', 'creative']],
@@ -79,25 +136,27 @@ function expandedTokens(query: string): string[] {
   return Array.from(new Set(out));
 }
 
-function searchPlans(query: string): string[] {
-  const plans = new Set<string>([query, expandedTokens(query).join(' ')]);
+function searchPlans(query: string, options: SearchOptions = {}): string[] {
+  const queryTerms = retrievalTokens(query, options);
+  const anchors = [...topicalAnchorTerms(query), ...personaAnchorTerms(options)];
+  const plans = new Set<string>([queryTerms.join(' '), [...queryTerms, ...anchors].join(' '), anchors.join(' ')]);
   for (const [pattern, aliases] of DOMAIN_ALIASES) {
-    if (pattern.test(query)) plans.add(aliases.join(' '));
+    if (pattern.test(query)) plans.add([...aliases, ...anchors].join(' '));
   }
   return Array.from(plans).filter((item) => item.trim().length > 0).slice(0, 8);
 }
 
-function ftsQuery(query: string): string {
-  const queryTokens = expandedTokens(query);
+function ftsQuery(query: string, options: SearchOptions = {}): string {
+  const queryTokens = retrievalTokens(query, options);
   return queryTokens.map((token) => `"${token.replace(/"/g, '""')}"`).join(' OR ') || '"pbs"';
 }
 
-async function searchFts(env: Env, query: string, limit: number, boosts: { kombucha?: boolean; architecture?: boolean; synthMaterial?: boolean }): Promise<SearchResult[]> {
+async function searchFts(env: Env, query: string, limit: number, boosts: { kombucha?: boolean; architecture?: boolean; synthMaterial?: boolean }, options: SearchOptions = {}): Promise<SearchResult[]> {
   const wantsKombucha = /kombucha|scoby|紅茶菌|康普茶|bacterial cellulose|biofilm|fermentation|bioplastic/i.test(query);
   const wantsArchitecture = /architecture|architectural|multispecies|multi-species|more-than-human|building|habitat|建築|多物種/i.test(query);
   const wantsSynthMaterial = /synth|synthesizer|sound|music|midi|oscillator|speaker|聲音|合成器|material|textile|fabric|circuit|sensor|材料|織品/i.test(query);
   const rows = await env.DB.prepare(`
-    SELECT title, url, source_family AS sourceFamily, path,
+    SELECT title, url, source_family AS sourceFamily, path, body,
            snippet(source_chunks_fts, 1, '', '', ' ', 72) AS description,
            (
              bm25(source_chunks_fts)
@@ -109,7 +168,7 @@ async function searchFts(env: Env, query: string, limit: number, boosts: { kombu
     WHERE source_chunks_fts MATCH ?
     ORDER BY score
     LIMIT ?
-  `).bind((boosts.kombucha ?? wantsKombucha) ? 1 : 0, (boosts.architecture ?? wantsArchitecture) ? 1 : 0, (boosts.synthMaterial ?? wantsSynthMaterial) ? 1 : 0, ftsQuery(query), Math.max(1, Math.min(limit, 20))).all<SearchResult>();
+  `).bind((boosts.kombucha ?? wantsKombucha) ? 1 : 0, (boosts.architecture ?? wantsArchitecture) ? 1 : 0, (boosts.synthMaterial ?? wantsSynthMaterial) ? 1 : 0, ftsQuery(query, options), Math.max(1, Math.min(limit, 20))).all<SearchResult>();
   return (rows.results ?? []).map((row) => ({
     title: row.title,
     url: row.url ?? '',
@@ -117,12 +176,13 @@ async function searchFts(env: Env, query: string, limit: number, boosts: { kombu
     path: row.path ?? '',
     description: String(row.description ?? '').replace(/\s+/g, ' ').trim(),
     score: Number(row.score ?? 0),
+    body: String(row.body ?? ''),
   }));
 }
 
-async function searchMemory(env: Env, query: string, limit = 8): Promise<SearchResult[]> {
+async function searchMemory(env: Env, query: string, limit = 8, options: SearchOptions = {}): Promise<SearchResult[]> {
   const perPlanLimit = Math.max(8, Math.min(16, limit * 2));
-  const planned = await Promise.all(searchPlans(query).map((plan) => searchFts(env, plan, perPlanLimit, {})));
+  const planned = await Promise.all(searchPlans(query, options).map((plan) => searchFts(env, plan, perPlanLimit, {}, options)));
   const merged = new Map<string, SearchResult & { appearances: number; planIndex: number }>();
   planned.forEach((results, planIndex) => {
     for (const result of results) {
@@ -136,10 +196,10 @@ async function searchMemory(env: Env, query: string, limit = 8): Promise<SearchR
     }
   });
 
-  const queryTerms = expandedTokens(query).map((item) => item.toLowerCase());
+  const queryTerms = [...retrievalTokens(query, options), ...topicalAnchorTerms(query), ...personaAnchorTerms(options)].map((item) => item.toLowerCase());
   const ranked = Array.from(merged.values()).sort((a, b) => {
-    const rankA = rerankScore(a, queryTerms);
-    const rankB = rerankScore(b, queryTerms);
+    const rankA = rerankScore(a, queryTerms, query, options);
+    const rankB = rerankScore(b, queryTerms, query, options);
     return rankB - rankA || a.score - b.score || a.title.localeCompare(b.title);
   });
 
@@ -161,13 +221,26 @@ async function searchMemory(env: Env, query: string, limit = 8): Promise<SearchR
   return selected.slice(0, limit);
 }
 
-function rerankScore(result: SearchResult & { appearances?: number; planIndex?: number }, queryTerms: string[]): number {
-  const text = `${result.title} ${result.description} ${result.sourceFamily}`.toLowerCase();
+function rerankScore(result: SearchResult & { appearances?: number; planIndex?: number }, queryTerms: string[], query = '', options: SearchOptions = {}): number {
+  const text = `${result.title} ${result.description} ${result.body ?? ''} ${result.sourceFamily}`.toLowerCase();
   const title = result.title.toLowerCase();
   const uniqueHits = queryTerms.filter((term) => text.includes(term.toLowerCase())).length;
   const titleHits = queryTerms.filter((term) => title.includes(term.toLowerCase())).length;
   const sourceWeight = result.sourceFamily === 'hackteria' || result.sourceFamily === 'sgmk' || result.sourceFamily === 'htgwyw' ? 3 : 0;
-  return uniqueHits * 3 + titleHits * 4 + (result.appearances ?? 1) * 2 + sourceWeight - (result.planIndex ?? 0) * 0.25 - result.score * 0.02;
+  const bodyPhraseBoost = /蜂|蜜蜂|bee|beehive|hive|農|農地|農業|farm|agricultur|open hardware|開源硬體|sensor|感測/i.test(query) && /open source beehives|green fab lab|valldaura|bee|beehive|agricultur|farm|sensor|open hardware/i.test(text) ? 45 : 0;
+  const exactProjectBoost = /open source beehives|green fab lab|valldaura/i.test(title) ? 28 : 0;
+  return uniqueHits * 3 + titleHits * 4 + (result.appearances ?? 1) * 2 + sourceWeight + bodyPhraseBoost + exactProjectBoost + crossNpcPenalty(result, query, options) - (result.planIndex ?? 0) * 0.25 - result.score * 0.02;
+}
+
+
+function stripResultBody(result: SearchResult): SearchResult {
+  const { body: _body, ...publicResult } = result;
+  void _body;
+  return publicResult;
+}
+
+function stripResultBodies(results: SearchResult[]): SearchResult[] {
+  return results.map((result) => stripResultBody(result));
 }
 
 function evidenceFromResults(results: SearchResult[]): EvidenceItem[] {
@@ -266,8 +339,8 @@ async function callDeepSeek(env: Env, systemPrompt: string, userPrompt: string):
   return answer.trim();
 }
 
-async function answerWithMemory(env: Env, question: string, preferredLanguage: string, npcContext = ''): Promise<{ answer: string; evidence: EvidenceItem[]; links: SearchResult[] }> {
-  const links = await searchMemory(env, question, 8);
+async function answerWithMemory(env: Env, question: string, preferredLanguage: string, npcContext = '', searchOptions: SearchOptions = {}): Promise<{ answer: string; evidence: EvidenceItem[]; links: SearchResult[] }> {
+  const links = await searchMemory(env, question, 8, searchOptions);
   const evidence = evidenceFromResults(links);
   const evidenceBlock = evidence.map((item, index) => `[${index + 1}] ${item.label}\n${item.text}\n${item.url}`).join('\n\n');
   const systemPrompt = [
@@ -296,10 +369,10 @@ async function answerWithMemory(env: Env, question: string, preferredLanguage: s
         ? answer
         : deterministicGroundedAnswer(question, evidence, preferredLanguage, '剛才可用的材料不足以支持某些延伸說法，所以這裡只列出能直接對應的公開來源。'),
       evidence,
-      links,
+      links: stripResultBodies(links),
     };
   } catch (error) {
-    return { answer: fallbackAnswer(evidence, error instanceof Error ? error.message : String(error)), evidence, links };
+    return { answer: fallbackAnswer(evidence, error instanceof Error ? error.message : String(error)), evidence, links: stripResultBodies(links) };
   }
 }
 
@@ -347,7 +420,7 @@ export default {
     if (url.pathname === '/api/memory/search') {
       const query = String(payload.query ?? '');
       const limit = Number(payload.limit ?? 8);
-      return jsonResponse(request, env, { results: await searchMemory(env, query, Number.isFinite(limit) ? limit : 8) });
+      return jsonResponse(request, env, { results: stripResultBodies(await searchMemory(env, query, Number.isFinite(limit) ? limit : 8)) });
     }
     if (url.pathname === '/api/chat/campfire') {
       const question = String(payload.question ?? '');
@@ -364,12 +437,12 @@ export default {
         `Role: ${String(persona.role ?? '')}`,
         `Intro: ${String(persona.intro ?? '')}`,
       ].join('\n');
-      return jsonResponse(request, env, await answerWithMemory(env, question, preferredLanguage, npcContext));
+      return jsonResponse(request, env, await answerWithMemory(env, question, preferredLanguage, npcContext, { mode: 'npc', npcName, personaId: String(persona.id ?? ''), personaText: `${String(persona.role ?? '')} ${String(persona.intro ?? '')}` }));
     }
     if (url.pathname === '/api/memory/draft') {
       const question = String(payload.question ?? payload.query ?? '');
       const answer = String(payload.answer ?? '');
-      const links = Array.isArray(payload.links) ? payload.links as SearchResult[] : await searchMemory(env, question, Number(payload.limit ?? 8));
+      const links = Array.isArray(payload.links) ? payload.links as SearchResult[] : stripResultBodies(await searchMemory(env, question, Number(payload.limit ?? 8)));
       const evidence = Array.isArray(payload.evidence) ? payload.evidence as EvidenceItem[] : evidenceFromResults(links);
       return jsonResponse(request, env, { stored: false, markdown: draftMarkdown(question, answer, evidence, links) });
     }

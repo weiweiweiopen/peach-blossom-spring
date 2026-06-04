@@ -148,7 +148,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบผสมวัสดุพลังงานแสงอาทิตย์ เลเซอร์ การเดินทาง และนิทานแปลก ๆ อยากดูไหมว่าวิทยาศาสตร์ศิลป์กลายเป็นเรื่องเล่าได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你是一個什麼樣的藝術家嗎？', '你在 NGM 訪談裡主要聊了哪些事？', '如果我是第一次認識你的作品，應該先看什麼？'],
+      'zh-TW': ['可以告訴我你是一個什麼樣的藝術家嗎？', '你怎麼把太陽能、雷射、旅行和寓言放進同一個藝術實踐？', '如果我是第一次認識你的作品，應該先看什麼？'],
       'en': ['Can you tell me what kind of artist you are?', 'What did you mainly talk about in your NGM interview?', 'If I am new to your work, what should I look at first?'],
       'id': ['Bisa ceritakan kamu seniman seperti apa?', 'Apa hal utama yang kamu bicarakan dalam wawancara NGM?', 'Kalau saya baru mengenal karyamu, sebaiknya mulai dari apa?'],
       'de': ['Kannst du mir erzählen, was für eine Künstlerin du bist?', 'Worüber hast du im NGM-Interview hauptsächlich gesprochen?', 'Wenn ich deine Arbeit zum ersten Mal kennenlerne, womit sollte ich anfangen?'],
@@ -166,7 +166,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันสนใจเครื่องมือที่เพื่อนบ้านใช้ ซ่อม และดูแลได้จริง อยากรู้ไหมว่าแล็บเติบโตในชีวิตประจำวันอย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Lifepatch 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談開放科學和日常生活？', '如果新手想理解你的社群實驗室，應該先問什麼？'],
+      'zh-TW': ['可以告訴我 Lifepatch 是一個什麼樣的團體嗎？', '你怎麼把開放科學做進鄰里和日常生活裡？', '如果新手想理解你的社群實驗室，應該先問什麼？'],
       'en': ['Can you tell me what kind of group Lifepatch is?', 'How did you talk about open science and everyday life in your NGM interview?', 'If a beginner wants to understand your community lab, what should they ask first?'],
       'id': ['Bisa ceritakan Lifepatch itu kelompok seperti apa?', 'Bagaimana kamu membahas sains terbuka dan kehidupan sehari-hari dalam wawancara NGM?', 'Kalau pemula ingin memahami lab komunitasmu, pertanyaan apa yang sebaiknya diajukan dulu?'],
       'de': ['Kannst du mir erzählen, was für eine Gruppe Lifepatch ist?', 'Wie hast du im NGM-Interview über offene Wissenschaft und Alltag gesprochen?', 'Wenn Anfänger dein Community-Labor verstehen wollen, was sollten sie zuerst fragen?'],
@@ -184,7 +184,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบเปลี่ยนหลักสูตรให้เป็นโหนดที่เดินทางและถูกดัดแปลงได้ อยากดูไหมว่าโรงเรียนกลายเป็นเครือข่ายช่วยเหลือนานาชาติอย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Fabricademy 是一個什麼樣的學習網絡嗎？', '你在 NGM 訪談裡怎麼談電子織品和分散式教育？', '如果我第一次接觸 Fabricademy，應該先理解哪個核心想法？'],
+      'zh-TW': ['可以告訴我 Fabricademy 是一個什麼樣的學習網絡嗎？', '你怎麼把電子織品課程做成一個分散式學習網絡？', '如果我第一次接觸 Fabricademy，應該先理解哪個核心想法？'],
       'en': ['Can you tell me what kind of learning network Fabricademy is?', 'How did you talk about e-textiles and distributed education in your NGM interview?', 'If I am new to Fabricademy, what core idea should I understand first?'],
       'id': ['Bisa ceritakan Fabricademy itu jaringan belajar seperti apa?', 'Bagaimana kamu membahas e-textiles dan pendidikan terdistribusi dalam wawancara NGM?', 'Kalau saya baru mengenal Fabricademy, gagasan inti apa yang perlu dipahami dulu?'],
       'de': ['Kannst du mir erzählen, was für ein Lernnetzwerk Fabricademy ist?', 'Wie hast du im NGM-Interview über E-Textilien und verteilte Bildung gesprochen?', 'Wenn ich Fabricademy neu kennenlerne, welche Kernidee sollte ich zuerst verstehen?'],
@@ -202,7 +202,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันถามก่อนว่าเครื่องนี้เสียแล้วใครซ่อม และใครเข้าใจกติกา อยากรู้ไหมว่าคอมมอนส์ทางเทคนิคไม่พังได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你關心的是什麼樣的開放實驗室文化嗎？', '你在 NGM 訪談裡怎麼談維修、規則和社群照護？', '如果新手想加入開放實驗室，最容易忽略什麼？'],
+      'zh-TW': ['可以告訴我你關心的是什麼樣的開放實驗室文化嗎？', '你怎麼把維修、規則和社群照護連成開放實驗室文化？', '如果新手想加入開放實驗室，最容易忽略什麼？'],
       'en': ['Can you tell me what kind of open-lab culture you care about?', 'How did you talk about repair, rules, and community care in your NGM interview?', 'If a beginner wants to join an open lab, what do they most often miss?'],
       'id': ['Bisa ceritakan budaya open lab seperti apa yang kamu pedulikan?', 'Bagaimana kamu membahas perbaikan, aturan, dan perawatan komunitas dalam wawancara NGM?', 'Kalau pemula ingin ikut open lab, apa yang sering terlewat?'],
       'de': ['Kannst du mir erzählen, welche Open-Lab-Kultur dir wichtig ist?', 'Wie hast du im NGM-Interview über Reparatur, Regeln und Community-Care gesprochen?', 'Wenn Anfänger in ein offenes Labor kommen, was übersehen sie oft?'],
@@ -220,7 +220,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'เมื่อวางเซนเซอร์ใกล้ร่างกาย คำถามแรกคือความยินยอมและการดูแล อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์ไม่ใช่แค่เสื้อผ้าเท่ ๆ?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你做的是什麼樣的女性主義科技實踐嗎？', '你在 NGM 訪談裡怎麼談身體、資料和照護？', '如果我第一次參加你的工作坊，應該帶著什麼問題來？'],
+      'zh-TW': ['可以告訴我你做的是什麼樣的女性主義科技實踐嗎？', '你怎麼把身體、資料和照護放進女性主義科技工作坊？', '如果我第一次參加你的工作坊，應該帶著什麼問題來？'],
       'en': ['Can you tell me what kind of feminist technology practice you do?', 'How did you talk about bodies, data, and care in your NGM interview?', 'If I join your workshop for the first time, what question should I bring?'],
       'id': ['Bisa ceritakan praktik teknologi feminis seperti apa yang kamu lakukan?', 'Bagaimana kamu membahas tubuh, data, dan perawatan dalam wawancara NGM?', 'Kalau saya pertama kali ikut workshopmu, pertanyaan apa yang sebaiknya saya bawa?'],
       'de': ['Kannst du mir erzählen, welche feministische Technologiepraxis du machst?', 'Wie hast du im NGM-Interview über Körper, Daten und Care gesprochen?', 'Wenn ich zum ersten Mal an deinem Workshop teilnehme, welche Frage sollte ich mitbringen?'],
@@ -238,7 +238,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบวาง Green Fab Lab ป่า Valldaura รังผึ้ง เซนเซอร์ และพื้นที่เกษตรไว้บนโต๊ะเดียวกัน อยากรู้ไหมว่าแฟ็บแล็บดูแลผืนดินได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Open Source Beehives 是一個什麼樣的計畫嗎？', '你在 NGM 訪談裡怎麼談蜜蜂、農地和開源硬體？', '如果我第一次認識 Green Fab Lab，應該先理解什麼？'],
+      'zh-TW': ['可以告訴我 Open Source Beehives 是一個什麼樣的計畫嗎？', '你怎麼把蜜蜂、農地和開源硬體放在同一個計畫裡？', '如果我第一次認識 Green Fab Lab，應該先理解什麼？'],
       'en': ['Can you tell me what kind of project Open Source Beehives is?', 'How did you talk about bees, farmland, and open hardware in your NGM interview?', 'If I am new to the Green Fab Lab, what should I understand first?'],
       'id': ['Bisa ceritakan Open Source Beehives itu proyek seperti apa?', 'Bagaimana kamu membahas lebah, lahan pertanian, dan open hardware dalam wawancara NGM?', 'Kalau saya baru mengenal Green Fab Lab, apa yang perlu dipahami dulu?'],
       'de': ['Kannst du mir erzählen, was für ein Projekt Open Source Beehives ist?', 'Wie hast du im NGM-Interview über Bienen, Landwirtschaft und Open Hardware gesprochen?', 'Wenn ich das Green Fab Lab neu kennenlerne, was sollte ich zuerst verstehen?'],
@@ -256,7 +256,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'เคล็ดลับโปรดของฉันคือเดินทางแบบมือโปรพร้อมแล็บในกระเป๋า อยากสร้างเครื่องมือแล็บไฮเทคราคาถูกเองไหม?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Hackteria 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談 DIY biology、bioart 和工作坊？', '如果新手想加入 Hackteria，應該先知道什麼？'],
+      'zh-TW': ['可以告訴我 Hackteria 是一個什麼樣的團體嗎？', '你怎麼把 DIY biology、bioart 和工作坊做成 Hackteria 的社群方法？', '如果新手想加入 Hackteria，應該先知道什麼？'],
       'en': ['Can you tell me what kind of group Hackteria is?', 'How did you talk about DIY biology, bioart, and workshops in your NGM interview?', 'If a beginner wants to join Hackteria, what should they know first?'],
       'id': ['Bisa ceritakan Hackteria itu kelompok seperti apa?', 'Bagaimana kamu membahas DIY biology, bioart, dan workshop dalam wawancara NGM?', 'Kalau pemula ingin ikut Hackteria, apa yang perlu diketahui dulu?'],
       'de': ['Kannst du mir erzählen, was für eine Gruppe Hackteria ist?', 'Wie hast du im NGM-Interview über DIY Biology, Bioart und Workshops gesprochen?', 'Wenn Anfänger bei Hackteria mitmachen wollen, was sollten sie zuerst wissen?'],
@@ -274,7 +274,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบให้ผ้า ด้าย วงจร และความปรารถนาของผู้คนทำงานร่วมกัน อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์เติบโตจากคำมั่นเล็ก ๆ อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 KOBAKANT 是一個什麼樣的團體嗎？', '你在 NGM 訪談裡怎麼談電子織品、開源文件和願望？', '如果我第一次認識 soft circuits，應該從哪裡開始？'],
+      'zh-TW': ['可以告訴我 KOBAKANT 是一個什麼樣的團體嗎？', '你怎麼把電子織品、開源文件和願望連在一起？', '如果我第一次認識 soft circuits，應該從哪裡開始？'],
       'en': ['Can you tell me what kind of group KOBAKANT is?', 'How did you talk about e-textiles, open documentation, and wishes in your NGM interview?', 'If I am new to soft circuits, where should I start?'],
       'id': ['Bisa ceritakan KOBAKANT itu kelompok seperti apa?', 'Bagaimana kamu membahas e-textiles, dokumentasi terbuka, dan keinginan dalam wawancara NGM?', 'Kalau saya baru mengenal soft circuits, mulai dari mana?'],
       'de': ['Kannst du mir erzählen, was für eine Gruppe KOBAKANT ist?', 'Wie hast du im NGM-Interview über E-Textilien, offene Dokumentation und Wünsche gesprochen?', 'Wenn ich Soft Circuits neu kennenlerne, womit sollte ich anfangen?'],
@@ -292,7 +292,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันเชื่อวงล้อม อาหารร่วมกัน และการฝึก มากกว่าการเปลี่ยนแคมป์เป็นสินค้า อยากรู้ไหมว่าชุมชนเสียงไม่ถูกอุตสาหกรรมกลืนได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你的聲音實踐是什麼樣的嗎？', '你在 NGM 訪談裡怎麼談身體、聲音和社群？', '如果新手想理解你的表演方法，應該先聽什麼？'],
+      'zh-TW': ['可以告訴我你的聲音實踐是什麼樣的嗎？', '你怎麼把身體、聲音和社群變成一種表演方法？', '如果新手想理解你的表演方法，應該先聽什麼？'],
       'en': ['Can you tell me what your vocal practice is like?', 'How did you talk about body, voice, and community in your NGM interview?', 'If a beginner wants to understand your performance method, what should they listen for first?'],
       'id': ['Bisa ceritakan praktik vokalmu seperti apa?', 'Bagaimana kamu membahas tubuh, suara, dan komunitas dalam wawancara NGM?', 'Kalau pemula ingin memahami metode performansmu, apa yang sebaiknya didengar dulu?'],
       'de': ['Kannst du mir erzählen, wie deine Stimmpraxis aussieht?', 'Wie hast du im NGM-Interview über Körper, Stimme und Community gesprochen?', 'Wenn Anfänger deine Performance-Methode verstehen wollen, worauf sollten sie zuerst hören?'],
@@ -310,7 +310,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันมองระยะห่างของเกาะเป็นวิธี ไม่ใช่ปัญหา อยากรู้ไหมว่าความห่างไกลปกป้องจังหวะของกิจกรรมได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Oki Wonder Lab 是一個什麼樣的地方嗎？', '你在 NGM 訪談裡怎麼談島嶼、孤立和共同製作？', '如果我第一次到你的實驗室，應該先感受什麼？'],
+      'zh-TW': ['可以告訴我 Oki Wonder Lab 是一個什麼樣的地方嗎？', '你怎麼把島嶼、孤立和共同製作變成 Oki Wonder Lab 的方法？', '如果我第一次到你的實驗室，應該先感受什麼？'],
       'en': ['Can you tell me what kind of place Oki Wonder Lab is?', 'How did you talk about islands, isolation, and making together in your NGM interview?', 'If I visit your lab for the first time, what should I notice first?'],
       'id': ['Bisa ceritakan Oki Wonder Lab itu tempat seperti apa?', 'Bagaimana kamu membahas pulau, isolasi, dan membuat bersama dalam wawancara NGM?', 'Kalau saya pertama kali datang ke labmu, apa yang perlu saya rasakan dulu?'],
       'de': ['Kannst du mir erzählen, was für ein Ort Oki Wonder Lab ist?', 'Wie hast du im NGM-Interview über Inseln, Isolation und gemeinsames Machen gesprochen?', 'Wenn ich dein Labor zum ersten Mal besuche, was sollte ich zuerst wahrnehmen?'],
@@ -328,7 +328,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบเปลี่ยน Modern Body Festival เป็นห้องทดลองเล็ก ๆ ที่ทุกคนเข้าได้ อยากรู้ไหมว่าผู้ชมเป็นเจ้าภาพร่วมแทนการดูเฉย ๆ ได้อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Modern Body Festival 是一個什麼樣的活動嗎？', '你在 NGM 訪談裡怎麼談身體、科技和觀眾？', '如果第一次看你的表演或策展，應該注意什麼？'],
+      'zh-TW': ['可以告訴我 Modern Body Festival 是一個什麼樣的活動嗎？', '你怎麼把身體、科技和觀眾變成 Modern Body Festival 的現場方法？', '如果第一次看你的表演或策展，應該注意什麼？'],
       'en': ['Can you tell me what kind of event Modern Body Festival is?', 'How did you talk about body, technology, and audience in your NGM interview?', 'If I encounter your performance or curating for the first time, what should I notice?'],
       'id': ['Bisa ceritakan Modern Body Festival itu acara seperti apa?', 'Bagaimana kamu membahas tubuh, teknologi, dan penonton dalam wawancara NGM?', 'Kalau saya pertama kali melihat performans atau kurasimu, apa yang perlu diperhatikan?'],
       'de': ['Kannst du mir erzählen, was für eine Veranstaltung Modern Body Festival ist?', 'Wie hast du im NGM-Interview über Körper, Technologie und Publikum gesprochen?', 'Wenn ich deine Performance oder kuratorische Arbeit neu kennenlerne, worauf sollte ich achten?'],
@@ -346,7 +346,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันมองการซ้อม งานบริหาร และซาวด์เช็กของ Modern Body Festival เป็นส่วนหนึ่งของการแสดง อยากรู้ไหมว่าชุมชนศิลปะเสียงทำงานด้วยกติกาประจำวันอย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Modern Body Festival 背後是一個什麼樣的社群嗎？', '你在 NGM 訪談裡怎麼談聲音、表演和組織工作？', '如果新手想理解聲音藝術社群，應該先問什麼？'],
+      'zh-TW': ['可以告訴我 Modern Body Festival 背後是一個什麼樣的社群嗎？', '你怎麼把聲音、表演和組織工作放在同一個社群裡？', '如果新手想理解聲音藝術社群，應該先問什麼？'],
       'en': ['Can you tell me what kind of community is behind Modern Body Festival?', 'How did you talk about sound, performance, and organizing in your NGM interview?', 'If a beginner wants to understand a sound-art community, what should they ask first?'],
       'id': ['Bisa ceritakan komunitas seperti apa yang ada di balik Modern Body Festival?', 'Bagaimana kamu membahas suara, performans, dan kerja organisasi dalam wawancara NGM?', 'Kalau pemula ingin memahami komunitas seni suara, apa yang sebaiknya ditanyakan dulu?'],
       'de': ['Kannst du mir erzählen, was für eine Community hinter Modern Body Festival steht?', 'Wie hast du im NGM-Interview über Klang, Performance und Organisationsarbeit gesprochen?', 'Wenn Anfänger eine Sound-Art-Community verstehen wollen, was sollten sie zuerst fragen?'],
@@ -364,7 +364,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบอยู่กับจุลินทรีย์ พืช และร่างกายสักพักก่อนออกแบบ อยากรู้ไหมว่าสถาปัตยกรรมที่มนุษย์อยู่ร่วมกับสปีชีส์อื่นคืออะไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你的人與其他物種共同居住實踐是什麼嗎？', '你在 NGM 訪談裡怎麼談植物、建築和穿戴科技？', '如果我第一次認識你的作品，應該先觀察什麼關係？'],
+      'zh-TW': ['可以告訴我你的人與其他物種共同居住實踐是什麼嗎？', '你怎麼把植物、建築和穿戴科技放進多物種共同居住？', '如果我第一次認識你的作品，應該先觀察什麼關係？'],
       'en': ['Can you tell me what your practice of living with other species is about?', 'How did you talk about plants, architecture, and wearables in your NGM interview?', 'If I am new to your work, what relationship should I observe first?'],
       'id': ['Bisa ceritakan praktik hidup bersama spesies lain yang kamu lakukan itu tentang apa?', 'Bagaimana kamu membahas tanaman, arsitektur, dan wearable dalam wawancara NGM?', 'Kalau saya baru mengenal karyamu, relasi apa yang perlu diamati dulu?'],
       'de': ['Kannst du mir erzählen, worum es in deiner Praxis des Zusammenlebens mit anderen Arten geht?', 'Wie hast du im NGM-Interview über Pflanzen, Architektur und Wearables gesprochen?', 'Wenn ich deine Arbeit neu kennenlerne, welche Beziehung sollte ich zuerst beobachten?'],
@@ -382,7 +382,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันมองหาความไว้วางใจระหว่างคนก่อนความเชื่อมโยงระหว่างแล็บ อยากรู้ไหมว่าสมาชิกภาพเป็นได้มากกว่ารายชื่อ?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Fablab Taipei 是一個什麼樣的地方嗎？', '你在 NGM 訪談裡怎麼談會員、信任和透明帳本？', '如果新手想理解 fab lab 社群，應該先看哪個日常問題？'],
+      'zh-TW': ['可以告訴我 Fablab Taipei 是一個什麼樣的地方嗎？', '你怎麼把會員、信任和透明帳本變成 fab lab 的社群基礎？', '如果新手想理解 fab lab 社群，應該先看哪個日常問題？'],
       'en': ['Can you tell me what kind of place Fablab Taipei is?', 'How did you talk about membership, trust, and transparent ledgers in your NGM interview?', 'If a beginner wants to understand a fab lab community, which everyday question should they look at first?'],
       'id': ['Bisa ceritakan Fablab Taipei itu tempat seperti apa?', 'Bagaimana kamu membahas keanggotaan, kepercayaan, dan buku kas transparan dalam wawancara NGM?', 'Kalau pemula ingin memahami komunitas fab lab, persoalan sehari-hari apa yang perlu dilihat dulu?'],
       'de': ['Kannst du mir erzählen, was für ein Ort Fablab Taipei ist?', 'Wie hast du im NGM-Interview über Mitgliedschaft, Vertrauen und transparente Kassen gesprochen?', 'Wenn Anfänger eine Fab-Lab-Community verstehen wollen, welche Alltagsfrage sollten sie zuerst anschauen?'],
@@ -400,7 +400,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันเก็บความล้มเหลว การทดลอง และการตอบสนองท้องถิ่น โดยไม่รีบทำให้เป็นเรื่องสำเร็จ อยากรู้ไหมว่าแคมป์กลายเป็นเครื่องมือภัณฑารักษ์อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我 Textiltronics 是一個什麼樣的計畫嗎？', '你在 NGM 訪談裡怎麼談失敗、策展和電子織品？', '如果第一次看 Attempts, Failures, Trials and Errors，應該怎麼理解它？'],
+      'zh-TW': ['可以告訴我 Textiltronics 是一個什麼樣的計畫嗎？', '你怎麼把失敗、策展和電子織品整理成 Textiltronics 的研究方法？', '如果第一次看 Attempts, Failures, Trials and Errors，應該怎麼理解它？'],
       'en': ['Can you tell me what kind of project Textiltronics is?', 'How did you talk about failure, curating, and e-textiles in your NGM interview?', 'If I see Attempts, Failures, Trials and Errors for the first time, how should I understand it?'],
       'id': ['Bisa ceritakan Textiltronics itu proyek seperti apa?', 'Bagaimana kamu membahas kegagalan, kurasi, dan e-textiles dalam wawancara NGM?', 'Kalau saya pertama kali melihat Attempts, Failures, Trials and Errors, bagaimana memahaminya?'],
       'de': ['Kannst du mir erzählen, was für ein Projekt Textiltronics ist?', 'Wie hast du im NGM-Interview über Scheitern, Kuratieren und E-Textilien gesprochen?', 'Wenn ich Attempts, Failures, Trials and Errors zum ersten Mal sehe, wie sollte ich es verstehen?'],
@@ -418,7 +418,7 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       th: 'ฉันชอบเปลี่ยนไม้ไผ่ สาย ร่างกาย และอิเล็กทรอนิกส์ให้เป็นเครื่องดนตรีใหม่ อยากรู้ไหมว่าเครื่องดนตรีประหลาดสร้างรูปแบบการแสดงใหม่อย่างไร?',
     },
     questions: {
-      'zh-TW': ['可以告訴我你的竹製樂器和表演是什麼樣的嗎？', '你在 NGM 訪談裡怎麼談身體、竹子和聲音？', '如果第一次聽你的作品，應該先注意什麼？'],
+      'zh-TW': ['可以告訴我你的竹製樂器和表演是什麼樣的嗎？', '你怎麼把身體、竹子和聲音連成你的表演方法？', '如果第一次聽你的作品，應該先注意什麼？'],
       'en': ['Can you tell me what your bamboo instruments and performances are like?', 'How did you talk about body, bamboo, and sound in your NGM interview?', 'If I hear your work for the first time, what should I notice first?'],
       'id': ['Bisa ceritakan instrumen bambu dan performansmu seperti apa?', 'Bagaimana kamu membahas tubuh, bambu, dan suara dalam wawancara NGM?', 'Kalau saya pertama kali mendengar karyamu, apa yang perlu diperhatikan dulu?'],
       'de': ['Kannst du mir erzählen, wie deine Bambusinstrumente und Performances sind?', 'Wie hast du im NGM-Interview über Körper, Bambus und Klang gesprochen?', 'Wenn ich deine Arbeit zum ersten Mal höre, worauf sollte ich zuerst achten?'],
