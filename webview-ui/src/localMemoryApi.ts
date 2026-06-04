@@ -2,6 +2,11 @@ import type { LanguageCode } from './i18n.js';
 import type { ChatEvidence } from './localChatbot.js';
 import type { WikiSearchResult } from './wikiSearch.js';
 
+export interface DialogueHistoryTurn {
+  speaker: string;
+  text: string;
+}
+
 export interface MemoryChatResponse {
   answer: string;
   evidence: ChatEvidence[];
@@ -65,6 +70,7 @@ export async function askNpc(args: {
   persona?: unknown;
   transcript?: string;
   preferredLanguage: LanguageCode;
+  dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
   return postJson<MemoryChatResponse>('/api/chat/npc', args);
 }

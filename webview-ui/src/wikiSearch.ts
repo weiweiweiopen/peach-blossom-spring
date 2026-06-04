@@ -160,3 +160,8 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
   }
   return Array.from(byUrl.values()).slice(0, limit);
 }
+
+
+export function searchWikiPagesWithHints(query: string, answer: string, personaId?: string, limit = 6): WikiSearchResult[] {
+  return searchWikiPages(`${query} ${answer}`, personaId, limit);
+}
