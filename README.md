@@ -4,7 +4,7 @@ Peach Blossom Spring is a digital exhibition garden for **NGM / Non-Governmental
 
 NGM is a research interview project by **Shih Wei Chieh** about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge without becoming institutions too quickly.
 
-The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Mika Satomi, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel, and Abao / Shih Wei Chieh.
+The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel, and Abao / Shih Wei Chieh.
 
 Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
 
@@ -134,7 +134,6 @@ PBS is also a Karpathy-like LLM wiki experiment: instead of asking an AI to re-r
 Current public source fields include:
 
 - NGM interview transcripts and persona notes;
-- HOW TO GET WHAT YOU WANT / KOBAKANT;
 - Hackteria Wiki;
 - SGMK Wiki;
 - Fabricademy / Textile Academy Wiki;

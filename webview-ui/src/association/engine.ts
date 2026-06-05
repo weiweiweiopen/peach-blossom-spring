@@ -301,9 +301,7 @@ function sourceIntentBoost(card: SourceCard, keywords: string[]): number {
   const source = String(card.source ?? "").toLowerCase();
   const keywordSet = new Set(keywords.map((keyword) => keyword.toLowerCase()));
   const wantsHackteria = keywordSet.has("hackteria") || keywordSet.has("biohack") || keywordSet.has("wetlab") || keywordSet.has("kitchen") || keywordSet.has("kitchenlab") || keywordSet.has("mobilekitchenlab") || keywordSet.has("fermentation") || keywordSet.has("food") || keywordSet.has("cuisine") || keywordSet.has("kombucha") || keywordSet.has("nata") || keywordSet.has("coco") || keywordSet.has("tofu");
-  const wantsTextiles = keywordSet.has("textile") || keywordSet.has("textiles") || keywordSet.has("wearable") || keywordSet.has("fabric") || keywordSet.has("sensor") || keywordSet.has("sensors");
   if (wantsHackteria && source === "hackteria") return 42;
-  if (wantsHackteria && source === "htgwyw" && !wantsTextiles) return -8;
   return 0;
 }
 
@@ -486,8 +484,7 @@ const SECONDARY_SEED_STOP_WORDS = new Set([
   "internal",
   "categories",
   "hackteria",
-  "htgwyw",
-]);
+  ]);
 
 function stripBoilerplate(input: string): string {
   return input

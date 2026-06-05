@@ -1,6 +1,6 @@
 import type { AssociationCorpus, SourceCard } from "./engine.js";
 
-type SourceName = "hackteria" | "htgwyw" | "sgmk";
+type SourceName = "hackteria" | "sgmk";
 
 type RichSourceCard = SourceCard & {
   sourceCategories?: string[];
@@ -70,7 +70,7 @@ export interface SemanticVectorContext {
   }>;
 }
 
-const SOURCES = new Set<SourceName>(["hackteria", "htgwyw", "sgmk"]);
+const SOURCES = new Set<SourceName>(["hackteria", "sgmk"]);
 
 const METHOD_TERMS = [
   "workshop",
@@ -325,7 +325,7 @@ function pickObservedTerms(terms: Set<string>, vocabulary: string[]): Set<string
 }
 
 function selectRepresentativeProfiles(profiles: CardProfile[]): CardProfile[] {
-  return ["hackteria", "sgmk", "htgwyw"].flatMap((source) =>
+  return ["hackteria", "sgmk"].flatMap((source) =>
     profiles
       .filter((profile) => profile.source === source)
       .sort((a, b) => profileRichness(b) - profileRichness(a) || a.card.title.localeCompare(b.card.title))
@@ -526,7 +526,6 @@ function renderFuture(future: FuturePaper, index: number): string[] {
 }
 
 function sourceTitle(source: SourceName): string {
-  if (source === "htgwyw") return "How To Get What You Want / Kobakant";
   if (source === "sgmk") return "SGMK";
   return "Hackteria";
 }

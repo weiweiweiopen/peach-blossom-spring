@@ -44,7 +44,7 @@ export type AssociationZineLanguage = "zh-TW" | "en" | "id" | "de" | "ja" | "th"
 
 type Workflow = ReturnType<typeof runAssociationWorkflow>;
 type Card = ReturnType<typeof sourceCards>[number];
-type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy" | "HOW TO GET WHAT YOU WANT / KOBAKANT";
+type AllowedSourceFamily = "Hackteria" | "SGMK" | "Fabricademy";
 type WikiEntryNote = { title: string; path: string; text: string; role: string };
 type EvidenceCoverage = { label: string; covered: boolean };
 type CompiledWikiNoteType = "source" | "concept" | "method" | "material" | "socialform" | "project" | "comparison" | "synthesis" | "theory" | string;
@@ -70,12 +70,12 @@ type CompiledWikiNote = {
 };
 
 const UI_ZINE_TRACE_KEY = "pbs:zine-click-traces";
-const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy", "HOW TO GET WHAT YOU WANT / KOBAKANT"];
+const ENABLED_SOURCE_FAMILIES: AllowedSourceFamily[] = ["Hackteria", "SGMK", "Fabricademy"];
 const WIKI_ENTRY_NOTES: WikiEntryNote[] = [
   {
     title: "PBS local memory source-first packet",
     path: "Sources/Raw",
-    text: "PBS local memory uses only canonical source-first materials from Hackteria, SGMK, and HOW TO GET WHAT YOU WANT / KOBAKANT. Treat search results as readable source paths, not as old compiled wiki claims.",
+    text: "PBS local memory uses only canonical source-first materials from Hackteria, SGMK, and Fabricademy. Treat search results as readable source paths, not as old compiled wiki claims.",
     role: "source-first overview",
   },
 ];
@@ -85,7 +85,7 @@ const ABSTRACT_RELATION_GROUPS: Array<{ label: string; query: RegExp; directEvid
   { label: "maintenance/labor", query: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour|care/i, directEvidence: /維護|維修|清理|垃圾|廢棄|勞動|日常|maintenance|repair|clean(?:ing|up)|garbage|trash|waste|labor|labour|care/i, supportEvidence: /documentation|failure|reuse|workshop|protocol|steward|照護|紀錄|失敗|再利用|工作坊/i, minimumSupportHits: 2 },
   { label: "public infrastructure", query: /公共|基礎設施|common|commons|public|infrastructure/i, directEvidence: /公共|基礎設施|common|commons|public|infrastructure/i, supportEvidence: /community|collective|shared|open source|documentation|workshop|maintenance|repair|reuse|hosting|kitchen|food|ferment|kombucha|lab|toolkit|protocol|社群|共同|共享|開源|文件|紀錄|工作坊|維護|維修|再利用|廚房|發酵|實驗室/i, minimumSupportHits: 3 },
   { label: "regeneration/sustainability", query: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, directEvidence: /再生|重新啟動|持續|永續|可持續|sustainab|regenerat|reboot|restart|renew/i, supportEvidence: /reuse|repair|maintenance|recycling|care|material|long-term|再利用|維修|維護|回收|照護|材料|長期/i, minimumSupportHits: 2 },
-  { label: "cross-community comparison", query: /跨社群|比較|對照|Hackteria.*SGMK|SGMK.*Hackteria|KOBAKANT.*SGMK|SGMK.*KOBAKANT|across|compare|comparison/i, directEvidence: /Hackteria|SGMK|SSAM|KOBAKANT|How To Get What You Want|cross|compare|comparison|跨社群|比較|對照/i },
+  { label: "cross-community comparison", query: /跨社群|比較|對照|Hackteria.*SGMK|SGMK.*Hackteria|across|compare|comparison/i, directEvidence: /Hackteria|SGMK|SSAM|cross|compare|comparison|跨社群|比較|對照/i },
 ];
 let activeDeepSeekTraceCalls: Array<{ status: string; httpStatus: number | null; durationMs: number; errorClass: string | null }> = [];
 
@@ -287,7 +287,6 @@ function sourceFamily(card: Partial<SourceCard>): AllowedSourceFamily | "Other" 
   if (source.includes("pbs llm wiki") || text.includes("pbs semantic layers") || text.includes("pbs entity layers") || text.includes("wiki/index")) return "Other";
   if (source === "hackteria" || text.includes("hackteria")) return "Hackteria";
   if (text.includes("fabricademy")) return "Fabricademy";
-  if (source === "htgwyw" || text.includes("kobakant") || text.includes("how to get what you want")) return "HOW TO GET WHAT YOU WANT / KOBAKANT";
   return "Other";
 }
 
@@ -566,7 +565,6 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     const text = evidenceText(card);
     if (wantsSgmk && family === "SGMK" && /sgmk|ssam|mechartlab|home made|8bit|gnusbuino|sound|synth/i.test(text)) return 10;
     if (wantsHackteriaKitchenBio && family === "Hackteria" && /kitchen|food|ferment|biohack|bioart|wetlab|kombucha|nata|tofu/i.test(text)) return 12;
-    if (wantsSoundDiy && family === "HOW TO GET WHAT YOU WANT / KOBAKANT" && /sound|synth|speaker|music|instrument|noise|electronics|soft circuit/i.test(text)) return 10;
     if (wantsSoundDiy && family === "Hackteria" && /sound|synth|speaker|music|instrument|noise|electronics/i.test(text)) return 8;
     return 0;
   };
@@ -631,7 +629,7 @@ function buildEditorialMessages(query: string, workflow: Workflow, language: Ass
     evidenceWarning: evidenceWarningForClaim(query, workflow),
     researchTopicCandidates: topics,
     instruction: "The query is the only editorial parameter. Treat sourceObservations, deepReadObservations, linkedEvidenceTrails, and primarySourcePacket as the complete pbs_engine.py answer packet: rewrite/filter this packet into an insightful zine voice; do not add outside claims. Evidence may support, contest, complicate, or limit the answer, but it must not redirect the article to a different topic. First classify what each page actually is (residency, workshop, event, organization page, product/project documentation, interview, resource list) before interpreting it. Do not infer social meanings from page format alone. If a page is a residency or artist-in-residence record, treat it first as a resource/access/mobility/organization case unless the text explicitly says it is collective exploration. If the materials do not directly support the requested relation, write a route-first wiki zine: name the most useful pages, explain what each can and cannot prove, and turn unsupported links into verification questions instead of a thesis. Write one coherent source-grounded route or argument; only call it a thesis when the public packet supports that direction.",
-    reminder: "請依照 query、primarySourcePacket、compiledWikiNotes、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。primarySourcePacket 是當次 pbs_engine.py source-first answer/evidence packet；不要使用舊 compiled wiki memory 或 NotebookLM 語境。使用具體 claim 時必須保留 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。不要把 micro-residency / residency / artist-in-residence 誤讀成一般工作坊或集體探索；除非證據明說，應優先視為獨立藝術家取得實驗室、技術機構、高科技單位或跨國社群支援的通道。材料只能來自當次 source-first packet 與 Hackteria、SGMK、HOW TO GET WHAT YOU WANT / KOBAKANT 公開材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
+    reminder: "請依照 query、primarySourcePacket、compiledWikiNotes、sourceObservations、deepReadObservations、linkedEvidenceTrails 與 evidenceCoverage 重寫小誌；先說材料支持什麼、不支持什麼。primarySourcePacket 是當次 pbs_engine.py source-first answer/evidence packet；不要使用舊 compiled wiki memory 或 NotebookLM 語境。使用具體 claim 時必須保留 sourceRefs/citations 作為判讀依據；lintStatus=warning 的 note 只能作為待查證方向，不可寫成定論。只有 evidenceCoverage.covered=true 的關係可以寫成論點；covered=false 的關係必須明確承認證據不足，並把它寫成閱讀路徑、待查證問題或反例，不得把單一頁面硬擴張成非營利、公共基礎設施、再生、長期運作等宏大結論。不要套固定文案，不要重複上一份小誌的題目或段落，不要把之前設定當真律。不要把 micro-residency / residency / artist-in-residence 誤讀成一般工作坊或集體探索；除非證據明說，應優先視為獨立藝術家取得實驗室、技術機構、高科技單位或跨國社群支援的通道。材料只能來自當次 source-first packet 與 Hackteria、SGMK、Fabricademy 公開材料；仍必須由 query 與 evidence 支持，不要憑空引用。標題、開頭、每章與 protocol 都必須回應玩家問題中的具體詞彙，並共同推進同一個閱讀路徑或中心論點。至少兩段要提到實際頁名/作品名以及它為玩家問題提供的用途或限制。除非 query 明確詢問某位人物，否則不要寫出人名，請改寫成組織、場域、方法或材料層級。不要引入 query 或材料包沒有的領域詞；不要用固定框架命名；不要解釋系統如何運作；不要使用後台、檢索、工作流等技術說明語。",
   }, null, 2);
   const system = `${currentEditorialSystemPrompt()}\n\n${languageInstruction(language)}\nIf any earlier instruction mentions a different output language, this OUTPUT LANGUAGE instruction wins. Keep the same JSON schema. Do not introduce domain vocabulary unless it appears in the player query or gathered page text.`;
   return { system, user };
@@ -1721,8 +1719,8 @@ function conceptualQueryHints(query: string): string {
   if (/public|infrastructure|commons|公共|基礎設施|基盤|โครงสร้างพื้นฐาน/i.test(query)) {
     hints.push("commons", "public knowledge", "shared resource", "open source", "documentation", "workshop", "community practice", "maintenance", "reuse");
   }
-  if (/NGM|Non-?Governmental Matters|國際網絡|international network|社群背景|community background|Hackteria|SGMK|KOBAKANT/i.test(query)) {
-    hints.push("Non-Governmental Matters", "Hackteria", "SGMK", "HOW TO GET WHAT YOU WANT", "KOBAKANT", "community network", "international network", "documentation", "workshop", "camp");
+  if (/NGM|Non-?Governmental Matters|國際網絡|international network|社群背景|community background|Hackteria|SGMK/i.test(query)) {
+    hints.push("Non-Governmental Matters", "Hackteria", "SGMK", "community network", "international network", "documentation", "workshop", "camp");
   }
   if (/倫理|bioethic|生命倫理|art.*bio|藝術.*生物|生物倫理/i.test(query)) {
     hints.push("bioart", "DIY biology", "wetlab", "biotechnology", "Hackteria", "Open Source Body", "MedTech-DIY", "biohacking", "ethics", "art science");
@@ -1731,7 +1729,7 @@ function conceptualQueryHints(query: string): string {
     hints.push("camp", "HackteriaLab", "temporary commons", "temporary lab", "workshop", "alternative education", "summer school", "field school", "community learning", "public sharing");
   }
   if (/產品|product|kit|教具/i.test(query)) {
-    hints.push("product", "prototype", "kit", "teaching kit", "wearable", "soft circuit", "e-textile", "KOBAKANT", "HOW TO GET WHAT YOU WANT");
+    hints.push("product", "prototype", "kit", "teaching kit", "wearable", "soft circuit", "e-textile");
   }
   if (/material|材料|素材|วัสดุ/i.test(query)) {
     hints.push("material practice", "material experiment", "soft circuit", "textile", "biofilm", "repair", "reuse");
@@ -1746,7 +1744,7 @@ function createBrowserWorkflow(query: string): Workflow {
     : "";
   const sensorHints = /sensor|sensing|detector|感測|感應|偵測/i.test(query) ? ", sensor" : "";
   const sgmkHints = wantsSgmkQuery(query) ? ", SGMK, SSAM, wiki.sgmk-ssam.ch, SGMK DIY Electronics and Kits, SGMK Sound and Instruments, 8bit Mix Tape, Gnusbuino, MechArtLab, HOME MADE" : "";
-  const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Topic hints:${textileHints}${sensorHints}${sgmkHints || " none"}. Do not retrieve a page merely because it belongs to Hackteria, SGMK, Fabricademy, or HOW TO GET WHAT YOU WANT / KOBAKANT; retrieve it only when page text matches the player query.`;
+  const expandedQuery = `${query}\n\nPBS-2026.2 entry hints: promoted public wiki memory, concepts, events, and public wiki index. Use these hints only to find evidence that answers the exact query; do not change the topic.${conceptualQueryHints(query)} Topic hints:${textileHints}${sensorHints}${sgmkHints || " none"}. Do not retrieve a page merely because it belongs to Hackteria, SGMK, or Fabricademy; retrieve it only when page text matches the player query.`;
   try {
     const workflow = runAssociationWorkflow(query, corpus);
     if (sourceCards(workflow).filter(isAllowedZineCard).length > 0) return workflow;

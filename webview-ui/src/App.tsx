@@ -240,8 +240,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "HOME MADE 2016、Archive HOME MADE 和 I.N.S.E.C.T. Summercamp 各自記錄了哪些活動形式、參與者和工作坊安排？",
     "Archive HOME MADE 和 Radionica krassfade 裡有哪些聲音工具、Klangmaschinen 或 DIY synth 工作坊？",
     "Fabricademy wearables、Playing with electronic textiles 和 Tone of the Things 有哪些可分享的電子織品教學文件？",
-    "KOBAKANT、Fluffy MIDI 和 Tone of the Things 如何把布料、感測器或 soft circuit 變成聲音介面？",
-    "導電線、導電布、壓力感測器和 soft circuit 可以在 KOBAKANT 或 Fabricademy 文件裡做出哪些作品？",
+    "導電線、導電布、壓力感測器和 soft circuit 可以在 Fabricademy 文件裡做出哪些作品？",
     "CNX OpenLab 和 CoLabs Chiang Mai 頁面記錄了哪些 bioart、DIY biology 或 DIWO 社群活動？",
     "SGMK 的 Main Page 和 HOME MADE 2016 如何呈現瑞士機電藝術社群的 DIY 工作方式？",
     "Green Fab Lab Valldaura、FarmBot 和 precision farming 有哪些開放硬體農業案例？",
@@ -255,7 +254,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Why can a camp work as alternative education instead of just a short event?",
     "How do NGM-related communities turn failure notes, material lists, and teaching steps into reusable public knowledge?",
     "How do low-cost tools, DIY microscopy, handmade electronics, and wet experiments support art-science collaboration?",
-    "If I know nothing about Hackteria, SGMK, or KOBAKANT, how can PBS explain how these communities are connected?",
+    "If I know nothing about Hackteria or SGMK, how can PBS explain how these communities are connected?",
     "Which wiki pages could become a beginner zine about NGM's international network, material experiments, and community background?",
   ],
   id: [
@@ -267,7 +266,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Mengapa camp bisa menjadi pendidikan alternatif, bukan hanya acara singkat?",
     "Bagaimana komunitas yang terkait NGM mengubah catatan gagal, daftar material, dan langkah mengajar menjadi pengetahuan publik?",
     "Bagaimana alat murah, mikroskop DIY, elektronik buatan tangan, dan wet experiment mendukung kerja sama seni-sains?",
-    "Jika saya belum mengenal Hackteria, SGMK, atau KOBAKANT, bagaimana PBS menjelaskan hubungan antar komunitas ini?",
+    "Jika saya belum mengenal Hackteria atau SGMK, bagaimana PBS menjelaskan hubungan antar komunitas ini?",
     "Halaman wiki mana yang cocok menjadi zine pemula tentang jaringan internasional NGM dan eksperimen material?",
   ],
   de: [
@@ -279,7 +278,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "Warum kann ein Camp als alternative Bildung funktionieren und nicht nur als kurzes Event?",
     "Wie machen NGM-nahe Communities Fehlernotizen, Materiallisten und Lehrschritte zu wiederverwendbarem öffentlichem Wissen?",
     "Wie unterstützen Low-Cost-Tools, DIY-Mikroskopie, handgemachte Elektronik und Wet Experiments Kunst-Wissenschaft-Kollaboration?",
-    "Wenn ich Hackteria, SGMK und KOBAKANT nicht kenne, wie kann PBS ihre Beziehungen erklären?",
+    "Wenn ich Hackteria und SGMK nicht kenne, wie kann PBS ihre Beziehungen erklären?",
     "Welche Wiki-Seiten ergeben ein Anfänger-Zine über NGMs internationales Netzwerk, Materialexperimente und Community-Hintergrund?",
   ],
   ja: [
@@ -291,7 +290,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "なぜ camp は短期イベントではなく代替教育になりうる？",
     "NGM に関わるコミュニティは失敗記録、素材リスト、教える手順をどう公共知に変える？",
     "低コスト工具、DIY 顕微鏡、手作り電子工作、wet experiment は芸術と科学の協働をどう支える？",
-    "Hackteria、SGMK、KOBAKANT を知らない人に、PBS はそれぞれの関係をどう説明できる？",
+    "Hackteria、SGMK を知らない人に、PBS はそれぞれの関係をどう説明できる？",
     "NGM の国際ネットワーク、素材実験、コミュニティ背景を初心者向け zine にするならどの wiki ページがよい？",
   ],
   th: [
@@ -303,7 +302,7 @@ const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
     "ทำไม camp จึงเป็น alternative education ได้ ไม่ใช่แค่อีเวนต์สั้นๆ?",
     "ชุมชนที่เกี่ยวกับ NGM เปลี่ยนบันทึกความล้มเหลว รายการวัสดุ และขั้นตอนสอนเป็นความรู้สาธารณะอย่างไร?",
     "เครื่องมือราคาถูก DIY microscopy งานอิเล็กทรอนิกส์ทำมือ และ wet experiment สนับสนุน art-science collaboration อย่างไร?",
-    "ถ้าฉันไม่รู้จัก Hackteria, SGMK หรือ KOBAKANT เลย PBS จะอธิบายความเชื่อมโยงอย่างไร?",
+    "ถ้าฉันไม่รู้จัก Hackteria หรือ SGMK เลย PBS จะอธิบายความเชื่อมโยงอย่างไร?",
     "หน้า wiki ไหนเหมาะทำ zine สำหรับมือใหม่เรื่องเครือข่ายนานาชาติ NGM การทดลองวัสดุ และภูมิหลังชุมชน?",
   ],
 };
@@ -484,7 +483,7 @@ const SCHEMA_CONTROL_COPY: Record<LanguageCode, {
   },
 };
 
-const DEFAULT_SOURCE_URL_TEXT = "https://howtogetwhatyouwant.at, https://www.hackteria.org/wiki/Main_Page, https://wiki.sgmk-ssam.ch/wiki/Main_Page";
+const DEFAULT_SOURCE_URL_TEXT = "https://www.hackteria.org/wiki/Main_Page, https://wiki.sgmk-ssam.ch/wiki/Main_Page";
 
 function SourceUrlEditor({ compact = false }: { compact?: boolean }) {
   const [sourcesText, setSourcesText] = useState(() => {
@@ -514,7 +513,7 @@ function SourceUrlEditor({ compact = false }: { compact?: boolean }) {
   return (
     <section className="schema-control-prototype schema-editorial-prompt-editor">
       <h3>搜尋 sources URL</h3>
-      <p>目前來源預設是 Hackteria、HOW TO GET WHAT YOU WANT / KOBAKANT、SGMK。雲端版只能儲存這個欄位文字，不會即時 crawl 新 URL；要真的搜尋新來源，需在本機 server 儲存後重新 crawl / export index / build / deploy。</p>
+      <p>目前來源預設是 Hackteria、SGMK。雲端版只能儲存這個欄位文字，不會即時 crawl 新 URL；要真的搜尋新來源，需在本機 server 儲存後重新 crawl / export index / build / deploy。</p>
       <textarea value={sourcesText} onChange={(event) => setSourcesText(event.target.value)} rows={compact ? 5 : 8} spellCheck={false} />
       <div className="schema-control-actions">
         <button type="button" onClick={() => void saveSources()}>儲存來源</button>

@@ -22,7 +22,6 @@ function sourceFamily(card: Partial<SourceCard>): string {
   if (source === 'sgmk' || text.includes('sgmk')) return 'SGMK';
   if (source === 'hackteria' || text.includes('hackteria')) return 'Hackteria';
   if (text.includes('fabricademy')) return 'Fabricademy';
-  if (source === 'htgwyw' || text.includes('kobakant') || text.includes('how to get what you want')) return 'HOW TO GET WHAT YOU WANT / KOBAKANT';
   return card.source || 'Wiki';
 }
 
@@ -34,8 +33,8 @@ function expandQuery(query: string): string {
   if (/作品|產品|product|教具|kit|project|work|案例|example/i.test(query)) {
     expansions.push('project', 'workshop', 'prototype', 'experiment', 'toy', 'instrument', 'product', 'kit', 'teaching kit');
   }
-  if (/NGM|Non-?Governmental Matters|國際網絡|国际网络|international network|社群背景|community background|Hackteria|SGMK|KOBAKANT/i.test(query)) {
-    expansions.push('Non-Governmental Matters', 'Hackteria', 'SGMK', 'HOW TO GET WHAT YOU WANT', 'KOBAKANT', 'community network', 'international network', 'workshop', 'camp', 'documentation');
+  if (/NGM|Non-?Governmental Matters|國際網絡|国际网络|international network|社群背景|community background|Hackteria|SGMK/i.test(query)) {
+    expansions.push('Non-Governmental Matters', 'Hackteria', 'SGMK', 'community network', 'international network', 'workshop', 'camp', 'documentation');
   }
   if (/倫理|伦理|bioethic|bio-?ethic|生命倫理|艺术.*生物|藝術.*生物|art.*bio|bio.*art/i.test(query)) {
     expansions.push('bioart', 'DIY biology', 'wetlab', 'biotechnology', 'Hackteria', 'Open Source Body', 'MedTech-DIY', 'tissue culture', 'biohacking', 'ethics', 'art science');
@@ -47,10 +46,10 @@ function expandQuery(query: string): string {
     expansions.push('sound', 'music', 'musical', 'instrument', 'speaker', 'HID');
   }
   if (/diy|自製|自造|合成器|synth|synthesizer|synthesiser|oscillator|聲音|sound/i.test(query)) {
-    expansions.push('diy electronics', 'synth', 'synthesizer', 'oscillator', 'sound circuit', 'speaker', 'ATtiny sound', 'Nandsynth', 'SolarpunkSynth', 'starvation synth', 'HOW TO GET WHAT YOU WANT', 'Kobakant', 'Hackteria');
+    expansions.push('diy electronics', 'synth', 'synthesizer', 'oscillator', 'sound circuit', 'speaker', 'ATtiny sound', 'Nandsynth', 'SolarpunkSynth', 'starvation synth', 'Hackteria');
   }
   if (/穿戴|織品|電子織品|布|身體|體感|失敗|紀錄|文件|可重讀|wearable|e-?textile|textile|fabric|soft|body|embod|somatic|failure|documentation|document/i.test(query)) {
-    expansions.push('wearable', 'e-textile', 'textile', 'fabric', 'soft circuit', 'stretch sensor', 'body', 'embodied knowledge', 'body interface', 'skin', 'touch', 'gesture', 'sensing', 'failure notes', 'trials and errors', 'documentation', 're-readable documentation', 'Kobakant', 'HOW TO GET WHAT YOU WANT', 'Fabricademy', 'BadLab', 'Open Source Body', 'MedTech-DIY');
+    expansions.push('wearable', 'e-textile', 'textile', 'fabric', 'soft circuit', 'stretch sensor', 'body', 'embodied knowledge', 'body interface', 'skin', 'touch', 'gesture', 'sensing', 'failure notes', 'trials and errors', 'documentation', 're-readable documentation', 'Fabricademy', 'BadLab', 'Open Source Body', 'MedTech-DIY');
   }
   if (/紅茶菌|康普茶|kombucha|ferment|fermentation|發酵|菌膜|茶菌/i.test(query)) {
     expansions.push('紅茶菌', '康普茶', 'kombucha', 'fermentation', 'ferment', 'SCOBY', 'biofilm', 'cellulose', 'bacterial cellulose', '菌膜', '細菌纖維素');
@@ -138,10 +137,10 @@ export function searchWikiPages(query: string, personaId?: string, limit = 6): W
       const family = sourceFamily(card);
       const baseScore = scoreText(queryTokens, card.title, `${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')} ${(card.categories ?? []).join(' ')}`);
       const sgmkBoost = wantsSgmk && family === 'SGMK' ? 60 : 0;
-      const soundDiyBoost = wantsSoundDiy && (family === 'Hackteria' || family === 'HOW TO GET WHAT YOU WANT / KOBAKANT') ? 18 : 0;
+      const soundDiyBoost = wantsSoundDiy && family === 'Hackteria' ? 18 : 0;
       const hackteriaKitchenBoost = wantsHackteriaKitchen && family === 'Hackteria' ? 34 : 0;
       const bodyTextileText = `${card.title} ${card.excerpt} ${(card.keywords ?? []).join(' ')} ${(card.tags ?? []).join(' ')}`.toLowerCase();
-      const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|kobakant|how to get what you want|fabricademy/i.test(bodyTextileText) ? 42 : 0;
+      const bodyTextileBoost = wantsBodyTextile && /e-?textile|textile|wearable|fabric|soft circuit|stretch sensor|body|embod|somatic|skin|gesture|touch|badlab|open source body|medtech|failure|documentation|trials|errors|fabricademy/i.test(bodyTextileText) ? 42 : 0;
       return { card, score: baseScore + sgmkBoost + soundDiyBoost + hackteriaKitchenBoost + bodyTextileBoost + evidenceQuality(card) + evidenceHygienePenalty(evidenceTextForHygiene(card)) };
     })
     .filter((item) => item.score > 0)

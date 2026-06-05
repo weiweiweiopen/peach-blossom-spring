@@ -264,24 +264,6 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
       'th': ['ช่วยเล่าได้ไหมว่า Hackteria เป็นกลุ่มแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึง DIY biology, bioart และเวิร์กช็อปอย่างไร?', 'ถ้ามือใหม่อยากเข้าร่วม Hackteria ควรรู้อะไรก่อน?'],
     },
   },
-  'mika-satomi': {
-    opener: {
-      'zh-TW': '我喜歡讓布、線、電路和人的願望一起工作。你想知道電子織品怎麼從小承諾開始長大嗎？',
-      en: 'I like making fabric, thread, circuits, and people’s wishes work together. Want to know how electronic textiles grow from small promises?',
-      id: 'Aku suka membuat kain, benang, rangkaian, dan harapan orang bekerja bersama. Mau tahu tekstil elektronik tumbuh dari janji kecil?',
-      de: 'Ich lasse gern Stoff, Faden, Schaltungen und Wünsche zusammenarbeiten. Willst du wissen, wie elektronische Textilien aus kleinen Versprechen wachsen?',
-      ja: '布、糸、回路、人の願いを一緒に働かせるのが好きです。電子テキスタイルが小さな約束から育つ様子を知りたいですか？',
-      th: 'ฉันชอบให้ผ้า ด้าย วงจร และความปรารถนาของผู้คนทำงานร่วมกัน อยากรู้ไหมว่าสิ่งทออิเล็กทรอนิกส์เติบโตจากคำมั่นเล็ก ๆ อย่างไร?',
-    },
-    questions: {
-      'zh-TW': ['可以告訴我 KOBAKANT 是一個什麼樣的團體嗎？', '你怎麼把電子織品、開源文件和願望連在一起？', '如果我第一次認識 soft circuits，應該從哪裡開始？'],
-      'en': ['Can you tell me what kind of group KOBAKANT is?', 'How did you talk about e-textiles, open documentation, and wishes in your NGM interview?', 'If I am new to soft circuits, where should I start?'],
-      'id': ['Bisa ceritakan KOBAKANT itu kelompok seperti apa?', 'Bagaimana kamu membahas e-textiles, dokumentasi terbuka, dan keinginan dalam wawancara NGM?', 'Kalau saya baru mengenal soft circuits, mulai dari mana?'],
-      'de': ['Kannst du mir erzählen, was für eine Gruppe KOBAKANT ist?', 'Wie hast du im NGM-Interview über E-Textilien, offene Dokumentation und Wünsche gesprochen?', 'Wenn ich Soft Circuits neu kennenlerne, womit sollte ich anfangen?'],
-      'ja': ['KOBAKANT はどんな団体なのか教えてくれますか？', 'NGM のインタビューで電子テキスタイル、オープンな記録、願いをどう話しましたか？', '初めて soft circuits を知るなら、どこから始めるとよいですか？'],
-      'th': ['ช่วยเล่าได้ไหมว่า KOBAKANT เป็นกลุ่มแบบไหน?', 'ในบทสัมภาษณ์ NGM คุณพูดถึง e-textiles เอกสารเปิด และความปรารถนาอย่างไร?', 'ถ้าฉันเพิ่งรู้จัก soft circuits ควรเริ่มจากตรงไหน?'],
-    },
-  },
   'rully-shabara': {
     opener: {
       'zh-TW': '我比較相信圍成一圈、一起吃飯、一起練習，而不是把營隊變成商品。你想知道聲音社群怎麼不被產業吞掉嗎？',
@@ -434,7 +416,7 @@ function communityQuestionSeed(language: LanguageCode, persona: Persona): string
   if (language === 'ja') {
     return [
       `${persona.name} のコミュニティ経験から、桃花源の初心者はどの材料・方法・組織の問いから始めるとよいですか？`,
-      `${persona.name} は自分たちの実践を NGM、Hackteria、SGMK、KOBAKANT の公開資料とどうつなげますか？`,
+      `${persona.name} は自分たちの実践を NGM、Hackteria、SGMK の公開資料とどうつなげますか？`,
       `${persona.name} のコミュニティを小誌の問いで紹介するなら、どの道具・キャンプ・ケアの方法を比較しますか？`,
       communityHint ? `${persona.name} が触れた「${communityHint}」は、どんな検証可能な桃花源の問いになりますか？` : `${persona.name} のコミュニティ記憶は、どんな検証可能な桃花源の問いになりますか？`,
     ];
@@ -442,14 +424,14 @@ function communityQuestionSeed(language: LanguageCode, persona: Persona): string
   if (language === 'zh-TW') {
     return [
       `從 ${persona.name} 的社群經驗出發，桃花源新手可以先問哪個材料、方法或組織問題？`,
-      `${persona.name} 會怎麼把自己的社群實作連到 NGM、Hackteria、SGMK 或 KOBAKANT 的公開資料？`,
+      `${persona.name} 會怎麼把自己的社群實作連到 NGM、Hackteria 或 SGMK 的公開資料？`,
       `如果只用一個小誌問題介紹 ${persona.name} 關心的社群，應該比較哪個工具、營隊或照護方法？`,
       communityHint ? `${persona.name} 提到的「${communityHint}」可以變成什麼可查證的桃花源社群問題？` : `${persona.name} 的社群記憶可以怎麼變成一個可查證的桃花源問題？`,
     ];
   }
   return [
     `From ${persona.name}'s community experience, what material, method, or organization question should a Peach Blossom Spring beginner ask first?`,
-    `How would ${persona.name} connect their own community practice to NGM, Hackteria, SGMK, or KOBAKANT public sources?`,
+    `How would ${persona.name} connect their own community practice to NGM, Hackteria, or SGMK public sources?`,
     `If one zine question introduced ${persona.name}'s community, which tool, camp, or care method should it compare?`,
     communityHint ? `How can “${communityHint}” become a checkable Peach Blossom Spring community question for ${persona.name}?` : `How can ${persona.name}'s community memory become a checkable Peach Blossom Spring question?`,
   ];
@@ -466,7 +448,7 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
     `從 ${persona.name} 的觀點看，哪些公開 source 最適合回答「社群如何保存知識」？`,
     `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
     `${persona.name} 的社群方法可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
-    `${persona.name} 和 KOBAKANT / HTG WYWant 的 documentation 方法有什麼共同問題？`,
+    `${persona.name} 的 documentation 方法和其他公開維基有什麼共同問題？`,
   ];
   if (language === 'zh-TW') {
     const responseQuestions = responseEntries.map(([, response]) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 48)}」如何連到公開 wiki sources 的可檢查材料？`);
@@ -488,7 +470,7 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
     `How would ${persona.name} compare their community methods with public workshop documentation?`,
     `What material, tool, or care practice from the three sources best matches ${persona.name}'s concerns?`,
     `How can ${persona.name}'s community experience become a makeable, checkable, teachable zine question?`,
-    `Which Hackteria, SGMK, or KOBAKANT pages would ${persona.name} probably argue with first?`,
+    `Which Hackteria or SGMK pages would ${persona.name} probably argue with first?`,
   ];
   return shuffleCopy([...communityQuestionSeed(language, persona), ...generated, ...englishSourceBridge]).slice(0, 9);
 }

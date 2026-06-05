@@ -13,7 +13,6 @@ const PERSONA_NPC_APPEARANCE: Record<string, PersonaNpcAppearance> = {
   'christian-dils': { gender: 'male', palette: 3, hueShift: 0 },
   'jonathan-minchin': { gender: 'male', palette: 4, hueShift: 0 },
   'marc-dusseiller': { gender: 'male', palette: 15, hueShift: 0 },
-  'mika-satomi': { gender: 'female', palette: 7, hueShift: 0 },
   'rully-shabara': { gender: 'male', palette: 2, hueShift: 0 },
   'wukir-suryadi': { gender: 'male', palette: 6, hueShift: 0 },
   'ryu-oyama': { gender: 'male', palette: 8, hueShift: 0 },

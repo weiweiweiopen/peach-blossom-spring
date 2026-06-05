@@ -187,7 +187,6 @@ function knowledgeSystemsFor(cards: SourceCard[]): string[] {
 }
 
 function sourceLabel(source: string | undefined): string {
-  if (source === "htgwyw") return "HOW TO GET WHAT YOU WANT / KOBAKANT";
   if (source === "hackteria") return "Hackteria / bioart-DIYbio";
   if (source === "sgmk") return "SGMK / maker culture";
   return source ? source : "unknown source";

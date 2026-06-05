@@ -12,12 +12,6 @@
       "main": "https://wiki.sgmk-ssam.ch/wiki/Main_Page",
       "out": "Sources/Raw/sgmk"
     },
-    "htgwyw": {
-      "kind": "wordpress",
-      "api": "https://www.kobakant.at/DIY/?rest_route=/wp/v2/posts",
-      "main": "https://howtogetwhatyouwant.at",
-      "out": "Sources/Raw/htgwyw"
-    },
     "designposthumanism": {
       "kind": "wordpress",
       "api": "https://designandposthumanism.org/wp-json/wp/v2/post",

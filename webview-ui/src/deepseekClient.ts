@@ -501,7 +501,7 @@ export async function askDeepSeekPbsQuestionSuggestions({ preferredLanguage, see
   const systemPrompt = trimMessage([
     languageInstruction(preferredLanguage),
     'You are the activity host for Peach Blossom Spring / Non-Governmental Matters. Your job is to propose audience-friendly starter questions for a wiki-zine interface.',
-    'The audience may know nothing about NGM, Hackteria, SGMK, HOW TO GET WHAT YOU WANT / KOBAKANT, e-textiles, DIY biology, DIY synths, independent art camps, or alternative education.',
+    'The audience may know nothing about NGM, Hackteria, SGMK, e-textiles, DIY biology, DIY synths, independent art camps, or alternative education.',
     'Do not lock each question to one fixed community. Make questions broad enough that several community wiki pages could answer them, while still naming concrete materials, practices, or social formats when useful.',
     'The questions should gently reveal what PBS can do: search across community wikis, connect cases, compare methods, find examples, explain backgrounds, and turn source traces into zines.',
     'Good question patterns include: finding cases that connect artistic expression and bioethics; why hacker camps often include DIY synths; examples of e-textile products; what an independent art camp is; why camps can work as alternative education.',

@@ -38,8 +38,8 @@ interface Persona {
 }
 
 const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
+const visiblePersonaIds = new Set(['marc-dusseiller', 'anastassia-pistofidou', 'christian-dils', 'abao']);
 
-const visiblePersonaIds = new Set(['marc-dusseiller', 'mika-satomi', 'anastassia-pistofidou', 'christian-dils', 'abao']);
 const personaAgentIds = personas
   .map((persona, index) => visiblePersonaIds.has(persona.id) ? index + 1 : null)
   .filter((id): id is number => id !== null);

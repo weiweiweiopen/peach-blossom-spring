@@ -38,7 +38,6 @@ function normalizeFamily(value: string): string {
   const lower = value.toLowerCase();
   if (lower.includes('sgmk')) return 'SGMK';
   if (lower.includes('hackteria')) return 'Hackteria';
-  if (lower.includes('kobakant') || lower.includes('how to get what you want') || lower.includes('htgwyw')) return 'HOW TO GET WHAT YOU WANT / KOBAKANT';
   if (lower.includes('designposthumanism') || lower.includes('posthuman')) return 'designposthumanism';
   if (lower.includes('fabricademy')) return 'Fabricademy';
   return value.trim() || 'unknown';
