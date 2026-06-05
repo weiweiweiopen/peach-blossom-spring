@@ -1,107 +1,133 @@
 # Peach Blossom Spring / PBS
 
-Peach Blossom Spring is a digital exhibition garden for **NGM / Non-Governmental Matters**.
+Peach Blossom Spring is an **NGM electronic garden**.
 
-NGM is a research interview project by **Shih Wei Chieh** about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge without becoming institutions too quickly.
+NGM / Non-Governmental Matters is a research interview project by **Shih Wei Chieh** about small, independent art-and-technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge without becoming institutions too quickly.
 
-The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel, and Abao / Shih Wei Chieh.
+PBS turns that research into a living digital garden. People, interviews, tools, workshops, camps, wikis, and source fragments become paths through a shared memory landscape. The game interface is important, but it is not the core by itself. The core is the **NGM electronic garden**: a source-grounded LLM wiki where fragile community knowledge can be asked, cited, repaired, and re-entered as playable memory.
 
-Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
-
-<img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
-
-## What this garden is
-
-PBS turns NGM into a small explorable world:
-
-- interview memories become NPCs you can talk to;
-- the campfire is a shared question place for the whole archive;
-- the zine tool turns one question into a short source-grounded booklet;
-- the map, ebook, and source links show where the project came from;
-- the Question Pet is now a traversal health monitor for the player's current question: it watches specificity, evidence readiness, source-family spread, and missing-evidence caveats.
-
-The tone is playful, but the archive logic is serious: the garden should help people remember fragile community knowledge without flattening it into a report or dashboard.
-
-<img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
-
-## How to play
-
-1. Open the public site and enter Peach Blossom Spring.
-2. Walk with arrow keys / WASD. On mobile, use the thumb control.
-3. Move near an NPC and click / tap / press Space to open a conversation.
-4. Go to the central campfire / computer to ask broader questions about NGM, communities, tools, camps, and sources.
-5. Use the zine function from a question to generate a small wiki booklet.
-6. Open the NGM ebook, map, and source links when you want to leave the fable and check the research material.
-
-NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context.
-
-<img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
-
-## Two Ways To Run PBS
-
-PBS now has two deliberately different runtimes. Use the cloud version for the public exhibition. Use the local version when you want the full source-first memory engine and local Review drafts.
-
-### 1. Public Cloud Exhibition
-
-The public site is the multiplayer/exhibition build:
+Public garden:
 
 ```text
 https://weiweiweiopen.github.io/peach-blossom-spring/
 ```
 
-Cloud runtime:
+## What PBS is
+
+PBS is not only a game and not only a chatbot. It is a public-facing research garden for NGM.
+
+The garden has several visible forms:
+
+- **NPC conversations**: interview memories become situated dialogue interfaces.
+- **Campfire / computer questions**: visitors ask broader questions across the archive.
+- **LLM wiki search**: the system searches source material before answering.
+- **Source links**: answers keep a path back to public pages, transcripts, and research material.
+- **Zine / booklet drafts**: one question can become a small source-grounded publication draft.
+- **Question Pet / traversal lint**: the current question is monitored for specificity, evidence readiness, source-family spread, and missing-evidence caveats.
+- **Map, ebook, and archive links**: the fable remains connected to the research body behind it.
+
+The tone can be playful, but the archive logic is serious. PBS should help people remember fragile community knowledge without flattening it into a report, dashboard, or generic AI answer.
+
+## NGM electronic garden logic
+
+The project starts from NGM interviews and related public knowledge fields.
+
+Interviewees and related figures include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, and Abao / Shih Wei Chieh.
+
+PBS treats them as part of a research ecology rather than a cast of fictional characters. NPCs are not exact replicas of people. They are conversation interfaces shaped by interviews, recurring concerns, public context, and the ethics of not pretending that an LLM is the person.
+
+The garden asks questions like:
+
+- How do small art-and-technology communities survive?
+- How do workshops transmit knowledge outside formal institutions?
+- How do open hardware, DIY biology, e-textiles, sound, solar tools, and handmade electronics become social forms?
+- How can wiki fragments become a navigable memory system without losing their local texture?
+
+## LLM wiki / source-first memory layer
+
+PBS uses an LLM wiki approach: instead of asking a model to improvise from nowhere, PBS builds and searches a curated memory layer first.
+
+The memory layer is source-first:
 
 ```text
-GitHub Pages game UI
--> pbs-memory-api meta tag
+sources
+-> source registry
+-> passages
+-> claims / chunks
+-> SQLite / D1 search index
+-> evidence packet
+-> LLM answer
+-> source links / review draft / zine material
+```
+
+Important rule:
+
+```text
+Player questions are not knowledge.
+Raw sources are not mutated by chat.
+Answers should remain connected to checkable material.
+```
+
+Current source families include:
+
+- NGM interview transcripts and persona notes;
+- Hackteria Wiki;
+- SGMK Wiki;
+- Fabricademy / Textile Academy Wiki;
+- Design+Posthumanism;
+- KUBU / Kulturhus Björkboda;
+- Radiona makerspace;
+- Green Fab Lab project pages;
+- selected public pages connected to NGM people, workshops, tools, camps, and communities.
+
+## How the public garden answers a question
+
+In the public version, the browser does not contain the full archive. It calls the cloud memory worker.
+
+```text
+GitHub Pages web UI
+-> meta[name="pbs-memory-api"]
 -> Cloudflare Worker: peach-blossom-spring-memory
 -> Cloudflare D1 SQLite / FTS source index
 -> DeepSeek proxy
--> cited answer / source links / traversal lint
+-> source-grounded answer
+-> evidence links / traversal lint / draft markdown response
 ```
 
-Cloud mode can search the deployed source index and return source-grounded answers. It cannot write to your local vault. `/api/memory/draft` returns Markdown for review with `stored:false`.
-
-Cloud source/deploy files:
+Public cloud files:
 
 ```text
+webview-ui/
 pbs-memory-worker/
 pbs-memory-worker/d1/source-index.sql
 webview-ui/index.html   # pbs-memory-api meta tag
 ```
 
-Refresh the cloud source index:
-
-```bash
-python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/source-index.sql
-cd pbs-memory-worker
-npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/source-index.sql
-npx wrangler deploy
-```
-
-Deploy the public game UI:
-
-```bash
-npm --prefix webview-ui run build
-git push origin main
-```
-
-Pushing `main` triggers `.github/workflows/pages.yml`, which publishes `dist/webview` to GitHub Pages.
-
-### 2. Local Full-Memory Version
-
-The local version is for a cloned/downloaded repo on your machine. It runs a Python server and the full source-first engine:
+Public API routes:
 
 ```text
-browser game UI
+/api/memory/search
+/api/chat/campfire
+/api/chat/npc
+/api/memory/draft
+```
+
+The cloud worker can return draft Markdown, but it cannot write into a local vault. Cloud draft responses use `stored:false`.
+
+## How the local full-memory garden works
+
+The local version is for working with the full source-first engine on a cloned repo.
+
+```text
+browser UI
 -> scripts/pbs_game_server.py
 -> scripts/pbs_engine.py
--> local SQLite / Sources/Raw / obsidian-vault/Wiki / obsidian-vault/Schema
--> DeepSeek
+-> local SQLite / Sources / Knowledge / Review
+-> DeepSeek proxy
 -> answer / source links / local Review draft
 ```
 
-Run it:
+Run local mode:
 
 ```bash
 ./scripts/run_pbs_local_game.sh
@@ -121,46 +147,122 @@ Open:
 http://127.0.0.1:4173/
 ```
 
-Local Review drafts can be written to:
+Local Review drafts are written to:
 
 ```text
-obsidian-vault/Review/compiled-note-drafts/
+Review/compiled-note-drafts/
 ```
 
-## LLM wiki / shared memory
-
-PBS is also a Karpathy-like LLM wiki experiment: instead of asking an AI to re-read a messy pile every time, the project grows a curated memory layer that can be searched, reviewed, repaired, and exported back into the game.
-
-Current public source fields include:
-
-- NGM interview transcripts and persona notes;
-- Hackteria Wiki;
-- SGMK Wiki;
-- Fabricademy / Textile Academy Wiki;
-- Design+Posthumanism;
-- KUBU / Kulturhus Björkboda;
-- Radiona makerspace;
-- Green Fab Lab project pages;
-- selected public source pages connected to NGM people, workshops, tools, camps, and communities.
-
-Important boundary: **the online version and the local version use different memory runtimes**. See `LOCAL_MEMORY_GAME.md` for the operational checklist.
+See also:
 
 ```text
-Cloud: game UI -> PBS memory Worker -> D1 SQLite / FTS source index -> DeepSeek -> answer
-Local: game UI -> local server -> pbs_engine.py -> SQLite / Sources / Wiki / Schema -> DeepSeek -> answer -> Review draft
+LOCAL_MEMORY_GAME.md
 ```
 
-<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
+## Repository map
+
+Current repo structure:
+
+```text
+.github/workflows/pages.yml        GitHub Pages deployment
+Sources/                           Source material entry point
+Knowledge/                         Generated local memory store (ignored when absent)
+Review/                            Local review drafts (created by local mode)
+data/                              NPC/persona data
+eslint-rules/                      Project-specific lint guards
+multiplayer-worker/                Multiplayer presence worker; not the memory core
+pbs-memory-worker/                 Cloudflare Worker for public memory API
+pbs-memory-worker/d1/              D1 SQL seed export target
+scripts/pbs_engine.py              Source-first memory engine
+scripts/pbs_game_server.py         Local full-memory HTTP server
+scripts/wiki_tool.py               Wiki helper tooling
+scripts/notebooklm_bridge.py       NotebookLM bridge helper
+shared/assets/                     Shared asset build helpers
+specs/                             Design/spec notes
+webview-ui/                        Vite/React garden UI
+webview-ui/src/localMemoryApi.ts   Browser bridge to cloud/local memory API
+```
+
+The most important technical files for the LLM wiki are:
+
+```text
+scripts/pbs_engine.py
+pbs-memory-worker/src/index.ts
+scripts/pbs_game_server.py
+webview-ui/src/localMemoryApi.ts
+```
+
+## PBS engine commands
+
+The local engine supports a source-first workflow:
+
+```bash
+python3 scripts/pbs_engine.py build-registry
+python3 scripts/pbs_engine.py extract-passages
+python3 scripts/pbs_engine.py extract-claims
+python3 scripts/pbs_engine.py index
+python3 scripts/pbs_engine.py search "e-textile workshop"
+python3 scripts/pbs_engine.py query --query "open hardware workshops"
+python3 scripts/pbs_engine.py draft-note --query "solar sound workshop"
+python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/source-index.sql
+python3 scripts/pbs_engine.py lint
+```
+
+Cloud source index refresh:
+
+```bash
+python3 scripts/pbs_engine.py export-d1-sql --target pbs-memory-worker/d1/source-index.sql
+cd pbs-memory-worker
+npx wrangler d1 execute peach-blossom-spring-memory-db --remote --file d1/source-index.sql
+npx wrangler deploy
+```
+
+Deploy public UI:
+
+```bash
+npm --prefix webview-ui run build
+git push origin main
+```
+
+Pushing `main` triggers:
+
+```text
+.github/workflows/pages.yml
+```
+
+which publishes `dist/webview` to GitHub Pages.
+
+## Public vs local memory modes
+
+Do not mix the two memory runtimes.
+
+```text
+Cloud mode:
+GitHub Pages UI -> PBS memory Worker -> D1 / FTS -> DeepSeek -> answer
+
+Local mode:
+Browser UI -> local Python server -> pbs_engine.py -> local SQLite / Sources / Knowledge -> DeepSeek -> answer -> Review draft
+```
+
+Use cloud mode for the public garden. Use local mode when editing, reviewing, rebuilding, or writing back into the local research workflow.
+
+## What is secondary
+
+PBS may include multiplayer presence, playful UI, RPG dialogue, visual maps, NPC movement, zines, and sound/video encounters. These are presentation and interaction layers.
+
+They should serve the NGM electronic garden and the LLM wiki memory layer, not replace them as the main explanation.
 
 ## Current status
 
-PBS is currently a working prototype:
+PBS is a working prototype of an NGM electronic garden:
 
-- the public game is playable online;
+- the public garden is playable online;
+- the cloud worker can search a D1 source index and return source-grounded answers;
+- local mode can rebuild/search the fuller source-first memory engine;
 - NPC and campfire conversations can use recent dialogue context;
-- source links are filtered so the game should not force unrelated links when no reliable source is found;
-- zine generation, map/archive entry points, and the local wiki-memory workflow are still being refined;
-- the Question Pet is connected to the shared-memory traversal lint and acts as a monitor for the player's current question;
-- the next work is to keep simplifying the public explanation, improve source coverage, and make the local shared-memory workflow easier for non-technical users.
+- zine generation, source coverage, and local review workflows are still being refined;
+- the next work is to keep the public explanation clear while improving the memory layer's source coverage and repair workflow.
 
-The goal is not to finish a perfect archive. The goal is to keep a living garden where small community knowledge can be asked, cited, repaired, and passed on.
+## One-sentence summary
+
+PBS is an **NGM electronic garden powered by a source-first LLM wiki**: a place where small community knowledge can be walked through, asked about, cited, repaired, and passed on.
