@@ -34,6 +34,22 @@ function endpoint(path: string): string {
   return base ? `${base}${path}` : path;
 }
 
+function stripReaderFacingSyntax(text: string): string {
+  return text
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/^\s{0,3}[-*+]\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function cleanMemoryChatResponse(response: MemoryChatResponse): MemoryChatResponse {
+  return { ...response, answer: stripReaderFacingSyntax(response.answer) };
+}
+
 async function postJson<T>(path: string, payload: unknown): Promise<T> {
   if (!isLocalHost() && !configuredMemoryApiBaseUrl()) {
     throw new Error('PBS memory API is not configured. Add a pbs-memory-api meta tag for cloud mode, or start scripts/pbs_game_server.py for local full-memory mode.');
@@ -61,7 +77,8 @@ export async function searchMemory(query: string, limit = 8): Promise<WikiSearch
 }
 
 export async function askCampfire(question: string, preferredLanguage: LanguageCode): Promise<MemoryChatResponse> {
-  return postJson<MemoryChatResponse>('/api/chat/campfire', { question, preferredLanguage });
+  const response = await postJson<MemoryChatResponse>('/api/chat/campfire', { question, preferredLanguage });
+  return cleanMemoryChatResponse(response);
 }
 
 export async function askNpc(args: {
@@ -72,7 +89,8 @@ export async function askNpc(args: {
   preferredLanguage: LanguageCode;
   dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
-  return postJson<MemoryChatResponse>('/api/chat/npc', args);
+  const response = await postJson<MemoryChatResponse>('/api/chat/npc', args);
+  return cleanMemoryChatResponse(response);
 }
 
 export async function createMemoryDraft(payload: {

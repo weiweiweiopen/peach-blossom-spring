@@ -313,6 +313,18 @@ function answerLooksGrounded(answer: string, evidence: EvidenceItem[]): boolean 
   return true;
 }
 
+function stripReaderFacingSyntax(text: string): string {
+  return text
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/^\s{0,3}[-*+]\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 async function callDeepSeek(env: Env, systemPrompt: string, userPrompt: string): Promise<string> {
   const url = env.DEEPSEEK_PROXY_URL || 'https://pbs-deepseek-proxy.dontmarryme.workers.dev/chat';
   const request = new Request(url, {
@@ -336,7 +348,7 @@ async function callDeepSeek(env: Env, systemPrompt: string, userPrompt: string):
   const data = await response.json() as { answer?: string; content?: string; choices?: Array<{ message?: { content?: string } }> };
   const answer = data.answer ?? data.content ?? data.choices?.[0]?.message?.content ?? '';
   if (!answer.trim()) throw new Error('DeepSeek response did not include answer text');
-  return answer.trim();
+  return stripReaderFacingSyntax(answer);
 }
 
 async function answerWithMemory(env: Env, question: string, preferredLanguage: string, npcContext = '', searchOptions: SearchOptions = {}): Promise<{ answer: string; evidence: EvidenceItem[]; links: SearchResult[] }> {
@@ -353,6 +365,7 @@ async function answerWithMemory(env: Env, question: string, preferredLanguage: s
     'If evidence is incomplete, say what is missing instead of inventing facts.',
     'Do not say no evidence was found when PBS evidence is present.',
     'Keep the answer readable for a game dialogue.',
+    'Plain text only. Do not use Markdown syntax: no **bold**, __bold__, `code`, headings, bullet lists, or fenced code blocks.',
     '',
     '--- optional NPC voice context, not evidence ---',
     npcContext.slice(0, 5000),
