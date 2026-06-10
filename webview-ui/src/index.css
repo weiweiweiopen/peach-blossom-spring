@@ -9619,3 +9619,45 @@ body[data-language="ja"],
     font-size: 13px !important;
   }
 }
+
+/* 2026-06-10 mobile preset question readability.
+   Preset buttons should read like short cards: no mixed-language CJK fallback,
+   no single-letter English orphan caused by anywhere wrapping. */
+.rpg-dialogue-panel[data-language] .rpg-dialogue-question-drawer .rpg-dialogue-fixed,
+.rpg-dialogue-panel[data-language] .rpg-dialogue-actions .rpg-dialogue-fixed {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important;
+  gap: 10px !important;
+}
+
+.rpg-dialogue-panel[data-language] .rpg-dialogue-question-drawer .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle),
+.rpg-dialogue-panel[data-language] .rpg-dialogue-actions .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+  width: 100% !important;
+  max-width: none !important;
+  text-align: left !important;
+  text-wrap: pretty !important;
+  hyphens: none !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  line-break: auto !important;
+}
+
+.rpg-dialogue-panel[data-language="zh-TW"] .rpg-dialogue-question-drawer .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle),
+.rpg-dialogue-panel[data-language="ja"] .rpg-dialogue-question-drawer .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle),
+.rpg-dialogue-panel[data-language="th"] .rpg-dialogue-question-drawer .rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle) {
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  line-break: strict !important;
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-question-drawer,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-actions:has(.rpg-dialogue-chip.pbs-game-button:not(.pbs-game-button--bubble):not(.rpg-dialogue-question-toggle)) {
+    max-height: min(36dvh, 260px) !important;
+  }
+
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-question-drawer .rpg-dialogue-fixed,
+  .rpg-dialogue-panel[data-language] .rpg-dialogue-actions .rpg-dialogue-fixed {
+    grid-template-columns: 1fr !important;
+  }
+}

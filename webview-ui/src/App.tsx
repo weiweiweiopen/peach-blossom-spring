@@ -27,7 +27,7 @@ import {
 import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
-import { publicCamperName, sanitizeRealPersonReferences } from "./privacy.js";
+import { publicCamperName, sanitizeNpcTextForUi, sanitizeRealPersonReferences } from "./privacy.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
@@ -236,8 +236,8 @@ const WUKIR_BANDCAMP_PLAYER_URL = WUKIR_BANDCAMP_ALBUM_URL;
 const TAMAGOTCHI_AGENT_PROMPT = "PBS Tamagotchi companion";
 const COMMUNITY_QUERY_PROMPTS: Record<LanguageCode, string[]> = {
   "zh-TW": [
-    "BioElectronics and BioMaterials Workshop, ISI Yogyakarta 2019 是什麼活動？它和 Hackteria 的 DIY biology、bioart 與 open hardware 社群有什麼關係？",
-    "Hackteria Main Page 和 About 頁面如何介紹 Hackteria 的 DIY biology、bioart 與開源藝術社群？",
+    "想從藝術與生物倫理的交會開始，PBS 可以先帶我看哪些社群路徑？",
+    "如果我想認識獨立科技藝術營隊與社群，PBS 會建議從哪些頁面開始？",
     "HOME MADE 2016、Archive HOME MADE 和 I.N.S.E.C.T. Summercamp 各自記錄了哪些活動形式、參與者和工作坊安排？",
     "Archive HOME MADE 和 Radionica krassfade 裡有哪些聲音工具、Klangmaschinen 或 DIY synth 工作坊？",
     "CNX OpenLab 和 CoLabs Chiang Mai 頁面記錄了哪些 bioart、DIY biology 或 DIWO 社群活動？",
@@ -749,8 +749,8 @@ function CampfireInlineLinks({ links, copy }: { links: WikiSearchResult[]; copy:
       {links.slice(0, 8).map((link, index) => (
         <p key={`${link.url}-${index.toString()}`} className="rpg-dialogue-source-line">
           <span className="rpg-dialogue-source-index">[{index + 1}]</span>{' '}
-          <a href={link.url} target="_blank" rel="noreferrer">{link.title}</a>
-          <span className="rpg-dialogue-source-body">：{link.sourceFamily}</span>
+          <a href={link.url} target="_blank" rel="noreferrer">{sanitizeRealPersonReferences(link.title)}</a>
+          <span className="rpg-dialogue-source-body">：{sanitizeRealPersonReferences(link.sourceFamily)}</span>
         </p>
       ))}
     </div>
@@ -1127,12 +1127,12 @@ function CampfireDialogue({
     onQuestionSubmitted?.(trimmed);
     try {
       const reply = await askCampfire(trimmed, language);
-      setMessages((current) => [...current, { speaker: copy.name, text: reply.answer, links: reply.links }]);
+      setMessages((current) => [...current, { speaker: copy.name, text: sanitizeNpcTextForUi(reply.answer, language), links: reply.links }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "PBS memory API is unavailable.");
       setMessages((current) => [...current, {
         speaker: copy.name,
-        text: "PBS memory API is unavailable. Cloud mode needs the PBS memory Worker URL; local full-memory mode needs scripts/pbs_game_server.py. Static snapshot fallback is disabled so the game will not pretend missing evidence is real memory.",
+        text: copy.failError,
         links: [],
       }]);
     } finally {
@@ -1198,7 +1198,7 @@ function CampfireDialogue({
             </div>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
+        <form onSubmit={handleSubmit} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-bwignore="true">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
@@ -1211,14 +1211,18 @@ function CampfireDialogue({
                 void askCampfireQuestion(draft);
               }
             }}
-            name="pbs-campfire-question"
+            name="pbs-free-text-question"
             inputMode="text"
             enterKeyHint="send"
-            autoComplete="new-password"
+            autoComplete="off"
             aria-autocomplete="none"
             data-form-type="other"
             data-lpignore="true"
             data-1p-ignore="true"
+            data-bwignore="true"
+            data-dashlane-ignore="true"
+            data-protonpass-ignore="true"
+            data-ccp-ignore="true"
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}

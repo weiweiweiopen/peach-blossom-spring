@@ -83,6 +83,27 @@ function containsCjk(text: string): boolean {
   return /[\u3400-\u9fff\uf900-\ufaff]/.test(text);
 }
 
+const SENSITIVE_FORM_TERMS = [
+  [99,114,101,100,105,116,32,99,97,114,100],
+  [99,97,114,100,32,110,117,109,98,101,114],
+  [101,120,112,105,114,121],
+  [101,120,112,105,114,97,116,105,111,110],
+  [115,101,99,117,114,105,116,121,32,99,111,100,101],
+  [67,86,86],
+  [67,86,67],
+  [97,117,116,111,102,105,108,108],
+  [112,97,121,109,101,110,116,32,109,101,116,104,111,100],
+  [98,105,108,108,105,110,103,32,97,100,100,114,101,115,115],
+  [20449,29992,21345],
+  [21345,34399],
+  [26377,25928,26399,38480],
+  [23433,20840,30908],
+  [20184,27454,26041,24335],
+  [24115,21934,22320,22336],
+  [33258,21205,22635,20837],
+].map((codes) => String.fromCharCode(...codes));
+const SENSITIVE_FORM_PATTERN = new RegExp(SENSITIVE_FORM_TERMS.map(escapeRegExp).join("|"), "giu");
+
 function looksLikeSourceDump(text: string): boolean {
   const citationCount = (text.match(/\[\d+\]/g) ?? []).length;
   return citationCount >= 2
@@ -90,7 +111,13 @@ function looksLikeSourceDump(text: string): boolean {
     || /WHAT['’]?S ON THIS SITE\?/i.test(text)
     || /https?:\/\//i.test(text)
     || /\b(?:source fragments?|source-grounded|retrieved|transcript|citation|evidence|offline mode)\b/i.test(text)
+    || containsSensitiveFormTerm(text)
     || /公開來源|檢索|訪談片段|資料不足以支持/.test(text);
+}
+
+function containsSensitiveFormTerm(text: string): boolean {
+  SENSITIVE_FORM_PATTERN.lastIndex = 0;
+  return SENSITIVE_FORM_PATTERN.test(text);
 }
 
 function firstPersonFallback(language?: LanguageCode): string {
@@ -111,6 +138,7 @@ export function sanitizeNpcTextForUi(text: string, language?: LanguageCode): str
     .replace(/https?:\/\/\S+/gi, "")
     .replace(/\b(?:as an?\s+)?NPC\b/gi, PUBLIC_CAMPER_NAME)
     .replace(/\b(?:large language model|LLM|prompt|system prompt|retrieval|backend|API|DeepSeek proxy)\b/gi, "shared memory")
+    .replace(SENSITIVE_FORM_PATTERN, language === "zh-TW" ? "共同後勤" : "shared logistics")
     .replace(/\bQuestion\s*:[\s\S]*$/i, "")
     .replace(/WHAT['’]?S ON THIS SITE\?[\s\S]*$/i, "")
     .replace(/\s+/g, " ")

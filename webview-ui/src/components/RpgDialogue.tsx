@@ -822,21 +822,25 @@ ${item.text}`).join('\n\n');
           </div>
         )}
 
-        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off">
+        <form onSubmit={(event) => void handleSubmit(event)} className="rpg-dialogue-form flex gap-4" data-ui-footer="zine" autoComplete="off" data-form-type="other" data-lpignore="true" data-1p-ignore="true" data-bwignore="true">
           <input
             type="text"
             className="rpg-dialogue-input flex-1 bg-bg border-2 border-border px-7 py-6 text-xl text-text outline-none focus:border-accent-bright"
             data-ui-part="field"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            name={`pbs-dialogue-${persona.id}`}
+            name={`pbs-free-text-${persona.id}`}
             inputMode="text"
             enterKeyHint="send"
-            autoComplete="new-password"
+            autoComplete="off"
             aria-autocomplete="none"
             data-form-type="other"
             data-lpignore="true"
             data-1p-ignore="true"
+            data-bwignore="true"
+            data-dashlane-ignore="true"
+            data-protonpass-ignore="true"
+            data-ccp-ignore="true"
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}
