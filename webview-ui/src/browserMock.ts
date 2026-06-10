@@ -27,6 +27,7 @@ import type {
   CatalogEntry,
   CharacterDirectionSprites,
 } from '../../shared/assets/types.ts';
+import { publicCamperName } from './privacy.js';
 import { getPersonaNpcAppearance } from './personaNpcAppearance.js';
 import { BROWSER_EDITOR_LAYOUT_KEY } from './vscodeApi.js';
 import { createCompactEditorLayout } from './world/peachBlossomWorld.js';
@@ -45,7 +46,7 @@ const personaAgentIds = personas
   .filter((id): id is number => id !== null);
 
 function personaFolderNames(): Record<number, string> {
-  return Object.fromEntries(personas.map((persona, index) => [index + 1, persona.name]));
+  return Object.fromEntries(personas.map((_persona, index) => [index + 1, publicCamperName()]));
 }
 
 function personaAgentMeta(): Record<number, { palette: number; hueShift: number }> {

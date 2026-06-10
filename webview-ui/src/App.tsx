@@ -27,6 +27,7 @@ import {
 import { RetroBootScreen } from "./components/RetroBootScreen.js";
 import { RpgDialogue } from "./components/RpgDialogue.js";
 import { SettingsModal } from "./components/SettingsModal.js";
+import { publicCamperName, sanitizeRealPersonReferences } from "./privacy.js";
 import { Tooltip } from "./components/Tooltip.js";
 import { Modal } from "./components/ui/Modal.js";
 import { ZOOM_MAX, ZOOM_MIN } from "./constants.js";
@@ -353,7 +354,7 @@ const ExpeditionPanel = lazy(() =>
   })),
 );
 function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
-  if (panel.kind === "dialogue.openWiki") return panel.persona.name;
+  if (panel.kind === "dialogue.openWiki") return publicCamperName();
   if (panel.kind === "wukirBandcamp") return "Institutionalized Ritual";
   if (panel.kind === "communityLinks") return t(language, "archive.newsTitle");
   if (panel.kind === "externalLink") return panel.title;
@@ -367,7 +368,7 @@ function splitPanelTitle(panel: SplitPanel, language: LanguageCode): string {
 
 function splitPanelKicker(panel: SplitPanel, language: LanguageCode): string {
   if (panel.kind === "dialogue.openWiki") return "WORLD WIKI";
-  if (panel.kind === "wukirBandcamp") return "Wukir Suryadi · Bandcamp";
+  if (panel.kind === "wukirBandcamp") return "campers · Bandcamp";
   if (panel.kind === "communityLinks") return t(language, "archive.communityPortals");
   if (panel.kind === "externalLink") {
     return t(language, "archive.embeddedLink");
@@ -1432,15 +1433,15 @@ function WukirBandcampEmbed() {
     <div className="world-split-embed wukir-bandcamp-panel">
       <div className="wukir-bandcamp-fallback">
         <strong>Institutionalized Ritual</strong>
-        <span>Wukir Suryadi</span>
+        <span>campers</span>
         <span>External Bandcamp preview unavailable</span>
         <a href={WUKIR_BANDCAMP_ALBUM_URL} target="_blank" rel="noreferrer">
           Open on Bandcamp
         </a>
       </div>
-      <div className="wukir-bandcamp-frame" aria-label="Wukir Suryadi Bandcamp player">
+      <div className="wukir-bandcamp-frame" aria-label="campers Bandcamp player">
         <iframe
-          title="Bandcamp player: Wukir Suryadi - Institutionalized Ritual"
+          title="Bandcamp player: campers - Institutionalized Ritual"
           src={WUKIR_BANDCAMP_PLAYER_URL}
           loading="lazy"
           allow="autoplay; encrypted-media"
@@ -2110,9 +2111,9 @@ function App() {
     const npcContexts = personas.map((persona, index) => ({
       id: `npc-${persona.id}`,
       characterId: index + 1,
-      name: persona.name,
+      name: publicCamperName(),
       personaId: persona.id,
-      text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`,
+      text: sanitizeRealPersonReferences(`${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`),
     }));
     const snapshot = createInitialSnapshot([pet], npcContexts);
     setHasStarted(true);
@@ -2654,9 +2655,9 @@ function App() {
               `npc-${persona.id}`,
               {
                 personaId: persona.id,
-                name: persona.name,
-                role: persona.role,
-                intro: persona.intro,
+                name: publicCamperName(),
+                role: sanitizeRealPersonReferences(persona.role),
+                intro: sanitizeRealPersonReferences(persona.intro),
                 links,
               },
             ];
@@ -3063,9 +3064,9 @@ function App() {
       const npcContexts = personas.map((persona, index) => ({
         id: `npc-${persona.id}`,
         characterId: index + 1,
-        name: persona.name,
+        name: publicCamperName(),
         personaId: persona.id,
-        text: `${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`,
+        text: sanitizeRealPersonReferences(`${persona.role} ${persona.intro} ${Object.values(persona.responses).join(" ")}`),
       }));
       setSimSnapshot(createInitialSnapshot([pet], npcContexts));
       void createCloudPetPersona(profile)

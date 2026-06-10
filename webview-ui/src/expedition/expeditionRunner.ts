@@ -1,4 +1,5 @@
 import agentProfiles from '../../../data/agent-profiles.json';
+import { publicCamperName, sanitizeRealPersonReferences } from '../privacy.js';
 import { buildExpeditionPromptContext } from './expeditionPrompt.js';
 import { getNpcBehaviorProfile } from './npcBehaviorProfiles.js';
 import type { AgentProfile, ExpeditionEvent, ExpeditionReport, ExpeditionResult, RunExpeditionInput } from './types.js';
@@ -131,16 +132,16 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     });
     const challengeTemplates = isChinese
       ? [
-        `先不要擴張。${persona.name} 會問：「${missionBrief}」真的需要現在做嗎？玩家技能「${playerSkills}」能不能先證明一個最小版本？`,
-        `${persona.name} 把限制放到桌上：${constraintBrief}。如果這個限制不能被尊重，任務就還不應該上場。`,
+        `先不要擴張。${publicCamperName()} 會問：「${missionBrief}」真的需要現在做嗎？玩家技能「${playerSkills}」能不能先證明一個最小版本？`,
+        `${publicCamperName()} 把限制放到桌上：${constraintBrief}。如果這個限制不能被尊重，任務就還不應該上場。`,
         `現場有人質疑：這件事會不會只是把「${playerSkills}」包成好看的提案？請指出誰會受益、誰能拒絕。`,
-        `${persona.name} 要求把任務翻成一句可執行的測試，而不是再引用訪談語錄。`,
+        `${publicCamperName()} 要求把任務翻成一句可執行的測試，而不是再引用訪談語錄。`,
       ]
       : [
-        `${persona.name} asks whether "${missionBrief}" really needs to scale now, or whether ${playerSkills} can prove one smallest useful version first.`,
-        `${persona.name} puts the constraint on the table: ${constraintBrief}. If the mission cannot respect it, it is not ready for the field.`,
+        `${publicCamperName()} asks whether "${missionBrief}" really needs to scale now, or whether ${playerSkills} can prove one smallest useful version first.`,
+        `${publicCamperName()} puts the constraint on the table: ${constraintBrief}. If the mission cannot respect it, it is not ready for the field.`,
         `The room questions whether ${playerSkills} is becoming presentation language instead of practice. Name who benefits and who can refuse.`,
-        `${persona.name} asks for one executable field test, not another transcript quotation.`,
+        `${publicCamperName()} asks for one executable field test, not another transcript quotation.`,
       ];
     const leadTemplates = isChinese
       ? [
@@ -160,13 +161,13 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
         `如果只能用「${playerSkills}」做第一步，哪個結果明天就能驗證？`,
         `「${missionBrief}」最需要誰先說不？`,
         `哪一個限制最可能讓這個任務變得更準，而不是更小？`,
-        `${persona.name} 的提醒要怎麼改寫成玩家下一個行動？`,
+        `${publicCamperName()} 的提醒要怎麼改寫成玩家下一個行動？`,
       ]
       : [
         `If the first step can only use ${playerSkills}, what result could be tested tomorrow?`,
         `Who needs the power to say no to "${missionBrief}" first?`,
         `Which constraint could make the mission more precise rather than merely smaller?`,
-        `How should ${persona.name}'s warning rewrite the player's next action?`,
+        `How should ${publicCamperName()}' warning rewrite the player's next action?`,
       ];
     const contribution = isChinese
       ? `文本記憶：${reasoning.sourceGroundedMemory}\n任務連接：${reasoning.cautiousExtrapolation}\n現場提案：${reasoning.speculativeProposal}`
@@ -191,8 +192,8 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
     keyEncounters: events.slice(0, 6).map((event) => {
       const persona = input.personas.find((item) => item.id === event.npcId);
       return input.language === 'zh-TW'
-        ? `第 ${event.round} 回合，${persona?.name ?? event.npcId}：${event.encounterType}。${event.npcContribution}`
-        : `Round ${event.round}, ${persona?.name ?? event.npcId}: ${event.encounterType} -> ${event.npcContribution}`;
+        ? `第 ${event.round} 回合，${persona ? publicCamperName() : event.npcId}：${event.encounterType}。${event.npcContribution}`
+        : `Round ${event.round}, ${persona ? publicCamperName() : event.npcId}: ${event.encounterType} -> ${event.npcContribution}`;
     }),
     strongestEmergentDirection: isChinese
       ? `把任務轉成由 ${playerSkills} 形塑的活原型：一個小型營隊測試、一份可見的衝突紀錄、一套照護或維護協議，以及一個可被其他節點 fork 的共享物件。`
@@ -244,5 +245,28 @@ export function runExpedition(input: RunExpeditionInput): ExpeditionResult {
       ],
   };
 
-  return { events, report };
+  const sanitizedEvents = events.map((event) => ({
+    ...event,
+    encounterType: sanitizeRealPersonReferences(event.encounterType),
+    npcContribution: sanitizeRealPersonReferences(event.npcContribution),
+    challengeToUser: sanitizeRealPersonReferences(event.challengeToUser),
+    newLead: sanitizeRealPersonReferences(event.newLead),
+    avatarBeliefUpdate: sanitizeRealPersonReferences(event.avatarBeliefUpdate),
+    nextQuestion: sanitizeRealPersonReferences(event.nextQuestion),
+  }));
+  const sanitizeItems = (items: string[]) => items.map(sanitizeRealPersonReferences);
+  return {
+    events: sanitizedEvents,
+    report: {
+      originalMission: sanitizeRealPersonReferences(report.originalMission),
+      interpretedMission: sanitizeRealPersonReferences(report.interpretedMission),
+      keyEncounters: sanitizeItems(report.keyEncounters),
+      strongestEmergentDirection: sanitizeRealPersonReferences(report.strongestEmergentDirection),
+      disagreementsBetweenNpcs: sanitizeItems(report.disagreementsBetweenNpcs),
+      blindSpots: sanitizeItems(report.blindSpots),
+      concreteNextActions: sanitizeItems(report.concreteNextActions),
+      followUpQuestions: sanitizeItems(report.followUpQuestions),
+      openCallResearchLeads: sanitizeItems(report.openCallResearchLeads),
+    },
+  };
 }

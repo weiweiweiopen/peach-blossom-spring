@@ -218,10 +218,10 @@ export const worldZones: WorldZone[] = [
   },
   {
     id: 'abao-story-circle',
-    name: 'Abao Story Circle',
+    name: 'campers Story Circle',
     kind: 'storyCircle',
     bounds: { col: 36, row: 29, w: 10, h: 8 },
-    description: 'The central conversation ground where Abao pulls the map into a storytelling split scene.',
+    description: 'The central conversation ground where campers pull the map into a storytelling split scene.',
   },
 ];
 

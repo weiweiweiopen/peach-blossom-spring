@@ -27,9 +27,9 @@
       "description": "Loughborough publications listing."
     },
     {
-      "title": "Academia.edu",
-      "url": "https://lboro.academia.edu/TincutaHeinzel",
-      "description": "Academia.edu profile."
+      "title": "Academia.edu profile",
+      "url": "https://www.academia.edu/",
+      "description": "External profile page."
     }
   ]
 }

@@ -13,9 +13,9 @@
   "personas": [
     {
       "id": "andreas-siagian",
-      "name": "Andreas Siagian",
+      "name": "campers",
       "role": "Lifepatch / local commons organizer",
-      "intro": "Andreas introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. His persona keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.",
+      "intro": "This camper introduces Lifepatch as a living space of values rather than a brand that owns his whole identity. This camper keeps returning to neighborhood scale, visible responsibility, and grounded collaboration.",
       "transcripts": {
         "en": "docs/transcripts_en/andreas-siagian.md",
         "zh": "docs/transcripts_zh/andreas-siagian.md"
@@ -32,9 +32,9 @@
     },
     {
       "id": "anastassia-pistofidou",
-      "name": "Anastassia Pistofidou",
+      "name": "campers",
       "role": "Fabricademy / decentralized education",
-      "intro": "Anastassia speaks through node networks, portable curriculum, and peer validation. Her persona turns camps into distributed learning frameworks.",
+      "intro": "This camper speaks through node networks, portable curriculum, and peer validation. This camper turns camps into distributed learning frameworks.",
       "transcripts": {
         "en": "docs/transcripts_en/anastassia-pistofidou.md",
         "zh": "docs/transcripts_zh/anastassia-pistofidou.md"
@@ -51,9 +51,9 @@
     },
     {
       "id": "giulia-tomasello",
-      "name": "Giulia Tomasello",
+      "name": "campers",
       "role": "wearable technology / care protocols",
-      "intro": "Giulia's persona frames technology through consent, feminist practice, and care as infrastructure.",
+      "intro": "This camper persona frames technology through consent, feminist practice, and care as infrastructure.",
       "transcripts": {
         "en": "docs/transcripts_en/giulia-tomasello.md",
         "zh": "docs/transcripts_zh/giulia-tomasello.md"
@@ -70,9 +70,9 @@
     },
     {
       "id": "christian-dils",
-      "name": "Christian Dils",
+      "name": "campers",
       "role": "Fraunhofer TexLab / research infrastructure",
-      "intro": "Christian's persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
+      "intro": "This camper persona thinks from equipment, maintenance, standard operating procedures, and healthy technical commons.",
       "transcripts": {
         "en": "docs/transcripts_en/christian-dils.md",
         "zh": "docs/transcripts_zh/christian-dils.md"
@@ -89,9 +89,9 @@
     },
     {
       "id": "jonathan-minchin",
-      "name": "Jonathan Minchin",
+      "name": "campers",
       "role": "Green Fablab / ecological field commons",
-      "intro": "Jonathan's persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
+      "intro": "This camper persona connects digital fabrication, agriculture, ecological calendars, and field-based knowledge commons.",
       "transcripts": {
         "en": "docs/transcripts_en/jonathan-minchin.md",
         "zh": "docs/transcripts_zh/jonathan-minchin.md"
@@ -108,9 +108,9 @@
     },
     {
       "id": "marc-dusseiller",
-      "name": "Marc Dusseiller",
+      "name": "campers",
       "role": "Hackteria / nomadic workshopologist",
-      "intro": "Marc's persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
+      "intro": "This camper persona values dense improvisation, low-cost open hardware, friendship, and failure as pedagogy.",
       "transcripts": {
         "en": "docs/transcripts_en/marc-dusseiller.md",
         "zh": "docs/transcripts_zh/marc-dusseiller.md"
@@ -127,9 +127,9 @@
     },
     {
       "id": "rully-shabara",
-      "name": "Rully Shabara",
+      "name": "campers",
       "role": "Senyawa / de-staged practice",
-      "intro": "Rully's persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
+      "intro": "This camper persona warns against turning camps into industries. He privileges circles, meals, exercises, and self-speaking communities.",
       "transcripts": {
         "en": "docs/transcripts_en/rully-shabara.md",
         "zh": "docs/transcripts_zh/rully-shabara.md"
@@ -146,9 +146,9 @@
     },
     {
       "id": "wukir-suryadi",
-      "name": "Wukir Suryadi",
+      "name": "campers",
       "role": "artist station / experimental instrument practice",
-      "intro": "Wukir's persona is a compact listening station for experimental sound, instrument-making, and careful external previews. His transcript is pending and will be added later.",
+      "intro": "This camper persona is a compact listening station for experimental sound, instrument-making, and careful external previews. His transcript is pending and will be added later.",
       "transcripts": {
         "en": "docs/transcripts_en/wukir-suryadi.md",
         "zh": "docs/transcripts_zh/wukir-suryadi.md"
@@ -165,9 +165,9 @@
     },
     {
       "id": "ryu-oyama",
-      "name": "Ryu Toru Oyama",
+      "name": "campers",
       "role": "Oki Wonder Lab / island-chain host",
-      "intro": "Ryu's persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
+      "intro": "This camper persona treats isolation as method and resource, using island rhythms to decenter activity in time and space.",
       "transcripts": {
         "en": "docs/transcripts_en/ryu-oyama.md",
         "zh": "docs/transcripts_zh/ryu-oyama.md"
@@ -184,9 +184,9 @@
     },
     {
       "id": "stephanie-pan",
-      "name": "Stephanie Pan",
+      "name": "campers",
       "role": "Modern Body Festival / micro-lab dramaturgy",
-      "intro": "Stephanie's persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
+      "intro": "This camper persona transforms festivals into micro-labs with care clauses, audience co-hosting, and continuous small generation.",
       "transcripts": {
         "en": "docs/transcripts_en/stephanie-pan.md",
         "zh": "docs/transcripts_zh/stephanie-pan.md"
@@ -203,9 +203,9 @@
     },
     {
       "id": "stelio-manousakis",
-      "name": "Stelio Manousakis",
+      "name": "campers",
       "role": "Modern Body Festival / governance rehearsal",
-      "intro": "Stelio's persona fuses administration and performance, treating sound-checks as governance checks.",
+      "intro": "This camper persona fuses administration and performance, treating sound-checks as governance checks.",
       "transcripts": {
         "en": "docs/transcripts_en/stelio-manousakis.md",
         "zh": "docs/transcripts_zh/stelio-manousakis.md"
@@ -222,9 +222,9 @@
     },
     {
       "id": "svenja-keune",
-      "name": "Svenja Keune",
+      "name": "campers",
       "role": "I.N.S.E.C.T. / multispecies design",
-      "intro": "Svenja's persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
+      "intro": "This camper persona thinks in ecological rhythms, being-with before designing-with, and pauses as part of collaboration.",
       "transcripts": {
         "en": "docs/transcripts_en/svenja-keune.md",
         "zh": "docs/transcripts_zh/svenja-keune.md"
@@ -241,9 +241,9 @@
     },
     {
       "id": "ted-hung",
-      "name": "Ted Hung",
+      "name": "campers",
       "role": "Fablab Taipei / person-based network",
-      "intro": "Ted's persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
+      "intro": "This camper persona says connections between people matter more than connections between labs. He favors person-based membership and transparent ledgers.",
       "transcripts": {
         "en": "docs/transcripts_en/ted-hung.md",
         "zh": "docs/transcripts_zh/ted-hung.md"
@@ -260,9 +260,9 @@
     },
     {
       "id": "tincuta-heinzel",
-      "name": "Tincuta Heinzel",
+      "name": "campers",
       "role": "curator / critical textile and media questions",
-      "intro": "Tincuta's persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
+      "intro": "This camper persona treats camps as curatorial tools that produce ethical questions, local responses, and versions rather than fixed outputs.",
       "transcripts": {
         "en": "docs/transcripts_en/tincuta-heinzel.md",
         "zh": "docs/transcripts_zh/tincuta-heinzel.md"

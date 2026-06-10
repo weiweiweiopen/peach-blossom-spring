@@ -7,6 +7,7 @@ import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../lo
 import { buildTranscriptEvidenceChunks, retrieveNpcEvidence, type ChatEvidence, rankEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
+import { publicCamperName, sanitizeNpcTextForUi, sanitizeRealPersonReferences } from '../privacy.js';
 import { searchWikiPages, searchWikiPagesWithHints, type WikiSearchResult } from '../wikiSearch.js';
 
 interface Persona {
@@ -118,17 +119,17 @@ const personaQuestionSeeds: Record<string, string[]> = {
   'jonathan-minchin': [
     'Open Source Beehives 如何把感測器、蜂群與農地照護連成一種可共享的田野知識？',
     'Green Fab Lab 的農業機器人與生態日曆，怎麼改變 fab lab 只做工具展示的想像？',
-    'Jonathan 的訪談裡，什麼樣的在地關係比實驗室設備更能讓技術留下來？',
+    'campers 的訪談裡，什麼樣的在地關係比實驗室設備更能讓技術留下來？',
   ],
   'marc-dusseiller': [
-    'Marc 說的 Hackteria 精神裡，為什麼便宜、可拆、好笑會比正式實驗室更重要？',
-    '在 Marc 的工作坊經驗裡，失敗、料理、焊接和友誼怎麼一起變成教學方法？',
-    '如果一個 science-art box 不能被打開、污染、重做，Marc 會怎麼批評它？',
+    'campers 說的 Hackteria 精神裡，為什麼便宜、可拆、好笑會比正式實驗室更重要？',
+    '在 campers 的工作坊經驗裡，失敗、料理、焊接和友誼怎麼一起變成教學方法？',
+    '如果一個 science-art box 不能被打開、污染、重做，campers 會怎麼批評它？',
   ],
   'tincuta-heinzel': [
     '什麼是 ATTEMPTS, FAILURES, TRIALS AND ERRORS？',
-    'Tincuta 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
-    '從 Tincuta 的訪談看，營隊什麼時候比較像策展工具，而不是教學活動？',
+    'campers 如何把失敗、策展與在地回應轉成可以被保存的研究問題？',
+    '從 campers 的訪談看，營隊什麼時候比較像策展工具，而不是教學活動？',
   ],
 };
 
@@ -412,67 +413,67 @@ const npcGuideProfiles: Record<string, NpcGuideProfile> = {
 
 
 function communityQuestionSeed(language: LanguageCode, persona: Persona): string[] {
-  const communityHint = cleanQuestionPart(Object.values(persona.responses).join(' '), 44);
+  const communityHint = cleanQuestionPart(sanitizeRealPersonReferences(Object.values(persona.responses).join(' ')), 44);
   if (language === 'ja') {
     return [
-      `${persona.name} のコミュニティ経験から、桃花源の初心者はどの材料・方法・組織の問いから始めるとよいですか？`,
-      `${persona.name} は自分たちの実践を NGM、Hackteria、SGMK の公開資料とどうつなげますか？`,
-      `${persona.name} のコミュニティを小誌の問いで紹介するなら、どの道具・キャンプ・ケアの方法を比較しますか？`,
-      communityHint ? `${persona.name} が触れた「${communityHint}」は、どんな検証可能な桃花源の問いになりますか？` : `${persona.name} のコミュニティ記憶は、どんな検証可能な桃花源の問いになりますか？`,
+      `この camper のコミュニティ経験から、桃花源の初心者はどの材料・方法・組織の問いから始めるとよいですか？`,
+      `この camper は自分たちの実践を NGM、Hackteria、SGMK の公開資料とどうつなげますか？`,
+      `この camper のコミュニティを小誌の問いで紹介するなら、どの道具・キャンプ・ケアの方法を比較しますか？`,
+      communityHint ? `「${communityHint}」は、どんな検証可能な桃花源の問いになりますか？` : `この camper のコミュニティ記憶は、どんな検証可能な桃花源の問いになりますか？`,
     ];
   }
   if (language === 'zh-TW') {
     return [
-      `從 ${persona.name} 的社群經驗出發，桃花源新手可以先問哪個材料、方法或組織問題？`,
-      `${persona.name} 會怎麼把自己的社群實作連到 NGM、Hackteria 或 SGMK 的公開資料？`,
-      `如果只用一個小誌問題介紹 ${persona.name} 關心的社群，應該比較哪個工具、營隊或照護方法？`,
-      communityHint ? `${persona.name} 提到的「${communityHint}」可以變成什麼可查證的桃花源社群問題？` : `${persona.name} 的社群記憶可以怎麼變成一個可查證的桃花源問題？`,
+      `從這位 camper 的社群經驗出發，桃花源新手可以先問哪個材料、方法或組織問題？`,
+      `這位 camper 會怎麼把自己的社群實作連到 NGM、Hackteria 或 SGMK 的公開資料？`,
+      `如果只用一個小誌問題介紹這位 camper 關心的社群，應該比較哪個工具、營隊或照護方法？`,
+      communityHint ? `「${communityHint}」可以變成什麼可查證的桃花源社群問題？` : `這位 camper 的社群記憶可以怎麼變成一個可查證的桃花源問題？`,
     ];
   }
   return [
-    `From ${persona.name}'s community experience, what material, method, or organization question should a Peach Blossom Spring beginner ask first?`,
-    `How would ${persona.name} connect their own community practice to NGM, Hackteria, or SGMK public sources?`,
-    `If one zine question introduced ${persona.name}'s community, which tool, camp, or care method should it compare?`,
-    communityHint ? `How can “${communityHint}” become a checkable Peach Blossom Spring community question for ${persona.name}?` : `How can ${persona.name}'s community memory become a checkable Peach Blossom Spring question?`,
+    `From this camper's community experience, what material, method, or organization question should a Peach Blossom Spring beginner ask first?`,
+    `How would this camper connect their community practice to NGM, Hackteria, or SGMK public sources?`,
+    `If one zine question introduced this camper's community, which tool, camp, or care method should it compare?`,
+    communityHint ? `How can “${communityHint}” become a checkable Peach Blossom Spring community question?` : `How can this camper's community memory become a checkable Peach Blossom Spring question?`,
   ];
 }
 
 function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _transcript = ''): string[] {
   const guided = npcGuideProfiles[persona.id]?.questions[language];
-  if (guided?.length) return guided;
+  if (guided?.length) return guided.map(sanitizeRealPersonReferences);
   const fixed = personaQuestionSeeds[persona.id] ?? [];
   const responseEntries = Object.entries(persona.responses).slice(0, 9);
   const sourceBridgeQuestions = [
-    `${persona.name} 的社群實作如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
-    `${persona.name} 會怎麼把工作坊、材料或照護經驗整理成一份可查證小誌？`,
-    `從 ${persona.name} 的觀點看，哪些公開 source 最適合回答「社群如何保存知識」？`,
-    `${persona.name} 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
-    `${persona.name} 的社群方法可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
-    `${persona.name} 的 documentation 方法和其他公開維基有什麼共同問題？`,
+    `這位 camper 的社群實作如何連到 Hackteria、SGMK 或 How To Get What You Want 的公開文件？`,
+    `這位 camper 會怎麼把工作坊、材料或照護經驗整理成一份可查證小誌？`,
+    `從這位 camper 的觀點看，哪些公開 source 最適合回答「社群如何保存知識」？`,
+    `這位 camper 的實作和 Hackteria 的 workshop / open hardware 文件有什麼可比較之處？`,
+    `這位 camper 的社群方法可以如何連到 SGMK 的 sound、DIY electronics 或 handmade tool 頁面？`,
+    `這位 camper 的 documentation 方法和其他公開維基有什麼共同問題？`,
   ];
   if (language === 'zh-TW') {
-    const responseQuestions = responseEntries.map(([, response]) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 48)}」如何連到公開 wiki sources 的可檢查材料？`);
-    return shuffleCopy([...fixed, ...communityQuestionSeed(language, persona), ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9);
+    const responseQuestions = responseEntries.map(([, response]) => `從這位 camper 的社群經驗看，「${cleanQuestionPart(sanitizeRealPersonReferences(response), 48)}」如何連到公開 wiki sources 的可檢查材料？`);
+    return shuffleCopy([...fixed.map(sanitizeRealPersonReferences), ...communityQuestionSeed(language, persona), ...sourceBridgeQuestions, ...responseQuestions]).slice(0, 9).map(sanitizeRealPersonReferences);
   }
 
   const templates: Record<LanguageCode, (response: string) => string> = {
-    'zh-TW': (response) => `從 ${persona.name} 的社群經驗看，「${cleanQuestionPart(response, 50)}」跟他的實作有什麼關係？`,
-    en: (response) => `From ${persona.name}'s community practice, how does “${cleanQuestionPart(response, 50)}” connect to materials, methods, or care?`,
-    id: (response) => `Dari praktik komunitas ${persona.name}, bagaimana “${cleanQuestionPart(response, 50)}” terhubung dengan bahan, metode, atau perawatan?`,
-    de: (response) => `Wie verbindet sich „${cleanQuestionPart(response, 50)}“ aus ${persona.name}s Community-Praxis mit Material, Methode oder Sorgearbeit?`,
-    ja: (response) => `${persona.name} のコミュニティ実践から見ると、「${cleanQuestionPart(response, 50)}」は材料・方法・ケアとどうつながりますか？`,
-    th: (response) => `จากการปฏิบัติของชุมชน ${persona.name} “${cleanQuestionPart(response, 50)}” เชื่อมกับวัสดุ วิธีการ หรือการดูแลอย่างไร?`,
+    'zh-TW': (response) => `從這位 camper 的社群經驗看，「${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}」跟他的實作有什麼關係？`,
+    en: (response) => `From this camper's community practice, how does “${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}” connect to materials, methods, or care?`,
+    id: (response) => `Dari praktik komunitas camper ini, bagaimana “${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}” terhubung dengan bahan, metode, atau perawatan?`,
+    de: (response) => `Wie verbindet sich „${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}“ aus der Community-Praxis dieses campers mit Material, Methode oder Sorgearbeit?`,
+    ja: (response) => `この camper のコミュニティ実践から見ると、「${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}」は材料・方法・ケアとどうつながりますか？`,
+    th: (response) => `จากการปฏิบัติของชุมชน camper นี้ “${cleanQuestionPart(sanitizeRealPersonReferences(response), 50)}” เชื่อมกับวัสดุ วิธีการ หรือการดูแลอย่างไร?`,
   };
   const generated = responseEntries.map(([, response]) => templates[language](response));
   const englishSourceBridge = [
-    `How does ${persona.name}'s community practice connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
-    `Which source pages would help turn ${persona.name}'s workshop memory into a checkable zine?`,
-    `How would ${persona.name} compare their community methods with public workshop documentation?`,
-    `What material, tool, or care practice from the three sources best matches ${persona.name}'s concerns?`,
-    `How can ${persona.name}'s community experience become a makeable, checkable, teachable zine question?`,
-    `Which Hackteria or SGMK pages would ${persona.name} probably argue with first?`,
+    `How does this camper's community practice connect to Hackteria, SGMK, or How To Get What You Want source pages?`,
+    `Which source pages would help turn this camper's workshop memory into a checkable zine?`,
+    `How would this camper compare their community methods with public workshop documentation?`,
+    `What material, tool, or care practice from the three sources best matches this camper's concerns?`,
+    `How can this camper's community experience become a makeable, checkable, teachable zine question?`,
+    `Which Hackteria or SGMK pages would this camper probably argue with first?`,
   ];
-  return shuffleCopy([...communityQuestionSeed(language, persona), ...generated, ...englishSourceBridge]).slice(0, 9);
+  return shuffleCopy([...communityQuestionSeed(language, persona), ...generated, ...englishSourceBridge]).slice(0, 9).map(sanitizeRealPersonReferences);
 }
 
 
@@ -530,12 +531,12 @@ function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, 
 
 function wukirMusicLabel(language: LanguageCode): string {
   const copy: Record<LanguageCode, string> = {
-    'zh-TW': '🎧 聽 Wukir 的音樂',
-    en: "🎧 Listen to Wukir's music",
-    id: '🎧 Dengarkan musik Wukir',
-    de: '🎧 Wukirs Musik hören',
-    ja: '🎧 Wukir の音楽を聴く',
-    th: '🎧 ฟังเพลงของ Wukir',
+    'zh-TW': '🎧 聽 camper 的音樂',
+    en: "🎧 Listen to camper music",
+    id: '🎧 Dengarkan musik camper',
+    de: '🎧 Camper-Musik hören',
+    ja: '🎧 camper の音楽を聴く',
+    th: '🎧 ฟังเพลงของ camper',
   };
   return copy[language];
 }
@@ -574,13 +575,14 @@ function makeIntroMessage(persona: Persona, language: LanguageCode): string {
 function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null, query: string): string {
   const transcript = `${knowledge?.transcript_zh ?? ''}\n${knowledge?.transcript_en ?? ''}`.trim();
   const chunks = transcript ? buildTranscriptEvidenceChunks(transcript, persona.id, persona.name) : [];
-  const evidence = rankEvidence(query || persona.intro, chunks, 2).map((item) => shorten(item.text, 150));
+  const evidence = rankEvidence(query || persona.intro, chunks, 2).map((item) => shorten(sanitizeRealPersonReferences(item.text), 150));
   return [
-    `NPC writer: ${persona.name}`,
-    `Role: ${persona.role}`,
-    `Intro voice: ${shorten(persona.intro, 180)}`,
+    `NPC writer: ${publicCamperName()}`,
+    `Role: ${sanitizeRealPersonReferences(persona.role)}`,
+    `Intro voice: ${shorten(sanitizeRealPersonReferences(persona.intro), 180)}`,
     `Transcript style clues: ${evidence.join(' / ') || 'Use the persona intro and response topics as the voice anchor.'}`,
     'Use this only for writing style, rhythm, emphasis, and choice of examples. Do not invent facts from the transcript unless the zine evidence also supports them.',
+    'Reader-facing text must not include real person names. Refer to the avatar only as campers/camper.',
   ].join('\n');
 }
 
@@ -611,8 +613,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
   useEffect(() => {
     setMessages([
       {
-        speaker: persona.name,
-        text: makeIntroMessage(persona, language),
+        speaker: publicCamperName(),
+        text: sanitizeNpcTextForUi(makeIntroMessage(persona, language), language),
       },
     ]);
     setQuestion('');
@@ -690,14 +692,14 @@ ${item.text}`).join('\n\n');
       if (canUseLocalMemoryServer()) {
         const answer = await askNpc({
           question: trimmed,
-          npcName: persona.name,
-          persona: { id: persona.id, name: persona.name, role: persona.role, intro: persona.intro, responses: persona.responses },
+          npcName: publicCamperName(),
+          persona: { id: persona.id, name: publicCamperName(), role: sanitizeRealPersonReferences(persona.role), intro: sanitizeRealPersonReferences(persona.intro), responses: persona.responses },
           transcript,
           preferredLanguage: language,
           dialogueHistory,
         });
         const resolvedLinks = answer.links.length ? answer.links : searchWikiPagesWithHints(trimmed, answer.answer, persona.id, 8);
-        setMessages((prev) => [...prev, { speaker: persona.name, text: answer.answer, evidence: answer.evidence, links: resolvedLinks }]);
+        setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizeNpcTextForUi(answer.answer, language), evidence: answer.evidence, links: resolvedLinks }]);
       } else {
         try {
           const answer = await askDeepSeekPersonaWithEvidence({
@@ -708,11 +710,13 @@ ${item.text}`).join('\n\n');
             evidence: mergedEvidence,
             dialogueHistory,
           });
-          setMessages((prev) => [...prev, { speaker: persona.name, text: answer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, answer, persona.id, 8) }]);
+          const sanitizedAnswer = sanitizeNpcTextForUi(answer, language);
+          setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizedAnswer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, sanitizedAnswer, persona.id, 8) }]);
         } catch (deepseekError) {
           console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
           const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          setMessages((prev) => [...prev, { speaker: persona.name, text: fallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, fallbackText, persona.id, 8) }]);
+          const sanitizedFallbackText = sanitizeNpcTextForUi(fallbackText, language);
+          setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizedFallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, sanitizedFallbackText, persona.id, 8) }]);
         }
       }
     } catch (err) {
@@ -750,15 +754,15 @@ ${item.text}`).join('\n\n');
           <div className="rpg-dialogue-title flex items-start gap-6">
             <div className="rpg-dialogue-avatars flex gap-4">
               <PixelAvatar avatar={{ palette: player.palette, hueShift: 0 }} label={player.name} />
-              <PixelAvatar avatar={npcAvatar} label={persona.name} />
+              <PixelAvatar avatar={npcAvatar} label={publicCamperName()} />
             </div>
             <div>
               <div className="rpg-dialogue-kicker-row flex items-center gap-3 mb-2">
                 <p className="rpg-dialogue-kicker pbs-frame-kicker text-lg uppercase tracking-wide text-accent-bright m-0" data-ui-part="caption">{t(language, 'home.wanderAndTalk')}</p>
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
               </div>
-              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{persona.name}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{persona.role}</p>
+              <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{publicCamperName()}</h2>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{sanitizeRealPersonReferences(persona.role)}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>
@@ -771,8 +775,8 @@ ${item.text}`).join('\n\n');
             {messages.map((message, index) => (
               <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
                 <p className="m-0">
-                  <span className="text-accent-bright">{message.speaker}: </span>
-                  {message.text}
+                  <span className="text-accent-bright">{sanitizeRealPersonReferences(message.speaker)}: </span>
+                  {sanitizeRealPersonReferences(message.text)}
                 </p>
                 {message.links && message.links.length > 0 && (
                   <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
@@ -780,7 +784,7 @@ ${item.text}`).join('\n\n');
                     <div className="rpg-dialogue-source-link-list">
                       {message.links.map((link, linkIndex) => (
                         <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                          <span>[{linkIndex + 1}] {link.title}</span>
+                          <span>[{linkIndex + 1}] {sanitizeRealPersonReferences(link.title)}</span>
                           <em>{link.sourceFamily}</em>
                         </a>
                       ))}
@@ -791,7 +795,7 @@ ${item.text}`).join('\n\n');
             ))}
             {isLoading && (
               <p className="rpg-dialogue-thinking text-base text-text-muted" data-ui-part="body">
-                {persona.name} {t(language, 'dialogue.thinking')}
+                {publicCamperName()} {t(language, 'dialogue.thinking')}
               </p>
             )}
           </div>
@@ -836,7 +840,7 @@ ${item.text}`).join('\n\n');
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck={false}
-            placeholder={t(language, 'dialogue.inputPlaceholder', { name: persona.name })}
+            placeholder={t(language, 'dialogue.inputPlaceholder', { name: publicCamperName() })}
           />
           <button
             className="rpg-dialogue-question-toggle rpg-dialogue-chip pbs-game-button"

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { runExpedition } from '../expedition/expeditionRunner.js';
 import type { ExpeditionEvent, ExpeditionPersona, ExpeditionReport } from '../expedition/types.js';
 import { type LanguageCode, t } from '../i18n.js';
+import { publicCamperName, sanitizeRealPersonReferences } from '../privacy.js';
 import type { PlayerProfile } from './PlayerSetup.js';
 
 interface ExpeditionPanelProps {
@@ -19,7 +20,7 @@ function ReportList({ title, items }: { title: string; items: string[] }) {
       <h4 className="text-base uppercase tracking-wide text-accent-bright mb-3">{title}</h4>
       <ul className="list-disc pl-5 text-base leading-relaxed text-text">
         {items.map((item) => (
-          <li key={item} className="mb-2 last:mb-0">{item}</li>
+          <li key={item} className="mb-2 last:mb-0">{sanitizeRealPersonReferences(item)}</li>
         ))}
       </ul>
     </div>
@@ -40,15 +41,15 @@ function buildReportMarkdown(report: ExpeditionReport, language: LanguageCode): 
     `# ${title}`,
     '',
     `## ${t(language, 'expedition.originalMission')}`,
-    report.originalMission,
+    sanitizeRealPersonReferences(report.originalMission),
     '',
     `## ${t(language, 'expedition.interpretedMission')}`,
-    report.interpretedMission,
+    sanitizeRealPersonReferences(report.interpretedMission),
     '',
     `## ${t(language, 'expedition.emergentDirection')}`,
-    report.strongestEmergentDirection,
+    sanitizeRealPersonReferences(report.strongestEmergentDirection),
     '',
-    ...sections.flatMap(([heading, items]) => [`## ${heading}`, ...items.map((item) => `- ${item}`), '']),
+    ...sections.flatMap(([heading, items]) => [`## ${heading}`, ...items.map((item) => `- ${sanitizeRealPersonReferences(item)}`), '']),
   ].join('\n');
 }
 
@@ -167,7 +168,7 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
                   checked={selectedNpcIds.includes(persona.id)}
                   onChange={() => toggleNpc(persona.id)}
                 />
-                {persona.name}
+                {publicCamperName()}
               </label>
             ))}
           </div>
@@ -193,12 +194,12 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
                 return (
                   <article key={`${event.round}-${event.npcId}`} className="border border-border bg-bg px-4 py-4">
                     <p className="text-base text-accent-bright mb-2">
-                      {t(language, 'expedition.round')} {event.round}: {persona?.name ?? event.npcId} / {event.encounterType}
+                      {t(language, 'expedition.round')} {event.round}: {persona ? publicCamperName() : event.npcId} / {event.encounterType}
                     </p>
-                    <p className="text-base leading-relaxed whitespace-pre-wrap mb-2">{event.npcContribution}</p>
-                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.challenge')}: {event.challengeToUser}</p>
-                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.lead')}: {event.newLead}</p>
-                    <p className="text-base leading-relaxed text-text">{t(language, 'expedition.nextQuestion')}: {event.nextQuestion}</p>
+                    <p className="text-base leading-relaxed whitespace-pre-wrap mb-2">{sanitizeRealPersonReferences(event.npcContribution)}</p>
+                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.challenge')}: {sanitizeRealPersonReferences(event.challengeToUser)}</p>
+                    <p className="text-base leading-relaxed text-text mb-2">{t(language, 'expedition.lead')}: {sanitizeRealPersonReferences(event.newLead)}</p>
+                    <p className="text-base leading-relaxed text-text">{t(language, 'expedition.nextQuestion')}: {sanitizeRealPersonReferences(event.nextQuestion)}</p>
                   </article>
                 );
               })}
@@ -210,9 +211,9 @@ export function ExpeditionPanel({ avatar, personas, isOpen, language, onClose }:
           <div className="mt-7 flex flex-col gap-4">
             <div className="border-2 border-accent-bright bg-bg/80 px-5 py-5">
               <h3 className="text-xl text-accent-bright mb-3">{t(language, 'expedition.report')}</h3>
-              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.originalMission')}: </span>{report.originalMission}</p>
-              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.interpretedMission')}: </span>{report.interpretedMission}</p>
-              <p className="text-base leading-relaxed"><span className="text-accent-bright">{t(language, 'expedition.emergentDirection')}: </span>{report.strongestEmergentDirection}</p>
+              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.originalMission')}: </span>{sanitizeRealPersonReferences(report.originalMission)}</p>
+              <p className="text-base leading-relaxed mb-3"><span className="text-accent-bright">{t(language, 'expedition.interpretedMission')}: </span>{sanitizeRealPersonReferences(report.interpretedMission)}</p>
+              <p className="text-base leading-relaxed"><span className="text-accent-bright">{t(language, 'expedition.emergentDirection')}: </span>{sanitizeRealPersonReferences(report.strongestEmergentDirection)}</p>
             </div>
             <ReportList title={t(language, 'expedition.keyEncounters')} items={report.keyEncounters} />
             <ReportList title={t(language, 'expedition.npcDisagreements')} items={report.disagreementsBetweenNpcs} />

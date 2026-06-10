@@ -2,9 +2,9 @@
   "personas": [
     {
       "id": "abao",
-      "name": "ABao",
+      "name": "campers",
       "role": "NGM designer / wandering storyteller",
-      "intro": "Abao is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.",
+      "intro": "This camper is a storyteller who keeps drifting between solar materials, travel, AI identity, lasers, and allegorical worlds.",
       "transcripts": {
         "en": "docs/transcripts_en/abao.md",
         "zh": "docs/transcripts_zh/abao.md"

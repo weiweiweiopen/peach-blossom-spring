@@ -77,7 +77,7 @@ const zhTW = {
     whereIsThis: "這裡是哪裡？",
     fallbackMission: "我正在想的這個任務",
     fallbackSkills: "我的技能",
-    requestFailed: "DeepSeek 代理請求失敗。",
+    requestFailed: "我剛剛沒能回答，請再試一次。",
     associationQuestion: "什麼是聯想功能？",
     associationLoadingTitle: "社群維基正在聯想中…",
     associationLoadingCopy: "你提供的問題會接到 PBS LLM wiki：先讀整理層與語意/實體橋，再追 wikilinks 到來源證據，生成一份有結構的小誌與可讀的 run trace。",

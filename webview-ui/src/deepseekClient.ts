@@ -11,6 +11,7 @@
 //      caller that depends on the older shape.
 
 import { getInitialDeepSeekApiKey } from './apiKeyStorage.js';
+import { publicCamperName, sanitizeNpcTextForUi, sanitizeRealPersonReferences } from './privacy.js';
 import type { LanguageCode } from './i18n.js';
 import type { ChatEvidence } from './localChatbot.js';
 import { getWikiLinksForInterviewee, type WikiLink } from './wikiLinks.js';
@@ -278,7 +279,7 @@ export async function askDeepSeekGroundedAnswer({
     'Use the recent dialogue context to preserve continuity and answer follow-ups. Do not reset the conversation when the player says \"that\", \"you said\", \"continue\", or asks a short follow-up.',
     'Return a compact reasoning draft for the second pass: 3 to 6 sentences, concrete, conversational, and specific to this question.',
     '',
-    `NPC context: ${knowledge.name}, ${knowledge.role}. ${knowledge.intro}`,
+    `NPC context: ${publicCamperName()}, ${sanitizeRealPersonReferences(knowledge.role)}. ${sanitizeRealPersonReferences(knowledge.intro)}`,
     '',
     '--- Recent dialogue context ---',
     dialogueHistoryBlock(dialogueHistory),
@@ -310,24 +311,25 @@ export async function askDeepSeekPersonaRewrite({
     'You are the second pass. Transform the reasoning draft into a natural NPC reply inside a game dialogue.',
     'Speak naturally in first person as the NPC, using the persona JSON/profile and transcript as the voice anchor; the player should feel they are talking to the character, not to a system summarizer.',
     'Never say phrases like "my persona", "X 的人格", "X\'s persona", "offline mode", "retrieval", "source-first", "I will answer from interview memory", or any backend/process language.',
-    'Do not paste source labels, URLs, role tags, citations, Markdown syntax, bracket citations like [1], bold markers, or retrieval metadata.',
+    'Do not paste source labels, URLs, role tags, citations, Markdown syntax, bracket citations like [1], bold markers, or retrieval metadata. Never output a raw transcript excerpt or a raw source-card sentence.',
     'No visible Markdown/syntax language in the dialogue: no **bold**, no backticks, no headings, no bullet report voice.',
     'Do not mechanically repeat the draft. Keep the reasoning, but make it feel like a live response to the player.',
     'Avoid formulaic openings, recurring slogans, and fake-poetic stock phrases.',
     'If the transcript does not support a confident answer, use the retrieved source fragments. Never say you are not a search engine; translate source-backed findings into the NPC voice.',
     'Use recent dialogue context for pronouns and follow-ups, but do not summarize the whole history unless asked.',
-    'Keep the final reply concise: 3 to 6 sentences.',
+    'Keep the final reply concise: 3 to 6 sentences. If the draft contains another language, translate it fully into the preferred language before answering.',
     '',
-    `NPC: ${knowledge.name} (${knowledge.role})`,
+    `NPC: ${publicCamperName()} (${sanitizeRealPersonReferences(knowledge.role)})`,
     '',
     '--- Recent dialogue context ---',
     dialogueHistoryBlock(dialogueHistory),
     '--- end recent dialogue context ---',
-    `Intro: ${knowledge.intro}`,
-    'The transcript reasoning should be invisible in the final voice; the player should hear a person, not a report. A small amount of dry humor is welcome when it fits the NPC.'
+    `Intro: ${sanitizeRealPersonReferences(knowledge.intro)}`,
+    'The transcript reasoning should be invisible in the final voice; the player should hear a person speaking in first person, not a report. A small amount of dry humor is welcome when it fits the NPC.',
+    `Privacy rule: never include real person names in the final answer. Refer to the avatar only as ${publicCamperName()} or in first person as I/me/my.`
   ].join('\n'));
   const reply = await postWorkerChat(systemPrompt, `${playerName}: ${question}\n\nGrounded draft to rewrite:\n${groundedDraft}`, 700);
-  return normalizeTraditionalChinese(reply, preferredLanguage);
+  return sanitizeNpcTextForUi(normalizeTraditionalChinese(reply, preferredLanguage), preferredLanguage);
 }
 
 function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, transcriptZhRaw: string): KnowledgeBase {
@@ -335,8 +337,9 @@ function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, trans
   const transcript_zh = trimTranscript(transcriptZhRaw);
   const knowledge = extractKnowledgePoints(transcript_en || transcript_zh);
   const systemPrompt = [
-    `You are role-playing as ${persona.name} (${persona.role}) inside a Peach Blossom Spring / 桃花源 RPG dialogue scene.`,
+    `You are role-playing as an anonymous ${publicCamperName()} avatar (${sanitizeRealPersonReferences(persona.role)}) inside a Peach Blossom Spring / 桃花源 RPG dialogue scene.`,
     'Speak in first person, with warmth and concrete detail. Quote or paraphrase from the supplied interview transcript whenever a player question touches material it covers; cite the relevant Q only when natural.',
+    `Privacy rule: never include real person names, interviewee names, or avatar legal names in reader-facing replies. Do not greet or address yourself by a real name. The public avatar name is ${publicCamperName()}; otherwise use I/me/my.`,
     'The persona and transcript are the primary source of voice, stance, cadence, doubts, and examples. Do not flatten the NPC into a generic PBS search assistant.',
     'No visible Markdown/syntax language: no **bold**, no backticks, no headings, no source labels, no bracket citations.',
     'Use this persona only. Never answer with details that belong to another interviewee.',
@@ -345,9 +348,9 @@ function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, trans
   ].join(' ');
   return {
     id: persona.id,
-    name: persona.name,
-    role: persona.role,
-    intro: persona.intro,
+    name: publicCamperName(),
+    role: sanitizeRealPersonReferences(persona.role),
+    intro: sanitizeRealPersonReferences(persona.intro),
     systemPrompt,
     knowledge,
     transcript_en,
@@ -396,8 +399,8 @@ export async function askDeepSeekPersona({
     knowledge.systemPrompt,
     languageInstruction(preferredLanguage),
     '',
-    `NPC: ${knowledge.name} (${knowledge.role})`,
-    `Intro: ${knowledge.intro}`,
+    `NPC: ${publicCamperName()} (${sanitizeRealPersonReferences(knowledge.role)})`,
+    `Intro: ${sanitizeRealPersonReferences(knowledge.intro)}`,
     '',
     '--- Relevant transcript excerpt ---',
     primaryTranscript || '(no transcript excerpt available)',
@@ -450,7 +453,7 @@ export async function askDeepSeekPersona({
     error?: string;
     choices?: Array<{ message?: { content?: string } }>;
   };
-  return normalizeTraditionalChinese(parseChatResponse(data), preferredLanguage);
+  return sanitizeNpcTextForUi(normalizeTraditionalChinese(parseChatResponse(data), preferredLanguage), preferredLanguage);
 }
 
 export async function askDeepSeekPersonaWithEvidence({

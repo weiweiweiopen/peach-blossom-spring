@@ -1,3 +1,5 @@
+import { publicCamperName, sanitizeNpcTextForUi } from './privacy.js';
+
 interface LocalWikiLink {
   title: string;
   url: string;
@@ -245,12 +247,12 @@ export function buildLocalGroundedAnswerDraft(args: {
   knowledge: LocalChatKnowledgeBase;
   evidence: ChatEvidence[];
 }): string {
-  const { message, knowledge, evidence } = args;
+  const { message, evidence } = args;
   if (evidence.length === 0) {
-    return `${knowledge.name}: 離線模式目前沒有找到足夠的 transcript 或 source 片段來回答「${naturalUserMessage(message)}」。`;
+    return `${publicCamperName()}: I do not have enough source fragments to answer “${naturalUserMessage(message)}” safely yet.`;
   }
   const transcriptEvidence = evidence.find((item) => item.source === 'transcript') ?? evidence[0];
-  return `${knowledge.name}: 離線模式只能先整理檢索到的材料，完整自然回答會交給 DeepSeek。${transcriptEvidence.text}`;
+  return `${publicCamperName()}: I can only work from the source fragments I found so far. ${sanitizeNpcTextForUi(transcriptEvidence.text)}`;
 }
 
 export function rewriteLocalPersonaVoice(args: {
@@ -260,7 +262,7 @@ export function rewriteLocalPersonaVoice(args: {
   evidence?: ChatEvidence[];
 }): string {
   const { draft, message, knowledge, evidence = [] } = args;
-  return calibratePersonaReply({ draft: `${knowledge.name}: ${draft}`, message, knowledge, evidence });
+  return calibratePersonaReply({ draft: `${publicCamperName()}: ${sanitizeNpcTextForUi(draft)}`, message, knowledge, evidence });
 }
 
 export function buildNpcReplyWithEvidence(args: {

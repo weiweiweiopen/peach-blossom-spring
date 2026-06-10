@@ -1,3 +1,5 @@
+import { publicCamperName, sanitizeRealPersonReferences } from "../privacy.js";
+
 import type {
   AgentProfile,
   ExpeditionAvatar,
@@ -34,7 +36,6 @@ function joinOrFallback(
 
 export function buildExpeditionPromptContext({
   avatar,
-  persona,
   agentProfile,
   behaviorProfile,
   language,
@@ -58,11 +59,11 @@ export function buildExpeditionPromptContext({
   const constraintText = constraints?.trim() || avatar.constraints?.trim();
   if (isChinese) {
     return {
-      sourceGroundedMemory: `${persona.name} 記得：${sourceResponse}`,
-      cautiousExtrapolation: `${persona.name} 把這段記憶推到「${topic}」時，先檢查它能不能服務玩家的任務：「${missionText}」，而不是只重複自己的訪談。`,
+      sourceGroundedMemory: `${publicCamperName()} 記得：${sanitizeRealPersonReferences(sourceResponse)}`,
+      cautiousExtrapolation: `${publicCamperName()} 把這段記憶推到「${topic}」時，先檢查它能不能服務玩家的任務：「${missionText}」，而不是只重複自己的訪談。`,
       speculativeProposal: constraintText
-        ? `${persona.name} 建議用「${playerSkills}」做一個小步驟，並先通過限制條件：「${constraintText}」。`
-        : `${persona.name} 建議用「${playerSkills}」做一個小步驟，讓任務先被現場質疑一次。`,
+        ? `${publicCamperName()} 建議用「${playerSkills}」做一個小步驟，並先通過限制條件：「${constraintText}」。`
+        : `${publicCamperName()} 建議用「${playerSkills}」做一個小步驟，讓任務先被現場質疑一次。`,
     };
   }
   const transferableMethods = joinOrFallback(
@@ -77,10 +78,10 @@ export function buildExpeditionPromptContext({
     agentProfile?.skills,
     behaviorProfile.expertise,
   );
-  const sourceGroundedMemory = `${persona.name} remembers: ${sourceResponse}`;
-  const cautiousExtrapolation = `${persona.name} cautiously extends that memory toward ${topic} by using ${transferableMethods}, then tests it against the player's mission: "${missionText}".`;
+  const sourceGroundedMemory = `${publicCamperName()} remembers: ${sanitizeRealPersonReferences(sourceResponse)}`;
+  const cautiousExtrapolation = `${publicCamperName()} cautiously extends that memory toward ${topic} by using ${sanitizeRealPersonReferences(transferableMethods)}, then tests it against the player's mission: "${missionText}".`;
   const speculativeProposal = constraintText
-    ? `${persona.name} proposes a next experiment shaped by ${profileSkills} and ${playerSkills}, while respecting: ${constraintText}.`
-    : `${persona.name} proposes a next experiment shaped by ${profileSkills} and ${playerSkills}, while still asking: ${likelyQuestions}.`;
+    ? `${publicCamperName()} proposes a next experiment shaped by ${sanitizeRealPersonReferences(profileSkills)} and ${playerSkills}, while respecting: ${constraintText}.`
+    : `${publicCamperName()} proposes a next experiment shaped by ${sanitizeRealPersonReferences(profileSkills)} and ${playerSkills}, while still asking: ${sanitizeRealPersonReferences(likelyQuestions)}.`;
   return { sourceGroundedMemory, cautiousExtrapolation, speculativeProposal };
 }
