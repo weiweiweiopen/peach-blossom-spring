@@ -11,9 +11,8 @@ The game scene is inspired by the form of hacker camps, which is usually the for
 <img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
 <img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
 
-## How to play
+## How to play (cloude and local version)
 Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
-- NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context. (currently dismissed due to the strong complaints from tbe interviewees;
 - the campfire is a shared question place for the whole archive;
 - the zine tool turns one question into a short source-grounded booklet;
 - the map, ebook, and source links show where the project came from;
