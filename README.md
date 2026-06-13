@@ -114,27 +114,25 @@ python3 scripts/pbs_engine.py index
 
 The important rule: raw sources stay in `Sources/Raw/`; generated search/index state goes into `Knowledge/`; reviewable drafts go into `Review/compiled-note-drafts/`.
 
-### D. Bind your own LLM
+### D. Use your own LLM
 
-PBS should not put private API keys in frontend code. Use an LLM proxy or local endpoint that accepts the PBS chat payload, then point the local server/UI to it.
+PBS is not tied to one AI model. The local version can talk to:
 
-For the local Python server:
+- a hosted API model, through your own small proxy;
+- a local model running on your computer or server, for example Gemma, Llama, Qwen, or another OpenAI-style local endpoint;
+- the default DeepSeek proxy used by the public demo.
 
-```bash
-export PBS_DEEPSEEK_PROXY_URL="https://your-llm-proxy.example.com/chat"
-export PBS_DEEPSEEK_ORIGIN="http://127.0.0.1:4173"
-# Optional, only if your proxy expects a key forwarded by the local server:
-export DEEPSEEK_API_KEY="your-key-kept-out-of-git"
-./scripts/run_pbs_local_game.sh
+In plain language: PBS keeps the memory layer local, then asks whichever LLM you connect to help read and answer from that memory.
+
+For most users, the important setup idea is simply:
+
+```text
+PBS local sources -> PBS local search -> your chosen LLM -> answer with source context
 ```
 
-For the browser build, copy `webview-ui/.env.example` to `webview-ui/.env.local` and set:
+Keep private API keys out of the public website and out of GitHub. If you use a cloud model, put the key in your private proxy or local server. If you use a local model, point PBS to that local model endpoint.
 
-```bash
-VITE_DEEPSEEK_PROXY_URL=https://your-llm-proxy.example.com/chat
-```
-
-Never commit `.env.local`, API keys, screenshots containing keys, or logs containing keys. If you deploy a public version, keep the real LLM key in the Worker/proxy secret store, not in GitHub Pages.
+Advanced users can configure the local endpoint with environment variables such as `PBS_DEEPSEEK_PROXY_URL`, or set `VITE_DEEPSEEK_PROXY_URL` for a custom browser build. See `LOCAL_MEMORY_GAME.md` for the more technical notes.
 
 ### E. Turn local answers into reviewable memory
 

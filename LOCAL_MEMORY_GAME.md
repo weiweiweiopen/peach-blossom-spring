@@ -145,23 +145,19 @@ python3 scripts/pbs_engine.py query --query "your test question" --limit 8
 Review/compiled-note-drafts/
 ```
 
-5. Bind your own LLM through a proxy/local endpoint. For local server mode:
+5. Bind your own LLM through a proxy or local model endpoint.
 
-```bash
-export PBS_DEEPSEEK_PROXY_URL="https://your-llm-proxy.example.com/chat"
-export PBS_DEEPSEEK_ORIGIN="http://127.0.0.1:4173"
-# Optional, only if your proxy expects a forwarded key:
-export DEEPSEEK_API_KEY="your-key-kept-out-of-git"
-./scripts/run_pbs_local_game.sh
+PBS is not tied to one AI model. The local version can use a hosted API model through your own private proxy, or a local model running on your computer/server, such as Gemma, Llama, Qwen, or another OpenAI-style endpoint.
+
+The idea is:
+
+```text
+PBS local sources -> PBS local search -> your chosen LLM -> answer with source context
 ```
 
-For browser builds, copy `webview-ui/.env.example` to `webview-ui/.env.local` and set:
+Keep API keys out of frontend code and out of GitHub. Cloud model keys should live in a private proxy or local server. Local model setups can point PBS to the local endpoint.
 
-```bash
-VITE_DEEPSEEK_PROXY_URL=https://your-llm-proxy.example.com/chat
-```
-
-Never commit `.env.local`, API keys, screenshots containing keys, or logs containing keys. Public deployments should keep real LLM keys in a Worker/proxy secret store, not in GitHub Pages.
+Technical note: local server mode can be pointed at another endpoint with `PBS_DEEPSEEK_PROXY_URL`; custom browser builds can use `VITE_DEEPSEEK_PROXY_URL` in `webview-ui/.env.local`. Do not commit `.env.local`.
 
 ## Removed Static Snapshot Runtime
 
