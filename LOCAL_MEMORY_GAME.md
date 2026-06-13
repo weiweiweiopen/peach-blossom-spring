@@ -116,6 +116,53 @@ Local Review drafts are written here:
 Review/compiled-note-drafts/
 ```
 
+## Building Your Own Local Shared Memory Layer
+
+1. Add your own Markdown/text sources under a source family folder:
+
+```text
+Sources/Raw/my-community/interview-001.md
+Sources/Raw/my-community/workshop-notes.md
+Sources/Raw/my-community/public-links.md
+```
+
+2. Rebuild and test the local index:
+
+```bash
+python3 scripts/pbs_engine.py index
+python3 scripts/pbs_engine.py query --query "your test question" --limit 8
+```
+
+3. Run the local game server and ask questions through the UI:
+
+```bash
+./scripts/run_pbs_local_game.sh
+```
+
+4. Review generated drafts in:
+
+```text
+Review/compiled-note-drafts/
+```
+
+5. Bind your own LLM through a proxy/local endpoint. For local server mode:
+
+```bash
+export PBS_DEEPSEEK_PROXY_URL="https://your-llm-proxy.example.com/chat"
+export PBS_DEEPSEEK_ORIGIN="http://127.0.0.1:4173"
+# Optional, only if your proxy expects a forwarded key:
+export DEEPSEEK_API_KEY="your-key-kept-out-of-git"
+./scripts/run_pbs_local_game.sh
+```
+
+For browser builds, copy `webview-ui/.env.example` to `webview-ui/.env.local` and set:
+
+```bash
+VITE_DEEPSEEK_PROXY_URL=https://your-llm-proxy.example.com/chat
+```
+
+Never commit `.env.local`, API keys, screenshots containing keys, or logs containing keys. Public deployments should keep real LLM keys in a Worker/proxy secret store, not in GitHub Pages.
+
 ## Removed Static Snapshot Runtime
 
 The old browser-only snapshot runtime was removed because it could make the online game pretend to have memory when it only had a small fake index. Current runtime memory must be either Cloud D1 or the local Python server.

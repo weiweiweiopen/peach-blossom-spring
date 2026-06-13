@@ -37,6 +37,126 @@ NPCs are built from NGM interview transcripts and persona notes. They are not ex
 
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
+## How do I use it?
+
+There are two different ways to use PBS. The online GitHub version is an exhibition garden that already has a deployed memory service. The downloaded local version is the one you use when you want to build your own source-first shared memory layer.
+
+### A. Use the online exhibition
+
+Open:
+
+```text
+https://weiweiweiopen.github.io/peach-blossom-spring/
+```
+
+The online version works like this:
+
+```text
+GitHub Pages UI -> Cloudflare PBS memory Worker -> Cloudflare D1 source index -> LLM proxy -> answer
+```
+
+Use it when you only want to play, test the public NGM garden, ask NPCs/campfire questions, or share the project with visitors. The online version cannot read your private files and cannot write review notes back into your downloaded repo.
+
+### B. Download PBS and make your own local memory layer
+
+Clone the repo:
+
+```bash
+git clone https://github.com/weiweiweiopen/peach-blossom-spring.git
+cd peach-blossom-spring
+npm --prefix webview-ui install
+```
+
+Run the local full-memory version:
+
+```bash
+./scripts/run_pbs_local_game.sh
+```
+
+Or run the steps manually:
+
+```bash
+npm --prefix webview-ui run build
+python3 scripts/pbs_engine.py index
+python3 scripts/pbs_game_server.py --host 127.0.0.1 --port 4173
+```
+
+Open:
+
+```text
+http://127.0.0.1:4173/
+```
+
+The local downloaded version works like this:
+
+```text
+local browser UI -> scripts/pbs_game_server.py -> scripts/pbs_engine.py -> Sources/Raw + Knowledge -> LLM proxy -> answer + Review draft
+```
+
+### C. Customize your own sources
+
+PBS is source-first. Put your source material under:
+
+```text
+Sources/Raw/<your-source-family>/
+```
+
+Use plain Markdown or text files. A practical pattern is:
+
+```text
+Sources/Raw/my-community/interview-001.md
+Sources/Raw/my-community/workshop-notes.md
+Sources/Raw/my-community/public-links.md
+```
+
+Then rebuild the local memory index:
+
+```bash
+python3 scripts/pbs_engine.py index
+python3 scripts/pbs_engine.py query --query "your test question" --limit 8
+```
+
+For the current public PBS corpus, source families are also listed in `pbs_sources.json`. The built-in hydrators can refresh some known public sources, for example:
+
+```bash
+python3 scripts/pbs_engine.py hydrate-mediawiki --family hackteria --query "microscopy" --limit 10
+python3 scripts/pbs_engine.py index
+```
+
+The important rule: raw sources stay in `Sources/Raw/`; generated search/index state goes into `Knowledge/`; reviewable drafts go into `Review/compiled-note-drafts/`.
+
+### D. Bind your own LLM
+
+PBS should not put private API keys in frontend code. Use an LLM proxy or local endpoint that accepts the PBS chat payload, then point the local server/UI to it.
+
+For the local Python server:
+
+```bash
+export PBS_DEEPSEEK_PROXY_URL="https://your-llm-proxy.example.com/chat"
+export PBS_DEEPSEEK_ORIGIN="http://127.0.0.1:4173"
+# Optional, only if your proxy expects a key forwarded by the local server:
+export DEEPSEEK_API_KEY="your-key-kept-out-of-git"
+./scripts/run_pbs_local_game.sh
+```
+
+For the browser build, copy `webview-ui/.env.example` to `webview-ui/.env.local` and set:
+
+```bash
+VITE_DEEPSEEK_PROXY_URL=https://your-llm-proxy.example.com/chat
+```
+
+Never commit `.env.local`, API keys, screenshots containing keys, or logs containing keys. If you deploy a public version, keep the real LLM key in the Worker/proxy secret store, not in GitHub Pages.
+
+### E. Turn local answers into reviewable memory
+
+Local mode can create review drafts instead of silently changing the source corpus. Drafts are written to:
+
+```text
+Review/compiled-note-drafts/
+```
+
+This keeps the shared memory layer auditable: ask questions, inspect retrieved sources, draft notes, review them as a human, then decide what belongs in the curated memory layer.
+
 ## Two Ways To Run PBS
 
 PBS now has two deliberately different runtimes. Use the cloud version for the public exhibition. Use the local version when you want the full source-first memory engine and local Review drafts.
