@@ -9,6 +9,7 @@ The name Peach Blossom Spring was inspired by the chinese Fables about a man fou
 The game scene is inspired by the form of hacker camps, which is usually the format how small art and technnklogy groups used for gathering.
 
 <img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
+<img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
 
 ## How to play
 Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
@@ -17,10 +18,10 @@ Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press
 - the zine tool turns one question into a short source-grounded booklet;
 - the map, ebook, and source links show where the project came from;
 - the Question Pet is now a traversal health monitor for the player's current question: it watches specificity, evidence readiness, source-family spread, and missing-evidence caveats.
-
-<img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
-<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
+
+<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
+
 
 ### A. The github cloud version
 
