@@ -19,16 +19,13 @@ PBS turns NGM into a small explorable world built with pixel office game engine 
 - the Question Pet is now a traversal health monitor for the player's current question: it watches specificity, evidence readiness, source-family spread, and missing-evidence caveats.
 
 <img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
-
+<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
 ## How to play
 
 Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
 
 
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
-
-## You may use it locally with your own deployed shared memory too
-The online garden exhibition above already has a deployed memory service. The downloaded local version is the one you use when you want to build your own source-first shared memory layer.
 
 ### A. The github cloud version
 
@@ -144,7 +141,7 @@ Review/compiled-note-drafts/
 
 This keeps the shared memory layer auditable: ask questions, inspect retrieved sources, draft notes, review them as a human, then decide what belongs in the curated memory layer.
 
-<img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
+
 
 ## Current status
 
