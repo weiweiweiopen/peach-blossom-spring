@@ -1,45 +1,38 @@
 # Peach Blossom Spring / PBS
 
-Peach Blossom Spring is a digital exhibition garden for **NGM / Non-Governmental Matters**.
+Peach Blossom Spring is inspired by **NGM / Non-Governmental Matters**. It is a LLM wiki wrapped with playful game interface. 
 
-NGM is a research interview project by **Shih Wei Chieh** about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge without becoming institutions too quickly.
+NGM is a research interview project about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge in alternative and non-institutional ways.
 
-The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel, and Abao / Shih Wei Chieh.
-
-Play the public version: https://weiweiweiopen.github.io/peach-blossom-spring/
+The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel.
 
 <img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
 
 ## What this garden is
 
-PBS turns NGM into a small explorable world:
+PBS turns NGM into a small explorable world built with pixel office game engine and work advanture to memorize the interview held right after covid time:
 
-- interview memories become NPCs you can talk to;
+- NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context. (currently dismissed due to the strong complaints from tbe interviewees;
 - the campfire is a shared question place for the whole archive;
 - the zine tool turns one question into a short source-grounded booklet;
 - the map, ebook, and source links show where the project came from;
 - the Question Pet is now a traversal health monitor for the player's current question: it watches specificity, evidence readiness, source-family spread, and missing-evidence caveats.
 
-The tone is playful, but the archive logic is serious: the garden should help people remember fragile community knowledge without flattening it into a report or dashboard.
-
 <img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
 
 ## How to play
 
-1. Open the public site and enter Peach Blossom Spring.
-2. Walk with arrow keys / WASD. On mobile, use the thumb control.
+1. Run the game online or download it and run it locally.
+2. Walk your avatar with arrow keys / WASD. On mobile, use the thumb control.
 3. Move near an NPC and click / tap / press Space to open a conversation.
 4. Go to the central campfire / computer to ask broader questions about NGM, communities, tools, camps, and sources.
 5. Use the zine function from a question to generate a small wiki booklet.
 6. Open the NGM ebook, map, and source links when you want to leave the fable and check the research material.
 
-NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context.
-
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
-## How do I use it?
-
-There are two different ways to use PBS. The online GitHub version is an exhibition garden that already has a deployed memory service. The downloaded local version is the one you use when you want to build your own source-first shared memory layer.
+## You may use it locally with your own deployed shared memory
+The online garden exhibition above already has a deployed memory service. The downloaded local version is the one you use when you want to build your own source-first shared memory layer.
 
 ### A. Use the online exhibition
 
