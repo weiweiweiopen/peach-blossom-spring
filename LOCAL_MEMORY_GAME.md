@@ -10,7 +10,7 @@ Cloud mode is for the public web game on GitHub Pages. The browser calls a Cloud
 GitHub Pages game UI -> PBS memory Worker -> Cloudflare D1 SQLite / FTS source index -> DeepSeek proxy -> answer / source links / traversal lint
 ```
 
-The Cloudflare Worker cannot write files into your local Obsidian vault. Its `/api/memory/draft` endpoint returns draft Markdown for review, but `stored` is `false`.
+The Cloudflare Worker cannot write files into your downloaded repo, local `Knowledge/` store, or local `Review/` drafts. Its `/api/memory/draft` endpoint returns draft Markdown for review, but `stored` is `false`.
 
 Use cloud mode when you want:
 
@@ -20,7 +20,7 @@ Use cloud mode when you want:
 - source-grounded campfire/NPC/zine answers;
 - Question Pet traversal health monitoring for the player's current question.
 
-Do not use cloud mode when you need local vault writes or durable memory promotion.
+Do not use cloud mode when you need local draft writes, local SQLite indexing, or durable memory promotion in the downloaded repo.
 
 Worker source:
 
@@ -63,11 +63,24 @@ git push origin main
 
 ## Local Full-Memory Mode: Downloaded / Cloned PBS
 
-Local mode is for downloaded/cloned PBS on a MacBook or another local machine. It uses Python, SQLite, Markdown sources, and the local Obsidian vault:
+Local mode is for downloaded/cloned PBS on a MacBook or another local machine. It uses Python, SQLite, Markdown sources, and root-level local memory folders:
 
 ```text
-browser game UI -> local PBS game server -> scripts/pbs_engine.py -> SQLite / Sources/Raw / Wiki / Schema -> DeepSeek -> answer / source links / Review draft
+browser game UI -> local PBS game server -> scripts/pbs_engine.py -> SQLite / Sources/Raw / Knowledge -> DeepSeek -> answer / source links / Review draft
 ```
+
+Current local structure:
+
+```text
+Sources/Raw/                  # canonical public markdown source corpus
+Knowledge/                    # generated SQLite, passages, claims, query runs, cache
+Review/compiled-note-drafts/  # local draft notes for human review
+scripts/pbs_engine.py         # source-first indexing/search/draft/export engine
+scripts/pbs_game_server.py    # local game API/server
+webview-ui/                   # browser game UI
+```
+
+The old `obsidian-vault/` runtime layout is not the current PBS structure. `pbs_engine.py` keeps `VAULT = ROOT` only as a legacy compatibility name; do not recreate `obsidian-vault/` for current local mode.
 
 Run it with:
 
@@ -79,8 +92,8 @@ Use local mode when you want:
 
 - the full source-first PBS engine;
 - local SQLite indexing from `Sources/Raw`;
-- access to `obsidian-vault/Wiki` and `obsidian-vault/Schema`;
-- local Review draft writes;
+- generated local state under `Knowledge/`;
+- local Review draft writes under `Review/compiled-note-drafts/`;
 - development without relying on the deployed D1 seed.
 
 Manual commands:
@@ -100,7 +113,7 @@ http://127.0.0.1:4173/
 Local Review drafts are written here:
 
 ```text
-obsidian-vault/Review/compiled-note-drafts/
+Review/compiled-note-drafts/
 ```
 
 ## Removed Static Snapshot Runtime

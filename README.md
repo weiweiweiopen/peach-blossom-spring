@@ -60,14 +60,17 @@ GitHub Pages game UI
 -> cited answer / source links / traversal lint
 ```
 
-Cloud mode can search the deployed source index and return source-grounded answers. It cannot write to your local vault. `/api/memory/draft` returns Markdown for review with `stored:false`.
+Cloud mode can search the deployed source index and return source-grounded answers. It cannot write to the downloaded repo, your local `Knowledge/` store, or your local `Review/` drafts. `/api/memory/draft` returns Markdown for review with `stored:false`.
 
 Cloud source/deploy files:
 
 ```text
-pbs-memory-worker/
+webview-ui/                         # React game UI published by GitHub Pages
+webview-ui/index.html               # pbs-memory-api meta tag
+pbs-memory-worker/                  # Cloudflare Worker API
 pbs-memory-worker/d1/source-index.sql
-webview-ui/index.html   # pbs-memory-api meta tag
+multiplayer-worker/                 # optional multiplayer/presence Worker
+shared/assets/                      # shared generated asset helpers
 ```
 
 Refresh the cloud source index:
@@ -90,16 +93,29 @@ Pushing `main` triggers `.github/workflows/pages.yml`, which publishes `dist/web
 
 ### 2. Local Full-Memory Version
 
-The local version is for a cloned/downloaded repo on your machine. It runs a Python server and the full source-first engine:
+The local version is for a cloned/downloaded repo on your machine. It runs a Python server and the full source-first engine. Unlike the online GitHub Pages version, the downloaded version can build a local SQLite index, read the local source corpus, and write local review drafts.
 
 ```text
 browser game UI
 -> scripts/pbs_game_server.py
 -> scripts/pbs_engine.py
--> local SQLite / Sources/Raw / obsidian-vault/Wiki / obsidian-vault/Schema
+-> local SQLite / Sources/Raw / Knowledge
 -> DeepSeek
 -> answer / source links / local Review draft
 ```
+
+Current local structure:
+
+```text
+Sources/Raw/                  # canonical public markdown source corpus
+Knowledge/                    # generated local SQLite, passages, claims, query runs, cache
+Review/compiled-note-drafts/  # local draft notes created for human review
+scripts/pbs_engine.py         # source-first indexing/search/draft/export engine
+scripts/pbs_game_server.py    # local game API/server
+webview-ui/                   # browser game UI
+```
+
+Do not recreate the old `obsidian-vault/` runtime layout for current PBS. `pbs_engine.py` keeps a legacy `VAULT = ROOT` name only for compatibility.
 
 Run it:
 
@@ -124,7 +140,7 @@ http://127.0.0.1:4173/
 Local Review drafts can be written to:
 
 ```text
-obsidian-vault/Review/compiled-note-drafts/
+Review/compiled-note-drafts/
 ```
 
 ## LLM wiki / shared memory
@@ -143,11 +159,11 @@ Current public source fields include:
 - Green Fab Lab project pages;
 - selected public source pages connected to NGM people, workshops, tools, camps, and communities.
 
-Important boundary: **the online version and the local version use different memory runtimes**. See `LOCAL_MEMORY_GAME.md` for the operational checklist.
+Important boundary: **the online version and the local downloaded version use different memory runtimes**. See `LOCAL_MEMORY_GAME.md` for the operational checklist.
 
 ```text
-Cloud: game UI -> PBS memory Worker -> D1 SQLite / FTS source index -> DeepSeek -> answer
-Local: game UI -> local server -> pbs_engine.py -> SQLite / Sources / Wiki / Schema -> DeepSeek -> answer -> Review draft
+Cloud online: GitHub Pages UI -> PBS memory Worker -> Cloudflare D1 / FTS source index -> DeepSeek -> answer
+Local download: game UI -> local server -> pbs_engine.py -> SQLite / Sources/Raw / Knowledge -> DeepSeek -> answer -> Review draft
 ```
 
 <img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
