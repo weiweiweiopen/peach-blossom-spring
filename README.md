@@ -1,17 +1,17 @@
 # Peach Blossom Spring / PBS
 
-Peach Blossom Spring is inspired by **NGM / Non-Governmental Matters**. It is a LLM wiki wrapped with playful game interface. PBS is also a Karpathy-like LLM wiki experiment: instead of asking an AI to re-read a messy pile every time, the project grows a curated memory layer that can be searched, reviewed, repaired, and exported back into the game.
+Peach Blossom Spring is exhibition garden of **NGM / Non-Governmental Matters**, a previous research made by Shih Wei Chieh; PBS is a source-fist LLM wiki wrapped with playful game interface, a Karpathy-like LLM wiki experiment: instead of asking an AI to re-read a messy pile every time, the project grows a curated memory layer that can be searched, reviewed, repaired, and exported back into the game.
 
 NGM is a research interview project about the sustainability of small, independent art and technology communities: how they organize, teach, share tools, host camps, keep friendships alive, survive funding gaps, and pass on knowledge in alternative and non-institutional ways.
 
-The interviewees include Andreas Siagian, Anastassia Pistofidou, Giulia Tomasello, Christian Dils, Jonathan Minchin, Marc Dusseiller, Rully Shabara, Wukir Suryadi, Ryu Toru Oyama, Stephanie Pan, Stelio Manousakis, Svenja Keune, Ted Hung, Tincuta Heinzel.
+The name Peach Blossom Spring was inspired by the chinese Fables about a man found a paridise in war time, but couldnt find a way to go back. 
+
+The game scene is inspired by the form of hacker camps, which is usually the format how small art and technnklogy groups used for gathering.
 
 <img width="1612" height="934" alt="Screenshot 2026-06-01 at 08 58 27" src="https://github.com/user-attachments/assets/840f29e0-210a-4a38-b63b-a105e81207bd" />
 
-## The garden is made with the scene of hacker camps
-
-PBS turns NGM into a small explorable world built with pixel office game engine and work advanture to memorize the interview held right after covid time. The world is built according to the scene of hacker camps, which is the most common format the independent art science groups use to gather people:
-
+## How to play
+Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
 - NPCs are built from NGM interview transcripts and persona notes. They are not exact replicas of people; they are conversation interfaces shaped by each interviewee's words, recurring concerns, and public context. (currently dismissed due to the strong complaints from tbe interviewees;
 - the campfire is a shared question place for the whole archive;
 - the zine tool turns one question into a short source-grounded booklet;
@@ -20,12 +20,6 @@ PBS turns NGM into a small explorable world built with pixel office game engine 
 
 <img width="1620" height="933" alt="Screenshot 2026-06-01 at 08 58 52" src="https://github.com/user-attachments/assets/882955c4-ff0b-4e4d-8ff3-1e51609ce2af" />
 <img width="1617" height="939" alt="Screenshot 2026-06-01 at 09 00 22" src="https://github.com/user-attachments/assets/ceb8e0f5-1445-48d2-bea5-7799a475dd1c" />
-
-## How to play
-
-Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
-
-
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
 ### A. The github cloud version
