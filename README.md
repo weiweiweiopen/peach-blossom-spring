@@ -76,7 +76,12 @@ The local version works like this:
 local sources -> PBS local search -> your chosen LLM -> source-grounded answer -> review draft
 ```
 
-It can use the default online proxy, your own API model, or a local model such as Gemma, Llama, or Qwen. Local answers can become reviewable drafts in `Review/compiled-note-drafts/`, so the memory layer stays inspectable instead of silently rewriting itself.
+PBS can connect to an LLM in two ways:
+
+- **API model:** point PBS to your own private API/proxy for OpenAI, DeepSeek, Claude, or another hosted model. Keep the API key in that proxy or local server, not in the public website.
+- **Local model:** run a model such as Gemma, Llama, or Qwen on your own computer/server with an OpenAI-compatible local endpoint, then point PBS to that local address.
+
+In both cases, PBS keeps the sources and memory layer local. The model only helps read the retrieved source context and write an answer. Local answers can become reviewable drafts in `Review/compiled-note-drafts/`, so the memory layer stays inspectable instead of silently rewriting itself.
 
 ### C. Add your own sources
 
