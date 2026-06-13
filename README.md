@@ -22,12 +22,8 @@ PBS turns NGM into a small explorable world built with pixel office game engine 
 
 ## How to play
 
-1. Run the game online or download it and run it locally.
-2. Walk your avatar with arrow keys / WASD. On mobile, use the thumb control.
-3. Move near an NPC and click / tap / press Space to open a conversation.
-4. Go to the central campfire / computer to ask broader questions about NGM, communities, tools, camps, and sources.
-5. Use the zine function from a question to generate a small wiki booklet.
-6. Open the NGM ebook, map, and source links when you want to leave the fable and check the research material.
+Walk your avatar with arrow keys / WASD. On mobile, use the thumb control. Press space bar or click NPC to start a conversation to explore!
+
 
 <img width="1616" height="934" alt="Screenshot 2026-06-01 at 08 59 22" src="https://github.com/user-attachments/assets/3a0ebd2b-4346-4bbd-94a3-d38162c59691" />
 
