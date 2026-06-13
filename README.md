@@ -40,6 +40,8 @@ Use it when you only want to play, test the public NGM garden, ask NPCs/campfire
 
 ### B. The local version
 
+Download PBS when you want your own local shared-memory garden: your sources stay on your machine, PBS searches them first, and then your chosen LLM helps answer from that source context.
+
 Clone the repo:
 
 ```bash
@@ -68,75 +70,31 @@ Open:
 http://127.0.0.1:4173/
 ```
 
-The local downloaded version works like this:
+The local version works like this:
 
 ```text
-local browser UI -> scripts/pbs_game_server.py -> scripts/pbs_engine.py -> Sources/Raw + Knowledge -> LLM proxy -> answer + Review draft
+local sources -> PBS local search -> your chosen LLM -> source-grounded answer -> review draft
 ```
 
-### C. Customize your own sources
+It can use the default online proxy, your own API model, or a local model such as Gemma, Llama, or Qwen. Local answers can become reviewable drafts in `Review/compiled-note-drafts/`, so the memory layer stays inspectable instead of silently rewriting itself.
 
-PBS is source-first. Put your source material under:
+### C. Add your own sources
+
+In the local game, open the source/schema interface and paste source URLs separated by commas. PBS will save the source list and use it as material for the local memory layer.
+
+You can also add Markdown or text files directly under:
 
 ```text
 Sources/Raw/<your-source-family>/
-```
-
-Use plain Markdown or text files. A practical pattern is:
-
-```text
-Sources/Raw/my-community/interview-001.md
-Sources/Raw/my-community/workshop-notes.md
-Sources/Raw/my-community/public-links.md
 ```
 
 Then rebuild the local memory index:
 
 ```bash
 python3 scripts/pbs_engine.py index
-python3 scripts/pbs_engine.py query --query "your test question" --limit 8
 ```
 
-For the current public PBS corpus, source families are also listed in `pbs_sources.json`. The built-in hydrators can refresh some known public sources, for example:
-
-```bash
-python3 scripts/pbs_engine.py hydrate-mediawiki --family hackteria --query "microscopy" --limit 10
-python3 scripts/pbs_engine.py index
-```
-
-The important rule: raw sources stay in `Sources/Raw/`; generated search/index state goes into `Knowledge/`; reviewable drafts go into `Review/compiled-note-drafts/`.
-
-### D. Use your own LLM
-
-PBS is not tied to one AI model. The local version can talk to:
-
-- a hosted API model, through your own small proxy;
-- a local model running on your computer or server, for example Gemma, Llama, Qwen, or another OpenAI-style local endpoint;
-- the default DeepSeek proxy used by the public demo.
-
-In plain language: PBS keeps the memory layer local, then asks whichever LLM you connect to help read and answer from that memory.
-
-For most users, the important setup idea is simply:
-
-```text
-PBS local sources -> PBS local search -> your chosen LLM -> answer with source context
-```
-
-Keep private API keys out of the public website and out of GitHub. If you use a cloud model, put the key in your private proxy or local server. If you use a local model, point PBS to that local model endpoint.
-
-Advanced users can configure the local endpoint with environment variables such as `PBS_DEEPSEEK_PROXY_URL`, or set `VITE_DEEPSEEK_PROXY_URL` for a custom browser build. See `LOCAL_MEMORY_GAME.md` for the more technical notes.
-
-### E. Turn local answers into reviewable memory
-
-Local mode can create review drafts instead of silently changing the source corpus. Drafts are written to:
-
-```text
-Review/compiled-note-drafts/
-```
-
-This keeps the shared memory layer auditable: ask questions, inspect retrieved sources, draft notes, review them as a human, then decide what belongs in the curated memory layer.
-
-
+Raw sources stay in `Sources/Raw/`; generated search state goes into `Knowledge/`; reviewable drafts go into `Review/compiled-note-drafts/`.
 
 ## Current status
 
