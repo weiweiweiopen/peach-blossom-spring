@@ -4,7 +4,7 @@ This branch retains the complete public base tree unchanged and adds complete re
 
 ## Scope and blocker
 
-This is NOT a complete backup of the local project and NOT a verified build of the local changes. The local variant changes Association imports to Daydream and imports a generated local memory index. Several additional Daydream modules could not be read from iCloud, and the provenance/publication status of generated local memory and other data is not established. Those inputs, all private vault/chat data, environment files and local source folders remain local and were not uploaded or deleted.
+This is NOT a complete backup of the local project and NOT a verified build of the local changes. The local variant changes Association imports to Daydream and imports a generated local memory index. Eight additional Daydream modules were recovered by bounded iCloud download and are now included. The provenance/publication status of generated local memory and other data is still not established; generated memory data and unreviewed assets remain excluded. Those inputs, all private vault/chat data, environment files and local source folders remain local and were not uploaded or deleted.
 
 ## Retrieve
 

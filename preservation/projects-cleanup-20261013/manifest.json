@@ -324,19 +324,59 @@
       "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/question-pet-simulation.test.ts",
       "sha256": "2757ab9482b6612990c91e8ac546e74ca0f81a3b941ce40cd055f4e987f2f9a0",
       "size": 50029
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/editorialBrief.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/editorialBrief.ts",
+      "sha256": "067022fa9ee522f1b48417033c8dbbe29df0146a825b99f99e44ce8b1b12ea47",
+      "size": 8159
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/engine.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/engine.ts",
+      "sha256": "bd969b6d6874ef370a4571370aadab5ca76d8697606e2e5a2f82f3aaec124f66",
+      "size": 30168
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/connectedPapers.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/connectedPapers.ts",
+      "sha256": "6cd7fe34e7dfd74620f381204fe8de353a1575eb37b98479d5a14cb20c2503fe",
+      "size": 19305
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/DaydreamPanel.tsx",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/DaydreamPanel.tsx",
+      "sha256": "6a90718675747059c67219fa12a6fa58b671119514869a916aa1830458c4a453",
+      "size": 6716
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/daydreamWorkflow.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/daydreamWorkflow.ts",
+      "sha256": "25b9a822c739565502c524c1876493dfc86d5f44bc1c057742514e231eaa4df4",
+      "size": 7119
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/artifactGuard.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/artifactGuard.ts",
+      "sha256": "53fcab4113df2f89f7ebce9c03548f9b56958d5126501e2b24d1781a68a76807",
+      "size": 4169
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/associationFeedback.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/associationFeedback.ts",
+      "sha256": "acec6f0905981f4d870f15c1135e3bcdb9c0a2a5af0dcfb2668b59c402de629d",
+      "size": 8154
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/templates/officialPbsResetTemplate.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/templates/officialPbsResetTemplate.ts",
+      "sha256": "ee6ff04a84c0f048ad0d10e7d002b075f152b835a1d72045fb511428f2a4f0f1",
+      "size": 3752
     }
   ],
   "full_local_worktree_preserved": false,
   "unreadable_source": [
-    "webview-ui/src/generated/pbsLocalMemory.json",
-    "webview-ui/src/daydream/editorialBrief.ts",
-    "webview-ui/src/daydream/engine.ts",
-    "webview-ui/src/daydream/connectedPapers.ts",
-    "webview-ui/src/daydream/DaydreamPanel.tsx",
-    "webview-ui/src/daydream/daydreamWorkflow.ts",
-    "webview-ui/src/daydream/artifactGuard.ts",
-    "webview-ui/src/daydream/associationFeedback.ts",
-    "webview-ui/src/daydream/templates/officialPbsResetTemplate.ts"
+    "webview-ui/src/generated/pbsLocalMemory.json"
   ],
   "modified_paths_not_published": [
     ".gitignore",
@@ -364,5 +404,6 @@
     "webview-ui/public/data/knowledge/jonathan-minchin.json",
     "webview-ui/public/data/knowledge/stephanie-pan.json",
     "webview-ui/public/data/knowledge/tincuta-heinzel.json"
-  ]
+  ],
+  "recovered_source_modules": 8
 }
