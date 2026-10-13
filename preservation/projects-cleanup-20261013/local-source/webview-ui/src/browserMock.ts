@@ -1,0 +1,403 @@
+/**
+ * Browser runtime mock — fetches assets and injects the same postMessage
+ * events the VS Code extension would send.
+ *
+ * In Vite dev, it prefers pre-decoded JSON endpoints from middleware.
+ * In plain browser builds, it decodes only the runtime layout's required PNGs.
+ *
+ * Only imported in browser runtime; tree-shaken from VS Code webview runtime.
+ */
+
+import extraPersonaData from '../../data/extra-personas.json';
+import personaData from '../../data/personas.json';
+import { rgbaToHex } from '../../shared/assets/colorUtils.ts';
+import {
+  CHAR_FRAME_H,
+  CHAR_FRAME_W,
+  CHAR_FRAMES_PER_ROW,
+  CHARACTER_DIRECTIONS,
+  FLOOR_TILE_SIZE,
+  WALL_BITMASK_COUNT,
+  WALL_GRID_COLS,
+  WALL_PIECE_HEIGHT,
+  WALL_PIECE_WIDTH,
+} from '../../shared/assets/constants.ts';
+import type {
+  AssetIndex,
+  CatalogEntry,
+  CharacterDirectionSprites,
+} from '../../shared/assets/types.ts';
+import { getPersonaNpcAppearance } from './personaNpcAppearance.js';
+import { BROWSER_EDITOR_LAYOUT_KEY } from './vscodeApi.js';
+import { createCompactEditorLayout } from './world/peachBlossomWorld.js';
+
+interface Persona {
+  id: string;
+  name: string;
+  role: string;
+}
+
+const personas = [...(personaData.personas as Persona[]), ...(extraPersonaData.personas as Persona[])];
+
+const visiblePersonaIds = new Set(['marc-dusseiller', 'mika-satomi', 'anastassia-pistofidou', 'christian-dils', 'abao']);
+const personaAgentIds = personas
+  .map((persona, index) => visiblePersonaIds.has(persona.id) ? index + 1 : null)
+  .filter((id): id is number => id !== null);
+
+function personaFolderNames(): Record<number, string> {
+  return Object.fromEntries(personas.map((persona, index) => [index + 1, persona.name]));
+}
+
+function personaAgentMeta(): Record<number, { palette: number; hueShift: number }> {
+  return Object.fromEntries(
+    personas.map((persona, index) => {
+      const appearance = getPersonaNpcAppearance(persona.id, index);
+      return [
+        index + 1,
+        {
+          palette: appearance.palette,
+          hueShift: appearance.hueShift,
+        },
+      ];
+    }),
+  );
+}
+
+interface MockPayload {
+  characters: CharacterDirectionSprites[];
+  floorSprites: string[][][];
+  wallSets: string[][][][];
+  furnitureCatalog: CatalogEntry[];
+  furnitureSprites: Record<string, string[][]>;
+  layout: unknown;
+}
+
+interface RuntimeLayout {
+  version?: number;
+  tiles?: number[];
+  furniture?: Array<{ type?: string }>;
+}
+
+// ── Module-level state ─────────────────────────────────────────────────────────
+
+let mockPayload: MockPayload | null = null;
+
+// ── PNG decode helpers (browser fallback) ───────────────────────────────────
+
+interface DecodedPng {
+  width: number;
+  height: number;
+  data: Uint8ClampedArray;
+}
+
+function getPixel(
+  data: Uint8ClampedArray,
+  width: number,
+  x: number,
+  y: number,
+): [number, number, number, number] {
+  const idx = (y * width + x) * 4;
+  return [data[idx], data[idx + 1], data[idx + 2], data[idx + 3]];
+}
+
+function readSprite(
+  png: DecodedPng,
+  width: number,
+  height: number,
+  offsetX = 0,
+  offsetY = 0,
+): string[][] {
+  const sprite: string[][] = [];
+  for (let y = 0; y < height; y++) {
+    const row: string[] = [];
+    for (let x = 0; x < width; x++) {
+      const [r, g, b, a] = getPixel(png.data, png.width, offsetX + x, offsetY + y);
+      row.push(rgbaToHex(r, g, b, a));
+    }
+    sprite.push(row);
+  }
+  return sprite;
+}
+
+async function decodePng(url: string): Promise<DecodedPng> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch PNG: ${url} (${res.status.toString()})`);
+  }
+  const blob = await res.blob();
+  const bitmap = await createImageBitmap(blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    bitmap.close();
+    throw new Error('Failed to create 2d canvas context for PNG decode');
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  return { width: canvas.width, height: canvas.height, data: imageData.data };
+}
+
+async function fetchJsonOptional<T>(url: string): Promise<T | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+function getIndexedAssetPath(kind: 'characters' | 'floors' | 'walls', relPath: string): string {
+  return relPath.startsWith(`${kind}/`) ? relPath : `${kind}/${relPath}`;
+}
+
+async function decodeCharactersFromPng(
+  base: string,
+  index: AssetIndex,
+): Promise<CharacterDirectionSprites[]> {
+  const sprites: CharacterDirectionSprites[] = [];
+  for (const relPath of index.characters) {
+    const png = await decodePng(`${base}assets/${getIndexedAssetPath('characters', relPath)}`);
+    const byDir: CharacterDirectionSprites = { down: [], up: [], right: [] };
+
+    for (let dirIdx = 0; dirIdx < CHARACTER_DIRECTIONS.length; dirIdx++) {
+      const dir = CHARACTER_DIRECTIONS[dirIdx];
+      const rowOffsetY = dirIdx * CHAR_FRAME_H;
+      const frames: string[][][] = [];
+      for (let frame = 0; frame < CHAR_FRAMES_PER_ROW; frame++) {
+        frames.push(readSprite(png, CHAR_FRAME_W, CHAR_FRAME_H, frame * CHAR_FRAME_W, rowOffsetY));
+      }
+      byDir[dir] = frames;
+    }
+
+    sprites.push(byDir);
+  }
+  return sprites;
+}
+
+async function decodeFloorsFromPng(base: string, index: AssetIndex): Promise<string[][][]> {
+  const floors: string[][][] = [];
+  for (const relPath of index.floors) {
+    const png = await decodePng(`${base}assets/${getIndexedAssetPath('floors', relPath)}`);
+    floors.push(readSprite(png, FLOOR_TILE_SIZE, FLOOR_TILE_SIZE));
+  }
+  return floors;
+}
+
+async function decodeWallsFromPng(base: string, index: AssetIndex): Promise<string[][][][]> {
+  const wallSets: string[][][][] = [];
+  for (const relPath of index.walls) {
+    const png = await decodePng(`${base}assets/${getIndexedAssetPath('walls', relPath)}`);
+    const set: string[][][] = [];
+    for (let mask = 0; mask < WALL_BITMASK_COUNT; mask++) {
+      const ox = (mask % WALL_GRID_COLS) * WALL_PIECE_WIDTH;
+      const oy = Math.floor(mask / WALL_GRID_COLS) * WALL_PIECE_HEIGHT;
+      set.push(readSprite(png, WALL_PIECE_WIDTH, WALL_PIECE_HEIGHT, ox, oy));
+    }
+    wallSets.push(set);
+  }
+  return wallSets;
+}
+
+async function decodeFurnitureFromPng(
+  base: string,
+  catalog: CatalogEntry[],
+): Promise<Record<string, string[][]>> {
+  const sprites: Record<string, string[][]> = {};
+  for (const entry of catalog) {
+    const png = await decodePng(`${base}assets/${entry.furniturePath}`);
+    sprites[entry.id] = readSprite(png, entry.width, entry.height);
+  }
+  return sprites;
+}
+
+function baseFurnitureType(type: string): string {
+  return type.replace(/:left$/, '');
+}
+
+function filterCatalogForLayout(catalog: CatalogEntry[], layout: unknown): CatalogEntry[] {
+  const runtimeLayout = layout as RuntimeLayout | null;
+  const usedIds = new Set(
+    (runtimeLayout?.furniture ?? [])
+      .map((item) => typeof item.type === 'string' ? baseFurnitureType(item.type) : '')
+      .filter(Boolean),
+  );
+  if (usedIds.size === 0) return catalog;
+
+  const usedGroupIds = new Set<string>();
+  for (const item of catalog) {
+    if (usedIds.has(item.id) && item.groupId) usedGroupIds.add(item.groupId);
+  }
+
+  return catalog.filter((item) =>
+    usedIds.has(item.id) ||
+    (item.groupId !== undefined && usedGroupIds.has(item.groupId)),
+  );
+}
+
+function maxFloorPatternForLayout(layout: unknown): number {
+  const runtimeLayout = layout as RuntimeLayout | null;
+  const floorIds = (runtimeLayout?.tiles ?? [])
+    .filter((tile): tile is number => Number.isInteger(tile) && tile > 0 && tile < 255);
+  return floorIds.length > 0 ? Math.max(...floorIds) : 0;
+}
+
+function filterAssetIndexForLayout(index: AssetIndex, layout: unknown): AssetIndex {
+  const maxFloorPattern = maxFloorPatternForLayout(layout);
+  if (maxFloorPattern <= 0) return index;
+  return {
+    ...index,
+    floors: index.floors.slice(0, Math.min(index.floors.length, maxFloorPattern)),
+  };
+}
+
+// ── Public API ─────────────────────────────────────────────────────────────────
+
+/**
+ * Call before createRoot() in main.tsx.
+ * Fetches all pre-decoded assets from the Vite dev server and stores them
+ * for dispatchMockMessages().
+ */
+export async function initBrowserMock(): Promise<void> {
+  console.log('[BrowserMock] Loading assets...');
+
+  const base = import.meta.env.BASE_URL; // '/' in dev, '/sub/' with a subpath, './' in production
+  const params = new URLSearchParams(window.location.search);
+  const wantsEditorAssets = params.get('editor') === '1';
+  const editorPreview = wantsEditorAssets;
+  const layoutPath = 'pbs-map.json';
+
+  const [assetIndex, catalog] = await Promise.all([
+    fetch(`${base}assets/asset-index.json`).then((r) => r.json()) as Promise<AssetIndex>,
+    fetch(`${base}assets/furniture-catalog.json`).then((r) => r.json()) as Promise<CatalogEntry[]>,
+  ]);
+
+  const savedEditorLayout = editorPreview ? window.localStorage.getItem(BROWSER_EDITOR_LAYOUT_KEY) : null;
+  let parsedEditorLayout = null as ReturnType<typeof createCompactEditorLayout> | null;
+  if (savedEditorLayout) {
+    try {
+      parsedEditorLayout = JSON.parse(savedEditorLayout) as ReturnType<typeof createCompactEditorLayout>;
+    } catch {
+      window.localStorage.removeItem(BROWSER_EDITOR_LAYOUT_KEY);
+    }
+  }
+  const compactEditorLayout = editorPreview
+    ? await fetch(`${base}assets/${layoutPath}`)
+        .then((r) => (r.ok ? r.json() : createCompactEditorLayout()))
+        .catch(() => createCompactEditorLayout())
+    : null;
+  const editorLayout = parsedEditorLayout?.layoutRevision === compactEditorLayout?.layoutRevision
+    ? parsedEditorLayout
+    : compactEditorLayout;
+  const layout = editorPreview
+    ? editorLayout
+    : await fetch(`${base}assets/${layoutPath}`).then((r) => r.json());
+
+  const runtimeAssetIndex = wantsEditorAssets ? assetIndex : filterAssetIndexForLayout(assetIndex, layout);
+  const runtimeCatalog = wantsEditorAssets ? catalog : filterCatalogForLayout(catalog, layout);
+
+  const shouldTryDecoded = import.meta.env.DEV;
+  const [decodedCharacters, decodedFloors, decodedWalls, decodedFurniture] = shouldTryDecoded
+    ? await Promise.all([
+        fetchJsonOptional<CharacterDirectionSprites[]>(`${base}assets/decoded/characters.json`),
+        fetchJsonOptional<string[][][]>(`${base}assets/decoded/floors.json`),
+        fetchJsonOptional<string[][][][]>(`${base}assets/decoded/walls.json`),
+        fetchJsonOptional<Record<string, string[][]>>(`${base}assets/decoded/furniture.json`),
+      ])
+    : [null, null, null, null];
+
+  const hasDecoded = !!(decodedCharacters && decodedFloors && decodedWalls && decodedFurniture);
+
+  if (!hasDecoded) {
+    if (shouldTryDecoded) {
+      console.log('[BrowserMock] Decoded JSON not found, decoding PNG assets in browser...');
+    } else {
+      console.log('[BrowserMock] Decoding PNG assets in browser...');
+    }
+  }
+
+  const [characters, floorSprites, wallSets, furnitureSprites] = hasDecoded
+    ? [
+        decodedCharacters!,
+        decodedFloors!.slice(0, runtimeAssetIndex.floors.length),
+        decodedWalls!,
+        Object.fromEntries(runtimeCatalog.map((item) => [item.id, decodedFurniture![item.id]]).filter(([, sprite]) => Boolean(sprite))),
+      ]
+    : await Promise.all([
+        decodeCharactersFromPng(base, runtimeAssetIndex),
+        decodeFloorsFromPng(base, runtimeAssetIndex),
+        decodeWallsFromPng(base, runtimeAssetIndex),
+        decodeFurnitureFromPng(base, runtimeCatalog),
+      ]);
+
+  mockPayload = {
+    characters,
+    floorSprites,
+    wallSets,
+    furnitureCatalog: runtimeCatalog,
+    furnitureSprites,
+    layout,
+  };
+
+  console.log(
+    `[BrowserMock] Ready (${hasDecoded ? 'decoded-json' : 'browser-png-decode'}) — ${characters.length}/${assetIndex.characters.length} chars, ${floorSprites.length}/${assetIndex.floors.length} floors, ${wallSets.length}/${assetIndex.walls.length} wall sets, ${runtimeCatalog.length}/${catalog.length} furniture items`,
+  );
+}
+
+/**
+ * Call inside a useEffect in App.tsx — after the window message listener
+ * in useExtensionMessages has been registered.
+ */
+export function dispatchMockMessages(): void {
+  if (!mockPayload) return;
+
+  const { characters, floorSprites, wallSets, furnitureCatalog, furnitureSprites, layout } =
+    mockPayload;
+
+  function dispatch(data: unknown): void {
+    window.dispatchEvent(new MessageEvent('message', { data }));
+  }
+
+  // Must match the load order defined in CLAUDE.md:
+  // characterSpritesLoaded → floorTilesLoaded → wallTilesLoaded → furnitureAssetsLoaded → layoutLoaded
+  dispatch({ type: 'characterSpritesLoaded', characters });
+  dispatch({ type: 'floorTilesLoaded', sprites: floorSprites });
+  dispatch({ type: 'wallTilesLoaded', sets: wallSets });
+  dispatch({ type: 'furnitureAssetsLoaded', catalog: furnitureCatalog, sprites: furnitureSprites });
+  const editorPreview = new URLSearchParams(window.location.search).get('editor') === '1';
+  if (!editorPreview) {
+    dispatch({
+      type: 'existingAgents',
+      agents: personaAgentIds,
+      agentMeta: personaAgentMeta(),
+      folderNames: personaFolderNames(),
+    });
+  }
+  dispatch({ type: 'layoutLoaded', layout });
+  if (!editorPreview) {
+    personas.forEach((persona, index) => {
+      const id = index + 1;
+      dispatch({ type: 'agentStatus', id, status: 'active' });
+      dispatch({
+        type: 'agentToolStart',
+        id,
+        toolId: `ngm-${id}`,
+        status: persona.role,
+        toolName: 'Persona',
+      });
+    });
+  }
+  dispatch({
+    type: 'settingsLoaded',
+    soundEnabled: false,
+    alwaysShowLabels: false,
+    hooksInfoShown: true,
+    extensionVersion: '1.3.0',
+    lastSeenVersion: '1.2',
+  });
+
+  console.log('[BrowserMock] Messages dispatched');
+}

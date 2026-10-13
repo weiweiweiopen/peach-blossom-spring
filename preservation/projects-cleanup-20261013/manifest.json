@@ -1,0 +1,368 @@
+{
+  "base_commit": "e429570154fbce1aba8bde5d642e837a2bb0bea5",
+  "files": [
+    {
+      "original_relative_path": "pbs-memory-worker/src/index.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/pbs-memory-worker/src/index.ts",
+      "sha256": "3e08a3b2d8389f70e415cfd8e2dd95b3c46d0bf895abccb7906fb3763479b82f",
+      "size": 20890
+    },
+    {
+      "original_relative_path": "scripts/pbs_engine.py",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/scripts/pbs_engine.py",
+      "sha256": "1fe525f969ec969866d3b8fe671f79ebd2544dd8257bcd092f660b3e8518967f",
+      "size": 54173
+    },
+    {
+      "original_relative_path": "webview-ui/scripts/check-visual-layout-guards.mjs",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/scripts/check-visual-layout-guards.mjs",
+      "sha256": "41f033092e65c0fd6001113be7e28edeac89934ea1bce574bbcb54675d47481d",
+      "size": 23328
+    },
+    {
+      "original_relative_path": "webview-ui/src/App.tsx",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/App.tsx",
+      "sha256": "86b3dfc1dde7b52d1e45daed53017bfec6fc523ce9761aec0c23512a29bb89af",
+      "size": 230554
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/DaydreamPanel.css",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/DaydreamPanel.css",
+      "sha256": "7101d66f117a2c98fe0f2d06025e196f5046da1cc7f4b5745f89c12d66c006a3",
+      "size": 3298
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/DaydreamPanel.tsx",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/DaydreamPanel.tsx",
+      "sha256": "6a90718675747059c67219fa12a6fa58b671119514869a916aa1830458c4a453",
+      "size": 6716
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/browserAssociationGenerator.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/browserAssociationGenerator.ts",
+      "sha256": "e597980cbe9ec02ff3e82931b844461abc40253cc4665ef5186deed5c511d133",
+      "size": 126659
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/connectedPapers.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/connectedPapers.ts",
+      "sha256": "996b3420db0af6d99807812134f27a1c72c3c698134246f8e79838d9f68ada1a",
+      "size": 19314
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/daydreamWorkflow.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/daydreamWorkflow.ts",
+      "sha256": "5f438c79181a2da3b90b2ab0fffeb20d044bf33a723f2da6a6c87bee1ea897a2",
+      "size": 7122
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/engine.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/engine.ts",
+      "sha256": "09922e3999e53a6e6b54b7313871c7c81631c109db475519b1ca4455902b1f5e",
+      "size": 31021
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/notebookBridgeTrace.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/notebookBridgeTrace.ts",
+      "sha256": "e9b39a037af60200a51466230544dd95cbcb0198a305b91550d3a305d6f29327",
+      "size": 1448
+    },
+    {
+      "original_relative_path": "webview-ui/src/association/researchTopics.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/association/researchTopics.ts",
+      "sha256": "adcc6986e88517cc270cd795cbabebe4c6fe10ae34da968a2fd6a01d8fe09a41",
+      "size": 10632
+    },
+    {
+      "original_relative_path": "webview-ui/src/browserMock.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/browserMock.ts",
+      "sha256": "be0fae7c6f6f2916b3b65eb6aba66b0cd643a93cce1e36ec5a2ca65585b16b83",
+      "size": 14209
+    },
+    {
+      "original_relative_path": "webview-ui/src/components/ExpeditionPanel.tsx",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/components/ExpeditionPanel.tsx",
+      "sha256": "aa4ad37bd61a232d8b549e1bbf508e785cd79ce4d39e913a5d7c4f7f10f038be",
+      "size": 10938
+    },
+    {
+      "original_relative_path": "webview-ui/src/components/RpgDialogue.tsx",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/components/RpgDialogue.tsx",
+      "sha256": "4098196aa05e906eeaf731ae9c5620fc6b89e899ffcda791bea84637019e9da8",
+      "size": 76575
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/DaydreamPanel.css",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/DaydreamPanel.css",
+      "sha256": "7101d66f117a2c98fe0f2d06025e196f5046da1cc7f4b5745f89c12d66c006a3",
+      "size": 3298
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/browserAssociationGenerator.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/browserAssociationGenerator.ts",
+      "sha256": "3dea7d2f61a9304c19f3c98d45347d70c72127ff624dec0ca10a3872532aa7d2",
+      "size": 122644
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/corpus.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/corpus.ts",
+      "sha256": "3f40bb3b73b526335768ed5e1a41f812909d496801ca725c944d16fb5583ebcb",
+      "size": 480
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/evidenceHygiene.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/evidenceHygiene.ts",
+      "sha256": "3ae9004ece05713b659459a22ef1116ba721a17629dc32bb4895d328be9143ba",
+      "size": 1626
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/layoutRegistry.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/layoutRegistry.ts",
+      "sha256": "cba28f8938ae91065aefee0eaf333814a0ded176d30e20200ed920d8fd5c8f10",
+      "size": 3144
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/officialTemplateRenderer.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/officialTemplateRenderer.ts",
+      "sha256": "7bc183edb74f3c092f1dd6b00262041a202ef2a17dc62424dcf4a6dc1e6aacba",
+      "size": 14142
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/prototypeMarkdown.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/prototypeMarkdown.ts",
+      "sha256": "db8d8a3c0217f42caa6d151ee36a165338cff28bc60db9cde002ee93518f9227",
+      "size": 39670
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/publicArtifactContent.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/publicArtifactContent.ts",
+      "sha256": "8e1b585e36cf2b8e87feebdf319c2230319ebcc89eb01984024b52d7b51e3861",
+      "size": 15775
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/publicArtifactHtml.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/publicArtifactHtml.ts",
+      "sha256": "e1609dd67845c029be58cf2c71b870e89845618b19d553e88b9f604911784fee",
+      "size": 4572
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/publicValidation.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/publicValidation.ts",
+      "sha256": "3311479b321cf72c57a5c1faf92d53ec327a94b5242c0f1b0bf737dd6889bac2",
+      "size": 1068
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/researchTopics.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/researchTopics.ts",
+      "sha256": "d996a6649d88c06f50329e54727dc40b364ec0ebd5fd51615d2391752fa6d764",
+      "size": 10614
+    },
+    {
+      "original_relative_path": "webview-ui/src/daydream/templates/official-html/html-raw.d.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/templates/official-html/html-raw.d.ts",
+      "sha256": "1a7176265dd419d965bf4ea8141a6b97dbd941f49a9972a4cb4590559ce3e0d5",
+      "size": 323
+    },
+    {
+      "original_relative_path": "webview-ui/src/expedition/expeditionPrompt.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/expedition/expeditionPrompt.ts",
+      "sha256": "b1666264da17dd21deca3cfc24459668b600259f06e194856e507807654060d0",
+      "size": 3452
+    },
+    {
+      "original_relative_path": "webview-ui/src/expedition/expeditionRunner.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/expedition/expeditionRunner.ts",
+      "sha256": "bea6d642fe308acfef10be2760048f978fae2202d563a7f324a616ea2f879502",
+      "size": 15129
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/de.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/de.ts",
+      "sha256": "eac1385780617ee6753f9eeb619d2688fae94ab317c24ce136d87f9a0c284b7a",
+      "size": 10475
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/en.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/en.ts",
+      "sha256": "11e905cd6c77196370a921fd1ef1d326609f19c54d644aaf10fab411473e00b6",
+      "size": 8766
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/id.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/id.ts",
+      "sha256": "b390c3f05424128b9e79b8d6b93a5fecd2de90ac0f516617ee2a5cbb4f669bd0",
+      "size": 9981
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/ja.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/ja.ts",
+      "sha256": "d178037cf0584d4ed31ff7da37eb13e72abe53256dc047f3747f634ed5f4db0b",
+      "size": 10467
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/th.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/th.ts",
+      "sha256": "b0093507b8d296ed2d5dd55c7b229a6f7b5187bba2f88bc122c7ce6738e97a2e",
+      "size": 16370
+    },
+    {
+      "original_relative_path": "webview-ui/src/i18n/locales/zh-TW.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/i18n/locales/zh-TW.ts",
+      "sha256": "46e5a414d757a57e78465f920dd8c57ddfe1978999a0d26237e09cd2e1fe3761",
+      "size": 8853
+    },
+    {
+      "original_relative_path": "webview-ui/src/index.css",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/index.css",
+      "sha256": "b6d2727f2038f401f47aa303acc4c25822bf59db2c24bbe464d4bead934d8f10",
+      "size": 276540
+    },
+    {
+      "original_relative_path": "webview-ui/src/localChatbot.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/localChatbot.ts",
+      "sha256": "7ca978d6a01515d8f17ff163c1ce21fc9baab01d7a7d9b29959cea3ebdc09c65",
+      "size": 18361
+    },
+    {
+      "original_relative_path": "webview-ui/src/localMemoryApi.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/localMemoryApi.ts",
+      "sha256": "2da08c0c45c4fa1bd733f1c323aa068c543f59e7ea2369774ddfb0f1c64ff430",
+      "size": 2418
+    },
+    {
+      "original_relative_path": "webview-ui/src/office/layout/layoutSerializer.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/office/layout/layoutSerializer.ts",
+      "sha256": "d72586b886428c1576db4a5d3a5d39f5fc072279e1ef73eb5429fa5c205283c1",
+      "size": 13525
+    },
+    {
+      "original_relative_path": "webview-ui/src/pbsLocalMemory.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/pbsLocalMemory.ts",
+      "sha256": "1ca3b86724e048b039ee5e835a297512896c782ea73a00e6dc16c42525753aba",
+      "size": 11062
+    },
+    {
+      "original_relative_path": "webview-ui/src/personaNpcAppearance.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/personaNpcAppearance.ts",
+      "sha256": "ee4ef8af3ff93500888427592af7541b7bfb2a6daad83e814b580db4de6a99c1",
+      "size": 1504
+    },
+    {
+      "original_relative_path": "webview-ui/src/simulation/wikiDaydream.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/simulation/wikiDaydream.ts",
+      "sha256": "af862446abf45eb5151b26745d4d59550375ce1e308d49319a3aa1459c6a45f2",
+      "size": 2436
+    },
+    {
+      "original_relative_path": "webview-ui/src/traversal/questionQuality.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/traversal/questionQuality.ts",
+      "sha256": "63fa050f0076747f1be15ca353c47c513b3d122ba12053a5f4749f76b12ff3e7",
+      "size": 5376
+    },
+    {
+      "original_relative_path": "webview-ui/src/ui-system.css",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/ui-system.css",
+      "sha256": "8c89183f1c5a18d5dfb346d6ffd23a5829d0f3d46521001c500b782ff93daa2c",
+      "size": 20706
+    },
+    {
+      "original_relative_path": "webview-ui/src/wikiSearch.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/wikiSearch.ts",
+      "sha256": "021dc7b900b2407be472c6f4341a06d85a1c1e1ee6c9ffefc642b353a3e7ebba",
+      "size": 19000
+    },
+    {
+      "original_relative_path": "webview-ui/src/world/peachBlossomWorld.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/world/peachBlossomWorld.ts",
+      "sha256": "6169720574d8568bcd6ceea282e520d1178719862499dfdc9cc619ae778d0ec1",
+      "size": 33314
+    },
+    {
+      "original_relative_path": "webview-ui/test/association-public-document.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/association-public-document.test.ts",
+      "sha256": "b93506d839061fc069728a61416a6322d9795dd7bdb7c4b475ba76be9979977e",
+      "size": 3129
+    },
+    {
+      "original_relative_path": "webview-ui/test/connected-papers-runner.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/connected-papers-runner.ts",
+      "sha256": "2f435489889d075a7c3348d7a42432f42e7079cd0034e4c09932452a467bd01e",
+      "size": 792
+    },
+    {
+      "original_relative_path": "webview-ui/test/connected-papers.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/connected-papers.test.ts",
+      "sha256": "6373e87f7b1a9bbcb9c6bd8ceb879e8f1283094798ce1803e9240d31d506a7f0",
+      "size": 1620
+    },
+    {
+      "original_relative_path": "webview-ui/test/daydream-artifact-guard.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/daydream-artifact-guard.test.ts",
+      "sha256": "676431bba7802638dea88f1301013b0c43722bbe441f7a311ad053cf64f43344",
+      "size": 1524
+    },
+    {
+      "original_relative_path": "webview-ui/test/daydream-engine.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/daydream-engine.test.ts",
+      "sha256": "0a7e81c7b7cc1280eb1ccdaa97eb09bb519a63f3fc8cf7fcec1948e76cf85095",
+      "size": 3728
+    },
+    {
+      "original_relative_path": "webview-ui/test/daydream-prototype-runner.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/daydream-prototype-runner.ts",
+      "sha256": "a0da1a128ea86b58e2bd502f79405c8c96e86b38f637e873fb5c67bcef881ae9",
+      "size": 1249
+    },
+    {
+      "original_relative_path": "webview-ui/test/daydream-public-validation.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/daydream-public-validation.test.ts",
+      "sha256": "7a0fb718a0058b33ff621aaa3bcef90f696f9632b77a8b0fca46325d63557e5d",
+      "size": 1021
+    },
+    {
+      "original_relative_path": "webview-ui/test/question-pet-simulation.test.ts",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/test/question-pet-simulation.test.ts",
+      "sha256": "2757ab9482b6612990c91e8ac546e74ca0f81a3b941ce40cd055f4e987f2f9a0",
+      "size": 50029
+    }
+  ],
+  "full_local_worktree_preserved": false,
+  "unreadable_source": [
+    "webview-ui/src/generated/pbsLocalMemory.json",
+    "webview-ui/src/daydream/editorialBrief.ts",
+    "webview-ui/src/daydream/engine.ts",
+    "webview-ui/src/daydream/connectedPapers.ts",
+    "webview-ui/src/daydream/DaydreamPanel.tsx",
+    "webview-ui/src/daydream/daydreamWorkflow.ts",
+    "webview-ui/src/daydream/artifactGuard.ts",
+    "webview-ui/src/daydream/associationFeedback.ts",
+    "webview-ui/src/daydream/templates/officialPbsResetTemplate.ts"
+  ],
+  "modified_paths_not_published": [
+    ".gitignore",
+    "MIGRATION.md",
+    "data/personas.json",
+    "data/wiki/corpus/hackteria.md",
+    "data/wiki/interviewees/abao/links.json",
+    "data/wiki/interviewees/andreas-siagian/links.json",
+    "data/wiki/interviewees/christian-dils/links.json",
+    "data/wiki/interviewees/giulia-tomasello/links.json",
+    "data/wiki/interviewees/marc-dusseiller/links.json",
+    "data/wiki/interviewees/rully-shabara/links.json",
+    "data/wiki/interviewees/stelio-manousakis/links.json",
+    "data/wiki/interviewees/stephanie-pan/links.json",
+    "data/wiki/interviewees/svenja-keune/links.json",
+    "data/wiki/interviewees/ted-hung/links.json",
+    "data/wiki/interviewees/tincuta-heinzel/links.json",
+    "pbs_sources.json",
+    "webview-ui/package-lock.json",
+    "webview-ui/prompts/pbs-bridge-writer-system.md",
+    "webview-ui/public/assets/furniture/MULTI_MIND_CAMPFIRE/manifest.json",
+    "webview-ui/public/data/knowledge/anastassia-pistofidou.json",
+    "webview-ui/public/data/knowledge/andreas-siagian.json",
+    "webview-ui/public/data/knowledge/christian-dils.json",
+    "webview-ui/public/data/knowledge/jonathan-minchin.json",
+    "webview-ui/public/data/knowledge/stephanie-pan.json",
+    "webview-ui/public/data/knowledge/tincuta-heinzel.json"
+  ]
+}
