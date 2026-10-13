@@ -372,6 +372,30 @@
       "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/src/daydream/templates/officialPbsResetTemplate.ts",
       "sha256": "ee6ff04a84c0f048ad0d10e7d002b075f152b835a1d72045fb511428f2a4f0f1",
       "size": 3752
+    },
+    {
+      "original_relative_path": ".gitignore",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/.gitignore",
+      "sha256": "449830eee58439008f2761ca330ca350b97f202d11dc678616a1ec27f4d37edf",
+      "size": 1130
+    },
+    {
+      "original_relative_path": "webview-ui/package-lock.json",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/package-lock.json",
+      "sha256": "fcbc571a6306f4560870369abe74ad821cb2ff0ba3f23885ce290f65a2b44dee",
+      "size": 134736
+    },
+    {
+      "original_relative_path": "webview-ui/prompts/pbs-bridge-writer-system.md",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/prompts/pbs-bridge-writer-system.md",
+      "sha256": "4b80a9867cd15333becd62dd71c85ac3e7e408c065f17f609da5f8f857b8267d",
+      "size": 6240
+    },
+    {
+      "original_relative_path": "webview-ui/public/assets/furniture/MULTI_MIND_CAMPFIRE/manifest.json",
+      "preserved_path": "preservation/projects-cleanup-20261013/local-source/webview-ui/public/assets/furniture/MULTI_MIND_CAMPFIRE/manifest.json",
+      "sha256": "3247f8a88719c31e904e712dda1b510dddc73e51469e353bc0a77fb995403ff1",
+      "size": 2895
     }
   ],
   "full_local_worktree_preserved": false,
@@ -379,7 +403,6 @@
     "webview-ui/src/generated/pbsLocalMemory.json"
   ],
   "modified_paths_not_published": [
-    ".gitignore",
     "MIGRATION.md",
     "data/personas.json",
     "data/wiki/corpus/hackteria.md",
@@ -395,9 +418,6 @@
     "data/wiki/interviewees/ted-hung/links.json",
     "data/wiki/interviewees/tincuta-heinzel/links.json",
     "pbs_sources.json",
-    "webview-ui/package-lock.json",
-    "webview-ui/prompts/pbs-bridge-writer-system.md",
-    "webview-ui/public/assets/furniture/MULTI_MIND_CAMPFIRE/manifest.json",
     "webview-ui/public/data/knowledge/anastassia-pistofidou.json",
     "webview-ui/public/data/knowledge/andreas-siagian.json",
     "webview-ui/public/data/knowledge/christian-dils.json",
@@ -405,5 +425,6 @@
     "webview-ui/public/data/knowledge/stephanie-pan.json",
     "webview-ui/public/data/knowledge/tincuta-heinzel.json"
   ],
-  "recovered_source_modules": 8
+  "recovered_source_modules": 8,
+  "local_path_document_retained_only": "MIGRATION.md"
 }
