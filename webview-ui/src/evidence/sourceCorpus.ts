@@ -22,6 +22,7 @@ export interface Passage {
   kind: 'source' | 'testimony';
   capturedAt?: string | null;
   readAt?: string;
+  links?: string[];
 }
 export interface EvidencePacket {
   id: string;
@@ -31,9 +32,29 @@ export interface EvidencePacket {
   currentRequest?: boolean;
   liveChecked?: boolean;
   answeredAt?: string;
+  sourceRevision?: string;
+  retrieval?: RetrievalTrace;
   passages: Passage[];
 }
-export interface SourceCorpus { version: string; documents: SourceDocument[] }
+export interface SourceCorpus { version: string; documents: SourceDocument[]; revision?: string }
+export type ResearchIntent = 'how_to' | 'compare' | 'explain' | 'current' | 'research';
+export interface QueryPlan { original: string; intent: ResearchIntent; topics: string[]; requestedCapabilities: string[]; literalTerms: string[]; organizations: string[]; locations: string[][] }
+export interface RetrievalCandidate { sourceId: string; title: string; path: string; url: string; score: number; matchedTopics: string[]; decision: 'selected' | 'rejected'; reason: string }
+export interface RetrievalTrace { plan: QueryPlan; candidates: RetrievalCandidate[] }
+
+export function researchIntent(query: string): ResearchIntent {
+  if (/怎[麼樣].*(?:製[作做]|做|接|縫|繡|組裝)|如何.*(?:製[作做]|做|接|組裝)|製[作做].*(?:步驟|方法)|想(?:做|製作)|how (?:to|can i|do i).*(?:mak|build|connect|sew|implement)|(?:make|build) (?:a|an|my)|作り方|どうやって|製作方法|วิธี(?:ทำ|สร้าง)|ทำ.*อย่างไร|bagaimana.*(?:membuat|merakit)|wie.*(?:bau|mach|näh)/i.test(query)) return 'how_to';
+  if (/比較|差別|對照|compare|difference|versus|\bvs\b|違い|比較|perbedaan|unterschied|แตกต่าง/i.test(query)) return 'compare';
+  if (asksForCurrentInformation(query)) return 'current';
+  if (/什麼是|為什麼|原理|what is|why|explain|とは|なぜ|อธิบาย|apa itu|was ist/i.test(query)) return 'explain';
+  return 'research';
+}
+
+export function linkedUrls(text: string): string[] {
+  return [...new Set((text.match(/https?:\/\/[^\s<>"`]+/g) ?? []).map((url) => url.replace(/[),.;\]”’]+$/g, '')))].filter((url) => {
+    try { const parsed = new URL(url); return !parsed.username && !parsed.password; } catch { return false; }
+  });
+}
 export const normalizeText = (value: string) => value.normalize('NFC').replace(/\s+/gu, ' ').trim();
 export function asksForCurrentInformation(question: string): boolean {
   return /現在|目前|最近|近期|今天|明天|本週|本周|今年|\b(?:now|current|currently|recent|latest|today|tomorrow|upcoming|sekarang|terbaru|aktuell|jetzt)\b|今日|今週|今.*(?:イベント|催し)|ตอนนี้|ปัจจุบัน|วันนี้/i.test(question);
@@ -42,8 +63,10 @@ export function asksForCurrentInformation(question: string): boolean {
 // Equivalents, not topic associations: sensing never implies music or textiles.
 const CONCEPTS: string[][] = [
   ['蜂箱', '蜂巢', '蜜蜂', 'beehive', 'beehives', 'honeybee', 'honeybees', 'bienenstock', 'bienenstöcke', 'sarang lebah', '養蜂', 'ミツバチ', '巣箱', 'ผึ้ง'],
-  ['感測', '传感', 'sensor', 'sensors', 'sensoren', 'sensing', 'センサー', 'เซนเซอร์'],
-  ['電子織品', '電子紡織', '織品', 'textile', 'textiles', 'e-textile', 'e-textiles', 'テキスタイル', 'สิ่งทอ'],
+  ['感測', '传感', 'sensor', 'sensors', 'sensoren', 'sensing', 'berührungssensor', 'berührungssensoren', 'センサー', 'เซนเซอร์'],
+  ['電子織品', '電子紡織', '織品', '織物', '布料', '導電布', 'textile', 'textiles', 'fabric', 'e-textile', 'e-textiles', 'テキスタイル', '布の', '布製', 'สิ่งทอ', 'ผ้า', 'kain', 'stoff'],
+  ['conductive_material', '導電縫線', '導電繡線', '導電線', '導電布', 'conductive thread', 'conductive yarn', 'conductive fabric', 'conductive embroidery', 'conductive felt', '導電糸', '導電性', 'ด้ายนำไฟฟ้า', 'ผ้านำไฟฟ้า', 'benang konduktif', 'leitfähigem garn', 'leitfähigen faden', 'leitfähiger faden', 'leitfähige'],
+  ['touch_input', '觸控', '觸碰', '觸摸', '触摸', '電容感測', 'touch', 'touch-sensitive', 'touchscreen', 'touchpad', 'capacitive', 'タッチ', 'สัมผัส', 'sentuh', 'berührung'],
   ['駐村', '駐地', 'residency', 'residence', 'resident', 'レジデンス', 'พำนัก'],
   ['工作坊', 'workshop', 'workshops', 'ワークショップ', 'เวิร์กช็อป'],
   ['合成器', 'synth', 'synthesizer', 'synthesiser', 'シンセサイザー'],
@@ -94,11 +117,22 @@ export function queryTerms(query: string): { concepts: string[][]; words: string
   return { concepts, words: [...new Set(words)], organizations, locations };
 }
 
-export function splitDocument(document: SourceDocument): Passage[] {
+export function queryPlan(query: string): QueryPlan {
+  const terms = queryTerms(query);
+  return { original: query, intent: researchIntent(query), topics: terms.concepts.map((group) => group[0]), literalTerms: terms.words,
+    organizations: terms.organizations, locations: terms.locations,
+    requestedCapabilities: [
+      /螢幕|屏幕|顯示|display|screen|画面|ディスプレイ|หน้าจอ|layar|bildschirm/i.test(query) ? 'image_display' : '',
+      /座標|坐标|\bxy\b|coordinates|position|位置|พิกัด/i.test(query) ? 'xy_position' : '',
+      /無線|无线|wireless|bluetooth|wifi|ワイヤレス|ไร้สาย/i.test(query) ? 'wireless' : '',
+    ].filter(Boolean) };
+}
+
+export function splitDocument(document: SourceDocument, chunkSize = 1500): Passage[] {
   const passages: Passage[] = [];
   // Offsets address the exact published, normalized body; the source hash pins raw Markdown.
   for (let start = 0; start < document.body.length;) {
-    let end = Math.min(start + 1500, document.body.length);
+    let end = Math.min(start + chunkSize, document.body.length);
     if (end < document.body.length) {
       const boundary = document.body.lastIndexOf('. ', end);
       if (boundary > start + 600) end = boundary + 1;
@@ -111,7 +145,7 @@ export function splitDocument(document: SourceDocument): Passage[] {
     if (text.length >= 50) passages.push({
       id: `${document.id}-${start}`, sourceId: document.id, title: document.title,
       url: document.url, path: document.path, hash: document.hash,
-      text, start, end, kind: 'source', capturedAt: document.capturedAt,
+      text, start, end, kind: 'source', capturedAt: document.capturedAt, links: linkedUrls(text),
     });
     start = end;
     while (document.body[start] === ' ') start++;
@@ -119,8 +153,10 @@ export function splitDocument(document: SourceDocument): Passage[] {
   return passages;
 }
 
-export function retrievePassages(corpus: SourceCorpus, query: string, limit = 6): Passage[] {
+export function retrievePassages(corpus: SourceCorpus, query: string, limit = 6, trace?: RetrievalTrace): Passage[] {
   const terms = queryTerms(query);
+  const making = researchIntent(query) === 'how_to';
+  const technical = making && terms.concepts.some((group) => ['touch_input', 'conductive_material', '電子織品', '感測', '合成器', '開源硬體'].includes(group[0]));
   const wantsDates = asksForCurrentInformation(query);
   if (!terms.concepts.length && !terms.words.length && !terms.organizations.length && !terms.locations.length) return [];
   const scoreText = (title: string, text: string) => {
@@ -141,22 +177,32 @@ export function retrievePassages(corpus: SourceCorpus, query: string, limit = 6)
   };
   const candidates = corpus.documents.flatMap((document) => {
     const text = `${document.title} ${document.body}`;
+    const matchedTopics = terms.concepts.filter((group) => group.some((term) => contains(text, term))).map((group) => group[0]);
+    const entry: RetrievalCandidate = { sourceId: document.id, title: document.title, path: document.path, url: document.url, score: scoreText(document.title, text), matchedTopics, decision: 'rejected', reason: 'below_relevance' };
+    if (entry.score > 0) trace?.candidates.push(entry);
+    if (technical && /^(?:members|people|team|about us|workshops)$/i.test(document.title.trim())) { entry.reason = 'profile_or_directory_not_a_method'; return []; }
     if (terms.organizations.some((org) => !contains(`${document.family} ${text}`, org))) return [];
     if (terms.locations.some((group) => !group.some((term) => contains(text, term)))) return [];
     // All explicit topics must occur in the document. A workshop is not a substitute for a residency.
-    if (terms.concepts.some((group) => !group.some((term) => contains(text, term)))) return [];
-    const wordHits = terms.words.filter((word) => contains(text, word)).length;
-    if (terms.words.length && wordHits < Math.min(terms.words.length, 2)) return [];
+    const missing = terms.concepts.filter((group) => !group.some((term) => contains(text, term)));
+    const materialReference = technical && /meet.*material|material.*note/i.test(document.title) && missing.every((group) => group[0] === 'touch_input');
+    if (missing.length && !materialReference) { entry.reason = `missing_topics:${missing.map((group) => group[0]).join(',')}`; return []; }
+    const wording = making ? terms.words.filter((word) => !/^(?:how|make|making|build|building|with|using|interface|wie|baue|ich|mit|einen|eine|aus|und|bagaimana|membuat|dengan|dari|antarmuka|layar)$/.test(word)) : terms.words;
+    const wordHits = wording.filter((word) => contains(text, word)).length;
+    if (wording.length && wordHits < Math.min(wording.length, 2)) return [];
     const docScore = scoreText(document.title, text);
     if (!docScore && !terms.organizations.length) return [];
-    return splitDocument(document)
-      .filter((passage) => terms.concepts.every((group) => group.some((term) => contains(`${document.title} ${passage.text}`, term))))
+    return splitDocument(document, making ? 1100 : 1500)
+      .filter((passage) => making || terms.concepts.every((group) => group.some((term) => contains(`${document.title} ${passage.text}`, term))))
       .filter((passage) => terms.locations.every((group) => group.some((term) => contains(`${document.title} ${passage.text}`, term))))
-      .filter((passage) => scoreText('', passage.text) > 0 || terms.organizations.length > 0)
+      .filter((passage) => making
+        ? /\b(?:microcontroller|capacitive|conductive|sensors?|pins?|library|breakout|sketch|schematic|teensy|arduino)\b/i.test(passage.text)
+        : scoreText('', passage.text) > 0 || terms.organizations.length > 0)
       .map((passage) => {
         const dated = wantsDates && /\b20\d{2}\b/.test(passage.text);
         const calendarDate = dated && /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/i.test(passage.text);
-        return { passage, score: docScore * 0.1 + scoreText('', passage.text) + (calendarDate ? 40 : dated ? 8 : 0) };
+        const method = !making ? 0 : /\b(?:code|pins?|breakout|sketch|schematic|fasttouch|teensytouch)\b|\.ino/i.test(passage.text) ? 60 : /\b(?:library|stitch|connect|materials?)\b/i.test(passage.text) ? 30 : 0;
+        return { passage, score: docScore * (making ? 2 : 0.1) + scoreText('', passage.text) + method + (calendarDate ? 40 : dated ? 8 : 0) };
       });
   }).sort((a, b) => b.score - a.score || a.passage.sourceId.localeCompare(b.passage.sourceId) || a.passage.start - b.passage.start);
   const result: Passage[] = [];
@@ -166,12 +212,18 @@ export function retrievePassages(corpus: SourceCorpus, query: string, limit = 6)
     // Prefer pages about the place over a person's nationality in an unrelated
     // residency. Do not pad a Thai event answer with Swiss resident biographies.
     if (hasLocationTitle && !terms.locations.every((group) => group.some((term) => contains(passage.title, term)))) continue;
-    if ((counts.get(passage.sourceId) ?? 0) >= 3) continue;
+    if ((counts.get(passage.sourceId) ?? 0) >= (making ? 5 : 3)) continue;
     // Avoid duplicated flattened extracts from crawler output.
     if (result.some((other) => other.text === passage.text)) continue;
     result.push(passage);
     counts.set(passage.sourceId, (counts.get(passage.sourceId) ?? 0) + 1);
     if (result.length >= limit) break;
+  }
+  if (trace) {
+    const selected = new Set(result.map((passage) => passage.sourceId));
+    for (const candidate of trace.candidates) if (selected.has(candidate.sourceId)) { candidate.decision = 'selected'; candidate.reason = 'relevant_original_passage'; }
+    trace.candidates.sort((a, b) => Number(b.decision === 'selected') - Number(a.decision === 'selected') || b.score - a.score);
+    trace.candidates = trace.candidates.slice(0, 24);
   }
   return result;
 }

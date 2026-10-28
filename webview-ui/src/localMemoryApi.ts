@@ -4,6 +4,7 @@ import type { WikiSearchResult } from './wikiSearch.js';
 import { answerFromPacket, getEvidencePacket, loadPublicCorpus, packetLinks } from './evidence/pagesEvidence.js';
 import { retrievePassages, type EvidencePacket } from './evidence/sourceCorpus.js';
 import { answerNpcQuestion, type NpcPersonaContext } from './evidence/npcConversation.js';
+import { rememberAnswer, type AnswerRecord } from './evidence/answerRecord.js';
 
 export interface DialogueHistoryTurn {
   speaker: string;
@@ -17,6 +18,7 @@ export interface MemoryChatResponse {
   draft?: { path?: string; markdown?: string; stored?: boolean };
   status?: 'no_evidence' | 'verified' | 'unverified' | 'character';
   evidencePacket?: EvidencePacket;
+  record?: AnswerRecord;
 }
 
 function isLocalHost(): boolean {
@@ -66,7 +68,9 @@ export async function searchMemory(query: string, limit = 8): Promise<WikiSearch
 }
 
 export async function askCampfire(question: string, preferredLanguage: LanguageCode, dialogueHistory: DialogueHistoryTurn[] = []): Promise<MemoryChatResponse> {
-  return answerFromPacket(await getEvidencePacket(question, { history: dialogueHistory }), preferredLanguage);
+  const response = await answerFromPacket(await getEvidencePacket(question, { history: dialogueHistory }), preferredLanguage);
+  if (response.record) { response.record.context = { speaker: 'campfire', turns: dialogueHistory.slice(-8) }; rememberAnswer(response.record); }
+  return response;
 }
 
 export async function askNpc(args: {
@@ -78,7 +82,12 @@ export async function askNpc(args: {
   preferredLanguage: LanguageCode;
   dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
-  return answerNpcQuestion(args);
+  const response = await answerNpcQuestion(args);
+  if (response.record) {
+    response.record.context = { speaker: args.npcName, characterId: args.persona?.id, characterRole: args.persona?.displayRole ?? args.persona?.role, turns: args.dialogueHistory?.slice(-8) ?? [] };
+    rememberAnswer(response.record);
+  }
+  return response;
 }
 
 export async function createMemoryDraft(payload: {

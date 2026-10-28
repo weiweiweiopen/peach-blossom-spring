@@ -56,6 +56,8 @@ import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, searchMemory } from "./localMemoryApi.js";
 import { EVIDENCE_COPY } from "./evidence/pagesEvidence.js";
 import { SavedZines } from "./components/SavedZines.js";
+import { AnswerBody, AnswerTools } from "./components/AnswerTools.js";
+import { makeAnswerRecord, type AnswerRecord } from "./evidence/answerRecord.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -743,23 +745,6 @@ function CampfireDialogueAvatar({ label }: { label: string }) {
   );
 }
 
-function CampfireInlineLinks({ links, copy }: { links: WikiSearchResult[]; copy: { sourceLinks: string; noLinks: string } }) {
-  if (!links.length) return <p className="rpg-dialogue-source-line">{copy.noLinks}</p>;
-  return (
-    <div className="rpg-dialogue-sources" data-ui-part="body">
-      <p className="rpg-dialogue-sources-title">{copy.sourceLinks}：</p>
-      {links.slice(0, 8).map((link, index) => (
-        <div key={`${link.url}-${index.toString()}`} className="rpg-dialogue-source-line">
-          <span className="rpg-dialogue-source-index">[{link.citationIndex ?? index + 1}]</span>{' '}
-          <a href={link.url} target="_blank" rel="noreferrer">{sanitizeRealPersonReferences(link.title)}</a>
-          <span className="rpg-dialogue-source-body">：{sanitizeRealPersonReferences(link.sourceFamily)}</span>
-          <details><summary>{copy.sourceLinks}</summary><blockquote>{link.description}</blockquote></details>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 const CAMPFIRE_DIALOGUE_COPY: Record<LanguageCode, { name: string; kicker: string; subtitle: string; playerSpeaker: string; intro: string; fail: string; failError: string; needQuestion: string; sourceTitle: string; sourceLinks: string; noLinks: string; suggestions: string; placeholder: string; suggest: string; zine: string; thinking: string }> = {
   "zh-TW": {
     name: "多重心智自我火燄",
@@ -1082,7 +1067,7 @@ function CampfireDialogue({
   onOpenAssociationZine: (query?: string) => void;
   onQuestionSubmitted?: (query: string) => void;
 }) {
-  type CampfireMessage = { speaker: string; text: string; links?: WikiSearchResult[] };
+  type CampfireMessage = { speaker: string; text: string; links?: WikiSearchResult[]; record?: AnswerRecord };
   const [draft, setDraft] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState("");
@@ -1141,7 +1126,9 @@ function CampfireDialogue({
       const history = messages.slice(-8).map((message) => ({ speaker: message.speaker === copy.playerSpeaker ? 'user' : 'assistant', text: message.text }));
       const reply = await askCampfire(trimmed, language, history);
       if (version !== requestVersion.current) return;
-      setMessages((current) => [...current, { speaker: copy.name, text: sanitizeNpcTextForUi(reply.answer, language), links: reply.links }]);
+      const text = sanitizeNpcTextForUi(reply.answer, language);
+      if (reply.record) reply.record.displayAnswer = text;
+      setMessages((current) => [...current, { speaker: copy.name, text, links: reply.links, record: reply.record }]);
     } catch (err) {
       if (version !== requestVersion.current) return;
       console.warn('Public query failed', err);
@@ -1150,6 +1137,8 @@ function CampfireDialogue({
         speaker: copy.name,
         text: copy.failError,
         links: [],
+        record: makeAnswerRecord({ question: trimmed, answer: copy.failError, language, status: 'unverified', statements: [], context: { speaker: copy.name, turns: messages.slice(-8).map((message) => ({ speaker: message.speaker === copy.playerSpeaker ? 'user' : 'assistant', text: message.text })) },
+          modelTrace: [{ stage: 'request_failure', durationMs: 0, system: '', input: trimmed, error: err instanceof Error ? err.message : 'unknown_error' }] }),
       }]);
     } finally {
       if (version === requestVersion.current) setIsThinking(false);
@@ -1192,11 +1181,8 @@ function CampfireDialogue({
           <div ref={logRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
               <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
-                <p className="m-0">
-                  <span className="text-accent-bright">{message.speaker}: </span>
-                  {message.text}
-                </p>
-                {message.links && <CampfireInlineLinks links={message.links} copy={copy} />}
+                <AnswerBody record={message.record} speaker={message.speaker} text={message.text} />
+                {message.record && <AnswerTools record={message.record} />}
               </div>
             ))}
             {isThinking && <p className="rpg-dialogue-thinking text-base text-text-muted" data-ui-part="body">{copy.thinking}</p>}

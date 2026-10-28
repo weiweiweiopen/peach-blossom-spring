@@ -2,6 +2,7 @@ import type { LanguageCode } from '../i18n.js';
 import type { DialogueHistoryTurn, MemoryChatResponse } from '../localMemoryApi.js';
 import { answerFromPacket, callPublicationModel, getEvidencePacket, hasConsistentOutputLanguage, type ModelCall } from './pagesEvidence.js';
 import type { EvidencePacket } from './sourceCorpus.js';
+import { makeAnswerRecord, type ModelTrace } from './answerRecord.js';
 
 export interface NpcPersonaContext {
   id?: string; name?: string; role?: string; intro?: string;
@@ -57,32 +58,41 @@ export async function answerNpcQuestion(args: NpcQuestion, dependencies: NpcDepe
   const persona = args.persona ?? {};
   const intent = npcIntent(args.question);
   const role = persona.displayRole || persona.role || args.npcName;
-  const plain = (answer: string): MemoryChatResponse => ({ answer, links: [], evidence: [], status: 'character' });
+  const modelTrace: ModelTrace[] = [];
+  const plain = (answer: string, status: 'character' | 'no_evidence' | 'unverified' = 'character'): MemoryChatResponse => ({ answer, links: [], evidence: [], status,
+    record: makeAnswerRecord({ question: args.question, answer, language, status, statements: [], context: { speaker: args.npcName, characterId: persona.id, characterRole: role, turns: args.dialogueHistory?.slice(-8) ?? [] }, modelTrace }) });
   if (intent === 'identity') return plain([copy.identity(role), persona.opening || copy.help].join(' '));
   if (intent === 'greeting') return plain(persona.opening || copy.greeting);
   if (intent === 'thanks') return plain(copy.thanks);
   if (intent === 'help') return plain(copy.help);
   if (/訪談|interview|インタビュー|สัมภาษณ์|wawancara/i.test(args.question) &&
     (!args.transcript?.trim() || /Transcript pending|user will provide later|逐字稿待補|訪談待補/i.test(args.transcript))) {
-    return { answer: MISSING_INTERVIEW[language], links: [], evidence: [], status: 'no_evidence' };
+    return plain(MISSING_INTERVIEW[language], 'no_evidence');
   }
   const model = dependencies.model ?? callPublicationModel;
+  const conversationModel: ModelCall = async (system, input, options) => {
+    const call: ModelTrace = { stage: system.startsWith('Review') ? 'conversation_review' : 'conversation', durationMs: 0, system, input, options };
+    const start = Date.now();
+    try { const output = await model(system, input, options); call.output = output; return output; }
+    catch (error) { call.error = error instanceof Error ? error.message : 'unknown_error'; throw error; }
+    finally { call.durationMs = Date.now() - start; modelTrace.push(call); }
+  };
   if (intent === 'reflection') {
     try {
-      const result = await model(
+      const result = await conversationModel(
         `You are the selected camper in a game, speaking in ${language}. Respond naturally to an opinion, emotional or advice question. Frame suggestions as proposals, not facts or memories. Use only the supplied character profile to anchor your perspective. Do not claim external events, current activities, real visits or achievements. Conversation history resolves references but is not factual evidence. Return JSON only: {"reply":"2–4 conversational sentences"}.`,
         JSON.stringify({ question: args.question, persona, history: args.dialogueHistory?.slice(-8) ?? [] }),
       ) as { reply?: string };
       if (typeof result.reply !== 'string' || !result.reply.trim() || !hasConsistentOutputLanguage(result.reply, language)) throw new Error('invalid_dialogue');
-      const review = await model(
+      const review = await conversationModel(
         `Review a character's reflection in ${language}. Return JSON only: {"languageCorrect":true or false,"noUnsupportedFacts":true or false}. Advice and opinions are allowed; invented visits, activities, biography or external facts are not. Check against the supplied profile, not previous AI prose.`,
         JSON.stringify({ profile: persona, question: args.question, reply: result.reply }),
       ) as { languageCorrect?: boolean; noUnsupportedFacts?: boolean };
       if (review.languageCorrect !== true || review.noUnsupportedFacts !== true) throw new Error('unsupported_dialogue');
       return plain(result.reply.trim());
-    } catch { return { ...plain(copy.failed), status: 'unverified' }; }
+    } catch { return plain(copy.failed, 'unverified'); }
   }
   const packet = await (dependencies.getPacket ?? getEvidencePacket)(args.question, { transcript: args.transcript, transcriptUrl: args.transcriptUrl, history: args.dialogueHistory });
   return answerFromPacket(packet, language,
-    `Speak conversationally in FIRST PERSON as this selected camper. The supplied testimony passages belong to this avatar's own interview: attribute them as "in my interview, I said..." in the selected language, never "he/she said" or "the interviewee said". For external source pages, say what you found, not that you personally took part. Voice context only, not additional factual evidence: ${JSON.stringify({ role: persona.role, intro: persona.intro })}. Do not borrow another person's experiences. Preserve uncertainty.`, model);
+    `Speak conversationally as this selected camper. ONLY passages explicitly marked kind=testimony are this avatar's own interview; attribute those as "in my interview, I said...". Passages marked kind=source are EXTERNAL documents, NOT an interview; say "the source describes" or "I found", NEVER "in my interview" and never claim you personally took part. Voice context only, not additional factual evidence: ${JSON.stringify({ role: persona.role, intro: persona.intro })}. Do not borrow another person's experiences. Preserve uncertainty.`, model);
 }

@@ -1,6 +1,7 @@
 import type { LanguageCode } from '../i18n.js';
 import { EVIDENCE_COPY } from '../evidence/pagesEvidence.js';
 import type { EvidencePacket, SupportedStatement } from '../evidence/sourceCorpus.js';
+import { ANSWER_COPY, type AnswerRecord } from '../evidence/answerRecord.js';
 
 export interface EvidencePublication {
   id: string;
@@ -9,6 +10,7 @@ export interface EvidencePublication {
   createdAt: string;
   packet: EvidencePacket;
   sections: Array<{ title: string; statements: SupportedStatement[] }>;
+  answerRecord?: AnswerRecord;
 }
 export const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
@@ -30,18 +32,20 @@ export function publicationFontCss(): string {
 export function renderEvidencePublication(publication: EvidencePublication, fontCss = ''): string {
   const { packet, language } = publication;
   const copy = EVIDENCE_COPY[language];
-  if (!publication.sections.length || publication.sections.some((section) => !section.statements.length)) throw new Error('empty_publication');
-  const used = [...new Set(publication.sections.flatMap((section) => section.statements.map((claim) => claim.passageId)))];
+  const research = publication.answerRecord?.research;
+  if (!research && (!publication.sections.length || publication.sections.some((section) => !section.statements.length))) throw new Error('empty_publication');
+  const used = research ? publication.answerRecord!.sources.map((source) => source.sourceId) : [...new Set(publication.sections.flatMap((section) => section.statements.map((claim) => claim.passageId)))];
   const citation = (id: string) => {
     if (!packet.passages.some((passage) => passage.id === id)) throw new Error('missing_publication_passage');
-    return used.indexOf(id) + 1;
+    return used.indexOf(research ? packet.passages.find((passage) => passage.id === id)!.sourceId : id) + 1;
   };
-  const sections = publication.sections.map((section, index) => `<section class="page" data-official-template="01-pbs-reset-title-kinetic.html"><header class="top"><span class="no">${String(index + 1).padStart(2, '0')}</span><h2 class="label">${escapeHtml(section.title)}</h2></header><article class="sheet">${index === 0 ? `<div class="titleBlock"><h1>${escapeHtml(publication.query)}</h1></div>` : ''}<div class="body">${section.statements.map((claim) => `<p>${claim.kind === 'testimony' ? `<small>${escapeHtml(copy.testimony)} · </small>` : ''}${escapeHtml(claim.text)} <a class="citation" href="#reading-${citation(claim.passageId)}">[${citation(claim.passageId)}]</a></p>`).join('')}</div></article></section>`).join('');
+  const sections = (research ? research.sections.map((section) => ({ title: section.title, content: section.items.map((item) => `<p>${item.role !== 'fact' ? `<small>${escapeHtml(ANSWER_COPY[language][item.role])} · </small>` : ''}${escapeHtml(item.text)} ${[...new Set(item.supports.map((support) => citation(support.passageId)))].map((number) => `<a class="citation" href="#reading-${number}">[${number}]</a>`).join(' ')}</p>`).join('') })) : publication.sections.map((section) => ({ title: section.title, content: section.statements.map((claim) => `<p>${claim.kind === 'testimony' ? `<small>${escapeHtml(copy.testimony)} · </small>` : ''}${escapeHtml(claim.text)} <a class="citation" href="#reading-${citation(claim.passageId)}">[${citation(claim.passageId)}]</a></p>`).join('') }))).map((section, index) => `<section class="page" data-official-template="01-pbs-reset-title-kinetic.html"><header class="top"><span class="no">${String(index + 1).padStart(2, '0')}</span><h2 class="label">${escapeHtml(section.title)}</h2></header><article class="sheet">${index === 0 ? `<div class="titleBlock"><h1>${escapeHtml(publication.query)}</h1></div>` : ''}<div class="body">${section.content}</div></article></section>`).join('');
   const references = used.map((id) => {
-    const passage = packet.passages.find((entry) => entry.id === id)!;
+    const source = research ? publication.answerRecord!.sources.find((entry) => entry.sourceId === id) : undefined;
+    const passage = source?.passages[0] ?? packet.passages.find((entry) => entry.id === id)!;
     const safeUrl = /^https?:\/\//i.test(passage.url) ? passage.url : '';
-    const quotes = [...new Set(publication.sections.flatMap((section) => section.statements.filter((claim) => claim.passageId === id).map((claim) => claim.quote)))];
-    return `<li id="reading-${citation(id)}" data-passage-id="${escapeHtml(passage.id)}" data-source-hash="${escapeHtml(passage.hash)}">${safeUrl ? `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(passage.title)}</a>` : escapeHtml(copy.testimony)}${quotes.map((quote) => `<blockquote>${escapeHtml(quote)}</blockquote>`).join('')}</li>`;
+    const quotes = source ? [...new Set(source.quotations.map((quote) => quote.quote))] : [...new Set(publication.sections.flatMap((section) => section.statements.filter((claim) => claim.passageId === id).map((claim) => claim.quote)))];
+    return `<li id="reading-${citation(passage.id)}" data-passage-id="${escapeHtml(passage.id)}" data-source-hash="${escapeHtml(passage.hash)}">${safeUrl ? `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(passage.title)}</a>` : escapeHtml(copy.testimony)}${quotes.map((quote) => `<blockquote>${escapeHtml(quote)}</blockquote>`).join('')}</li>`;
   }).join('');
   const font = language === 'ja' ? '"Noto Sans JP", sans-serif' : language === 'th' ? '"Noto Sans Thai", sans-serif' : language === 'zh-TW' ? '"Noto Sans TC", sans-serif' : '"FS Pixel Sans", system-ui, sans-serif';
   return `<!doctype html><html lang="${language}" data-publication-id="${escapeHtml(publication.id)}" data-evidence-id="${escapeHtml(packet.id)}" data-corpus-version="${escapeHtml(packet.corpusVersion)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(publication.query)}</title><style>${fontCss}

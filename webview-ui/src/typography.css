@@ -1,13 +1,14 @@
 @import '@fontsource/noto-sans-jp/400.css';
 @import '@fontsource/noto-sans-thai/400.css';
 @import '@fontsource/noto-sans-tc/400.css';
+@import '@fontsource/noto-sans/400.css';
 
 /* A named important layer outranks legacy unlayered !important rules regardless
    of selector specificity. This is the sole runtime typography owner; features
    choose semantic slots, never add language-specific size overrides. */
 @layer pbs-typography {
   .pbs-interaction-root {
-    --ui-font: 'FS Pixel Sans', system-ui, sans-serif;
+    --ui-font: 'Noto Sans', system-ui, sans-serif;
     --ui-type-title: 30px;
     --ui-type-subtitle: 20px;
     --ui-type-body: 18px;

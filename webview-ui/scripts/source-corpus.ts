@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { normalizeText, type SourceCorpus, type SourceDocument } from '../src/evidence/sourceCorpus.js';
 
-export function buildSourceCorpus(repoRoot: string): SourceCorpus {
+export function buildSourceCorpus(repoRoot: string, revision = process.env.GITHUB_SHA || 'main'): SourceCorpus {
   const root = path.join(repoRoot, 'Sources/Raw');
   const documents: SourceDocument[] = [];
   function visit(directory: string) {
@@ -29,5 +29,5 @@ export function buildSourceCorpus(repoRoot: string): SourceCorpus {
     }
   }
   visit(root);
-  return { version: createHash('sha256').update(documents.map((item) => `${item.path}:${item.hash}`).join('\n')).digest('hex'), documents };
+  return { version: createHash('sha256').update(documents.map((item) => `${item.path}:${item.hash}`).join('\n')).digest('hex'), documents, revision };
 }

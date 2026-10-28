@@ -41,6 +41,24 @@
 .pbs-publication-shelf ul { list-style:none;margin:0;padding:12px;max-width:360px;max-height:45vh;overflow:auto;border:3px solid #315b63;background:#fffaf0; }
 .pbs-publication-shelf li { margin-bottom:12px;overflow-wrap:anywhere; }
 .pbs-publication-shelf a { display:block;color:inherit;text-decoration:underline; }
+.answer-research section { margin:0 0 1.2em; }
+.answer-research h3 { margin:.5em 0 .35em!important;color:#234d54;font-weight:600!important; }
+.answer-research .answer-item { margin:0 0 .7em!important;overflow-wrap:anywhere; }
+.answer-kind { color:#315b63; }
+.answer-citation { color:#176e61;text-decoration:underline;white-space:nowrap; }
+.answer-tools { margin-top:12px;display:grid;gap:8px;min-width:0; }
+.answer-tools details { min-width:0; }
+.answer-tools summary { cursor:pointer;min-height:36px;padding:6px 8px;border:1px solid #315b63;background:#fffaf0;overflow-wrap:anywhere; }
+.answer-tools ol,.answer-tools ul { list-style:none!important;margin:0!important;padding:6px 8px!important;display:grid;gap:10px; }
+.answer-tools li { min-width:0;overflow-wrap:anywhere; }
+.answer-source-heading { display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap; }
+.answer-source-heading a,.answer-related a,.answer-source-actions a { color:#176e61;text-decoration:underline;overflow-wrap:anywhere; }
+.answer-source-actions { margin-left:12px; }
+.answer-quotations summary { border:0;background:transparent;padding:4px 0; }
+.answer-quotations blockquote { white-space:pre-wrap;overflow-wrap:anywhere;border-left:3px solid #69c3aa;margin:6px 0!important;padding:4px 8px!important; }
+.answer-export-button,.answer-export-menu button { width:fit-content;max-width:100%;border:2px solid #315b63;background:#fcf46b;color:#234d54;cursor:pointer; }
+.answer-export-menu { display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;padding:10px;border:2px solid #315b63;background:#fffaf0; }
+.answer-export-menu p { width:100%;margin:0!important; }
 @media(max-width:700px),(pointer:coarse) {
   .pbs-interaction-root { --ui-icon-button-size:48px;--ui-icon-button-glyph:24px; }
   .pbs-interaction-root .rpg-dialogue-panel { width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:12px!important; }

@@ -1,7 +1,8 @@
-import { EVIDENCE_COPY, getEvidencePacket, writeSupportedStatements } from '../evidence/pagesEvidence.js';
+import { answerFromPacket, EVIDENCE_COPY, getEvidencePacket, writeSupportedStatements } from '../evidence/pagesEvidence.js';
 import type { LanguageCode } from '../i18n.js';
 import { extractPublicArtifactText } from './artifactGuard.js';
 import { publicationFontCss, renderEvidencePublication, savePublication, type EvidencePublication } from './evidencePublication.js';
+import { cachedAnswer } from '../evidence/answerRecord.js';
 import type { AssociationHtmlLayoutVariant } from './publicArtifactHtml.js';
 
 export interface BrowserAssociationResult {
@@ -22,6 +23,17 @@ export async function generateBrowserAssociationZine(query: string, language: La
     throw error;
   }
   onProgress?.(copy.writing);
+  let existing = cachedAnswer(query, language);
+  if ((!existing || existing.evidencePacket?.id !== packet.id) && packet.retrieval && ['how_to', 'compare'].includes(packet.retrieval.plan.intent)) {
+    const response = await answerFromPacket(packet, language, options.writingStyle ? `Style only: ${options.writingStyle.slice(0, 1200)}` : '');
+    if (response.status !== 'verified') throw new Error(response.answer);
+    existing = response.record;
+  }
+  if (existing?.research?.verified && existing.evidencePacket?.id === packet.id) {
+    const publication: EvidencePublication = { id: `zine-${crypto.randomUUID()}`, query, language, createdAt: new Date().toISOString(), packet, sections: [], answerRecord: existing };
+    const html = renderEvidencePublication(publication, publicationFontCss());
+    return { title: query, html, visibleText: extractPublicArtifactText(html), variant: 'pbs-reset-title', requestId: publication.id, evidenceId: packet.id, saved: savePublication(publication, html) };
+  }
   // The same immutable packet used by the answer is used by every writing/review stage.
   const instructions = ['Write a short, coherent publication answering the question. Evidence determines length; do not pad.',
     options.writingStyle ? `Style only, never additional facts: ${options.writingStyle.slice(0, 1200)}` : '',

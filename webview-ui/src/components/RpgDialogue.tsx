@@ -11,6 +11,8 @@ import { publicCamperName, sanitizeNpcTextForUi, sanitizeRealPersonReferences } 
 import type { WikiSearchResult } from '../wikiSearch.js';
 import { localizedNpcRole } from '../npcRoles.js';
 import { getEvidencePacket } from '../evidence/pagesEvidence.js';
+import { cachedAnswer, makeAnswerRecord, type AnswerRecord } from '../evidence/answerRecord.js';
+import { AnswerBody, AnswerTools } from './AnswerTools.js';
 
 interface Persona {
   id: string;
@@ -40,6 +42,7 @@ interface DialogueMessage {
   text: string;
   evidence?: ChatEvidence[];
   links?: WikiSearchResult[];
+  record?: AnswerRecord;
 }
 
 const DIALOGUE_CONTEXT_TURNS = 8;
@@ -480,18 +483,6 @@ function makeSuggestedQuestions(language: LanguageCode, persona: Persona, _trans
 }
 
 
-function sourceLinksLabel(language: LanguageCode): string {
-  const copy: Record<LanguageCode, string> = {
-    'zh-TW': '相關連結',
-    en: 'Source links',
-    id: 'Tautan sumber',
-    de: 'Quellenlinks',
-    ja: '関連リンク',
-    th: 'ลิงก์แหล่งที่มา',
-  };
-  return copy[language];
-}
-
 function zineLabel(language: LanguageCode): string {
   const copy: Record<LanguageCode, string> = {
     'zh-TW': 'Wiki 小誌',
@@ -667,11 +658,18 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         dialogueHistory,
       });
       if (version !== requestVersion.current) return;
-      setMessages((prev) => [...prev, { speaker: publicCamperName(), role: 'assistant', text: sanitizeNpcTextForUi(answer.answer, language), evidence: answer.evidence, links: answer.links.filter((link) => link.url !== '#') }]);
+      const text = sanitizeNpcTextForUi(answer.answer, language);
+      if (answer.record) answer.record.displayAnswer = text;
+      setMessages((prev) => [...prev, { speaker: publicCamperName(), role: 'assistant', text, evidence: answer.evidence, links: answer.links.filter((link) => link.url !== '#'), record: answer.record }]);
     } catch (err) {
       if (version !== requestVersion.current) return;
       console.warn('NPC dialogue error:', err);
       setError(t(language, 'dialogue.requestFailed'));
+      const text = t(language, 'dialogue.requestFailed');
+      const record = makeAnswerRecord({ question: trimmed, answer: text, language, status: 'unverified', statements: [],
+        context: { speaker: publicCamperName(), characterId: persona.id, characterRole: localizedNpcRole(persona.id, language, persona.role), turns: dialogueHistory },
+        modelTrace: [{ stage: 'request_failure', durationMs: 0, system: '', input: trimmed, error: err instanceof Error ? err.message : 'unknown_error' }] });
+      setMessages((prev) => [...prev, { speaker: publicCamperName(), role: 'assistant', text, record }]);
     } finally {
       if (version === requestVersion.current) setIsLoading(false);
     }
@@ -698,7 +696,7 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
       const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
       if (version !== requestVersion.current) return;
       if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
-      await getEvidencePacket(trimmed, {
+      if (!cachedAnswer(trimmed, language)?.evidencePacket) await getEvidencePacket(trimmed, {
         transcript: language === 'zh-TW' ? dialogueKnowledge.transcript_zh || dialogueKnowledge.transcript_en : dialogueKnowledge.transcript_en || dialogueKnowledge.transcript_zh,
         transcriptUrl: `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/docs/transcripts_${language === 'zh-TW' ? 'zh' : 'en'}/${persona.id}.md`,
         history: recentDialogueHistory(messages, player.name),
@@ -738,23 +736,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
           <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
               <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body" data-speaker-role={message.role}>
-                <p className="m-0">
-                  <span className="text-accent-bright">{message.role === 'user' ? message.speaker : publicCamperName()}: </span>
-                  {message.role === 'user' ? message.text : sanitizeRealPersonReferences(message.text)}
-                </p>
-                {message.links && message.links.length > 0 && (
-                  <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>
-                    <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
-                    <div className="rpg-dialogue-source-link-list">
-                      {message.links.map((link, linkIndex) => (
-                        <div key={`${link.url}-${linkIndex.toString()}`}><a href={link.url} target="_blank" rel="noreferrer">
-                          <span>[{link.citationIndex ?? linkIndex + 1}] {sanitizeRealPersonReferences(link.title)}</span>
-                          <em>{link.sourceFamily}</em>
-                        </a><blockquote>{link.description}</blockquote></div>
-                      ))}
-                    </div>
-                  </details>
-                )}
+                <AnswerBody record={message.record} speaker={message.role === 'user' ? message.speaker : publicCamperName()} text={message.role === 'user' ? message.text : sanitizeRealPersonReferences(message.text)} />
+                {message.record && <AnswerTools record={message.record} />}
               </div>
             ))}
             {isLoading && (
