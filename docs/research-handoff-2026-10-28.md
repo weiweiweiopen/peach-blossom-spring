@@ -41,6 +41,9 @@ CSS values, not whether the answer enabled the requested task.
 - Latin-script UI now uses bundled Noto Sans rather than a visually smaller pixel
   face, matching the Noto CJK and Thai families. Typography slots, mobile layout
   and icon sizing remain centralized.
+- The multiplayer encounter panel is temporarily hidden while NPC, campfire or
+  publication windows are open, preserving the encounter state while preventing
+  its input from intercepting the research-window controls.
 
 ## Verification
 

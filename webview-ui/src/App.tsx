@@ -4678,7 +4678,7 @@ function App() {
         </div>
       )}
 
-      {playerProfile && multiplayerConfig && encounterPanel && (
+      {playerProfile && multiplayerConfig && encounterPanel && !activeDialoguePersona && !isCampfireDialogueOpen && !isSplitOpen && (
         <div className="pbs-encounter-panel" role="dialog" aria-modal="false" aria-labelledby="pbs-encounter-title">
           <div className="pbs-encounter-panel-header">
             <div>
