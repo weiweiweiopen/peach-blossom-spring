@@ -9,6 +9,10 @@ test('public artifact guard accepts artwork-facing language', () => {
   );
 });
 
+test('public artifact guard does not reject genuine open source terminology', () => {
+  assert.doesNotThrow(() => assertCleanPublicArtifact('<h1>Open Source Beehives</h1><p>Read the original sources.</p>'));
+});
+
 test('public artifact guard rejects backend workflow labels in visible text', () => {
   const result = inspectPublicArtifact('<main><h1>Step 1 recursive linked-source reading</h1><p>source trail</p></main>');
 

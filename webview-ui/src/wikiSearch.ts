@@ -9,6 +9,7 @@ export interface WikiSearchResult {
   description: string;
   sourceFamily: string;
   score: number;
+  citationIndex?: number;
 }
 
 function compact(text: string, max = 220): string {

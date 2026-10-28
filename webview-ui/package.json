@@ -13,13 +13,18 @@
     "test": "node --import tsx/esm --test test/*.test.ts",
     "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs",
     "check:public-artifact": "node scripts/check-public-artifact.mjs",
-    "check:visual-layout": "node scripts/check-visual-layout-guards.mjs"
+    "check:visual-layout": "node scripts/check-visual-layout-guards.mjs",
+    "test:pages": "node scripts/verify-pages.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@fontsource/noto-sans-jp": "^5.3.1",
+    "@fontsource/noto-sans-tc": "^5.3.1",
+    "@fontsource/noto-sans-thai": "^5.3.0",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^25.5.2",
     "@types/pngjs": "^6.0.5",

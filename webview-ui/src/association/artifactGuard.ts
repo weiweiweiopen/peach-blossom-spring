@@ -23,7 +23,7 @@ export const PUBLIC_ARTIFACT_BANNED_PATTERNS: RegExp[] = [
   /\bprovenance\b/i,
   /\bsource\s*trail\b/i,
   /\bsource\s*graph\b/i,
-  /\bsources?\b/i,
+  // Ordinary words such as “open source” are factual content, not internal labels.
   /\bbackend\b/i,
   /\binternal\s+process\b/i,
   /\bprompt\b/i,

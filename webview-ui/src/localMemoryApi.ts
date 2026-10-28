@@ -1,6 +1,8 @@
 import type { LanguageCode } from './i18n.js';
 import type { ChatEvidence } from './localChatbot.js';
 import type { WikiSearchResult } from './wikiSearch.js';
+import { answerFromPacket, getEvidencePacket, loadPublicCorpus, packetLinks } from './evidence/pagesEvidence.js';
+import { retrievePassages, type EvidencePacket } from './evidence/sourceCorpus.js';
 
 export interface DialogueHistoryTurn {
   speaker: string;
@@ -12,6 +14,8 @@ export interface MemoryChatResponse {
   evidence: ChatEvidence[];
   links: WikiSearchResult[];
   draft?: { path?: string; markdown?: string; stored?: boolean };
+  status?: 'no_evidence' | 'verified' | 'unverified';
+  evidencePacket?: EvidencePacket;
 }
 
 function isLocalHost(): boolean {
@@ -26,28 +30,12 @@ function configuredMemoryApiBaseUrl(): string {
 }
 
 export function canUseLocalMemoryServer(): boolean {
-  return isLocalHost() || configuredMemoryApiBaseUrl().length > 0;
+  return true; // The versioned Pages corpus works on both the public site and local preview.
 }
 
 function endpoint(path: string): string {
   const base = configuredMemoryApiBaseUrl();
   return base ? `${base}${path}` : path;
-}
-
-function stripReaderFacingSyntax(text: string): string {
-  return text
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/__([^_]+)__/g, '$1')
-    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
-    .replace(/^\s{0,3}[-*+]\s+/gm, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function cleanMemoryChatResponse(response: MemoryChatResponse): MemoryChatResponse {
-  return { ...response, answer: stripReaderFacingSyntax(response.answer) };
 }
 
 async function postJson<T>(path: string, payload: unknown): Promise<T> {
@@ -72,13 +60,12 @@ async function postJson<T>(path: string, payload: unknown): Promise<T> {
 }
 
 export async function searchMemory(query: string, limit = 8): Promise<WikiSearchResult[]> {
-  const data = await postJson<{ results: WikiSearchResult[] }>('/api/memory/search', { query, limit });
-  return data.results;
+  const corpus = await loadPublicCorpus();
+  return packetLinks({ id: 'search', query, corpusVersion: corpus.version, passages: retrievePassages(corpus, query, limit) });
 }
 
-export async function askCampfire(question: string, preferredLanguage: LanguageCode): Promise<MemoryChatResponse> {
-  const response = await postJson<MemoryChatResponse>('/api/chat/campfire', { question, preferredLanguage });
-  return cleanMemoryChatResponse(response);
+export async function askCampfire(question: string, preferredLanguage: LanguageCode, dialogueHistory: DialogueHistoryTurn[] = []): Promise<MemoryChatResponse> {
+  return answerFromPacket(await getEvidencePacket(question, { history: dialogueHistory }), preferredLanguage);
 }
 
 export async function askNpc(args: {
@@ -86,11 +73,12 @@ export async function askNpc(args: {
   npcName: string;
   persona?: unknown;
   transcript?: string;
+  transcriptUrl?: string;
   preferredLanguage: LanguageCode;
   dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
-  const response = await postJson<MemoryChatResponse>('/api/chat/npc', args);
-  return cleanMemoryChatResponse(response);
+  return answerFromPacket(await getEvidencePacket(args.question, { transcript: args.transcript, transcriptUrl: args.transcriptUrl, history: args.dialogueHistory }),
+    args.preferredLanguage, 'Speak conversationally in first person where supported. Do not borrow another person’s experiences. Attribute interview accounts and preserve uncertainty.');
 }
 
 export async function createMemoryDraft(payload: {

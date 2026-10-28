@@ -54,6 +54,8 @@ import {
 } from "./multiplayerPresence.js";
 import { OfficeCanvas } from "./office/components/OfficeCanvas.js";
 import { askCampfire, searchMemory } from "./localMemoryApi.js";
+import { EVIDENCE_COPY } from "./evidence/pagesEvidence.js";
+import { SavedZines } from "./components/SavedZines.js";
 import { EditorState } from "./office/editor/editorState.js";
 import { EditorToolbar } from "./office/editor/EditorToolbar.js";
 import { OfficeState } from "./office/engine/officeState.js";
@@ -747,11 +749,12 @@ function CampfireInlineLinks({ links, copy }: { links: WikiSearchResult[]; copy:
     <div className="rpg-dialogue-sources" data-ui-part="body">
       <p className="rpg-dialogue-sources-title">{copy.sourceLinks}：</p>
       {links.slice(0, 8).map((link, index) => (
-        <p key={`${link.url}-${index.toString()}`} className="rpg-dialogue-source-line">
-          <span className="rpg-dialogue-source-index">[{index + 1}]</span>{' '}
+        <div key={`${link.url}-${index.toString()}`} className="rpg-dialogue-source-line">
+          <span className="rpg-dialogue-source-index">[{link.citationIndex ?? index + 1}]</span>{' '}
           <a href={link.url} target="_blank" rel="noreferrer">{sanitizeRealPersonReferences(link.title)}</a>
           <span className="rpg-dialogue-source-body">：{sanitizeRealPersonReferences(link.sourceFamily)}</span>
-        </p>
+          <details><summary>{copy.sourceLinks}</summary><blockquote>{link.description}</blockquote></details>
+        </div>
       ))}
     </div>
   );
@@ -1085,6 +1088,7 @@ function CampfireDialogue({
   const [error, setError] = useState("");
   const [showSuggestedQuestions, setShowSuggestedQuestions] = useState(false);
   const logRef = useRef<HTMLDivElement | null>(null);
+  const requestVersion = useRef(0);
   const copy = CAMPFIRE_DIALOGUE_COPY[language];
   const fallbackSuggestedQuestions = useMemo(() => shuffleCopy(COMMUNITY_QUERY_PROMPTS[language]).slice(0, 9), [language]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(fallbackSuggestedQuestions);
@@ -1095,6 +1099,13 @@ function CampfireDialogue({
       text: copy.intro,
     },
   ]);
+  useEffect(() => {
+    requestVersion.current++;
+    setMessages([{ speaker: CAMPFIRE_DIALOGUE_COPY[language].name, text: CAMPFIRE_DIALOGUE_COPY[language].intro }]);
+    setError('');
+    setIsThinking(false);
+    return () => { requestVersion.current++; };
+  }, [language]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -1123,20 +1134,25 @@ function CampfireDialogue({
     setDraft("");
     setError("");
     setIsThinking(true);
+    const version = requestVersion.current;
     setMessages((current) => [...current, { speaker: copy.playerSpeaker, text: trimmed }]);
     onQuestionSubmitted?.(trimmed);
     try {
-      const reply = await askCampfire(trimmed, language);
+      const history = messages.slice(-8).map((message) => ({ speaker: message.speaker === copy.playerSpeaker ? 'user' : 'assistant', text: message.text }));
+      const reply = await askCampfire(trimmed, language, history);
+      if (version !== requestVersion.current) return;
       setMessages((current) => [...current, { speaker: copy.name, text: sanitizeNpcTextForUi(reply.answer, language), links: reply.links }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "PBS memory API is unavailable.");
+      if (version !== requestVersion.current) return;
+      console.warn('Public query failed', err);
+      setError(EVIDENCE_COPY[language].failed);
       setMessages((current) => [...current, {
         speaker: copy.name,
         text: copy.failError,
         links: [],
       }]);
     } finally {
-      setIsThinking(false);
+      if (version === requestVersion.current) setIsThinking(false);
     }
   }
 
@@ -1269,6 +1285,8 @@ async function importAssociationGenerator() {
 function attachZineIframeControls(iframe: HTMLIFrameElement): void {
   const doc = iframe.contentDocument;
   if (!doc) return;
+  // Evidence publications own their responsive layout and await fonts before print.
+  if (doc.documentElement.dataset.publicationId) return;
   if (window.matchMedia("(max-width: 700px), (pointer: coarse)").matches && !doc.getElementById("pbs-mobile-zine-readable")) {
     const style = doc.createElement("style");
     style.id = "pbs-mobile-zine-readable";
@@ -3577,16 +3595,16 @@ function App() {
   }, [activeDispatchPets, selectedDispatchPet]);
 
   if (!hasStarted) {
-    return <RetroBootScreen onStart={handleBootStart} language={selectedLanguage} onLanguageChange={handleLanguageChange} />;
+    return <div className="pbs-interaction-root" data-language={selectedLanguage}><RetroBootScreen onStart={handleBootStart} language={selectedLanguage} onLanguageChange={handleLanguageChange} /></div>;
   }
 
 
   if (!layoutReady || isPostBootLoading) {
     return (
-      <div className="boot-loading-screen" role="status" aria-live="polite">
+      <div className="boot-loading-screen pbs-interaction-root" data-language={selectedLanguage} role="status" aria-live="polite">
         <div className="boot-loading-card pbs-frame F3 pbs-frame-f3">
-          <p className="boot-loading-title">Peach Blossom Spring</p>
-          <p className="boot-loading-copy">Loading Peach Blossom Spring...</p>
+          <p className="boot-loading-title" data-ui-part="title">Peach Blossom Spring</p>
+          <p className="boot-loading-copy" data-ui-part="body">{t(selectedLanguage, 'common.loading')}</p>
           <span className="boot-loading-dots" aria-hidden="true" />
         </div>
       </div>
@@ -3619,6 +3637,7 @@ function App() {
             : undefined,
       }}
     >
+      <SavedZines language={selectedLanguage} />
       {playerProfile && (
         <div className="pbs-world-map-layer">
           <OfficeCanvas

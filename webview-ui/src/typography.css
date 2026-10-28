@@ -1,0 +1,61 @@
+@import '@fontsource/noto-sans-jp/400.css';
+@import '@fontsource/noto-sans-thai/400.css';
+@import '@fontsource/noto-sans-tc/400.css';
+
+/* A named important layer outranks legacy unlayered !important rules regardless
+   of selector specificity. This is the sole runtime typography owner; features
+   choose semantic slots, never add language-specific size overrides. */
+@layer pbs-typography {
+  .pbs-interaction-root {
+    --ui-font: 'FS Pixel Sans', system-ui, sans-serif;
+    --ui-type-title: 30px;
+    --ui-type-subtitle: 20px;
+    --ui-type-body: 18px;
+    --ui-type-field: 18px;
+    --ui-type-button: 16px;
+    --ui-type-caption: 14px;
+    --ui-type-micro: 12px;
+    --ui-line-title: 1.3;
+    --ui-line-subtitle: 1.4;
+    --ui-line-body: 1.6;
+    --ui-line-field: 1.5;
+    --ui-line-button: 1.4;
+    --ui-line-caption: 1.5;
+    --ui-line-micro: 1.4;
+    font-family: var(--ui-font) !important;
+    font-size: var(--ui-type-body) !important;
+    line-height: var(--ui-line-body) !important;
+  }
+  .pbs-interaction-root[data-language='zh-TW'] { --ui-font: 'Noto Sans TC', sans-serif; }
+  .pbs-interaction-root[data-language='ja'] { --ui-font: 'Noto Sans JP', sans-serif; }
+  .pbs-interaction-root[data-language='th'] { --ui-font: 'Noto Sans Thai', sans-serif; --ui-line-body: 1.75; --ui-line-field: 1.65; }
+
+  .pbs-interaction-root * {
+    font-family: var(--ui-font) !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    font-size-adjust: none !important;
+    font-synthesis: none !important;
+    font-weight: 400 !important;
+  }
+  .pbs-interaction-root :is(h1, .type-display) { font-size: clamp(32px, 5vw, 60px) !important; line-height: 1.2 !important; }
+  .pbs-interaction-root :is(h2, .type-title, .type-heading) { font-size: var(--ui-type-title) !important; line-height: var(--ui-line-title) !important; }
+  .pbs-interaction-root :is(h3, .type-subheading) { font-size: var(--ui-type-subtitle) !important; line-height: var(--ui-line-subtitle) !important; }
+  .pbs-interaction-root :is(.type-body, .type-body-large, .rpg-dialogue-log, .rpg-dialogue-message, .rpg-dialogue-thinking) { font-size: var(--ui-type-body) !important; line-height: var(--ui-line-body) !important; }
+  .pbs-interaction-root :is(.type-label, .type-caption, .text-xs, .text-sm) { font-size: var(--ui-type-caption) !important; line-height: var(--ui-line-caption) !important; }
+  .pbs-interaction-root :is(.type-micro, small) { font-size: var(--ui-type-micro) !important; line-height: var(--ui-line-micro) !important; }
+  .pbs-interaction-root :is(button, input, textarea, select) { font: inherit !important; }
+  .pbs-interaction-root [data-ui-part='title'] { font-size: var(--ui-type-title) !important; line-height: var(--ui-line-title) !important; }
+  .pbs-interaction-root [data-ui-part='subtitle'] { font-size: var(--ui-type-subtitle) !important; line-height: var(--ui-line-subtitle) !important; }
+  .pbs-interaction-root [data-ui-part='body'] { font-size: var(--ui-type-body) !important; line-height: var(--ui-line-body) !important; }
+  .pbs-interaction-root [data-ui-part='caption'] { font-size: var(--ui-type-caption) !important; line-height: var(--ui-line-caption) !important; }
+  .pbs-interaction-root [data-ui-part='field'] { font-size: var(--ui-type-field) !important; line-height: var(--ui-line-field) !important; }
+  .pbs-interaction-root [data-ui-part='button-label'], .pbs-interaction-root [data-ui-control='text-button'], .pbs-interaction-root .global-language-options button { font-size: var(--ui-type-button) !important; line-height: var(--ui-line-button) !important; }
+  .pbs-interaction-root [data-ui-part='micro'] { font-size: var(--ui-type-micro) !important; line-height: var(--ui-line-micro) !important; }
+  .pbs-interaction-root [data-ui-control='icon-button'] { font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important; font-size: var(--ui-icon-button-glyph) !important; line-height: 1 !important; }
+  .pbs-interaction-root [data-ui-control='window-action'] { font-size: var(--ui-window-button-glyph) !important; line-height: 1 !important; }
+  .pbs-interaction-root .rpg-dialogue-message p { white-space: pre-line; }
+  @media(max-width:700px) {
+    .pbs-interaction-root { --ui-type-title: 24px; --ui-type-subtitle: 18px; }
+  }
+}

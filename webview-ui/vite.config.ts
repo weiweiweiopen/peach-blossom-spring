@@ -5,6 +5,25 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
 import type { Plugin } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
+import { buildSourceCorpus } from './scripts/source-corpus.js';
+
+function publicSourceCorpusPlugin(): Plugin {
+  let cached: string | undefined;
+  const corpus = () => cached ??= JSON.stringify(buildSourceCorpus(path.resolve(__dirname, '..')));
+  return {
+    name: 'public-source-corpus',
+    configureServer(server) {
+      server.middlewares.use('/source-corpus.json', (_req, res) => {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.end(corpus());
+      });
+      server.watcher.on('change', (file) => { if (file.includes('/Sources/Raw/')) cached = undefined; });
+    },
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'source-corpus.json', source: corpus() });
+    },
+  };
+}
 
 import { buildAssetIndex, buildFurnitureCatalog } from '../shared/assets/build.ts';
 import {
@@ -339,7 +358,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname, '');
 
   return {
-    plugins: [tailwindcss(), react(), browserMockAssetsPlugin(), deepSeekChatProxyPlugin(env.VITE_DEEPSEEK_API_KEY ?? '')],
+    plugins: [tailwindcss(), react(), publicSourceCorpusPlugin(), browserMockAssetsPlugin(), deepSeekChatProxyPlugin(env.VITE_DEEPSEEK_API_KEY ?? '')],
     build: {
       outDir: '../dist/webview',
       emptyOutDir: true,

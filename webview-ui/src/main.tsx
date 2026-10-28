@@ -1,5 +1,6 @@
 import './index.css';
 import './ui-system.css';
+import './typography.css';
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

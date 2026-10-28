@@ -106,7 +106,7 @@ function extractKnowledgePoints(transcript: string): string[] {
 
 // The shared Cloudflare proxy caps each message at 16K characters. Keep each
 // source slice small enough that the final system message stays under the cap.
-const TRANSCRIPT_CHAR_BUDGET = 5200;
+const TRANSCRIPT_CHAR_BUDGET = 60000; // Search full interviews before selecting bounded passages.
 const SYSTEM_MESSAGE_CHAR_BUDGET = 14000;
 
 function trimTranscript(raw: string): string {

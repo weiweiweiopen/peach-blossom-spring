@@ -2,26 +2,26 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildSemanticVectorContext, generateConnectedPapersMarkdown } from "../src/association/connectedPapers.js";
-import { associationCorpus } from "../src/association/corpus.js";
+import { graphCorpus } from './fixtures/graph-corpus.js';
 
 test("connected-paper report is grounded in exported source cards", () => {
-  const markdown = generateConnectedPapersMarkdown(associationCorpus);
+  const markdown = generateConnectedPapersMarkdown(graphCorpus);
 
   assert.match(markdown, /## 1\. Related Articles/);
   assert.match(markdown, /## 2\. Missing Bridges/);
   assert.match(markdown, /## 3\. Future Papers/);
   assert.match(markdown, /Hackteria/);
   assert.match(markdown, /SGMK/);
-  assert.match(markdown, /How To Get What You Want \/ Kobakant/);
+  assert.match(markdown, /DIY microscopy community lab/);
   assert.match(markdown, /只使用 `sourceCards\.json`/);
   assert.doesNotMatch(markdown, /Hackteria 不會被預設為水，除非 page 文字或 keyword 真的出現 water。[\s\S]*Hackteria = water/);
 });
 
 test("connected-paper semantic context acts as a grounded vector layer", () => {
-  const anchors = associationCorpus.cards
-    .filter((card) => card.source === "htgwyw" && /wearable sound/i.test(card.title))
+  const anchors = graphCorpus.cards
+    .filter((card) => card.source === "hackteria")
     .slice(0, 2);
-  const context = buildSemanticVectorContext(associationCorpus, anchors);
+  const context = buildSemanticVectorContext(graphCorpus, anchors);
 
   assert.ok(context.anchorCards.length > 0);
   assert.ok(context.relatedCards.length > 0);

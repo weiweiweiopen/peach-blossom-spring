@@ -26,6 +26,14 @@ function PixelPetSprite({ role }: { role: HomePetRole }) {
 }
 
 function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
+  const copy: Record<LanguageCode, { memory: string; description: string; mode: string }> = {
+    'zh-TW': { memory: '原文記憶', description: '科學藝術社群的 LLM Wiki', mode: '世界控制臺模式' },
+    en: { memory: 'Original texts', description: 'An LLM wiki for science and art communities', mode: 'World console mode' },
+    id: { memory: 'Teks asli', description: 'Wiki LLM untuk komunitas sains dan seni', mode: 'Mode konsol dunia' },
+    de: { memory: 'Originaltexte', description: 'Ein LLM-Wiki für Wissenschaft und Kunst', mode: 'Weltkonsolenmodus' },
+    ja: { memory: '原文の記憶', description: '科学と芸術のコミュニティのための LLM Wiki', mode: 'ワールドコンソールモード' },
+    th: { memory: 'ความทรงจำต้นฉบับ', description: 'วิกิ LLM สำหรับชุมชนวิทยาศาสตร์และศิลปะ', mode: 'โหมดคอนโซลโลก' },
+  };
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -37,17 +45,17 @@ function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
       <div className="retro-boot-overlay" role="dialog" aria-label="Retro boot screen" data-language={language}>
       <div className="retro-boot-stage pbs-frame F1 pbs-frame-f1">
         <div className="retro-sticker-bar">
-          <span>PBS-2026.6.1</span>
-          <span className="retro-version-stack"><span>LOCAL MEMORY</span></span>
+          <span>PBS-2026.10.28</span>
+          <span className="retro-version-stack"><span>{copy[language].memory}</span></span>
         </div>
 
         <div className="retro-screen">
           <div className="retro-title-card" data-language={language}>
             <p className="retro-kicker">Non-Governmental Matters</p>
             <h1>{t(language, "home.title")}</h1>
-            <p>A LLM WIKI FOR SCIENCE ART COMMUNITY</p>
+            <p>{copy[language].description}</p>
             <button className="retro-start-button" type="button" onClick={onStart} onKeyDown={handleKeyDown} autoFocus>
-              PRESS START
+              {t(language, 'home.startButton')}
             </button>
           </div>
 
@@ -62,7 +70,7 @@ function BootScreenOverlay({ onStart, language }: RetroBootScreenProps) {
 
         <div className="retro-console-label">
           <span>Wise Mouse Culture</span>
-          <span>WORLD CONSOLE MODE</span>
+          <span>{copy[language].mode}</span>
         </div>
       </div>
     </div>

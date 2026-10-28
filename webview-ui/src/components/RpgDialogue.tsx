@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { KnowledgeBase } from '../deepseekClient.js';
-import { askDeepSeekPersonaWithEvidence, loadKnowledgeBase } from '../deepseekClient.js';
+import { loadKnowledgeBase } from '../deepseekClient.js';
 import { type LanguageCode, t } from '../i18n.js';
-import { askNpc, canUseLocalMemoryServer, type DialogueHistoryTurn } from '../localMemoryApi.js';
-import { buildTranscriptEvidenceChunks, retrieveNpcEvidence, type ChatEvidence, rankEvidence } from '../localChatbot.js';
+import { askNpc, type DialogueHistoryTurn } from '../localMemoryApi.js';
+import { buildTranscriptEvidenceChunks, rankEvidence, type ChatEvidence } from '../localChatbot.js';
 import { getCharacterSprites } from '../office/sprites/spriteData.js';
 import { Direction, type SpriteData } from '../office/types.js';
 import { publicCamperName, sanitizeNpcTextForUi, sanitizeRealPersonReferences } from '../privacy.js';
-import { searchWikiPages, searchWikiPagesWithHints, type WikiSearchResult } from '../wikiSearch.js';
+import type { WikiSearchResult } from '../wikiSearch.js';
+import { localizedNpcRole } from '../npcRoles.js';
+import { getEvidencePacket } from '../evidence/pagesEvidence.js';
 
 interface Persona {
   id: string;
@@ -34,6 +36,7 @@ interface DialogueAvatar {
 
 interface DialogueMessage {
   speaker: string;
+  role?: 'user' | 'assistant';
   text: string;
   evidence?: ChatEvidence[];
   links?: WikiSearchResult[];
@@ -41,11 +44,11 @@ interface DialogueMessage {
 
 const DIALOGUE_CONTEXT_TURNS = 8;
 
-function recentDialogueHistory(messages: DialogueMessage[]): DialogueHistoryTurn[] {
+function recentDialogueHistory(messages: DialogueMessage[], playerName: string): DialogueHistoryTurn[] {
   return messages
     .filter((message) => message.text.trim())
     .slice(-DIALOGUE_CONTEXT_TURNS)
-    .map((message) => ({ speaker: message.speaker, text: message.text.trim() }));
+    .map((message) => ({ speaker: message.role ?? (message.speaker === playerName ? 'user' : 'assistant'), text: message.text.trim() }));
 }
 
 interface RpgDialogueProps {
@@ -501,34 +504,6 @@ function zineLabel(language: LanguageCode): string {
   return copy[language];
 }
 
-function buildPersonaTranscriptAnswer(language: LanguageCode, persona: Persona, topic: string, transcriptEvidence: ChatEvidence[]): string {
-  const response = persona.responses[topic] || persona.intro;
-  const snippets = transcriptEvidence
-    .slice(0, 2)
-    .map((item) => cleanQuestionPart(item.text, 92))
-    .filter(Boolean);
-  const evidenceJoined = snippets.map((snippet, index) => `(${index + 1}) ${snippet}`).join(language === 'zh-TW' || language === 'ja' ? '；' : '; ');
-  const evidenceCopy: Record<LanguageCode, string> = {
-    'zh-TW': snippets.length ? `\n\n我記得訪談裡還有兩個線索：${evidenceJoined}` : '',
-    en: snippets.length ? `\n\nI also remember these interview traces: ${evidenceJoined}` : '',
-    id: snippets.length ? `\n\nSaya juga mengingat jejak wawancara ini: ${evidenceJoined}` : '',
-    de: snippets.length ? `\n\nIch erinnere außerdem diese Interviewspuren: ${evidenceJoined}` : '',
-    ja: snippets.length ? `\n\nインタビューには、さらにこの手がかりがあります：${evidenceJoined}` : '',
-    th: snippets.length ? `\n\nฉันยังจำร่องรอยจากบทสัมภาษณ์เหล่านี้ได้: ${evidenceJoined}` : '',
-  };
-  const localizedLead: Record<LanguageCode, string> = {
-    'zh-TW': snippets.length
-      ? `我先不把這題丟給搜尋鬼。對我來說，重點會落在可觸摸、可重做、也不把人累壞的小尺度實作。`
-      : `我先把問題縮小到一個能活下來的尺度：先做一個可重做的小版本，再看誰願意一起修、一起分享。`,
-    en: response,
-    id: `Saya akan mengecilkannya dulu menjadi praktik yang bisa disentuh, diulang, dan tidak menghabiskan orang-orangnya.`,
-    de: `Ich würde es zuerst auf eine berührbare, wiederholbare Praxis verkleinern, die die Beteiligten nicht ausbrennt.`,
-    ja: `まず、触れられて、作り直せて、人を燃え尽きさせない小さな実践に縮めて考えます。`,
-    th: `ฉันจะย่อมันให้เป็นการทดลองเล็ก ๆ ที่จับต้องได้ ทำซ้ำได้ และไม่ทำให้คนทำงานหมดแรงก่อน`,
-  };
-  return `${localizedLead[language]}${evidenceCopy[language]}`;
-}
-
 function wukirMusicLabel(language: LanguageCode): string {
   const copy: Record<LanguageCode, string> = {
     'zh-TW': '🎧 聽 camper 的音樂',
@@ -587,6 +562,7 @@ function npcWritingStylePrompt(persona: Persona, knowledge: KnowledgeBase | null
 }
 
 export function RpgDialogue({ persona, player, npcAvatar, topicLabels, language, onClose, onOpenMusic, onSimEvent, onOpenAssociationZine }: RpgDialogueProps) {
+  const requestVersion = useRef(0);
   const [messages, setMessages] = useState<DialogueMessage[]>([]);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -611,15 +587,19 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
   }, [persona]);
 
   useEffect(() => {
+    requestVersion.current++;
+    setIsLoading(false);
     setMessages([
       {
         speaker: publicCamperName(),
+        role: 'assistant',
         text: sanitizeNpcTextForUi(makeIntroMessage(persona, language), language),
       },
     ]);
     setQuestion('');
     setError('');
     setAreSuggestionsOpen(false);
+    return () => { requestVersion.current++; };
   }, [language, persona]);
 
   useEffect(() => {
@@ -664,66 +644,35 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
 
     setError('');
     setIsLoading(true);
-    const dialogueHistory = recentDialogueHistory(messages);
-    setMessages((prev) => [...prev, { speaker: player.name, text: trimmed }]);
+    const version = requestVersion.current;
+    const dialogueHistory = recentDialogueHistory(messages, player.name);
+    setMessages((prev) => [...prev, { speaker: player.name, role: 'user', text: trimmed }]);
     try {
       const topic = resolveTopic(trimmed);
       onSimEvent?.(trimmed, topic);
       const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
+      if (version !== requestVersion.current) return;
       if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
-      const transcriptCandidates = buildTranscriptEvidenceChunks(
-        `${dialogueKnowledge.transcript_zh}\n${dialogueKnowledge.transcript_en}`,
-        dialogueKnowledge.id,
-        dialogueKnowledge.name,
-      );
-      const transcriptEvidence = rankEvidence(`${trimmed}
-${topic}`, transcriptCandidates, 4);
-      const npcEvidence = retrieveNpcEvidence({
-        message: trimmed,
-        retrievalContext: topic,
-        knowledge: dialogueKnowledge,
+      const transcript = language === 'zh-TW'
+        ? dialogueKnowledge.transcript_zh || dialogueKnowledge.transcript_en
+        : dialogueKnowledge.transcript_en || dialogueKnowledge.transcript_zh;
+      const answer = await askNpc({
+        question: trimmed,
+        npcName: publicCamperName(),
+        persona: { id: persona.id, name: publicCamperName(), role: sanitizeRealPersonReferences(persona.role), intro: sanitizeRealPersonReferences(persona.intro), responses: persona.responses },
+        transcript,
+        transcriptUrl: `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/docs/transcripts_${language === 'zh-TW' ? 'zh' : 'en'}/${persona.id}.md`,
+        preferredLanguage: language,
+        dialogueHistory,
       });
-      const mergedEvidence = [...npcEvidence, ...transcriptEvidence]
-        .filter((item, index, array) => array.findIndex((other) => other.id === item.id) === index)
-        .slice(0, 6);
-      const transcript = mergedEvidence.map((item) => `${item.label}
-${item.text}`).join('\n\n');
-      const links = searchWikiPages(trimmed, persona.id, 8);
-      if (canUseLocalMemoryServer()) {
-        const answer = await askNpc({
-          question: trimmed,
-          npcName: publicCamperName(),
-          persona: { id: persona.id, name: publicCamperName(), role: sanitizeRealPersonReferences(persona.role), intro: sanitizeRealPersonReferences(persona.intro), responses: persona.responses },
-          transcript,
-          preferredLanguage: language,
-          dialogueHistory,
-        });
-        const resolvedLinks = answer.links.length ? answer.links : searchWikiPagesWithHints(trimmed, answer.answer, persona.id, 8);
-        setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizeNpcTextForUi(answer.answer, language), evidence: answer.evidence, links: resolvedLinks }]);
-      } else {
-        try {
-          const answer = await askDeepSeekPersonaWithEvidence({
-            playerName: player.name,
-            question: trimmed,
-            knowledge: dialogueKnowledge,
-            preferredLanguage: language,
-            evidence: mergedEvidence,
-            dialogueHistory,
-          });
-          const sanitizedAnswer = sanitizeNpcTextForUi(answer, language);
-          setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizedAnswer, evidence: mergedEvidence, links: links.length ? links : searchWikiPagesWithHints(trimmed, sanitizedAnswer, persona.id, 8) }]);
-        } catch (deepseekError) {
-          console.warn('NPC DeepSeek answer failed; using transcript fallback.', deepseekError);
-          const fallbackText = buildPersonaTranscriptAnswer(language, persona, topic, transcriptEvidence);
-          const sanitizedFallbackText = sanitizeNpcTextForUi(fallbackText, language);
-          setMessages((prev) => [...prev, { speaker: publicCamperName(), text: sanitizedFallbackText, links: links.length ? links : searchWikiPagesWithHints(trimmed, sanitizedFallbackText, persona.id, 8) }]);
-        }
-      }
+      if (version !== requestVersion.current) return;
+      setMessages((prev) => [...prev, { speaker: publicCamperName(), role: 'assistant', text: sanitizeNpcTextForUi(answer.answer, language), evidence: answer.evidence, links: answer.links.filter((link) => link.url !== '#') }]);
     } catch (err) {
+      if (version !== requestVersion.current) return;
       console.warn('NPC dialogue error:', err);
       setError(t(language, 'dialogue.requestFailed'));
     } finally {
-      setIsLoading(false);
+      if (version === requestVersion.current) setIsLoading(false);
     }
   }
 
@@ -742,9 +691,23 @@ ${item.text}`).join('\n\n');
   async function handleOpenZine(): Promise<void> {
     const trimmed = question.trim();
     if (!trimmed || isLoading || !onOpenAssociationZine) return;
-    const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
-    if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
-    onOpenAssociationZine(trimmed, npcWritingStylePrompt(persona, dialogueKnowledge, trimmed));
+    const version = requestVersion.current;
+    setIsLoading(true);
+    try {
+      const dialogueKnowledge = loadedKnowledge ?? (await loadKnowledgeBase(persona));
+      if (version !== requestVersion.current) return;
+      if (!loadedKnowledge) setLoadedKnowledge(dialogueKnowledge);
+      await getEvidencePacket(trimmed, {
+        transcript: language === 'zh-TW' ? dialogueKnowledge.transcript_zh || dialogueKnowledge.transcript_en : dialogueKnowledge.transcript_en || dialogueKnowledge.transcript_zh,
+        transcriptUrl: `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/docs/transcripts_${language === 'zh-TW' ? 'zh' : 'en'}/${persona.id}.md`,
+        history: recentDialogueHistory(messages, player.name),
+      });
+      if (version === requestVersion.current) onOpenAssociationZine(trimmed, npcWritingStylePrompt(persona, dialogueKnowledge, trimmed));
+    } catch {
+      if (version === requestVersion.current) setError(t(language, 'dialogue.requestFailed'));
+    } finally {
+      if (version === requestVersion.current) setIsLoading(false);
+    }
   }
 
   return (
@@ -762,7 +725,7 @@ ${item.text}`).join('\n\n');
                 {persona.id === 'wukir-suryadi' && <WukirMusicButton language={language} onOpenMusic={onOpenMusic} />}
               </div>
               <h2 className="rpg-dialogue-name pbs-frame-title text-2xl leading-none" data-ui-part="title">{publicCamperName()}</h2>
-              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{sanitizeRealPersonReferences(persona.role)}</p>
+              <p className="rpg-dialogue-role pbs-frame-subtitle text-xl text-text-muted mt-2" data-ui-part="subtitle">{sanitizeRealPersonReferences(localizedNpcRole(persona.id, language, persona.role))}</p>
             </div>
           </div>
           <button className="rpg-dialogue-x pbs-frame-action" data-ui-control="window-action" type="button" onClick={onClose}>
@@ -783,10 +746,10 @@ ${item.text}`).join('\n\n');
                     <summary>{sourceLinksLabel(language)} ({message.links.length})</summary>
                     <div className="rpg-dialogue-source-link-list">
                       {message.links.map((link, linkIndex) => (
-                        <a key={`${link.url}-${linkIndex.toString()}`} href={link.url} target="_blank" rel="noreferrer">
-                          <span>[{linkIndex + 1}] {sanitizeRealPersonReferences(link.title)}</span>
+                        <div key={`${link.url}-${linkIndex.toString()}`}><a href={link.url} target="_blank" rel="noreferrer">
+                          <span>[{link.citationIndex ?? linkIndex + 1}] {sanitizeRealPersonReferences(link.title)}</span>
                           <em>{link.sourceFamily}</em>
-                        </a>
+                        </a><blockquote>{link.description}</blockquote></div>
                       ))}
                     </div>
                   </details>

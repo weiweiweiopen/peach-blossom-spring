@@ -4,6 +4,7 @@ import test from 'node:test';
 import { associationCorpus } from '../src/association/corpus.js';
 import { generateAssociationReport, parseSeedKeywords } from '../src/association/engine.js';
 import { generatePrototypeWikiPage } from '../src/association/prototypeMarkdown.js';
+import { graphCorpus } from './fixtures/graph-corpus.js';
 
 test('association parser extracts seed keywords', () => {
   assert.deepEqual(parseSeedKeywords('DIY microscopy, handmade sensors, sensors!').slice(0, 3), [
@@ -25,7 +26,7 @@ test('association parser maps Chinese seed terms to corpus keywords', () => {
 test('association report retrieves source cards and generates cited futures', () => {
   const report = generateAssociationReport(
     'A curatorial note about DIY microscopy, bio art, wet labs, and community workshops.',
-    associationCorpus,
+    graphCorpus,
   );
 
   assert.ok(report.matchedCards.length > 0);
