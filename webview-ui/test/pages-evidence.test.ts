@@ -70,13 +70,34 @@ test('out-of-range citation and fabricated quotation are rejected', () => {
 });
 test('independent review can reject a claim even with a genuine quotation', async () => {
   let calls = 0;
-  const model: ModelCall = async () => ++calls === 1 ? { statements: [{ ...statement, text: '全部感測器現在均已完成。' }] } : { supported: false, languageCorrect: true };
+  const model: ModelCall = async () => ++calls % 2 === 1 ? { statements: [{ ...statement, text: '全部感測器現在均已完成。' }] } : { supported: false, languageCorrect: true };
   const result = await answerFromPacket(packet, 'zh-TW', '', model);
-  assert.equal(calls, 2); assert.equal(result.status, 'unverified'); assert.doesNotMatch(result.answer, /均已完成/);
+  assert.equal(calls, 4); assert.equal(result.status, 'unverified'); assert.doesNotMatch(result.answer, /均已完成/);
+});
+test('one repair uses the same evidence and review feedback rather than publishing the rejected draft', async () => {
+  let calls = 0;
+  const seen: string[] = [];
+  const claims = await writeSupportedStatements(packet, 'zh-TW', '', async (_system, user) => {
+    calls++;
+    const input = JSON.parse(user);
+    seen.push(...input.passages.map((item: { id: string }) => item.id));
+    if (calls === 1) return { statements: [{ ...statement, text: '全部感測器現在均已完成。' }] };
+    if (calls === 2) return { supported: false, languageCorrect: true, issues: ['Statement 1 changes development into completion.'] };
+    if (calls === 3) { assert.match(input.correction, /development into completion/); return { statements: [statement] }; }
+    return { supported: true, languageCorrect: true, issues: [] };
+  });
+  assert.equal(calls, 4); assert.equal(claims[0].text, statement.text);
+  assert.ok(seen.every((id) => packet.passages.some((passage) => passage.id === id)));
+});
+test('transport failure is not retried as an evidence repair', async () => {
+  let calls = 0;
+  await assert.rejects(writeSupportedStatements(packet, 'zh-TW', '', async () => { calls++; throw new Error('chat_http_502'); }), /chat_http_502/);
+  assert.equal(calls, 1);
 });
 test('wrong-language review fails closed, without canned replacement facts', async () => {
   let calls = 0;
-  await assert.rejects(writeSupportedStatements(packet, 'th', '', async () => ++calls === 1 ? { statements: [statement] } : { supported: true, languageCorrect: false }), /wrong_output_language|unsupported_claim/);
+  await assert.rejects(writeSupportedStatements(packet, 'th', '', async () => { calls++; return { statements: [statement] }; }), /wrong_output_language/);
+  assert.equal(calls, 2);
 });
 test('deployed Japanese/Chinese mixed-language failure is rejected even if a model would approve it', () => {
   assert.equal(hasConsistentOutputLanguage('原文當時描述、同プロジェクトはセンサーキットを開発中だった。', 'ja'), false);

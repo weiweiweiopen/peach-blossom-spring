@@ -3,6 +3,7 @@ import type { ChatEvidence } from './localChatbot.js';
 import type { WikiSearchResult } from './wikiSearch.js';
 import { answerFromPacket, getEvidencePacket, loadPublicCorpus, packetLinks } from './evidence/pagesEvidence.js';
 import { retrievePassages, type EvidencePacket } from './evidence/sourceCorpus.js';
+import { answerNpcQuestion, type NpcPersonaContext } from './evidence/npcConversation.js';
 
 export interface DialogueHistoryTurn {
   speaker: string;
@@ -14,7 +15,7 @@ export interface MemoryChatResponse {
   evidence: ChatEvidence[];
   links: WikiSearchResult[];
   draft?: { path?: string; markdown?: string; stored?: boolean };
-  status?: 'no_evidence' | 'verified' | 'unverified';
+  status?: 'no_evidence' | 'verified' | 'unverified' | 'character';
   evidencePacket?: EvidencePacket;
 }
 
@@ -71,14 +72,13 @@ export async function askCampfire(question: string, preferredLanguage: LanguageC
 export async function askNpc(args: {
   question: string;
   npcName: string;
-  persona?: unknown;
+  persona?: NpcPersonaContext;
   transcript?: string;
   transcriptUrl?: string;
   preferredLanguage: LanguageCode;
   dialogueHistory?: DialogueHistoryTurn[];
 }): Promise<MemoryChatResponse> {
-  return answerFromPacket(await getEvidencePacket(args.question, { transcript: args.transcript, transcriptUrl: args.transcriptUrl, history: args.dialogueHistory }),
-    args.preferredLanguage, 'Speak conversationally in first person where supported. Do not borrow another person’s experiences. Attribute interview accounts and preserve uncertainty.');
+  return answerNpcQuestion(args);
 }
 
 export async function createMemoryDraft(payload: {

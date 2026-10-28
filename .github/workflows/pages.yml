@@ -32,13 +32,15 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
         working-directory: webview-ui
-      - run: npm run test:pages
+      - run: npm run test:pages && npm run test:npc
         working-directory: webview-ui
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: pages-evidence-qa
-          path: webview-ui/test-results/pages
+          path: |
+            webview-ui/test-results/pages
+            webview-ui/test-results/npc
           if-no-files-found: ignore
       - uses: actions/configure-pages@v5
         with:

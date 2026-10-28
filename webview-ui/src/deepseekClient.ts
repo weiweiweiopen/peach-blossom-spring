@@ -69,18 +69,20 @@ interface PersonaShape {
 // pull every LLM source file before the player talks to an NPC.
 type TranscriptModuleLoader = () => Promise<string>;
 
-const transcriptEnModules = import.meta.glob('../../docs/transcripts_en/*.md?raw', {
+const transcriptEnModules = import.meta.glob('../../docs/transcripts_en/*.md', {
+  query: '?raw',
   import: 'default',
 }) as Record<string, TranscriptModuleLoader>;
 
-const transcriptZhModules = import.meta.glob('../../docs/transcripts_zh/*.md?raw', {
+const transcriptZhModules = import.meta.glob('../../docs/transcripts_zh/*.md', {
+  query: '?raw',
   import: 'default',
 }) as Record<string, TranscriptModuleLoader>;
 
 function modulesByPersonaId(modules: Record<string, TranscriptModuleLoader>): Record<string, TranscriptModuleLoader> {
   const byPersonaId: Record<string, TranscriptModuleLoader> = {};
   for (const [filepath, loader] of Object.entries(modules)) {
-    const match = /\/([^/]+)\.md\?raw$/.exec(filepath);
+    const match = /\/([^/]+)\.md(?:\?raw)?$/.exec(filepath);
     if (match) {
       byPersonaId[match[1]] = loader;
     }
@@ -93,7 +95,8 @@ const transcriptZhByPersonaId = modulesByPersonaId(transcriptZhModules);
 
 async function loadTranscript(loaders: Record<string, TranscriptModuleLoader>, personaId: string): Promise<string> {
   const load = loaders[personaId];
-  return load ? await load() : '';
+  const text = load ? await load() : '';
+  return /Transcript pending|user will provide later|逐字稿待補|訪談待補/i.test(text) ? '' : text;
 }
 
 function extractKnowledgePoints(transcript: string): string[] {
@@ -104,29 +107,9 @@ function extractKnowledgePoints(transcript: string): string[] {
     .filter((line) => line.length > 0 && !line.startsWith('#'));
 }
 
-// The shared Cloudflare proxy caps each message at 16K characters. Keep each
-// source slice small enough that the final system message stays under the cap.
-const TRANSCRIPT_CHAR_BUDGET = 60000; // Search full interviews before selecting bounded passages.
+// Retain full interview text in memory. The evidence layer selects bounded
+// passages before model requests; loading must not silently cut later questions.
 const SYSTEM_MESSAGE_CHAR_BUDGET = 14000;
-
-function trimTranscript(raw: string): string {
-  if (raw.length <= TRANSCRIPT_CHAR_BUDGET) return raw;
-  // Prefer to keep the English half (typically appears first under
-  // "## Interview (EN)") and as much of the Chinese half as fits.  Split
-  // on the Chinese section header and assemble proportionally.
-  const zhHeader = '## 訪談（中文）';
-  const idx = raw.indexOf(zhHeader);
-  if (idx === -1) {
-    return raw.slice(0, TRANSCRIPT_CHAR_BUDGET) + '\n\n[…transcript truncated]';
-  }
-  const en = raw.slice(0, idx);
-  const zh = raw.slice(idx);
-  const enBudget = Math.min(en.length, Math.floor(TRANSCRIPT_CHAR_BUDGET * 0.6));
-  const zhBudget = TRANSCRIPT_CHAR_BUDGET - enBudget;
-  const enKept = en.slice(0, enBudget);
-  const zhKept = zh.slice(0, zhBudget);
-  return `${enKept}\n[…EN truncated]\n\n${zhKept}\n[…ZH truncated]`;
-}
 
 function trimMessage(raw: string): string {
   if (raw.length <= SYSTEM_MESSAGE_CHAR_BUDGET) return raw;
@@ -333,8 +316,8 @@ export async function askDeepSeekPersonaRewrite({
 }
 
 function makeBaseKnowledge(persona: PersonaShape, transcriptEnRaw: string, transcriptZhRaw: string): KnowledgeBase {
-  const transcript_en = trimTranscript(transcriptEnRaw);
-  const transcript_zh = trimTranscript(transcriptZhRaw);
+  const transcript_en = transcriptEnRaw;
+  const transcript_zh = transcriptZhRaw;
   const knowledge = extractKnowledgePoints(transcript_en || transcript_zh);
   const systemPrompt = [
     `You are role-playing as an anonymous ${publicCamperName()} avatar (${sanitizeRealPersonReferences(persona.role)}) inside a Peach Blossom Spring / 桃花源 RPG dialogue scene.`,

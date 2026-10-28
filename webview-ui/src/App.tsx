@@ -146,7 +146,7 @@ function readQaUiParams(): { enabled: boolean; language: LanguageCode | null; pa
 
 function qaPlayerProfile(language: LanguageCode): PlayerProfile {
   return {
-    name: language === "zh-TW" ? "小貓 PBS QA" : "PBS QA Cat",
+    name: new URLSearchParams(window.location.search).get('qa-player')?.slice(0, 40) || (language === "zh-TW" ? "小貓 PBS QA" : "PBS QA Cat"),
     palette: 1,
     avatarTitle: "Tamagotchi agent",
     currentRole: "Interface tester",
@@ -2153,7 +2153,11 @@ function App() {
     setLanguageMenuOpen(false);
 
     if (qaUi.panel === "computer") setIsCampfireDialogueOpen(true);
-    if (qaUi.panel === "npc") setActiveDialogueId(1);
+    if (qaUi.panel === "npc") {
+      const requested = new URLSearchParams(window.location.search).get('qa-npc');
+      const index = personas.findIndex((persona) => persona.id === requested);
+      setActiveDialogueId(index >= 0 ? index + 1 : 1);
+    }
     if (qaUi.panel === "pet") setSelectedPet(pet);
     if (qaUi.panel === "language") {
       setIsCampfireDialogueOpen(true);

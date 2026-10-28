@@ -659,7 +659,8 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
       const answer = await askNpc({
         question: trimmed,
         npcName: publicCamperName(),
-        persona: { id: persona.id, name: publicCamperName(), role: sanitizeRealPersonReferences(persona.role), intro: sanitizeRealPersonReferences(persona.intro), responses: persona.responses },
+        persona: { id: persona.id, name: publicCamperName(), role: sanitizeRealPersonReferences(persona.role), intro: sanitizeRealPersonReferences(persona.intro), responses: persona.responses,
+          displayRole: sanitizeRealPersonReferences(localizedNpcRole(persona.id, language, persona.role)), opening: sanitizeNpcTextForUi(makeIntroMessage(persona, language), language) },
         transcript,
         transcriptUrl: `https://github.com/weiweiweiopen/peach-blossom-spring/blob/main/docs/transcripts_${language === 'zh-TW' ? 'zh' : 'en'}/${persona.id}.md`,
         preferredLanguage: language,
@@ -736,10 +737,10 @@ ${loadedKnowledge?.transcript_en ?? ""}`), [language, loadedKnowledge, persona])
         <div className="rpg-dialogue-main flex-1 min-h-0 flex gap-6 mb-6">
           <div ref={messageLogRef} className="rpg-dialogue-log pbs-frame-body rpg-message-scroll flex-1 overflow-auto bg-bg/70 border border-border px-10 py-9 text-xl" data-ui-part="body">
             {messages.map((message, index) => (
-              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body">
+              <div key={`${message.speaker}-${index.toString()}`} className="rpg-dialogue-message text-xl leading-relaxed mb-6 last:mb-0" data-ui-part="body" data-speaker-role={message.role}>
                 <p className="m-0">
-                  <span className="text-accent-bright">{sanitizeRealPersonReferences(message.speaker)}: </span>
-                  {sanitizeRealPersonReferences(message.text)}
+                  <span className="text-accent-bright">{message.role === 'user' ? message.speaker : publicCamperName()}: </span>
+                  {message.role === 'user' ? message.text : sanitizeRealPersonReferences(message.text)}
                 </p>
                 {message.links && message.links.length > 0 && (
                   <details className="rpg-dialogue-source-links" aria-label={sourceLinksLabel(language)}>

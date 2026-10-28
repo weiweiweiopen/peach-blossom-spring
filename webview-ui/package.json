@@ -14,7 +14,8 @@
     "check:i18n": "node --import tsx/esm scripts/check-i18n.mjs",
     "check:public-artifact": "node scripts/check-public-artifact.mjs",
     "check:visual-layout": "node scripts/check-visual-layout-guards.mjs",
-    "test:pages": "node scripts/verify-pages.mjs"
+    "test:pages": "node scripts/verify-pages.mjs",
+    "test:npc": "node scripts/verify-npc.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
