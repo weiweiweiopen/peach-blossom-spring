@@ -43,6 +43,10 @@ export interface RetrievalCandidate { sourceId: string; title: string; path: str
 export interface RetrievalTrace { plan: QueryPlan; candidates: RetrievalCandidate[] }
 
 export function researchIntent(query: string): ResearchIntent {
+  // “How did you turn workshops into a community method?” is an interview /
+  // social-method question, not a request for hardware assembly instructions.
+  if (/社群方法|社區方法|社群(?:的)?(?:運作|組織|合作|經營|實踐|方法)|community (?:method|practice|approach|organizing)|organis(?:e|ing).*community/i.test(query) &&
+      !/怎[麼樣].*(?:製[作做]|組裝|接線|縫製)|如何.*(?:製作|組裝|接線)|\b(?:build|wire|assemble)\b/i.test(query)) return 'explain';
   if (/怎[麼樣].*(?:製[作做]|做|接|縫|繡|組裝)|如何.*(?:製[作做]|做|接|組裝)|製[作做].*(?:步驟|方法)|想(?:做|製作)|how (?:to|can i|do i).*(?:mak|build|connect|sew|implement)|(?:make|build) (?:a|an|my)|作り方|どうやって|製作方法|วิธี(?:ทำ|สร้าง)|ทำ.*อย่างไร|bagaimana.*(?:membuat|merakit)|wie.*(?:bau|mach|näh)/i.test(query)) return 'how_to';
   if (/比較|差別|對照|compare|difference|versus|\bvs\b|違い|比較|perbedaan|unterschied|แตกต่าง/i.test(query)) return 'compare';
   if (asksForCurrentInformation(query)) return 'current';
@@ -151,6 +155,27 @@ export function splitDocument(document: SourceDocument, chunkSize = 1500): Passa
     while (document.body[start] === ' ') start++;
   }
   return passages;
+}
+
+/** Interview matching uses the question's substantive ideas, not a strict AND
+ * over English terms, organization names and every synonym in a translation. */
+export function retrieveInterviewPassages(document: SourceDocument, question: string, limit = 4): Passage[] {
+  const groups: Array<{ query: RegExp; terms: RegExp }> = [
+    { query: /diy|自製|自造|自己動手/i, terms: /DIY|自己動手|自製|自造|手作|低成本|便宜/i },
+    { query: /biology|bioart|生物|生命|バイオ|ชีว/i, terms: /生物|生命|biology|biological|bioart|細菌|微生物/i },
+    { query: /工作坊|workshop|ワークショップ|เวิร์กช็อป/i, terms: /工作坊|workshops?|實驗課|教學|共同學習/i },
+    { query: /社群|社區|community|コミュニティ|ชุมชน/i, terms: /社群|社區|網絡|網路|網絡|人們|community|communities|network/i },
+    { query: /資金|經費|fund|grant|資金調達/i, terms: /資金|經費|錢|補助|資助|funding|grant|financing/i },
+    { query: /失敗|failure|failures/i, terms: /失敗|試錯|failure|failures/i },
+    { query: /國際|全球|全球化|global|international/i, terms: /國際|全球|全球化|跨國|global|international/i },
+  ];
+  const active = groups.filter((group) => group.query.test(question));
+  if (!active.length) return [];
+  const ranks = splitDocument(document).map((passage) => ({ passage, matches: active.filter((group) => group.terms.test(passage.text)).length }));
+  const minimum = active.length >= 3 ? 2 : 1;
+  return ranks.filter((item) => item.matches >= minimum)
+    .sort((a, b) => b.matches - a.matches || a.passage.start - b.passage.start)
+    .slice(0, limit).map((item) => ({ ...item.passage, kind: 'testimony' as const }));
 }
 
 export function retrievePassages(corpus: SourceCorpus, query: string, limit = 6, trace?: RetrievalTrace): Passage[] {

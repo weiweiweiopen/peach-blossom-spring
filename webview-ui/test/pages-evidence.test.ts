@@ -89,6 +89,24 @@ test('one repair uses the same evidence and review feedback rather than publishi
   assert.equal(calls, 4); assert.equal(claims[0].text, statement.text);
   assert.ok(seen.every((id) => packet.passages.some((passage) => passage.id === id)));
 });
+test('when review gives exact rejected indices, retain only individually approved claims instead of discarding the whole answer', async () => {
+  const valid = { ...statement, text: '原文將 Alpha Kit 描述為仍在開發的感測器套件。' };
+  const bad = { ...statement, text: 'Alpha Kit 已於 2026 年完成量產。' };
+  let calls = 0;
+  const result = await answerFromPacket(packet, 'zh-TW', '', async () => ++calls === 1
+    ? { statements: [valid, bad, { ...valid, text: '該歷史規劃提及溫度與濕度感測。' }] }
+    : { supported: false, languageCorrect: true, unsupportedIndexes: [2], issues: ['Statement 2 is not supported.'] });
+  assert.equal(result.status, 'verified'); assert.equal(calls, 2);
+  assert.ok(result.answer.includes(valid.text)); assert.ok(!result.answer.includes(bad.text));
+  assert.equal(result.record?.statements.length, 2);
+});
+test('malformed review indices cannot cause unsupported claims to be accepted', async () => {
+  let calls = 0;
+  const result = await answerFromPacket(packet, 'zh-TW', '', async () => ++calls % 2 === 1
+    ? { statements: [statement, statement, statement] }
+    : { supported: false, languageCorrect: true, unsupportedIndexes: [0, 9], issues: ['invalid'] });
+  assert.equal(result.status, 'unverified'); assert.equal(calls, 4);
+});
 test('transport failure is not retried as an evidence repair', async () => {
   let calls = 0;
   await assert.rejects(writeSupportedStatements(packet, 'zh-TW', '', async () => { calls++; throw new Error('chat_http_502'); }), /chat_http_502/);

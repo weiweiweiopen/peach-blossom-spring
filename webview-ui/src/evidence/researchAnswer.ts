@@ -18,7 +18,7 @@ export function validateResearch(value: unknown, packet: EvidencePacket, languag
       count++;
       if (!item || typeof item.id !== 'string' || !/^[a-zA-Z0-9_-]{1,50}$/.test(item.id) || ids.has(item.id) ||
         typeof item.text !== 'string' || !item.text.trim() || item.text.length > 1200 || !['fact', 'inference', 'proposal', 'gap'].includes(item.role) ||
-        !Array.isArray(item.supports) || item.supports.length > 3) throw new Error('invalid_research_item');
+        !Array.isArray(item.supports) || item.supports.length > 5) throw new Error('invalid_research_item');
       ids.add(item.id);
       if (!hasConsistentOutputLanguage(item.text, language)) throw new Error('wrong_output_language');
       if (item.role !== 'gap' && !item.supports.length) throw new Error('research_item_without_support');
@@ -33,7 +33,8 @@ export function validateResearch(value: unknown, packet: EvidencePacket, languag
     });
     return { title: section.title.trim(), kind: section.kind, items };
   });
-  if (count > 18 || !sections.some((section) => section.items.some((item) => item.role === 'fact'))) throw new Error('insufficient_research_answer');
+  if (count > 24) throw new Error('too_many_research_items');
+  if (!sections.some((section) => section.items.some((item) => item.role === 'fact'))) throw new Error('insufficient_research_answer');
   return { sections, verified: false };
 }
 

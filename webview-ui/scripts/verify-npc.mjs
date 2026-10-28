@@ -89,6 +89,10 @@ try {
             if (payload.messages[0].content.includes('selected camper in a game')) return route.fulfill({ json: { answer: JSON.stringify({ reply: reflectionReplies[language] }) } });
             if (payload.messages[0].content.includes('independent evidence editor')) return route.fulfill({ json: { answer: JSON.stringify({ supported: true, languageCorrect: true }) } });
             const interview = data.passages.find((passage) => passage.kind === 'testimony' && passage.text.includes('Hackteria'));
+            if (/DIY biology.*bioart.*Hackteria/i.test(data.question)) {
+              assert.ok(interview, 'Community-method question must use the selected NPC interview');
+              return route.fulfill({ json: { answer: JSON.stringify({ statements: [{ text: '在我的訪談中，我談到 Hackteria 的工作坊、開放知識與社群合作。', passageId: interview.id, quote: interview.text.slice(0, 160), kind: 'testimony' }] }) } });
+            }
             if (/NGM|訪談|interview/i.test(data.question)) {
               assert.ok(interview, 'The NPC did not receive its real interview');
               sawInterview = true;
@@ -131,7 +135,12 @@ try {
         const reflection = await send('What do you think I should try first?');
         assert.doesNotMatch(reflection, /找不到足以回答|這次我沒能|could not put that thought|今回は考えをうまく/);
         if (!live) assert.ok(reflection.includes(reflectionReplies[language]));
-        report.push({ engine: engine.name, language, live, modelCalls, wikiCalls, identity, activities, identityAgain, interview, reflection });
+        if (language === 'zh-TW') {
+          const community = await send('你怎麼把 DIY biology、bioart 和工作坊做成 Hackteria 的社群方法？');
+          assert.match(community, /Hackteria/); assert.match(community, /\[\d+\]/);
+          assert.doesNotMatch(community, /未通過|找不到足以回答/);
+          report.push({ engine: engine.name, language, live, modelCalls, wikiCalls, identity, activities, identityAgain, interview, reflection, community });
+        } else report.push({ engine: engine.name, language, live, modelCalls, wikiCalls, identity, activities, identityAgain, interview, reflection });
         console.log(JSON.stringify(report.at(-1)));
         await context.close();
       }

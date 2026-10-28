@@ -7,13 +7,25 @@ import { localizedNpcRole } from '../src/npcRoles.js';
 import { answerNpcQuestion, npcIntent } from '../src/evidence/npcConversation.js';
 import { asksForCurrentInformation } from '../src/evidence/liveWiki.js';
 import { buildSourceCorpus } from '../scripts/source-corpus.js';
-import { retrievePassages, type EvidencePacket } from '../src/evidence/sourceCorpus.js';
+import { normalizeText, queryPlan, retrieveInterviewPassages, retrievePassages, type EvidencePacket, type SourceDocument } from '../src/evidence/sourceCorpus.js';
 import type { LanguageCode } from '../src/i18n.js';
 
 const corpus = buildSourceCorpus(path.resolve(import.meta.dirname, '../..'));
 const languages: LanguageCode[] = ['zh-TW', 'en', 'id', 'de', 'ja', 'th'];
 const who: Record<LanguageCode, string> = { 'zh-TW': '你是誰', en: 'Who are you?', id: 'Siapa kamu?', de: 'Wer bist du?', ja: 'あなたは誰ですか？', th: 'คุณเป็นใคร' };
 const marc = personas.personas.find((persona) => persona.id === 'marc-dusseiller')!;
+
+test('screenshot community-method question is not classified as electronics assembly and retrieves the real character interview', () => {
+  const question = '你怎麼把 DIY biology、bioart 和工作坊做成 Hackteria 的社群方法？';
+  assert.equal(queryPlan(question).intent, 'explain');
+  const body = normalizeText(readFileSync(path.resolve(import.meta.dirname, '../../docs/transcripts_zh/marc-dusseiller.md'), 'utf8'));
+  const document: SourceDocument = { id: 'marc-interview', title: 'NGM interview', body, family: 'interview', path: 'docs/transcripts_zh/marc-dusseiller.md', hash: 'test', url: 'https://example.org/interview', capturedAt: null };
+  const matches = retrieveInterviewPassages(document, question);
+  assert.ok(matches.length >= 2);
+  assert.ok(matches.some((passage) => /維基|工作坊|HackteriaLab/.test(passage.text)));
+  assert.ok(matches.every((passage) => passage.kind === 'testimony' && body.slice(passage.start, passage.end).trim() === passage.text));
+  assert.equal(queryPlan('怎麼製做導電縫線、織品的觸控螢幕？').intent, 'how_to');
+});
 
 test('screenshot regression: identity uses the selected role without retrieval or a model', async () => {
   for (const persona of personas.personas) for (const language of languages) {
