@@ -81,7 +81,15 @@ Before release, real-model beehive and electronic-textile questions passed exact
 quotation checks and the separate review. The beehive answer preserved historical
 development status rather than declaring planned sensors completed.
 
-Local release checks passed: 57 unit/regression tests, six locales with 176
+Local release checks passed: 58 unit/regression tests, six locales with 176
 nonempty matching keys, TypeScript/production build, 12 home-screen fixtures,
 120 UI-panel/viewport fixtures, and six query/publication/save/PDF flows. The
 browser suite uses controlled model replies and is not an accuracy percentage.
+
+The first deployed real-browser smoke additionally exposed Chinese historical
+phrasing in Japanese output, despite a positive model language review. The
+follow-up fix scopes historical examples to the selected language and adds an
+independent script/known-contamination gate plus the exact regression case.
+Real-model Japanese and Thai checks subsequently produced correctly localized,
+source-supported answers. A Thai draft also failed semantic review in an earlier
+attempt and was correctly withheld; these samples are not a zero-error-rate claim.

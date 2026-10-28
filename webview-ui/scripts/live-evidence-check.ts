@@ -10,8 +10,8 @@ const originalFetch = globalThis.fetch;
 globalThis.fetch = (input, init) => originalFetch(input, { ...init, headers: { ...init?.headers, Origin: 'https://weiweiweiopen.github.io' } });
 globalThis.document = { querySelector: () => ({ getAttribute: () => 'https://pbs-deepseek-proxy.dontmarryme.workers.dev/chat' }) } as unknown as Document;
 const corpus = buildSourceCorpus(path.resolve(import.meta.dirname, '../..'));
-const cases: Array<[string, LanguageCode]> = [['蜂箱感測器', 'zh-TW'], ['Playing with electronic textiles', 'en']];
-for (const [query, language] of cases) {
+const cases: Array<[string, LanguageCode]> = [['蜂箱感測器', 'zh-TW'], ['Playing with electronic textiles', 'en'], ['蜂箱感測器', 'ja'], ['蜂箱感測器', 'th']];
+for (const [query, language] of cases.filter(([, code]) => !process.argv[2] || process.argv[2] === code)) {
   const packet: EvidencePacket = { id: crypto.randomUUID(), query, corpusVersion: corpus.version, passages: retrievePassages(corpus, query) };
   const result = await answerFromPacket(packet, language, '', async (system, user) => {
     const value = await callPublicationModel(system, user);

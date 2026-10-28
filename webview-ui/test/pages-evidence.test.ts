@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import path from 'node:path';
 import { buildSourceCorpus } from '../scripts/source-corpus.js';
 import { retrievePassages, validateStatements, type EvidencePacket } from '../src/evidence/sourceCorpus.js';
-import { answerFromPacket, writeSupportedStatements, type ModelCall } from '../src/evidence/pagesEvidence.js';
+import { answerFromPacket, hasConsistentOutputLanguage, writeSupportedStatements, type ModelCall } from '../src/evidence/pagesEvidence.js';
 import { renderEvidencePublication } from '../src/association/evidencePublication.js';
 import { sanitizeNpcTextForUi } from '../src/privacy.js';
 import { localizedNpcRole } from '../src/npcRoles.js';
@@ -76,7 +76,13 @@ test('independent review can reject a claim even with a genuine quotation', asyn
 });
 test('wrong-language review fails closed, without canned replacement facts', async () => {
   let calls = 0;
-  await assert.rejects(writeSupportedStatements(packet, 'th', '', async () => ++calls === 1 ? { statements: [statement] } : { supported: true, languageCorrect: false }), /unsupported_claim/);
+  await assert.rejects(writeSupportedStatements(packet, 'th', '', async () => ++calls === 1 ? { statements: [statement] } : { supported: true, languageCorrect: false }), /wrong_output_language|unsupported_claim/);
+});
+test('deployed Japanese/Chinese mixed-language failure is rejected even if a model would approve it', () => {
+  assert.equal(hasConsistentOutputLanguage('原文當時描述、同プロジェクトはセンサーキットを開発中だった。', 'ja'), false);
+  assert.equal(hasConsistentOutputLanguage('原文では、当時センサーキットを開発中だったと記されています。', 'ja'), true);
+  assert.equal(hasConsistentOutputLanguage('原文當時描述 ชุดอุปกรณ์อยู่ระหว่างการพัฒนา', 'th'), false);
+  assert.equal(hasConsistentOutputLanguage('ต้นฉบับระบุว่าชุดอุปกรณ์อยู่ระหว่างการพัฒนา', 'th'), true);
 });
 test('interview testimony is never promoted to independently verified fact', () => {
   const testimony = { ...packet, passages: [{ ...passage, kind: 'testimony' as const }] };
